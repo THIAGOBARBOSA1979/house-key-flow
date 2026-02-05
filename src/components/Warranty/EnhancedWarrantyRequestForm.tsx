@@ -25,12 +25,16 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Import the WarrantyItem type
+import type { WarrantyItem } from "@/types/warranty";
+
 interface EnhancedWarrantyRequestFormProps {
   onSubmit?: (data: FormValues & { problems: WarrantyProblem[] }) => void;
   onCancel?: () => void;
+  selectedItem?: WarrantyItem | null;
 }
 
-export function EnhancedWarrantyRequestForm({ onSubmit, onCancel }: EnhancedWarrantyRequestFormProps) {
+export function EnhancedWarrantyRequestForm({ onSubmit, onCancel, selectedItem }: EnhancedWarrantyRequestFormProps) {
   const [problems, setProblems] = useState<WarrantyProblem[]>([
     {
       id: uuidv4(),
