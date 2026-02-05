@@ -7,21 +7,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { WarrantyProblem } from "@/components/Warranty/WarrantyProblemItem";
 import { EnhancedWarrantyRequestForm } from "@/components/Warranty/EnhancedWarrantyRequestForm";
+import { WarrantyItemSelector } from "@/components/Warranty/WarrantyItemSelector";
 import { useToast } from "@/components/ui/use-toast";
-import { v4 as uuidv4 } from 'uuid';
+import { WarrantyItem } from "@/types/warranty";
+import { warrantyValidationService } from "@/services/WarrantyValidationService";
 
 // Mock data
 const warrantyClaims = [
@@ -163,22 +159,84 @@ const WarrantyStatus = ({ status }: { status: "pending" | "progress" | "complete
 const ClientWarranty = () => {
   const [selectedClaim, setSelectedClaim] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedWarrantyItem, setSelectedWarrantyItem] = useState<WarrantyItem | null>(null);
+  const [requestStep, setRequestStep] = useState<"select_item" | "fill_form">("select_item");
   const { toast } = useToast();
+  
+  // Mock client ID - in real app, get from auth context
+  const clientId = "client-1";
   
   const claim = selectedClaim 
     ? warrantyClaims.find(c => c.id === selectedClaim) 
     : null;
 
-  // Handle form submission
+  // Handle form submission with validation
   const handleSubmit = (data: any) => {
+    if (!selectedWarrantyItem) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione um item de garantia.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Validate with service
+    const result = warrantyValidationService.validateAndCreateRequest(
+      selectedWarrantyItem.id,
+      clientId,
+      {
+        title: data.title,
+        problems: data.problems,
+        additionalInfo: data.additionalInfo,
+      }
+    );
+    
+    if (!result.success) {
+      toast({
+        title: "Erro na solicitação",
+        description: (result as { success: false; error: { error: string } }).error.error,
+        variant: "destructive"
+      });
+      return;
+    }
+    
     toast({
       title: "Solicitação enviada",
       description: "Sua solicitação de garantia foi enviada com sucesso."
     });
-    console.log("Form data:", data);
+    console.log("Created request:", result.request);
     
-    // Close dialog
+    // Reset and close dialog
     setIsDialogOpen(false);
+    setSelectedWarrantyItem(null);
+    setRequestStep("select_item");
+  };
+  
+  // Handle dialog close
+  const handleDialogClose = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (!open) {
+      setSelectedWarrantyItem(null);
+      setRequestStep("select_item");
+    }
+  };
+  
+  // Handle item selection
+  const handleItemSelect = (item: WarrantyItem | null) => {
+    setSelectedWarrantyItem(item);
+  };
+  
+  // Proceed to form step
+  const handleProceedToForm = () => {
+    if (selectedWarrantyItem) {
+      setRequestStep("fill_form");
+    }
+  };
+  
+  // Go back to item selection
+  const handleBackToSelection = () => {
+    setRequestStep("select_item");
   };
 
   return (
@@ -194,7 +252,7 @@ const ClientWarranty = () => {
             Gerencie solicitações de garantia do seu imóvel
           </p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
@@ -203,16 +261,60 @@ const ClientWarranty = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Nova Solicitação de Garantia</DialogTitle>
-              <DialogDescription>
-                Preencha os detalhes da sua solicitação para que possamos analisar e atender da melhor forma.
-              </DialogDescription>
+              <DialogTitle>
+                {requestStep === "select_item" 
+                  ? "Selecione o Item de Garantia" 
+                  : `Nova Solicitação - ${selectedWarrantyItem?.name}`}
+              </DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                {requestStep === "select_item" 
+                  ? "Escolha o item para o qual deseja abrir uma solicitação de garantia. Apenas itens com garantia ativa estão disponíveis."
+                  : "Preencha os detalhes da sua solicitação para que possamos analisar e atender da melhor forma."}
+              </p>
             </DialogHeader>
             
-            <EnhancedWarrantyRequestForm 
-              onSubmit={handleSubmit} 
-              onCancel={() => setIsDialogOpen(false)} 
-            />
+            {requestStep === "select_item" ? (
+              <div className="space-y-4">
+                <WarrantyItemSelector
+                  clientId={clientId}
+                  selectedItemId={selectedWarrantyItem?.id || null}
+                  onSelectItem={handleItemSelect}
+                  showIneligible={true}
+                />
+                
+                <div className="flex justify-end gap-3 pt-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleDialogClose(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button 
+                    onClick={handleProceedToForm}
+                    disabled={!selectedWarrantyItem}
+                  >
+                    Continuar
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleBackToSelection}
+                  className="mb-2"
+                >
+                  ← Voltar para seleção
+                </Button>
+                <EnhancedWarrantyRequestForm 
+                  onSubmit={handleSubmit} 
+                  onCancel={handleBackToSelection}
+                  selectedItem={selectedWarrantyItem}
+                />
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
