@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Home, ClipboardCheck, ShieldCheck, Mail, Phone, ArrowRight, FileText, Key, Plus, History, Calendar, Search } from "lucide-react";
+import { User, Home, ClipboardCheck, ShieldCheck, Mail, Phone, ArrowRight, FileText, Key, Plus, History, Calendar, Search, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,11 +11,15 @@ import { NewClientForm } from "@/components/ClientArea/NewClientForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
 import { toast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ClientStageManager } from "@/components/Admin/ClientStageManager";
+import { ClientEventHistory } from "@/components/Admin/ClientEventHistory";
+import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
+import { clientStageService } from "@/services/ClientStageService";
 
 // Mock data improvements
 const clients = [
   {
-    id: "1",
+    id: "client-1",
     name: "Maria Oliveira",
     email: "maria.oliveira@email.com",
     phone: "(11) 97777-6666",
@@ -161,9 +165,16 @@ const ClientArea = () => {
                   <TableCell>{client.phone}</TableCell>
                   <TableCell>{client.property} - {client.unit}</TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="bg-green-50 text-green-700">
-                      Ativo
-                    </Badge>
+                    {(() => {
+                      const profile = clientStageService.getClientProfile(client.id);
+                      return profile ? (
+                        <StageIndicator currentStage={profile.currentStage} variant="compact" />
+                      ) : (
+                        <Badge variant="outline" className="bg-green-50 text-green-700">
+                          Ativo
+                        </Badge>
+                      );
+                    })()}
                   </TableCell>
                   <TableCell>
                     <Button 
@@ -197,8 +208,9 @@ const ClientArea = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+                <TabsTrigger value="stages">Etapas</TabsTrigger>
                 <TabsTrigger value="documents">Documentos</TabsTrigger>
                 <TabsTrigger value="inspections">Vistorias</TabsTrigger>
                 <TabsTrigger value="warranty">Garantias</TabsTrigger>
@@ -230,6 +242,17 @@ const ClientArea = () => {
                     </div>
                   </div>
                 </div>
+              </TabsContent>
+
+              <TabsContent value="stages" className="mt-4 space-y-4">
+                <ClientStageManager 
+                  clientId={selectedClient.id} 
+                  onStageChange={() => {
+                    // Refresh client data
+                    toast({ title: "Etapa atualizada", description: "A etapa do cliente foi atualizada com sucesso." });
+                  }} 
+                />
+                <ClientEventHistory clientId={selectedClient.id} />
               </TabsContent>
 
               <TabsContent value="documents" className="mt-4">

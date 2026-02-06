@@ -10,20 +10,38 @@ import {
   Calendar,
   AlertCircle,
   CheckCircle,
-  Clock,
-  TrendingUp,
   Bell,
-  ArrowRight
+  ArrowRight,
+  Lock
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
+import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
+import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
+import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
+import { useClientStage } from "@/hooks/useClientStage";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const Dashboard = () => {
-  // Mock data para demonstrar funcionalidades
+  // Get client stage data
+  const clientId = "client-1"; // Mock - would come from auth context
+  const { 
+    profile, 
+    stage, 
+    permissions, 
+    timeline, 
+    isLoading,
+    canScheduleInspection,
+    canRequestWarranty 
+  } = useClientStage(clientId);
+  
+  const { unreadCount, urgentNotifications } = useNotifications(clientId);
+
+  // Mock data for property info
   const userInfo = {
-    name: "Maria Oliveira",
-    property: "Edifício Aurora",
-    unit: "Unidade 204",
+    name: profile?.name || "Maria Oliveira",
+    property: profile?.propertyName || "Edifício Aurora",
+    unit: profile?.unitNumber || "204",
     deliveryDate: new Date(2025, 5, 15),
     contractDate: new Date(2024, 10, 20)
   };
@@ -42,12 +60,6 @@ const Dashboard = () => {
   const warrantyRequests = [
     { id: "1", title: "Reparo na torneira do banheiro", status: "em_andamento", priority: "media" },
     { id: "2", title: "Ajuste na porta da cozinha", status: "concluido", priority: "baixa" }
-  ];
-
-  const notifications = [
-    { id: "1", title: "Vistoria agendada", message: "Sua vistoria de pré-entrega foi confirmada", urgent: true },
-    { id: "2", title: "Documento disponível", message: "Manual do proprietário já está disponível", urgent: false },
-    { id: "3", title: "Lembrete de pagamento", message: "Próxima parcela vence em 5 dias", urgent: true }
   ];
 
   const getStatusColor = (status: string) => {
@@ -75,16 +87,29 @@ const Dashboard = () => {
   const daysToDelivery = Math.ceil((userInfo.deliveryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
   const contractProgress = Math.min(((new Date().getTime() - userInfo.contractDate.getTime()) / (userInfo.deliveryDate.getTime() - userInfo.contractDate.getTime())) * 100, 100);
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          Bem-vindo, {userInfo.name}! 👋
-        </h1>
-        <p className="text-muted-foreground">
-          Acompanhe o progresso do seu imóvel e acesse seus documentos
-        </p>
+      {/* Header with Stage Indicator */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Bem-vindo, {userInfo.name}! 👋
+          </h1>
+          <p className="text-muted-foreground">
+            Acompanhe o progresso do seu imóvel e acesse seus documentos
+          </p>
+        </div>
+        {stage && (
+          <StageIndicator currentStage={stage} showDescription />
+        )}
       </div>
 
       {/* Property Info Card */}
@@ -120,6 +145,13 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
+      {/* Timeline Section */}
+      <ClientTimeline 
+        timeline={timeline} 
+        title="Sua Jornada"
+        description="Acompanhe cada etapa do processo do seu imóvel"
+      />
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
@@ -130,7 +162,7 @@ const Dashboard = () => {
                 <p className="text-2xl font-bold">4</p>
                 <p className="text-xs text-muted-foreground">3 disponíveis</p>
               </div>
-              <FileText className="h-8 w-8 text-blue-600" />
+              <FileText className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -140,9 +172,11 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Vistorias</p>
                 <p className="text-2xl font-bold">2</p>
-                <p className="text-xs text-muted-foreground">1 agendada</p>
+                <p className="text-xs text-muted-foreground">
+                  {canScheduleInspection ? '1 agendada' : 'Aguardando liberação'}
+                </p>
               </div>
-              <ClipboardCheck className="h-8 w-8 text-green-600" />
+              <ClipboardCheck className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -151,10 +185,12 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Garantias</p>
-                <p className="text-2xl font-bold">2</p>
-                <p className="text-xs text-muted-foreground">1 em andamento</p>
+                <p className="text-2xl font-bold">{canRequestWarranty ? '2' : '-'}</p>
+                <p className="text-xs text-muted-foreground">
+                  {canRequestWarranty ? '1 em andamento' : 'Aguardando liberação'}
+                </p>
               </div>
-              <ShieldCheck className="h-8 w-8 text-orange-600" />
+              <ShieldCheck className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -163,10 +199,12 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Notificações</p>
-                <p className="text-2xl font-bold">3</p>
-                <p className="text-xs text-muted-foreground">2 urgentes</p>
+                <p className="text-2xl font-bold">{unreadCount}</p>
+                <p className="text-xs text-muted-foreground">
+                  {urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'nenhuma urgente'}
+                </p>
               </div>
-              <Bell className="h-8 w-8 text-red-600" />
+              <Bell className="h-8 w-8 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -206,13 +244,16 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Upcoming Inspections */}
+        {/* Upcoming Inspections with Gate */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <ClipboardCheck className="h-5 w-5" />
                 Próximas Vistorias
+                {!canScheduleInspection && (
+                  <Lock className="h-4 w-4 text-muted-foreground" />
+                )}
               </CardTitle>
               <Link to="/client/inspections">
                 <Button variant="ghost" size="sm">
@@ -222,30 +263,42 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            {upcomingInspections.map((inspection) => (
-              <div key={inspection.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">{inspection.title}</p>
-                    <p className="text-xs text-muted-foreground">{inspection.date.toLocaleDateString()}</p>
+            {canScheduleInspection ? (
+              upcomingInspections.map((inspection) => (
+                <div key={inspection.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">{inspection.title}</p>
+                      <p className="text-xs text-muted-foreground">{inspection.date.toLocaleDateString()}</p>
+                    </div>
                   </div>
+                  <Badge variant={getStatusColor(inspection.status) as any} className="text-xs">
+                    {getStatusLabel(inspection.status)}
+                  </Badge>
                 </div>
-                <Badge variant={getStatusColor(inspection.status) as any} className="text-xs">
-                  {getStatusLabel(inspection.status)}
-                </Badge>
+              ))
+            ) : (
+              <div className="p-4 bg-muted/50 rounded-lg text-center">
+                <Lock className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  As vistorias serão liberadas em breve pelo administrador.
+                </p>
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
 
-        {/* Warranty Requests */}
+        {/* Warranty Requests with Gate */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <ShieldCheck className="h-5 w-5" />
                 Solicitações de Garantia
+                {!canRequestWarranty && (
+                  <Lock className="h-4 w-4 text-muted-foreground" />
+                )}
               </CardTitle>
               <Link to="/client/warranty">
                 <Button variant="ghost" size="sm">
@@ -255,20 +308,29 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            {warrantyRequests.map((request) => (
-              <div key={request.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-                <div className="flex items-center gap-3">
-                  <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">{request.title}</p>
-                    <p className="text-xs text-muted-foreground">Prioridade: {request.priority}</p>
+            {canRequestWarranty ? (
+              warrantyRequests.map((request) => (
+                <div key={request.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                  <div className="flex items-center gap-3">
+                    <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">{request.title}</p>
+                      <p className="text-xs text-muted-foreground">Prioridade: {request.priority}</p>
+                    </div>
                   </div>
+                  <Badge variant={getStatusColor(request.status) as any} className="text-xs">
+                    {getStatusLabel(request.status)}
+                  </Badge>
                 </div>
-                <Badge variant={getStatusColor(request.status) as any} className="text-xs">
-                  {getStatusLabel(request.status)}
-                </Badge>
+              ))
+            ) : (
+              <div className="p-4 bg-muted/50 rounded-lg text-center">
+                <Lock className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  As garantias serão liberadas após a aprovação da vistoria.
+                </p>
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
 
@@ -281,19 +343,22 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {notifications.map((notification) => (
-              <div key={notification.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50">
-                {notification.urgent ? (
-                  <AlertCircle className="h-4 w-4 text-orange-600 mt-0.5" />
-                ) : (
-                  <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                )}
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{notification.title}</p>
-                  <p className="text-xs text-muted-foreground">{notification.message}</p>
+            {urgentNotifications.length > 0 ? (
+              urgentNotifications.slice(0, 3).map((notification) => (
+                <div key={notification.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50">
+                  <AlertCircle className="h-4 w-4 text-primary mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{notification.title}</p>
+                    <p className="text-xs text-muted-foreground">{notification.message}</p>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="flex items-center gap-3 p-2">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <p className="text-sm text-muted-foreground">Nenhuma notificação urgente</p>
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
       </div>
@@ -312,18 +377,35 @@ const Dashboard = () => {
                 Meus Documentos
               </Button>
             </Link>
-            <Link to="/client/inspections">
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                <ClipboardCheck className="h-6 w-6" />
+            
+            {canScheduleInspection ? (
+              <Link to="/client/inspections">
+                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
+                  <ClipboardCheck className="h-6 w-6" />
+                  Agendar Vistoria
+                </Button>
+              </Link>
+            ) : (
+              <Button variant="outline" className="w-full h-20 flex flex-col gap-2" disabled>
+                <Lock className="h-6 w-6" />
                 Agendar Vistoria
               </Button>
-            </Link>
-            <Link to="/client/warranty">
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                <ShieldCheck className="h-6 w-6" />
+            )}
+            
+            {canRequestWarranty ? (
+              <Link to="/client/warranty">
+                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
+                  <ShieldCheck className="h-6 w-6" />
+                  Solicitar Garantia
+                </Button>
+              </Link>
+            ) : (
+              <Button variant="outline" className="w-full h-20 flex flex-col gap-2" disabled>
+                <Lock className="h-6 w-6" />
                 Solicitar Garantia
               </Button>
-            </Link>
+            )}
+            
             <Link to="/client/properties">
               <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                 <Home className="h-6 w-6" />

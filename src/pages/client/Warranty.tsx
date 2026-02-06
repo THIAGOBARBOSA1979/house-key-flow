@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight } from "lucide-react";
+import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,6 +18,9 @@ import { WarrantyItemSelector } from "@/components/Warranty/WarrantyItemSelector
 import { useToast } from "@/components/ui/use-toast";
 import { WarrantyItem } from "@/types/warranty";
 import { warrantyValidationService } from "@/services/WarrantyValidationService";
+import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
+import { useClientStage } from "@/hooks/useClientStage";
+import { eventAutomationService } from "@/services/EventAutomationService";
 
 // Mock data
 const warrantyClaims = [
@@ -166,6 +169,9 @@ const ClientWarranty = () => {
   // Mock client ID - in real app, get from auth context
   const clientId = "client-1";
   
+  // Get client stage permissions
+  const { canRequestWarranty, permissions, stage, isLoading } = useClientStage(clientId);
+  
   const claim = selectedClaim 
     ? warrantyClaims.find(c => c.id === selectedClaim) 
     : null;
@@ -201,6 +207,13 @@ const ClientWarranty = () => {
       return;
     }
     
+    // Trigger event automation for warranty request
+    eventAutomationService.onWarrantyRequested(
+      result.request.id,
+      clientId,
+      selectedWarrantyItem.name
+    );
+    
     toast({
       title: "Solicitação enviada",
       description: "Sua solicitação de garantia foi enviada com sucesso."
@@ -215,6 +228,14 @@ const ClientWarranty = () => {
   
   // Handle dialog close
   const handleDialogClose = (open: boolean) => {
+    if (!canRequestWarranty) {
+      toast({
+        title: "Funcionalidade bloqueada",
+        description: "Você ainda não tem permissão para solicitar garantias.",
+        variant: "destructive"
+      });
+      return;
+    }
     setIsDialogOpen(open);
     if (!open) {
       setSelectedWarrantyItem(null);
@@ -239,6 +260,14 @@ const ClientWarranty = () => {
     setRequestStep("select_item");
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Page header */}
@@ -247,19 +276,28 @@ const ClientWarranty = () => {
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
             <ShieldCheck className="h-8 w-8" />
             Garantias
+            {!canRequestWarranty && (
+              <Lock className="h-5 w-5 text-muted-foreground" />
+            )}
           </h1>
           <p className="text-muted-foreground">
-            Gerencie solicitações de garantia do seu imóvel
+            {canRequestWarranty 
+              ? "Gerencie solicitações de garantia do seu imóvel"
+              : "As garantias serão liberadas após a aprovação da sua vistoria"
+            }
           </p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Solicitação
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+        
+        {/* Conditionally render button based on permissions */}
+        {canRequestWarranty ? (
+          <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Nova Solicitação
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {requestStep === "select_item" 
@@ -317,47 +355,66 @@ const ClientWarranty = () => {
             )}
           </DialogContent>
         </Dialog>
+        ) : (
+          <GatedButton 
+            isAllowed={false} 
+            tooltipMessage="Garantias serão liberadas após aprovação da vistoria"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Nova Solicitação
+          </GatedButton>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left column */}
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Minhas Solicitações</CardTitle>
-              <CardDescription>
-                Selecione uma solicitação para ver detalhes
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {warrantyClaims.length > 0 ? (
-                warrantyClaims.map((item) => (
-                  <div 
-                    key={item.id} 
-                    className={`p-3 border rounded-md cursor-pointer transition-colors ${
-                      selectedClaim === item.id 
-                        ? "border-primary bg-primary/5" 
-                        : "hover:bg-accent"
-                    }`}
-                    onClick={() => setSelectedClaim(item.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-medium">{item.title}</h3>
-                      <StatusBadge status={item.status} />
+      {/* Feature Gate for warranty content */}
+      <FeatureGate
+        isAllowed={canRequestWarranty}
+        requiredStage="warranty_enabled"
+        featureName="A funcionalidade de garantias"
+        message="As garantias serão liberadas automaticamente após a aprovação da sua vistoria de pré-entrega."
+        redirectTo="/client/inspections"
+        redirectLabel="Ver minhas vistorias"
+        variant="overlay"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left column */}
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Minhas Solicitações</CardTitle>
+                <CardDescription>
+                  Selecione uma solicitação para ver detalhes
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {warrantyClaims.length > 0 ? (
+                  warrantyClaims.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={`p-3 border rounded-md cursor-pointer transition-colors ${
+                        selectedClaim === item.id 
+                          ? "border-primary bg-primary/5" 
+                          : "hover:bg-accent"
+                      }`}
+                      onClick={() => setSelectedClaim(item.id)}
+                    >
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-medium">{item.title}</h3>
+                        <StatusBadge status={item.status} />
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>{format(item.createdAt, "dd/MM/yyyy")}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                      <Calendar className="h-3 w-3" />
-                      <span>{format(item.createdAt, "dd/MM/yyyy")}</span>
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center p-4">
+                    <p className="text-muted-foreground">Você ainda não possui solicitações</p>
                   </div>
-                ))
-              ) : (
-                <div className="text-center p-4">
-                  <p className="text-muted-foreground">Você ainda não possui solicitações</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                )}
+              </CardContent>
+            </Card>
           
           <WarrantyGuide />
         </div>
@@ -509,6 +566,7 @@ const ClientWarranty = () => {
           )}
         </div>
       </div>
+      </FeatureGate>
     </div>
   );
 };
