@@ -1,334 +1,480 @@
 
-# Plano: Fluxo Gradual do Cliente com Automacao por Eventos
+# Plano: Modulo Completo de Garantias com Timeline, Kanban, SLA e Relatorios
 
-## Resumo
+## Resumo Executivo
 
-Implementar um sistema de fluxo progressivo para clientes no painel, onde cada cliente evolui por etapas controladas (Cadastrado > Vistoria Liberada > Garantia Liberada). O sistema incluira automacao por eventos, controle manual pelo administrador, linha do tempo visual, notificacoes automaticas e integracao total com o modulo de garantia.
+Implementar um modulo de garantia completo que inclui:
+1. Timeline visual para o cliente acompanhar sua solicitacao
+2. Kanban administrativo com drag-and-drop
+3. Automacao por eventos para transicoes de status
+4. SLA configuravel por tipo de garantia
+5. Dashboard de metricas e relatorios
+6. Notificacoes automaticas integradas
 
-## Arquitetura do Sistema
+O sistema sera construido sobre a infraestrutura existente, reutilizando servicos ja implementados (EventAutomationService, NotificationService, ClientStageService) e mantendo todas as funcionalidades atuais.
+
+---
+
+## Arquitetura Geral
 
 ```text
-+------------------+     +-------------------+     +------------------+
-|  ClientStage     |     |  EventAutomation  |     |  Notifications   |
-|  Service         |---->|  Service          |---->|  Service         |
-|                  |     |                   |     |                  |
-+------------------+     +-------------------+     +------------------+
-        |                        |                        |
-        v                        v                        v
-+------------------+     +-------------------+     +------------------+
-| Etapa 1:         |     | Evento: Vistoria  |     | - Toast          |
-|   Cadastrado     |     |   Aprovada        |     | - Historico      |
-|                  |     |                   |     | - (futuro: email)|
-| Etapa 2:         |     | Evento: Vistoria  |     |                  |
-|   Vistoria       |     |   Reprovada       |     |                  |
-|   Liberada       |     |                   |     |                  |
-|                  |     |                   |     |                  |
-| Etapa 3:         |     |                   |     |                  |
-|   Garantia       |     |                   |     |                  |
-|   Liberada       |     |                   |     |                  |
-+------------------+     +-------------------+     +------------------+
++-------------------+     +-------------------+     +-------------------+
+|                   |     |                   |     |                   |
+|  PAINEL CLIENTE   |     |  PAINEL ADMIN     |     |  SERVICOS         |
+|                   |     |                   |     |                   |
++-------------------+     +-------------------+     +-------------------+
+        |                         |                         |
+        v                         v                         v
++-------------------+     +-------------------+     +-------------------+
+| WarrantyTimeline  |     | WarrantyKanban    |     | WarrantyService   |
+| (etapas visuais)  |     | (drag-and-drop)   |     | (logica central)  |
++-------------------+     +-------------------+     +-------------------+
+        |                         |                         |
+        v                         v                         v
++-------------------+     +-------------------+     +-------------------+
+| SLA Indicators    |     | SLA Dashboard     |     | SLAService        |
+| (prazo restante)  |     | (metricas)        |     | (calculo prazos)  |
++-------------------+     +-------------------+     +-------------------+
+        |                         |                         |
+        +------------+------------+                         |
+                     |                                      |
+                     v                                      v
+            +-------------------+                  +-------------------+
+            | EventAutomation   |<---------------->| Notification      |
+            | Service (existente)|                  | Service (existente)|
+            +-------------------+                  +-------------------+
 ```
 
-## O Que Sera Criado
+---
 
-### 1. Tipos e Interfaces
+## 1. TIMELINE DO CLIENTE (Nova Pagina)
 
-**Novos tipos para gerenciar o fluxo do cliente:**
+### Objetivo
+Permitir ao cliente visualizar todas as etapas da sua solicitacao de garantia com transparencia total.
 
-| Tipo | Descricao |
-|------|-----------|
-| `ClientStage` | Enum com as etapas: registered, inspection_enabled, warranty_enabled |
-| `ClientProfile` | Perfil completo do cliente com etapa atual e permissoes |
-| `ClientEvent` | Evento registrado no historico do cliente |
-| `ClientNotification` | Notificacao para o cliente |
-| `StagePermissions` | Mapeamento de permissoes por etapa |
-| `TimelineItem` | Item da linha do tempo visual |
+### Etapas da Timeline
 
-### 2. Servicos
+| Ordem | Etapa | Descricao | SLA Padrao |
+|-------|-------|-----------|------------|
+| 1 | Solicitacao aberta | Cliente criou a solicitacao | - |
+| 2 | Em analise | Equipe esta analisando | 2 dias uteis |
+| 3 | Vistoria agendada | Tecnico designado | 3 dias uteis |
+| 4 | Vistoria realizada | Tecnico visitou o local | - |
+| 5 | Aprovada/Reprovada | Decisao sobre a garantia | 1 dia util |
+| 6 | Em execucao | Reparo em andamento | Var. por tipo |
+| 7 | Finalizada | Garantia concluida | - |
 
-**ClientStageService:**
-- `getCurrentStage(clientId)` - Retorna etapa atual do cliente
-- `getPermissions(clientId)` - Retorna permissoes baseadas na etapa
-- `canScheduleInspection(clientId)` - Verifica se pode agendar vistoria
-- `canRequestWarranty(clientId)` - Verifica se pode solicitar garantia
-- `advanceStage(clientId, newStage, reason)` - Avanca etapa do cliente
-- `getTimeline(clientId)` - Retorna linha do tempo do cliente
-
-**EventAutomationService:**
-- `onInspectionApproved(inspectionId, clientId)` - Libera garantia automaticamente
-- `onInspectionRejected(inspectionId, clientId)` - Bloqueia avanco
-- `processEvent(event)` - Processa evento e executa automacoes
-
-**NotificationService:**
-- `createNotification(clientId, type, data)` - Cria notificacao
-- `getNotifications(clientId)` - Lista notificacoes do cliente
-- `markAsRead(notificationId)` - Marca como lida
-- `getUnreadCount(clientId)` - Conta nao lidas
-
-### 3. Componentes de Interface
-
-**Componentes para o Painel do Cliente:**
+### Componentes Criados
 
 | Componente | Descricao |
 |------------|-----------|
-| `ClientTimeline.tsx` | Linha do tempo visual com todas as etapas |
-| `TimelineItem.tsx` | Item individual da timeline |
-| `StageIndicator.tsx` | Indicador de etapa atual |
-| `FeatureGate.tsx` | Componente que bloqueia acesso a funcionalidades |
-| `BlockedFeatureMessage.tsx` | Mensagem de funcionalidade bloqueada |
-| `NotificationCenter.tsx` | Central de notificacoes do cliente |
-| `NotificationItem.tsx` | Item de notificacao individual |
+| `WarrantyRequestTimeline.tsx` | Timeline visual completa |
+| `WarrantyTimelineStep.tsx` | Etapa individual com SLA |
+| `SLAIndicator.tsx` | Badge de prazo (no prazo/alerta/atrasado) |
+| `WarrantyRequestDetail.tsx` | Pagina de detalhe da solicitacao |
 
-**Componentes para o Painel do Administrador:**
+### Indicadores Visuais
+
+```text
+Estados da Etapa:
+  [VERDE]   Concluido - Etapa finalizada no prazo
+  [AZUL]    Em andamento - Etapa atual
+  [AMARELO] Alerta - Menos de 20% do prazo restante
+  [VERMELHO] Atrasado - Prazo SLA estourado
+  [CINZA]   Pendente - Etapa futura
+```
+
+---
+
+## 2. KANBAN ADMINISTRATIVO
+
+### Objetivo
+Centralizar a gestao de todas as solicitacoes de garantia em um painel visual drag-and-drop.
+
+### Colunas do Kanban
+
+```text
+|  ABERTAS  |  EM ANALISE  |  VISTORIA  |  VISTORIA   |  APROVADAS  |  EM EXECUCAO  |  FINALIZADAS  |
+|           |              |  AGENDADA  |  REALIZADA  |             |               |               |
+|   [Card]  |    [Card]    |   [Card]   |   [Card]    |   [Card]    |    [Card]     |    [Card]     |
+|   [Card]  |              |   [Card]   |             |   [Card]    |    [Card]     |               |
+```
+
+### Card de Solicitacao
+
+Cada card exibira:
+- Cliente + Imovel
+- Tipo de garantia
+- Prioridade (badge colorido)
+- Data de abertura
+- SLA restante (barra de progresso)
+- Indicador de atraso (se aplicavel)
+- Responsavel designado
+
+### Funcionalidades do Kanban
+
+| Funcionalidade | Descricao |
+|----------------|-----------|
+| Drag & Drop | Mover cards entre colunas |
+| Auto-sync | Atualiza timeline do cliente |
+| Historico | Registra quem moveu, quando |
+| Filtros | Por imovel, tipo, responsavel, prazo |
+| Ordenacao | Por SLA, prioridade, data |
+
+### Componentes Criados
 
 | Componente | Descricao |
 |------------|-----------|
-| `ClientStageManager.tsx` | Gerenciador de etapas do cliente |
-| `ManualReleaseDialog.tsx` | Dialog para liberacao manual |
-| `ClientEventHistory.tsx` | Historico de eventos do cliente |
-| `AdminNotificationTrigger.tsx` | Disparador manual de notificacoes |
+| `WarrantyKanban.tsx` | Board principal |
+| `KanbanColumn.tsx` | Coluna individual |
+| `KanbanCard.tsx` | Card de solicitacao |
+| `KanbanFilters.tsx` | Barra de filtros |
 
-### 4. Paginas Modificadas
+---
 
-**Painel do Cliente:**
-- `Dashboard.tsx` - Adicionar linha do tempo e indicador de etapa
-- `Inspections.tsx` - Bloquear agendamento se etapa < inspection_enabled
-- `Warranty.tsx` - Bloquear solicitacao se etapa < warranty_enabled
+## 3. AUTOMACAO POR EVENTOS
 
-**Painel do Administrador:**
-- `ClientArea.tsx` - Adicionar gerenciamento de etapas
-- `Inspections.tsx` - Adicionar aprovacao/reprovacao com automacao
+### Eventos e Acoes Automaticas
 
-## Fluxo Detalhado das Etapas
+| Evento | Acoes Automaticas |
+|--------|-------------------|
+| `warranty_status_changed` | Atualiza timeline, recalcula SLA, notifica cliente |
+| `warranty_inspection_scheduled` | Avanca etapa, notifica cliente com data |
+| `warranty_inspection_completed` | Marca vistoria realizada, aguarda decisao |
+| `warranty_approved` | Avanca para execucao, inicia SLA de reparo |
+| `warranty_rejected` | Finaliza com reprovacao, notifica cliente |
+| `warranty_execution_started` | Registra inicio do reparo |
+| `warranty_completed` | Encerra fluxo, bloqueia edicao, notifica |
+| `sla_expired` | Marca como atrasado, alerta responsaveis |
 
-### Etapa 1 - Cliente Cadastrado
+### Novo Servico: WarrantyAutomationService
 
 ```text
-Permissoes:
-  [x] Visualizar dashboard
-  [x] Visualizar documentos
-  [x] Visualizar informacoes do imovel
-  [ ] Agendar vistoria (BLOQUEADO)
-  [ ] Iniciar vistoria (BLOQUEADO)
-  [ ] Solicitar garantia (BLOQUEADO)
-
-Condicao para avancar:
-  - Liberacao manual pelo administrador
-  OU
-  - Evento automatico do sistema (ex: data de entrega proxima)
+WarrantyAutomationService
+  |
+  +-- onStatusChange(requestId, oldStatus, newStatus)
+  |     -> Atualiza timeline
+  |     -> Recalcula SLA
+  |     -> Registra historico
+  |     -> Cria notificacao
+  |
+  +-- onInspectionScheduled(requestId, date, technicianId)
+  |     -> Avanca status
+  |     -> Notifica cliente
+  |
+  +-- onInspectionCompleted(requestId, result, notes)
+  |     -> Atualiza status
+  |     -> Aguarda aprovacao
+  |
+  +-- onApproved(requestId, notes)
+  |     -> Avanca para execucao
+  |     -> Inicia SLA de reparo
+  |
+  +-- onRejected(requestId, reason)
+  |     -> Finaliza com motivo
+  |     -> Notifica cliente
+  |
+  +-- onCompleted(requestId)
+  |     -> Encerra fluxo
+  |     -> Bloqueia edicao
+  |     -> Notificacao final
+  |
+  +-- checkSLAExpiration()
+        -> Verifica todos os SLAs
+        -> Marca atrasados
+        -> Gera alertas
 ```
 
-### Etapa 2 - Vistoria Liberada
+---
+
+## 4. SLA CONFIGURAVEL POR TIPO
+
+### Tipos de Garantia com SLA
+
+| Tipo | SLA Analise | SLA Vistoria | SLA Decisao | SLA Execucao |
+|------|-------------|--------------|-------------|--------------|
+| Estrutural | 3 dias | 5 dias | 2 dias | 30 dias |
+| Hidraulica | 2 dias | 3 dias | 1 dia | 7 dias |
+| Eletrica | 2 dias | 3 dias | 1 dia | 7 dias |
+| Impermeabilizacao | 3 dias | 5 dias | 2 dias | 15 dias |
+| Acabamento | 2 dias | 3 dias | 1 dia | 5 dias |
+| Esquadrias | 2 dias | 3 dias | 1 dia | 10 dias |
+
+### Servico SLA
 
 ```text
-Permissoes:
-  [x] Todas da etapa anterior
-  [x] Agendar vistoria
-  [x] Iniciar vistoria
-  [x] Visualizar historico de vistorias
-  [ ] Solicitar garantia (BLOQUEADO)
-
-Condicao para avancar:
-  - Vistoria aprovada (AUTOMATICO)
-  OU
-  - Liberacao manual pelo administrador
+SLAService
+  |
+  +-- getSLAForType(warrantyType)
+  |     -> Retorna configuracao SLA
+  |
+  +-- calculateDeadline(startDate, slaHours)
+  |     -> Calcula prazo considerando dias uteis
+  |
+  +-- getRemainingTime(requestId, stage)
+  |     -> Retorna tempo restante
+  |
+  +-- getSLAStatus(requestId, stage)
+  |     -> "on_track" | "warning" | "expired"
+  |
+  +-- updateSLAConfiguration(warrantyType, config)
+        -> Permite admin alterar SLAs
 ```
 
-### Etapa 3 - Garantia Liberada
+### Componentes de Configuracao (Admin)
+
+| Componente | Descricao |
+|------------|-----------|
+| `SLAConfigurationPanel.tsx` | Painel de configuracao |
+| `SLATypeEditor.tsx` | Editor de SLA por tipo |
+| `SLAPreview.tsx` | Visualizacao do fluxo |
+
+---
+
+## 5. DASHBOARD DE METRICAS (Admin)
+
+### Cards de Resumo
 
 ```text
-Permissoes:
-  [x] Todas da etapa anterior
-  [x] Solicitar garantia (respeitando regras de elegibilidade)
-  [x] Visualizar historico de garantias
-
-Validacoes adicionais:
-  - Todas as regras do modulo de garantia permanecem ativas
-  - Elegibilidade por data e status
-  - Bloqueio de duplicidade
++-------------------+  +-------------------+  +-------------------+  +-------------------+
+|  ABERTAS HOJE     |  |  EM ATRASO        |  |  TEMPO MEDIO      |  |  % NO PRAZO       |
+|       12          |  |        5          |  |     4.2 dias      |  |       87%         |
++-------------------+  +-------------------+  +-------------------+  +-------------------+
 ```
 
-## Linha do Tempo Visual
+### Graficos Implementados
 
-**Estados visuais para cada item:**
+| Grafico | Tipo | Descricao |
+|---------|------|-----------|
+| Solicitacoes por Status | Donut | Distribuicao atual |
+| Evolucao Mensal | Linha | Abertas vs Finalizadas |
+| Tempo por Tipo | Barras | Tempo medio por categoria |
+| SLA Performance | Gauge | % cumprimento SLA |
+| Gargalos por Etapa | Barras horizontais | Tempo medio por etapa |
+| Heatmap Semanal | Heatmap | Volume por dia/hora |
 
-| Estado | Cor | Icone | Descricao |
-|--------|-----|-------|-----------|
-| Concluido | Verde | CheckCircle | Etapa completada com sucesso |
-| Atual | Azul | Clock | Etapa em andamento |
-| Pendente | Cinza | Circle | Etapa futura |
-| Bloqueado | Vermelho | Lock | Etapa bloqueada por reprovacao |
+### Filtros Disponiveis
 
-**Itens da Timeline:**
-1. Cadastro realizado
-2. Vistoria liberada
-3. Vistoria agendada
-4. Vistoria realizada
-5. Vistoria aprovada/reprovada
-6. Garantia liberada
-7. Solicitacoes de garantia
-8. Garantias concluidas
+- Periodo (hoje, semana, mes, customizado)
+- Tipo de garantia
+- Imovel/Empreendimento
+- Responsavel
+- Status
 
-## Automacao por Eventos
+### Componentes Criados
 
-### Evento: Vistoria Aprovada
+| Componente | Descricao |
+|------------|-----------|
+| `WarrantyDashboard.tsx` | Dashboard principal |
+| `MetricsCards.tsx` | Cards de resumo |
+| `PerformanceCharts.tsx` | Graficos de performance |
+| `BottleneckAnalysis.tsx` | Analise de gargalos |
+| `SLAComplianceChart.tsx` | Grafico de SLA |
+| `ExportReportButton.tsx` | Botao de exportacao |
 
-```text
-Trigger: Inspector marca vistoria como "aprovada"
+---
 
-Acoes automaticas:
-  1. Atualizar etapa do cliente para "warranty_enabled"
-  2. Registrar evento no historico
-  3. Criar notificacao: "Sua garantia foi liberada!"
-  4. Atualizar timeline
-  5. Log de auditoria com data, responsavel e tipo (automatico)
-```
+## 6. NOTIFICACOES AUTOMATICAS
 
-### Evento: Vistoria Reprovada
+### Novos Tipos de Notificacao
 
-```text
-Trigger: Inspector marca vistoria como "reprovada"
+| Tipo | Titulo | Destinatario |
+|------|--------|--------------|
+| `warranty_opened` | Solicitacao Registrada | Cliente |
+| `warranty_in_analysis` | Em Analise | Cliente |
+| `warranty_inspection_scheduled` | Vistoria Agendada | Cliente |
+| `warranty_inspection_done` | Vistoria Realizada | Cliente |
+| `warranty_approved` | Garantia Aprovada | Cliente |
+| `warranty_rejected` | Garantia Negada | Cliente |
+| `warranty_in_execution` | Reparo Iniciado | Cliente |
+| `warranty_completed` | Garantia Concluida | Cliente |
+| `sla_warning` | Prazo Proximo | Admin |
+| `sla_expired` | SLA Estourado | Admin + Cliente |
 
-Acoes automaticas:
-  1. Manter cliente na etapa atual
-  2. Registrar evento no historico
-  3. Criar notificacao: "Sua vistoria precisa de ajustes"
-  4. Agendar nova vistoria automaticamente (se configurado)
-  5. Log de auditoria
-```
+### Integracao com NotificationService Existente
 
-## Notificacoes
+Estender o servico atual para incluir os novos tipos, mantendo compatibilidade.
 
-### Tipos de Notificacao
+---
 
-| Tipo | Mensagem | Urgencia |
-|------|----------|----------|
-| inspection_enabled | "Vistoria liberada! Agende sua vistoria." | Alta |
-| inspection_scheduled | "Vistoria agendada para [data]" | Normal |
-| inspection_reminder | "Lembrete: sua vistoria e amanha" | Alta |
-| inspection_approved | "Vistoria aprovada! Garantia liberada." | Alta |
-| inspection_rejected | "Vistoria com pendencias. Verificar." | Alta |
-| warranty_enabled | "Voce ja pode solicitar garantias" | Normal |
-| warranty_created | "Solicitacao de garantia registrada" | Normal |
-| warranty_updated | "Atualizacao na sua solicitacao" | Normal |
-| warranty_completed | "Sua solicitacao foi concluida" | Normal |
+## 7. ESTRUTURA DE DADOS
 
-### Estrutura da Notificacao
+### Novos Tipos TypeScript
 
 ```text
-{
+// Etapas da garantia
+WarrantyStage = 
+  | "opened"
+  | "in_analysis" 
+  | "inspection_scheduled"
+  | "inspection_completed"
+  | "approved"
+  | "rejected"
+  | "in_execution"
+  | "completed"
+
+// Configuracao SLA
+SLAConfig = {
+  warrantyType: string
+  analysisHours: number
+  inspectionHours: number
+  decisionHours: number
+  executionHours: number
+}
+
+// Status do SLA
+SLAStatus = "on_track" | "warning" | "expired"
+
+// Historico de movimentacao
+WarrantyStatusHistory = {
   id: string
-  clientId: string
-  type: NotificationType
-  title: string
-  message: string
-  createdAt: Date
-  read: boolean
-  urgent: boolean
-  metadata: {
-    relatedEntityId?: string
-    relatedEntityType?: "inspection" | "warranty" | "stage"
-  }
+  requestId: string
+  fromStatus: WarrantyStage | null
+  toStatus: WarrantyStage
+  changedAt: Date
+  changedBy: string
+  isAutomatic: boolean
+  notes?: string
+}
+
+// Solicitacao de garantia estendida
+WarrantyRequestExtended = WarrantyRequest & {
+  currentStage: WarrantyStage
+  stageStartedAt: Date
+  slaDeadline: Date
+  slaStatus: SLAStatus
+  assignedTo: string | null
+  inspectionDate?: Date
+  inspectionNotes?: string
+  executionStartDate?: Date
+  completionDate?: Date
+  history: WarrantyStatusHistory[]
 }
 ```
 
-## Seguranca e Validacao
+---
 
-### Validacao Dupla (Frontend + Backend)
+## 8. ARQUIVOS A CRIAR
 
-**Frontend:**
-- Componente `FeatureGate` verifica permissoes antes de renderizar
-- Botoes desabilitados com tooltip explicativo
-- Redirecionamento automatico se tentar acessar URL diretamente
+### Tipos
+- `src/types/warrantyFlow.ts` - Tipos para fluxo de garantia
 
-**Backend (preparado para integracao):**
-- Validacao de etapa antes de processar requisicoes
-- Verificacao de propriedade (clientId match)
-- Logs de tentativas de acesso nao autorizado
+### Servicos
+- `src/services/WarrantySLAService.ts` - Gerenciamento de SLA
+- `src/services/WarrantyFlowService.ts` - Fluxo e historico
+- `src/services/WarrantyAutomationService.ts` - Automacoes
 
-### Bloqueio de Acesso Direto
+### Componentes Cliente
+- `src/components/Warranty/ClientTimeline/WarrantyRequestTimeline.tsx`
+- `src/components/Warranty/ClientTimeline/WarrantyTimelineStep.tsx`
+- `src/components/Warranty/ClientTimeline/SLAIndicator.tsx`
 
-```text
-Se cliente tenta acessar /client/warranty sem etapa warranty_enabled:
-  -> Exibir FeatureGate com mensagem:
-     "Esta funcionalidade sera liberada apos a aprovacao da sua vistoria."
-  -> Botao: "Ver minhas vistorias"
-```
+### Componentes Admin - Kanban
+- `src/components/Warranty/Kanban/WarrantyKanban.tsx`
+- `src/components/Warranty/Kanban/KanbanColumn.tsx`
+- `src/components/Warranty/Kanban/KanbanCard.tsx`
+- `src/components/Warranty/Kanban/KanbanFilters.tsx`
 
-## Arquivos a Serem Criados
+### Componentes Admin - Dashboard
+- `src/components/Warranty/Dashboard/WarrantyMetricsDashboard.tsx`
+- `src/components/Warranty/Dashboard/MetricsCards.tsx`
+- `src/components/Warranty/Dashboard/PerformanceCharts.tsx`
+- `src/components/Warranty/Dashboard/SLAComplianceChart.tsx`
+- `src/components/Warranty/Dashboard/BottleneckAnalysis.tsx`
 
-| Arquivo | Descricao |
-|---------|-----------|
-| `src/types/clientFlow.ts` | Tipos para fluxo do cliente |
-| `src/services/ClientStageService.ts` | Servico de gerenciamento de etapas |
-| `src/services/EventAutomationService.ts` | Servico de automacao por eventos |
-| `src/services/NotificationService.ts` | Servico de notificacoes |
-| `src/components/ClientFlow/ClientTimeline.tsx` | Linha do tempo visual |
-| `src/components/ClientFlow/TimelineItem.tsx` | Item da timeline |
-| `src/components/ClientFlow/StageIndicator.tsx` | Indicador de etapa |
-| `src/components/ClientFlow/FeatureGate.tsx` | Bloqueio de funcionalidades |
-| `src/components/ClientFlow/NotificationCenter.tsx` | Central de notificacoes |
-| `src/components/ClientFlow/NotificationItem.tsx` | Item de notificacao |
-| `src/components/Admin/ClientStageManager.tsx` | Gerenciador admin de etapas |
-| `src/components/Admin/ManualReleaseDialog.tsx` | Dialog de liberacao manual |
-| `src/components/Admin/ClientEventHistory.tsx` | Historico de eventos |
-| `src/hooks/useClientStage.ts` | Hook para gerenciar etapa do cliente |
-| `src/hooks/useNotifications.ts` | Hook para notificacoes |
+### Componentes Admin - SLA Config
+- `src/components/Warranty/SLA/SLAConfigurationPanel.tsx`
+- `src/components/Warranty/SLA/SLATypeEditor.tsx`
 
-## Arquivos a Serem Modificados
+### Paginas
+- Modificar: `src/pages/client/Warranty.tsx` (adicionar timeline)
+- Modificar: `src/pages/Warranty.tsx` (adicionar kanban + dashboard)
+
+---
+
+## 9. ARQUIVOS A MODIFICAR
 
 | Arquivo | Modificacoes |
 |---------|--------------|
-| `src/pages/client/Dashboard.tsx` | Adicionar timeline e indicador de etapa |
-| `src/pages/client/Inspections.tsx` | Integrar FeatureGate para agendamento |
-| `src/pages/client/Warranty.tsx` | Integrar FeatureGate e validacao de etapa |
-| `src/pages/ClientArea.tsx` | Adicionar gerenciamento de etapas no admin |
-| `src/components/Layout/ClientLayout.tsx` | Integrar NotificationCenter |
-| `src/contexts/AuthContext.tsx` | Adicionar informacoes de etapa ao contexto |
-| `src/types/auth.ts` | Estender User com clientStage |
+| `src/types/clientFlow.ts` | Adicionar novos tipos de notificacao |
+| `src/services/NotificationService.ts` | Adicionar templates de notificacao |
+| `src/services/EventAutomationService.ts` | Integrar automacoes de garantia |
+| `src/pages/client/Warranty.tsx` | Adicionar timeline de acompanhamento |
+| `src/pages/Warranty.tsx` | Adicionar tabs: Kanban, Dashboard, SLA Config |
+| `src/types/warranty.ts` | Estender tipos existentes |
 
-## Integracao com Modulo de Garantia
+---
 
-A validacao de garantia tera duas camadas:
-
-```text
-Camada 1 - Etapa do Cliente (ClientStageService):
-  -> Cliente esta na etapa "warranty_enabled"?
-  -> Se NAO: bloquear acesso
-
-Camada 2 - Elegibilidade do Item (WarrantyValidationService):
-  -> Item tem garantia ativa?
-  -> Data dentro do periodo?
-  -> Status = "ativa"?
-  -> Item pertence ao cliente?
-```
-
-Ambas as camadas precisam ser satisfeitas para criar uma solicitacao.
-
-## Dados Mock Iniciais
+## 10. FLUXO DE USUARIO - CLIENTE
 
 ```text
-Cliente de demonstracao:
-  id: "client-1"
-  nome: "Maria Oliveira"
-  etapa: "inspection_enabled"
-  
-  Timeline:
-    [CONCLUIDO] Cadastro: 20/11/2024
-    [CONCLUIDO] Vistoria Liberada: 15/03/2025
-    [ATUAL] Vistoria Agendada: 15/05/2025
-    [PENDENTE] Vistoria Realizada
-    [PENDENTE] Garantia Liberada
-    
-  Notificacoes:
-    - "Vistoria de pre-entrega agendada" (2h atras)
-    - "Sua vistoria foi liberada" (1 dia atras)
+1. Cliente acessa /client/warranty
+2. Ve lista de solicitacoes abertas
+3. Clica em uma solicitacao
+4. Ve timeline visual com:
+   - Todas as etapas
+   - Status atual destacado
+   - Prazo SLA de cada etapa
+   - Indicador de atraso se houver
+5. Recebe notificacoes a cada mudanca
 ```
 
-## Proximos Passos Pos-Implementacao
+---
 
-1. Integrar com Supabase/Lovable Cloud para persistencia real
-2. Implementar envio de email para notificacoes
-3. Adicionar integracao com WhatsApp
-4. Criar dashboard de metricas para administrador
-5. Implementar regras de SLA para tempos de resposta
+## 11. FLUXO DE USUARIO - ADMIN
+
+```text
+1. Admin acessa /warranty (painel admin)
+2. Ve tabs: Kanban | Dashboard | Configuracao SLA
+3. No Kanban:
+   - Ve todas as solicitacoes por status
+   - Arrasta cards para mudar status
+   - Sistema atualiza automaticamente timeline + notifica cliente
+4. No Dashboard:
+   - Ve metricas em tempo real
+   - Filtra por periodo/tipo/imovel
+   - Identifica gargalos
+   - Exporta relatorios
+5. Em Configuracao SLA:
+   - Ajusta prazos por tipo de garantia
+   - Alteracoes afetam novas solicitacoes
+```
+
+---
+
+## 12. CONSIDERACOES TECNICAS
+
+### Performance
+- Kanban usa virtualizacao para muitos cards
+- Dashboard carrega dados sob demanda
+- Metricas cacheadas por 5 minutos
+
+### Responsividade
+- Kanban colapsa em coluna unica no mobile
+- Dashboard adapta graficos para telas menores
+- Timeline vertical sempre responsiva
+
+### Seguranca
+- Validacao de permissoes em cada acao
+- Historico imutavel de movimentacoes
+- Logs de auditoria completos
+
+### Estabilidade
+- Nao quebrar funcionalidades existentes
+- Reutilizar servicos ja implementados
+- Testes de integracao em pontos criticos
+
+---
+
+## 13. ORDEM DE IMPLEMENTACAO
+
+1. Criar tipos e interfaces (`warrantyFlow.ts`)
+2. Criar servico SLA (`WarrantySLAService.ts`)
+3. Criar servico de fluxo (`WarrantyFlowService.ts`)
+4. Criar timeline do cliente
+5. Criar kanban administrativo
+6. Criar dashboard de metricas
+7. Criar configuracao de SLA
+8. Integrar automacoes
+9. Atualizar notificacoes
+10. Testes e ajustes finais
