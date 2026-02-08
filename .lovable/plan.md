@@ -1,480 +1,438 @@
 
-# Plano: Modulo Completo de Garantias com Timeline, Kanban, SLA e Relatorios
+# Plano de Refatoracao de UX + Auditoria + Guia de Padroes Visuais
 
-## Resumo Executivo
+## Sumario Executivo
 
-Implementar um modulo de garantia completo que inclui:
-1. Timeline visual para o cliente acompanhar sua solicitacao
-2. Kanban administrativo com drag-and-drop
-3. Automacao por eventos para transicoes de status
-4. SLA configuravel por tipo de garantia
-5. Dashboard de metricas e relatorios
-6. Notificacoes automaticas integradas
-
-O sistema sera construido sobre a infraestrutura existente, reutilizando servicos ja implementados (EventAutomationService, NotificationService, ClientStageService) e mantendo todas as funcionalidades atuais.
+Este plano detalha uma refatoracao completa de UX para o sistema de gestao imobiliaria A2 Incorporadora, focando em organizacao visual, consistencia de interface e usabilidade, sem modificar funcionalidades existentes.
 
 ---
 
-## Arquitetura Geral
+## ETAPA 1: AUDITORIA COMPLETA DE UX
+
+### 1.1 Problemas de Hierarquia Visual Identificados
+
+| Problema | Local | Impacto |
+|----------|-------|---------|
+| Headers inconsistentes | Paginas Properties, Inspections, ClientArea usam tamanhos de fonte diferentes (text-3xl com/sem icones) | Confusao visual |
+| Sidebar admin sem agrupamento | Todos os 10 itens de menu estao no mesmo nivel | Sobrecarga cognitiva |
+| Cards sem padronizacao | PropertyCard, InspectionItem, WarrantyClaim tem estilos diferentes | Falta de unidade |
+| Stats duplicados | Dashboard admin e client usam componentes Stats diferentes | Inconsistencia |
+| Espacamentos variaveis | p-4, p-6, p-8 usados de forma inconsistente | Layout desorganizado |
+
+### 1.2 Problemas de Fluxo e Navegacao
+
+| Problema | Descricao | Recomendacao |
+|----------|-----------|--------------|
+| Menu plano | 10 itens no sidebar sem categorias | Agrupar em: Operacoes, Gestao, Configuracoes |
+| Redundancia de rotas | Rotas duplicadas (/admin/warranty e /warranty) | Manter apenas prefixadas |
+| Botoes de acao dispersos | Acoes primarias e secundarias sem padrao | Padronizar posicao (esquerda=cancelar, direita=confirmar) |
+| Breadcrumbs ausentes | Nao ha indicacao de localizacao | Adicionar breadcrumbs em todas as paginas |
+
+### 1.3 Problemas de Responsividade
 
 ```text
-+-------------------+     +-------------------+     +-------------------+
-|                   |     |                   |     |                   |
-|  PAINEL CLIENTE   |     |  PAINEL ADMIN     |     |  SERVICOS         |
-|                   |     |                   |     |                   |
-+-------------------+     +-------------------+     +-------------------+
-        |                         |                         |
-        v                         v                         v
-+-------------------+     +-------------------+     +-------------------+
-| WarrantyTimeline  |     | WarrantyKanban    |     | WarrantyService   |
-| (etapas visuais)  |     | (drag-and-drop)   |     | (logica central)  |
-+-------------------+     +-------------------+     +-------------------+
-        |                         |                         |
-        v                         v                         v
-+-------------------+     +-------------------+     +-------------------+
-| SLA Indicators    |     | SLA Dashboard     |     | SLAService        |
-| (prazo restante)  |     | (metricas)        |     | (calculo prazos)  |
-+-------------------+     +-------------------+     +-------------------+
-        |                         |                         |
-        +------------+------------+                         |
-                     |                                      |
-                     v                                      v
-            +-------------------+                  +-------------------+
-            | EventAutomation   |<---------------->| Notification      |
-            | Service (existente)|                  | Service (existente)|
-            +-------------------+                  +-------------------+
+Desktop (1280px+)     Tablet (768-1279px)     Mobile (<768px)
+      OK                    PARCIAL                 PROBLEMAS
+
+Sidebar:
+- Desktop: Fixo 64px margem OK
+- Tablet: Colapso nao implementado
+- Mobile: Toggle funciona mas icone mal posicionado (right-4 top-4 sobrepoe conteudo)
+
+Tabelas:
+- ClientArea tabela sem scroll horizontal
+- Users grid 3 colunas quebra em tablet
+
+Cards:
+- PropertyCard imagem fixa 160px inadequada para mobile
+- Stats cards muito comprimidos em mobile (grid-cols-4)
 ```
+
+### 1.4 Inconsistencias Visuais Documentadas
+
+| Componente | Variacao A | Variacao B | Onde |
+|------------|------------|------------|------|
+| Status Badge | StatusBadge component | Badge inline com classes | Properties vs ClientArea |
+| Botoes primarios | Primary | Gradient (from-blue-600 to-indigo-600) | Admin vs Landing |
+| Loading states | Spinner generico | animate-spin border-b-2 | Varios |
+| Cores de status | status.pending/progress/complete | bg-green-50 text-green-700 | CSS vs inline |
+| Sombras em hover | card-hover class | hover:shadow-lg | Definido vs inline |
 
 ---
 
-## 1. TIMELINE DO CLIENTE (Nova Pagina)
+## ETAPA 2: REFATORACAO DE LAYOUT
 
-### Objetivo
-Permitir ao cliente visualizar todas as etapas da sua solicitacao de garantia com transparencia total.
+### 2.1 Painel Administrativo - Reorganizacao do Sidebar
 
-### Etapas da Timeline
+```text
+ANTES (10 itens planos):
+- Dashboard
+- Empreendimentos
+- Vistorias
+- Garantias
+- Documentos
+- Checklists
+- Agendamentos
+- Usuarios
+- Area do Cliente
+- Configuracoes
 
-| Ordem | Etapa | Descricao | SLA Padrao |
-|-------|-------|-----------|------------|
-| 1 | Solicitacao aberta | Cliente criou a solicitacao | - |
-| 2 | Em analise | Equipe esta analisando | 2 dias uteis |
-| 3 | Vistoria agendada | Tecnico designado | 3 dias uteis |
-| 4 | Vistoria realizada | Tecnico visitou o local | - |
-| 5 | Aprovada/Reprovada | Decisao sobre a garantia | 1 dia util |
-| 6 | Em execucao | Reparo em andamento | Var. por tipo |
-| 7 | Finalizada | Garantia concluida | - |
+DEPOIS (3 grupos logicos):
 
-### Componentes Criados
+OPERACIONAL (Frequencia: Diaria)
++-- Dashboard
++-- Agendamentos (rebatizado de Calendar)
++-- Vistorias
++-- Garantias
 
-| Componente | Descricao |
+GESTAO (Frequencia: Semanal)
++-- Empreendimentos
++-- Area do Cliente
++-- Documentos
++-- Usuarios
+
+SISTEMA (Frequencia: Mensal)
++-- Checklists
++-- Configuracoes
+```
+
+### 2.2 Componentes de Pagina - Padronizacao
+
+**PageHeader Component (novo)**
+```text
+Estrutura padrao:
++------------------------------------------+
+| [Icone] Titulo                    [Acoes]|
+| Descricao do contexto                    |
++------------------------------------------+
+
+Especificacoes:
+- Icone: 32x32 (h-8 w-8)
+- Titulo: text-3xl font-bold
+- Descricao: text-muted-foreground
+- Acoes: gap-2, botao primario a direita
+```
+
+**FilterBar Component (novo)**
+```text
++------------------------------------------+
+| [Search] [Filtro1] [Filtro2]    [+Acoes] |
++------------------------------------------+
+
+Especificacoes:
+- Search: icone left, flex-1 max-w-md
+- Filtros: Select width-[180px]
+- Acoes: Button variant="outline"
+```
+
+### 2.3 Area do Cliente - Reorganizacao
+
+```text
+ATUAL: Dashboard muito denso com 8 cards + timeline + acoes rapidas
+
+PROPOSTO:
++------------------------------------------+
+| Header com saudacao + StageIndicator     |
++------------------------------------------+
+| Card do Imovel (hero simplificado)       |
++------------------------------------------+
+| [Stats Grid: 4 cards]                    |
++------------------------------------------+
+| 2 colunas:                               |
+| [Proximas Acoes]  [Notificacoes]         |
++------------------------------------------+
+| Acoes Rapidas (bottom fixed no mobile)   |
++------------------------------------------+
+
+Reducao de 50% na densidade visual
+Foco nas acoes mais importantes
+```
+
+### 2.4 Correcoes de Responsividade
+
+| Breakpoint | Alteracao |
 |------------|-----------|
-| `WarrantyRequestTimeline.tsx` | Timeline visual completa |
-| `WarrantyTimelineStep.tsx` | Etapa individual com SLA |
-| `SLAIndicator.tsx` | Badge de prazo (no prazo/alerta/atrasado) |
-| `WarrantyRequestDetail.tsx` | Pagina de detalhe da solicitacao |
+| Mobile (<640px) | Stats: grid-cols-2 (era 4), Cards empilhados, Acoes rapidas fixed bottom |
+| Tablet (640-1024px) | Sidebar com modo icon-only (w-16), Grid 2 colunas |
+| Desktop (>1024px) | Layout atual mantido com refinamentos |
 
-### Indicadores Visuais
-
+**Sidebar Responsivo:**
 ```text
-Estados da Etapa:
-  [VERDE]   Concluido - Etapa finalizada no prazo
-  [AZUL]    Em andamento - Etapa atual
-  [AMARELO] Alerta - Menos de 20% do prazo restante
-  [VERMELHO] Atrasado - Prazo SLA estourado
-  [CINZA]   Pendente - Etapa futura
+Mobile: Hidden + Sheet trigger no header
+Tablet: Collapsed (icons only, w-16) com hover expand
+Desktop: Full width (w-64)
 ```
 
 ---
 
-## 2. KANBAN ADMINISTRATIVO
+## ETAPA 3: GUIA DE PADROES VISUAIS
 
-### Objetivo
-Centralizar a gestao de todas as solicitacoes de garantia em um painel visual drag-and-drop.
-
-### Colunas do Kanban
+### 3.1 Tipografia
 
 ```text
-|  ABERTAS  |  EM ANALISE  |  VISTORIA  |  VISTORIA   |  APROVADAS  |  EM EXECUCAO  |  FINALIZADAS  |
-|           |              |  AGENDADA  |  REALIZADA  |             |               |               |
-|   [Card]  |    [Card]    |   [Card]   |   [Card]    |   [Card]    |    [Card]     |    [Card]     |
-|   [Card]  |              |   [Card]   |             |   [Card]    |    [Card]     |               |
+HIERARQUIA:
+H1 (Titulo de pagina):    text-3xl font-bold tracking-tight
+H2 (Secao):               text-xl font-semibold
+H3 (Card title):          text-lg font-medium
+H4 (Subsecao):            text-base font-medium
+Body:                     text-sm (14px)
+Caption:                  text-xs text-muted-foreground
+
+ESPACAMENTO:
+- Entre titulo e descricao: mt-1
+- Entre secoes: space-y-6 ou space-y-8
+- Dentro de cards: space-y-4
+- Entre items de lista: space-y-2 ou space-y-3
 ```
 
-### Card de Solicitacao
-
-Cada card exibira:
-- Cliente + Imovel
-- Tipo de garantia
-- Prioridade (badge colorido)
-- Data de abertura
-- SLA restante (barra de progresso)
-- Indicador de atraso (se aplicavel)
-- Responsavel designado
-
-### Funcionalidades do Kanban
-
-| Funcionalidade | Descricao |
-|----------------|-----------|
-| Drag & Drop | Mover cards entre colunas |
-| Auto-sync | Atualiza timeline do cliente |
-| Historico | Registra quem moveu, quando |
-| Filtros | Por imovel, tipo, responsavel, prazo |
-| Ordenacao | Por SLA, prioridade, data |
-
-### Componentes Criados
-
-| Componente | Descricao |
-|------------|-----------|
-| `WarrantyKanban.tsx` | Board principal |
-| `KanbanColumn.tsx` | Coluna individual |
-| `KanbanCard.tsx` | Card de solicitacao |
-| `KanbanFilters.tsx` | Barra de filtros |
-
----
-
-## 3. AUTOMACAO POR EVENTOS
-
-### Eventos e Acoes Automaticas
-
-| Evento | Acoes Automaticas |
-|--------|-------------------|
-| `warranty_status_changed` | Atualiza timeline, recalcula SLA, notifica cliente |
-| `warranty_inspection_scheduled` | Avanca etapa, notifica cliente com data |
-| `warranty_inspection_completed` | Marca vistoria realizada, aguarda decisao |
-| `warranty_approved` | Avanca para execucao, inicia SLA de reparo |
-| `warranty_rejected` | Finaliza com reprovacao, notifica cliente |
-| `warranty_execution_started` | Registra inicio do reparo |
-| `warranty_completed` | Encerra fluxo, bloqueia edicao, notifica |
-| `sla_expired` | Marca como atrasado, alerta responsaveis |
-
-### Novo Servico: WarrantyAutomationService
+### 3.2 Sistema de Cores
 
 ```text
-WarrantyAutomationService
-  |
-  +-- onStatusChange(requestId, oldStatus, newStatus)
-  |     -> Atualiza timeline
-  |     -> Recalcula SLA
-  |     -> Registra historico
-  |     -> Cria notificacao
-  |
-  +-- onInspectionScheduled(requestId, date, technicianId)
-  |     -> Avanca status
-  |     -> Notifica cliente
-  |
-  +-- onInspectionCompleted(requestId, result, notes)
-  |     -> Atualiza status
-  |     -> Aguarda aprovacao
-  |
-  +-- onApproved(requestId, notes)
-  |     -> Avanca para execucao
-  |     -> Inicia SLA de reparo
-  |
-  +-- onRejected(requestId, reason)
-  |     -> Finaliza com motivo
-  |     -> Notifica cliente
-  |
-  +-- onCompleted(requestId)
-  |     -> Encerra fluxo
-  |     -> Bloqueia edicao
-  |     -> Notificacao final
-  |
-  +-- checkSLAExpiration()
-        -> Verifica todos os SLAs
-        -> Marca atrasados
-        -> Gera alertas
+CORES PRIMARIAS (ja definidas em CSS):
+--primary: 221 83% 53%         /* Azul principal */
+--primary-foreground: 210 40% 98%
+
+CORES DE STATUS (padronizar uso):
+Sucesso:   bg-emerald-100 text-emerald-700 border-emerald-200
+Alerta:    bg-amber-100 text-amber-700 border-amber-200
+Erro:      bg-red-100 text-red-700 border-red-200
+Info:      bg-blue-100 text-blue-700 border-blue-200
+Neutro:    bg-slate-100 text-slate-700 border-slate-200
+
+CORES DE STATUS (workflow):
+Pendente:     status-pending (amber)
+Em Progresso: status-progress (blue)
+Concluido:    status-complete (emerald)
+Critico:      status-critical (red)
 ```
 
----
-
-## 4. SLA CONFIGURAVEL POR TIPO
-
-### Tipos de Garantia com SLA
-
-| Tipo | SLA Analise | SLA Vistoria | SLA Decisao | SLA Execucao |
-|------|-------------|--------------|-------------|--------------|
-| Estrutural | 3 dias | 5 dias | 2 dias | 30 dias |
-| Hidraulica | 2 dias | 3 dias | 1 dia | 7 dias |
-| Eletrica | 2 dias | 3 dias | 1 dia | 7 dias |
-| Impermeabilizacao | 3 dias | 5 dias | 2 dias | 15 dias |
-| Acabamento | 2 dias | 3 dias | 1 dia | 5 dias |
-| Esquadrias | 2 dias | 3 dias | 1 dia | 10 dias |
-
-### Servico SLA
+### 3.3 Espacamentos e Grid
 
 ```text
-SLAService
-  |
-  +-- getSLAForType(warrantyType)
-  |     -> Retorna configuracao SLA
-  |
-  +-- calculateDeadline(startDate, slaHours)
-  |     -> Calcula prazo considerando dias uteis
-  |
-  +-- getRemainingTime(requestId, stage)
-  |     -> Retorna tempo restante
-  |
-  +-- getSLAStatus(requestId, stage)
-  |     -> "on_track" | "warning" | "expired"
-  |
-  +-- updateSLAConfiguration(warrantyType, config)
-        -> Permite admin alterar SLAs
+ESPACAMENTOS PADRAO:
+xs: 4px   (gap-1, p-1)
+sm: 8px   (gap-2, p-2)
+md: 16px  (gap-4, p-4)
+lg: 24px  (gap-6, p-6)
+xl: 32px  (gap-8, p-8)
+
+GRIDS:
+- Cards de dashboard: grid-cols-1 md:grid-cols-2 lg:grid-cols-4
+- Listagem principal: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+- Formularios: max-w-2xl mx-auto
+
+CONTAINERS:
+- Pagina principal: max-w-7xl mx-auto
+- Dialogs pequenos: sm:max-w-[425px]
+- Dialogs medios: sm:max-w-[600px]
+- Dialogs grandes: max-w-3xl
 ```
 
-### Componentes de Configuracao (Admin)
+### 3.4 Componentes Padronizados
 
-| Componente | Descricao |
-|------------|-----------|
-| `SLAConfigurationPanel.tsx` | Painel de configuracao |
-| `SLATypeEditor.tsx` | Editor de SLA por tipo |
-| `SLAPreview.tsx` | Visualizacao do fluxo |
-
----
-
-## 5. DASHBOARD DE METRICAS (Admin)
-
-### Cards de Resumo
-
+**Botoes:**
 ```text
-+-------------------+  +-------------------+  +-------------------+  +-------------------+
-|  ABERTAS HOJE     |  |  EM ATRASO        |  |  TEMPO MEDIO      |  |  % NO PRAZO       |
-|       12          |  |        5          |  |     4.2 dias      |  |       87%         |
-+-------------------+  +-------------------+  +-------------------+  +-------------------+
+Primario (acao principal):
+  Button (default) - bg-primary
+  Uso: Salvar, Confirmar, Criar novo
+
+Secundario (acao alternativa):
+  Button variant="outline"
+  Uso: Cancelar, Voltar, Ver mais
+
+Terciario (acao sutil):
+  Button variant="ghost"
+  Uso: Acoes inline, links, menus
+
+Destrutivo (acao perigosa):
+  Button variant="destructive"
+  Uso: Excluir, Remover
+
+Tamanhos:
+  default: h-10 (40px) - uso padrao
+  sm: h-9 (36px) - tabelas, inline
+  lg: h-11 (44px) - CTAs, forms
+  icon: h-10 w-10 - apenas icone
 ```
 
-### Graficos Implementados
+**Cards:**
+```text
+Card padrao:
+  - Sem borda destacada (border default)
+  - Hover: hover:shadow-md transition-shadow
+  - Padding: CardHeader p-6, CardContent p-6 pt-0, CardFooter p-6 pt-0
 
-| Grafico | Tipo | Descricao |
-|---------|------|-----------|
-| Solicitacoes por Status | Donut | Distribuicao atual |
-| Evolucao Mensal | Linha | Abertas vs Finalizadas |
-| Tempo por Tipo | Barras | Tempo medio por categoria |
-| SLA Performance | Gauge | % cumprimento SLA |
-| Gargalos por Etapa | Barras horizontais | Tempo medio por etapa |
-| Heatmap Semanal | Heatmap | Volume por dia/hora |
+Card interativo:
+  - Adicionar cursor-pointer
+  - Hover: hover:border-primary/30 hover:shadow-lg
 
-### Filtros Disponiveis
+Card destacado (hero):
+  - bg-gradient-to-r from-primary/10 to-primary/5
+  - border-primary/20
+```
 
-- Periodo (hoje, semana, mes, customizado)
-- Tipo de garantia
-- Imovel/Empreendimento
-- Responsavel
-- Status
+**Formularios:**
+```text
+Label: text-sm font-medium
+Input: h-10 (default), h-12 (prominente)
+Espacamento entre campos: space-y-4
+Botoes de formulario: flex justify-end gap-2
+  - Cancelar a esquerda (outline)
+  - Confirmar a direita (primary)
+```
 
-### Componentes Criados
-
-| Componente | Descricao |
-|------------|-----------|
-| `WarrantyDashboard.tsx` | Dashboard principal |
-| `MetricsCards.tsx` | Cards de resumo |
-| `PerformanceCharts.tsx` | Graficos de performance |
-| `BottleneckAnalysis.tsx` | Analise de gargalos |
-| `SLAComplianceChart.tsx` | Grafico de SLA |
-| `ExportReportButton.tsx` | Botao de exportacao |
-
----
-
-## 6. NOTIFICACOES AUTOMATICAS
-
-### Novos Tipos de Notificacao
-
-| Tipo | Titulo | Destinatario |
-|------|--------|--------------|
-| `warranty_opened` | Solicitacao Registrada | Cliente |
-| `warranty_in_analysis` | Em Analise | Cliente |
-| `warranty_inspection_scheduled` | Vistoria Agendada | Cliente |
-| `warranty_inspection_done` | Vistoria Realizada | Cliente |
-| `warranty_approved` | Garantia Aprovada | Cliente |
-| `warranty_rejected` | Garantia Negada | Cliente |
-| `warranty_in_execution` | Reparo Iniciado | Cliente |
-| `warranty_completed` | Garantia Concluida | Cliente |
-| `sla_warning` | Prazo Proximo | Admin |
-| `sla_expired` | SLA Estourado | Admin + Cliente |
-
-### Integracao com NotificationService Existente
-
-Estender o servico atual para incluir os novos tipos, mantendo compatibilidade.
-
----
-
-## 7. ESTRUTURA DE DADOS
-
-### Novos Tipos TypeScript
+### 3.5 Feedbacks Visuais
 
 ```text
-// Etapas da garantia
-WarrantyStage = 
-  | "opened"
-  | "in_analysis" 
-  | "inspection_scheduled"
-  | "inspection_completed"
-  | "approved"
-  | "rejected"
-  | "in_execution"
-  | "completed"
+ESTADOS DE LOADING:
+- Spinner: animate-spin h-4 w-4
+- Skeleton: Skeleton component para cards/tabelas
+- Texto: "Carregando..." com spinner
 
-// Configuracao SLA
-SLAConfig = {
-  warrantyType: string
-  analysisHours: number
-  inspectionHours: number
-  decisionHours: number
-  executionHours: number
-}
+ESTADOS DE HOVER:
+- Botoes: opacity 90% (hover:bg-primary/90)
+- Cards: shadow aumentada (hover:shadow-md)
+- Links: underline ou cor mais escura
+- Linhas de tabela: hover:bg-muted/50
 
-// Status do SLA
-SLAStatus = "on_track" | "warning" | "expired"
+ESTADOS DE FOCUS:
+- Ring: focus-visible:ring-2 focus-visible:ring-ring
+- Outline removido: focus-visible:outline-none
 
-// Historico de movimentacao
-WarrantyStatusHistory = {
-  id: string
-  requestId: string
-  fromStatus: WarrantyStage | null
-  toStatus: WarrantyStage
-  changedAt: Date
-  changedBy: string
-  isAutomatic: boolean
-  notes?: string
-}
+NOTIFICACOES (toast):
+- Sucesso: default + icone CheckCircle
+- Erro: variant="destructive"
+- Info: default
+- Duracao: 5000ms (padrao)
 
-// Solicitacao de garantia estendida
-WarrantyRequestExtended = WarrantyRequest & {
-  currentStage: WarrantyStage
-  stageStartedAt: Date
-  slaDeadline: Date
-  slaStatus: SLAStatus
-  assignedTo: string | null
-  inspectionDate?: Date
-  inspectionNotes?: string
-  executionStartDate?: Date
-  completionDate?: Date
-  history: WarrantyStatusHistory[]
-}
+MENSAGENS INLINE:
+- Erro de campo: FormMessage (text-destructive text-sm)
+- Dica: text-muted-foreground text-sm
+- Alerta: Alert component
+```
+
+### 3.6 Icones
+
+```text
+BIBLIOTECA: Lucide React (ja em uso)
+
+TAMANHOS PADRAO:
+- Inline com texto: h-4 w-4 (16px)
+- Cards/botoes: h-5 w-5 (20px)
+- Headers: h-6 w-6 ou h-8 w-8
+- Ilustracoes: h-12 w-12 ou maior
+
+POSICIONAMENTO:
+- Antes do texto: mr-2 ou gap-2
+- Sozinho: flex items-center justify-center
 ```
 
 ---
 
-## 8. ARQUIVOS A CRIAR
+## ETAPA 4: ARQUIVOS A MODIFICAR
 
-### Tipos
-- `src/types/warrantyFlow.ts` - Tipos para fluxo de garantia
+### 4.1 Novos Componentes a Criar
 
-### Servicos
-- `src/services/WarrantySLAService.ts` - Gerenciamento de SLA
-- `src/services/WarrantyFlowService.ts` - Fluxo e historico
-- `src/services/WarrantyAutomationService.ts` - Automacoes
+| Arquivo | Proposito |
+|---------|-----------|
+| `src/components/Layout/PageHeader.tsx` | Header padronizado de paginas |
+| `src/components/Layout/FilterBar.tsx` | Barra de filtros padronizada |
+| `src/components/Layout/Breadcrumbs.tsx` | Navegacao hierarquica |
+| `src/components/Layout/SidebarGroup.tsx` | Agrupamento de itens do menu |
+| `src/styles/design-tokens.css` | Variaveis CSS adicionais |
+| `DESIGN_SYSTEM.md` | Documentacao do design system |
 
-### Componentes Cliente
-- `src/components/Warranty/ClientTimeline/WarrantyRequestTimeline.tsx`
-- `src/components/Warranty/ClientTimeline/WarrantyTimelineStep.tsx`
-- `src/components/Warranty/ClientTimeline/SLAIndicator.tsx`
+### 4.2 Componentes a Refatorar
 
-### Componentes Admin - Kanban
-- `src/components/Warranty/Kanban/WarrantyKanban.tsx`
-- `src/components/Warranty/Kanban/KanbanColumn.tsx`
-- `src/components/Warranty/Kanban/KanbanCard.tsx`
-- `src/components/Warranty/Kanban/KanbanFilters.tsx`
+| Arquivo | Modificacao |
+|---------|-------------|
+| `src/components/Layout/Sidebar.tsx` | Reorganizar em grupos, adicionar colapso |
+| `src/components/Layout/AppLayout.tsx` | Adicionar breadcrumbs, melhorar top bar |
+| `src/components/Layout/ClientLayout.tsx` | Unificar com AppLayout onde possivel |
+| `src/components/shared/StatusBadge.tsx` | Adicionar variantes, unificar uso |
+| `src/components/Dashboard/Stats.tsx` | Responsividade melhorada |
+| `src/components/Properties/PropertyCard.tsx` | Altura de imagem responsiva |
 
-### Componentes Admin - Dashboard
-- `src/components/Warranty/Dashboard/WarrantyMetricsDashboard.tsx`
-- `src/components/Warranty/Dashboard/MetricsCards.tsx`
-- `src/components/Warranty/Dashboard/PerformanceCharts.tsx`
-- `src/components/Warranty/Dashboard/SLAComplianceChart.tsx`
-- `src/components/Warranty/Dashboard/BottleneckAnalysis.tsx`
+### 4.3 Paginas a Refatorar
 
-### Componentes Admin - SLA Config
-- `src/components/Warranty/SLA/SLAConfigurationPanel.tsx`
-- `src/components/Warranty/SLA/SLATypeEditor.tsx`
-
-### Paginas
-- Modificar: `src/pages/client/Warranty.tsx` (adicionar timeline)
-- Modificar: `src/pages/Warranty.tsx` (adicionar kanban + dashboard)
-
----
-
-## 9. ARQUIVOS A MODIFICAR
-
-| Arquivo | Modificacoes |
-|---------|--------------|
-| `src/types/clientFlow.ts` | Adicionar novos tipos de notificacao |
-| `src/services/NotificationService.ts` | Adicionar templates de notificacao |
-| `src/services/EventAutomationService.ts` | Integrar automacoes de garantia |
-| `src/pages/client/Warranty.tsx` | Adicionar timeline de acompanhamento |
-| `src/pages/Warranty.tsx` | Adicionar tabs: Kanban, Dashboard, SLA Config |
-| `src/types/warranty.ts` | Estender tipos existentes |
+| Arquivo | Modificacao |
+|---------|-------------|
+| `src/pages/Properties.tsx` | Usar PageHeader, FilterBar |
+| `src/pages/Inspections.tsx` | Remover padding extra, usar PageHeader |
+| `src/pages/ClientArea.tsx` | Tabela responsiva, espacamentos |
+| `src/pages/Users.tsx` | Simplificar stats, padronizar cards |
+| `src/pages/Settings.tsx` | Organizar tabs, import faltando |
+| `src/pages/client/Dashboard.tsx` | Reduzir densidade, mobile-first |
 
 ---
 
-## 10. FLUXO DE USUARIO - CLIENTE
+## ETAPA 5: CHECKLIST DE QUALIDADE
+
+### Antes de Cada Modificacao:
+- [ ] Funcionalidade original preservada
+- [ ] Nenhuma regra de negocio alterada
+- [ ] Sem adicao de novos fluxos
+
+### Apos Cada Modificacao:
+- [ ] Testado em mobile (375px)
+- [ ] Testado em tablet (768px)
+- [ ] Testado em desktop (1280px)
+- [ ] Sem erros no console
+- [ ] Consistencia visual mantida
+
+### Entrega Final:
+- [ ] Todas as paginas usam PageHeader
+- [ ] Sidebar reorganizado em grupos
+- [ ] StatusBadge unificado
+- [ ] Responsividade corrigida
+- [ ] DESIGN_SYSTEM.md documentado
+- [ ] Zero regressoes funcionais
+
+---
+
+## CRONOGRAMA DE IMPLEMENTACAO
 
 ```text
-1. Cliente acessa /client/warranty
-2. Ve lista de solicitacoes abertas
-3. Clica em uma solicitacao
-4. Ve timeline visual com:
-   - Todas as etapas
-   - Status atual destacado
-   - Prazo SLA de cada etapa
-   - Indicador de atraso se houver
-5. Recebe notificacoes a cada mudanca
+FASE 1: Fundacao (Componentes Base)
+  - Criar PageHeader, FilterBar, Breadcrumbs
+  - Criar design-tokens.css
+  - Criar DESIGN_SYSTEM.md
+
+FASE 2: Sidebar e Navegacao
+  - Refatorar Sidebar com grupos
+  - Adicionar modo collapsed
+  - Implementar breadcrumbs
+
+FASE 3: Componentes Compartilhados
+  - Unificar StatusBadge
+  - Padronizar Stats
+  - Corrigir PropertyCard
+
+FASE 4: Paginas Admin
+  - Aplicar PageHeader em todas
+  - Corrigir responsividade
+  - Padronizar espacamentos
+
+FASE 5: Area do Cliente
+  - Simplificar Dashboard
+  - Melhorar mobile experience
+  - Padronizar cards
+
+FASE 6: Testes e Documentacao
+  - Testes de responsividade
+  - Atualizacao DESIGN_SYSTEM.md
+  - Validacao final
 ```
 
 ---
 
-## 11. FLUXO DE USUARIO - ADMIN
+## METRICAS DE SUCESSO
 
-```text
-1. Admin acessa /warranty (painel admin)
-2. Ve tabs: Kanban | Dashboard | Configuracao SLA
-3. No Kanban:
-   - Ve todas as solicitacoes por status
-   - Arrasta cards para mudar status
-   - Sistema atualiza automaticamente timeline + notifica cliente
-4. No Dashboard:
-   - Ve metricas em tempo real
-   - Filtra por periodo/tipo/imovel
-   - Identifica gargalos
-   - Exporta relatorios
-5. Em Configuracao SLA:
-   - Ajusta prazos por tipo de garantia
-   - Alteracoes afetam novas solicitacoes
-```
+| Metrica | Antes | Meta |
+|---------|-------|------|
+| Itens de menu (1o nivel) | 10 | 3 grupos |
+| Variantes de StatusBadge | 2+ | 1 unificado |
+| Espacamentos inconsistentes | 15+ | 0 |
+| Problemas responsivos | 8+ | 0 |
+| Documentacao design | 0 | 1 arquivo completo |
 
----
-
-## 12. CONSIDERACOES TECNICAS
-
-### Performance
-- Kanban usa virtualizacao para muitos cards
-- Dashboard carrega dados sob demanda
-- Metricas cacheadas por 5 minutos
-
-### Responsividade
-- Kanban colapsa em coluna unica no mobile
-- Dashboard adapta graficos para telas menores
-- Timeline vertical sempre responsiva
-
-### Seguranca
-- Validacao de permissoes em cada acao
-- Historico imutavel de movimentacoes
-- Logs de auditoria completos
-
-### Estabilidade
-- Nao quebrar funcionalidades existentes
-- Reutilizar servicos ja implementados
-- Testes de integracao em pontos criticos
-
----
-
-## 13. ORDEM DE IMPLEMENTACAO
-
-1. Criar tipos e interfaces (`warrantyFlow.ts`)
-2. Criar servico SLA (`WarrantySLAService.ts`)
-3. Criar servico de fluxo (`WarrantyFlowService.ts`)
-4. Criar timeline do cliente
-5. Criar kanban administrativo
-6. Criar dashboard de metricas
-7. Criar configuracao de SLA
-8. Integrar automacoes
-9. Atualizar notificacoes
-10. Testes e ajustes finais
