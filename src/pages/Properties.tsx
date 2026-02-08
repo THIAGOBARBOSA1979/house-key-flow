@@ -1,8 +1,10 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Building, Plus, Search } from "lucide-react";
+import { Building, Plus } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
+import { PageHeader } from "@/components/Layout/PageHeader";
+import { FilterBar } from "@/components/Layout/FilterBar";
 import { 
   Select, 
   SelectContent, 
@@ -64,35 +66,35 @@ const properties = [
 ];
 
 const Properties = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const filteredProperties = properties.filter(property => {
+    const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.location.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || property.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="space-y-6">
-      {/* Page header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Building />
-            Empreendimentos
-          </h1>
-          <p className="text-muted-foreground">
-            Gerenciamento de todos os empreendimentos
-          </p>
-        </div>
+      <PageHeader
+        icon={Building}
+        title="Empreendimentos"
+        description="Gerenciamento de todos os empreendimentos"
+      >
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Novo Empreendimento
         </Button>
-      </div>
+      </PageHeader>
 
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar empreendimentos..."
-            className="pl-8"
-          />
-        </div>
-        <Select defaultValue="all">
+      <FilterBar
+        searchPlaceholder="Buscar empreendimentos..."
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+      >
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -103,11 +105,10 @@ const Properties = () => {
             <SelectItem value="complete">Concluído</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </FilterBar>
 
-      {/* Properties list */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {properties.map((property) => (
+        {filteredProperties.map((property) => (
           <PropertyCard key={property.id} property={property} />
         ))}
       </div>
