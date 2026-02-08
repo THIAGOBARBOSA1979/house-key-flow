@@ -1,10 +1,10 @@
+
 import { useState } from "react";
-import { User, Home, ClipboardCheck, ShieldCheck, Mail, Phone, ArrowRight, FileText, Key, Plus, History, Calendar, Search, Settings } from "lucide-react";
+import { User, Key, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NewClientForm } from "@/components/ClientArea/NewClientForm";
@@ -15,8 +15,11 @@ import { ClientStageManager } from "@/components/Admin/ClientStageManager";
 import { ClientEventHistory } from "@/components/Admin/ClientEventHistory";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
 import { clientStageService } from "@/services/ClientStageService";
+import { PageHeader } from "@/components/Layout/PageHeader";
+import { FilterBar } from "@/components/Layout/FilterBar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-// Mock data improvements
+// Mock data
 const clients = [
   {
     id: "client-1",
@@ -90,105 +93,88 @@ const ClientArea = () => {
     setCredentialsDialogOpen(false);
   };
 
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.phone.includes(searchQuery)
+  );
+
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <User className="h-8 w-8" />
-            Área do Cliente
-          </h1>
-          <p className="text-muted-foreground">
-            Gestão centralizada de clientes e acesso
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
-            <Key className="mr-2 h-4 w-4" />
-            Gerar Credenciais
-          </Button>
-          <Button onClick={() => setNewClientDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Cliente
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        icon={User}
+        title="Área do Cliente"
+        description="Gestão centralizada de clientes e acesso"
+      >
+        <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
+          <Key className="mr-2 h-4 w-4" />
+          Gerar Credenciais
+        </Button>
+        <Button onClick={() => setNewClientDialogOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Novo Cliente
+        </Button>
+      </PageHeader>
 
-      {/* Search */}
-      <Card className="border-dashed">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            Buscar cliente
-          </CardTitle>
-          <CardDescription>
-            Pesquise por nome, email ou telefone do cliente
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <Input 
-              placeholder="Digite o nome, email ou telefone" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleSearch}>Buscar</Button>
-          </div>
-        </CardContent>
-      </Card>
+      <FilterBar
+        searchPlaceholder="Buscar por nome, email ou telefone..."
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
 
-      {/* Client List */}
+      {/* Client List with horizontal scroll for mobile */}
       <Card>
         <CardHeader>
           <CardTitle>Lista de Clientes</CardTitle>
           <CardDescription>Todos os clientes cadastrados no sistema</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Telefone</TableHead>
-                <TableHead>Imóvel</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {clients.map(client => (
-                <TableRow key={client.id}>
-                  <TableCell>{client.name}</TableCell>
-                  <TableCell>{client.email}</TableCell>
-                  <TableCell>{client.phone}</TableCell>
-                  <TableCell>{client.property} - {client.unit}</TableCell>
-                  <TableCell>
-                    {(() => {
-                      const profile = clientStageService.getClientProfile(client.id);
-                      return profile ? (
-                        <StageIndicator currentStage={profile.currentStage} variant="compact" />
-                      ) : (
-                        <Badge variant="outline" className="bg-green-50 text-green-700">
-                          Ativo
-                        </Badge>
-                      );
-                    })()}
-                  </TableCell>
-                  <TableCell>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setSelectedClient(client)}
-                    >
-                      Detalhes
-                    </Button>
-                  </TableCell>
+        <CardContent className="p-0">
+          <ScrollArea className="w-full">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[150px]">Nome</TableHead>
+                  <TableHead className="min-w-[180px]">Email</TableHead>
+                  <TableHead className="min-w-[130px]">Telefone</TableHead>
+                  <TableHead className="min-w-[180px]">Imóvel</TableHead>
+                  <TableHead className="min-w-[100px]">Status</TableHead>
+                  <TableHead className="min-w-[80px]">Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredClients.map(client => (
+                  <TableRow key={client.id}>
+                    <TableCell className="font-medium">{client.name}</TableCell>
+                    <TableCell>{client.email}</TableCell>
+                    <TableCell>{client.phone}</TableCell>
+                    <TableCell>{client.property} - {client.unit}</TableCell>
+                    <TableCell>
+                      {(() => {
+                        const profile = clientStageService.getClientProfile(client.id);
+                        return profile ? (
+                          <StageIndicator currentStage={profile.currentStage} variant="compact" />
+                        ) : (
+                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                            Ativo
+                          </Badge>
+                        );
+                      })()}
+                    </TableCell>
+                    <TableCell>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setSelectedClient(client)}
+                      >
+                        Detalhes
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </CardContent>
       </Card>
 
@@ -208,7 +194,7 @@ const ClientArea = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
                 <TabsTrigger value="overview">Visão Geral</TabsTrigger>
                 <TabsTrigger value="stages">Etapas</TabsTrigger>
                 <TabsTrigger value="documents">Documentos</TabsTrigger>
@@ -217,29 +203,16 @@ const ClientArea = () => {
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4 mt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
                     <h3 className="font-medium">Informações Pessoais</h3>
-                    <div className="mt-2 space-y-2">
-                      <p className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-muted-foreground" />
-                        {selectedClient.email}
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
-                        {selectedClient.phone}
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground">{selectedClient.email}</p>
+                    <p className="text-sm text-muted-foreground">{selectedClient.phone}</p>
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <h3 className="font-medium">Informações do Imóvel</h3>
-                    <div className="mt-2 space-y-2">
-                      <p className="flex items-center gap-2">
-                        <Home className="h-4 w-4 text-muted-foreground" />
-                        {selectedClient.property}
-                      </p>
-                      <p>Unidade: {selectedClient.unit}</p>
-                    </div>
+                    <p className="text-sm text-muted-foreground">{selectedClient.property}</p>
+                    <p className="text-sm text-muted-foreground">Unidade: {selectedClient.unit}</p>
                   </div>
                 </div>
               </TabsContent>
@@ -248,7 +221,6 @@ const ClientArea = () => {
                 <ClientStageManager 
                   clientId={selectedClient.id} 
                   onStageChange={() => {
-                    // Refresh client data
                     toast({ title: "Etapa atualizada", description: "A etapa do cliente foi atualizada com sucesso." });
                   }} 
                 />
@@ -256,22 +228,17 @@ const ClientArea = () => {
               </TabsContent>
 
               <TabsContent value="documents" className="mt-4">
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {selectedClient.documents.map(doc => (
-                    <Card key={doc.id}>
+                    <Card key={doc.id} className="transition-shadow hover:shadow-md">
                       <CardHeader className="p-4">
-                        <CardTitle className="text-lg flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          {doc.title}
-                        </CardTitle>
+                        <CardTitle className="text-base">{doc.title}</CardTitle>
                         <CardDescription>
                           Adicionado em {format(doc.uploadedAt, "dd/MM/yyyy")}
                         </CardDescription>
                       </CardHeader>
-                      <CardFooter className="p-4">
-                        <Button variant="outline" size="sm">
-                          Visualizar
-                        </Button>
+                      <CardFooter className="p-4 pt-0">
+                        <Button variant="outline" size="sm">Visualizar</Button>
                       </CardFooter>
                     </Card>
                   ))}
@@ -279,17 +246,17 @@ const ClientArea = () => {
               </TabsContent>
 
               <TabsContent value="inspections" className="mt-4">
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {selectedClient.inspections.map(inspection => (
-                    <Card key={inspection.id}>
+                    <Card key={inspection.id} className="transition-shadow hover:shadow-md">
                       <CardHeader className="p-4">
-                        <CardTitle className="text-lg">{inspection.title}</CardTitle>
+                        <CardTitle className="text-base">{inspection.title}</CardTitle>
                         <CardDescription>
                           Agendada para {format(inspection.date, "dd/MM/yyyy 'às' HH:mm")}
                         </CardDescription>
                       </CardHeader>
-                      <CardFooter className="p-4">
-                        <Badge variant={inspection.status === "completed" ? "secondary" : "outline"}>
+                      <CardFooter className="p-4 pt-0">
+                        <Badge variant="outline">
                           {inspection.status === "scheduled" ? "Agendada" : "Concluída"}
                         </Badge>
                       </CardFooter>
@@ -299,20 +266,18 @@ const ClientArea = () => {
               </TabsContent>
 
               <TabsContent value="warranty" className="mt-4">
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {selectedClient.warrantyClaims.map(claim => (
-                    <Card key={claim.id}>
+                    <Card key={claim.id} className="transition-shadow hover:shadow-md">
                       <CardHeader className="p-4">
-                        <CardTitle className="text-lg">{claim.title}</CardTitle>
+                        <CardTitle className="text-base">{claim.title}</CardTitle>
                         <CardDescription>{claim.description}</CardDescription>
                       </CardHeader>
-                      <CardFooter className="p-4 flex justify-between">
-                        <Badge variant={claim.status === "completed" ? "secondary" : "outline"}>
+                      <CardFooter className="p-4 pt-0 flex justify-between">
+                        <Badge variant="outline">
                           {claim.status === "pending" ? "Pendente" : "Concluída"}
                         </Badge>
-                        <Button variant="outline" size="sm">
-                          Ver detalhes
-                        </Button>
+                        <Button variant="outline" size="sm">Ver detalhes</Button>
                       </CardFooter>
                     </Card>
                   ))}

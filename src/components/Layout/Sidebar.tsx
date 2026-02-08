@@ -1,65 +1,94 @@
 
-import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Home, Building, ClipboardCheck, ShieldCheck, Settings, Menu, X, Users, Calendar, User, FileText } from "lucide-react";
+import { 
+  Home, 
+  Building, 
+  ClipboardCheck, 
+  ShieldCheck, 
+  Settings, 
+  Menu, 
+  X, 
+  Users, 
+  Calendar, 
+  User, 
+  FileText,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
+import { SidebarGroup } from "./SidebarGroup";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SidebarProps {
   className?: string;
 }
 
-const SidebarLink = ({
-  to,
-  icon: Icon,
-  children,
-  end = false
-}: {
-  to: string;
-  icon: React.ElementType;
-  children: React.ReactNode;
-  end?: boolean;
-}) => {
-  return <NavLink to={to} end={end} className={({
-    isActive
-  }) => cn("flex items-center gap-3 px-3 py-2 rounded-md transition-colors", isActive ? "bg-sidebar-accent text-sidebar-accent-foreground" : "hover:bg-sidebar-accent/50 text-sidebar-foreground/80 hover:text-sidebar-foreground")}>
-      <Icon size={18} />
-      <span>{children}</span>
-    </NavLink>;
-};
+// Menu items organized by groups
+const operationalItems = [
+  { to: "/admin", icon: Home, label: "Dashboard", end: true },
+  { to: "/admin/calendar", icon: Calendar, label: "Agendamentos" },
+  { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias" },
+  { to: "/admin/warranty", icon: ShieldCheck, label: "Garantias" },
+];
 
-export const Sidebar = ({
-  className
-}: SidebarProps) => {
-  const [isOpen, setIsOpen] = useState(true);
-  
-  return <>
-      {/* Mobile sidebar toggle button */}
-      <button className="fixed right-4 top-4 z-50 rounded-full p-2 bg-primary text-primary-foreground shadow-md lg:hidden" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? <X size={20} /> : <Menu size={20} />}
-      </button>
-      
-      {/* Sidebar */}
-      <div className={cn("fixed inset-y-0 left-0 z-40 w-64 bg-sidebar flex flex-col transition-transform duration-300 lg:translate-x-0", isOpen ? "translate-x-0" : "-translate-x-full", className)}>
-        {/* Logo */}
-        <div className="flex items-center h-16 px-6 border-b border-sidebar-border">
+const managementItems = [
+  { to: "/admin/properties", icon: Building, label: "Empreendimentos" },
+  { to: "/admin/client-area", icon: User, label: "Área do Cliente" },
+  { to: "/admin/documents", icon: FileText, label: "Documentos" },
+  { to: "/admin/users", icon: Users, label: "Usuários" },
+];
+
+const systemItems = [
+  { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists" },
+  { to: "/admin/settings", icon: Settings, label: "Configurações" },
+];
+
+function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
+  return (
+    <div className="flex flex-col h-full">
+      {/* Logo */}
+      <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
+        {!collapsed && (
           <h1 className="text-xl font-bold text-sidebar-foreground">A2 Imobiliária</h1>
-        </div>
-        
-        {/* Navigation links */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          <SidebarLink to="/admin" icon={Home} end>Dashboard</SidebarLink>
-          <SidebarLink to="/admin/properties" icon={Building}>Empreendimentos</SidebarLink>
-          <SidebarLink to="/admin/inspections" icon={ClipboardCheck}>Vistorias</SidebarLink>
-          <SidebarLink to="/admin/warranty" icon={ShieldCheck}>Garantias</SidebarLink>
-          <SidebarLink to="/admin/documents" icon={FileText}>Documentos</SidebarLink>
-          <SidebarLink to="/admin/checklist" icon={ClipboardCheck}>Checklists</SidebarLink>
-          <SidebarLink to="/admin/calendar" icon={Calendar}>Agendamentos</SidebarLink>
-          <SidebarLink to="/admin/users" icon={Users}>Usuários</SidebarLink>
-          <SidebarLink to="/admin/client-area" icon={User}>Área do Cliente</SidebarLink>
-          <SidebarLink to="/admin/settings" icon={Settings}>Configurações</SidebarLink>
-        </nav>
-        
-        {/* User profile */}
+        )}
+        {onToggleCollapse && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onToggleCollapse}
+            className="text-sidebar-foreground hover:bg-sidebar-accent"
+          >
+            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          </Button>
+        )}
+      </div>
+      
+      {/* Navigation links */}
+      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-2">
+        <SidebarGroup 
+          title="Operacional" 
+          items={operationalItems} 
+          defaultOpen={true}
+          collapsed={collapsed}
+        />
+        <SidebarGroup 
+          title="Gestão" 
+          items={managementItems}
+          defaultOpen={true}
+          collapsed={collapsed}
+        />
+        <SidebarGroup 
+          title="Sistema" 
+          items={systemItems}
+          defaultOpen={false}
+          collapsed={collapsed}
+        />
+      </nav>
+      
+      {/* User profile */}
+      {!collapsed && (
         <div className="p-4 border-t border-sidebar-border">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-accent-foreground">
@@ -71,6 +100,49 @@ export const Sidebar = ({
             </div>
           </div>
         </div>
-      </div>
-    </>;
+      )}
+    </div>
+  );
+}
+
+export const Sidebar = ({ className }: SidebarProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  // Mobile: Use Sheet
+  if (isMobile) {
+    return (
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetTrigger asChild>
+          <Button 
+            size="icon" 
+            variant="outline" 
+            className="fixed left-4 top-4 z-50 lg:hidden"
+          >
+            <Menu size={20} />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-0 w-64 bg-sidebar">
+          <SidebarContent collapsed={false} />
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  // Desktop/Tablet: Fixed sidebar with collapse
+  return (
+    <div 
+      className={cn(
+        "fixed inset-y-0 left-0 z-40 bg-sidebar flex flex-col transition-all duration-300",
+        isCollapsed ? "w-16" : "w-64",
+        className
+      )}
+    >
+      <SidebarContent 
+        collapsed={isCollapsed} 
+        onToggleCollapse={() => setIsCollapsed(!isCollapsed)} 
+      />
+    </div>
+  );
 };

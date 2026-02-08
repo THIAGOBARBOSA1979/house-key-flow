@@ -1,6 +1,6 @@
-
 import { useState } from "react";
 import { Users as UsersIcon, Plus, User, Mail, Phone, UserCheck, UserCog, UserMinus, Search, Filter, MoreVertical, Edit, Trash2, Eye, Download, Upload, Settings } from "lucide-react";
+import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -348,51 +348,50 @@ const Users = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page header with stats */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <UsersIcon className="text-primary" />
-            Usuários
-          </h1>
-          <p className="text-muted-foreground">
-            Gerenciamento completo de usuários do sistema
-          </p>
-        </div>
-        
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="text-center">
-            <CardContent className="p-3">
-              <div className="text-2xl font-bold text-primary">{stats.total}</div>
-              <div className="text-xs text-muted-foreground">Total</div>
-            </CardContent>
-          </Card>
-          <Card className="text-center">
-            <CardContent className="p-3">
-              <div className="text-2xl font-bold text-green-600">{stats.active}</div>
-              <div className="text-xs text-muted-foreground">Ativos</div>
-            </CardContent>
-          </Card>
-          <Card className="text-center">
-            <CardContent className="p-3">
-              <div className="text-2xl font-bold text-red-600">{stats.inactive}</div>
-              <div className="text-xs text-muted-foreground">Inativos</div>
-            </CardContent>
-          </Card>
-          <Card className="text-center">
-            <CardContent className="p-3">
-              <div className="text-2xl font-bold text-blue-600">{stats.clients}</div>
-              <div className="text-xs text-muted-foreground">Clientes</div>
-            </CardContent>
-          </Card>
-          <Card className="text-center">
-            <CardContent className="p-3">
-              <div className="text-2xl font-bold text-purple-600">{stats.staff}</div>
-              <div className="text-xs text-muted-foreground">Equipe</div>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Page header */}
+      <PageHeader
+        icon={UsersIcon}
+        title="Usuários"
+        description="Gerenciamento completo de usuários do sistema"
+      >
+        <Button onClick={() => setIsUserFormOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Novo Usuário
+        </Button>
+      </PageHeader>
+
+      {/* Stats Cards - Responsive grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <Card className="text-center">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-primary">{stats.total}</div>
+            <div className="text-xs text-muted-foreground">Total</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">{stats.active}</div>
+            <div className="text-xs text-muted-foreground">Ativos</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-red-600">{stats.inactive}</div>
+            <div className="text-xs text-muted-foreground">Inativos</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-blue-600">{stats.clients}</div>
+            <div className="text-xs text-muted-foreground">Clientes</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-purple-600">{stats.staff}</div>
+            <div className="text-xs text-muted-foreground">Equipe</div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Actions Bar */}
