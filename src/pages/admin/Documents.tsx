@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -387,24 +388,18 @@ export default function AdminDocuments() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <FileText className="h-8 w-8" />
-            Documentos
-          </h1>
-          <p className="text-muted-foreground">
-            Gerencie modelos de documentos e arquivos ({documents.length} documentos)
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setIsCreateDialogOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Novo Documento
-              </Button>
-            </DialogTrigger>
+      <PageHeader
+        icon={FileText}
+        title="Documentos"
+        description={`Gerencie modelos de documentos e arquivos (${documents.length} documentos)`}
+      >
+        <Button onClick={() => setIsCreateDialogOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Novo Documento
+        </Button>
+      </PageHeader>
+
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Criar Novo Documento</DialogTitle>
@@ -562,9 +557,7 @@ export default function AdminDocuments() {
                 </Button>
               </div>
             </DialogContent>
-          </Dialog>
-        </div>
-      </div>
+      </Dialog>
 
       <Tabs defaultValue="documents" className="space-y-6">
         <TabsList>

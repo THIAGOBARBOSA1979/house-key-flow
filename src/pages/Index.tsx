@@ -1,11 +1,14 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Stats } from "@/components/Dashboard/Stats";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
-import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight } from "lucide-react";
+import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus } from "lucide-react";
+import { PageHeader } from "@/components/Layout/PageHeader";
+import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 
 // Mock data
 const recentProperties = [
@@ -78,41 +81,35 @@ const recentWarrantyClaims = [
 ];
 
 const Dashboard = () => {
-  const [isLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   return (
     <div className="space-y-8">
-      {/* Page header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Visão geral do sistema de gestão de entregas e garantias
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Calendar className="mr-2 h-4 w-4" />
-            Calendário
-          </Button>
-          <Button>
-            Novo Empreendimento
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        icon={Home}
+        title="Dashboard"
+        description="Visão geral do sistema de gestão de entregas e garantias"
+      >
+        <Button variant="outline" onClick={() => navigate("/admin/calendar")}>
+          <Calendar className="mr-2 h-4 w-4" />
+          Calendário
+        </Button>
+        <Button onClick={() => navigate("/admin/properties")}>
+          <Plus className="mr-2 h-4 w-4" />
+          Novo Empreendimento
+        </Button>
+      </PageHeader>
       
-      {/* Statistics */}
       <Stats />
       
       {/* Recent Properties */}
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Empreendimentos Recentes</h2>
-          <Button variant="ghost" size="sm" asChild className="gap-1">
-            <a href="/properties">
-              Ver todos
-              <ChevronRight size={16} />
-            </a>
+          <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/properties")}>
+            Ver todos
+            <ChevronRight size={16} />
           </Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -129,16 +126,18 @@ const Dashboard = () => {
             <ClipboardCheck size={20} />
             Próximas Vistorias
           </h2>
-          <Button variant="ghost" size="sm" asChild className="gap-1">
-            <a href="/inspections">
-              Ver todas
-              <ChevronRight size={16} />
-            </a>
+          <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/inspections")}>
+            Ver todas
+            <ChevronRight size={16} />
           </Button>
         </div>
         <div className="space-y-3">
           {upcomingInspections.map((inspection) => (
-            <InspectionItem key={inspection.id} inspection={inspection} />
+            <Card key={inspection.id} className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30">
+              <CardContent className="p-0">
+                <InspectionItem inspection={inspection} />
+              </CardContent>
+            </Card>
           ))}
         </div>
       </section>
@@ -150,16 +149,19 @@ const Dashboard = () => {
             <ShieldCheck size={20} />
             Solicitações de Garantia Recentes
           </h2>
-          <Button variant="ghost" size="sm" asChild className="gap-1">
-            <a href="/warranty">
-              Ver todas
-              <ChevronRight size={16} />
-            </a>
+          <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/warranty")}>
+            Ver todas
+            <ChevronRight size={16} />
           </Button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {recentWarrantyClaims.map((claim) => (
-            <WarrantyClaim key={claim.id} claim={claim} />
+            <WarrantyClaim 
+              key={claim.id} 
+              claim={claim}
+              onAtender={() => toast({ title: "Atendimento iniciado", description: `Garantia "${claim.title}" está sendo atendida.` })}
+              onGerenciarProblemas={() => toast({ title: "Gerenciando problemas", description: `Abrindo gerenciamento de problemas para "${claim.title}".` })}
+            />
           ))}
         </div>
       </section>

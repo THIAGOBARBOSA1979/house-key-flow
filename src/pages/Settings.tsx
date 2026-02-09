@@ -8,6 +8,15 @@ import { Switch } from "@/components/ui/switch";
 import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import WebhooksConfig from "@/components/Settings/WebhooksConfig";
+import { PageHeader } from "@/components/Layout/PageHeader";
+import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Settings = () => {
   const { toast } = useToast();
@@ -21,17 +30,11 @@ const Settings = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <SettingsIcon className="h-8 w-8" />
-            Configurações do Sistema
-          </h1>
-          <p className="text-muted-foreground">
-            Personalize a aplicação conforme as necessidades da sua empresa
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        icon={SettingsIcon}
+        title="Configurações do Sistema"
+        description="Personalize a aplicação conforme as necessidades da sua empresa"
+      />
 
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList>
@@ -72,7 +75,6 @@ const Settings = () => {
                   <Input id="company-phone" defaultValue="(11) 3456-7890" />
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="company-address">Endereço</Label>
                 <Input id="company-address" defaultValue="Av. Paulista, 1000, São Paulo - SP" />
@@ -100,7 +102,6 @@ const Settings = () => {
                   </div>
                   <Switch id="dark-mode" />
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <Label htmlFor="show-logo">Mostrar Logo na Interface</Label>
@@ -108,12 +109,10 @@ const Settings = () => {
                   </div>
                   <Switch id="show-logo" defaultChecked />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="logo-upload">Logotipo da Empresa</Label>
                   <Input id="logo-upload" type="file" accept="image/*" />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="primary-color">Cor Primária</Label>
                   <div className="flex gap-2">
@@ -149,7 +148,6 @@ const Settings = () => {
                 </div>
                 <Switch defaultChecked />
               </div>
-
               <div className="flex items-center justify-between">
                 <div>
                   <Label>Relatórios Mensais</Label>
@@ -157,7 +155,6 @@ const Settings = () => {
                 </div>
                 <Switch />
               </div>
-
               <div className="flex items-center justify-between">
                 <div>
                   <Label>Integração de Documentos</Label>
@@ -310,7 +307,6 @@ const Settings = () => {
                   </div>
                   <Switch defaultChecked />
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Aprovação de Novos Usuários</Label>
@@ -318,7 +314,6 @@ const Settings = () => {
                   </div>
                   <Switch defaultChecked />
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Autenticação em Dois Fatores</Label>
@@ -326,7 +321,6 @@ const Settings = () => {
                   </div>
                   <Switch />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="session-timeout">Tempo de Expiração de Sessão (minutos)</Label>
                   <Input id="session-timeout" type="number" defaultValue="30" />
@@ -359,7 +353,6 @@ const Settings = () => {
                   </div>
                   <Switch defaultChecked />
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Backup Automático</Label>
@@ -367,7 +360,6 @@ const Settings = () => {
                   </div>
                   <Switch defaultChecked />
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Log de Auditoria</Label>
@@ -375,12 +367,11 @@ const Settings = () => {
                   </div>
                   <Switch defaultChecked />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="password-policy">Política de Senhas</Label>
                   <Select defaultValue="strong">
                     <SelectTrigger>
-                      <SelectValue>Forte (letras maiúsculas, minúsculas, números e símbolos)</SelectValue>
+                      <SelectValue placeholder="Selecionar política" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="basic">Básica (mínimo 8 caracteres)</SelectItem>
@@ -434,31 +425,5 @@ const Settings = () => {
     </div>
   );
 };
-
-// Helper components
-const Separator = ({ className }: { className?: string }) => (
-  <div className={cn("h-px bg-border", className)} />
-);
-
-const Select = ({ children, className, ...props }: React.SelectHTMLAttributes<HTMLSelectElement> & { children: React.ReactNode }) => (
-  <select
-    className={cn(
-      "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-      className
-    )}
-    {...props}
-  >
-    {children}
-  </select>
-);
-
-const SelectTrigger = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
-const SelectContent = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-const SelectItem = ({ children, value }: { children: React.ReactNode, value: string }) => (
-  <option value={value}>{children}</option>
-);
-const SelectValue = ({ children }: { children?: React.ReactNode }) => <>{children || null}</>;
-
-const cn = (...args: any[]) => args.filter(Boolean).join(' ');
 
 export default Settings;

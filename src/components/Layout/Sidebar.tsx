@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { 
   Home, 
@@ -8,7 +7,6 @@ import {
   ShieldCheck, 
   Settings, 
   Menu, 
-  X, 
   Users, 
   Calendar, 
   User, 
@@ -23,9 +21,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SidebarProps {
   className?: string;
+  onCollapseChange?: (collapsed: boolean) => void;
 }
 
-// Menu items organized by groups
 const operationalItems = [
   { to: "/admin", icon: Home, label: "Dashboard", end: true },
   { to: "/admin/calendar", icon: Calendar, label: "Agendamentos" },
@@ -48,7 +46,6 @@ const systemItems = [
 function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
   return (
     <div className="flex flex-col h-full">
-      {/* Logo */}
       <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
         {!collapsed && (
           <h1 className="text-xl font-bold text-sidebar-foreground">A2 Imobiliária</h1>
@@ -65,7 +62,6 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
         )}
       </div>
       
-      {/* Navigation links */}
       <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-2">
         <SidebarGroup 
           title="Operacional" 
@@ -87,7 +83,6 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
         />
       </nav>
       
-      {/* User profile */}
       {!collapsed && (
         <div className="p-4 border-t border-sidebar-border">
           <div className="flex items-center gap-3">
@@ -105,12 +100,22 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
   );
 }
 
-export const Sidebar = ({ className }: SidebarProps) => {
+export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
-  // Mobile: Use Sheet
+  const handleToggleCollapse = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    onCollapseChange?.(newState);
+  };
+
+  // Notify parent of initial state
+  useEffect(() => {
+    onCollapseChange?.(isCollapsed);
+  }, []);
+
   if (isMobile) {
     return (
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -130,7 +135,6 @@ export const Sidebar = ({ className }: SidebarProps) => {
     );
   }
 
-  // Desktop/Tablet: Fixed sidebar with collapse
   return (
     <div 
       className={cn(
@@ -141,7 +145,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
     >
       <SidebarContent 
         collapsed={isCollapsed} 
-        onToggleCollapse={() => setIsCollapsed(!isCollapsed)} 
+        onToggleCollapse={handleToggleCollapse} 
       />
     </div>
   );
