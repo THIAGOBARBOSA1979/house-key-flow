@@ -1,10 +1,9 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Menu } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,21 +23,20 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const isMobile = useIsMobile();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Determine left margin based on sidebar state
-  const marginLeft = isMobile ? 0 : (sidebarCollapsed ? 64 : 256);
+  const sidebarWidth = sidebarCollapsed ? 64 : 256;
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar />
-      <div 
-        className="min-h-screen transition-all duration-300"
-        style={{ marginLeft: isMobile ? 0 : undefined }}
-      >
-        {/* Top bar with breadcrumbs and user info */}
+      <Sidebar onCollapseChange={setSidebarCollapsed} />
+      <div className="min-h-screen transition-all duration-300">
+        {/* Top bar */}
         <div className="border-b bg-background/95 backdrop-blur-md sticky top-0 z-40">
-          <div className="flex items-center justify-between p-4 lg:ml-64">
+          <div 
+            className="flex items-center justify-between p-4 transition-all duration-300"
+            style={{ marginLeft: isMobile ? 0 : sidebarWidth }}
+          >
             <div className="flex items-center gap-4">
-              {isMobile && <div className="w-10" />} {/* Spacer for mobile menu button */}
+              {isMobile && <div className="w-10" />}
               <Breadcrumbs />
             </div>
             <DropdownMenu>
@@ -65,7 +63,10 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </div>
         </div>
         
-        <main className="p-4 md:p-6 lg:p-8 lg:ml-64">
+        <main 
+          className="p-4 md:p-6 lg:p-8 transition-all duration-300"
+          style={{ marginLeft: isMobile ? 0 : sidebarWidth }}
+        >
           {children}
         </main>
       </div>

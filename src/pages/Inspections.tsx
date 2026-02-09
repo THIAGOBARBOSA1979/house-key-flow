@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, Calendar as CalendarIcon, ListFilter } from "lucide-react";
+import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -14,24 +14,9 @@ import {
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Mock data
 const inspections = [
-  {
-    id: "1",
-    property: "Edifício Aurora",
-    unit: "101",
-    client: "João Silva",
-    scheduledDate: new Date(),
-    status: "pending" as const
-  },
-  {
-    id: "2",
-    property: "Residencial Bosque",
-    unit: "302",
-    client: "Maria Santos",
-    scheduledDate: new Date(),
-    status: "progress" as const
-  }
+  { id: "1", property: "Edifício Aurora", unit: "101", client: "João Silva", scheduledDate: new Date(), status: "pending" as const },
+  { id: "2", property: "Residencial Bosque", unit: "302", client: "Maria Santos", scheduledDate: new Date(), status: "progress" as const },
 ];
 
 export default function Inspections() {
@@ -44,6 +29,11 @@ export default function Inspections() {
     const matchesStatus = filterStatus === "all" || inspection.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterStatus("all");
+  };
 
   return (
     <div className="space-y-6">
@@ -81,23 +71,31 @@ export default function Inspections() {
         </Button>
       </FilterBar>
 
-      <div className="grid gap-4">
-        {filteredInspections.map((inspection) => (
-          <Card 
-            key={inspection.id} 
-            className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30"
-          >
-            <CardContent className="p-0">
-              <InspectionItem inspection={inspection} />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="flex justify-center gap-2">
-        <Button variant="outline">Anterior</Button>
-        <Button variant="outline">Próxima</Button>
-      </div>
+      {filteredInspections.length > 0 ? (
+        <div className="grid gap-4">
+          {filteredInspections.map((inspection) => (
+            <Card 
+              key={inspection.id} 
+              className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30"
+            >
+              <CardContent className="p-0">
+                <InspectionItem inspection={inspection} />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <SearchX className="h-12 w-12 text-muted-foreground/50 mb-4" />
+          <h3 className="text-lg font-medium mb-1">Nenhuma vistoria encontrada</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Nenhum resultado corresponde aos filtros aplicados.
+          </p>
+          <Button variant="outline" onClick={clearFilters}>
+            Limpar filtros
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

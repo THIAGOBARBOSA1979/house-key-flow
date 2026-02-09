@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,8 @@ import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
 import { ChecklistExecution } from '@/components/Checklists/ChecklistExecution';
 import { ChecklistItem, ChecklistService } from '@/services/ChecklistService';
-import { Plus, FileText, PlayCircle, BarChart } from 'lucide-react';
+import { FileText, PlayCircle, BarChart, ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/Layout/PageHeader';
 
 interface ChecklistTemplate {
   id: string;
@@ -47,12 +47,10 @@ export default function Checklist() {
 
   const handleSaveExecution = (completedItems: ChecklistItem[], notes: string) => {
     console.log('Salvando execução:', { completedItems, notes });
-    // Implementar lógica de salvamento
   };
 
   const handleSubmitExecution = (completedItems: ChecklistItem[], notes: string) => {
     console.log('Finalizando execução:', { completedItems, notes });
-    // Implementar lógica de finalização
     setCurrentView('templates');
   };
 
@@ -64,7 +62,7 @@ export default function Checklist() {
 
   if (currentView === 'builder') {
     return (
-      <div className="container mx-auto py-6">
+      <div className="space-y-6">
         <ChecklistBuilder
           onSave={handleSaveChecklist}
           onCancel={handleBack}
@@ -75,10 +73,11 @@ export default function Checklist() {
 
   if (currentView === 'execution' && selectedTemplate) {
     return (
-      <div className="container mx-auto py-6">
-        <div className="mb-4">
+      <div className="space-y-6">
+        <div>
           <Button variant="outline" onClick={handleBack}>
-            ← Voltar aos Templates
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar aos Templates
           </Button>
         </div>
         <ChecklistExecution
@@ -92,19 +91,12 @@ export default function Checklist() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <FileText className="h-8 w-8" />
-            Checklists
-          </h1>
-          <p className="text-muted-foreground">
-            Gerencie templates e execute checklists de inspeção
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        icon={FileText}
+        title="Checklists"
+        description="Gerencie templates e execute checklists de inspeção"
+      />
 
       <Tabs defaultValue="templates" className="space-y-6">
         <TabsList>
@@ -155,7 +147,6 @@ export default function Checklist() {
                 <p className="text-xs text-muted-foreground">Total de templates</p>
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle>Execuções Este Mês</CardTitle>
@@ -165,7 +156,6 @@ export default function Checklist() {
                 <p className="text-xs text-muted-foreground">Checklists executados</p>
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle>Taxa de Conclusão</CardTitle>

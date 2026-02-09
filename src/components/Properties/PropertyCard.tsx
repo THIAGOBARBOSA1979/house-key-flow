@@ -21,7 +21,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
   
   return (
     <Card className="overflow-hidden card-hover">
-      <div className="h-40 bg-slate-200 relative">
+      <div className="h-32 sm:h-40 bg-muted relative">
         {property.imageUrl ? (
           <img 
             src={property.imageUrl} 
