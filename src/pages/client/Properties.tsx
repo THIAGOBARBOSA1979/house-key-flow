@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, FileText, Home, Calendar, ShieldCheck, Ruler, MapPin } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 // Mock data
 const property = {
@@ -26,6 +28,25 @@ const property = {
 };
 
 const ClientProperties = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleViewDocument = (title: string) => {
+    toast({ title: "Abrindo documento", description: `Abrindo "${title}" para visualização.` });
+  };
+
+  const handleViewMemorial = () => {
+    toast({ title: "Memorial descritivo", description: "O memorial descritivo completo será aberto em uma nova aba." });
+  };
+
+  const handleViewWarrantyTerm = () => {
+    toast({ title: "Termo de garantia", description: "O termo completo de garantia será aberto em uma nova aba." });
+  };
+
+  const handleRequestWarranty = () => {
+    navigate("/client/warranty");
+  };
+
   return (
     <div className="space-y-6">
       {/* Page header */}
@@ -109,7 +130,7 @@ const ClientProperties = () => {
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleViewDocument(doc.title)}>
                       Visualizar
                     </Button>
                   </CardContent>
@@ -255,7 +276,7 @@ const ClientProperties = () => {
               </div>
               
               <div className="flex justify-end mt-4">
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleViewMemorial}>
                   Ver memorial descritivo completo
                 </Button>
               </div>
@@ -369,10 +390,10 @@ const ClientProperties = () => {
               </div>
               
               <div className="flex justify-between pt-4 border-t">
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleViewWarrantyTerm}>
                   Ver termo completo de garantia
                 </Button>
-                <Button>
+                <Button onClick={handleRequestWarranty}>
                   Solicitar garantia
                 </Button>
               </div>

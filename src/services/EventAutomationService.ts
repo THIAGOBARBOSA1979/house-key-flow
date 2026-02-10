@@ -1,6 +1,7 @@
 import { clientStageService } from './ClientStageService';
 import { notificationService } from './NotificationService';
 import { ClientEvent, EventType } from '@/types/clientFlow';
+import { auditLogService } from './AuditLogService';
 
 export interface AutomationResult {
   success: boolean;
@@ -9,66 +10,92 @@ export interface AutomationResult {
 }
 
 class EventAutomationService {
-  // Process inspection approved event
-  onInspectionApproved(inspectionId: string, clientId: string): AutomationResult {
+  // Process inspection accepted by client
+  onInspectionAccepted(inspectionId: string, clientId: string): AutomationResult {
     const actions: string[] = [];
 
     try {
-      // 1. Advance client to warranty_enabled stage
       const stageResult = clientStageService.advanceStage(
-        clientId,
-        'warranty_enabled',
-        'Vistoria aprovada - Garantia liberada automaticamente',
-        'Sistema',
-        true
+        clientId, 'warranty_enabled',
+        'Vistoria aceita pelo cliente - Garantia liberada automaticamente',
+        'Cliente', true
       );
-
       if (!stageResult.success) {
         return { success: false, actions, error: stageResult.error };
       }
       actions.push('Etapa do cliente atualizada para "Garantia Liberada"');
 
-      // 2. Register event in history
       clientStageService.addEvent({
-        clientId,
-        eventType: 'inspection_approved',
-        title: 'Vistoria Aprovada',
-        description: 'A vistoria foi aprovada pela equipe técnica',
-        metadata: {
-          relatedEntityId: inspectionId,
-          relatedEntityType: 'inspection',
-          isAutomatic: true
-        }
+        clientId, eventType: 'inspection_approved',
+        title: 'Vistoria Aceita pelo Cliente',
+        description: 'O cliente aceitou a vistoria e confirmou as condições do imóvel.',
+        metadata: { relatedEntityId: inspectionId, relatedEntityType: 'inspection', isAutomatic: true }
       });
       actions.push('Evento registrado no histórico');
 
-      // 3. Create notification
       notificationService.createNotification(clientId, 'inspection_approved', {
-        relatedEntityId: inspectionId,
-        relatedEntityType: 'inspection'
+        relatedEntityId: inspectionId, relatedEntityType: 'inspection'
       });
-      actions.push('Notificação de aprovação criada');
-
-      // 4. Create warranty enabled notification
       notificationService.createNotification(clientId, 'warranty_enabled', {
         relatedEntityType: 'stage'
       });
-      actions.push('Notificação de garantia liberada criada');
+      actions.push('Notificações criadas');
 
-      console.log('[EventAutomation] Inspection approved automation completed:', {
-        clientId,
-        inspectionId,
-        actions
+      auditLogService.log({
+        entityType: 'inspection', entityId: inspectionId, action: 'accepted',
+        performedBy: clientId, performedByName: 'Cliente', performedByRole: 'client',
+        details: 'Vistoria aceita pelo cliente. Módulo de garantias liberado.'
+      });
+      actions.push('Log de auditoria registrado');
+
+      return { success: true, actions };
+    } catch (error) {
+      console.error('[EventAutomation] Error:', error);
+      return { success: false, actions, error: error instanceof Error ? error.message : 'Erro desconhecido' };
+    }
+  }
+
+  // Process inspection approved event (admin)
+  onInspectionApproved(inspectionId: string, clientId: string): AutomationResult {
+    const actions: string[] = [];
+
+    try {
+      const stageResult = clientStageService.advanceStage(
+        clientId, 'warranty_enabled',
+        'Vistoria aprovada - Garantia liberada automaticamente',
+        'Sistema', true
+      );
+      if (!stageResult.success) {
+        return { success: false, actions, error: stageResult.error };
+      }
+      actions.push('Etapa do cliente atualizada para "Garantia Liberada"');
+
+      clientStageService.addEvent({
+        clientId, eventType: 'inspection_approved',
+        title: 'Vistoria Aprovada',
+        description: 'A vistoria foi aprovada pela equipe técnica',
+        metadata: { relatedEntityId: inspectionId, relatedEntityType: 'inspection', isAutomatic: true }
+      });
+      actions.push('Evento registrado no histórico');
+
+      notificationService.createNotification(clientId, 'inspection_approved', {
+        relatedEntityId: inspectionId, relatedEntityType: 'inspection'
+      });
+      notificationService.createNotification(clientId, 'warranty_enabled', {
+        relatedEntityType: 'stage'
+      });
+      actions.push('Notificações criadas');
+
+      auditLogService.log({
+        entityType: 'inspection', entityId: inspectionId, action: 'accepted',
+        performedBy: 'admin-1', performedByName: 'Sistema', performedByRole: 'admin',
+        details: 'Vistoria aprovada pela equipe técnica. Módulo de garantias liberado.'
       });
 
       return { success: true, actions };
     } catch (error) {
-      console.error('[EventAutomation] Error processing inspection approved:', error);
-      return { 
-        success: false, 
-        actions, 
-        error: error instanceof Error ? error.message : 'Erro desconhecido' 
-      };
+      console.error('[EventAutomation] Error:', error);
+      return { success: false, actions, error: error instanceof Error ? error.message : 'Erro desconhecido' };
     }
   }
 
@@ -101,10 +128,10 @@ class EventAutomationService {
       });
       actions.push('Notificação de pendência criada');
 
-      console.log('[EventAutomation] Inspection rejected automation completed:', {
-        clientId,
-        inspectionId,
-        actions
+      auditLogService.log({
+        entityType: 'inspection', entityId: inspectionId, action: 'rejected',
+        performedBy: clientId, performedByName: 'Cliente', performedByRole: 'client',
+        details: `Vistoria recusada pelo cliente. Motivo: ${reason || 'Não informado'}`
       });
 
       return { success: true, actions };

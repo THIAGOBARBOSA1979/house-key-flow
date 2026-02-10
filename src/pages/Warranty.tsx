@@ -14,7 +14,8 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
-import { Kanban, BarChart3, Settings, List } from "lucide-react";
+import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
+import { Kanban, BarChart3, Settings } from "lucide-react";
 
 const Warranty = () => {
   const { toast } = useToast();
@@ -74,7 +75,23 @@ const Warranty = () => {
             <DialogTitle>Detalhes da Solicitação</DialogTitle>
           </DialogHeader>
           {selectedRequest && (
-            <WarrantyRequestTimeline request={selectedRequest} />
+            <Tabs defaultValue="timeline" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="timeline">Acompanhamento</TabsTrigger>
+                <TabsTrigger value="logs">Histórico/Logs</TabsTrigger>
+              </TabsList>
+              <TabsContent value="timeline">
+                <WarrantyRequestTimeline request={selectedRequest} />
+              </TabsContent>
+              <TabsContent value="logs">
+                <AuditLogViewer 
+                  entityType="warranty" 
+                  entityId={selectedRequest.id} 
+                  title="Logs de Auditoria" 
+                  compact 
+                />
+              </TabsContent>
+            </Tabs>
           )}
         </DialogContent>
       </Dialog>
