@@ -10,9 +10,12 @@ import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDi
 import { useToast } from "@/hooks/use-toast";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
+import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptance";
+import { InspectionAcceptanceStatus } from "@/types/clientFlow";
+import { eventAutomationService } from "@/services/EventAutomationService";
 
 // Mock data
-const inspections = [
+const initialInspections = [
   {
     id: "1",
     title: "Vistoria de Pré-entrega",
@@ -29,7 +32,11 @@ const inspections = [
       { id: "4", name: "Verificação de esquadrias e vidros", completed: false },
       { id: "5", name: "Verificação de pisos e revestimentos", completed: false },
     ],
-    canStart: true
+    canStart: true,
+    acceptanceStatus: undefined as InspectionAcceptanceStatus | undefined,
+    acceptedAt: undefined as Date | undefined,
+    rejectedAt: undefined as Date | undefined,
+    rejectionReason: undefined as string | undefined,
   },
   {
     id: "2",
@@ -47,7 +54,11 @@ const inspections = [
       { id: "4", name: "Entrega de manuais e garantias", completed: false },
       { id: "5", name: "Assinatura de termo de recebimento", completed: false },
     ],
-    canStart: false
+    canStart: false,
+    acceptanceStatus: undefined as InspectionAcceptanceStatus | undefined,
+    acceptedAt: undefined as Date | undefined,
+    rejectedAt: undefined as Date | undefined,
+    rejectionReason: undefined as string | undefined,
   },
   {
     id: "3",
@@ -63,12 +74,16 @@ const inspections = [
       { id: "2", name: "Verificação do reparo da maçaneta da porta", completed: true },
     ],
     canStart: false,
-    report: "https://example.com/report.pdf"
+    report: "https://example.com/report.pdf",
+    acceptanceStatus: "pending_acceptance" as InspectionAcceptanceStatus | undefined,
+    acceptedAt: undefined as Date | undefined,
+    rejectedAt: undefined as Date | undefined,
+    rejectionReason: undefined as string | undefined,
   }
 ];
 
 // Helper component for the checklist status badges
-const Badge = ({ status }: { status: boolean }) => {
+const ChecklistBadge = ({ status }: { status: boolean }) => {
   return (
     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
       status 
@@ -81,14 +96,14 @@ const Badge = ({ status }: { status: boolean }) => {
 };
 
 const ClientInspections = () => {
+  const [inspections, setInspections] = useState(initialInspections);
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
   const [activeInspection, setActiveInspection] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Get client stage permissions
   const clientId = "client-1";
-  const { canScheduleInspection, permissions, stage } = useClientStage(clientId);
+  const { canScheduleInspection, permissions } = useClientStage(clientId);
   
   const inspection = selectedInspection 
     ? inspections.find(i => i.id === selectedInspection) 
@@ -96,11 +111,7 @@ const ClientInspections = () => {
 
   const handleStartInspection = (inspectionId: string) => {
     if (!permissions.canStartInspection) {
-      toast({
-        title: "Funcionalidade bloqueada",
-        description: "Você ainda não tem permissão para iniciar vistorias.",
-        variant: "destructive"
-      });
+      toast({ title: "Funcionalidade bloqueada", description: "Você ainda não tem permissão para iniciar vistorias.", variant: "destructive" });
       return;
     }
     setActiveInspection(inspectionId);
@@ -108,28 +119,42 @@ const ClientInspections = () => {
   };
 
   const handleInspectionComplete = (data: any) => {
-    console.log("Inspection completed:", data);
-    
-    toast({
-      title: "Vistoria concluída com sucesso",
-      description: "O relatório será processado e estará disponível em breve.",
-    });
-    
+    toast({ title: "Vistoria concluída com sucesso", description: "O relatório será processado e estará disponível em breve." });
     setStartInspectionOpen(false);
   };
 
   const handleConfirmPresence = () => {
-    toast({
-      title: "Presença confirmada",
-      description: "Obrigado por confirmar sua presença na vistoria.",
-    });
+    toast({ title: "Presença confirmada", description: "Obrigado por confirmar sua presença na vistoria." });
   };
 
   const handleRequestReschedule = () => {
-    toast({
-      title: "Solicitação de remarcação enviada",
-      description: "Em breve entraremos em contato para agendar uma nova data.",
-    });
+    toast({ title: "Solicitação de remarcação enviada", description: "Em breve entraremos em contato para agendar uma nova data." });
+  };
+
+  const handleContactTeam = () => {
+    toast({ title: "Mensagem enviada", description: "Nossa equipe receberá sua mensagem e entrará em contato em breve." });
+  };
+
+  const handleViewPdf = () => {
+    toast({ title: "Abrindo documento", description: "O relatório em PDF será aberto em uma nova aba." });
+  };
+
+  const handleAcceptInspection = (inspectionId: string) => {
+    setInspections(prev => prev.map(i => 
+      i.id === inspectionId 
+        ? { ...i, acceptanceStatus: "accepted" as InspectionAcceptanceStatus, acceptedAt: new Date() }
+        : i
+    ));
+    eventAutomationService.onInspectionAccepted(inspectionId, clientId);
+  };
+
+  const handleRejectInspection = (inspectionId: string, reason: string) => {
+    setInspections(prev => prev.map(i => 
+      i.id === inspectionId 
+        ? { ...i, acceptanceStatus: "rejected" as InspectionAcceptanceStatus, rejectedAt: new Date(), rejectionReason: reason }
+        : i
+    ));
+    eventAutomationService.onInspectionRejected(inspectionId, clientId, reason);
   };
 
   return (
@@ -146,24 +171,19 @@ const ClientInspections = () => {
           </p>
         </div>
         
-        {/* Schedule button with gate */}
         {canScheduleInspection ? (
           <Button>
             <Calendar className="mr-2 h-4 w-4" />
             Agendar Vistoria
           </Button>
         ) : (
-          <GatedButton 
-            isAllowed={false} 
-            tooltipMessage="Agendar vistorias será liberado em breve"
-          >
+          <GatedButton isAllowed={false} tooltipMessage="Agendar vistorias será liberado em breve">
             <Calendar className="mr-2 h-4 w-4" />
             Agendar Vistoria
           </GatedButton>
         )}
       </div>
 
-      {/* Feature Gate for entire inspection feature */}
       <FeatureGate
         isAllowed={canScheduleInspection}
         requiredStage="inspection_enabled"
@@ -179,24 +199,31 @@ const ClientInspections = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Vistorias Agendadas</CardTitle>
-                <CardDescription>
-                  Selecione uma vistoria para ver detalhes
-                </CardDescription>
+                <CardDescription>Selecione uma vistoria para ver detalhes</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 {inspections.map((item) => (
                   <div 
                     key={item.id} 
                     className={`p-3 border rounded-md cursor-pointer transition-colors ${
-                      selectedInspection === item.id 
-                        ? "border-primary bg-primary/5" 
-                        : "hover:bg-accent"
+                      selectedInspection === item.id ? "border-primary bg-primary/5" : "hover:bg-accent"
                     }`}
                     onClick={() => setSelectedInspection(item.id)}
                   >
                     <div className="flex justify-between items-start">
                       <h3 className="font-medium">{item.title}</h3>
-                      <StatusBadge status={item.status} />
+                      <div className="flex items-center gap-1.5">
+                        {item.acceptanceStatus === "pending_acceptance" && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800">Aceite pendente</span>
+                        )}
+                        {item.acceptanceStatus === "accepted" && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-800">Aceita</span>
+                        )}
+                        {item.acceptanceStatus === "rejected" && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800">Recusada</span>
+                        )}
+                        <StatusBadge status={item.status} />
+                      </div>
                     </div>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                       <Calendar className="h-3 w-3" />
@@ -215,7 +242,7 @@ const ClientInspections = () => {
                 <p className="text-sm text-muted-foreground">
                   Se você precisar remarcar uma vistoria ou tiver dúvidas sobre o processo, entre em contato com nossa equipe.
                 </p>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleContactTeam}>
                   Falar com a equipe
                 </Button>
               </CardContent>
@@ -235,6 +262,21 @@ const ClientInspections = () => {
                 </TabsList>
                 
                 <TabsContent value="details" className="space-y-4 pt-4">
+                  {/* Acceptance component for completed inspections */}
+                  {inspection.status === "complete" && inspection.acceptanceStatus && (
+                    <InspectionAcceptance
+                      inspectionId={inspection.id}
+                      status={inspection.acceptanceStatus}
+                      conformeCount={inspection.checklist.filter(i => i.completed).length}
+                      naoConformeCount={inspection.checklist.filter(i => !i.completed).length}
+                      acceptedAt={inspection.acceptedAt}
+                      rejectedAt={inspection.rejectedAt}
+                      rejectionReason={inspection.rejectionReason}
+                      onAccept={handleAcceptInspection}
+                      onReject={handleRejectInspection}
+                    />
+                  )}
+
                   <Card>
                     <CardHeader>
                       <div className="flex justify-between items-start">
@@ -265,61 +307,50 @@ const ClientInspections = () => {
                         </div>
                         <div className="space-y-2">
                           <h3 className="font-medium">Descrição:</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {inspection.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{inspection.description}</p>
                         </div>
                       </div>
                       
-                      <div className="pt-2 border-t">
-                        <h3 className="font-medium mb-2">Próximos passos:</h3>
-                        <ul className="space-y-2 text-sm">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <span>Compareça no horário agendado</span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <span>Traga um documento com foto</span>
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <span>Anote todas as observações durante a vistoria</span>
-                          </li>
-                        </ul>
-                      </div>
+                      {inspection.status !== "complete" && (
+                        <div className="pt-2 border-t">
+                          <h3 className="font-medium mb-2">Próximos passos:</h3>
+                          <ul className="space-y-2 text-sm">
+                            <li className="flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              <span>Compareça no horário agendado</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              <span>Traga um documento com foto</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              <span>Anote todas as observações durante a vistoria</span>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
                       
                       <div className="flex justify-between pt-4">
-                        <Button 
-                          variant="outline" 
-                          onClick={handleRequestReschedule}
-                        >
+                        <Button variant="outline" onClick={handleRequestReschedule} disabled={inspection.status === "complete"}>
                           Solicitar remarcação
                         </Button>
                         
                         {inspection.canStart && permissions.canStartInspection ? (
-                          <Button 
-                            onClick={() => handleStartInspection(inspection.id)}
-                          >
+                          <Button onClick={() => handleStartInspection(inspection.id)}>
                             <ClipboardCheck className="h-4 w-4 mr-2" />
                             Iniciar Vistoria
                           </Button>
                         ) : inspection.canStart ? (
-                          <GatedButton
-                            isAllowed={false}
-                            tooltipMessage="Aguarde a liberação para iniciar"
-                          >
+                          <GatedButton isAllowed={false} tooltipMessage="Aguarde a liberação para iniciar">
                             <ClipboardCheck className="h-4 w-4 mr-2" />
                             Iniciar Vistoria
                           </GatedButton>
-                        ) : (
-                          <Button
-                            onClick={handleConfirmPresence}
-                            disabled={inspection.status === "complete"}
-                          >
-                            {inspection.status === "complete" ? "Vistoria Concluída" : "Confirmar presença"}
+                        ) : inspection.status !== "complete" ? (
+                          <Button onClick={handleConfirmPresence}>
+                            Confirmar presença
                           </Button>
-                        )}
+                        ) : null}
                       </div>
                     </CardContent>
                   </Card>
@@ -329,9 +360,7 @@ const ClientInspections = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle>Checklist da Vistoria</CardTitle>
-                      <CardDescription>
-                        Itens que serão verificados durante a vistoria
-                      </CardDescription>
+                      <CardDescription>Itens que serão verificados durante a vistoria</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -348,7 +377,7 @@ const ClientInspections = () => {
                                 <tr key={item.id}>
                                   <td className="py-3 px-4">{item.name}</td>
                                   <td className="py-3 px-4 text-right">
-                                    <Badge status={item.completed} />
+                                    <ChecklistBadge status={item.completed} />
                                   </td>
                                 </tr>
                               ))}
@@ -368,9 +397,7 @@ const ClientInspections = () => {
                     <Card>
                       <CardHeader>
                         <CardTitle>Relatório de Vistoria</CardTitle>
-                        <CardDescription>
-                          Documentação completa com os resultados da vistoria
-                        </CardDescription>
+                        <CardDescription>Documentação completa com os resultados da vistoria</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="border rounded-md p-4 space-y-2">
@@ -382,7 +409,7 @@ const ClientInspections = () => {
                                 Finalizado em {format(new Date(2025, 3, 10), "dd/MM/yyyy")}
                               </p>
                               <div className="mt-2">
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" onClick={handleViewPdf}>
                                   Visualizar PDF
                                 </Button>
                               </div>
@@ -400,6 +427,21 @@ const ClientInspections = () => {
                             <p><span className="font-medium">Itens não conformes:</span> {inspection.checklist.filter(i => !i.completed).length}</p>
                           </div>
                         </div>
+
+                        {/* Acceptance status in report tab */}
+                        {inspection.acceptanceStatus && (
+                          <InspectionAcceptance
+                            inspectionId={inspection.id}
+                            status={inspection.acceptanceStatus}
+                            conformeCount={inspection.checklist.filter(i => i.completed).length}
+                            naoConformeCount={inspection.checklist.filter(i => !i.completed).length}
+                            acceptedAt={inspection.acceptedAt}
+                            rejectedAt={inspection.rejectedAt}
+                            rejectionReason={inspection.rejectionReason}
+                            onAccept={handleAcceptInspection}
+                            onReject={handleRejectInspection}
+                          />
+                        )}
                       </CardContent>
                     </Card>
                   </TabsContent>

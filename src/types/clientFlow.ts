@@ -2,6 +2,19 @@
 // Client Stage Types
 export type ClientStage = 'registered' | 'inspection_enabled' | 'warranty_enabled';
 
+// Inspection Acceptance Types
+export type InspectionAcceptanceStatus = 'pending_acceptance' | 'accepted' | 'rejected';
+
+export interface InspectionAcceptance {
+  inspectionId: string;
+  clientId: string;
+  status: InspectionAcceptanceStatus;
+  acceptedAt?: Date;
+  rejectedAt?: Date;
+  rejectionReason?: string;
+  registeredBy: string;
+}
+
 export type NotificationType = 
   | 'inspection_enabled'
   | 'inspection_scheduled'

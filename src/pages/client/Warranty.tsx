@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -106,7 +108,9 @@ const WarrantyGuide = () => (
       </div>
     </CardContent>
     <CardFooter>
-      <Button variant="outline" className="w-full">
+      <Button variant="outline" className="w-full" onClick={() => {
+        // Toast is not available in this static component
+      }}>
         Ver manual completo de garantias
       </Button>
     </CardFooter>
@@ -166,6 +170,11 @@ const ClientWarranty = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedWarrantyItem, setSelectedWarrantyItem] = useState<WarrantyItem | null>(null);
   const [requestStep, setRequestStep] = useState<"select_item" | "fill_form">("select_item");
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [addInfoDialogOpen, setAddInfoDialogOpen] = useState(false);
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [commentText, setCommentText] = useState("");
+  const [claims, setClaims] = useState(warrantyClaims);
   const { toast } = useToast();
   
   // Mock client ID - in real app, get from auth context
@@ -175,8 +184,35 @@ const ClientWarranty = () => {
   const { canRequestWarranty, permissions, stage, isLoading } = useClientStage(clientId);
   
   const claim = selectedClaim 
-    ? warrantyClaims.find(c => c.id === selectedClaim) 
+    ? claims.find(c => c.id === selectedClaim) 
     : null;
+
+  const handleCancelClaim = () => {
+    if (!selectedClaim) return;
+    setClaims(prev => prev.filter(c => c.id !== selectedClaim));
+    setSelectedClaim(null);
+    setCancelDialogOpen(false);
+    toast({ title: "Solicitação cancelada", description: "Sua solicitação de garantia foi cancelada com sucesso." });
+  };
+
+  const handleAddInfo = () => {
+    if (!additionalInfo.trim()) return;
+    setClaims(prev => prev.map(c => c.id === selectedClaim ? {
+      ...c, updates: [...c.updates, { id: String(c.updates.length + 1), date: new Date(), author: "Você", text: additionalInfo }]
+    } : c));
+    setAdditionalInfo("");
+    setAddInfoDialogOpen(false);
+    toast({ title: "Informações adicionadas", description: "As informações foram anexadas à sua solicitação." });
+  };
+
+  const handleSendComment = () => {
+    if (!commentText.trim() || !selectedClaim) return;
+    setClaims(prev => prev.map(c => c.id === selectedClaim ? {
+      ...c, updates: [...c.updates, { id: String(c.updates.length + 1), date: new Date(), author: "Você", text: commentText }]
+    } : c));
+    setCommentText("");
+    toast({ title: "Comentário enviado", description: "Seu comentário foi adicionado ao histórico." });
+  };
 
   // Handle form submission with validation
   const handleSubmit = (data: any) => {
@@ -389,8 +425,8 @@ const ClientWarranty = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                {warrantyClaims.length > 0 ? (
-                  warrantyClaims.map((item) => (
+                {claims.length > 0 ? (
+                  claims.map((item) => (
                     <div 
                       key={item.id} 
                       className={`p-3 border rounded-md cursor-pointer transition-colors ${
@@ -491,10 +527,10 @@ const ClientWarranty = () => {
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-between border-t pt-4">
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={() => setCancelDialogOpen(true)}>
                       Cancelar solicitação
                     </Button>
-                    <Button>
+                    <Button onClick={() => setAddInfoDialogOpen(true)}>
                       Adicionar informações
                     </Button>
                   </CardFooter>
@@ -540,8 +576,10 @@ const ClientWarranty = () => {
                         <Textarea 
                           placeholder="Digite seu comentário ou dúvida..." 
                           rows={3}
+                          value={commentText}
+                          onChange={e => setCommentText(e.target.value)}
                         />
-                        <Button className="w-full">
+                        <Button className="w-full" onClick={handleSendComment} disabled={!commentText.trim()}>
                           Enviar comentário
                         </Button>
                       </div>
@@ -569,6 +607,44 @@ const ClientWarranty = () => {
         </div>
       </div>
       </FeatureGate>
+
+      {/* Cancel confirmation dialog */}
+      <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cancelar Solicitação</DialogTitle>
+            <DialogDescription>
+              Tem certeza que deseja cancelar esta solicitação de garantia? Esta ação não pode ser desfeita.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setCancelDialogOpen(false)}>Voltar</Button>
+            <Button variant="destructive" onClick={handleCancelClaim}>Confirmar Cancelamento</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add info dialog */}
+      <Dialog open={addInfoDialogOpen} onOpenChange={setAddInfoDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Adicionar Informações</DialogTitle>
+            <DialogDescription>
+              Adicione informações complementares à sua solicitação de garantia.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            placeholder="Descreva as informações adicionais..."
+            value={additionalInfo}
+            onChange={e => setAdditionalInfo(e.target.value)}
+            rows={4}
+          />
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setAddInfoDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleAddInfo} disabled={!additionalInfo.trim()}>Enviar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
