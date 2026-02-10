@@ -1,235 +1,220 @@
 
-# Auditoria Profunda do Painel Administrativo - Plano de Correcoes
+# Plano: Finalizacao do Modulo de Garantias e Vistorias
 
-## Diagnostico Completo
+## Resumo
 
-Apos analise minuciosa de todas as paginas, componentes, servicos e fluxos do painel administrativo, foram identificados os seguintes problemas organizados por gravidade.
-
----
-
-## PROBLEMAS CRITICOS (Funcionalidade Quebrada)
-
-### 1. Settings.tsx - Componentes Select/Separator locais conflitantes
-A pagina Settings define `Select`, `SelectTrigger`, `SelectContent`, `SelectItem`, `SelectValue` e `Separator` localmente (linhas 438-462), usando elementos HTML nativos que conflitam com os componentes Radix/shadcn importados pelo resto do sistema. Tambem redefine a funcao `cn` localmente, sobrescrevendo a importacao de `@/lib/utils`. A aba Notificacoes usa `Separator` que nao esta importado corretamente.
-
-**Correcao:** Remover todos os componentes locais e usar os imports oficiais de `@/components/ui/select` e `@/components/ui/separator`. Remover a redefinicao local de `cn`.
-
-### 2. Dashboard (Index.tsx) - Links com rotas incorretas
-Os links "Ver todos" no Dashboard usam rotas nao-prefixadas (`/properties`, `/inspections`, `/warranty`) ao inves de `/admin/properties`, `/admin/inspections`, `/admin/warranty`. Botao "Calendario" e "Novo Empreendimento" nao apontam para rotas corretas.
-
-**Correcao:** Atualizar todos os links para usar rotas prefixadas com `/admin/`.
-
-### 3. Dashboard - Nao usa PageHeader padronizado
-Ao contrario de Properties, Inspections, ClientArea e Users que ja foram refatorados, o Dashboard ainda usa header manual inline.
-
-**Correcao:** Refatorar para usar o componente `PageHeader`.
-
-### 4. WarrantyHeader.tsx - Nao usa PageHeader padronizado
-O header de garantias implementa seu proprio layout de header, inconsistente com o padrao das demais paginas.
-
-**Correcao:** Refatorar para usar `PageHeader` mantendo os dropdown menus como children.
-
-### 5. Checklist.tsx - Nao usa PageHeader padronizado
-Usa header inline manual com `container mx-auto py-6` diferente do padrao do AppLayout.
-
-**Correcao:** Refatorar para usar `PageHeader` e remover `container mx-auto` que ja e gerido pelo AppLayout.
-
-### 6. Documents.tsx (admin) - Nao usa PageHeader padronizado
-Usa header inline manual.
-
-**Correcao:** Refatorar para usar `PageHeader`.
+Implementar as funcionalidades faltantes para tornar o modulo de Garantias e Vistorias completo e pronto para producao: aceite/recusa de vistoria pelo cliente, logs de rastreabilidade, e correcoes de UX/integracao entre os fluxos.
 
 ---
 
-## PROBLEMAS DE LAYOUT E RESPONSIVIDADE
+## Diagnostico Atual
 
-### 7. AppLayout - Sidebar collapse nao sincroniza margem
-O `AppLayout` usa `lg:ml-64` fixo independente do estado de collapse do sidebar. Quando o sidebar colapsa para `w-16`, o conteudo nao se ajusta.
+### O que ja esta implementado:
+- Timeline visual para cliente (WarrantyRequestTimeline)
+- Kanban administrativo com drag-and-drop
+- SLA configuravel por tipo de garantia
+- Dashboard de metricas
+- Servicos de fluxo (WarrantyFlowService, WarrantySLAService, WarrantyAutomationService)
+- Checklist de vistoria com marcacao conforme/nao-conforme (StartInspection)
+- Feature gating por estagio do cliente
 
-**Correcao:** Sincronizar o estado `isCollapsed` do Sidebar com o AppLayout e usar margem dinamica (`ml-16` quando colapsado, `ml-64` quando expandido).
-
-### 8. Sidebar mobile - Botao de menu sobrepoe conteudo
-O botao hamburguer no mobile usa `fixed left-4 top-4 z-50` que pode sobrepor o conteudo do top bar.
-
-**Correcao:** Coordenar o espacamento do top bar no mobile para acomodar o botao de menu sem sobreposicao.
-
-### 9. PropertyCard - Imagem com altura fixa quebra em mobile
-A div de imagem usa `h-40` fixo que pode parecer desproporcionada em telas muito pequenas.
-
-**Correcao:** Usar `h-32 sm:h-40` para melhor adaptacao.
-
-### 10. InspectionItem - Reschedule Dialog quebrado
-O dialog de reagendamento usa `<div style={{ display: 'none' }}>` como triggerButton, o que nao funciona - o dialog nunca abre visualmente quando clicado.
-
-**Correcao:** Controlar o dialog com estado `open/onOpenChange` corretamente.
-
-### 11. Users.tsx - Botao "Novo Usuario" duplicado
-O botao aparece tanto no `PageHeader` (linha 357) quanto na barra de acoes (linha 402).
-
-**Correcao:** Remover a duplicata da barra de acoes, mantendo apenas no PageHeader.
-
-### 12. Warranty Header - Excesso de botoes na barra
-5 botoes/dropdowns na mesma linha criam sobrecarga visual e quebra em mobile. "Agendar Vistoria" parece fora de contexto no header de Garantias.
-
-**Correcao:** Simplificar agrupando acoes em menos dropdowns e removendo o botao "Agendar Vistoria" (esta funcionalidade ja existe na pagina de Vistorias).
+### O que esta faltando:
+1. **Aceite de Vistoria pelo Cliente** - Nao existe mecanismo para o cliente aceitar ou recusar a vistoria apos conclusao
+2. **Logs de Rastreabilidade** - O WarrantyFlowService registra historico, mas nao existe um servico unificado de audit log nem visualizacao desses logs
+3. **Integracao vistoria-garantia** - A conclusao da vistoria no painel do cliente nao conecta com o fluxo de garantia automatizado
+4. **Feedback visual nas acoes do cliente** - Botoes como "Cancelar solicitacao", "Adicionar informacoes", "Enviar comentario" nao tem acao implementada
 
 ---
 
-## PROBLEMAS DE CONSISTENCIA VISUAL
+## ETAPA 1: Servico de Audit Log
 
-### 13. WarrantyClaim - Usa classes inline ao inves do design system
-Usa `bg-white p-4 rounded-lg shadow border border-slate-100` ao inves das classes do Card component e do design system.
+### Novo arquivo: `src/services/AuditLogService.ts`
 
-**Correcao:** Refatorar para usar o componente `Card` do shadcn.
+Criar servico centralizado de rastreabilidade:
 
-### 14. InspectionItem - Background hardcoded
-Usa `bg-white/50 backdrop-blur-sm` que nao respeita o tema escuro e nao segue o padrao de Cards.
+| Campo | Tipo | Descricao |
+|-------|------|-----------|
+| id | string | ID unico do log |
+| entityType | string | 'inspection' ou 'warranty' |
+| entityId | string | ID da entidade |
+| action | string | Acao realizada (created, updated, accepted, rejected, etc.) |
+| performedBy | string | ID do usuario |
+| performedByName | string | Nome do usuario |
+| performedByRole | string | 'admin' ou 'client' |
+| timestamp | Date | Data/hora da acao |
+| details | string | Descricao da acao |
+| metadata | object | Dados adicionais (campo alterado, valor anterior, etc.) |
 
-**Correcao:** Refatorar para usar o componente Card ou remover o background hardcoded em favor de classes tematicas.
+Metodos principais:
+- `log(entry)` - Registra nova entrada
+- `getLogsByEntity(entityType, entityId)` - Logs por entidade
+- `getLogsByUser(userId)` - Logs por usuario
+- `getLogsByDateRange(from, to)` - Logs por periodo
+- `getRecentLogs(limit)` - Logs recentes
 
-### 15. Checklist.tsx - Container inconsistente
-Usa `container mx-auto py-6` manual enquanto o AppLayout ja gerencia padding com `p-4 md:p-6 lg:p-8`.
-
-**Correcao:** Remover o container manual para alinhar com as demais paginas.
-
-### 16. Calendar.tsx - Header sem padronizacao
-Usa `CalendarHeader` proprio ao inves do `PageHeader` padronizado.
-
-**Correcao:** Integrar com `PageHeader` para consistencia, mantendo o CalendarHeader para funcionalidade especifica.
-
----
-
-## PROBLEMAS DE ESTADOS E FEEDBACK
-
-### 17. Properties.tsx - Estado vazio sem feedback
-Quando o filtro nao encontra resultados, a pagina exibe um grid vazio sem mensagem.
-
-**Correcao:** Adicionar componente de estado vazio com mensagem e acao para limpar filtros.
-
-### 18. Inspections.tsx - Estado vazio sem feedback
-Mesmo problema do Properties.
-
-**Correcao:** Adicionar componente de estado vazio.
-
-### 19. Inspections.tsx - Paginacao nao funcional
-Botoes "Anterior" e "Proxima" existem mas nao tem logica de paginacao implementada. Com apenas 2 itens mock, a paginacao nao faz sentido.
-
-**Correcao:** Implementar logica de paginacao real ou remover os botoes e adicionar logica quando houver volume de dados suficiente.
-
-### 20. ClientArea.tsx - Cliente unico no mock
-Apenas 1 cliente no mock dificulta testar filtragem e torna a busca pouco demonstravel.
-
-**Correcao:** Adicionar mais clientes mock para demonstrar melhor a funcionalidade.
-
-### 21. Diversas acoes sem efeito real
-- "Ver perfil" em Users (linha 291) - console.log
-- "Cancelar vistoria" em InspectionItem - console.log
-- "Enviar lembrete" em InspectionItem - console.log
-- Botao "Detalhes" em WarrantyClaim - sem acao
-- Botao "Atender" em WarrantyClaim - sem acao definida
-- Botoes "Visualizar" em documentos do cliente - sem acao
-
-**Correcao:** Implementar toasts de feedback para todas as acoes que ainda nao tem backend, informando o usuario que a acao foi registrada.
+Dados mock iniciais com acoes pre-registradas para as vistorias e garantias existentes.
 
 ---
 
-## PLANO DE IMPLEMENTACAO
+## ETAPA 2: Aceite de Vistoria pelo Cliente
 
-### Fase 1: Correcoes Criticas (Prioridade Maxima)
+### Novo tipo: `InspectionAcceptance` em `src/types/clientFlow.ts`
 
-**Arquivo: `src/pages/Settings.tsx`**
-- Remover redefinicao local de `cn`, `Select*`, `SelectValue`, `SelectTrigger`, `SelectContent`, `SelectItem`, `Separator` (linhas 438-462)
-- Importar `Separator` de `@/components/ui/separator`
-- Importar `Select*` de `@/components/ui/select`
-- Usar importacao existente de `cn` de `@/lib/utils`
+Adicionar ao arquivo existente:
 
-**Arquivo: `src/pages/Index.tsx`**
-- Alterar links de `/properties` para `/admin/properties`, `/inspections` para `/admin/inspections`, `/warranty` para `/admin/warranty`
-- Substituir header inline por `PageHeader`
-- Fazer botoes "Calendario" e "Novo Empreendimento" navegarem para rotas corretas
+```text
+InspectionAcceptanceStatus = 'pending_acceptance' | 'accepted' | 'rejected'
 
-### Fase 2: Padronizacao de Headers
+InspectionAcceptance = {
+  inspectionId: string
+  clientId: string
+  status: InspectionAcceptanceStatus
+  acceptedAt?: Date
+  rejectedAt?: Date
+  rejectionReason?: string
+  registeredBy: string
+}
+```
 
-**Arquivo: `src/components/Warranty/WarrantyHeader.tsx`**
-- Refatorar para usar `PageHeader` internamente
-- Simplificar barra de acoes removendo "Agendar Vistoria" (contextualmente incorreto)
-- Agrupar menus em 2 dropdowns ao inves de 4
+### Novo componente: `src/components/Inspection/InspectionAcceptance.tsx`
 
-**Arquivo: `src/pages/Checklist.tsx`**
-- Substituir header inline por `PageHeader`
-- Remover `container mx-auto py-6` redundante
+Componente de aceite/recusa com:
+- Resumo visual da vistoria concluida (itens conformes vs nao-conformes)
+- Botao "Aceitar Vistoria" com dialog de confirmacao
+- Botao "Recusar Vistoria" com campo obrigatorio de motivo
+- Indicador visual do status de aceite (aceito/recusado/pendente)
+- Registro de data, hora e responsavel
+- Toast de confirmacao apos cada acao
 
-**Arquivo: `src/pages/admin/Documents.tsx`**
-- Substituir header inline por `PageHeader`
+### Modificacao: `src/pages/client/Inspections.tsx`
 
-### Fase 3: Correcoes de Layout
+Na aba "Detalhes" de uma vistoria com status "complete":
+- Mostrar o componente InspectionAcceptance
+- Se vistoria aceita: mostrar banner verde "Vistoria aceita em DD/MM/YYYY as HH:MM"
+- Se vistoria recusada: mostrar banner vermelho com motivo
+- Se pendente de aceite: mostrar os botoes de acao
 
-**Arquivo: `src/components/Layout/AppLayout.tsx`**
-- Implementar deteccao do estado collapsed do sidebar
-- Usar margem dinamica baseada no estado
+### Modificacao: `src/services/EventAutomationService.ts`
 
-**Arquivo: `src/components/Layout/Sidebar.tsx`**
-- Expor estado de collapse via callback ou context
-
-**Arquivo: `src/components/Inspection/InspectionItem.tsx`**
-- Corrigir dialog de reagendamento para usar controle de estado adequado
-- Substituir background `bg-white/50` por classes tematicas
-
-**Arquivo: `src/components/Warranty/WarrantyClaim.tsx`**
-- Refatorar para usar componente `Card`
-
-### Fase 4: Estados Vazios e Feedback
-
-**Arquivo: `src/pages/Properties.tsx`**
-- Adicionar mensagem de estado vazio quando filtro retorna 0 resultados
-
-**Arquivo: `src/pages/Inspections.tsx`**
-- Adicionar mensagem de estado vazio
-- Remover paginacao nao funcional ou implementar logica real
-
-**Arquivo: `src/pages/Users.tsx`**
-- Remover botao "Novo Usuario" duplicado da barra de acoes
-
-**Arquivo: `src/pages/ClientArea.tsx`**
-- Adicionar mais clientes mock (3-5 clientes)
-
-### Fase 5: Feedback para Acoes
-
-**Arquivo: `src/components/Inspection/InspectionItem.tsx`**
-- Adicionar toast para "Cancelar vistoria" e "Enviar lembrete"
-
-**Arquivo: `src/components/Warranty/WarrantyClaim.tsx`**
-- Adicionar toast para botao "Detalhes"
-- Garantir que `onAtender` e `onGerenciarProblemas` tenham fallback com toast
-
-**Arquivo: `src/pages/Users.tsx`**
-- Substituir console.log de "Ver perfil" por toast informativo
+Adicionar novos metodos:
+- `onInspectionAccepted(inspectionId, clientId)` - Dispara automacao de aceite
+  - Registra evento no historico
+  - Avanca estagio do cliente para 'warranty_enabled'
+  - Cria notificacao de garantia liberada
+  - Registra log de auditoria
+- `onInspectionRejected(inspectionId, clientId, reason)` - Dispara automacao de recusa
+  - Registra evento no historico
+  - Mantem estagio atual
+  - Cria notificacao de pendencia
+  - Registra log de auditoria
 
 ---
 
-## RESUMO DE ARQUIVOS AFETADOS
+## ETAPA 3: Integracao Vistoria-Garantia
 
-| Arquivo | Tipo de Alteracao |
-|---------|-------------------|
-| `src/pages/Settings.tsx` | Remover componentes locais conflitantes, usar imports corretos |
-| `src/pages/Index.tsx` | Corrigir links, usar PageHeader |
-| `src/pages/Warranty.tsx` | Nenhuma alteracao (ja refatorado) |
-| `src/components/Warranty/WarrantyHeader.tsx` | Simplificar, usar PageHeader |
-| `src/pages/Checklist.tsx` | Usar PageHeader, remover container redundante |
-| `src/pages/admin/Documents.tsx` | Usar PageHeader |
-| `src/components/Layout/AppLayout.tsx` | Margem dinamica baseada em collapse |
-| `src/components/Layout/Sidebar.tsx` | Expor estado de collapse |
-| `src/components/Inspection/InspectionItem.tsx` | Corrigir dialog, background, feedback |
-| `src/components/Warranty/WarrantyClaim.tsx` | Usar Card, feedback em acoes |
-| `src/pages/Properties.tsx` | Estado vazio |
-| `src/pages/Inspections.tsx` | Estado vazio, paginacao |
-| `src/pages/Users.tsx` | Remover duplicata, feedback |
-| `src/pages/ClientArea.tsx` | Mais clientes mock |
+### Modificacao: `src/pages/client/Inspections.tsx`
 
-## REGRAS RESPEITADAS
+Quando o cliente aceita a vistoria:
+1. Chamar `eventAutomationService.onInspectionAccepted()`
+2. O servico automaticamente libera o modulo de garantias
+3. Toast informando: "Vistoria aceita. O modulo de garantias foi liberado."
 
-- Nenhuma funcionalidade nova criada
+Quando o cliente recusa a vistoria:
+1. Chamar `eventAutomationService.onInspectionRejected()`
+2. Toast informando: "Vistoria recusada. Nossa equipe entrara em contato."
+
+### Modificacao nos mock data de `src/pages/client/Inspections.tsx`
+
+Adicionar campo `acceptanceStatus` aos mocks de vistoria:
+- Vistoria "complete" (id: 3) recebe `acceptanceStatus: 'pending_acceptance'` para demonstrar o fluxo
+
+---
+
+## ETAPA 4: Visualizacao de Logs de Auditoria
+
+### Novo componente: `src/components/Admin/AuditLogViewer.tsx`
+
+Componente reutilizavel para visualizar logs:
+- Tabela com colunas: Data/Hora, Usuario, Acao, Entidade, Detalhes
+- Filtros por tipo de entidade, usuario, periodo
+- Badge de cor por tipo de acao (criacao=verde, edicao=azul, aceite=emerald, recusa=vermelho)
+- Icone por role (admin/client)
+- Paginacao
+
+### Modificacao: `src/pages/Inspections.tsx` (admin)
+
+Adicionar aba ou secao com logs de auditoria das vistorias, usando o AuditLogViewer filtrado por `entityType: 'inspection'`.
+
+### Modificacao: `src/pages/Warranty.tsx` (admin)
+
+No dialog de detalhes da solicitacao (quando clica em um card do Kanban), adicionar aba "Historico/Logs" mostrando o AuditLogViewer filtrado por `entityType: 'warranty'` e `entityId` da solicitacao.
+
+---
+
+## ETAPA 5: Feedback Visual e Acoes Faltantes
+
+### Modificacao: `src/pages/client/Warranty.tsx`
+
+- Botao "Cancelar solicitacao" (linha 494): implementar dialog de confirmacao + toast
+- Botao "Adicionar informacoes" (linha 497): implementar dialog com textarea + toast
+- Botao "Enviar comentario" (linha 544): implementar logica de adicionar ao array de updates + toast
+- Botao "Ver manual completo de garantias" (linha 110): toast informativo
+
+### Modificacao: `src/pages/client/Inspections.tsx`
+
+- Botao "Falar com a equipe" (linha 219): toast informativo
+- Botao "Visualizar PDF" (linha 386): toast informativo
+
+### Modificacao: `src/pages/client/Properties.tsx`
+
+- Botoes "Visualizar" dos documentos (linha 112): toast informativo
+- Botao "Ver memorial descritivo completo" (linha 258): toast informativo
+- Botao "Ver termo completo de garantia" (linha 372): toast informativo
+- Botao "Solicitar garantia" (linha 375): navegar para /client/warranty
+
+---
+
+## ETAPA 6: Correcoes de UX e Responsividade
+
+### Pagina do cliente - Vistorias
+- Padronizar o status badge da vistoria concluida com aceite pendente (novo status visual)
+- Garantir que a tab "Relatorio" mostre status de aceite
+- Mobile: garantir que os botoes aceitar/recusar sejam empilhados verticalmente
+
+### Pagina do cliente - Garantias
+- A lista de solicitacoes deve mostrar o timeline compacto do WarrantyRequestTimeline
+- Integrar dados do warrantyFlowService com os mock data locais
+- Adicionar aba "Acompanhamento" que mostra o WarrantyRequestTimeline completo
+
+### Pagina admin - Vistorias
+- Cards de vistoria devem mostrar indicador de aceite do cliente (aceito/pendente/recusado)
+- Toast de feedback ao clicar em "Detalhes"
+
+---
+
+## Resumo de Arquivos
+
+### Novos arquivos:
+| Arquivo | Descricao |
+|---------|-----------|
+| `src/services/AuditLogService.ts` | Servico centralizado de logs |
+| `src/components/Inspection/InspectionAcceptance.tsx` | Componente de aceite/recusa |
+| `src/components/Admin/AuditLogViewer.tsx` | Visualizador de logs |
+
+### Arquivos modificados:
+| Arquivo | Alteracao |
+|---------|-----------|
+| `src/types/clientFlow.ts` | Adicionar tipos de aceite de vistoria e novos event types |
+| `src/services/EventAutomationService.ts` | Adicionar metodos de aceite/recusa |
+| `src/pages/client/Inspections.tsx` | Integrar aceite de vistoria, feedback em acoes |
+| `src/pages/client/Warranty.tsx` | Feedback em acoes, integrar timeline do warrantyFlowService |
+| `src/pages/client/Properties.tsx` | Feedback em botoes sem acao |
+| `src/pages/Warranty.tsx` (admin) | Aba de logs no dialog de detalhes |
+| `src/pages/Inspections.tsx` (admin) | Indicador de aceite nos cards |
+
+### Regras respeitadas:
 - Nenhuma funcionalidade removida
 - Nenhuma regra de negocio alterada
-- Nenhuma inteligencia artificial introduzida
-- Apenas correcoes, padronizacoes e melhorias de usabilidade
+- Nenhum modulo novo fora do escopo
+- Integracao total com servicos existentes
+- Zero regressoes funcionais
