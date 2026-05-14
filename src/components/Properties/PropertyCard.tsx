@@ -5,17 +5,21 @@ import { Building, Home, Users, MapPin, Calendar } from "lucide-react";
 import { StatusBadge } from "../shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 
+import { Property } from "@/services/PropertyService";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 interface PropertyCardProps {
-  property: {
-    id: string;
-    name: string;
-    location: string;
-    units: number;
-    completedUnits: number;
-    status: "pending" | "progress" | "complete";
-    imageUrl?: string;
-  };
+  property: Property;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
+
 
 export const PropertyCard = ({ property }: PropertyCardProps) => {
   const completionPercentage = Math.round((property.completedUnits / property.units) * 100);
@@ -80,11 +84,27 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button variant="outline" size="sm" className="w-full">
+      <CardFooter className="gap-2 pt-0">
+        <Button variant="outline" size="sm" className="flex-1">
           Ver detalhes
         </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-9 w-9">
+              <MoreHorizontal size={18} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onEdit}>
+              <Pencil className="mr-2 h-4 w-4" /> Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={onDelete}>
+              <Trash2 className="mr-2 h-4 w-4" /> Excluir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardFooter>
+
     </Card>
   );
 };
