@@ -41,8 +41,8 @@ export const DashboardCharts = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card className="card-standard">
-        <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-h3 font-bold">Vistorias por Mês</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-h3">Vistorias por Mês</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
