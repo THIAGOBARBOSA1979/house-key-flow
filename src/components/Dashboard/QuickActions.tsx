@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { 
   Plus, 
   FileUp, 
-  UserPlus, 
+  User, 
   CalendarClock, 
   ShieldCheck,
   Building
@@ -16,28 +16,28 @@ export const QuickActions = () => {
 
   const actions = [
     { 
-      label: "Novo Empreendimento", 
+      label: "Nova Obra", 
       icon: Building, 
       onClick: () => navigate("/admin/properties"),
       color: "text-blue-500",
       bgColor: "bg-blue-50",
-      description: "Cadastrar nova obra"
+      description: "Cadastrar empreendimento"
     },
     { 
-      label: "Gerenciar Vistorias", 
-      icon: CalendarClock, 
-      onClick: () => navigate("/admin/inspections"),
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
-      description: "Agendar e realizar"
-    },
-    { 
-      label: "Fluxo de Garantias", 
+      label: "Novo Chamado", 
       icon: ShieldCheck, 
       onClick: () => navigate("/admin/warranty"),
       color: "text-status-critical",
       bgColor: "bg-status-critical/10",
-      description: "Atender chamados"
+      description: "Solicitação de assistência"
+    },
+    { 
+      label: "Área do Cliente", 
+      icon: User, 
+      onClick: () => navigate("/admin/client-area"),
+      color: "text-emerald-500",
+      bgColor: "bg-emerald-50",
+      description: "Ver portal do cliente"
     },
     { 
       label: "Upload Documento", 
