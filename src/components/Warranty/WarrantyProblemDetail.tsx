@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { 
   Card, 
   CardContent, 
@@ -165,7 +166,7 @@ export const WarrantyProblemDetail = ({ problem, onUpdateProblem }: WarrantyProb
           <div>
             <CardTitle className="text-lg">{problem.title}</CardTitle>
             <CardDescription>
-              Criado em {format(problem.createdAt, "dd/MM/yyyy")} • Categoria: {problem.category}
+              Criado em {isValid(new Date(problem.createdAt)) ? format(new Date(problem.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "—"} • Categoria: {problem.category}
             </CardDescription>
           </div>
           <div className={`px-3 py-1 rounded-full font-medium text-sm flex items-center gap-1.5 ${priorityConfig[problem.priority].colorClass}`}>
@@ -270,7 +271,7 @@ export const WarrantyProblemDetail = ({ problem, onUpdateProblem }: WarrantyProb
                       {technicians.find(t => t.id === action.performedBy)?.name}
                     </span>
                     <span className="text-sm text-muted-foreground">
-                      {format(action.createdAt, "dd/MM/yyyy HH:mm")}
+                      {isValid(new Date(action.createdAt)) ? format(new Date(action.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "—"}
                     </span>
                   </div>
                   <p className="mt-1 text-sm">{action.description}</p>
