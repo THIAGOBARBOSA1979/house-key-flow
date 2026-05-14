@@ -16,10 +16,17 @@ import {
 } from "@/components/ui/dialog";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle } from "lucide-react";
+import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, MessageSquare, UserPlus, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 const Warranty = () => {
