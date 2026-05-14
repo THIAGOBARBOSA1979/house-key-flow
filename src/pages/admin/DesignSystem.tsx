@@ -234,7 +234,7 @@ const DesignSystem = () => {
                 <p className="text-tiny uppercase font-bold text-muted-foreground tracking-wider mb-1">Total Clientes</p>
                 <div className="flex items-end justify-between">
                   <h3 className="text-h2 leading-none">1,284</h3>
-                  <Badge variant="success" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-[10px]">
+                  <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px]">
                     +12%
                   </Badge>
                 </div>
