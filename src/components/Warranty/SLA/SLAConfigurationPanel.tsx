@@ -27,6 +27,7 @@ import { SLAConfig, DEFAULT_SLA_CONFIGS } from "@/types/warrantyFlow";
 import { warrantySLAService } from "@/services/WarrantySLAService";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings, Save, Clock, AlertCircle, Edit2 } from "lucide-react";
+import { auditLogService } from "@/services/AuditLogService";
 
 export function SLAConfigurationPanel() {
   const { toast } = useToast();
@@ -47,6 +48,16 @@ export function SLAConfigurationPanel() {
 
   const handleSave = () => {
     if (!editingConfig) return;
+
+    auditLogService.log({
+      entityType: 'system',
+      entityId: 'sla-config',
+      action: 'settings_updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Configuração de SLA alterada para o tipo: ${editingConfig.warrantyType}`
+    });
     
     // Validate
     if (editingConfig.analysisHours < 1 || 
