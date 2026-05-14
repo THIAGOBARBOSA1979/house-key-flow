@@ -144,11 +144,36 @@ const Users = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="text-center"><CardContent className="p-4"><div className="text-2xl font-bold text-primary">{stats.total}</div><div className="text-xs text-muted-foreground">Total</div></CardContent></Card>
-        <Card className="text-center"><CardContent className="p-4"><div className="text-2xl font-bold text-emerald-600">{stats.active}</div><div className="text-xs text-muted-foreground">Ativos</div></CardContent></Card>
-        <Card className="text-center"><CardContent className="p-4"><div className="text-2xl font-bold text-red-600">{stats.inactive}</div><div className="text-xs text-muted-foreground">Inativos</div></CardContent></Card>
-        <Card className="text-center"><CardContent className="p-4"><div className="text-2xl font-bold text-blue-600">{stats.clients}</div><div className="text-xs text-muted-foreground">Clientes</div></CardContent></Card>
-        <Card className="text-center"><CardContent className="p-4"><div className="text-2xl font-bold text-purple-600">{stats.staff}</div><div className="text-xs text-muted-foreground">Equipe</div></CardContent></Card>
+        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-primary">{stats.total}</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Total</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-emerald-600">{stats.active}</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Ativos</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center shadow-sm hover:shadow-md transition-shadow border-red-100">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-red-600">{stats.inactive}</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Inativos</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-blue-600">{stats.clients}</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Clientes</div>
+          </CardContent>
+        </Card>
+        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="text-2xl font-bold text-purple-600">{stats.staff}</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Equipe</div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Actions Bar - removed duplicate "Novo Usuário" */}

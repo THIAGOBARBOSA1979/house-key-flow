@@ -171,7 +171,7 @@ const ClientArea = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <ScrollArea className="w-full">
+          <ScrollArea className="w-full whitespace-nowrap">
             <Table>
               <TableHeader>
                 <TableRow>
