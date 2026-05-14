@@ -141,13 +141,18 @@ export function KanbanCard({
         </div>
       )}
       
-      {/* SLA expired warning */}
-      {slaInfo.status === "expired" && (
-        <div className="mt-2 pt-2 border-t flex items-center gap-1.5 text-xs text-red-600">
-          <AlertTriangle className="h-3 w-3" />
+      {/* SLA expired or Stalled warning */}
+      {slaInfo.status === "expired" ? (
+        <div className="mt-2 pt-2 border-t flex items-center gap-1.5 text-xs text-red-600 font-bold">
+          <AlertTriangle className="h-3.5 w-3.5" />
           <span>Prazo SLA excedido</span>
         </div>
-      )}
+      ) : isStalled ? (
+        <div className="mt-2 pt-2 border-t flex items-center gap-1.5 text-xs text-amber-600 font-medium">
+          <Clock className="h-3.5 w-3.5" />
+          <span>Sem atualização há 48h+</span>
+        </div>
+      ) : null}
     </Card>
   );
 }
