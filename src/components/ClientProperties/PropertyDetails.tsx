@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { toast } from "@/components/ui/use-toast";
 
 // Mock property data
@@ -108,7 +109,7 @@ export function PropertyDetails({ propertyId = "1" }: PropertyDetailsProps) {
                 <div>
                   <p className="font-medium">Data de Entrega</p>
                   <p className="text-muted-foreground">
-                    {format(property.deliveryDate, "dd 'de' MMMM 'de' yyyy")}
+                    {isValid(new Date(property.deliveryDate)) ? format(new Date(property.deliveryDate), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) : "—"}
                   </p>
                 </div>
               </div>
@@ -202,7 +203,7 @@ export function PropertyDetails({ propertyId = "1" }: PropertyDetailsProps) {
                   {document.title}
                 </CardTitle>
                 <CardDescription>
-                  Adicionado em {format(document.uploadedAt, "dd/MM/yyyy")}
+                  Adicionado em {isValid(new Date(document.uploadedAt)) ? format(new Date(document.uploadedAt), "dd/MM/yyyy", { locale: ptBR }) : "—"}
                 </CardDescription>
               </CardHeader>
               <CardFooter>
