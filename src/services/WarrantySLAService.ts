@@ -94,24 +94,25 @@ class WarrantySLAService {
   ): Date {
     const deadline = new Date(startDate);
     
+    if (slaHours === 0) return deadline;
+
     if (considerBusinessDays) {
-      // Add hours considering business days (Mon-Fri, 9-18h)
-      let hoursAdded = 0;
-      const hoursPerDay = 8; // Business hours per day
-      const daysToAdd = Math.ceil(slaHours / hoursPerDay);
-      
+      let hoursRemaining = slaHours;
       let currentDate = new Date(startDate);
-      while (hoursAdded < slaHours) {
-        currentDate.setDate(currentDate.getDate() + 1);
+      
+      // Advance to the next business hour/day
+      while (hoursRemaining > 0) {
+        currentDate.setHours(currentDate.getHours() + 1);
         const dayOfWeek = currentDate.getDay();
+        const hour = currentDate.getHours();
         
-        // Skip weekends
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          hoursAdded += hoursPerDay;
+        // Brazilian Business Hours: Mon-Fri, 08:00 - 18:00 (10h/day)
+        if (dayOfWeek !== 0 && dayOfWeek !== 6 && hour >= 8 && hour < 18) {
+          hoursRemaining--;
         }
       }
       
-      deadline.setTime(currentDate.getTime());
+      return currentDate;
     } else {
       // Simple hour addition
       deadline.setTime(deadline.getTime() + (slaHours * 60 * 60 * 1000));
