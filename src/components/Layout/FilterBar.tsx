@@ -38,7 +38,7 @@ export function FilterBar({
       </div>
       {children && (
         <div className="flex flex-wrap items-center gap-3">
-          <div className="h-6 w-[1px] bg-border/50 mx-1 hidden md:block" />
+          <div className="h-6 w-px bg-border/50 mx-1 hidden md:block" />
           {children}
         </div>
       )}
