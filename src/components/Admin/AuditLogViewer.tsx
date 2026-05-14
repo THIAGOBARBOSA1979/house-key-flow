@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -19,14 +21,14 @@ interface AuditLogViewerProps {
 const ACTION_LABELS: Record<AuditAction, string> = {
   created: "Criação",
   updated: "Atualização",
-  accepted: "Aceite",
+  accepted: "Aprovação",
   rejected: "Recusa",
   scheduled: "Agendamento",
   completed: "Conclusão",
   cancelled: "Cancelamento",
-  stage_changed: "Mudança de Etapa",
+  stage_changed: "Etapa Alterada",
   comment_added: "Comentário",
-  info_added: "Informação Adicionada",
+  info_added: "Info Adicional",
   assigned: "Atribuição",
 };
 
