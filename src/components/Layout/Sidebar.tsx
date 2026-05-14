@@ -14,7 +14,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Layout,
-  LogOut
+  LogOut,
+  Activity
 } from "lucide-react";
 
 import { SidebarGroup } from "./SidebarGroup";
@@ -45,6 +46,7 @@ const systemItems = [
   { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists" },
   { to: "/admin/settings", icon: Settings, label: "Configurações" },
   { to: "/admin/design-system", icon: Layout, label: "Design System" },
+  { to: "/admin/audit-logs", icon: Activity, label: "Logs de Auditoria" },
 ];
 
 
