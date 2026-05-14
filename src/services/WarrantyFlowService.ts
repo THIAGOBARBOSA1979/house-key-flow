@@ -596,34 +596,6 @@ class WarrantyFlowService {
   }
 
   /**
-   * Update problem details
-   */
-  updateProblem(
-    requestId: string,
-    problemId: string,
-    data: Partial<WarrantyProblemDetail>,
-    changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
-    if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
-
-    const problems = request.problems.map(p => 
-      p.id === problemId ? { ...p, ...data } : p
-    );
-
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      problems,
-      updatedAt: new Date()
-    };
-
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
-
-    return { success: true, request: updatedRequest };
-  }
-
-  /**
    * Schedule inspection
    */
   scheduleInspection(
