@@ -560,7 +560,7 @@ const ClientWarranty = () => {
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                               <p className="font-medium">{update.author}</p>
                               <p className="text-sm text-muted-foreground">
-                                {format(update.date, "dd/MM/yyyy 'às' HH:mm")}
+                                {isValid(new Date(update.date)) ? format(new Date(update.date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
                               </p>
                             </div>
                             <p className="text-sm">
