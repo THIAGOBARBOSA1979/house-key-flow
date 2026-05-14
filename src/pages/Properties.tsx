@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, SearchX, LayoutGrid, List, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { cn } from "@/lib/utils";
+import { DataView } from "@/components/shared/DataView";
 
 import { 
   Select, 
@@ -152,77 +153,74 @@ const Properties = () => {
         </div>
       </FilterBar>
 
-      {filteredProperties.length > 0 ? (
-        viewMode === "grid" ? (
-          <div className="grid-layout">
-            {filteredProperties.map((property) => (
-              <PropertyCard 
-                key={property.id} 
-                property={property} 
-                onEdit={() => openEdit(property)}
-                onDelete={() => setPropertyToDelete(property)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-md border bg-card overflow-hidden shadow-sm">
+      <DataView
+        items={filteredProperties}
+        viewMode={viewMode}
+        renderGrid={(property) => (
+          <PropertyCard 
+            key={property.id} 
+            property={property} 
+            onEdit={() => openEdit(property)}
+            onDelete={() => setPropertyToDelete(property)}
+          />
+        )}
+        renderList={() => (
+          <div className="rounded-xl border bg-card overflow-hidden shadow-sem-sm">
             <Table>
-              <TableHeader>
+              <TableHeader className="bg-muted/30">
                 <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead className="hidden md:table-cell">Localização</TableHead>
-                  <TableHead>Progresso</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
+                  <TableHead className="font-bold py-4 px-6">Nome</TableHead>
+                  <TableHead className="hidden md:table-cell font-bold py-4 px-6">Localização</TableHead>
+                  <TableHead className="font-bold py-4 px-6">Progresso</TableHead>
+                  <TableHead className="font-bold py-4 px-6">Status</TableHead>
+                  <TableHead className="text-right font-bold py-4 px-6">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredProperties.map((property) => {
                   const percentage = Math.round((property.completedUnits / property.units) * 100);
-                  const statusColors: Record<string, string> = {
-                    pending: "bg-status-pending",
-                    progress: "bg-brand",
-                    complete: "bg-status-complete"
-                  };
                   return (
-                    <TableRow key={property.id} className="group hover:bg-muted/30">
-                      <TableCell>
+                    <TableRow key={property.id} className="group hover:bg-muted/20 transition-all border-b border-border/50">
+                      <TableCell className="py-4 px-6">
                         <div className="flex flex-col">
-                          <span className="text-label">{property.name}</span>
-                          <span className="md:hidden text-caption mt-0.5">
+                          <span className="text-label group-hover:text-primary transition-colors">{property.name}</span>
+                          <span className="md:hidden text-caption mt-0.5 text-muted-foreground">
                             {property.location}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell text-body-sm">{property.location}</TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell text-body-sm text-muted-foreground py-4 px-6">{property.location}</TableCell>
+                      <TableCell className="py-4 px-6">
                         <div className="flex items-center gap-3 min-w-[120px] max-w-[200px]">
-                          <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden border">
+                          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
                             <div 
-                              className={cn("h-full transition-all duration-700", statusColors[property.status] || "bg-brand")}
+                              className={cn(
+                                "h-full transition-all duration-700",
+                                property.status === 'complete' ? "bg-status-complete" : "bg-primary"
+                              )}
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
-                          <span className="text-caption font-bold text-foreground whitespace-nowrap">{percentage}%</span>
+                          <span className="text-sem-tiny font-bold text-foreground whitespace-nowrap">{percentage}%</span>
                         </div>
                       </TableCell>
 
-                      <TableCell>
+                      <TableCell className="py-4 px-6">
                         <StatusBadge status={property.status} size="sm" />
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right py-4 px-6">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5 active:scale-95 transition-all">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => openEdit(property)}>
-                              <Pencil className="mr-2 h-4 w-4" /> Editar
+                          <DropdownMenuContent align="end" className="w-40 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
+                            <DropdownMenuItem onClick={() => openEdit(property)} className="cursor-pointer py-2.5 font-medium">
+                              <Pencil className="mr-2 h-4 w-4 text-muted-foreground" /> Editar
                             </DropdownMenuItem>
                             <DropdownMenuItem 
-                              className="text-destructive focus:text-destructive" 
+                              className="text-destructive focus:text-destructive cursor-pointer py-2.5 font-bold" 
                               onClick={() => setPropertyToDelete(property)}
                             >
                               <Trash2 className="mr-2 h-4 w-4" /> Excluir
@@ -236,19 +234,16 @@ const Properties = () => {
               </TableBody>
             </Table>
           </div>
-        )
-      ) : (
-        <div className="flex flex-col items-center justify-center section-padding bg-muted/30 rounded-lg border-2 border-dashed">
-          <SearchX className="h-12 w-12 text-muted-foreground/30 mb-4" />
-          <h3 className="text-h3 mb-1">Nenhum empreendimento encontrado</h3>
-          <p className="text-body-base mb-6">
-            Tente ajustar seus filtros ou cadastre um novo.
-          </p>
-          <Button variant="outline" onClick={clearFilters}>
-            Limpar filtros
-          </Button>
-        </div>
-      )}
+        )}
+        emptyState={{
+          title: "Nenhum empreendimento encontrado",
+          description: "Tente ajustar seus filtros ou cadastre um novo empreendimento para começar.",
+          action: {
+            label: "Limpar filtros",
+            onClick: clearFilters
+          }
+        }}
+      />
 
       {/* Create Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>

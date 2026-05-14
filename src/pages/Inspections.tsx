@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX, History, Clock, CheckCircle2, AlertCircle, BarChart, LayoutGrid } from "lucide-react";
+import { ClipboardCheck, Calendar as CalendarIcon, History, Clock, CheckCircle2, AlertCircle, BarChart, LayoutGrid } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -17,6 +17,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { inspectionService } from "@/services/InspectionService";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { DataView } from "@/components/shared/DataView";
+import { cn } from "@/lib/utils";
 
 export default function Inspections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,40 +77,28 @@ export default function Inspections() {
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="bg-status-pending/5 border-status-pending/20 shadow-sm transition-all hover:bg-status-pending/10">
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-2 bg-status-pending/10 rounded-lg text-status-pending">
-              <Clock size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Pendentes</p>
-              <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-status-complete/5 border-status-complete/20 shadow-sm transition-all hover:bg-status-complete/10">
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-2 bg-status-complete/10 rounded-lg text-status-complete">
-              <CheckCircle2 size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Concluídas</p>
-              <p className="text-2xl font-bold text-foreground">{stats.completed}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-status-critical/5 border-status-critical/20 shadow-sm transition-all hover:bg-status-critical/10">
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-2 bg-status-critical/10 rounded-lg text-status-critical">
-              <AlertCircle size={20} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Atrasadas</p>
-              <p className="text-2xl font-bold text-status-critical">{stats.delayed}</p>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StatsCard 
+          label="Pendentes" 
+          value={stats.pending} 
+          icon={Clock} 
+          variant="pending"
+          description="Vistorias aguardando realização"
+        />
+        <StatsCard 
+          label="Concluídas" 
+          value={stats.completed} 
+          icon={CheckCircle2} 
+          variant="complete"
+          description="Total de vistorias finalizadas"
+        />
+        <StatsCard 
+          label="Atrasadas" 
+          value={stats.delayed} 
+          icon={AlertCircle} 
+          variant="critical"
+          description="Vistorias fora do prazo previsto"
+        />
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
