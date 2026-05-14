@@ -81,7 +81,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
                   : "hover:bg-sidebar-accent/50 text-sidebar-foreground/70 hover:text-sidebar-foreground font-medium"
               )}
             >
-              <Icon size={18} className={cn("transition-transform", isActive ? "scale-110" : "")} />
+              <Icon size={18} className={cn("transition-transform", location.pathname === item.to || location.pathname.startsWith(item.to) ? "scale-110" : "")} />
               <span className="text-sm">{item.label}</span>
             </NavLink>
           );
