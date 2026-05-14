@@ -154,7 +154,7 @@ const Properties = () => {
 
       {filteredProperties.length > 0 ? (
         viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid-layout">
             {filteredProperties.map((property) => (
               <PropertyCard 
                 key={property.id} 
@@ -189,12 +189,12 @@ const Properties = () => {
                       <TableCell className="font-medium">
                         <div className="flex flex-col">
                           {property.name}
-                          <div className="md:hidden text-xs text-muted-foreground font-normal mt-0.5">
+                          <div className="md:hidden text-caption mt-0.5">
                             {property.location}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">{property.location}</TableCell>
+                      <TableCell className="hidden md:table-cell text-body-sm">{property.location}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3 min-w-[120px] max-w-[200px]">
                           <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden border">
@@ -203,7 +203,7 @@ const Properties = () => {
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
-                          <span className="text-xs font-bold text-foreground whitespace-nowrap">{percentage}%</span>
+                          <span className="text-caption font-bold text-foreground whitespace-nowrap">{percentage}%</span>
                         </div>
                       </TableCell>
 
@@ -238,10 +238,10 @@ const Properties = () => {
           </div>
         )
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed">
+        <div className="flex flex-col items-center justify-center section-padding bg-muted/30 rounded-lg border-2 border-dashed">
           <SearchX className="h-12 w-12 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-medium mb-1">Nenhum empreendimento encontrado</h3>
-          <p className="text-sm text-muted-foreground mb-6">
+          <h3 className="text-h3 mb-1">Nenhum empreendimento encontrado</h3>
+          <p className="text-body-base mb-6">
             Tente ajustar seus filtros ou cadastre um novo.
           </p>
           <Button variant="outline" onClick={clearFilters}>
