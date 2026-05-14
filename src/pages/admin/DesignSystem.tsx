@@ -125,6 +125,21 @@ const DesignSystem = () => {
             </Card>
           </section>
 
+          {/* Borders & Radii */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Square className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Bordas e Radii</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <RadiusToken name="Radius XS" value="var(--radius-xs)" />
+              <RadiusToken name="Radius SM" value="var(--radius-sm)" />
+              <RadiusToken name="Radius MD" value="var(--radius-md)" />
+              <RadiusToken name="Radius LG" value="var(--radius-lg)" />
+              <RadiusToken name="Radius XL" value="var(--radius-xl)" />
+            </div>
+          </section>
+
           {/* Elevation & Shadows */}
           <section className="space-y-6">
             <div className="flex items-center gap-2 border-b pb-2">
@@ -132,20 +147,37 @@ const DesignSystem = () => {
               <h2 className="text-h2">Elevação e Sombras</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="card-standard p-8 text-center bg-background shadow-sm">
+              <div className="card-standard p-8 text-center bg-background shadow-sm border-none">
                 <p className="text-xs font-bold uppercase">Shadow SM</p>
                 <p className="text-[10px] text-muted-foreground mt-1">var(--shadow-sm)</p>
               </div>
-              <div className="card-standard p-8 text-center bg-background shadow-md">
+              <div className="card-standard p-8 text-center bg-background shadow-md border-none">
                 <p className="text-xs font-bold uppercase">Shadow MD</p>
                 <p className="text-[10px] text-muted-foreground mt-1">var(--shadow-md)</p>
               </div>
-              <div className="card-standard p-8 text-center bg-background shadow-lg">
+              <div className="card-standard p-8 text-center bg-background shadow-lg border-none">
                 <p className="text-xs font-bold uppercase">Shadow LG</p>
                 <p className="text-[10px] text-muted-foreground mt-1">var(--shadow-lg)</p>
               </div>
             </div>
           </section>
+
+          {/* Spacing Scale */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Grid className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Escala de Espaçamento</h2>
+            </div>
+            <div className="space-y-4 max-w-xl bg-muted/20 p-6 rounded-xl border">
+              <SpacingItem label="Space 1" variable="--space-1" width="w-[0.25rem]" />
+              <SpacingItem label="Space 2" variable="--space-2" width="w-[0.5rem]" />
+              <SpacingItem label="Space 3" variable="--space-3" width="w-[0.75rem]" />
+              <SpacingItem label="Space 4" variable="--space-4" width="w-[1rem]" />
+              <SpacingItem label="Space 6" variable="--space-6" width="w-[1.5rem]" />
+              <SpacingItem label="Space 8" variable="--space-8" width="w-[2rem]" />
+            </div>
+          </section>
+
         </TabsContent>
 
         <TabsContent value="components" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
@@ -306,4 +338,20 @@ const ColorToken = ({ name, value, variable, description }: { name: string; valu
   </Card>
 );
 
+const RadiusToken = ({ name, value }: { name: string; value: string }) => (
+  <div className="space-y-2">
+    <div className="h-12 bg-primary/20 border-2 border-primary/40" style={{ borderRadius: `var(${value.replace('var(', '').replace(')', '')})` }} />
+    <p className="text-[10px] font-bold text-center">{name}</p>
+  </div>
+);
+
+const SpacingItem = ({ label, variable, width }: { label: string; variable: string; width: string }) => (
+  <div className="flex items-center gap-4">
+    <div className="w-20 text-[10px] font-bold uppercase text-muted-foreground">{label}</div>
+    <div className={cn("h-4 bg-primary rounded-sm", width)} />
+    <div className="text-[10px] font-mono text-muted-foreground">{variable}</div>
+  </div>
+);
+
 export default DesignSystem;
+
