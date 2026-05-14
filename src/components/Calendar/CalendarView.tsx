@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
@@ -65,7 +66,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
             <CardTitle>
-              Agendamentos para {date ? format(date, "dd/MM/yyyy") : "hoje"}
+              Agendamentos para {date && isValid(date) ? format(date, "dd/MM/yyyy", { locale: ptBR }) : "hoje"}
             </CardTitle>
             <CardDescription>
               {filteredAppointments.length} agendamentos encontrados
