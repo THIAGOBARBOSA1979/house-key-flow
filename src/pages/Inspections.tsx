@@ -75,36 +75,36 @@ export default function Inspections() {
       </PageHeader>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="bg-slate-50/50 border-blue-100 shadow-sm">
+        <Card className="bg-status-pending/5 border-status-pending/20 shadow-sm transition-all hover:bg-status-pending/10">
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+            <div className="p-2 bg-status-pending/10 rounded-lg text-status-pending">
               <Clock size={20} />
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Pendentes</p>
-              <p className="text-2xl font-bold">{stats.pending}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-slate-50/50 border-emerald-100 shadow-sm">
+        <Card className="bg-status-complete/5 border-status-complete/20 shadow-sm transition-all hover:bg-status-complete/10">
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+            <div className="p-2 bg-status-complete/10 rounded-lg text-status-complete">
               <CheckCircle2 size={20} />
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Concluídas</p>
-              <p className="text-2xl font-bold">{stats.completed}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.completed}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-slate-50/50 border-red-100 shadow-sm">
+        <Card className="bg-status-critical/5 border-status-critical/20 shadow-sm transition-all hover:bg-status-critical/10">
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-2 bg-red-100 rounded-lg text-red-600">
+            <div className="p-2 bg-status-critical/10 rounded-lg text-status-critical">
               <AlertCircle size={20} />
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Atrasadas</p>
-              <p className="text-2xl font-bold text-red-600">{stats.delayed}</p>
+              <p className="text-2xl font-bold text-status-critical">{stats.delayed}</p>
             </div>
           </CardContent>
         </Card>
