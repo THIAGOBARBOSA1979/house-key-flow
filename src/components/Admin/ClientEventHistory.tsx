@@ -20,7 +20,8 @@ import {
 } from "lucide-react";
 import { ClientEvent, EventType } from "@/types/clientFlow";
 import { clientStageService } from "@/services/ClientStageService";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
 interface ClientEventHistoryProps {
@@ -134,7 +135,7 @@ export function ClientEventHistory({ clientId }: ClientEventHistoryProps) {
                       </Badge>
                     </div>
                     <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                      <span>{format(event.createdAt, "dd/MM/yyyy 'às' HH:mm")}</span>
+                      <span>{isValid(new Date(event.createdAt)) ? format(new Date(event.createdAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}</span>
                       {event.metadata?.performedBy && (
                         <>
                           <span>•</span>
