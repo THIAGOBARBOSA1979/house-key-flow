@@ -5,7 +5,7 @@ import { SLABadge } from "../ClientTimeline/SLAIndicator";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Building2, User, Calendar, GripVertical, AlertTriangle, Clock, DollarSign } from "lucide-react";
+import { Building2, User, Calendar, GripVertical, AlertTriangle, Clock, DollarSign, CheckSquare } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -13,9 +13,19 @@ interface KanbanCardProps {
   data: KanbanCardData;
   isDragging?: boolean;
   onClick?: () => void;
+  selected?: boolean;
+  onToggleSelection?: (e: React.MouseEvent) => void;
+  showSelection?: boolean;
 }
 
-export function KanbanCard({ data, isDragging = false, onClick }: KanbanCardProps) {
+export function KanbanCard({ 
+  data, 
+  isDragging = false, 
+  onClick, 
+  selected = false, 
+  onToggleSelection, 
+  showSelection = false 
+}: KanbanCardProps) {
   const { request, slaInfo, dragDisabled } = data;
   
   // Priority config
@@ -37,13 +47,25 @@ export function KanbanCard({ data, isDragging = false, onClick }: KanbanCardProp
     <Card
       onClick={onClick}
       className={cn(
-        "p-3 cursor-pointer transition-all border-l-4",
+        "p-3 cursor-pointer transition-all border-l-4 relative",
         slaBorderColors[slaInfo.status],
         isDragging && "shadow-lg scale-105 rotate-2 opacity-90",
         !isDragging && "hover:shadow-md",
-        dragDisabled && "opacity-70 cursor-not-allowed"
+        dragDisabled && "opacity-70 cursor-not-allowed",
+        selected && "ring-2 ring-primary bg-primary/5 border-l-primary"
       )}
     >
+      {showSelection && (
+        <div 
+          className={cn(
+            "absolute top-2 right-2 w-4 h-4 rounded border transition-colors flex items-center justify-center",
+            selected ? "bg-primary border-primary" : "bg-white border-muted-foreground/30"
+          )}
+          onClick={onToggleSelection}
+        >
+          {selected && <CheckSquare className="h-3 w-3 text-white" />}
+        </div>
+      )}
       {/* Header with drag handle and priority */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-1.5 flex-1 min-w-0">

@@ -397,6 +397,81 @@ class WarrantyFlowService {
     return { success: true, request: updatedRequest };
   }
 
+  /**
+   * Toggle problem resolution status
+   */
+  toggleProblemStatus(
+    requestId: string,
+    problemId: string,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
+
+    const problemIndex = request.problems.findIndex(p => p.id === problemId);
+    if (problemIndex === -1) return { success: false, error: "Problema não encontrado" };
+
+    const problems = [...request.problems];
+    const isResolving = problems[problemIndex].status !== "resolved";
+    
+    problems[problemIndex] = {
+      ...problems[problemIndex],
+      status: isResolving ? "resolved" : "pending",
+      resolvedAt: isResolving ? new Date() : undefined
+    };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems,
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'updated',
+      performedBy: changedBy,
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Status do problema '${problems[problemIndex].description}' alterado para ${problems[problemIndex].status}`
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Add material to request
+   */
+  addMaterial(
+    requestId: string,
+    material: { name: string; quantity: number; unit: string; cost?: number },
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const materials = request.materials || [];
+    const newMaterial = { ...material, id: `mat-${Date.now()}` };
+    
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      materials: [...materials, newMaterial],
+      actualCost: (request.actualCost || 0) + (material.cost || 0),
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Assign technician to request
+   */
   assignTechnician(
     requestId: string,
     technicianId: string,
@@ -627,6 +702,14 @@ class WarrantyFlowService {
     
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
+    }
+
+    // Business Rule: Check if all problems are resolved
+    if (request.problems && request.problems.some(p => p.status !== "resolved")) {
+      return { 
+        success: false, 
+        error: "Não é possível finalizar a garantia com problemas pendentes. Resolva todos os itens primeiro." 
+      };
     }
     
     const statusResult = this.changeStatus(
