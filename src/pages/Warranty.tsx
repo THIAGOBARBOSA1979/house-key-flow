@@ -29,6 +29,13 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
+const TECHNICIANS = [
+  { id: "tech-1", name: "Carlos Técnico" },
+  { id: "tech-2", name: "Ana Vistoriadora" },
+  { id: "tech-3", name: "Roberto Santos" },
+  { id: "tech-4", name: "Juliana Costa" }
+];
+
 const Warranty = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("kanban");
