@@ -21,7 +21,7 @@ interface PropertyCardProps {
 }
 
 
-export const PropertyCard = ({ property }: PropertyCardProps) => {
+export const PropertyCard = ({ property, onEdit, onDelete }: PropertyCardProps) => {
   const completionPercentage = Math.round((property.completedUnits / property.units) * 100);
   
   return (

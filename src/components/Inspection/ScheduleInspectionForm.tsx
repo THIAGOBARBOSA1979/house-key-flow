@@ -79,6 +79,8 @@ const timeSlots = [
   "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
 ];
 
+type FormValues = z.infer<typeof formSchema>;
+
 export const ScheduleInspectionForm = ({ 
   onSuccess, 
   clientId,
@@ -99,14 +101,21 @@ export const ScheduleInspectionForm = ({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      inspectionType: "",
+      date: new Date(),
+      time: "",
+      technician: "",
+      checklist: "",
       notes: "",
       notifyClient: true,
       requestId: requestId || ""
     },
   });
 
+
   const onSubmit = (data: FormValues) => {
-    inspectionService.schedule(data, propertyInfo);
+    inspectionService.schedule(data as any, propertyInfo);
+
 
     toast({
       title: "Vistoria agendada com sucesso",
