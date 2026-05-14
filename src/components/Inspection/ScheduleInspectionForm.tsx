@@ -3,7 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { CalendarIcon, Check, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -118,7 +118,7 @@ export const ScheduleInspectionForm = ({
 
     toast({
       title: "Vistoria agendada com sucesso",
-      description: `Agendada para ${format(data.date, "dd/MM/yyyy")} às ${data.time}`,
+      description: `Agendada para ${isValid(data.date) ? format(data.date, "dd/MM/yyyy", { locale: ptBR }) : "—"} às ${data.time}`,
     });
     
     if (data.notifyClient) {
@@ -210,8 +210,8 @@ export const ScheduleInspectionForm = ({
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value ? (
-                          format(field.value, "dd/MM/yyyy")
+                        {field.value && isValid(field.value) ? (
+                          format(field.value, "dd/MM/yyyy", { locale: ptBR })
                         ) : (
                           <span>Selecione uma data</span>
                         )}
