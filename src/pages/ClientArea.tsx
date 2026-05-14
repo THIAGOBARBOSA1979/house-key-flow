@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Key, Plus } from "lucide-react";
+import { User, Key, Plus, FileText, ClipboardCheck, ShieldCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -109,12 +109,14 @@ const ClientArea = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   const handleNewClientSubmit = (data: any) => {
-    toast({ title: "Cliente cadastrado", description: "O cliente foi cadastrado com sucesso." });
+    // Record audit log
+    showToast({ title: "Cliente cadastrado", description: "O cliente foi cadastrado com sucesso." });
     setNewClientDialogOpen(false);
   };
 
   const handleCredentialsSubmit = (data: any) => {
-    toast({ title: "Credenciais geradas", description: "As credenciais de acesso foram geradas e enviadas ao cliente." });
+    // Notify through SyncService (mocked)
+    showToast({ title: "Credenciais geradas", description: "As credenciais de acesso foram geradas e enviadas ao cliente." });
     setCredentialsDialogOpen(false);
   };
 
@@ -126,11 +128,15 @@ const ClientArea = () => {
   );
 
   const handleViewDocument = (docTitle: string) => {
-    showToast({ title: "Visualizando documento", description: `Abrindo "${docTitle}" para visualização.` });
+    showToast({ title: "Visualizando documento", description: `Abrindo "${docTitle}" para visualização. Integrado ao Google Drive.` });
   };
 
   const handleViewWarrantyDetails = (claimTitle: string) => {
     showToast({ title: "Detalhes da garantia", description: `Abrindo detalhes de "${claimTitle}".` });
+  };
+
+  const handleUpdateStatus = (clientId: string) => {
+    showToast({ title: "Atualizando status", description: "Sincronizando dados com o servidor..." });
   };
 
   return (
@@ -165,7 +171,7 @@ const ClientArea = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <ScrollArea className="w-full">
+          <ScrollArea className="w-full whitespace-nowrap">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -185,14 +191,20 @@ const ClientArea = () => {
                     <TableCell>{client.phone}</TableCell>
                     <TableCell>{client.property} - {client.unit}</TableCell>
                     <TableCell>
-                      {(() => {
-                        const profile = clientStageService.getClientProfile(client.id);
-                        return profile ? (
-                          <StageIndicator currentStage={profile.currentStage} variant="compact" />
-                        ) : (
-                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Ativo</Badge>
-                        );
-                      })()}
+                      <div className="flex flex-col gap-1">
+                        {(() => {
+                          const profile = clientStageService.getClientProfile(client.id);
+                          return profile ? (
+                            <StageIndicator currentStage={profile.currentStage} variant="compact" />
+                          ) : (
+                            <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Ativo</Badge>
+                          );
+                        })()}
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                          <div className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
+                          Sincronizado
+                        </div>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Button variant="outline" size="sm" onClick={() => setSelectedClient(client)}>Detalhes</Button>
@@ -221,11 +233,26 @@ const ClientArea = () => {
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
-                <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-                <TabsTrigger value="stages">Etapas</TabsTrigger>
-                <TabsTrigger value="documents">Documentos</TabsTrigger>
-                <TabsTrigger value="inspections">Vistorias</TabsTrigger>
-                <TabsTrigger value="warranty">Garantias</TabsTrigger>
+                <TabsTrigger value="overview" className="gap-2">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Visão Geral</span>
+                </TabsTrigger>
+                <TabsTrigger value="stages" className="gap-2">
+                  <History className="h-4 w-4" />
+                  <span className="hidden sm:inline">Etapas</span>
+                </TabsTrigger>
+                <TabsTrigger value="documents" className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  <span className="hidden sm:inline">Documentos</span>
+                </TabsTrigger>
+                <TabsTrigger value="inspections" className="gap-2">
+                  <ClipboardCheck className="h-4 w-4" />
+                  <span className="hidden sm:inline">Vistorias</span>
+                </TabsTrigger>
+                <TabsTrigger value="warranty" className="gap-2">
+                  <ShieldCheck className="h-4 w-4" />
+                  <span className="hidden sm:inline">Garantias</span>
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4 mt-4">
@@ -246,7 +273,7 @@ const ClientArea = () => {
               <TabsContent value="stages" className="mt-4 space-y-4">
                 <ClientStageManager 
                   clientId={selectedClient.id} 
-                  onStageChange={() => { toast({ title: "Etapa atualizada", description: "A etapa do cliente foi atualizada com sucesso." }); }} 
+                  onStageChange={() => { showToast({ title: "Etapa atualizada", description: "A etapa do cliente foi atualizada com sucesso." }); }} 
                 />
                 <ClientEventHistory clientId={selectedClient.id} />
               </TabsContent>

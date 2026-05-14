@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { Kanban, BarChart3, Settings } from "lucide-react";
+import { Kanban, BarChart3, Settings, History } from "lucide-react";
 
 const Warranty = () => {
   const { toast } = useToast();
@@ -40,7 +40,7 @@ const Warranty = () => {
       <WarrantyHeader onExportData={handleExportData} />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full max-w-md grid-cols-3">
+        <TabsList className="grid w-full max-w-lg grid-cols-4">
           <TabsTrigger value="kanban" className="gap-2">
             <Kanban className="h-4 w-4" />
             <span className="hidden sm:inline">Kanban</span>
@@ -52,6 +52,10 @@ const Warranty = () => {
           <TabsTrigger value="sla" className="gap-2">
             <Settings className="h-4 w-4" />
             <span className="hidden sm:inline">SLA</span>
+          </TabsTrigger>
+          <TabsTrigger value="logs" className="gap-2">
+            <History className="h-4 w-4" />
+            <span className="hidden sm:inline">Logs</span>
           </TabsTrigger>
         </TabsList>
         
@@ -65,6 +69,10 @@ const Warranty = () => {
         
         <TabsContent value="sla" className="space-y-4">
           <SLAConfigurationPanel />
+        </TabsContent>
+
+        <TabsContent value="logs" className="space-y-4">
+          <AuditLogViewer entityType="warranty" title="Logs de Auditoria - Garantias" />
         </TabsContent>
       </Tabs>
 

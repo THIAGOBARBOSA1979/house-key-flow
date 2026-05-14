@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   FileText, Plus, Search, Upload, Download, Edit, Trash2, Eye, Save, X, 
-  Star, Clock, AlertTriangle, Copy, Archive, BarChart, History, TrendingUp
+  Star, Clock, AlertTriangle, Copy, Archive, BarChart, History, TrendingUp, Filter, LayoutGrid, List
 } from "lucide-react";
 import {
   Select,
@@ -560,7 +560,7 @@ export default function AdminDocuments() {
       </Dialog>
 
       <Tabs defaultValue="documents" className="space-y-6">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
           <TabsTrigger value="dashboard">
             <BarChart className="h-4 w-4 mr-2" />
             Dashboard
@@ -592,12 +592,25 @@ export default function AdminDocuments() {
         </TabsContent>
 
         <TabsContent value="documents" className="space-y-6">
-          {/* Filtros */}
-          <DocumentFilters 
-            onSearch={handleSearch}
-            activeFilters={activeFilters}
-            onClearFilters={handleClearFilters}
-          />
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <DocumentFilters 
+              onSearch={handleSearch}
+              activeFilters={activeFilters}
+              onClearFilters={handleClearFilters}
+            />
+            <div className="flex items-center gap-2 self-end">
+              <Tabs value={currentView} onValueChange={setCurrentView} className="hidden md:flex">
+                <TabsList>
+                  <TabsTrigger value="grid">
+                    <LayoutGrid className="h-4 w-4" />
+                  </TabsTrigger>
+                  <TabsTrigger value="list">
+                    <List className="h-4 w-4" />
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
 
           {/* Ações em massa */}
           <BulkActions
@@ -608,7 +621,7 @@ export default function AdminDocuments() {
           />
 
           {/* Lista de documentos com histórico de versões */}
-          <div className="grid gap-4">
+          <div className={currentView === "grid" ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" : "grid gap-4"}>
             {filteredDocuments.map((doc) => (
               <Card key={doc.id} className="hover:shadow-md transition-shadow">
                 <CardHeader>
@@ -666,7 +679,7 @@ export default function AdminDocuments() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className={currentView === "grid" ? "pt-0" : ""}>
                   <div className="space-y-3">
                     <div className="text-sm text-muted-foreground">
                       <strong>Associado a:</strong> {

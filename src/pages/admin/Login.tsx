@@ -43,7 +43,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

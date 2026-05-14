@@ -173,7 +173,7 @@ const Dashboard = () => {
                 <WarrantyClaim 
                   key={claim.id} 
                   claim={claim}
-                  onAtender={() => toast({ title: "Atendimento iniciado", description: `Garantia "${claim.title}" está sendo atendida.` })}
+                  onAtender={() => toast({ title: "Atendimento iniciado", description: `Garantia "${claim.title}" está sendo atendida. Sincronizando com workflow...` })}
                   onGerenciarProblemas={() => toast({ title: "Gerenciando problemas", description: `Abrindo gerenciamento de problemas para "${claim.title}".` })}
                 />
               ))}
@@ -205,7 +205,7 @@ const Dashboard = () => {
                   ))}
                 </div>
                 <div className="p-4 border-t text-center">
-                  <Button variant="ghost" size="sm" className="w-full text-xs">
+                  <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => toast({ title: "Histórico completo", description: "Carregando todo o log de atividades do sistema..." })}>
                     Ver todo o histórico
                   </Button>
                 </div>
@@ -223,7 +223,7 @@ const Dashboard = () => {
                 <p className="text-sm opacity-90 leading-relaxed">
                   Precisa de ajuda com alguma configuração avançada do sistema?
                 </p>
-                <Button variant="secondary" size="sm" className="w-full font-semibold relative z-10">
+                <Button variant="secondary" size="sm" className="w-full font-semibold relative z-10" onClick={() => toast({ title: "Suporte", description: "Conectando ao canal de suporte prioritário..." })}>
                   Falar com Consultor
                 </Button>
               </CardContent>

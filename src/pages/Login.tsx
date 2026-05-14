@@ -47,7 +47,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [activeTab, setActiveTab] = useState("client");
 
   const form = useForm<z.infer<typeof formSchema>>({
