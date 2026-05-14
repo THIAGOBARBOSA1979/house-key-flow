@@ -17,8 +17,11 @@ import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { auditLogService } from "@/services/AuditLogService";
 
+import { useAuth } from "@/contexts/AuthContext";
+
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   
@@ -31,6 +34,15 @@ const Dashboard = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      auditLogService.log({
+        entityType: 'system',
+        entityId: 'dashboard',
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: 'Dashboard sincronizado manualmente.'
+      });
       toast({ title: "Dados atualizados", description: "O dashboard foi sincronizado com os dados mais recentes." });
     }, 800);
   };
@@ -39,7 +51,7 @@ const Dashboard = () => {
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
       <PageHeader
         icon={Home}
-        title="Painel de Controle"
+        title={`Olá, ${user?.name?.split(' ')[0] || 'Administrador'}`}
         description="Gestão integrada de empreendimentos, vistorias e garantias."
       >
         <div className="flex items-center gap-2">
@@ -162,7 +174,12 @@ const Dashboard = () => {
                   ))}
                 </div>
                 <div className="p-4 border-t border-border/10 text-center">
-                  <Button variant="ghost" size="sm" className="w-full text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary"
+                    onClick={() => navigate("/admin/audit-logs")}
+                  >
                     Ver logs de auditoria
                   </Button>
                 </div>
