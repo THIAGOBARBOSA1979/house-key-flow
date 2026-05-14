@@ -112,7 +112,17 @@ const Users = () => {
   const handleToggleUserStatus = (userId: string) => { 
     const user = userService.getById(userId);
     if (user) {
-      userService.update(userId, { status: user.status === "active" ? "inactive" : "active" });
+      const newStatus = user.status === "active" ? "inactive" : "active";
+      userService.update(userId, { status: newStatus });
+      auditLogService.log({
+        entityType: 'user',
+        entityId: userId,
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Status do usuário ${user.name} alterado para ${newStatus === 'active' ? 'Ativo' : 'Inativo'}.`
+      });
       refreshList();
       showToast({ title: "Status atualizado", description: "O status do usuário foi alterado." }); 
     }
