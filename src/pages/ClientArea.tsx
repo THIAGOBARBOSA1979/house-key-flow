@@ -3,7 +3,8 @@ import { User, Key, Plus, FileText, ClipboardCheck, ShieldCheck, History } from 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NewClientForm } from "@/components/ClientArea/NewClientForm";
@@ -284,7 +285,7 @@ const ClientArea = () => {
                     <Card key={doc.id} className="transition-shadow hover:shadow-md">
                       <CardHeader className="p-4">
                         <CardTitle className="text-base">{doc.title}</CardTitle>
-                        <CardDescription>Adicionado em {format(doc.uploadedAt, "dd/MM/yyyy")}</CardDescription>
+                        <CardDescription>Adicionado em {isValid(new Date(doc.uploadedAt)) ? format(new Date(doc.uploadedAt), "dd/MM/yyyy", { locale: ptBR }) : "—"}</CardDescription>
                       </CardHeader>
                       <CardFooter className="p-4 pt-0">
                         <Button variant="outline" size="sm" onClick={() => handleViewDocument(doc.title)}>Visualizar</Button>
@@ -300,7 +301,7 @@ const ClientArea = () => {
                     <Card key={inspection.id} className="transition-shadow hover:shadow-md">
                       <CardHeader className="p-4">
                         <CardTitle className="text-base">{inspection.title}</CardTitle>
-                        <CardDescription>Agendada para {format(inspection.date, "dd/MM/yyyy 'às' HH:mm")}</CardDescription>
+                        <CardDescription>Agendada para {isValid(new Date(inspection.date)) ? format(new Date(inspection.date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}</CardDescription>
                       </CardHeader>
                       <CardFooter className="p-4 pt-0">
                         <Badge variant="outline">{inspection.status === "scheduled" ? "Agendada" : "Concluída"}</Badge>
