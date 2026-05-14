@@ -44,28 +44,27 @@ export function ListView({ appointments, onViewDetails, filterOptions }: ListVie
   return (
     <div className="space-y-4">
       {filteredAppointments.length === 0 ? (
-        <Card>
-          <CardContent className="p-6 flex flex-col items-center justify-center">
-            <CalendarIcon className="h-12 w-12 text-muted-foreground/50 mb-3" />
-            <h3 className="font-medium mb-1">Nenhum agendamento encontrado</h3>
-            <p className="text-sm text-muted-foreground">Tente ajustar os filtros ou adicionar um novo agendamento</p>
-            <Button className="mt-4">
-              <Plus className="mr-2 h-4 w-4" />
-              Novo Agendamento
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center section-padding bg-muted/20 rounded-xl border-2 border-dashed border-muted-foreground/10 animate-fade-in">
+          <div className="p-4 bg-muted/20 rounded-full mb-4">
+            <CalendarIcon className="h-12 w-12 text-muted-foreground/30" />
+          </div>
+          <h3 className="text-h3 font-bold text-foreground mb-1">Nenhum agendamento encontrado</h3>
+          <p className="text-body-base text-muted-foreground mb-6 text-center max-w-md">Tente ajustar os filtros ou adicione um novo agendamento para começar.</p>
+          <Button onClick={() => {}} className="rounded-lg h-10 px-6 font-bold">
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Agendamento
+          </Button>
+        </div>
       ) : (
-        filteredAppointments.map((appointment) => (
-          <Card key={appointment.id} className="overflow-hidden">
-            <CardContent className="p-0">
-              <AppointmentItem 
-                appointment={appointment} 
-                onViewDetails={onViewDetails}
-              />
-            </CardContent>
-          </Card>
-        ))
+        <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden divide-y divide-border/10">
+          {filteredAppointments.map((appointment) => (
+            <AppointmentItem 
+              key={appointment.id} 
+              appointment={appointment} 
+              onViewDetails={onViewDetails}
+            />
+          ))}
+        </Card>
       )}
     </div>
   );

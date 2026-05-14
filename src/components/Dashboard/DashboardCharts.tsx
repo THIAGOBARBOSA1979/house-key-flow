@@ -32,7 +32,7 @@ const warrantyData = [
   { name: 'Estrutural', value: 200 },
 ];
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 /**
  * Dashboard charts refactored with Design System aesthetic.
@@ -40,9 +40,9 @@ const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 export const DashboardCharts = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="card-standard">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-h3">Vistorias por Mês</CardTitle>
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="pb-4 border-b border-border/10">
+          <CardTitle className="text-h4">Vistorias por Mês</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
@@ -84,9 +84,9 @@ export const DashboardCharts = () => {
         </CardContent>
       </Card>
 
-      <Card className="card-standard">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-h3">Chamados por Categoria</CardTitle>
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="pb-4 border-b border-border/10">
+          <CardTitle className="text-h4">Chamados por Categoria</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">

@@ -10,6 +10,7 @@ import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspec
 import { appointments, type Appointment } from "@/components/Calendar/AppointmentData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar as CalendarIcon, List } from "lucide-react";
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -90,24 +91,26 @@ const Calendar = () => {
         setFilterSheetOpen={setFilterSheetOpen}
       />
 
-      <Tabs defaultValue="calendar" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="calendar">Visualização do Calendário</TabsTrigger>
-          <TabsTrigger value="list">Lista de Agendamentos</TabsTrigger>
+      <Tabs defaultValue="calendar" className="w-full space-y-6">
+        <TabsList className="bg-muted/50 p-1 rounded-xl w-full max-w-lg">
+          <TabsTrigger value="calendar" className="rounded-lg py-2.5 font-bold text-xs gap-2">
+            <CalendarIcon className="h-4 w-4" />
+            Calendário
+          </TabsTrigger>
+          <TabsTrigger value="list" className="rounded-lg py-2.5 font-bold text-xs gap-2">
+            <List className="h-4 w-4" />
+            Lista
+          </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="calendar">
-          <Card>
-            <CardContent className="p-6">
-              <CalendarView
-                appointments={filteredAppointments}
-                onViewDetails={setSelectedAppointment}
-              />
-            </CardContent>
-          </Card>
+        <TabsContent value="calendar" className="animate-in fade-in slide-in-from-bottom-2 duration-normal">
+          <CalendarView
+            appointments={filteredAppointments}
+            onViewDetails={setSelectedAppointment}
+          />
         </TabsContent>
         
-        <TabsContent value="list">
+        <TabsContent value="list" className="animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <ListView
             appointments={filteredAppointments}
             onViewDetails={setSelectedAppointment}

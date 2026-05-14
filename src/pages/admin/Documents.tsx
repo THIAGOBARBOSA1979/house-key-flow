@@ -54,6 +54,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
+import { StatsCard } from "@/components/shared/StatsCard";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -108,40 +109,40 @@ const AdminDocuments = () => {
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-tiny text-muted-foreground">Total de Documentos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{documents.length}</div>
-            <p className="text-[10px] text-emerald-500 font-bold mt-1">Sincronizado</p>
-          </CardContent>
-        </Card>
-        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-tiny text-muted-foreground">Rascunhos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-amber-500">
-              {documents.filter(d => d.status === 'draft').length}
-            </div>
-            <p className="text-[10px] text-muted-foreground font-bold mt-1">Requer atenção</p>
-          </CardContent>
-        </Card>
-        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm md:col-span-2">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-tiny text-muted-foreground">Armazenamento (Simulado)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-end justify-between mb-2">
-              <span className="text-2xl font-bold">1.8 GB</span>
-              <span className="text-xs text-muted-foreground">de 10 GB (18%)</span>
-            </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden border">
-              <div className="h-full bg-primary transition-all duration-1000" style={{ width: '18%' }} />
-            </div>
-          </CardContent>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard 
+          label="Total Arquivos" 
+          value={documents.length} 
+          icon={FileText} 
+          variant="brand" 
+          description="Contratos e licenças"
+        />
+        <StatsCard 
+          label="Rascunhos" 
+          value={documents.filter(d => d.status === 'draft').length} 
+          icon={Clock} 
+          variant="pending" 
+          description="Aguardando publicação"
+        />
+        <StatsCard 
+          label="Sincronizados" 
+          value={documents.filter(d => d.status === 'published').length} 
+          icon={CheckCircle2} 
+          variant="complete" 
+          description="Em nuvem (G-Drive)"
+        />
+        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm overflow-hidden flex flex-col justify-center px-5 py-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sem-tiny uppercase font-bold tracking-widest text-muted-foreground/80">Armazenamento</p>
+            <span className="text-sem-tiny font-black text-primary">18%</span>
+          </div>
+          <div className="flex items-baseline gap-2 mb-3">
+            <h3 className="text-sem-h3 font-bold text-foreground leading-tight">1.8 GB</h3>
+            <span className="text-sem-caption text-muted-foreground">de 10 GB</span>
+          </div>
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
+            <div className="h-full bg-primary transition-all duration-1000 ease-out rounded-full" style={{ width: '18%' }} />
+          </div>
         </Card>
       </div>
 
@@ -252,31 +253,31 @@ const AdminDocuments = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
               {filteredDocs.map(doc => (
-                <Card key={doc.id} className="card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer">
+                <Card key={doc.id} className="card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all">
                    <div className="flex justify-between items-start">
-                      <div className="p-3 bg-background rounded-lg shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                        <FileText size={24} />
+                      <div className="p-3 bg-card rounded-xl shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-all border border-border/10">
+                        <FileText size={22} />
                       </div>
                       <div className="flex flex-col items-end gap-1">
                         {getStatusBadge(doc.status)}
                       </div>
                    </div>
                    <div className="mt-4">
-                      <h4 className="text-sm font-bold truncate pr-6">{doc.title}</h4>
-                      <p className="text-[10px] text-muted-foreground font-bold uppercase mt-1">
+                      <h4 className="text-label font-bold truncate pr-6 group-hover:text-primary transition-colors">{doc.title}</h4>
+                      <p className="text-sem-tiny text-muted-foreground font-bold uppercase tracking-tighter mt-1">
                         {doc.category} • {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
                       </p>
                    </div>
                    <div className="absolute top-4 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background shadow-sm">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background shadow-md border border-border/10">
                             <MoreHorizontal size={14} />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="text-xs font-bold"><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
-                          <DropdownMenuItem className="text-xs font-bold" onClick={() => handleDelete(doc.id)}><Trash2 size={14} className="mr-2 text-destructive" /> Excluir</DropdownMenuItem>
+                        <DropdownMenuContent align="end" className="w-40 animate-in zoom-in-95">
+                          <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer"><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
+                          <DropdownMenuItem className="text-xs font-bold py-2 text-destructive focus:text-destructive cursor-pointer" onClick={() => handleDelete(doc.id)}><Trash2 size={14} className="mr-2" /> Excluir</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                    </div>
