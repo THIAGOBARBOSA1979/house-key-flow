@@ -5,7 +5,7 @@ import { SLABadge } from "../ClientTimeline/SLAIndicator";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Building2, User, Calendar, GripVertical, AlertTriangle } from "lucide-react";
+import { Building2, User, Calendar, GripVertical, AlertTriangle, Clock, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
