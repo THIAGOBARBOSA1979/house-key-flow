@@ -40,12 +40,12 @@ const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 export const DashboardCharts = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="card-standard border-none bg-background/50 backdrop-blur-md">
+      <Card className="card-standard">
         <CardHeader className="pb-4 border-b border-border/10">
           <CardTitle className="text-h3 font-bold">Vistorias por Mês</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="h-[300px] w-full">
+          <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={inspectionData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="hsl(var(--muted))" opacity={0.3} />
@@ -84,12 +84,12 @@ export const DashboardCharts = () => {
         </CardContent>
       </Card>
 
-      <Card className="card-standard border-none bg-background/50 backdrop-blur-md">
-        <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-h3 font-bold">Chamados por Categoria</CardTitle>
+      <Card className="card-standard">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-h3">Chamados por Categoria</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="h-[300px] w-full">
+          <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
