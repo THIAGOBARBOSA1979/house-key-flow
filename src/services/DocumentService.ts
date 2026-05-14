@@ -1,5 +1,6 @@
 
 import { v4 as uuidv4 } from 'uuid';
+import { auditLogService } from './AuditLogService';
 
 export interface Document {
   id: string;
@@ -212,6 +213,15 @@ OBSERVAÇÕES: {{observacoes}}`,
     };
     
     this.documents.push(newDocument);
+    auditLogService.log({
+      entityType: 'inspection' as any,
+      entityId: newDocument.id,
+      action: 'created',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento ${newDocument.title} criado.`
+    });
     console.log('DocumentService: Documento criado:', newDocument.title);
     return newDocument;
   }
