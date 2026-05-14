@@ -48,21 +48,23 @@ const Dashboard = () => {
       <PageHeader
         icon={Home}
         title="Painel de Controle"
-        description="Bem-vindo ao centro de operações da construtora"
+        description="Gestão integrada de empreendimentos, vistorias e garantias."
       >
-        <Button variant="outline" size="icon" onClick={handleRefresh} disabled={loading}>
-          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-        </Button>
-        <Button variant="outline" onClick={() => navigate("/admin/calendar")}>
-          <Calendar className="mr-2 h-4 w-4" />
-          Calendário
-        </Button>
-        <Button onClick={() => navigate("/admin/properties")} className="bg-primary hover:bg-primary/90">
-          <Plus className="mr-2 h-4 w-4" />
-          Novo Empreendimento
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={handleRefresh} disabled={loading} className="rounded-lg">
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          </Button>
+          <Button variant="outline" onClick={() => navigate("/admin/design-system")} className="rounded-lg h-9">
+            <Layers className="mr-2 h-4 w-4" />
+            Design System
+          </Button>
+          <Button onClick={() => navigate("/admin/properties")} className="bg-primary hover:bg-primary/90 rounded-lg h-9">
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Empreendimento
+          </Button>
+        </div>
       </PageHeader>
-      
+
       <Stats />
       
       <DashboardCharts />

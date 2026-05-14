@@ -1,20 +1,15 @@
 
-
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
-import { Building, ShieldCheck, ClipboardCheck, LucideIcon, Activity } from "lucide-react";
+import { Building, ShieldCheck, ClipboardCheck, Activity } from "lucide-react";
+import { StatsCard } from "@/components/shared/StatsCard";
 
 interface StatItem {
   title: string;
   value: string | number;
   description?: string;
-  icon: LucideIcon;
-  colorClass?: string;
-}
-
-interface StatsProps {
-  stats?: StatItem[];
-  className?: string;
+  icon: any;
+  variant: 'brand' | 'complete' | 'progress' | 'pending' | 'critical' | 'default';
+  trend?: { value: string; isPositive: boolean };
 }
 
 const defaultStats: StatItem[] = [
@@ -23,69 +18,51 @@ const defaultStats: StatItem[] = [
     value: "12",
     icon: Building,
     description: "3 em lançamento",
-    colorClass: "bg-brand/10 text-brand dark:text-brand",
+    variant: "brand",
   },
   {
     title: "Vistorias",
     value: "148",
     icon: ClipboardCheck,
     description: "24 para esta semana",
-    colorClass: "bg-status-complete/10 text-status-complete dark:text-status-complete",
+    variant: "complete",
+    trend: { value: "5%", isPositive: true }
   },
   {
     title: "Garantias",
     value: "57",
     icon: ShieldCheck,
     description: "12 em atendimento",
-    colorClass: "bg-status-progress/10 text-status-progress dark:text-status-progress",
+    variant: "progress",
   },
   {
-    title: "Taxa de Satisfação",
+    title: "Satisfação",
     value: "94%",
     icon: Activity,
-    description: "+2% desde o mês passado",
-    colorClass: "bg-status-pending/10 text-status-pending dark:text-status-pending",
+    description: "Feedback dos clientes",
+    variant: "pending",
+    trend: { value: "2%", isPositive: true }
   },
 ];
 
-/**
- * Reusable Stats component following Design System tokens.
- */
-export const Stats = ({ stats = defaultStats, className }: StatsProps) => {
+export const Stats = ({ stats = defaultStats, className }: { stats?: StatItem[], className?: string }) => {
   return (
     <div className={cn(
-      "grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6",
+      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4-sem",
       className
     )}>
-      {stats.map((stat, index) => {
-        const Icon = stat.icon;
-        return (
-          <Card 
-            key={stat.title} 
-            className="card-standard border-none bg-background/50 backdrop-blur-md animate-in slide-in-from-bottom-2 duration-300"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <CardContent className="p-5">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <p className="text-tiny">{stat.title}</p>
-                  <p className="text-2xl font-black tracking-tight">{stat.value}</p>
-                  {stat.description && (
-                    <p className="text-tiny font-bold text-muted-foreground/80 mt-1">{stat.description}</p>
-                  )}
-                </div>
-                <div className={cn(
-                  "p-2.5 rounded-xl shadow-inner",
-                  stat.colorClass || "bg-primary/10 text-primary"
-                )}>
-                  <Icon className="h-5 w-5" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {stats.map((stat) => (
+        <StatsCard 
+          key={stat.title}
+          label={stat.title}
+          value={stat.value}
+          icon={stat.icon}
+          description={stat.description}
+          variant={stat.variant}
+          trend={stat.trend}
+          className="animate-in fade-in slide-in-from-bottom-2 duration-normal"
+        />
+      ))}
     </div>
   );
 };
-
