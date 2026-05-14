@@ -162,19 +162,20 @@ export default function Inspections() {
                 ))}
               </div>
             ) : (
-
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <SearchX className="h-12 w-12 text-muted-foreground/50 mb-4" />
-              <h3 className="text-lg font-medium mb-1">Nenhuma vistoria encontrada</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Nenhum resultado corresponde aos filtros aplicados.
-              </p>
-              <Button variant="outline" onClick={clearFilters}>
-                Limpar filtros
-              </Button>
-            </div>
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <SearchX className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                <h3 className="text-lg font-medium mb-1">Nenhuma vistoria encontrada</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Nenhum resultado corresponde aos filtros aplicados.
+                </p>
+                <Button variant="outline" onClick={clearFilters}>
+                  Limpar filtros
+                </Button>
+              </div>
+            )
           )}
         </TabsContent>
+
 
         <TabsContent value="analytics" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
