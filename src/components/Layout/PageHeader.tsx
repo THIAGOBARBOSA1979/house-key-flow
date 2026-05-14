@@ -32,7 +32,7 @@ export function PageHeader({
           <span className="animate-in slide-in-from-left-2 duration-300 font-bold">{title}</span>
         </h1>
         {description && (
-          <p className="text-small animate-in slide-in-from-left-4 duration-500">
+          <p className="text-body-sm animate-in slide-in-from-left-4 duration-500">
             {description}
           </p>
         )}

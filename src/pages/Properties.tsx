@@ -186,12 +186,12 @@ const Properties = () => {
                   };
                   return (
                     <TableRow key={property.id} className="group hover:bg-muted/30">
-                      <TableCell className="font-medium">
+                      <TableCell>
                         <div className="flex flex-col">
-                          {property.name}
-                          <div className="md:hidden text-caption mt-0.5">
+                          <span className="text-label">{property.name}</span>
+                          <span className="md:hidden text-caption mt-0.5">
                             {property.location}
-                          </div>
+                          </span>
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell text-body-sm">{property.location}</TableCell>

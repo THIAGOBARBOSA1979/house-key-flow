@@ -16,9 +16,7 @@ import {
   Smartphone,
   CheckCircle2,
   AlertTriangle,
-  XCircle,
-  Clock,
-  Info
+  BookOpen
 } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -26,281 +24,88 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
+/**
+ * Design System Documentation Page
+ * Centralizes all visual tokens, components and usage guidelines.
+ */
 const DesignSystem = () => {
   return (
     <div className="container-responsive py-8 space-y-10 animate-fade-in">
       <PageHeader
         icon={Layout}
         title="Design System"
-        description="Diretrizes visuais, tokens e catálogo de componentes reutilizáveis."
+        description="Diretrizes visuais, tokens e catálogo de componentes reutilizáveis para o ecossistema A2."
       >
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="h-9">
-            <Laptop className="w-4 h-4 mr-2" /> Desktop
-          </Button>
-          <Button variant="outline" size="sm" className="h-9">
-            <Tablet className="w-4 h-4 mr-2" /> Tablet
-          </Button>
-          <Button variant="outline" size="sm" className="h-9">
-            <Smartphone className="w-4 h-4 mr-2" /> Mobile
+            <BookOpen className="w-4 h-4 mr-2" /> Documentação
           </Button>
         </div>
       </PageHeader>
 
-      <Tabs defaultValue="tokens" className="space-y-8">
-        <TabsList className="bg-background/50 border w-full justify-start overflow-x-auto">
-          <TabsTrigger value="tokens" className="text-xs font-bold gap-2">
-            <Layers className="w-3.5 h-3.5" /> Tokens Visuais
+      <Tabs defaultValue="guide" className="space-y-8">
+        <TabsList className="bg-background/50 border w-full justify-start overflow-x-auto h-auto p-1">
+          <TabsTrigger value="guide" className="text-xs font-bold gap-2 py-2">
+            <BookOpen className="w-3.5 h-3.5" /> Guia de Uso
           </TabsTrigger>
-          <TabsTrigger value="components" className="text-xs font-bold gap-2">
-            <Box className="w-3.5 h-3.5" /> Catálogo de Componentes
+          <TabsTrigger value="tokens" className="text-xs font-bold gap-2 py-2">
+            <Layers className="w-3.5 h-3.5" /> Design Tokens
           </TabsTrigger>
-          <TabsTrigger value="accessibility" className="text-xs font-bold gap-2">
-            <Accessibility className="w-3.5 h-3.5" /> Acessibilidade
+          <TabsTrigger value="components" className="text-xs font-bold gap-2 py-2">
+            <Box className="w-3.5 h-3.5" /> Componentes
           </TabsTrigger>
-          <TabsTrigger value="playground" className="text-xs font-bold gap-2">
-            <Activity className="w-3.5 h-3.5" /> Playground
+          <TabsTrigger value="layout" className="text-xs font-bold gap-2 py-2">
+            <Grid className="w-3.5 h-3.5" /> Layout & Grid
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="tokens" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
-          {/* Colors */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Palette className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Paleta de Cores</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <ColorToken name="Primary (Brand)" value="hsl(var(--primary))" variable="--primary" description="Cor principal para ações e destaques." />
-              <ColorToken name="Background" value="hsl(var(--background))" variable="--background" description="Fundo principal da aplicação." />
-              <ColorToken name="Foreground" value="hsl(var(--foreground))" variable="--foreground" description="Cor de texto padrão." />
-              <ColorToken name="Muted" value="hsl(var(--muted))" variable="--muted" description="Elementos secundários ou desabilitados." />
-            </div>
+        {/* --- GUIDE CONTENT --- */}
+        <TabsContent value="guide" className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+          <section className="prose dark:prose-invert max-w-none">
+            <h2 className="text-h2">Como usar os Tokens Semânticos</h2>
+            <p className="text-body-base text-muted-foreground">
+              Nosso sistema utiliza tokens semânticos para garantir que a intenção do design seja preservada 
+              independente do tema ou da plataforma. Nunca utilize valores hex/rgb fixos ou classes arbitrárias 
+              do Tailwind (ex: <code>text-[#333]</code>) se houver um token correspondente.
+            </p>
             
-            <h3 className="text-h3 mt-6">Status Semânticos</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <ColorToken name="Pending" value="hsl(var(--status-pending))" variable="--status-pending" />
-              <ColorToken name="Progress" value="hsl(var(--status-progress))" variable="--status-progress" />
-              <ColorToken name="Complete" value="hsl(var(--status-complete))" variable="--status-complete" />
-              <ColorToken name="Critical" value="hsl(var(--status-critical))" variable="--status-critical" />
-            </div>
-          </section>
-
-          {/* Typography */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Type className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Tipografia</h2>
-            </div>
-            <Card className="card-standard">
-              <CardContent className="p-6 space-y-6">
-                <div className="space-y-2">
-                  <p className="text-tiny text-muted-foreground">Display / Hero</p>
-                  <p className="text-display">O Futuro da Gestão de Propriedades</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-tiny text-muted-foreground">Heading 1</p>
-                  <p className="text-h1">Título Principal de Seção</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-tiny text-muted-foreground">Heading 2</p>
-                  <p className="text-h2">Subtítulo ou Seção Secundária</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-tiny text-muted-foreground">Body Text</p>
-                  <p className="text-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed erat molestie vehicula.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Borders & Radii */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Square className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Bordas e Radii</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <RadiusToken name="Radius XS" value="var(--radius-xs)" />
-              <RadiusToken name="Radius SM" value="var(--radius-sm)" />
-              <RadiusToken name="Radius MD" value="var(--radius-md)" />
-              <RadiusToken name="Radius LG" value="var(--radius-lg)" />
-              <RadiusToken name="Radius XL" value="var(--radius-xl)" />
-            </div>
-          </section>
-
-          {/* Elevation & Shadows */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Box className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Elevação e Sombras</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="card-standard p-8 text-center bg-background shadow-sm border-none">
-                <p className="text-xs font-bold uppercase">Shadow SM</p>
-                <p className="text-[10px] text-muted-foreground mt-1">var(--shadow-sm)</p>
-              </div>
-              <div className="card-standard p-8 text-center bg-background shadow-md border-none">
-                <p className="text-xs font-bold uppercase">Shadow MD</p>
-                <p className="text-[10px] text-muted-foreground mt-1">var(--shadow-md)</p>
-              </div>
-              <div className="card-standard p-8 text-center bg-background shadow-lg border-none">
-                <p className="text-xs font-bold uppercase">Shadow LG</p>
-                <p className="text-[10px] text-muted-foreground mt-1">var(--shadow-lg)</p>
-              </div>
-            </div>
-          </section>
-
-          {/* Spacing Scale */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Grid className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Escala de Espaçamento</h2>
-            </div>
-            <div className="space-y-4 max-w-xl bg-muted/20 p-6 rounded-xl border">
-              <SpacingItem label="Space 1" variable="--space-1" width="w-[0.25rem]" />
-              <SpacingItem label="Space 2" variable="--space-2" width="w-[0.5rem]" />
-              <SpacingItem label="Space 3" variable="--space-3" width="w-[0.75rem]" />
-              <SpacingItem label="Space 4" variable="--space-4" width="w-[1rem]" />
-              <SpacingItem label="Space 6" variable="--space-6" width="w-[1.5rem]" />
-              <SpacingItem label="Space 8" variable="--space-8" width="w-[2rem]" />
-            </div>
-          </section>
-
-        </TabsContent>
-
-        <TabsContent value="components" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
-          {/* Status Badges Catalogo */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Activity className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Status Badges</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-              <div className="space-y-2">
-                <p className="text-tiny text-muted-foreground">Pendente</p>
-                <StatusBadge status="pending" />
-              </div>
-              <div className="space-y-2">
-                <p className="text-tiny text-muted-foreground">Em Andamento</p>
-                <StatusBadge status="progress" />
-              </div>
-              <div className="space-y-2">
-                <p className="text-tiny text-muted-foreground">Concluído</p>
-                <StatusBadge status="complete" />
-              </div>
-              <div className="space-y-2">
-                <p className="text-tiny text-muted-foreground">Crítico</p>
-                <StatusBadge status="critical" />
-              </div>
-              <div className="space-y-2">
-                <p className="text-tiny text-muted-foreground">Custom Label</p>
-                <StatusBadge status="success" label="Finalizado" />
-              </div>
-            </div>
-          </section>
-
-          {/* Buttons Catalogo */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <MousePointer2 className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Botões e Interativos</h2>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              <Button>Primary Action</Button>
-              <Button variant="secondary">Secondary Action</Button>
-              <Button variant="outline">Outline Style</Button>
-              <Button variant="ghost">Ghost Button</Button>
-              <Button variant="destructive">Destructive</Button>
-              <Button disabled>Disabled State</Button>
-            </div>
-          </section>
-
-          {/* Forms Catalogo */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Square className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Formulários</h2>
-            </div>
-            <div className="max-w-md space-y-4 bg-muted/20 p-6 rounded-lg border">
-              <div className="space-y-2">
-                <Label htmlFor="demo-input">Input Padrão</Label>
-                <Input id="demo-input" placeholder="Digite algo..." />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="demo-select">Select Customizado</Label>
-                <Select>
-                  <SelectTrigger id="demo-select">
-                    <SelectValue placeholder="Selecione uma opção" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Opção 1</SelectItem>
-                    <SelectItem value="2">Opção 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </section>
-        </TabsContent>
-
-        <TabsContent value="accessibility" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 border-b pb-2">
-              <Accessibility className="w-5 h-5 text-primary" />
-              <h2 className="text-h2">Diretrizes de Acessibilidade</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="card-standard bg-primary/5 border-primary/20">
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
+              <Card className="card-standard">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                    WCAG AA Checklist
-                  </CardTitle>
+                  <CardTitle className="text-h4">Convenção de Nomes</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Contraste mínimo de 4.5:1 para texto normal.
+                <CardContent className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-1 bg-primary/10 rounded text-primary font-mono text-[10px]">text-h*</div>
+                    <div className="text-body-sm">Usado para títulos hierárquicos (h1 a h4).</div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Foco visível (Focus Ring) em todos os elementos interativos.
+                  <div className="flex items-start gap-3">
+                    <div className="p-1 bg-primary/10 rounded text-primary font-mono text-[10px]">text-body-*</div>
+                    <div className="text-body-sm">Usado para textos corridos (lg, base, sm).</div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Área mínima de toque de 44x44px em mobile.
+                  <div className="flex items-start gap-3">
+                    <div className="p-1 bg-primary/10 rounded text-primary font-mono text-[10px]">text-label</div>
+                    <div className="text-body-sm">Usado para rótulos de formulário ou textos curtos e enfáticos.</div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Semântica correta com ARIA roles.
+                  <div className="flex items-start gap-3">
+                    <div className="p-1 bg-primary/10 rounded text-primary font-mono text-[10px]">container-*</div>
+                    <div className="text-body-sm">Utilidades para grids e containers responsivos.</div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="card-standard bg-amber-500/5 border-amber-500/20">
+              <Card className="card-standard border-primary/20 bg-primary/5">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5 text-amber-500" />
-                    Pontos de Atenção
-                  </CardTitle>
+                  <CardTitle className="text-h4">Boas Práticas</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm text-muted-foreground italic">"A acessibilidade não é um recurso, é uma premissa básica de design no A2 Gestão de Propriedades."</p>
-                  <ul className="list-disc list-inside text-sm space-y-2 mt-4">
-                    <li>Evite confiar apenas na cor para transmitir informação.</li>
-                    <li>Sempre forneça alternativas textuais (alt) para imagens.</li>
-                    <li>Garanta que a navegação por teclado siga uma ordem lógica.</li>
+                <CardContent className="space-y-2">
+                  <ul className="list-disc list-inside text-body-sm space-y-2">
+                    <li>Use <strong>text-h1</strong> apenas uma vez por página.</li>
+                    <li>Prefira <strong>gap-layout-gap</strong> para grids de conteúdo.</li>
+                    <li>Utilize <strong>card-standard</strong> para todos os containers de conteúdo.</li>
+                    <li>Sempre valide o contraste no tema <strong>Escuro</strong>.</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -308,19 +113,111 @@ const DesignSystem = () => {
           </section>
         </TabsContent>
 
-        <TabsContent value="playground" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
-           <section className="space-y-6">
-              <div className="flex items-center gap-2 border-b pb-2">
-                <Activity className="w-5 h-5 text-primary" />
-                <h2 className="text-h2">Simulador de Breakpoints</h2>
+        {/* --- TOKENS CONTENT --- */}
+        <TabsContent value="tokens" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
+          {/* Colors */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Palette className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Cores & Status</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <ColorToken name="Primary (Brand)" value="hsl(var(--primary))" variable="--primary" description="Cor principal de ação." />
+              <ColorToken name="Background" value="hsl(var(--background))" variable="--background" description="Fundo da aplicação." />
+              <ColorToken name="Muted" value="hsl(var(--muted))" variable="--muted" description="Textos secundários." />
+              <ColorToken name="Brand Gradient" value="linear-gradient(to right, hsl(var(--brand)), #4f46e5)" variable="from-brand to-indigo-600" />
+            </div>
+          </section>
+
+          {/* Typography Scale */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Type className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Tipografia</h2>
+            </div>
+            <div className="space-y-6 bg-card border rounded-xl p-8">
+              <div className="space-y-1">
+                <p className="text-tiny uppercase font-bold text-muted-foreground">Display Hero</p>
+                <p className="text-display">Gestão de Excelência</p>
+                <code className="text-[10px] bg-muted px-1">.text-display</code>
               </div>
-              <div className="border rounded-xl p-10 bg-muted/10 flex items-center justify-center min-h-[400px]">
-                 <div className="text-center space-y-4">
-                    <Layout className="w-12 h-12 text-primary mx-auto opacity-50" />
-                    <p className="text-muted-foreground">Selecione um breakpoint acima para simular visualizações.</p>
-                 </div>
+              <div className="space-y-1">
+                <p className="text-tiny uppercase font-bold text-muted-foreground">Heading 1</p>
+                <p className="text-h1">Título de Seção Principal</p>
+                <code className="text-[10px] bg-muted px-1">.text-h1</code>
               </div>
-           </section>
+              <div className="space-y-1">
+                <p className="text-tiny uppercase font-bold text-muted-foreground">Heading 3</p>
+                <p className="text-h3">Título de Bloco ou Card</p>
+                <code className="text-[10px] bg-muted px-1">.text-h3</code>
+              </div>
+              <div className="space-y-1">
+                <p className="text-tiny uppercase font-bold text-muted-foreground">Body Base</p>
+                <p className="text-body-base">Texto padrão para parágrafos e descrições longas com excelente legibilidade.</p>
+                <code className="text-[10px] bg-muted px-1">.text-body-base</code>
+              </div>
+            </div>
+          </section>
+        </TabsContent>
+
+        {/* --- COMPONENTS CONTENT --- */}
+        <TabsContent value="components" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Box className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Componentes de Status</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="space-y-3 p-4 border rounded-lg bg-background/50">
+                <p className="text-label">Pendente</p>
+                <StatusBadge status="pending" />
+              </div>
+              <div className="space-y-3 p-4 border rounded-lg bg-background/50">
+                <p className="text-label">Em Progresso</p>
+                <StatusBadge status="progress" />
+              </div>
+              <div className="space-y-3 p-4 border rounded-lg bg-background/50">
+                <p className="text-label">Concluído</p>
+                <StatusBadge status="complete" />
+              </div>
+              <div className="space-y-3 p-4 border rounded-lg bg-background/50">
+                <p className="text-label">Crítico</p>
+                <StatusBadge status="critical" />
+              </div>
+            </div>
+          </section>
+        </TabsContent>
+
+        {/* --- LAYOUT CONTENT --- */}
+        <TabsContent value="layout" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Grid className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Grid & Espaçamento</h2>
+            </div>
+            <Card className="card-standard">
+              <CardContent className="p-6">
+                <div className="space-y-8">
+                  <div className="space-y-2">
+                    <p className="text-label">Container Responsivo (<code>.container-responsive</code>)</p>
+                    <div className="h-10 bg-primary/10 border-2 border-dashed border-primary/30 rounded flex items-center justify-center text-tiny font-bold text-primary">
+                      MAX WIDTH: 1280px + PADDING RESPONSIVO
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <p className="text-label">Grid de Conteúdo (<code>.grid-layout</code>)</p>
+                    <div className="grid grid-cols-4 gap-4">
+                      {[1,2,3,4].map(i => (
+                        <div key={i} className="h-16 bg-muted/50 rounded border flex items-center justify-center text-tiny">Coluna {i}</div>
+                      ))}
+                    </div>
+                    <p className="text-caption mt-2">Utiliza <code>gap-layout-gap</code> (1.5rem) por padrão.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
         </TabsContent>
       </Tabs>
     </div>
@@ -329,7 +226,7 @@ const DesignSystem = () => {
 
 const ColorToken = ({ name, value, variable, description }: { name: string; value: string; variable: string; description?: string }) => (
   <Card className="card-standard overflow-hidden border-none shadow-sm">
-    <div className="h-20" style={{ backgroundColor: value }} />
+    <div className="h-20" style={{ background: value }} />
     <CardContent className="p-3 bg-background">
       <p className="text-xs font-bold">{name}</p>
       <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{variable}</p>
@@ -354,4 +251,3 @@ const SpacingItem = ({ label, variable, width }: { label: string; variable: stri
 );
 
 export default DesignSystem;
-

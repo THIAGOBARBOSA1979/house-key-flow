@@ -52,7 +52,7 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
         {!collapsed && (
-          <h1 className="text-xl font-bold text-sidebar-foreground">A2 Imobiliária</h1>
+          <h1 className="text-h3 font-bold text-sidebar-foreground">A2 Imobiliária</h1>
         )}
         {onToggleCollapse && (
           <Button 
