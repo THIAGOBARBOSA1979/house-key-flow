@@ -79,7 +79,6 @@ const timeSlots = [
   "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
 ];
 
-type FormValues = z.infer<typeof formSchema>;
 
 export const ScheduleInspectionForm = ({ 
   onSuccess, 
