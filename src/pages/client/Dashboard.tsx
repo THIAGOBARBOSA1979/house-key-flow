@@ -100,10 +100,10 @@ const Dashboard = () => {
       {/* Header with Stage Indicator */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-h1">
             Bem-vindo, {userInfo.name}! 👋
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-body-base">
             Acompanhe o progresso do seu imóvel e acesse seus documentos
           </p>
         </div>
@@ -153,14 +153,14 @@ const Dashboard = () => {
       />
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-layout-gap">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Documentos</p>
-                <p className="text-2xl font-bold">4</p>
-                <p className="text-xs text-muted-foreground">3 disponíveis</p>
+                <p className="text-label">Documentos</p>
+                <p className="text-h1">4</p>
+                <p className="text-caption">3 disponíveis</p>
               </div>
               <FileText className="h-8 w-8 text-primary" />
             </div>
@@ -170,9 +170,9 @@ const Dashboard = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Vistorias</p>
-                <p className="text-2xl font-bold">2</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-label">Vistorias</p>
+                <p className="text-h1">2</p>
+                <p className="text-caption">
                   {canScheduleInspection ? '1 agendada' : 'Aguardando liberação'}
                 </p>
               </div>
@@ -184,9 +184,9 @@ const Dashboard = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Garantias</p>
-                <p className="text-2xl font-bold">{canRequestWarranty ? '2' : '-'}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-label">Garantias</p>
+                <p className="text-h1">{canRequestWarranty ? '2' : '-'}</p>
+                <p className="text-caption">
                   {canRequestWarranty ? '1 em andamento' : 'Aguardando liberação'}
                 </p>
               </div>
@@ -198,9 +198,9 @@ const Dashboard = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Notificações</p>
-                <p className="text-2xl font-bold">{unreadCount}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-label">Notificações</p>
+                <p className="text-h1">{unreadCount}</p>
+                <p className="text-caption">
                   {urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'nenhuma urgente'}
                 </p>
               </div>
@@ -210,7 +210,7 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
         {/* Recent Documents */}
         <Card>
           <CardHeader>
@@ -232,8 +232,8 @@ const Dashboard = () => {
                 <div className="flex items-center gap-3">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm font-medium">{doc.title}</p>
-                    <p className="text-xs text-muted-foreground">{doc.date.toLocaleDateString()}</p>
+                    <p className="text-body-base font-semibold">{doc.title}</p>
+                    <p className="text-caption">{doc.date.toLocaleDateString()}</p>
                   </div>
                 </div>
                 <Badge variant={getStatusColor(doc.status) as any} className="text-xs">
@@ -269,8 +269,8 @@ const Dashboard = () => {
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">{inspection.title}</p>
-                      <p className="text-xs text-muted-foreground">{inspection.date.toLocaleDateString()}</p>
+                      <p className="text-body-base font-semibold">{inspection.title}</p>
+                      <p className="text-caption">{inspection.date.toLocaleDateString()}</p>
                     </div>
                   </div>
                   <Badge variant={getStatusColor(inspection.status) as any} className="text-xs">
@@ -314,8 +314,8 @@ const Dashboard = () => {
                   <div className="flex items-center gap-3">
                     <ShieldCheck className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">{request.title}</p>
-                      <p className="text-xs text-muted-foreground">Prioridade: {request.priority}</p>
+                      <p className="text-body-base font-semibold">{request.title}</p>
+                      <p className="text-caption">Prioridade: {request.priority}</p>
                     </div>
                   </div>
                   <Badge variant={getStatusColor(request.status) as any} className="text-xs">
@@ -348,8 +348,8 @@ const Dashboard = () => {
                 <div key={notification.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50">
                   <AlertCircle className="h-4 w-4 text-primary mt-0.5" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium">{notification.title}</p>
-                    <p className="text-xs text-muted-foreground">{notification.message}</p>
+                    <p className="text-body-base font-semibold">{notification.title}</p>
+                    <p className="text-caption">{notification.message}</p>
                   </div>
                 </div>
               ))
@@ -370,7 +370,7 @@ const Dashboard = () => {
           <CardDescription>Acesse rapidamente as funcionalidades mais utilizadas</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-layout-gap">
             <Link to="/client/documents">
               <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                 <FileText className="h-6 w-6" />
