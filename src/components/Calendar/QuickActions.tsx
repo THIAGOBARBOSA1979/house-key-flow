@@ -59,18 +59,18 @@ export const QuickActions = ({
           description="Aguardando confirmação"
         />
         <StatsCard 
-          label="Esta Semana" 
+          label="Concluídos" 
           value={completedThisWeek} 
           icon={CheckCircle} 
           variant="complete" 
           description="Vistorias concluídas"
         />
         <StatsCard 
-          label="Taxa Conclusão" 
-          value="85%" 
-          icon={Users} 
-          variant="progress" 
-          description="Eficiência da equipe"
+          label="SLA Médio" 
+          value="4.2d" 
+          icon={Clock} 
+          variant="brand" 
+          description="Tempo médio de resposta"
         />
       </div>
 

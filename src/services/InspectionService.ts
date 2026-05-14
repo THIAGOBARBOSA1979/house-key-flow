@@ -11,7 +11,8 @@ interface ScheduleInspectionData {
   technician: string;
   checklist: string;
   notes?: string;
-  requestId?: string; // Optional: link to a warranty request
+  requestId?: string;
+  priority?: "low" | "medium" | "high";
 }
 
 class InspectionService {
@@ -77,7 +78,9 @@ class InspectionService {
       technician: data.technician,
       status: "pending",
       notes: data.notes,
-      requestId: data.requestId
+      requestId: data.requestId,
+      priority: data.priority || "medium",
+      createdAt: new Date()
     };
 
     this.inspections.push(newInspection);
@@ -130,6 +133,14 @@ class InspectionService {
         details: `Status da vistoria alterado para ${status}.`
       });
     }
+  }
+  
+  getConflicts(date: Date, technicianId: string) {
+    return this.inspections.filter(i => 
+      i.date.toDateString() === date.toDateString() && 
+      i.technician === technicianId &&
+      i.status !== "cancelled"
+    );
   }
 
   delete(id: string) {

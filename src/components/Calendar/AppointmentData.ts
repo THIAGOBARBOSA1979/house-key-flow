@@ -16,6 +16,7 @@ export interface Appointment {
   technician?: string;
   notes?: string;
   checklist?: string;
+  priority?: "low" | "medium" | "high";
 }
 
 // Convert service data to Appointment format
@@ -47,9 +48,10 @@ export const appointments: Appointment[] = [
     property: "Edifício Aurora",
     unit: "507",
     client: "Carlos Silva",
-    date: new Date(2025, 4, 19, 10, 0),
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 10, 0),
     type: "inspection",
-    status: "pending"
+    status: "pending",
+    priority: "high"
   },
   {
     id: "2",
@@ -57,9 +59,10 @@ export const appointments: Appointment[] = [
     property: "Edifício Aurora",
     unit: "204",
     client: "Maria Oliveira",
-    date: new Date(2025, 4, 19, 14, 30),
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 14, 30),
     type: "inspection",
-    status: "confirmed"
+    status: "confirmed",
+    priority: "medium"
   },
   {
     id: "3",
@@ -67,9 +70,10 @@ export const appointments: Appointment[] = [
     property: "Residencial Bosque Verde",
     unit: "102",
     client: "Roberto Pereira",
-    date: new Date(2025, 4, 18, 9, 0),
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1, 9, 0),
     type: "warranty",
-    status: "completed"
+    status: "completed",
+    priority: "low"
   },
   {
     id: "4",
@@ -77,9 +81,10 @@ export const appointments: Appointment[] = [
     property: "Condomínio Monte Azul",
     unit: "301",
     client: "Juliana Costa",
-    date: new Date(2025, 4, 18, 15, 0),
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1, 15, 0),
     type: "inspection",
-    status: "confirmed"
+    status: "confirmed",
+    priority: "high"
   },
   {
     id: "5",
@@ -87,9 +92,10 @@ export const appointments: Appointment[] = [
     property: "Residencial Bosque Verde",
     unit: "405",
     client: "Fernando Martins",
-    date: new Date(2025, 4, 20, 10, 30),
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 10, 30),
     type: "warranty",
-    status: "pending"
+    status: "pending",
+    priority: "medium"
   },
   {
     id: "6",
@@ -97,8 +103,9 @@ export const appointments: Appointment[] = [
     property: "Edifício Aurora",
     unit: "602",
     client: "Luciana Santos",
-    date: new Date(2025, 4, 22, 11, 0),
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 11, 0),
     type: "inspection",
-    status: "cancelled"
+    status: "cancelled",
+    priority: "medium"
   },
 ];
