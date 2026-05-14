@@ -181,13 +181,13 @@ export default function AdminLogin() {
                         name="email"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-base font-medium">Email</FormLabel>
+                            <FormLabel className="text-sem-label font-bold text-foreground">Email Institucional</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                 <Input 
                                   placeholder="admin@exemplo.com" 
-                                  className="pl-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
+                                  className="pl-11 h-12 rounded-xl bg-muted/20 border-border/10 focus:border-brand focus:ring-brand/20 transition-all font-medium" 
                                   {...field} 
                                 />
                               </div>
@@ -215,7 +215,7 @@ export default function AdminLogin() {
                                   type="button"
                                   variant="ghost"
                                   size="icon"
-                                  className="absolute right-1 top-1 h-10 w-10 text-gray-400 hover:text-gray-600"
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent"
                                   onClick={() => setShowPassword(!showPassword)}
                                 >
                                   {showPassword ? (
@@ -231,24 +231,24 @@ export default function AdminLogin() {
                         )}
                       />
 
-                      <div className="flex items-center justify-between text-sm">
-                        <label className="flex items-center space-x-3 cursor-pointer">
+                      <div className="flex items-center justify-between text-sem-tiny">
+                        <label className="flex items-center space-x-3 cursor-pointer group">
                           <input 
                             type="checkbox" 
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                            className="h-4 w-4 rounded border-border text-brand focus:ring-brand/20 cursor-pointer" 
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
                           />
-                          <span className="text-gray-700 font-medium">Lembrar de mim</span>
+                          <span className="text-muted-foreground font-bold uppercase tracking-tight group-hover:text-foreground transition-colors">Lembrar acesso</span>
                         </label>
-                        <Link to="/admin/forgot-password" className="text-blue-600 hover:text-blue-800 font-medium hover:underline">
-                          Esqueci minha senha
+                        <Link to="/admin/forgot-password" virtual-link="true" className="text-primary font-black uppercase tracking-tight hover:underline">
+                          Esqueci a senha
                         </Link>
                       </div>
 
                       <Button 
                         type="submit" 
-                        className="w-full h-12 text-base font-semibold bg-gradient-to-r from-slate-600 to-blue-600 hover:from-slate-700 hover:to-blue-700 transition-all duration-200" 
+                        className="w-full h-12 text-sm font-black uppercase tracking-widest bg-brand hover:bg-brand/90 transition-all duration-300 rounded-xl shadow-sem-md interactive-active" 
                         disabled={isLoading}
                       >
                         {isLoading ? (
@@ -266,21 +266,25 @@ export default function AdminLogin() {
                     </form>
                   </Form>
 
-                  <div className="space-y-4">
-                    <Separator className="bg-gray-200" />
+                  <div className="space-y-6 pt-4">
+                    <Separator className="bg-border/10" />
                     
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200">
-                      <div className="text-center">
-                        <p className="text-amber-800 font-medium text-sm mb-2">
-                          🔐 Credenciais para demonstração:
+                    <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
+                      <div className="text-center space-y-2">
+                        <p className="text-sem-tiny font-black text-primary uppercase tracking-widest">
+                          Acesso para Demonstração
                         </p>
-                        <div className="font-mono text-xs bg-white/80 p-3 rounded-lg border border-amber-200">
-                          <div className="text-amber-700">
-                            <strong>Email:</strong> admin@exemplo.com<br />
-                            <strong>Senha:</strong> 123456
-                          </div>
+                        <div className="font-mono text-[10px] text-muted-foreground bg-card p-3 rounded-lg border border-border/10 shadow-inner inline-block w-full">
+                          <strong>LOGIN:</strong> admin@exemplo.com<br />
+                          <strong>PASS:</strong> 123456
                         </div>
                       </div>
+                    </div>
+
+                    <div className="text-center">
+                      <Link to="/client/login" virtual-link="true" className="text-sem-tiny font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
+                        Portal do Cliente <ArrowRight className="inline-block h-3 w-3 ml-1" />
+                      </Link>
                     </div>
                   </div>
                 </CardContent>
