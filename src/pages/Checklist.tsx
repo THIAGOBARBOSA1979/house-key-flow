@@ -130,8 +130,8 @@ export default function Checklist() {
       </PageHeader>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatsCard label="Templates" value="3" icon={FileText} variant="brand" description="Modelos disponíveis" />
-        <StatsCard label="Execuções" value="48" icon={PlayCircle} variant="progress" description="Este mês" />
+        <StatsCard label="Templates" value={checklistService.getAllTemplates().length.toString()} icon={FileText} variant="brand" description="Modelos disponíveis" />
+        <StatsCard label="Execuções" value="48" icon={PlayCircle} variant="progress" description="Este mês" trend={{ value: "12%", isPositive: true }} />
         <StatsCard label="Finalizados" value="92%" icon={CheckCircle2} variant="complete" description="Taxa de sucesso" />
       </div>
 
