@@ -67,7 +67,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-border/10">
           <div>
             <CardTitle className="text-h4">
-              {date ? safeFormat(date, "dd/MM/yyyy") : "Hoje"}
+              {date ? safeFormat(date, "dd/MM/yyyy") : safeFormat(new Date(), "dd/MM/yyyy")}
             </CardTitle>
             <CardDescription className="text-sem-tiny uppercase font-bold tracking-tighter text-primary mt-1">
               {filteredAppointments.length} agendamentos encontrados
