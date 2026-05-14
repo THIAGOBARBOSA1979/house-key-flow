@@ -12,6 +12,7 @@ import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { warrantyAutomationService } from "@/services/WarrantyAutomationService";
 import { warrantySLAService } from "@/services/WarrantySLAService";
 import { KanbanColumn } from "./KanbanColumn";
+import { KanbanCard } from "./KanbanCard";
 import { KanbanFilters } from "./KanbanFilters";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
