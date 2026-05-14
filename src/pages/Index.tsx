@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Stats } from "@/components/Dashboard/Stats";
 import { DashboardCharts } from "@/components/Dashboard/DashboardCharts";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
+import { QuickActions } from "@/components/Dashboard/QuickActions";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
 import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw, Layers, Clock } from "lucide-react";
@@ -59,6 +60,8 @@ const Dashboard = () => {
       <Stats />
       
       <DashboardCharts />
+      
+      <QuickActions />
       
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-2 space-y-8">
