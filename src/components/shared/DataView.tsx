@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface DataViewProps<T> {
   items: T[];
-  renderGrid: (item: T) => React.ReactNode;
+  renderGrid?: (item: T) => React.ReactNode;
   renderList?: () => React.ReactNode;
   viewMode?: 'grid' | 'list';
   isLoading?: boolean;
@@ -71,7 +71,7 @@ export function DataView<T>({
     <div className={cn("grid-layout animate-fade-in", gridClassName)}>
       {items.map((item, index) => (
         <React.Fragment key={index}>
-          {renderGrid(item)}
+          {renderGrid ? renderGrid(item) : null}
         </React.Fragment>
       ))}
     </div>

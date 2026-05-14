@@ -1,6 +1,3 @@
-
-
-
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +6,7 @@ import { DashboardCharts } from "@/components/Dashboard/DashboardCharts";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
-import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw } from "lucide-react";
+import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw, Layers } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,7 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
-
 
 const recentActivities = [
   { id: 1, user: "Roberto Oliveira", action: "aprovou a vistoria", target: "Unidade 507 - Aurora", time: "2 horas atrás", type: "inspection" },
@@ -64,7 +60,7 @@ const Dashboard = () => {
           </Button>
         </div>
       </PageHeader>
-
+      
       <Stats />
       
       <DashboardCharts />
@@ -75,7 +71,7 @@ const Dashboard = () => {
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h2">Empreendimentos Ativos</h2>
-              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/properties")}>
+              <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/properties")}>
                 Ver todos
                 <ChevronRight size={16} />
               </Button>
@@ -94,14 +90,14 @@ const Dashboard = () => {
                 <ClipboardCheck size={24} className="text-primary" />
                 Vistorias Agendadas
               </h2>
-              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/inspections")}>
+              <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/inspections")}>
                 Ver todas
                 <ChevronRight size={16} />
               </Button>
             </div>
             <div className="space-y-3">
               {inspections.map((inspection) => (
-                <Card key={inspection.id} className="card-standard overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30 border-l-4 border-l-primary/50">
+                <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/50 backdrop-blur-sm card-hover-effect">
                   <CardContent className="p-0">
                     <InspectionItem inspection={inspection} />
                   </CardContent>
@@ -112,7 +108,7 @@ const Dashboard = () => {
         </div>
 
         <div className="space-y-8">
-          {/* Warranty Claims - Moved to sidebar for compact view */}
+          {/* Warranty Claims */}
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h2 flex items-center gap-2">
@@ -120,24 +116,24 @@ const Dashboard = () => {
                 Garantias Urgentes
               </h2>
             </div>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
               {warrantyClaims.map((claim) => (
                 <div 
                   key={claim.id} 
-                  className="card-standard p-4 interactive-active interactive-hover hover:border-amber-400/50 cursor-pointer" 
+                  className="card-standard p-5 interactive-active border-none bg-card/50 backdrop-blur-sm group hover:ring-2 hover:ring-status-critical/30" 
                   onClick={() => navigate("/admin/warranty")}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <Badge variant={claim.priority === 'high' || claim.priority === 'critical' ? 'destructive' : 'outline'}>
+                  <div className="flex justify-between items-start mb-3">
+                    <Badge variant={claim.priority === 'high' || claim.priority === 'critical' ? 'destructive' : 'outline'} className="rounded-lg text-sem-tiny font-bold uppercase">
                       {claim.priority === 'high' ? 'Alta' : 'Crítica'}
                     </Badge>
-                    <span className="text-sem-tiny text-muted-foreground">{claim.id}</span>
+                    <span className="text-sem-tiny font-bold text-muted-foreground uppercase tracking-tighter">{claim.id}</span>
                   </div>
-                  <h4 className="text-label line-clamp-1">{claim.title}</h4>
-                  <p className="text-body-sm text-muted-foreground mt-1">{claim.propertyName} - Un. {claim.unitNumber}</p>
+                  <h4 className="text-label group-hover:text-status-critical transition-colors">{claim.title}</h4>
+                  <p className="text-sem-body-sm text-muted-foreground mt-1 font-medium">{claim.propertyName} • Un. {claim.unitNumber}</p>
                 </div>
               ))}
-              <Button variant="outline" className="w-full text-xs" onClick={() => navigate("/admin/warranty")}>
+              <Button variant="outline" className="w-full text-xs font-bold rounded-lg h-10 border-dashed" onClick={() => navigate("/admin/warranty")}>
                 Gerenciar todas as garantias
               </Button>
             </div>
@@ -148,28 +144,28 @@ const Dashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h2 flex items-center gap-2">
                 <Activity size={24} className="text-primary" />
-                Feed de Atividades
+                Atividades
               </h2>
             </div>
-            <Card className="border-none shadow-sm">
+            <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
               <CardContent className="p-0">
-                <div className="divide-y">
+                <div className="divide-y divide-border/10">
                   {recentActivities.map((activity) => (
-                    <div key={activity.id} className="p-4 hover:bg-muted/30 transition-colors">
-                      <p className="text-sm leading-tight">
-                        <span className="font-semibold text-primary">{activity.user}</span>{" "}
-                        <span className="text-muted-foreground">{activity.action}</span> em{" "}
-                        <span className="font-medium">{activity.target}</span>
+                    <div key={activity.id} className="p-4 hover:bg-primary/5 transition-colors">
+                      <p className="text-sem-body-sm leading-tight">
+                        <span className="font-bold text-primary">{activity.user}</span>{" "}
+                        <span className="text-muted-foreground font-medium">{activity.action}</span> em{" "}
+                        <span className="font-bold">{activity.target}</span>
                       </p>
-                      <p className="text-tiny text-muted-foreground mt-1.5 flex items-center gap-1">
-                        <Activity size={10} />
+                      <p className="text-sem-tiny text-muted-foreground mt-2 flex items-center gap-1.5 font-bold uppercase tracking-tighter">
+                        <Clock size={10} />
                         {activity.time}
                       </p>
                     </div>
                   ))}
                 </div>
-                <div className="p-4 border-t text-center">
-                  <Button variant="link" size="sm" className="w-full text-xs text-muted-foreground">
+                <div className="p-4 border-t border-border/10 text-center">
+                  <Button variant="ghost" size="sm" className="w-full text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
                     Ver logs de auditoria
                   </Button>
                 </div>
@@ -183,4 +179,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
