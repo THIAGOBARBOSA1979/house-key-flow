@@ -303,7 +303,29 @@ const Warranty = () => {
                   </Card>
                 </div>
               </TabsContent>
-              <TabsContent value="logs">
+              <TabsContent value="chat">
+                <div className="space-y-4">
+                  <div className="h-[300px] border rounded-md p-4 bg-muted/10 overflow-y-auto flex flex-col gap-3">
+                    <div className="bg-primary/10 self-start p-3 rounded-lg max-w-[80%]">
+                      <p className="text-xs font-bold text-primary mb-1">A2 Imobiliária</p>
+                      <p className="text-sm">Olá, recebemos sua solicitação. O técnico Carlos foi designado para seu caso.</p>
+                      <span className="text-[10px] text-muted-foreground mt-1 block">10:45</span>
+                    </div>
+                    <div className="bg-muted self-end p-3 rounded-lg max-w-[80%]">
+                      <p className="text-xs font-bold mb-1">Cliente</p>
+                      <p className="text-sm">Obrigado! Qual a previsão para a vistoria?</p>
+                      <span className="text-[10px] text-muted-foreground mt-1 block">11:20</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Textarea placeholder="Digite sua mensagem para o cliente..." className="min-h-[80px]" />
+                    <Button className="self-end gap-2">
+                      <MessageSquare className="h-4 w-4" />
+                      Enviar
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
                 <AuditLogViewer 
                   entityType="warranty" 
                   entityId={selectedRequest.id} 
