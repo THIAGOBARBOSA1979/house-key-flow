@@ -1,5 +1,3 @@
-
-
 import {
   WarrantyStage,
   WarrantyRequestFlow,
@@ -13,7 +11,8 @@ import {
   FINAL_STAGES,
   isValidTransition,
   isFinalStage,
-  DEFAULT_SLA_CONFIGS
+  DEFAULT_SLA_CONFIGS,
+  WarrantyProblemDetail
 } from '@/types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService } from './AuditLogService';
@@ -533,30 +532,6 @@ class WarrantyFlowService {
     this.persist();
 
     return { success: true, request: updatedRequest };
-  }
-
-    const request = this.requests.get(requestId);
-    
-    if (!request) {
-      return { success: false, error: "Solicitação não encontrada" };
-    }
-    
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      assignedTo: technicianId,
-      assignedToName: technicianName,
-      updatedAt: new Date()
-    };
-    
-    this.requests.set(requestId, updatedRequest);
-    
-    console.log('[WarrantyFlowService] Technician assigned:', {
-      requestId,
-      technicianId,
-      technicianName
-    });
-    
-    return { success: true };
   }
 
   /**
