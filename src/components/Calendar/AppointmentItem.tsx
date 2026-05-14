@@ -5,18 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock } from "lucide-react";
 
-export interface Appointment {
-  id: string;
-  title: string;
-  property: string;
-  unit: string;
-  client: string;
-  date: Date;
-  type: "inspection" | "warranty";
-  status: "pending" | "confirmed" | "completed" | "cancelled";
-}
+import { Appointment } from "./AppointmentData";
 
-interface AppointmentItemProps {
+export interface AppointmentItemProps {
   appointment: Appointment;
   onViewDetails: (id: string) => void;
   compact?: boolean;

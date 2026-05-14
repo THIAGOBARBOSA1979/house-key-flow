@@ -5,7 +5,8 @@ import { safeFormat } from "@/lib/utils";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
-import { AppointmentItem, Appointment } from "./AppointmentItem";
+import { AppointmentItem } from "./AppointmentItem";
+import { Appointment } from "./AppointmentData";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { Button } from "@/components/ui/button";
 

@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { Appointment } from "./AppointmentItem";
+import { Appointment } from "./AppointmentData";
 
 interface AppointmentDetailsProps {
   selectedAppointment: string | null;
