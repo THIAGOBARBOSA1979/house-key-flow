@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,75 +11,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
-
-// Form schema with validation
-const formSchema = z.object({
-  name: z.string().min(3, {
-    message: "O nome deve ter pelo menos 3 caracteres"
-  }),
-  address: z.string().min(5, {
-    message: "O endereço deve ter pelo menos 5 caracteres"
-  }),
-  city: z.string().min(2, {
-    message: "Informe a cidade"
-  }),
-  state: z.string().min(2, {
-    message: "Informe o estado"
-  }),
-  phase: z.string({
-    required_error: "Selecione a fase da obra"
-  }),
-  description: z.string().optional(),
-  status: z.boolean().default(true),
-  totalUnits: z.number().min(1).default(1),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-// Phase options
-const phaseOptions = [
-  { value: "planning", label: "Planejamento" },
-  { value: "foundation", label: "Fundação" },
-  { value: "structure", label: "Estrutura" },
-  { value: "finishing", label: "Acabamento" },
-  { value: "completed", label: "Concluído" },
-];
+import { propertySchema, type Property } from "@/services/PropertyService";
 
 interface PropertyFormProps {
-  onSubmit?: (data: FormValues) => void;
+  initialData?: Property;
+  onSubmit?: (data: any) => void;
   onCancel?: () => void;
 }
 
-export function PropertyForm({ onSubmit, onCancel }: PropertyFormProps) {
-  // Initialize form with validation
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
+
+export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormProps) {
+  const form = useForm<Property>({
+    resolver: zodResolver(propertySchema),
+    defaultValues: initialData || {
       name: "",
-      address: "",
-      city: "",
-      state: "",
-      phase: "",
+      location: "",
+      units: 1,
+      completedUnits: 0,
+      status: "pending",
       description: "",
-      status: true,
-      totalUnits: 1,
     },
   });
   
-  // Handle form submission
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = (values: Property) => {
     if (onSubmit) {
       onSubmit(values);
-    } else {
-      // Default behavior if no onSubmit is provided
-      toast({
-        title: "Empreendimento cadastrado",
-        description: "O empreendimento foi cadastrado com sucesso.",
-      });
-      console.log("Form submitted:", values);
-      form.reset();
     }
   };
+
   
   return (
     <Form {...form}>
