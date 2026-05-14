@@ -252,16 +252,16 @@
   }
 
   /* Typography Semantic Utilities */
-  .text-display { @apply text-display text-foreground; }
-  .text-h1 { @apply text-h1 text-foreground; }
-  .text-h2 { @apply text-h2 text-foreground; }
-  .text-h3 { @apply text-h3 text-foreground; }
-  .text-h4 { @apply text-h4 text-foreground; }
-  .text-body-lg { @apply text-body-lg text-foreground/90; }
-  .text-body-base { @apply text-body-base text-foreground/80; }
-  .text-body-sm { @apply text-body-sm text-muted-foreground; }
-  .text-label { @apply text-label font-semibold text-foreground; }
-  .text-caption { @apply text-caption text-muted-foreground uppercase tracking-wider; }
+  .text-display { @apply text-sem-display text-foreground; }
+  .text-h1 { @apply text-sem-h1 text-foreground; }
+  .text-h2 { @apply text-sem-h2 text-foreground; }
+  .text-h3 { @apply text-sem-h3 text-foreground; }
+  .text-h4 { @apply text-sem-h4 text-foreground; }
+  .text-body-lg { @apply text-sem-body-lg text-foreground/90; }
+  .text-body-base { @apply text-sem-body-base text-foreground/80; }
+  .text-body-sm { @apply text-sem-body-sm text-muted-foreground; }
+  .text-label { @apply text-sem-label font-semibold text-foreground; }
+  .text-caption { @apply text-sem-caption text-muted-foreground uppercase tracking-wider; }
 
   /* Animations */
   .animate-fade-in {
