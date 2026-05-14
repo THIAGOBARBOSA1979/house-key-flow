@@ -1,6 +1,6 @@
 
-import { format, isValid } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { isValid } from "date-fns";
+import { safeFormat } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, MapPin, User, Check, X, FileCheck } from "lucide-react";
@@ -57,7 +57,7 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
         
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <Clock className="h-3.5 w-3.5" />
-          <span>{isValid(new Date(appointment.date)) ? format(new Date(appointment.date), "HH:mm", { locale: ptBR }) : "—"}</span>
+          <span>{safeFormat(appointment.date, "HH:mm")}</span>
           <span className="mx-1">•</span>
           {getStatusBadge(appointment.status)}
         </div>
@@ -105,11 +105,11 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
           </div>
           <div className="flex items-center gap-1 text-muted-foreground">
             <Clock size={14} />
-            <span>{isValid(new Date(appointment.date)) ? format(new Date(appointment.date), "dd/MM/yyyy", { locale: ptBR }) : "—"}</span>
+            <span>{safeFormat(appointment.date, "dd/MM/yyyy")}</span>
           </div>
           <div className="flex items-center gap-1 text-muted-foreground">
             <Clock size={14} />
-            <span>{isValid(new Date(appointment.date)) ? format(new Date(appointment.date), "HH:mm", { locale: ptBR }) : "—"}</span>
+            <span>{safeFormat(appointment.date, "HH:mm")}</span>
           </div>
         </div>
       </div>
