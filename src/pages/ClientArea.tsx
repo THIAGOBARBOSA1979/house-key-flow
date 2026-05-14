@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { User, Key, Plus, FileText, ClipboardCheck, ShieldCheck, History } from "lucide-react";
+import { useState, useMemo } from "react";
+import { User, Key, Plus, FileText, ClipboardCheck, ShieldCheck, History, MoreHorizontal, UserCheck, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,10 @@ import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { DataView } from "@/components/shared/DataView";
+import { cn } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 // Mock data - expanded
 const clients = [
@@ -163,61 +167,95 @@ const ClientArea = () => {
         onSearchChange={setSearchQuery}
       />
 
-      {/* Client List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Lista de Clientes</CardTitle>
-          <CardDescription>
-            {filteredClients.length} cliente(s) encontrado(s)
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-0">
-          <ScrollArea className="w-full whitespace-nowrap">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="min-w-[150px]">Nome</TableHead>
-                  <TableHead className="min-w-[180px]">Email</TableHead>
-                  <TableHead className="min-w-[130px]">Telefone</TableHead>
-                  <TableHead className="min-w-[180px]">Imóvel</TableHead>
-                  <TableHead className="min-w-[100px]">Status</TableHead>
-                  <TableHead className="min-w-[80px]">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredClients.map(client => (
-                  <TableRow key={client.id}>
-                    <TableCell className="font-medium">{client.name}</TableCell>
-                    <TableCell>{client.email}</TableCell>
-                    <TableCell>{client.phone}</TableCell>
-                    <TableCell>{client.property} - {client.unit}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        {(() => {
-                          const profile = clientStageService.getClientProfile(client.id);
-                          return profile ? (
-                            <StageIndicator currentStage={profile.currentStage} variant="compact" />
-                          ) : (
-                            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">Ativo</Badge>
-                          );
-                        })()}
-                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                          <div className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
-                          Sincronizado
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="outline" size="sm" onClick={() => setSelectedClient(client)}>Detalhes</Button>
-                    </TableCell>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <StatsCard label="Total Clientes" value={clients.length} icon={User} variant="brand" />
+        <StatsCard label="Acessos Recentes" value="28" icon={UserCheck} variant="complete" />
+        <StatsCard label="Novos Leads" value="15" icon={Plus} variant="progress" />
+      </div>
+
+      <DataView
+        items={filteredClients}
+        viewMode="list"
+        renderList={() => (
+          <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+            <ScrollArea className="w-full">
+              <Table>
+                <TableHeader className="bg-muted/30">
+                  <TableRow>
+                    <TableHead className="font-bold py-4 px-6">Nome</TableHead>
+                    <TableHead className="hidden md:table-cell font-bold py-4 px-6">Contato</TableHead>
+                    <TableHead className="hidden lg:table-cell font-bold py-4 px-6">Imóvel</TableHead>
+                    <TableHead className="font-bold py-4 px-6">Status</TableHead>
+                    <TableHead className="text-right font-bold py-4 px-6">Ações</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {filteredClients.map(client => (
+                    <TableRow key={client.id} className="group hover:bg-primary/5 transition-all border-b border-border/50">
+                      <TableCell className="py-4 px-6">
+                        <div className="flex flex-col">
+                          <span className="text-label group-hover:text-primary transition-colors">{client.name}</span>
+                          <span className="md:hidden text-caption mt-0.5 text-muted-foreground">{client.email}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell py-4 px-6">
+                        <div className="flex flex-col text-sem-body-sm">
+                          <span>{client.email}</span>
+                          <span className="text-muted-foreground">{client.phone}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell py-4 px-6 text-sem-body-sm text-muted-foreground font-medium">
+                        {client.property} • {client.unit}
+                      </TableCell>
+                      <TableCell className="py-4 px-6">
+                        <div className="flex flex-col gap-1.5">
+                          {(() => {
+                            const profile = clientStageService.getClientProfile(client.id);
+                            return profile ? (
+                              <StageIndicator currentStage={profile.currentStage} variant="compact" />
+                            ) : (
+                              <Badge className="bg-status-complete/10 text-status-complete border-status-complete/20 rounded-lg text-sem-tiny font-bold uppercase">Ativo</Badge>
+                            );
+                          })()}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right py-4 px-6">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
+                            <DropdownMenuItem onClick={() => setSelectedClient(client)} className="py-2.5 font-medium cursor-pointer">
+                              <User className="mr-2 h-4 w-4 text-muted-foreground" /> Ver Detalhes
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleUpdateStatus(client.id)} className="py-2.5 font-medium cursor-pointer">
+                              <History className="mr-2 h-4 w-4 text-muted-foreground" /> Sincronizar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setCredentialsDialogOpen(true)} className="py-2.5 font-medium cursor-pointer">
+                              <Key className="mr-2 h-4 w-4 text-muted-foreground" /> Credenciais
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </Card>
+        )}
+        emptyState={{
+          title: "Nenhum cliente encontrado",
+          description: "Não encontramos clientes com os termos pesquisados.",
+          action: {
+            label: "Limpar pesquisa",
+            onClick: () => setSearchQuery("")
+          }
+        }}
+      />
 
       {/* Selected Client Details */}
       {selectedClient && (

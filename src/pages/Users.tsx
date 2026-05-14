@@ -11,6 +11,9 @@ import { UserForm } from "@/components/Users/UserForm";
 import { UserFilters } from "@/components/Users/UserFilters";
 import { useToast } from "@/hooks/use-toast";
 import { userService, type User as UserType } from "@/services/UserService";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { DataView } from "@/components/shared/DataView";
+import { cn } from "@/lib/utils";
 
 const roleConfig = {
   admin: { label: "Administrador", badge: "bg-purple-100 text-purple-800 border-purple-200", icon: UserCog },
@@ -124,46 +127,72 @@ const Users = () => {
   const renderUserCard = (user: UserType) => {
     const isSelected = selectedUsers.includes(user.id!);
     return (
-      <Card key={user.id} className={`transition-all duration-200 hover:shadow-lg ${isSelected ? 'ring-2 ring-primary' : ''}`}>
+      <Card 
+        key={user.id} 
+        className={cn(
+          "card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm group",
+          isSelected && "ring-2 ring-primary"
+        )}
+      >
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
-              <Checkbox checked={isSelected} onCheckedChange={() => handleSelectUser(user.id!)} />
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-semibold text-lg">{user.avatar}</div>
-              <div>
-                <h3 className="font-semibold text-lg">{user.name}</h3>
-                <p className="text-sm text-muted-foreground">Último login: {user.lastLogin}</p>
+              <Checkbox checked={isSelected} onCheckedChange={() => handleSelectUser(user.id!)} className="rounded-md" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary font-bold text-lg border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
+                {user.avatar}
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-bold text-base truncate group-hover:text-primary transition-colors">{user.name}</h3>
+                <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">Login: {user.lastLogin}</p>
               </div>
             </div>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => showToast({ title: "Perfil do usuário", description: `Visualizando perfil de ${user.name}.` })}>
-                  <Eye className="mr-2 h-4 w-4" />Ver perfil
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-primary/5">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
+                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => showToast({ title: "Perfil do usuário", description: `Visualizando perfil de ${user.name}.` })}>
+                  <Eye className="mr-2 h-4 w-4 text-muted-foreground" />Ver perfil
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleEditUser(user)}><Edit className="mr-2 h-4 w-4" />Editar</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleToggleUserStatus(user.id!)}>
-                  {user.status === "active" ? <UserMinus className="mr-2 h-4 w-4" /> : <UserCheck className="mr-2 h-4 w-4" />}
+                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleEditUser(user)}><Edit className="mr-2 h-4 w-4 text-muted-foreground" />Editar</DropdownMenuItem>
+                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleToggleUserStatus(user.id!)}>
+                  {user.status === "active" ? <UserMinus className="mr-2 h-4 w-4 text-muted-foreground" /> : <UserCheck className="mr-2 h-4 w-4 text-muted-foreground" />}
                   {user.status === "active" ? "Desativar" : "Ativar"}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleDeleteUser(user.id!)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" />Remover</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleDeleteUser(user.id!)} className="py-2.5 font-bold text-destructive focus:text-destructive cursor-pointer">
+                  <Trash2 className="mr-2 h-4 w-4" />Remover
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="space-y-2 mb-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground"><Mail size={14} /><span>{user.email}</span></div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground"><Phone size={14} /><span>{user.phone}</span></div>
+          <div className="space-y-2 mb-5">
+            <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground">
+              <div className="p-1 bg-muted rounded-md"><Mail size={12} /></div>
+              <span className="truncate">{user.email}</span>
+            </div>
+            <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground">
+              <div className="p-1 bg-muted rounded-md"><Phone size={12} /></div>
+              <span>{user.phone}</span>
+            </div>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className={roleConfig[user.role as keyof typeof roleConfig]?.badge}>{roleConfig[user.role as keyof typeof roleConfig]?.label}</Badge>
-              {user.status === "inactive" && <Badge variant="outline" className="bg-red-50 text-red-800 border-red-200">Inativo</Badge>}
+          <div className="flex items-center justify-between pt-4 border-t border-border/10">
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="outline" className={cn("text-sem-tiny font-bold rounded-lg", roleConfig[user.role as keyof typeof roleConfig]?.badge)}>
+                {roleConfig[user.role as keyof typeof roleConfig]?.label}
+              </Badge>
+              {user.status === "inactive" && (
+                <Badge variant="outline" className="text-sem-tiny font-bold bg-status-critical/10 text-status-critical border-status-critical/20 rounded-lg">
+                  Inativo
+                </Badge>
+              )}
             </div>
             {user.role === "client" && user.propertyName && (
-              <div className="text-xs text-muted-foreground text-right">
-                <div className="font-medium">{user.propertyName}</div>
-                <div>Unidade {user.unit}</div>
+              <div className="text-right">
+                <p className="text-sem-tiny font-bold uppercase tracking-tighter text-primary">{user.propertyName}</p>
+                <p className="text-sem-tiny text-muted-foreground font-medium">Unidade {user.unit}</p>
               </div>
             )}
           </div>
@@ -178,56 +207,35 @@ const Users = () => {
         <Button onClick={() => { setEditingUser(null); setIsUserFormOpen(true); }}><Plus className="mr-2 h-4 w-4" />Novo Usuário</Button>
       </PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">{stats.total}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Total</div>
-          </CardContent>
-        </Card>
-        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-emerald-600">{stats.active}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Ativos</div>
-          </CardContent>
-        </Card>
-        <Card className="text-center shadow-sm hover:shadow-md transition-shadow border-red-100">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-red-600">{stats.inactive}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Inativos</div>
-          </CardContent>
-        </Card>
-        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-600">{stats.clients}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Clientes</div>
-          </CardContent>
-        </Card>
-        <Card className="text-center shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-purple-600">{stats.staff}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Equipe</div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" />
+        <StatsCard label="Usuários Ativos" value={stats.active} icon={UserCheck} variant="complete" />
+        <StatsCard label="Usuários Inativos" value={stats.inactive} icon={UserMinus} variant="critical" />
+        <StatsCard label="Total Clientes" value={stats.clients} icon={User} variant="progress" />
+        <StatsCard label="Total Equipe" value={stats.staff} icon={UserCog} variant="default" />
       </div>
 
-      <Card>
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Button variant="outline"><Upload className="mr-2 h-4 w-4" />Importar</Button>
-              <Button variant="outline"><Download className="mr-2 h-4 w-4" />Exportar</Button>
+              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold"><Upload className="mr-2 h-4 w-4" />Importar</Button>
+              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold"><Download className="mr-2 h-4 w-4" />Exportar</Button>
             </div>
             {selectedUsers.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">{selectedUsers.length} selecionado(s)</span>
+              <div className="flex items-center gap-3 animate-fade-in">
+                <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">{selectedUsers.length} selecionado(s)</span>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild><Button variant="outline" size="sm"><Settings className="mr-2 h-4 w-4" />Ações em lote</Button></DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => handleBulkAction("activate")}><UserCheck className="mr-2 h-4 w-4" />Ativar usuários</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleBulkAction("deactivate")}><UserMinus className="mr-2 h-4 w-4" />Desativar usuários</DropdownMenuItem>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="default" size="sm" className="rounded-lg h-9 text-xs font-bold">
+                      <Settings className="mr-2 h-4 w-4" />Ações em lote
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 shadow-sem-lg">
+                    <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleBulkAction("activate")}><UserCheck className="mr-2 h-4 w-4 text-muted-foreground" />Ativar usuários</DropdownMenuItem>
+                    <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleBulkAction("deactivate")}><UserMinus className="mr-2 h-4 w-4 text-muted-foreground" />Desativar usuários</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleBulkAction("delete")} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" />Remover usuários</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleBulkAction("delete")} className="py-2.5 font-bold text-destructive focus:text-destructive cursor-pointer"><Trash2 className="mr-2 h-4 w-4" />Remover usuários</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -245,17 +253,25 @@ const Users = () => {
         </div>
       )}
 
-      <Tabs defaultValue="all">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="all">Todos ({filteredUsers.length})</TabsTrigger>
-          <TabsTrigger value="admin">Administradores ({filteredUsers.filter(u => u.role === "admin" || u.role === "manager").length})</TabsTrigger>
-          <TabsTrigger value="staff">Funcionários ({filteredUsers.filter(u => u.role === "technical").length})</TabsTrigger>
-          <TabsTrigger value="clients">Clientes ({filteredUsers.filter(u => u.role === "client").length})</TabsTrigger>
+      <Tabs defaultValue="all" className="space-y-6">
+        <TabsList className="bg-muted/50 p-1 rounded-xl w-full justify-start overflow-x-auto h-auto">
+          <TabsTrigger value="all" className="rounded-lg py-2 font-bold text-xs">Todos ({filteredUsers.length})</TabsTrigger>
+          <TabsTrigger value="admin" className="rounded-lg py-2 font-bold text-xs">Administradores ({filteredUsers.filter(u => u.role === "admin" || u.role === "manager").length})</TabsTrigger>
+          <TabsTrigger value="staff" className="rounded-lg py-2 font-bold text-xs">Funcionários ({filteredUsers.filter(u => u.role === "technical").length})</TabsTrigger>
+          <TabsTrigger value="clients" className="rounded-lg py-2 font-bold text-xs">Clientes ({filteredUsers.filter(u => u.role === "client").length})</TabsTrigger>
         </TabsList>
-        <TabsContent value="all" className="space-y-4 pt-4"><div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{filteredUsers.map(renderUserCard)}</div></TabsContent>
-        <TabsContent value="admin" className="space-y-4 pt-4"><div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{filteredUsers.filter(user => user.role === "admin" || user.role === "manager").map(renderUserCard)}</div></TabsContent>
-        <TabsContent value="staff" className="space-y-4 pt-4"><div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{filteredUsers.filter(user => user.role === "technical").map(renderUserCard)}</div></TabsContent>
-        <TabsContent value="clients" className="space-y-4 pt-4"><div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{filteredUsers.filter(user => user.role === "client").map(renderUserCard)}</div></TabsContent>
+        <TabsContent value="all" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
+          <DataView items={filteredUsers} renderGrid={renderUserCard} emptyState={{ title: "Nenhum usuário encontrado", description: "Tente ajustar seus filtros." }} />
+        </TabsContent>
+        <TabsContent value="admin" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
+          <DataView items={filteredUsers.filter(user => user.role === "admin" || user.role === "manager")} renderGrid={renderUserCard} />
+        </TabsContent>
+        <TabsContent value="staff" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
+          <DataView items={filteredUsers.filter(user => user.role === "technical")} renderGrid={renderUserCard} />
+        </TabsContent>
+        <TabsContent value="clients" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
+          <DataView items={filteredUsers.filter(user => user.role === "client")} renderGrid={renderUserCard} />
+        </TabsContent>
       </Tabs>
 
       <UserForm 
