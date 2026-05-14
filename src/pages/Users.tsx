@@ -11,6 +11,7 @@ import { UserForm } from "@/components/Users/UserForm";
 import { UserFilters } from "@/components/Users/UserFilters";
 import { useToast } from "@/hooks/use-toast";
 import { userService, type User as UserType } from "@/services/UserService";
+import { auditLogService } from "@/services/AuditLogService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
 import { cn } from "@/lib/utils";
