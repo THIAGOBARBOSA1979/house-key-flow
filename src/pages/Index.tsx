@@ -81,6 +81,13 @@ const recentWarrantyClaims = [
   },
 ];
 
+const recentActivities = [
+  { id: 1, user: "Roberto Oliveira", action: "aprovou a vistoria", target: "Unidade 507 - Aurora", time: "2 horas atrás", type: "inspection" },
+  { id: 2, user: "Sistemas", action: "gerou lembrete de SLA", target: "Garantia #128", time: "4 horas atrás", type: "system" },
+  { id: 3, user: "Ana Paula", action: "anexou documento", target: "Memorial Descritivo - Bosque", time: "5 horas atrás", type: "document" },
+  { id: 4, user: "Carlos Eduardo", action: "iniciou atendimento", target: "Garantia #135", time: "Ontem", type: "warranty" },
+];
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
