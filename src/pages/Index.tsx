@@ -155,7 +155,7 @@ const Dashboard = () => {
                         <span className="text-muted-foreground">{activity.action}</span> em{" "}
                         <span className="font-medium">{activity.target}</span>
                       </p>
-                      <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
+                      <p className="text-tiny text-muted-foreground mt-1.5 flex items-center gap-1">
                         <Activity size={10} />
                         {activity.time}
                       </p>
