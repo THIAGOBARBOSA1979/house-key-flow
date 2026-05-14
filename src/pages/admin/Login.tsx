@@ -101,7 +101,7 @@ export default function AdminLogin() {
               </div>
               <div>
                 <h1 className="text-3xl font-black tracking-tighter text-foreground uppercase">A2 Gestão</h1>
-                <p className="text-sem-tiny font-black text-primary uppercase tracking-widest">Painel Administrativo v2.6</p>
+                <p className="text-sem-tiny font-black text-primary uppercase tracking-widest">Painel Administrativo v2.8.5</p>
               </div>
             </div>
             
