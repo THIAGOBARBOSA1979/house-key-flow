@@ -470,14 +470,71 @@ class WarrantyFlowService {
   }
 
   /**
-   * Assign technician to request
+   * Assign or change technician
    */
   assignTechnician(
     requestId: string,
     technicianId: string,
     technicianName: string,
     assignedBy: string
-  ): { success: boolean; error?: string } {
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    
+    if (!request) {
+      return { success: false, error: "Solicitação não encontrada" };
+    }
+    
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      assignedTo: technicianId,
+      assignedToName: technicianName,
+      updatedAt: new Date()
+    };
+    
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+    
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'assigned',
+      performedBy: assignedBy,
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Solicitação atribuída ao técnico ${technicianName}.`
+    });
+    
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Update problem details
+   */
+  updateProblem(
+    requestId: string,
+    problemId: string,
+    data: Partial<WarrantyProblemDetail>,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
+
+    const problems = request.problems.map(p => 
+      p.id === problemId ? { ...p, ...data } : p
+    );
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems,
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    return { success: true, request: updatedRequest };
+  }
+
     const request = this.requests.get(requestId);
     
     if (!request) {
