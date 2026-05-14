@@ -142,123 +142,121 @@ export default function AdminLogin() {
               </div>
             </CardHeader>
             <CardContent className="p-8 pt-4 space-y-6">
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sem-label font-bold text-foreground">Email Institucional</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input 
-                                  placeholder="admin@exemplo.com" 
-                                  className="pl-11 h-12 rounded-xl bg-muted/20 border-border/10 focus:border-brand focus:ring-brand/20 transition-all font-medium" 
-                                  {...field} 
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sem-label font-bold text-foreground">Senha de Acesso</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input 
-                                  type={showPassword ? "text" : "password"} 
-                                  className="pl-11 pr-11 h-12 rounded-xl bg-muted/20 border-border/10 focus:border-brand focus:ring-brand/20 transition-all font-medium" 
-                                  placeholder="••••••••"
-                                  {...field} 
-                                />
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent"
-                                  onClick={() => setShowPassword(!showPassword)}
-                                >
-                                  {showPassword ? (
-                                    <EyeOff className="h-5 w-5" />
-                                  ) : (
-                                    <Eye className="h-5 w-5" />
-                                  )}
-                                </Button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="flex items-center justify-between text-sem-tiny">
-                        <label className="flex items-center space-x-3 cursor-pointer group">
-                          <input 
-                            type="checkbox" 
-                            className="h-4 w-4 rounded border-border text-brand focus:ring-brand/20 cursor-pointer" 
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                          />
-                          <span className="text-muted-foreground font-bold uppercase tracking-tight group-hover:text-foreground transition-colors">Lembrar acesso</span>
-                        </label>
-                        <Link to="/admin/forgot-password" virtual-link="true" className="text-primary font-black uppercase tracking-tight hover:underline">
-                          Esqueci a senha
-                        </Link>
-                      </div>
-
-                      <Button 
-                        type="submit" 
-                        className="w-full h-12 text-sm font-black uppercase tracking-widest bg-brand hover:bg-brand/90 transition-all duration-300 rounded-xl shadow-sem-md interactive-active" 
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                            Entrando...
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sem-label font-bold text-foreground">Email Institucional</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input 
+                              placeholder="admin@exemplo.com" 
+                              className="pl-11 h-12 rounded-xl bg-muted/20 border-border/10 focus:border-brand focus:ring-brand/20 transition-all font-medium" 
+                              {...field} 
+                            />
                           </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            Acessar Painel
-                            <ArrowRight className="h-4 w-4" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sem-label font-bold text-foreground">Senha de Acesso</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input 
+                              type={showPassword ? "text" : "password"} 
+                              className="pl-11 pr-11 h-12 rounded-xl bg-muted/20 border-border/10 focus:border-brand focus:ring-brand/20 transition-all font-medium" 
+                              placeholder="••••••••"
+                              {...field} 
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              {showPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                              ) : (
+                                <Eye className="h-5 w-5" />
+                              )}
+                            </Button>
                           </div>
-                        )}
-                      </Button>
-                    </form>
-                  </Form>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                  <div className="space-y-6 pt-4">
-                    <Separator className="bg-border/10" />
-                    
-                    <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
-                      <div className="text-center space-y-2">
-                        <p className="text-sem-tiny font-black text-primary uppercase tracking-widest">
-                          Acesso para Demonstração
-                        </p>
-                        <div className="font-mono text-[10px] text-muted-foreground bg-card p-3 rounded-lg border border-border/10 shadow-inner inline-block w-full">
-                          <strong>LOGIN:</strong> admin@exemplo.com<br />
-                          <strong>PASS:</strong> 123456
-                        </div>
+                  <div className="flex items-center justify-between text-sem-tiny">
+                    <label className="flex items-center space-x-3 cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        className="h-4 w-4 rounded border-border text-brand focus:ring-brand/20 cursor-pointer" 
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                      <span className="text-muted-foreground font-bold uppercase tracking-tight group-hover:text-foreground transition-colors">Lembrar acesso</span>
+                    </label>
+                    <Link to="/admin/forgot-password" virtual-link="true" className="text-primary font-black uppercase tracking-tight hover:underline">
+                      Esqueci a senha
+                    </Link>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 text-sm font-black uppercase tracking-widest bg-brand hover:bg-brand/90 transition-all duration-300 rounded-xl shadow-sem-md interactive-active" 
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        Entrando...
                       </div>
-                    </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        Acessar Painel
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
+                    )}
+                  </Button>
+                </form>
+              </Form>
 
-                    <div className="text-center">
-                      <Link to="/client/login" virtual-link="true" className="text-sem-tiny font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
-                        Portal do Cliente <ArrowRight className="inline-block h-3 w-3 ml-1" />
-                      </Link>
+              <div className="space-y-6 pt-4">
+                <Separator className="bg-border/10" />
+                
+                <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
+                  <div className="text-center space-y-2">
+                    <p className="text-sem-tiny font-black text-primary uppercase tracking-widest">
+                      Acesso para Demonstração
+                    </p>
+                    <div className="font-mono text-[10px] text-muted-foreground bg-card p-3 rounded-lg border border-border/10 shadow-inner inline-block w-full">
+                      <strong>LOGIN:</strong> admin@exemplo.com<br />
+                      <strong>PASS:</strong> 123456
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                </div>
+
+                <div className="text-center">
+                  <Link to="/client/login" virtual-link="true" className="text-sem-tiny font-bold text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
+                    Portal do Cliente <ArrowRight className="inline-block h-3 w-3 ml-1" />
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
