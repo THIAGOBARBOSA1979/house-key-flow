@@ -1,14 +1,15 @@
 
+
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building, ShieldCheck, ClipboardCheck, AlertTriangle, LucideIcon, Activity } from "lucide-react";
+import { Building, ShieldCheck, ClipboardCheck, LucideIcon, Activity } from "lucide-react";
 
 interface StatItem {
   title: string;
   value: string | number;
   description?: string;
   icon: LucideIcon;
-  color?: string;
+  colorClass?: string;
 }
 
 interface StatsProps {
@@ -22,53 +23,60 @@ const defaultStats: StatItem[] = [
     value: "12",
     icon: Building,
     description: "3 em lançamento",
-    color: "text-blue-600 bg-blue-100/50",
+    colorClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
   },
   {
     title: "Vistorias",
     value: "148",
     icon: ClipboardCheck,
     description: "24 para esta semana",
-    color: "text-emerald-600 bg-emerald-100/50",
+    colorClass: "bg-status-complete/10 text-status-complete dark:text-emerald-400",
   },
   {
     title: "Garantias",
     value: "57",
     icon: ShieldCheck,
     description: "12 em atendimento",
-    color: "text-violet-600 bg-violet-100/50",
+    colorClass: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
   },
   {
     title: "Taxa de Satisfação",
     value: "94%",
     icon: Activity,
     description: "+2% desde o mês passado",
-    color: "text-amber-600 bg-amber-100/50",
+    colorClass: "bg-status-pending/10 text-status-pending dark:text-amber-400",
   },
 ];
 
+/**
+ * Reusable Stats component following Design System tokens.
+ */
 export const Stats = ({ stats = defaultStats, className }: StatsProps) => {
   return (
     <div className={cn(
-      "grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4",
+      "grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6",
       className
     )}>
-      {stats.map((stat) => {
+      {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
-          <Card key={stat.title} className="transition-shadow hover:shadow-md">
-            <CardContent className="p-4">
+          <Card 
+            key={stat.title} 
+            className="card-standard border-none bg-background/50 backdrop-blur-md animate-in slide-in-from-bottom-2 duration-300"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <CardContent className="p-5">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <p className="text-tiny">{stat.title}</p>
+                  <p className="text-2xl font-black tracking-tight">{stat.value}</p>
                   {stat.description && (
-                    <p className="text-xs text-muted-foreground">{stat.description}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground/80 mt-1">{stat.description}</p>
                   )}
                 </div>
                 <div className={cn(
-                  "p-2 rounded-lg",
-                  stat.color || "text-primary bg-primary/10"
+                  "p-2.5 rounded-xl shadow-inner",
+                  stat.colorClass || "bg-primary/10 text-primary"
                 )}>
                   <Icon className="h-5 w-5" />
                 </div>
@@ -80,3 +88,4 @@ export const Stats = ({ stats = defaultStats, className }: StatsProps) => {
     </div>
   );
 };
+

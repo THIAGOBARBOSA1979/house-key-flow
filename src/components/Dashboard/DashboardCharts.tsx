@@ -1,4 +1,5 @@
 
+
 import { 
   BarChart, 
   Bar, 
@@ -10,11 +11,10 @@ import {
   Cell, 
   PieChart, 
   Pie,
-  Legend,
-  LineChart,
-  Line
+  Legend
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const inspectionData = [
   { name: 'Jan', vistorias: 40 },
@@ -32,44 +32,51 @@ const warrantyData = [
   { name: 'Estrutural', value: 200 },
 ];
 
-const COLORS = ['#0ea5e9', '#10b981', '#f59e0b', '#ef4444'];
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
+/**
+ * Dashboard charts refactored with Design System aesthetic.
+ */
 export const DashboardCharts = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-medium">Vistorias por Mês</CardTitle>
+      <Card className="card-standard border-none bg-background/50 backdrop-blur-md">
+        <CardHeader className="pb-4 border-b border-border/10">
+          <CardTitle className="text-h3 font-bold">Vistorias por Mês</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={inspectionData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <BarChart data={inspectionData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="hsl(var(--muted))" opacity={0.3} />
                 <XAxis 
                   dataKey="name" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
                 />
                 <YAxis 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
                 />
                 <Tooltip 
-                  cursor={{ fill: '#f8fafc' }}
+                  cursor={{ fill: 'hsl(var(--muted))', opacity: 0.1 }}
                   contentStyle={{ 
-                    borderRadius: '8px', 
-                    border: '1px solid #e2e8f0',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    backgroundColor: 'hsl(var(--card))',
+                    borderRadius: 'var(--radius-md)', 
+                    border: '1px solid hsl(var(--border))',
+                    boxShadow: 'var(--shadow-md)',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
                   }}
                 />
                 <Bar 
                   dataKey="vistorias" 
-                  fill="#3b82f6" 
-                  radius={[4, 4, 0, 0]} 
-                  barSize={30}
+                  fill="hsl(var(--primary))" 
+                  radius={[6, 6, 0, 0]} 
+                  barSize={24}
+                  className="transition-all duration-300 hover:opacity-hover"
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -77,38 +84,46 @@ export const DashboardCharts = () => {
         </CardContent>
       </Card>
 
-      <Card className="shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base font-medium">Chamados por Categoria</CardTitle>
+      <Card className="card-standard border-none bg-background/50 backdrop-blur-md">
+        <CardHeader className="pb-4 border-b border-border/10">
+          <CardTitle className="text-h3 font-bold">Chamados por Categoria</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={warrantyData}
                   cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
+                  cy="45%"
+                  innerRadius={70}
+                  outerRadius={95}
+                  paddingAngle={8}
                   dataKey="value"
+                  stroke="none"
                 >
                   {warrantyData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={COLORS[index % COLORS.length]} 
+                      className="hover:opacity-hover transition-opacity cursor-pointer"
+                    />
                   ))}
                 </Pie>
                 <Tooltip 
                   contentStyle={{ 
-                    borderRadius: '8px', 
-                    border: '1px solid #e2e8f0' 
+                    backgroundColor: 'hsl(var(--card))',
+                    borderRadius: 'var(--radius-md)', 
+                    border: '1px solid hsl(var(--border))',
+                    boxShadow: 'var(--shadow-md)',
+                    fontSize: '12px'
                   }}
                 />
                 <Legend 
                   verticalAlign="bottom" 
                   height={36}
                   iconType="circle"
-                  formatter={(value) => <span className="text-xs text-slate-600">{value}</span>}
+                  formatter={(value) => <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider ml-1">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -118,3 +133,4 @@ export const DashboardCharts = () => {
     </div>
   );
 };
+
