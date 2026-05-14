@@ -6,11 +6,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook, FileText, Mail, Trash2 } from "lucide-react";
+import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook, FileText, Mail, Trash2, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 import { useToast } from "@/components/ui/use-toast";
 import WebhooksConfig from "@/components/Settings/WebhooksConfig";
+import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -58,6 +59,7 @@ const Settings = () => {
             <TabsTrigger value="warranty" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><ShieldCheck size={14} /> Garantias</TabsTrigger>
             <TabsTrigger value="security" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Lock size={14} /> Segurança</TabsTrigger>
             <TabsTrigger value="integrations" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Webhook size={14} /> Integrações</TabsTrigger>
+            <TabsTrigger value="audit" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Activity size={14} /> Auditoria</TabsTrigger>
           </TabsList>
         </div>
 
@@ -448,6 +450,9 @@ const Settings = () => {
               <WebhooksConfig />
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="audit" className="space-y-6 focus-visible:outline-none">
+          <AuditLogViewer title="Histórico de Ações Administrativas" />
         </TabsContent>
       </Tabs>
     </div>
