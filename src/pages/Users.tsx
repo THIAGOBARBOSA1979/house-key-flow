@@ -60,9 +60,27 @@ const Users = () => {
   const handleSaveUser = (userData: any) => {
     if (editingUser?.id) {
       userService.update(editingUser.id, userData);
+      auditLogService.log({
+        entityType: 'user',
+        entityId: editingUser.id,
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Dados do usuário ${userData.name} atualizados.`
+      });
       showToast({ title: "Usuário atualizado", description: "As informações do usuário foram atualizadas com sucesso." });
     } else {
-      userService.create(userData);
+      const newUser = userService.create(userData);
+      auditLogService.log({
+        entityType: 'user',
+        entityId: newUser.id!,
+        action: 'created',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Novo usuário ${userData.name} criado no sistema.`
+      });
       showToast({ title: "Usuário criado", description: "Novo usuário foi criado com sucesso." });
     }
     refreshList();
@@ -77,6 +95,15 @@ const Users = () => {
 
   const handleDeleteUser = (userId: string) => { 
     userService.delete(userId);
+    auditLogService.log({
+      entityType: 'user',
+      entityId: userId,
+      action: 'cancelled',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Usuário removido permanentemente do sistema.`
+    });
     refreshList();
     showToast({ title: "Usuário removido", description: "O usuário foi removido do sistema.", variant: "destructive" }); 
   };
