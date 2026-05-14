@@ -57,6 +57,8 @@ export function CalendarFilters({
           <SelectItem value="all">Todos os tipos</SelectItem>
           <SelectItem value="inspection">Vistorias</SelectItem>
           <SelectItem value="warranty">Garantias</SelectItem>
+          <SelectItem value="delivery">Entregas</SelectItem>
+          <SelectItem value="technical_visit">Visitas Técnicas</SelectItem>
         </SelectContent>
       </Select>
       
@@ -90,6 +92,7 @@ export function CalendarFilters({
           <SelectItem value="confirmed">Confirmado</SelectItem>
           <SelectItem value="completed">Concluído</SelectItem>
           <SelectItem value="cancelled">Cancelado</SelectItem>
+          <SelectItem value="rescheduled">Reagendado</SelectItem>
         </SelectContent>
       </Select>
       

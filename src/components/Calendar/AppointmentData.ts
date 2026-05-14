@@ -1,4 +1,7 @@
 
+export type AppointmentType = "inspection" | "warranty" | "delivery" | "technical_visit";
+export type AppointmentStatus = "pending" | "confirmed" | "completed" | "cancelled" | "rescheduled";
+
 export interface Appointment {
   id: string;
   title: string;
@@ -6,8 +9,11 @@ export interface Appointment {
   unit: string;
   client: string;
   date: Date;
-  type: "inspection" | "warranty";
-  status: "pending" | "confirmed" | "completed" | "cancelled";
+  type: AppointmentType;
+  status: AppointmentStatus;
+  technician?: string;
+  notes?: string;
+  checklist?: string;
 }
 
 // Mock data for appointments
