@@ -15,6 +15,7 @@ import { ScheduleInspectionForm } from "./ScheduleInspectionForm";
 interface ScheduleInspectionDialogProps {
   triggerButton?: React.ReactNode;
   clientId?: string;
+  onSuccess?: () => void;
   propertyInfo?: {
     property: string;
     unit: string;
@@ -25,12 +26,14 @@ interface ScheduleInspectionDialogProps {
 export function ScheduleInspectionDialog({ 
   triggerButton, 
   clientId,
+  onSuccess,
   propertyInfo 
 }: ScheduleInspectionDialogProps) {
   const [open, setOpen] = React.useState(false);
   
   const handleSuccess = () => {
     setOpen(false);
+    onSuccess?.();
   };
 
   return (
