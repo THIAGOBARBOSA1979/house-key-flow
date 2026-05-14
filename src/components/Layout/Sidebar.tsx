@@ -12,8 +12,10 @@ import {
   User, 
   FileText,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Layout
 } from "lucide-react";
+
 import { SidebarGroup } from "./SidebarGroup";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -41,7 +43,9 @@ const managementItems = [
 const systemItems = [
   { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists" },
   { to: "/admin/settings", icon: Settings, label: "Configurações" },
+  { to: "/admin/design-system", icon: Layout, label: "Design System" },
 ];
+
 
 function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
   return (
