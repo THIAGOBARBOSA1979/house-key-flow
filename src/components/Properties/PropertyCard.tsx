@@ -1,110 +1,128 @@
 
+
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Home, Users, MapPin, Calendar } from "lucide-react";
+import { Building, Home, Users, MapPin, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { StatusBadge } from "../shared/StatusBadge";
-import { Badge } from "@/components/ui/badge";
-
 import { Property } from "@/services/PropertyService";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: Property;
   onEdit?: () => void;
   onDelete?: () => void;
+  className?: string;
 }
 
-
-export const PropertyCard = ({ property, onEdit, onDelete }: PropertyCardProps) => {
+/**
+ * Enhanced PropertyCard following the new Design System tokens.
+ */
+export const PropertyCard = ({ property, onEdit, onDelete, className }: PropertyCardProps) => {
   const completionPercentage = Math.round((property.completedUnits / property.units) * 100);
   
   return (
-    <Card className="overflow-hidden card-hover">
-      <div className="h-32 sm:h-40 bg-muted relative">
+    <Card className={cn("card-standard card-hover-effect overflow-hidden border-none bg-background/50 backdrop-blur-sm", className)}>
+      <div className="h-40 bg-muted/30 relative group overflow-hidden">
         {property.imageUrl ? (
           <img 
             src={property.imageUrl} 
             alt={property.name} 
-            className="w-full h-full object-cover" 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Building className="text-slate-400" size={48} />
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted/50 to-muted/80">
+            <Building className="text-muted-foreground/40" size={48} />
           </div>
         )}
-        <div className="absolute top-2 right-2">
-          <StatusBadge status={property.status} />
+        <div className="absolute top-3 right-3 shadow-lg">
+          <StatusBadge status={property.status} showIcon size="sm" />
         </div>
       </div>
-      <CardHeader className="pb-2">
+
+      <CardHeader className="pb-2 space-y-1">
         <div className="flex justify-between items-start gap-2">
-          <div>
-            <CardTitle className="text-xl">{property.name}</CardTitle>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-              <MapPin size={14} />
-              {property.location}
+          <div className="min-w-0">
+            <CardTitle className="text-lg font-bold truncate leading-tight group-hover:text-primary transition-colors">
+              {property.name}
+            </CardTitle>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+              <MapPin size={12} className="text-primary/70" />
+              <span className="truncate">{property.location}</span>
             </div>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Unidades</p>
+
+      <CardContent className="space-y-4 pt-2">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Unidades</p>
             <div className="flex items-center gap-2">
-              <Home size={16} className="text-company" />
-              <span className="text-sm font-medium">{property.units}</span>
+              <div className="p-1 bg-primary/10 rounded">
+                <Home size={14} className="text-primary" />
+              </div>
+              <span className="text-sm font-bold">{property.units}</span>
             </div>
           </div>
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Entregues</p>
+          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Entregues</p>
             <div className="flex items-center gap-2">
-              <Users size={16} className="text-emerald-600" />
-              <span className="text-sm font-medium">{property.completedUnits}</span>
+              <div className="p-1 bg-emerald-500/10 rounded">
+                <Users size={14} className="text-emerald-500" />
+              </div>
+              <span className="text-sm font-bold">{property.completedUnits}</span>
             </div>
           </div>
         </div>
         
         <div className="space-y-2">
-          <div className="flex justify-between text-xs font-medium">
-            <span>Progresso da Entrega</span>
-            <span>{completionPercentage}%</span>
+          <div className="flex justify-between items-center text-[11px] font-bold">
+            <span className="text-muted-foreground">PROGRESSO DA ENTREGA</span>
+            <span className="text-primary">{completionPercentage}%</span>
           </div>
-          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden border border-border/20">
             <div 
-              className="h-full bg-company transition-all duration-500" 
+              className={cn(
+                "h-full transition-all duration-1000 ease-out rounded-full",
+                property.status === 'complete' ? "bg-emerald-500" : "bg-primary"
+              )} 
               style={{ width: `${completionPercentage}%` }}
+              role="progressbar"
+              aria-valuenow={completionPercentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
             />
           </div>
         </div>
       </CardContent>
-      <CardFooter className="gap-2 pt-0">
-        <Button variant="outline" size="sm" className="flex-1">
-          Ver detalhes
+
+      <CardFooter className="gap-2 pt-2 border-t border-border/10">
+        <Button variant="ghost" size="sm" className="flex-1 text-xs font-bold hover:bg-primary/10 hover:text-primary active:scale-95 transition-all">
+          Gerenciar
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-9 w-9">
-              <MoreHorizontal size={18} />
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted">
+              <MoreHorizontal size={16} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onEdit}>
-              <Pencil className="mr-2 h-4 w-4" /> Editar
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuItem onClick={onEdit} className="text-xs font-medium cursor-pointer">
+              <Pencil className="mr-2 h-3.5 w-3.5" /> Editar
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={onDelete}>
-              <Trash2 className="mr-2 h-4 w-4" /> Excluir
+            <DropdownMenuItem className="text-xs font-medium text-destructive focus:text-destructive cursor-pointer" onClick={onDelete}>
+              <Trash2 className="mr-2 h-3.5 w-3.5" /> Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardFooter>
-
     </Card>
   );
 };
+

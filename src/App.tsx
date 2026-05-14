@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 // Admin pages and layout
 import { AppLayout } from "./components/Layout/AppLayout";
 import AdminDocuments from "./pages/admin/Documents";
+import DesignSystem from "./pages/admin/DesignSystem";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
 import Inspections from "./pages/Inspections";
@@ -26,6 +27,7 @@ import Users from "./pages/Users";
 import ClientArea from "./pages/ClientArea";
 import Checklist from "./pages/Checklist";
 import Settings from "./pages/Settings";
+
 
 // Client pages and layout
 import ClientLayout from "./components/Layout/ClientLayout";
@@ -129,6 +131,12 @@ const App = () => {
                     <AppLayout><Settings /></AppLayout>
                   </ProtectedRoute>
                 } />
+                <Route path="/admin/design-system" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><DesignSystem /></AppLayout>
+                  </ProtectedRoute>
+                } />
+
 
                 {/* Protected Client Routes */}
                 <Route path="/client" element={

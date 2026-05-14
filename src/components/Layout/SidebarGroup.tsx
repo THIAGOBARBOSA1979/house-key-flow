@@ -32,7 +32,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
 
   if (collapsed) {
     return (
-      <div className="space-y-1 py-2">
+      <div className="space-y-2 py-2">
         {items.map((item) => {
           const Icon = item.icon;
           return (
@@ -41,10 +41,10 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               to={item.to}
               end={item.end}
               className={({ isActive }) => cn(
-                "flex items-center justify-center p-2 rounded-md transition-colors",
+                "flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all duration-200 active:scale-95",
                 isActive 
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground" 
-                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground/80 hover:text-sidebar-foreground"
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
+                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground/70 hover:text-sidebar-foreground"
               )}
               title={item.label}
             >
@@ -56,16 +56,17 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
     );
   }
 
+
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
-        {title}
+      <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-3 text-tiny text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors group">
+        <span className="font-bold tracking-widest">{title}</span>
         <ChevronDown className={cn(
-          "h-4 w-4 transition-transform duration-200",
-          isOpen && "rotate-180"
+          "h-3.5 w-3.5 transition-transform duration-300 opacity-0 group-hover:opacity-100",
+          isOpen && "rotate-180 opacity-100"
         )} />
       </CollapsibleTrigger>
-      <CollapsibleContent className="space-y-1">
+      <CollapsibleContent className="space-y-1 px-2 pb-2">
         {items.map((item) => {
           const Icon = item.icon;
           return (
@@ -74,18 +75,19 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               to={item.to}
               end={item.end}
               className={({ isActive }) => cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+                "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 active:scale-95",
                 isActive 
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground" 
-                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground/80 hover:text-sidebar-foreground"
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 font-bold" 
+                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground/70 hover:text-sidebar-foreground font-medium"
               )}
             >
-              <Icon size={18} />
-              <span>{item.label}</span>
+              <Icon size={18} className={cn("transition-transform", location.pathname === item.to || location.pathname.startsWith(item.to) ? "scale-110" : "")} />
+              <span className="text-sm">{item.label}</span>
             </NavLink>
           );
         })}
       </CollapsibleContent>
+
     </Collapsible>
   );
 }
