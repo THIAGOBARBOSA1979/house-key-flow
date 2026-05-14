@@ -118,6 +118,41 @@ const Dashboard = () => {
         </div>
 
         <div className="space-y-8">
+          {/* Summary Chart */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-h2 flex items-center gap-2">
+                <Activity size={24} className="text-primary" />
+                Resumo Geral
+              </h2>
+            </div>
+            <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sem-body-sm font-medium text-muted-foreground">Obras no prazo</span>
+                  <span className="text-sem-body-sm font-bold">100%</span>
+                </div>
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-status-complete w-full" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sem-body-sm font-medium text-muted-foreground">Vistorias aprovadas</span>
+                  <span className="text-sem-body-sm font-bold">92%</span>
+                </div>
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-status-progress w-[92%]" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sem-body-sm font-medium text-muted-foreground">SLA de Garantias</span>
+                  <span className="text-sem-body-sm font-bold">88%</span>
+                </div>
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-status-pending w-[88%]" />
+                </div>
+              </div>
+            </Card>
+          </section>
+
           {/* Warranty Claims */}
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -127,22 +162,28 @@ const Dashboard = () => {
               </h2>
             </div>
             <div className="grid grid-cols-1 gap-4">
-              {warrantyClaims.map((claim) => (
-                <div 
-                  key={claim.id} 
-                  className="card-standard p-5 interactive-active border-none bg-card/50 backdrop-blur-sm group hover:ring-2 hover:ring-status-critical/30" 
-                  onClick={() => navigate("/admin/warranty")}
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <Badge variant={claim.priority === 'high' || claim.priority === 'critical' ? 'destructive' : 'outline'} className="rounded-lg text-sem-tiny font-bold uppercase">
-                      {claim.priority === 'high' ? 'Alta' : 'Crítica'}
-                    </Badge>
-                    <span className="text-sem-tiny font-bold text-muted-foreground uppercase tracking-tighter">{claim.id}</span>
+              {warrantyClaims.length > 0 ? (
+                warrantyClaims.map((claim) => (
+                  <div 
+                    key={claim.id} 
+                    className="card-standard p-5 interactive-active border-none bg-card/50 backdrop-blur-sm group hover:ring-2 hover:ring-status-critical/30" 
+                    onClick={() => navigate("/admin/warranty")}
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <Badge variant={claim.priority === 'high' || claim.priority === 'critical' ? 'destructive' : 'outline'} className="rounded-lg text-sem-tiny font-bold uppercase">
+                        {claim.priority === 'high' ? 'Alta' : claim.priority === 'critical' ? 'Crítica' : 'Média'}
+                      </Badge>
+                      <span className="text-sem-tiny font-bold text-muted-foreground uppercase tracking-tighter">{claim.id}</span>
+                    </div>
+                    <h4 className="text-label group-hover:text-status-critical transition-colors">{claim.title}</h4>
+                    <p className="text-sem-body-sm text-muted-foreground mt-1 font-medium">{claim.propertyName} • Un. {claim.unitNumber}</p>
                   </div>
-                  <h4 className="text-label group-hover:text-status-critical transition-colors">{claim.title}</h4>
-                  <p className="text-sem-body-sm text-muted-foreground mt-1 font-medium">{claim.propertyName} • Un. {claim.unitNumber}</p>
+                ))
+              ) : (
+                <div className="text-center py-6 bg-muted/20 rounded-lg border border-dashed border-border">
+                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Sem garantias urgentes</p>
                 </div>
-              ))}
+              )}
               <Button variant="outline" className="w-full text-xs font-bold rounded-lg h-10 border-dashed" onClick={() => navigate("/admin/warranty")}>
                 Gerenciar todas as garantias
               </Button>
@@ -153,8 +194,8 @@ const Dashboard = () => {
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h2 flex items-center gap-2">
-                <Activity size={24} className="text-primary" />
-                Atividades
+                <History size={24} className="text-primary" />
+                Logs de Auditoria
               </h2>
             </div>
             <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
@@ -162,14 +203,19 @@ const Dashboard = () => {
                 <div className="divide-y divide-border/10">
                   {recentActivities.map((activity) => (
                     <div key={activity.id} className="p-4 hover:bg-primary/5 transition-colors">
-                      <p className="text-sem-body-sm leading-tight">
-                        <span className="font-bold text-primary">{activity.performedByName}</span>{" "}
-                        <span className="text-muted-foreground font-medium">{activity.details}</span>
-                      </p>
-                      <p className="text-sem-tiny text-muted-foreground mt-2 flex items-center gap-1.5 font-bold uppercase tracking-tighter">
-                        <Clock size={10} />
-                        {new Date(activity.timestamp).toLocaleDateString('pt-BR')} {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                      </p>
+                      <div className="flex items-start gap-3">
+                        <div className="mt-1 w-2 h-2 rounded-full bg-primary/40 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-sem-body-sm leading-tight">
+                            <span className="font-bold text-primary">{activity.performedByName}</span>{" "}
+                            <span className="text-muted-foreground font-medium">{activity.details}</span>
+                          </p>
+                          <p className="text-sem-tiny text-muted-foreground mt-2 flex items-center gap-1.5 font-bold uppercase tracking-tighter">
+                            <Clock size={10} />
+                            {new Date(activity.timestamp).toLocaleDateString('pt-BR')} {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -180,7 +226,7 @@ const Dashboard = () => {
                     className="w-full text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary"
                     onClick={() => navigate("/admin/audit-logs")}
                   >
-                    Ver logs de auditoria
+                    Ver logs completos
                   </Button>
                 </div>
               </CardContent>
