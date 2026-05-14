@@ -1,6 +1,7 @@
 
 
 import { SyncService } from './SyncService';
+import { auditLogService } from './AuditLogService';
 
 export interface ChecklistItem {
   id: string;
@@ -95,6 +96,15 @@ class ChecklistService {
     };
     this.templates.push(newTemplate);
     this.persist();
+    auditLogService.log({
+      entityType: 'inspection' as any,
+      entityId: newTemplate.id,
+      action: 'created',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Template de checklist "${newTemplate.title}" criado.`
+    });
     return newTemplate;
   }
 
