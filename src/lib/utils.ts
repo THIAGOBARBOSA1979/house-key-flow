@@ -1,6 +1,8 @@
 
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 /**
  * Utility for merging tailwind classes safely
@@ -29,11 +31,9 @@ export function safeFormat(
 ) {
   if (!date) return "—";
   const d = new Date(date);
-  if (isNaN(d.getTime())) return "Data inválida";
+  if (!isValid(d)) return "—";
   
-  // Dynamic import of format to avoid circular deps if any
-  const { format } = require('date-fns');
-  return format(d, formatStr, options);
+  return format(d, formatStr, { locale: ptBR, ...options });
 }
 
 /**
