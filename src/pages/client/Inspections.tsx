@@ -5,7 +5,9 @@ import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileT
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { format } from "date-fns";
+import { isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { safeFormat } from "@/lib/utils";
 import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { useToast } from "@/hooks/use-toast";
@@ -216,20 +218,20 @@ const ClientInspections = () => {
                       <h3 className="font-medium">{item.title}</h3>
                       <div className="flex items-center gap-1.5">
                         {item.acceptanceStatus === "pending_acceptance" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800">Aceite pendente</span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-pending/10 text-status-pending border-status-pending/20">Aceite pendente</span>
                         )}
                         {item.acceptanceStatus === "accepted" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-800">Aceita</span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-complete/10 text-status-complete border-status-complete/20">Aceita</span>
                         )}
                         {item.acceptanceStatus === "rejected" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800">Recusada</span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-critical/10 text-status-critical border-status-critical/20">Recusada</span>
                         )}
                         <StatusBadge status={item.status} />
                       </div>
                     </div>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                       <Calendar className="h-3 w-3" />
-                      <span>{format(item.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
+                      <span>{safeFormat(item.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
                     </div>
                   </div>
                 ))}
@@ -285,7 +287,7 @@ const ClientInspections = () => {
                         <div>
                           <CardTitle className="text-2xl">{inspection.title}</CardTitle>
                           <CardDescription>
-                            {format(inspection.scheduledDate, "dd 'de' MMMM 'de' yyyy 'às' HH:mm")}
+                            {safeFormat(inspection.scheduledDate, "dd 'de' MMMM 'de' yyyy 'às' HH:mm")}
                           </CardDescription>
                         </div>
                         <StatusBadge status={inspection.status} />
@@ -408,7 +410,7 @@ const ClientInspections = () => {
                             <div>
                               <h3 className="font-medium">Relatório de Vistoria - {inspection.title}</h3>
                               <p className="text-sm text-muted-foreground">
-                                Finalizado em {format(new Date(2025, 3, 10), "dd/MM/yyyy")}
+                                Finalizado em {safeFormat(new Date(2025, 3, 10), "dd/MM/yyyy")}
                               </p>
                               <div className="mt-2">
                                 <Button variant="outline" size="sm" onClick={handleViewPdf}>
@@ -423,7 +425,7 @@ const ClientInspections = () => {
                           <h3 className="font-medium mb-2">Resumo</h3>
                           <div className="space-y-1 text-sm">
                             <p><span className="font-medium">Vistoria realizada por:</span> {inspection.inspector}</p>
-                            <p><span className="font-medium">Data da vistoria:</span> {format(inspection.scheduledDate, "dd/MM/yyyy")}</p>
+                            <p><span className="font-medium">Data da vistoria:</span> {safeFormat(inspection.scheduledDate, "dd/MM/yyyy")}</p>
                             <p><span className="font-medium">Total de itens verificados:</span> {inspection.checklist.length}</p>
                             <p><span className="font-medium">Itens conformes:</span> {inspection.checklist.filter(i => i.completed).length}</p>
                             <p><span className="font-medium">Itens não conformes:</span> {inspection.checklist.filter(i => !i.completed).length}</p>

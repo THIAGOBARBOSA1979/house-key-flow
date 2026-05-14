@@ -1,4 +1,5 @@
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "../shared/StatusBadge";
@@ -71,7 +72,7 @@ export const WarrantyClaim = ({ claim, onAtender, onGerenciarProblemas }: Warran
           </div>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Calendar size={14} />
-            <span>Aberto em {format(claim.createdAt, "dd/MM/yyyy")}</span>
+            <span>Aberto em {isValid(new Date(claim.createdAt)) ? format(new Date(claim.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "—"}</span>
           </div>
         </div>
         

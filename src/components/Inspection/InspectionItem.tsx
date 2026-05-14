@@ -1,5 +1,5 @@
 
-import { format } from "date-fns";
+import { safeFormat } from "@/lib/utils";
 import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "../shared/StatusBadge";
@@ -73,7 +73,7 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <Calendar size={12} className="text-muted-foreground/60" />
-              <span>{format(inspection.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
+              <span>{safeFormat(inspection.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
             </div>
           </div>
         </div>

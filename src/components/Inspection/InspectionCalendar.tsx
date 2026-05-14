@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday } from "date-fns";
+import { startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { safeFormat, cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, User, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface InspectionCalendarProps {
@@ -25,7 +25,12 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
   const getInspectionsForDay = (day: Date) => {
-    return inspections.filter(i => isSameDay(new Date(i.date || i.scheduledDate), day));
+    return inspections.filter(i => {
+      const dateVal = i.date || i.scheduledDate;
+      if (!dateVal) return false;
+      const d = new Date(dateVal);
+      return isValid(d) && isSameDay(d, day);
+    });
   };
 
   return (
@@ -33,7 +38,7 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
       <CardContent className="p-0">
         <div className="flex items-center justify-between p-4-sem border-b">
           <h2 className="text-lg font-semibold capitalize">
-            {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
+            {safeFormat(currentMonth, "MMMM yyyy")}
           </h2>
           <div className="flex gap-1">
             <Button variant="outline" size="icon" onClick={prevMonth}>
@@ -74,7 +79,7 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
                     "text-sm font-medium h-6 w-6 flex items-center justify-center rounded-full",
                     isToday(day) && "bg-brand text-brand-foreground"
                   )}>
-                    {format(day, "d")}
+                    {safeFormat(day, "d")}
                   </span>
                   {dayInspections.length > 0 && (
                     <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">
@@ -91,7 +96,7 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
                     >
                       <div className="font-bold flex items-center gap-0.5">
                         <Clock className="h-2 w-2" />
-                        {inspection.time || format(new Date(inspection.scheduledDate), "HH:mm")}
+                        {inspection.time || safeFormat(inspection.scheduledDate, "HH:mm")}
                       </div>
                       <div className="truncate">{inspection.property}</div>
                     </div>
