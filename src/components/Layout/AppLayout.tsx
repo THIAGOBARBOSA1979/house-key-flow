@@ -23,7 +23,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const isMobile = useIsMobile();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const sidebarWidth = sidebarCollapsed ? 64 : 256;
+  const sidebarWidth = sidebarCollapsed ? "64px" : "256px";
 
   return (
     <div className="min-h-screen bg-background">
@@ -33,7 +33,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <div className="border-b bg-background/95 backdrop-blur-md sticky top-0 z-40">
           <div 
             className="flex items-center justify-between p-4 transition-all duration-300"
-            style={{ marginLeft: isMobile ? 0 : sidebarWidth }}
+            style={{ paddingLeft: isMobile ? 0 : sidebarWidth }}
           >
             <div className="flex items-center gap-4">
               {isMobile && <div className="w-10" />}
@@ -65,7 +65,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         
         <main 
           className="p-4 md:p-6 lg:p-8 transition-all duration-300"
-          style={{ marginLeft: isMobile ? 0 : sidebarWidth }}
+          style={{ paddingLeft: isMobile ? 0 : sidebarWidth }}
         >
           {children}
         </main>

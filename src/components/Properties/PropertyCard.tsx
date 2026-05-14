@@ -1,8 +1,9 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Home, Users } from "lucide-react";
+import { Building, Home, Users, MapPin, Calendar } from "lucide-react";
 import { StatusBadge } from "../shared/StatusBadge";
+import { Badge } from "@/components/ui/badge";
 
 interface PropertyCardProps {
   property: {
@@ -37,26 +38,47 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
           <StatusBadge status={property.status} />
         </div>
       </div>
-      <CardHeader>
-        <CardTitle>{property.name}</CardTitle>
-        <p className="text-sm text-muted-foreground">{property.location}</p>
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start gap-2">
+          <div>
+            <CardTitle className="text-xl">{property.name}</CardTitle>
+            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+              <MapPin size={14} />
+              {property.location}
+            </div>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Home size={16} className="text-muted-foreground" />
-          <span className="text-sm">
-            {property.completedUnits} de {property.units} unidades entregues
-          </span>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Unidades</p>
+            <div className="flex items-center gap-2">
+              <Home size={16} className="text-company" />
+              <span className="text-sm font-medium">{property.units}</span>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Entregues</p>
+            <div className="flex items-center gap-2">
+              <Users size={16} className="text-emerald-600" />
+              <span className="text-sm font-medium">{property.completedUnits}</span>
+            </div>
+          </div>
         </div>
         
-        {/* Progress bar */}
-        <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-company" 
-            style={{ width: `${completionPercentage}%` }}
-          />
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs font-medium">
+            <span>Progresso da Entrega</span>
+            <span>{completionPercentage}%</span>
+          </div>
+          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-company transition-all duration-500" 
+              style={{ width: `${completionPercentage}%` }}
+            />
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground text-right">{completionPercentage}% concluído</p>
       </CardContent>
       <CardFooter>
         <Button variant="outline" size="sm" className="w-full">

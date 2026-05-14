@@ -1,11 +1,13 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Stats } from "@/components/Dashboard/Stats";
+import { DashboardCharts } from "@/components/Dashboard/DashboardCharts";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
-import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus } from "lucide-react";
+import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -80,12 +82,19 @@ const recentWarrantyClaims = [
   },
 ];
 
+const recentActivities = [
+  { id: 1, user: "Roberto Oliveira", action: "aprovou a vistoria", target: "Unidade 507 - Aurora", time: "2 horas atrás", type: "inspection" },
+  { id: 2, user: "Sistemas", action: "gerou lembrete de SLA", target: "Garantia #128", time: "4 horas atrás", type: "system" },
+  { id: 3, user: "Ana Paula", action: "anexou documento", target: "Memorial Descritivo - Bosque", time: "5 horas atrás", type: "document" },
+  { id: 4, user: "Carlos Eduardo", action: "iniciou atendimento", target: "Garantia #135", time: "Ontem", type: "warranty" },
+];
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-10">
       <PageHeader
         icon={Home}
         title="Dashboard"
@@ -103,6 +112,8 @@ const Dashboard = () => {
       
       <Stats />
       
+      <DashboardCharts />
+      
       {/* Recent Properties */}
       <section>
         <div className="flex items-center justify-between mb-4">
@@ -119,52 +130,107 @@ const Dashboard = () => {
         </div>
       </section>
       
-      {/* Inspections */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <ClipboardCheck size={20} />
-            Próximas Vistorias
-          </h2>
-          <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/inspections")}>
-            Ver todas
-            <ChevronRight size={16} />
-          </Button>
+      {/* Two columns for bottom sections */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2 space-y-8">
+          {/* Inspections */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <ClipboardCheck size={20} />
+                Próximas Vistorias
+              </h2>
+              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/inspections")}>
+                Ver todas
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+            <div className="space-y-3">
+              {upcomingInspections.map((inspection) => (
+                <Card key={inspection.id} className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30">
+                  <CardContent className="p-0">
+                    <InspectionItem inspection={inspection} />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+          
+          {/* Warranty Claims */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <ShieldCheck size={20} />
+                Solicitações de Garantia Recentes
+              </h2>
+              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/warranty")}>
+                Ver todas
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {recentWarrantyClaims.map((claim) => (
+                <WarrantyClaim 
+                  key={claim.id} 
+                  claim={claim}
+                  onAtender={() => toast({ title: "Atendimento iniciado", description: `Garantia "${claim.title}" está sendo atendida.` })}
+                  onGerenciarProblemas={() => toast({ title: "Gerenciando problemas", description: `Abrindo gerenciamento de problemas para "${claim.title}".` })}
+                />
+              ))}
+            </div>
+          </section>
         </div>
-        <div className="space-y-3">
-          {upcomingInspections.map((inspection) => (
-            <Card key={inspection.id} className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30">
+
+        {/* Right Sidebar on Dashboard */}
+        <div className="space-y-8">
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Activity size={20} />
+                Atividades Recentes
+              </h2>
+            </div>
+            <Card>
               <CardContent className="p-0">
-                <InspectionItem inspection={inspection} />
+                <div className="divide-y">
+                  {recentActivities.map((activity) => (
+                    <div key={activity.id} className="p-4 hover:bg-muted/50 transition-colors">
+                      <p className="text-sm">
+                        <span className="font-semibold">{activity.user}</span>{" "}
+                        {activity.action} em{" "}
+                        <span className="font-medium">{activity.target}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-4 border-t text-center">
+                  <Button variant="ghost" size="sm" className="w-full text-xs">
+                    Ver todo o histórico
+                  </Button>
+                </div>
               </CardContent>
             </Card>
-          ))}
+          </section>
+
+          <section>
+            <Card className="bg-primary text-primary-foreground overflow-hidden">
+              <CardContent className="p-6 space-y-4 relative">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <ShieldCheck size={80} />
+                </div>
+                <h3 className="font-bold text-lg">Suporte Premium</h3>
+                <p className="text-sm opacity-90 leading-relaxed">
+                  Precisa de ajuda com alguma configuração avançada do sistema?
+                </p>
+                <Button variant="secondary" size="sm" className="w-full font-semibold relative z-10">
+                  Falar com Consultor
+                </Button>
+              </CardContent>
+            </Card>
+          </section>
         </div>
-      </section>
-      
-      {/* Warranty Claims */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <ShieldCheck size={20} />
-            Solicitações de Garantia Recentes
-          </h2>
-          <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/warranty")}>
-            Ver todas
-            <ChevronRight size={16} />
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {recentWarrantyClaims.map((claim) => (
-            <WarrantyClaim 
-              key={claim.id} 
-              claim={claim}
-              onAtender={() => toast({ title: "Atendimento iniciado", description: `Garantia "${claim.title}" está sendo atendida.` })}
-              onGerenciarProblemas={() => toast({ title: "Gerenciando problemas", description: `Abrindo gerenciamento de problemas para "${claim.title}".` })}
-            />
-          ))}
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

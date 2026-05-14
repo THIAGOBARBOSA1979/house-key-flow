@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX, History } from "lucide-react";
+import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX, History, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -18,7 +18,9 @@ import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 
 const inspections = [
   { id: "1", property: "Edifício Aurora", unit: "101", client: "João Silva", scheduledDate: new Date(), status: "pending" as const },
-  { id: "2", property: "Residencial Bosque", unit: "302", client: "Maria Santos", scheduledDate: new Date(), status: "progress" as const },
+  { id: "2", property: "Residencial Bosque Verde", unit: "302", client: "Maria Santos", scheduledDate: new Date(), status: "progress" as const },
+  { id: "3", property: "Condomínio Monte Azul", unit: "505", client: "Pedro Alves", scheduledDate: new Date(Date.now() - 86400000), status: "pending" as const }, // Ontem
+  { id: "4", property: "Edifício Aurora", unit: "204", client: "Ana Beatriz", scheduledDate: new Date(), status: "complete" as const },
 ];
 
 export default function Inspections() {
@@ -51,6 +53,42 @@ export default function Inspections() {
         </Button>
         <ScheduleInspectionDialog />
       </PageHeader>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="bg-slate-50/50">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <Clock size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Pendentes</p>
+              <p className="text-2xl font-bold">12</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-slate-50/50">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+              <CheckCircle2 size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Concluídas</p>
+              <p className="text-2xl font-bold">85</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-slate-50/50 border-red-100">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-2 bg-red-100 rounded-lg text-red-600">
+              <AlertCircle size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Atrasadas</p>
+              <p className="text-2xl font-bold">3</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>

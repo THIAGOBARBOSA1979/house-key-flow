@@ -109,9 +109,17 @@ const Settings = () => {
                   </div>
                   <Switch id="show-logo" defaultChecked />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <Label htmlFor="logo-upload">Logotipo da Empresa</Label>
-                  <Input id="logo-upload" type="file" accept="image/*" />
+                  <div className="flex items-center gap-4">
+                    <div className="h-16 w-16 rounded-md border flex items-center justify-center bg-slate-50 overflow-hidden">
+                      <Building className="h-8 w-8 text-muted-foreground/30" />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <Input id="logo-upload" type="file" accept="image/*" />
+                      <p className="text-xs text-muted-foreground">PNG ou JPG até 2MB. Recomendado: 256x256px.</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="primary-color">Cor Primária</Label>
