@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX, History, Clock, CheckCircle2, AlertCircle, BarChart } from "lucide-react";
+import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX, History, Clock, CheckCircle2, AlertCircle, BarChart, LayoutGrid } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -15,30 +15,45 @@ import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspec
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-
-const inspections = [
-  { id: "1", property: "Edifício Aurora", unit: "101", client: "João Silva", scheduledDate: new Date(), status: "pending" as const },
-  { id: "2", property: "Residencial Bosque Verde", unit: "302", client: "Maria Santos", scheduledDate: new Date(), status: "progress" as const },
-  { id: "3", property: "Condomínio Monte Azul", unit: "505", client: "Pedro Alves", scheduledDate: new Date(Date.now() - 86400000), status: "pending" as const }, // Ontem
-  { id: "4", property: "Edifício Aurora", unit: "204", client: "Ana Beatriz", scheduledDate: new Date(), status: "complete" as const },
-];
+import { inspectionService } from "@/services/InspectionService";
+import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 
 export default function Inspections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [activeTab, setActiveTab] = useState("list");
+  const [inspections, setInspections] = useState<any[]>([]);
+  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
 
-  const filteredInspections = inspections.filter(inspection => {
-    const matchesSearch = inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         inspection.client.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === "all" || inspection.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+  useEffect(() => {
+    setInspections(inspectionService.getAll());
+  }, []);
+
+  const filteredInspections = useMemo(() => {
+    return inspections.filter(inspection => {
+      const matchesSearch = inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           inspection.client.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus = filterStatus === "all" || inspection.status === filterStatus;
+      return matchesSearch && matchesStatus;
+    });
+  }, [inspections, searchTerm, filterStatus]);
 
   const clearFilters = () => {
     setSearchTerm("");
     setFilterStatus("all");
   };
+
+  const stats = useMemo(() => {
+    return {
+      pending: inspections.filter(i => i.status === "pending").length,
+      completed: inspections.filter(i => i.status === "complete").length,
+      delayed: inspections.filter(i => {
+        const date = new Date(i.date || i.scheduledDate);
+        return i.status === "pending" && date < new Date();
+      }).length
+    };
+  }, [inspections]);
+
 
   return (
     <div className="space-y-6">
@@ -47,51 +62,56 @@ export default function Inspections() {
         title="Vistorias"
         description="Gerenciamento de vistorias e entregas de unidades"
       >
-        <Button variant="outline">
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          Calendário
-        </Button>
-        <ScheduleInspectionDialog />
+        <div className="flex gap-2">
+          <Button 
+            variant={viewMode === "calendar" ? "default" : "outline"}
+            onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+          >
+            {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
+            {viewMode === "calendar" ? "Lista" : "Calendário"}
+          </Button>
+          <ScheduleInspectionDialog onSuccess={() => setInspections(inspectionService.getAll())} />
+        </div>
       </PageHeader>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="bg-slate-50/50">
+        <Card className="bg-slate-50/50 border-blue-100 shadow-sm">
           <CardContent className="p-4 flex items-center gap-4">
             <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
               <Clock size={20} />
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Pendentes</p>
-              <p className="text-2xl font-bold">12</p>
+              <p className="text-2xl font-bold">{stats.pending}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-slate-50/50">
+        <Card className="bg-slate-50/50 border-emerald-100 shadow-sm">
           <CardContent className="p-4 flex items-center gap-4">
             <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
               <CheckCircle2 size={20} />
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Concluídas</p>
-              <p className="text-2xl font-bold">85</p>
+              <p className="text-2xl font-bold">{stats.completed}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-slate-50/50 border-red-100">
+        <Card className="bg-slate-50/50 border-red-100 shadow-sm">
           <CardContent className="p-4 flex items-center gap-4">
             <div className="p-2 bg-red-100 rounded-lg text-red-600">
               <AlertCircle size={20} />
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Atrasadas</p>
-              <p className="text-2xl font-bold">3</p>
+              <p className="text-2xl font-bold text-red-600">{stats.delayed}</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full max-w-lg grid-cols-3">
+        <TabsList className="grid w-full max-w-lg grid-cols-3 bg-muted/50 p-1">
           <TabsTrigger value="list" className="gap-2">
             <ClipboardCheck className="h-4 w-4" />
             Vistorias
@@ -123,26 +143,26 @@ export default function Inspections() {
                 <SelectItem value="complete">Concluídos</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
-              <ListFilter className="mr-2 h-4 w-4" />
-              Mais filtros
-            </Button>
           </FilterBar>
 
-          {filteredInspections.length > 0 ? (
-            <div className="grid gap-4">
-              {filteredInspections.map((inspection) => (
-                <Card 
-                  key={inspection.id} 
-                  className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30"
-                >
-                  <CardContent className="p-0">
-                    <InspectionItem inspection={inspection} />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+          {viewMode === "calendar" ? (
+            <InspectionCalendar inspections={filteredInspections} />
           ) : (
+            filteredInspections.length > 0 ? (
+              <div className="grid gap-4">
+                {filteredInspections.map((inspection) => (
+                  <Card 
+                    key={inspection.id} 
+                    className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30"
+                  >
+                    <CardContent className="p-0">
+                      <InspectionItem inspection={inspection} />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <SearchX className="h-12 w-12 text-muted-foreground/50 mb-4" />
               <h3 className="text-lg font-medium mb-1">Nenhuma vistoria encontrada</h3>
