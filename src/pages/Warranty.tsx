@@ -7,6 +7,7 @@ import { WarrantyMetricsDashboard } from "@/components/Warranty/Dashboard/Warran
 import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfigurationPanel";
 import { WarrantyHeader } from "@/components/Warranty/WarrantyHeader";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";
+import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { 
   Dialog, 
   DialogContent, 
