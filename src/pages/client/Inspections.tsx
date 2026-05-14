@@ -5,7 +5,8 @@ import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileT
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { useToast } from "@/hooks/use-toast";
@@ -229,7 +230,7 @@ const ClientInspections = () => {
                     </div>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                       <Calendar className="h-3 w-3" />
-                      <span>{format(item.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
+                      <span>{isValid(new Date(item.scheduledDate)) ? format(new Date(item.scheduledDate), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}</span>
                     </div>
                   </div>
                 ))}
@@ -285,7 +286,7 @@ const ClientInspections = () => {
                         <div>
                           <CardTitle className="text-2xl">{inspection.title}</CardTitle>
                           <CardDescription>
-                            {format(inspection.scheduledDate, "dd 'de' MMMM 'de' yyyy 'às' HH:mm")}
+                            {isValid(new Date(inspection.scheduledDate)) ? format(new Date(inspection.scheduledDate), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
                           </CardDescription>
                         </div>
                         <StatusBadge status={inspection.status} />
