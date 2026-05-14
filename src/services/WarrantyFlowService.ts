@@ -568,62 +568,31 @@ class WarrantyFlowService {
   }
 
   /**
-   * Calculate metrics for dashboard
+   * Update problem details
    */
-  calculateMetrics(): WarrantyMetrics {
-    const requests = this.getAllRequests();
-    
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+  updateProblem(
+    requestId: string,
+    problemId: string,
+    data: Partial<WarrantyProblemDetail>,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
-    const totalOpen = requests.filter(r => !isFinalStage(r.currentStage)).length;
-    const openedToday = requests.filter(r => r.createdAt >= today).length;
-    const openedThisWeek = requests.filter(r => r.createdAt >= weekAgo).length;
-    const openedThisMonth = requests.filter(r => r.createdAt >= monthAgo).length;
-    const completedThisMonth = requests.filter(r => r.currentStage === 'completed' && r.updatedAt >= monthAgo).length;
+    const problems = request.problems.map(p => 
+      p.id === problemId ? { ...p, ...data } : p
+    );
 
-    const onTrackCount = requests.filter(r => r.slaStatus === 'on_track').length;
-    const warningCount = requests.filter(r => r.slaStatus === 'warning').length;
-    const expiredCount = requests.filter(r => r.slaStatus === 'expired').length;
-    
-    const slaComplianceRate = requests.length > 0 
-      ? ((requests.length - expiredCount) / requests.length) * 100 
-      : 100;
-
-    // Time by stage
-    const stageDistribution: any = {};
-    const averageTimeByStage: any = {};
-    STAGE_ORDER.forEach(stage => {
-      const stageRequests = requests.filter(r => r.currentStage === stage);
-      stageDistribution[stage] = stageRequests.length;
-      averageTimeByStage[stage] = 24; // Mock avg
-    });
-
-    return {
-      totalOpen,
-      openedToday,
-      openedThisWeek,
-      openedThisMonth,
-      completedThisMonth,
-      onTrackCount,
-      warningCount,
-      expiredCount,
-      slaComplianceRate,
-      averageResolutionTime: 120,
-      averageTimeByStage,
-      averageTimeByType: {},
-      bottleneckStage: "in_analysis",
-      stageDistribution,
-      byType: {},
-      byPriority: {
-        low: requests.filter(r => r.priority === 'low').length,
-        medium: requests.filter(r => r.priority === 'medium').length,
-        high: requests.filter(r => r.priority === 'high').length,
-        critical: requests.filter(r => r.priority === 'critical').length,
-      }
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems,
+      updatedAt: new Date()
     };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    return { success: true, request: updatedRequest };
   }
 
   /**
