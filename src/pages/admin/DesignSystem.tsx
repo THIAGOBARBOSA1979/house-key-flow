@@ -89,6 +89,9 @@ const DesignSystem = () => {
           <TabsTrigger value="accessibility" className="text-xs font-bold gap-2 py-2.5 rounded-lg px-4">
             <Accessibility className="w-3.5 h-3.5" /> Acessibilidade
           </TabsTrigger>
+          <TabsTrigger value="forms" className="text-xs font-bold gap-2 py-2.5 rounded-lg px-4">
+            <Smartphone className="w-3.5 h-3.5" /> Formulários
+          </TabsTrigger>
           <TabsTrigger value="playground" className="text-xs font-bold gap-2 py-2.5 rounded-lg px-4">
             <Zap className="w-3.5 h-3.5" /> Playground
           </TabsTrigger>
@@ -273,6 +276,53 @@ const DesignSystem = () => {
                 title="ARIA" 
                 desc="Uso sistemático de roles e labels para garantir suporte a leitores de tela." 
               />
+            </div>
+          </section>
+        </TabsContent>
+
+        {/* --- FORMS CONTENT --- */}
+        <TabsContent value="forms" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-normal">
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Smartphone className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Padrões de Formulário</h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="card-standard p-6 border-none bg-card/50 backdrop-blur-sm">
+                <CardHeader className="px-0 pt-0">
+                  <CardTitle className="text-label font-bold">Input & Label</CardTitle>
+                </CardHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label className="text-label">Nome do Usuário</Label>
+                    <Input placeholder="Ex: João Silva" className="rounded-lg h-11" />
+                    <p className="text-sem-tiny text-muted-foreground font-medium">Use labels claros e placeholders de exemplo.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-label">Email Institucional</Label>
+                    <Input type="email" defaultValue="erro@exemplo" className="rounded-lg h-11 border-status-critical focus-visible:ring-status-critical" />
+                    <p className="text-sem-tiny text-status-critical font-bold">Este campo requer um email válido.</p>
+                  </div>
+                </div>
+              </Card>
+              <Card className="card-standard p-6 border-none bg-card/50 backdrop-blur-sm">
+                <CardHeader className="px-0 pt-0">
+                  <CardTitle className="text-label font-bold">Estrutura de Diálogo</CardTitle>
+                </CardHeader>
+                <div className="space-y-4">
+                  <div className="p-4 bg-muted/20 rounded-xl border border-dashed border-border/40">
+                    <p className="text-sem-body-sm text-center italic">
+                      Todos os formulários em modais devem seguir a estrutura:
+                      <br/>
+                      <strong>Header -> Content -> Footer (Sticky)</strong>
+                    </p>
+                  </div>
+                  <div className="flex justify-end gap-3 pt-4 border-t border-border/10">
+                    <Button variant="outline" className="rounded-lg font-bold">Cancelar</Button>
+                    <Button className="rounded-lg font-bold">Salvar Alterações</Button>
+                  </div>
+                </div>
+              </Card>
             </div>
           </section>
         </TabsContent>
