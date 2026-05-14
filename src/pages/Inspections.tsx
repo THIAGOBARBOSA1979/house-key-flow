@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX, History, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { ClipboardCheck, Calendar as CalendarIcon, ListFilter, SearchX, History, Clock, CheckCircle2, AlertCircle, BarChart } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -12,7 +12,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 
@@ -91,10 +91,14 @@ export default function Inspections() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
+        <TabsList className="grid w-full max-w-lg grid-cols-3">
           <TabsTrigger value="list" className="gap-2">
             <ClipboardCheck className="h-4 w-4" />
             Vistorias
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-2">
+            <BarChart className="h-4 w-4" />
+            Estatísticas
           </TabsTrigger>
           <TabsTrigger value="logs" className="gap-2">
             <History className="h-4 w-4" />
@@ -150,6 +154,29 @@ export default function Inspections() {
               </Button>
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Distribuição por Status</CardTitle>
+                <CardDescription>Resumo atual do pipeline de vistorias</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground italic">
+                Gráfico de distribuição (Mock)
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Evolução Mensal</CardTitle>
+                <CardDescription>Volume de vistorias concluídas por mês</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground italic">
+                Gráfico de tendência (Mock)
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="logs">
