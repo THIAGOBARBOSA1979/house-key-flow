@@ -386,6 +386,31 @@ const ShadowItem = ({ name, token }: { name: string; token: string }) => (
   </div>
 );
 
+const OpacityItem = ({ name, token, value }: { name: string; token: string; value: string }) => (
+  <div className="space-y-2">
+    <div className="h-12 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold text-xs" style={{ opacity: value }}>
+      {value}
+    </div>
+    <div className="text-center">
+      <p className="text-tiny font-bold uppercase">{name}</p>
+      <code className="text-[10px] text-muted-foreground">.{token}</code>
+    </div>
+  </div>
+);
+
+const ZIndexItem = ({ label, value, className, color }: { label: string; value: string; className: string; color: string }) => (
+  <div className="flex items-center gap-4 group">
+    <div className="w-24 text-tiny font-bold uppercase text-muted-foreground">{label}</div>
+    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+      <div className={cn("h-full transition-all duration-500 group-hover:scale-x-105 origin-left", color)} style={{ width: `${(parseInt(value) / 1060) * 100}%` }} />
+    </div>
+    <div className="w-16 text-right">
+      <code className="text-[10px] bg-muted px-2 py-0.5 rounded">{value}</code>
+    </div>
+  </div>
+);
+
+
 const AnimationCard = ({ name, animation, duration }: { name: string; animation: string; duration: string }) => {
   const [key, setKey] = useState(0);
   return (
