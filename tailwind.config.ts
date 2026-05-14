@@ -94,9 +94,13 @@ export default {
 				sm: 'var(--radius-sm)',
 				xs: 'var(--radius-xs)',
 				xl: 'var(--radius-xl)',
+				'2xl': 'var(--radius-2xl)',
 				full: 'var(--radius-full)',
 			},
 			zIndex: {
+				hide: 'var(--z-hide)',
+				base: 'var(--z-base)',
+				docked: 'var(--z-docked)',
 				dropdown: 'var(--z-dropdown)',
 				sticky: 'var(--z-sticky)',
 				fixed: 'var(--z-fixed)',
@@ -110,15 +114,21 @@ export default {
 				hover: 'var(--opacity-hover)',
 			},
 			spacing: {
+				'0.5-sem': 'var(--space-0-5)',
 				'1-sem': 'var(--space-1)',
+				'1.5-sem': 'var(--space-1-5)',
 				'2-sem': 'var(--space-2)',
 				'3-sem': 'var(--space-3)',
 				'4-sem': 'var(--space-4)',
+				'5-sem': 'var(--space-5)',
 				'6-sem': 'var(--space-6)',
 				'8-sem': 'var(--space-8)',
+				'10-sem': 'var(--space-10)',
 				'12-sem': 'var(--space-12)',
 				'16-sem': 'var(--space-16)',
 				'20-sem': 'var(--space-20)',
+				'24-sem': 'var(--space-24)',
+				'32-sem': 'var(--space-32)',
 				'layout-gap': 'var(--layout-gap)',
 				'section-gap': 'var(--section-gap)',
 			},
@@ -133,29 +143,50 @@ export default {
 				'sem-body-sm': ['var(--font-body-sm)', { lineHeight: '1.6', fontWeight: '400' }],
 				'sem-label': ['var(--font-label)', { lineHeight: '1.5', fontWeight: '600' }],
 				'sem-caption': ['var(--font-caption)', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.01em' }],
+				'sem-tiny': ['var(--font-tiny)', { lineHeight: '1.2', fontWeight: '600', letterSpacing: '0.02em' }],
 			},
-
+			transitionDuration: {
+				fast: 'var(--duration-fast)',
+				normal: 'var(--duration-normal)',
+				slow: 'var(--duration-slow)',
+				slower: 'var(--duration-slower)',
+			},
+			transitionTimingFunction: {
+				'in-sem': 'var(--ease-in)',
+				'out-sem': 'var(--ease-out)',
+				'in-out-sem': 'var(--ease-in-out)',
+				'spring-sem': 'var(--ease-spring)',
+			},
+			boxShadow: {
+				'sem-sm': 'var(--shadow-sm)',
+				'sem-md': 'var(--shadow-md)',
+				'sem-lg': 'var(--shadow-lg)',
+				'sem-xl': 'var(--shadow-xl)',
+				'sem-inner': 'var(--shadow-inner)',
+			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'fade-in': {
+					from: { opacity: '0', transform: 'translateY(4px)' },
+					to: { opacity: '1', transform: 'translateY(0)' }
+				},
+				'slide-up': {
+					from: { opacity: '0', transform: 'translateY(20px)' },
+					to: { opacity: '1', transform: 'translateY(0)' }
 				}
 			},
 			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-down': 'accordion-down var(--duration-fast) var(--ease-out)',
+				'accordion-up': 'accordion-up var(--duration-fast) var(--ease-out)',
+				'fade-in': 'fade-in var(--duration-slow) var(--ease-out)',
+				'slide-up': 'slide-up var(--duration-slow) var(--ease-spring)'
 			}
 		}
 	},
