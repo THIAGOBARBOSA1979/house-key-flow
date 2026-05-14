@@ -1,5 +1,6 @@
 
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -80,7 +81,7 @@ export function AppointmentDetails({
             </div>
             <div>
               <Label>Data e Hora</Label>
-              <div className="mt-1 text-sm">{format(appointment.date, "dd/MM/yyyy 'às' HH:mm")}</div>
+              <div className="mt-1 text-sm">{isValid(new Date(appointment.date)) ? format(new Date(appointment.date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}</div>
             </div>
           </div>
           
