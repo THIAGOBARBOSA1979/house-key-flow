@@ -110,13 +110,13 @@ const ClientArea = () => {
 
   const handleNewClientSubmit = (data: any) => {
     // Record audit log
-    toast({ title: "Cliente cadastrado", description: "O cliente foi cadastrado com sucesso." });
+    showToast({ title: "Cliente cadastrado", description: "O cliente foi cadastrado com sucesso." });
     setNewClientDialogOpen(false);
   };
 
   const handleCredentialsSubmit = (data: any) => {
     // Notify through SyncService (mocked)
-    toast({ title: "Credenciais geradas", description: "As credenciais de acesso foram geradas e enviadas ao cliente." });
+    showToast({ title: "Credenciais geradas", description: "As credenciais de acesso foram geradas e enviadas ao cliente." });
     setCredentialsDialogOpen(false);
   };
 
@@ -258,7 +258,7 @@ const ClientArea = () => {
               <TabsContent value="stages" className="mt-4 space-y-4">
                 <ClientStageManager 
                   clientId={selectedClient.id} 
-                  onStageChange={() => { toast({ title: "Etapa atualizada", description: "A etapa do cliente foi atualizada com sucesso." }); }} 
+                  onStageChange={() => { showToast({ title: "Etapa atualizada", description: "A etapa do cliente foi atualizada com sucesso." }); }} 
                 />
                 <ClientEventHistory clientId={selectedClient.id} />
               </TabsContent>
