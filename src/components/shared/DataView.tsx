@@ -42,8 +42,10 @@ export function DataView<T>({
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center section-padding bg-muted/20 rounded-xl border-2 border-dashed border-muted-foreground/10 animate-fade-in">
-        {emptyState?.icon || <SearchX className="h-14 w-14 text-muted-foreground/20 mb-4" />}
+      <div className="flex flex-col items-center justify-center section-padding bg-muted/20 rounded-xl border-2 border-dashed border-muted-foreground/10 animate-fade-in py-20">
+        <div className="p-4 bg-muted/20 rounded-full mb-4">
+          {emptyState?.icon || <SearchX className="h-12 w-12 text-muted-foreground/30" />}
+        </div>
         <h3 className="text-h3 font-bold text-foreground mb-1">
           {emptyState?.title || "Nenhum registro encontrado"}
         </h3>
@@ -51,7 +53,7 @@ export function DataView<T>({
           {emptyState?.description || "Tente ajustar seus filtros para encontrar o que procura."}
         </p>
         {emptyState?.action && (
-          <Button variant="outline" onClick={emptyState.action.onClick} className="interactive-active">
+          <Button onClick={emptyState.action.onClick} className="rounded-lg h-10 px-6 font-bold active:scale-95 transition-all">
             {emptyState.action.label}
           </Button>
         )}
