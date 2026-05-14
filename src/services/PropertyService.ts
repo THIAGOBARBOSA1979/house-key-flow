@@ -58,7 +58,7 @@ class PropertyService {
     this.properties.push(newProperty);
     this.persist();
     auditLogService.log({
-      entityType: 'inspection' as any, // Temporary mapping until more types added
+      entityType: 'property',
       entityId: newProperty.id,
       action: 'created',
       performedBy: 'admin-1',
