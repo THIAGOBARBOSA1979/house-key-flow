@@ -69,6 +69,7 @@ export default function Inspections() {
           <Button 
             variant={viewMode === "calendar" ? "default" : "outline"}
             onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+            className="interactive-active"
           >
             {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
             {viewMode === "calendar" ? "Lista" : "Calendário"}
@@ -102,29 +103,29 @@ export default function Inspections() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full max-w-lg grid-cols-3 bg-muted/50 p-1">
-          <TabsTrigger value="list" className="gap-2">
+        <TabsList className="grid w-full max-w-lg grid-cols-3 bg-muted/50 p-1 rounded-xl">
+          <TabsTrigger value="list" className="gap-2 rounded-lg py-2">
             <ClipboardCheck className="h-4 w-4" />
             Vistorias
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-2">
+          <TabsTrigger value="analytics" className="gap-2 rounded-lg py-2">
             <BarChart className="h-4 w-4" />
             Estatísticas
           </TabsTrigger>
-          <TabsTrigger value="logs" className="gap-2">
+          <TabsTrigger value="logs" className="gap-2 rounded-lg py-2">
             <History className="h-4 w-4" />
             Logs
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="list" className="space-y-4">
+        <TabsContent value="list" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <FilterBar
             searchPlaceholder="Buscar agendamentos..."
             searchValue={searchTerm}
             onSearchChange={setSearchTerm}
           >
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] rounded-lg">
                 <SelectValue placeholder="Filtrar por status" />
               </SelectTrigger>
               <SelectContent>
@@ -139,49 +140,46 @@ export default function Inspections() {
           {viewMode === "calendar" ? (
             <InspectionCalendar inspections={filteredInspections} />
           ) : (
-            filteredInspections.length > 0 ? (
-              <div className="grid gap-4">
-                {filteredInspections.map((inspection) => (
-                  <Card 
-                    key={inspection.id} 
-                    className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30"
-                  >
-                    <CardContent className="p-0">
-                      <InspectionItem inspection={inspection} />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <SearchX className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                <h3 className="text-lg font-medium mb-1">Nenhuma vistoria encontrada</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Nenhum resultado corresponde aos filtros aplicados.
-                </p>
-                <Button variant="outline" onClick={clearFilters}>
-                  Limpar filtros
-                </Button>
-              </div>
-            )
+            <DataView
+              items={filteredInspections}
+              gridClassName="grid-cols-1 xl:grid-cols-2"
+              renderGrid={(inspection) => (
+                <Card 
+                  key={inspection.id} 
+                  className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm"
+                >
+                  <CardContent className="p-0">
+                    <InspectionItem inspection={inspection} />
+                  </CardContent>
+                </Card>
+              )}
+              emptyState={{
+                title: "Nenhuma vistoria encontrada",
+                description: "Nenhum resultado corresponde aos filtros aplicados no momento.",
+                action: {
+                  label: "Limpar filtros",
+                  onClick: clearFilters
+                }
+              }}
+            />
           )}
         </TabsContent>
 
 
-        <TabsContent value="analytics" className="space-y-6">
+        <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
+            <Card className="card-standard bg-card/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-base">Distribuição por Status</CardTitle>
+                <CardTitle className="text-h4">Distribuição por Status</CardTitle>
                 <CardDescription>Resumo atual do pipeline de vistorias</CardDescription>
               </CardHeader>
               <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground italic">
                 Gráfico de distribuição (Mock)
               </CardContent>
             </Card>
-            <Card>
+            <Card className="card-standard bg-card/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-base">Evolução Mensal</CardTitle>
+                <CardTitle className="text-h4">Evolução Mensal</CardTitle>
                 <CardDescription>Volume de vistorias concluídas por mês</CardDescription>
               </CardHeader>
               <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground italic">
@@ -191,7 +189,7 @@ export default function Inspections() {
           </div>
         </TabsContent>
 
-        <TabsContent value="logs">
+        <TabsContent value="logs" className="animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <AuditLogViewer entityType="inspection" title="Logs de Auditoria - Vistorias" />
         </TabsContent>
       </Tabs>
