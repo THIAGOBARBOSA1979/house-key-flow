@@ -75,12 +75,12 @@ export const InspectionAcceptance = ({
 
   if (status === "accepted") {
     return (
-      <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+      <div className="rounded-lg border border-status-complete/20 bg-status-complete/10 p-4">
         <div className="flex items-center gap-3">
-          <CheckCircle className="h-6 w-6 text-green-600" />
+          <CheckCircle className="h-6 w-6 text-status-complete" />
           <div>
-            <h3 className="font-medium text-green-900">Vistoria aceita</h3>
-            <p className="text-sm text-green-700">
+            <h3 className="font-medium text-foreground">Vistoria aceita</h3>
+            <p className="text-sm text-muted-foreground">
               Aceita em {safeFormat(acceptedAt, "dd/MM/yyyy 'às' HH:mm")}
             </p>
           </div>
@@ -91,16 +91,16 @@ export const InspectionAcceptance = ({
 
   if (status === "rejected") {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+      <div className="rounded-lg border border-status-critical/20 bg-status-critical/10 p-4">
         <div className="flex items-center gap-3">
-          <XCircle className="h-6 w-6 text-red-600" />
+          <XCircle className="h-6 w-6 text-status-critical" />
           <div>
-            <h3 className="font-medium text-red-900">Vistoria recusada</h3>
-            <p className="text-sm text-red-700">
+            <h3 className="font-medium text-foreground">Vistoria recusada</h3>
+            <p className="text-sm text-muted-foreground">
               Recusada em {safeFormat(rejectedAt, "dd/MM/yyyy 'às' HH:mm")}
             </p>
             {rejectionReason && (
-              <p className="text-sm text-red-600 mt-1">
+              <p className="text-sm text-status-critical mt-1">
                 <span className="font-medium">Motivo:</span> {rejectionReason}
               </p>
             )}
@@ -113,29 +113,29 @@ export const InspectionAcceptance = ({
   // pending_acceptance
   return (
     <>
-      <Card className="border-amber-200 bg-amber-50/50">
+      <Card className="border-status-pending/20 bg-status-pending/5">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Clock className="h-5 w-5 text-amber-600" />
+          <CardTitle className="text-lg flex items-center gap-2 text-status-pending">
+            <Clock className="h-5 w-5" />
             Aceite de Vistoria Pendente
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-background rounded-lg p-3 text-center border">
-              <div className="text-2xl font-bold text-green-600">{conformeCount}</div>
+              <div className="text-2xl font-bold text-status-complete">{conformeCount}</div>
               <div className="text-xs text-muted-foreground">Itens conformes</div>
             </div>
             <div className="bg-background rounded-lg p-3 text-center border">
-              <div className="text-2xl font-bold text-red-600">{naoConformeCount}</div>
+              <div className="text-2xl font-bold text-status-critical">{naoConformeCount}</div>
               <div className="text-xs text-muted-foreground">Itens não conformes</div>
             </div>
           </div>
 
           {naoConformeCount > 0 && (
-            <div className="flex items-start gap-2 p-3 bg-amber-100 rounded-md">
-              <AlertTriangle className="h-4 w-4 text-amber-700 mt-0.5" />
-              <p className="text-sm text-amber-800">
+            <div className="flex items-start gap-2 p-3 bg-status-pending/10 rounded-md border border-status-pending/20">
+              <AlertTriangle className="h-4 w-4 text-status-pending mt-0.5" />
+              <p className="text-sm text-foreground/80">
                 Foram identificados {naoConformeCount} itens não conformes de um total de {totalItems}. 
                 Revise os itens antes de aceitar.
               </p>
