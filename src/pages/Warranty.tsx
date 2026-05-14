@@ -20,6 +20,7 @@ import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, M
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Select, 
   SelectContent, 
