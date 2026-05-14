@@ -170,6 +170,7 @@ export function KanbanFilters({
                   ))}
                 </SelectContent>
               </Select>
+            </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Data de Abertura (Início)</label>
               <Input
