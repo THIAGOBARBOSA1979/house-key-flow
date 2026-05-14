@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   FileText, Plus, Search, Upload, Download, Edit, Trash2, Eye, Save, X, 
-  Star, Clock, AlertTriangle, Copy, Archive, BarChart, History, TrendingUp
+  Star, Clock, AlertTriangle, Copy, Archive, BarChart, History, TrendingUp, Filter, LayoutGrid, List
 } from "lucide-react";
 import {
   Select,
@@ -592,12 +592,25 @@ export default function AdminDocuments() {
         </TabsContent>
 
         <TabsContent value="documents" className="space-y-6">
-          {/* Filtros */}
-          <DocumentFilters 
-            onSearch={handleSearch}
-            activeFilters={activeFilters}
-            onClearFilters={handleClearFilters}
-          />
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <DocumentFilters 
+              onSearch={handleSearch}
+              activeFilters={activeFilters}
+              onClearFilters={handleClearFilters}
+            />
+            <div className="flex items-center gap-2 self-end">
+              <Tabs value={currentView} onValueChange={setCurrentView} className="hidden md:flex">
+                <TabsList>
+                  <TabsTrigger value="grid">
+                    <LayoutGrid className="h-4 w-4" />
+                  </TabsTrigger>
+                  <TabsTrigger value="list">
+                    <List className="h-4 w-4" />
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
 
           {/* Ações em massa */}
           <BulkActions
