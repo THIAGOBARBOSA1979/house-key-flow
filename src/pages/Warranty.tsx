@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/dialog";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { Kanban, BarChart3, Settings, History, Plus } from "lucide-react";
+import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const Warranty = () => {
   const { toast } = useToast();
@@ -100,7 +101,12 @@ const Warranty = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-medium">Detalhamento de Problemas</h3>
-                    <Button size="sm" variant="outline" className="gap-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="gap-2"
+                      onClick={() => toast({ title: "Funcionalidade em desenvolvimento", description: "Adição manual de problemas será implementada na próxima versão." })}
+                    >
                       <Plus className="h-4 w-4" />
                       Adicionar Item
                     </Button>
@@ -109,23 +115,61 @@ const Warranty = () => {
                     {selectedRequest.problems && selectedRequest.problems.length > 0 ? (
                       <div className="space-y-3">
                         {selectedRequest.problems.map((prob) => (
-                          <div key={prob.id} className="p-3 border rounded bg-background flex justify-between items-center">
+                          <div key={prob.id} className="p-3 border rounded bg-background flex justify-between items-center shadow-sm">
                             <div>
                               <p className="font-medium">{prob.description}</p>
-                              <div className="flex gap-2 text-xs text-muted-foreground">
-                                <span>{prob.category}</span>
-                                <span>•</span>
-                                <span className={prob.severity === 'severe' ? 'text-red-500 font-bold' : ''}>{prob.severity}</span>
+                              <div className="flex gap-2 text-xs text-muted-foreground mt-1">
+                                <span className="bg-muted px-1.5 py-0.5 rounded">{prob.category}</span>
+                                <span className="flex items-center gap-1">
+                                  Prioridade: 
+                                  <span className={prob.severity === 'severe' ? 'text-red-500 font-bold' : ''}>
+                                    {prob.severity === 'severe' ? 'Alta' : prob.severity === 'moderate' ? 'Média' : 'Baixa'}
+                                  </span>
+                                </span>
                               </div>
                             </div>
-                            <Badge variant={prob.status === 'resolved' ? 'default' : 'secondary'}>
-                              {prob.status === 'resolved' ? 'Resolvido' : 'Pendente'}
-                            </Badge>
+                            <div className="flex items-center gap-3">
+                              {prob.status === 'resolved' && prob.resolvedAt && (
+                                <span className="text-[10px] text-muted-foreground italic hidden sm:inline">
+                                  Resolvido em {new Date(prob.resolvedAt).toLocaleDateString()}
+                                </span>
+                              )}
+                              <Button
+                                size="sm"
+                                variant={prob.status === 'resolved' ? 'default' : 'outline'}
+                                className={cn(
+                                  "h-8 px-3 gap-1",
+                                  prob.status === 'resolved' ? "bg-emerald-600 hover:bg-emerald-700" : "border-amber-500 text-amber-700 hover:bg-amber-50"
+                                )}
+                                onClick={() => {
+                                  const result = warrantyFlowService.toggleProblemStatus(selectedRequest.id, prob.id, 'admin-1');
+                                  if (result.success && result.request) {
+                                    setSelectedRequest(result.request);
+                                    toast({ title: "Status atualizado", description: "O problema foi marcado como " + (prob.status === 'resolved' ? 'pendente' : 'resolvido') });
+                                  }
+                                }}
+                              >
+                                {prob.status === 'resolved' ? (
+                                  <>
+                                    <CheckCircle className="h-3.5 w-3.5" />
+                                    Resolvido
+                                  </>
+                                ) : (
+                                  <>
+                                    <AlertCircle className="h-3.5 w-3.5" />
+                                    Pendente
+                                  </>
+                                )}
+                              </Button>
+                            </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-center text-muted-foreground py-8 italic">Nenhum detalhamento de problema disponível.</p>
+                      <div className="text-center py-10">
+                        <AlertCircle className="h-10 w-10 text-muted-foreground/30 mx-auto mb-2" />
+                        <p className="text-muted-foreground italic">Nenhum detalhamento de problema disponível.</p>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -161,16 +205,49 @@ const Warranty = () => {
                     </CardHeader>
                     <CardContent>
                       {selectedRequest.materials && selectedRequest.materials.length > 0 ? (
-                        <ul className="space-y-1">
+                        <div className="space-y-2">
                           {selectedRequest.materials.map((m, i) => (
-                            <li key={i} className="text-xs flex justify-between">
-                              <span>{m.name} ({m.quantity} {m.unit})</span>
-                              {m.cost && <span>R$ {m.cost}</span>}
-                            </li>
+                            <div key={i} className="flex justify-between items-center p-2 rounded hover:bg-muted/50 transition-colors">
+                              <div className="flex flex-col">
+                                <span className="text-xs font-bold">{m.name}</span>
+                                <span className="text-[10px] text-muted-foreground">{m.quantity} {m.unit}</span>
+                              </div>
+                              {m.cost && <span className="text-xs font-medium">R$ {m.cost.toLocaleString('pt-BR')}</span>}
+                            </div>
                           ))}
-                        </ul>
+                          <div className="pt-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full h-8 text-[10px] border border-dashed gap-1"
+                              onClick={() => {
+                                const result = warrantyFlowService.addMaterial(selectedRequest.id, { name: "Novo Material", quantity: 1, unit: "un", cost: 0 }, 'admin-1');
+                                if (result.success && result.request) {
+                                  setSelectedRequest(result.request);
+                                }
+                              }}
+                            >
+                              <Plus className="h-3 w-3" /> Adicionar Material
+                            </Button>
+                          </div>
+                        </div>
                       ) : (
-                        <p className="text-xs text-muted-foreground italic">Nenhum material registrado.</p>
+                        <div className="text-center py-6">
+                          <p className="text-xs text-muted-foreground italic mb-3">Nenhum material registrado.</p>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-8 text-[10px] gap-1"
+                            onClick={() => {
+                              const result = warrantyFlowService.addMaterial(selectedRequest.id, { name: "Novo Material", quantity: 1, unit: "un", cost: 0 }, 'admin-1');
+                              if (result.success && result.request) {
+                                setSelectedRequest(result.request);
+                              }
+                            }}
+                          >
+                            <Plus className="h-3 w-3" /> Registrar Primeiro Material
+                          </Button>
+                        </div>
                       )}
                     </CardContent>
                   </Card>
