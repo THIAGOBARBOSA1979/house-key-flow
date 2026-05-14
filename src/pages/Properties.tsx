@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, SearchX } from "lucide-react";
+import { Building, Plus, SearchX, LayoutGrid, List } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -11,6 +11,17 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Badge } from "@/components/ui/badge";
 
 const properties = [
   { id: "1", name: "Edifício Aurora", location: "São Paulo, SP", units: 120, completedUnits: 85, status: "progress" as const },
@@ -24,6 +35,7 @@ const properties = [
 const Properties = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,25 +67,85 @@ const Properties = () => {
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
       >
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos os status</SelectItem>
-            <SelectItem value="pending">Pendente</SelectItem>
-            <SelectItem value="progress">Em andamento</SelectItem>
-            <SelectItem value="complete">Concluído</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os status</SelectItem>
+              <SelectItem value="pending">Pendente</SelectItem>
+              <SelectItem value="progress">Em andamento</SelectItem>
+              <SelectItem value="complete">Concluído</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} className="hidden md:flex">
+            <TabsList>
+              <TabsTrigger value="grid">
+                <LayoutGrid className="h-4 w-4" />
+              </TabsTrigger>
+              <TabsTrigger value="list">
+                <List className="h-4 w-4" />
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
       </FilterBar>
 
       {filteredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProperties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </div>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProperties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-md border bg-card overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Localização</TableHead>
+                  <TableHead>Unidades</TableHead>
+                  <TableHead>Progresso</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredProperties.map((property) => {
+                  const percentage = Math.round((property.completedUnits / property.units) * 100);
+                  return (
+                    <TableRow key={property.id}>
+                      <TableCell className="font-medium">{property.name}</TableCell>
+                      <TableCell>{property.location}</TableCell>
+                      <TableCell>{property.completedUnits} / {property.units}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2 min-w-[120px]">
+                          <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-company" 
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-muted-foreground">{percentage}%</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={property.status} />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">Ver</Button>
+                        <Button variant="ghost" size="sm">Editar</Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        )
       ) : (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <SearchX className="h-12 w-12 text-muted-foreground/50 mb-4" />
