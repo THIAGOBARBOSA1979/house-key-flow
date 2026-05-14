@@ -170,6 +170,22 @@ export function KanbanFilters({
                   ))}
                 </SelectContent>
               </Select>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Data de Abertura (Início)</label>
+              <Input
+                type="date"
+                value={filters.dateFrom ? filters.dateFrom.toISOString().split('T')[0] : ""}
+                onChange={(e) => updateFilter("dateFrom", e.target.value ? new Date(e.target.value).toISOString() : undefined)}
+              />
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block">Data de Abertura (Fim)</label>
+              <Input
+                type="date"
+                value={filters.dateTo ? filters.dateTo.toISOString().split('T')[0] : ""}
+                onChange={(e) => updateFilter("dateTo", e.target.value ? new Date(e.target.value).toISOString() : undefined)}
+              />
             </div>
           </div>
         </SheetContent>
