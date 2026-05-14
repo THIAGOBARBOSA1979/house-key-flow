@@ -1,7 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building, ShieldCheck, ClipboardCheck, AlertTriangle, LucideIcon } from "lucide-react";
+import { Building, ShieldCheck, ClipboardCheck, AlertTriangle, LucideIcon, Activity } from "lucide-react";
 
 interface StatItem {
   title: string;
