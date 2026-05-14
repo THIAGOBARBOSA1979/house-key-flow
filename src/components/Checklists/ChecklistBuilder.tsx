@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { uuidv4 } from '@/lib/utils';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
