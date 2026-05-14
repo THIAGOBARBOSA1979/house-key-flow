@@ -101,7 +101,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <footer 
           className="py-6-sem px-8-sem border-t border-border/50 text-center transition-all duration-normal"
         >
-          <p className="text-sem-tiny uppercase font-bold tracking-widest text-muted-foreground/60">&copy; 2026 A2 Gestão de Propriedades • v2.4.0</p>
+          <p className="text-sem-tiny uppercase font-bold tracking-widest text-muted-foreground/60">&copy; 2026 A2 Gestão de Propriedades • v2.8.5</p>
         </footer>
       </div>
     </div>
