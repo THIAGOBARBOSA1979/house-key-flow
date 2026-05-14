@@ -296,6 +296,8 @@ export interface WarrantyProblemDetail {
   resolvedAt?: Date;
   estimatedCost?: number;
   actualCost?: number;
+  evidence?: string[]; // Array of photo URLs
+  internalComments?: string;
 }
 
 // Timeline step for client view
