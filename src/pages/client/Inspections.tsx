@@ -99,6 +99,7 @@ const ClientInspections = () => {
   const [inspections, setInspections] = useState(initialInspections);
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [activeInspection, setActiveInspection] = useState<string | null>(null);
   const { toast } = useToast();
   
@@ -172,7 +173,7 @@ const ClientInspections = () => {
         </div>
         
         {canScheduleInspection ? (
-          <Button>
+          <Button onClick={() => setScheduleDialogOpen(true)}>
             <Calendar className="mr-2 h-4 w-4" />
             Agendar Vistoria
           </Button>
