@@ -54,6 +54,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
+import { StatsCard } from "@/components/shared/StatsCard";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -108,40 +109,40 @@ const AdminDocuments = () => {
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-tiny text-muted-foreground">Total de Documentos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{documents.length}</div>
-            <p className="text-[10px] text-emerald-500 font-bold mt-1">Sincronizado</p>
-          </CardContent>
-        </Card>
-        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-tiny text-muted-foreground">Rascunhos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-amber-500">
-              {documents.filter(d => d.status === 'draft').length}
-            </div>
-            <p className="text-[10px] text-muted-foreground font-bold mt-1">Requer atenção</p>
-          </CardContent>
-        </Card>
-        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm md:col-span-2">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-tiny text-muted-foreground">Armazenamento (Simulado)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-end justify-between mb-2">
-              <span className="text-2xl font-bold">1.8 GB</span>
-              <span className="text-xs text-muted-foreground">de 10 GB (18%)</span>
-            </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden border">
-              <div className="h-full bg-primary transition-all duration-1000" style={{ width: '18%' }} />
-            </div>
-          </CardContent>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard 
+          label="Total Arquivos" 
+          value={documents.length} 
+          icon={FileText} 
+          variant="brand" 
+          description="Contratos e licenças"
+        />
+        <StatsCard 
+          label="Rascunhos" 
+          value={documents.filter(d => d.status === 'draft').length} 
+          icon={Clock} 
+          variant="pending" 
+          description="Aguardando publicação"
+        />
+        <StatsCard 
+          label="Sincronizados" 
+          value={documents.filter(d => d.status === 'published').length} 
+          icon={CheckCircle2} 
+          variant="complete" 
+          description="Em nuvem (G-Drive)"
+        />
+        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm overflow-hidden flex flex-col justify-center px-5 py-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sem-tiny uppercase font-bold tracking-widest text-muted-foreground/80">Armazenamento</p>
+            <span className="text-sem-tiny font-black text-primary">18%</span>
+          </div>
+          <div className="flex items-baseline gap-2 mb-3">
+            <h3 className="text-sem-h3 font-bold text-foreground leading-tight">1.8 GB</h3>
+            <span className="text-sem-caption text-muted-foreground">de 10 GB</span>
+          </div>
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
+            <div className="h-full bg-primary transition-all duration-1000 ease-out rounded-full" style={{ width: '18%' }} />
+          </div>
         </Card>
       </div>
 
