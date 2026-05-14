@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { SearchX, Loader2 } from "lucide-react";
+import React, { useState } from 'react';
+import { SearchX, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,7 @@ interface DataViewProps<T> {
     };
   };
   gridClassName?: string;
+  itemsPerPage?: number;
 }
 
 export function DataView<T>({

@@ -125,13 +125,13 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
           />
         </div>
         
-        <div className="flex justify-end gap-3 pt-4 border-t">
+        <div className="flex justify-end gap-3 pt-6 border-t border-border/10">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel} className="rounded-lg font-bold">
               Cancelar
             </Button>
           )}
-          <Button type="submit">
+          <Button type="submit" className="rounded-lg font-bold bg-primary hover:bg-primary/90">
             {initialData ? "Salvar Alterações" : "Criar Empreendimento"}
           </Button>
         </div>
