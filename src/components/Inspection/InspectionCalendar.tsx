@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, User, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,12 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
   const getInspectionsForDay = (day: Date) => {
-    return inspections.filter(i => isSameDay(new Date(i.date || i.scheduledDate), day));
+    return inspections.filter(i => {
+      const dateVal = i.date || i.scheduledDate;
+      if (!dateVal) return false;
+      const d = new Date(dateVal);
+      return isValid(d) && isSameDay(d, day);
+    });
   };
 
   return (
@@ -91,7 +96,7 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
                     >
                       <div className="font-bold flex items-center gap-0.5">
                         <Clock className="h-2 w-2" />
-                        {inspection.time || format(new Date(inspection.scheduledDate), "HH:mm")}
+                        {inspection.time || (isValid(new Date(inspection.scheduledDate)) ? format(new Date(inspection.scheduledDate), "HH:mm") : "—")}
                       </div>
                       <div className="truncate">{inspection.property}</div>
                     </div>
