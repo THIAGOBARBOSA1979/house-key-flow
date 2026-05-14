@@ -198,7 +198,7 @@ const ClientArea = () => {
                           return profile ? (
                             <StageIndicator currentStage={profile.currentStage} variant="compact" />
                           ) : (
-                            <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Ativo</Badge>
+                            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">Ativo</Badge>
                           );
                         })()}
                         <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
@@ -304,7 +304,7 @@ const ClientArea = () => {
                         <CardDescription>Agendada para {safeFormat(inspection.date, "dd/MM/yyyy 'às' HH:mm")}</CardDescription>
                       </CardHeader>
                       <CardFooter className="p-4 pt-0">
-                        <Badge variant="outline">{inspection.status === "scheduled" ? "Agendada" : "Concluída"}</Badge>
+                        <Badge className="bg-muted text-muted-foreground">{inspection.status === "scheduled" ? "Agendada" : "Concluída"}</Badge>
                       </CardFooter>
                     </Card>
                   ))}
@@ -323,7 +323,7 @@ const ClientArea = () => {
                         <CardDescription>{claim.description}</CardDescription>
                       </CardHeader>
                       <CardFooter className="p-4 pt-0 flex justify-between">
-                        <Badge variant="outline">{claim.status === "pending" ? "Pendente" : "Concluída"}</Badge>
+                        <Badge className="bg-muted text-muted-foreground">{claim.status === "pending" ? "Pendente" : "Concluída"}</Badge>
                         <Button variant="outline" size="sm" onClick={() => handleViewWarrantyDetails(claim.title)}>Ver detalhes</Button>
                       </CardFooter>
                     </Card>
