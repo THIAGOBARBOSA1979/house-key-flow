@@ -28,7 +28,8 @@ import {
   ShieldCheck,
   Keyboard,
   Contrast,
-  Command
+  Command,
+  Table as TableIcon
 } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -54,6 +55,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const DesignSystem = () => {
   const [playgroundState, setPlaygroundState] = useState({

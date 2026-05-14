@@ -131,6 +131,9 @@ export default {
 				'32-sem': 'var(--space-32)',
 				'layout-gap': 'var(--layout-gap)',
 				'section-gap': 'var(--section-gap)',
+				'header-height': 'var(--header-height)',
+				'sidebar-width': 'var(--sidebar-width)',
+				'sidebar-collapsed-width': 'var(--sidebar-collapsed-width)',
 			},
 			fontSize: {
 				'sem-display': ['var(--font-display)', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '800' }],

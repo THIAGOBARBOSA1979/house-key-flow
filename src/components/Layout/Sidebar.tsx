@@ -50,23 +50,23 @@ const systemItems = [
 function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
+      <div className="flex items-center justify-between h-header-height px-4 border-b border-sidebar-border">
         {!collapsed && (
-          <h1 className="text-h3 font-bold text-sidebar-foreground">A2 Imobiliária</h1>
+          <h1 className="text-h3 font-bold text-sidebar-foreground truncate">A2 Imobiliária</h1>
         )}
         {onToggleCollapse && (
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={onToggleCollapse}
-            className="text-sidebar-foreground hover:bg-sidebar-accent"
+            className="text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-normal"
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </Button>
         )}
       </div>
       
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-2">
+      <nav className="flex-1 overflow-y-auto py-4-sem px-3-sem space-y-2-sem">
         <SidebarGroup 
           title="Operacional" 
           items={operationalItems} 
@@ -88,14 +88,14 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
       </nav>
       
       {!collapsed && (
-        <div className="p-4 border-t border-sidebar-border">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-accent-foreground">
+        <div className="p-4-sem border-t border-sidebar-border animate-fade-in">
+          <div className="flex items-center gap-3-sem">
+            <div className="w-8 h-8 rounded-lg bg-sidebar-accent flex items-center justify-center text-sidebar-accent-foreground font-bold shadow-sem-sm">
               A
             </div>
-            <div>
-              <p className="text-sm font-medium text-sidebar-foreground">Admin</p>
-              <p className="text-xs text-sidebar-foreground/70">admin@construtora.com</p>
+            <div className="min-w-0">
+              <p className="text-body-sm font-bold text-sidebar-foreground truncate">Admin</p>
+              <p className="text-sem-tiny text-sidebar-foreground/70 truncate">admin@construtora.com</p>
             </div>
           </div>
         </div>
@@ -127,12 +127,12 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
           <Button 
             size="icon" 
             variant="outline" 
-            className="fixed left-4 top-4 z-50 lg:hidden"
+            className="fixed left-4 top-4 z-modal lg:hidden shadow-sem-md bg-background"
           >
             <Menu size={20} />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-64 bg-sidebar">
+        <SheetContent side="left" className="p-0 w-sidebar-width bg-sidebar border-r-sidebar-border shadow-sem-xl">
           <SidebarContent collapsed={false} />
         </SheetContent>
       </Sheet>
@@ -142,8 +142,8 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
   return (
     <div 
       className={cn(
-        "fixed inset-y-0 left-0 z-40 bg-sidebar flex flex-col transition-all duration-300",
-        isCollapsed ? "w-16" : "w-64",
+        "fixed inset-y-0 left-0 z-sticky bg-sidebar flex flex-col transition-all duration-normal ease-out-sem border-r border-sidebar-border",
+        isCollapsed ? "w-sidebar-collapsed-width" : "w-sidebar-width",
         className
       )}
     >
@@ -154,3 +154,4 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
     </div>
   );
 };
+
