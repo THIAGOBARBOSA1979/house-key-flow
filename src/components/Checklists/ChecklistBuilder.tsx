@@ -212,9 +212,9 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
       </Card>
       
       {/* Action buttons */}
-      <div className="flex justify-end gap-3">
-        <Button variant="outline" onClick={onCancel}>Cancelar</Button>
-        <Button onClick={handleSave} disabled={!title.trim() || items.length === 0}>
+      <div className="flex justify-end gap-3 pt-6 border-t border-border/10">
+        <Button variant="outline" onClick={onCancel} className="rounded-lg font-bold">Cancelar</Button>
+        <Button onClick={handleSave} disabled={!title.trim() || items.length === 0} className="rounded-lg font-bold bg-primary hover:bg-primary/90">
           <Check className="mr-2 h-4 w-4" />
           Salvar Checklist
         </Button>
