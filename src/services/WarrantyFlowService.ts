@@ -54,7 +54,9 @@ const initialMockRequests: WarrantyRequestFlow[] = [
         description: "Vazamento no registro",
         severity: "moderate",
         photos: [],
-        status: "pending"
+        status: "pending",
+        createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+        updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000)
       }
     ],
     history: [
