@@ -479,6 +479,34 @@ class WarrantyFlowService {
 
     this.requests.set(requestId, updatedRequest);
     this.persist();
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Assign or change technician
+   */
+  assignTechnician(
+    requestId: string,
+    technicianId: string,
+    technicianName: string,
+    assignedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    
+    if (!request) {
+      return { success: false, error: "Solicitação não encontrada" };
+    }
+    
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      assignedTo: technicianId,
+      assignedToName: technicianName,
+      updatedAt: new Date()
+    };
+    
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
     
     auditLogService.log({
       entityType: 'warranty',
