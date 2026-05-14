@@ -5,7 +5,7 @@ import { SLABadge } from "../ClientTimeline/SLAIndicator";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Building2, User, Calendar, GripVertical, AlertTriangle } from "lucide-react";
+import { Building2, User, Calendar, GripVertical, AlertTriangle, Clock, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -70,12 +70,25 @@ export function KanbanCard({ data, isDragging = false, onClick }: KanbanCardProp
           <Building2 className="h-3 w-3" />
           <span className="truncate">{request.propertyName} - {request.unitNumber}</span>
         </div>
+        {request.isPaused && (
+          <div className="flex items-center gap-1.5 text-amber-600 font-medium">
+            <Clock className="h-3 w-3" />
+            <span>Pausado: {request.pauseReason}</span>
+          </div>
+        )}
       </div>
       
-      {/* Category badge */}
-      <Badge variant="secondary" className="text-xs mb-2">
-        {request.category}
-      </Badge>
+      {/* Category and Cost badges */}
+      <div className="flex flex-wrap gap-1.5 mb-2">
+        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+          {request.category}
+        </Badge>
+        {request.estimatedCost && (
+          <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-emerald-200 text-emerald-700 bg-emerald-50">
+            Est: R$ {request.estimatedCost.toLocaleString('pt-BR')}
+          </Badge>
+        )}
+      </div>
       
       {/* SLA and assignment */}
       <div className="flex items-center justify-between mt-2 pt-2 border-t">
