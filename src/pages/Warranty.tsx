@@ -157,7 +157,23 @@ const Warranty = () => {
               <TabsContent value="problems" className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-bold">Itens da Solicitação</h3>
-                  <Button size="sm" variant="outline" className="gap-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="gap-2"
+                    onClick={() => {
+                      const result = warrantyFlowService.addProblemToRequest(selectedRequest.id, {
+                        description: "Novo problema identificado",
+                        category: "Geral",
+                        location: "A definir",
+                        severity: "moderate"
+                      }, 'admin-1');
+                      if (result.success && result.request) {
+                        setSelectedRequest(result.request);
+                        toast({ title: "Item adicionado", description: "Um novo item foi adicionado à lista." });
+                      }
+                    }}
+                  >
                     <Plus className="h-4 w-4" />
                     Adicionar Item
                   </Button>
