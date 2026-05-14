@@ -128,8 +128,8 @@ export default function Login() {
                 A2
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">A2 Incorporadora</h1>
-                <p className="text-sm text-muted-foreground font-medium">Sistema de Gestão</p>
+                <h1 className="text-h2 font-black tracking-tighter text-foreground">A2 Incorporadora</h1>
+                <p className="text-label text-brand uppercase tracking-widest">Sistema de Gestão</p>
               </div>
             </Link>
           </div>
@@ -159,7 +159,7 @@ export default function Login() {
                     </>
                   )}
                 </h2>
-                <p className="text-xl text-gray-600 leading-relaxed">
+                <p className="text-body-lg text-muted-foreground leading-relaxed">
                   {activeTab === "admin" 
                     ? "Acesse o painel administrativo e gerencie todos os aspectos do seu empreendimento com eficiência e segurança."
                     : "Acesse sua área exclusiva e tenha controle total sobre seu imóvel, vistorias e garantias de forma simples e intuitiva."
@@ -203,7 +203,7 @@ export default function Login() {
               <Card className="w-full max-w-md shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="space-y-4 pb-8">
                   <div className="text-center">
-                    <CardTitle className="text-3xl font-bold text-gray-900">
+                    <CardTitle className="text-h2 font-black tracking-tight text-foreground">
                       {activeTab === "admin" ? "Acesso Administrativo" : "Bem-vindo de volta"}
                     </CardTitle>
                     <CardDescription className="mt-3 text-base text-gray-600">

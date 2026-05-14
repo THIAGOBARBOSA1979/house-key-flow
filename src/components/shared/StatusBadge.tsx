@@ -102,8 +102,8 @@ export const StatusBadge = ({
       className={cn(
         "badge-status transition-all duration-200",
         config.badgeClass,
-        size === "sm" && "px-2 py-0.5 text-[10px] gap-1",
-        size === "lg" && "px-4 py-1.5 text-sm gap-2",
+        size === "sm" && "px-2 py-0.5 text-tiny gap-1",
+        size === "lg" && "px-4 py-1.5 text-sem-body-sm gap-2 font-bold",
         className
       )}
     >

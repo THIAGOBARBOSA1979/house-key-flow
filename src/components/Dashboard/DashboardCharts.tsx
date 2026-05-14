@@ -123,7 +123,7 @@ export const DashboardCharts = () => {
                   verticalAlign="bottom" 
                   height={36}
                   iconType="circle"
-                  formatter={(value) => <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider ml-1">{value}</span>}
+                  formatter={(value) => <span className="text-tiny font-bold text-muted-foreground uppercase tracking-wider ml-1">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>

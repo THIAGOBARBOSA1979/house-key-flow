@@ -62,7 +62,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, className }: Property
       <CardContent className="space-y-4 pt-2">
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Unidades</p>
+            <p className="text-tiny text-muted-foreground uppercase font-bold tracking-widest mb-1">Unidades</p>
             <div className="flex items-center gap-2">
               <div className="p-1 bg-primary/10 rounded">
                 <Home size={14} className="text-primary" />
@@ -71,7 +71,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, className }: Property
             </div>
           </div>
           <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
-            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Entregues</p>
+            <p className="text-tiny text-muted-foreground uppercase font-bold tracking-widest mb-1">Entregues</p>
             <div className="flex items-center gap-2">
               <div className="p-1 bg-emerald-500/10 rounded">
                 <Users size={14} className="text-emerald-500" />
@@ -82,7 +82,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, className }: Property
         </div>
         
         <div className="space-y-2">
-          <div className="flex justify-between items-center text-[11px] font-bold">
+          <div className="flex justify-between items-center text-tiny font-bold">
             <span className="text-muted-foreground">PROGRESSO DA ENTREGA</span>
             <span className="text-primary">{completionPercentage}%</span>
           </div>

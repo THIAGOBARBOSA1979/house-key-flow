@@ -60,8 +60,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                       {user?.name?.charAt(0) || "U"}
                     </div>
                     <div className="hidden sm:flex flex-col items-start leading-none gap-0.5">
-                      <span className="text-xs font-bold truncate max-w-[120px]">{user?.name}</span>
-                      <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Administrador</span>
+                      <span className="text-label truncate max-w-[120px]">{user?.name}</span>
+                      <span className="text-tiny text-muted-foreground uppercase font-bold tracking-tighter">Administrador</span>
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
