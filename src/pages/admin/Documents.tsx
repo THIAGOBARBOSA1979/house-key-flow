@@ -560,7 +560,7 @@ export default function AdminDocuments() {
       </Dialog>
 
       <Tabs defaultValue="documents" className="space-y-6">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
           <TabsTrigger value="dashboard">
             <BarChart className="h-4 w-4 mr-2" />
             Dashboard
