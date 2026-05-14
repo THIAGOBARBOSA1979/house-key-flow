@@ -163,6 +163,28 @@ const DesignSystem = () => {
               <ShadowItem name="Shadow LG" token="shadow-sem-lg" />
               <ShadowItem name="Shadow XL" token="shadow-sem-xl" />
             </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <OpacityItem name="Disabled" token="opacity-disabled" value="0.4" />
+              <OpacityItem name="Muted" token="opacity-muted" value="0.6" />
+              <OpacityItem name="Hover" token="opacity-hover" value="0.9" />
+              <OpacityItem name="Full" token="opacity-full" value="1.0" />
+            </div>
+          </section>
+
+          {/* Z-Index Hierarchy */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Layers className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Hierarquia Z-Index</h2>
+            </div>
+            <div className="bg-card border rounded-xl p-6 space-y-4">
+              <ZIndexItem label="Tooltip" value="1060" className="z-tooltip" color="bg-rose-500" />
+              <ZIndexItem label="Popover" value="1050" className="z-popover" color="bg-amber-500" />
+              <ZIndexItem label="Modal" value="1040" className="z-modal" color="bg-emerald-500" />
+              <ZIndexItem label="Fixed" value="1030" className="z-fixed" color="bg-blue-500" />
+              <ZIndexItem label="Sticky" value="1020" className="z-sticky" color="bg-indigo-500" />
+              <ZIndexItem label="Dropdown" value="1000" className="z-dropdown" color="bg-purple-500" />
+            </div>
           </section>
 
           {/* Animations */}
@@ -409,7 +431,6 @@ const ZIndexItem = ({ label, value, className, color }: { label: string; value: 
     </div>
   </div>
 );
-
 
 const AnimationCard = ({ name, animation, duration }: { name: string; animation: string; duration: string }) => {
   const [key, setKey] = useState(0);
