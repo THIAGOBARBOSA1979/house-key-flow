@@ -185,6 +185,12 @@
     --layout-gap: 1.5rem;
     --section-gap: 3.5rem;
   }
+
+  :root {
+    --header-height: 4rem;
+    --sidebar-width: 16rem;
+    --sidebar-collapsed-width: 4rem;
+  }
 }
 
 @media (max-width: 768px) {
