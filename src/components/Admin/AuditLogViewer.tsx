@@ -30,6 +30,10 @@ const ACTION_LABELS: Record<AuditAction, string> = {
   comment_added: "Comentário",
   info_added: "Info Adicional",
   assigned: "Atribuição",
+  exported: "Exportação",
+  logged_in: "Login",
+  logged_out: "Logout",
+  settings_updated: "Configuração",
 };
 
 const ACTION_COLORS: Record<AuditAction, string> = {
@@ -44,6 +48,10 @@ const ACTION_COLORS: Record<AuditAction, string> = {
   comment_added: "bg-muted text-muted-foreground border-border",
   info_added: "bg-status-progress/10 text-status-progress border-status-progress/20",
   assigned: "bg-brand/10 text-brand border-brand/20",
+  exported: "bg-status-progress/10 text-status-progress border-status-progress/20",
+  logged_in: "bg-status-complete/10 text-status-complete border-status-complete/20",
+  logged_out: "bg-muted text-muted-foreground border-border",
+  settings_updated: "bg-brand/10 text-brand border-brand/20",
 };
 
 const ITEMS_PER_PAGE = 10;
