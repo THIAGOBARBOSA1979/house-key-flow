@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Key, Plus } from "lucide-react";
+import { User, Key, Plus, FileText, ClipboardCheck, ShieldCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -233,11 +233,26 @@ const ClientArea = () => {
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
-                <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-                <TabsTrigger value="stages">Etapas</TabsTrigger>
-                <TabsTrigger value="documents">Documentos</TabsTrigger>
-                <TabsTrigger value="inspections">Vistorias</TabsTrigger>
-                <TabsTrigger value="warranty">Garantias</TabsTrigger>
+                <TabsTrigger value="overview" className="gap-2">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Visão Geral</span>
+                </TabsTrigger>
+                <TabsTrigger value="stages" className="gap-2">
+                  <History className="h-4 w-4" />
+                  <span className="hidden sm:inline">Etapas</span>
+                </TabsTrigger>
+                <TabsTrigger value="documents" className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  <span className="hidden sm:inline">Documentos</span>
+                </TabsTrigger>
+                <TabsTrigger value="inspections" className="gap-2">
+                  <ClipboardCheck className="h-4 w-4" />
+                  <span className="hidden sm:inline">Vistorias</span>
+                </TabsTrigger>
+                <TabsTrigger value="warranty" className="gap-2">
+                  <ShieldCheck className="h-4 w-4" />
+                  <span className="hidden sm:inline">Garantias</span>
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4 mt-4">
