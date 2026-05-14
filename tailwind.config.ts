@@ -112,6 +112,7 @@ export default {
 				disabled: 'var(--opacity-disabled)',
 				muted: 'var(--opacity-muted)',
 				hover: 'var(--opacity-hover)',
+				active: 'var(--opacity-active)',
 			},
 			spacing: {
 				'0.5-sem': 'var(--space-0-5)',

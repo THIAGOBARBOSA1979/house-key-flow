@@ -75,8 +75,8 @@ const DesignSystem = () => {
     <div className="container-responsive py-8 space-y-10 animate-fade-in">
       <PageHeader
         icon={Layout}
-        title="Design System v2.0"
-        description="Arquitetura robusta de Design Tokens e catálogo de componentes evoluídos para o ecossistema A2."
+        title="Design System v2.5"
+        description="Arquitetura robusta de Design Tokens, estados interativos padronizados e catálogo de componentes evoluídos."
       >
         <div className="flex gap-2">
           <Badge variant="secondary" className="h-6">Alpha v2.0.0</Badge>
@@ -344,19 +344,32 @@ const DesignSystem = () => {
               {/* Feedback Playground */}
               <Card className="card-standard">
                 <CardHeader>
-                  <CardTitle className="text-h4">Feedback Visual</CardTitle>
+                  <CardTitle className="text-h4">Feedback Visual & Estados</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex gap-2">
+                <CardContent className="space-y-6">
+                  <div className="flex flex-wrap gap-2">
                     <StatusBadge status="complete" />
                     <StatusBadge status="progress" />
                     <StatusBadge status="pending" />
                     <StatusBadge status="critical" />
                   </div>
+                  
+                  <div className="pt-4 border-t space-y-4">
+                    <Label className="text-label">Estados Interativos (Hover/Active)</Label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 card-standard interactive-hover cursor-pointer text-center">
+                        <span className="text-caption font-bold">Interactive Hover</span>
+                      </div>
+                      <div className="p-4 card-standard interactive-active cursor-pointer text-center">
+                        <span className="text-caption font-bold">Interactive Active</span>
+                      </div>
+                    </div>
+                  </div>
+
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="outline" size="sm">Hover para Tooltip</Button>
+                        <Button variant="outline" size="sm" className="w-full">Hover para Tooltip</Button>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Exemplo de feedback de contexto</p>
