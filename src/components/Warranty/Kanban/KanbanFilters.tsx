@@ -41,13 +41,17 @@ export function KanbanFilters({
     onFiltersChange({});
   };
 
-  const updateFilter = (key: keyof WarrantyFilters, value: string | undefined) => {
-    if (value === "" || value === "all") {
+  const updateFilter = (key: keyof WarrantyFilters, value: any) => {
+    if (value === "" || value === "all" || value === undefined) {
       const newFilters = { ...filters };
       delete newFilters[key];
       onFiltersChange(newFilters);
     } else {
-      onFiltersChange({ ...filters, [key]: value });
+      let finalValue = value;
+      if ((key === "dateFrom" || key === "dateTo") && typeof value === "string") {
+        finalValue = new Date(value);
+      }
+      onFiltersChange({ ...filters, [key]: finalValue });
     }
   };
 
