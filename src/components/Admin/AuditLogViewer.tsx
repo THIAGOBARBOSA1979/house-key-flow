@@ -30,17 +30,17 @@ const ACTION_LABELS: Record<AuditAction, string> = {
 };
 
 const ACTION_COLORS: Record<AuditAction, string> = {
-  created: "bg-green-100 text-green-800",
-  updated: "bg-blue-100 text-blue-800",
-  accepted: "bg-emerald-100 text-emerald-800",
-  rejected: "bg-red-100 text-red-800",
-  scheduled: "bg-purple-100 text-purple-800",
-  completed: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
-  stage_changed: "bg-amber-100 text-amber-800",
-  comment_added: "bg-gray-100 text-gray-800",
-  info_added: "bg-blue-100 text-blue-800",
-  assigned: "bg-indigo-100 text-indigo-800",
+  created: "bg-status-complete/10 text-status-complete border-status-complete/20",
+  updated: "bg-status-progress/10 text-status-progress border-status-progress/20",
+  accepted: "bg-status-complete/10 text-status-complete border-status-complete/20",
+  rejected: "bg-status-critical/10 text-status-critical border-status-critical/20",
+  scheduled: "bg-status-pending/10 text-status-pending border-status-pending/20",
+  completed: "bg-status-complete/10 text-status-complete border-status-complete/20",
+  cancelled: "bg-status-critical/10 text-status-critical border-status-critical/20",
+  stage_changed: "bg-status-pending/10 text-status-pending border-status-pending/20",
+  comment_added: "bg-muted text-muted-foreground border-border",
+  info_added: "bg-status-progress/10 text-status-progress border-status-progress/20",
+  assigned: "bg-brand/10 text-brand border-brand/20",
 };
 
 const ITEMS_PER_PAGE = 10;

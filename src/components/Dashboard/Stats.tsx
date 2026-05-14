@@ -23,28 +23,28 @@ const defaultStats: StatItem[] = [
     value: "12",
     icon: Building,
     description: "3 em lançamento",
-    colorClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    colorClass: "bg-brand/10 text-brand dark:text-brand",
   },
   {
     title: "Vistorias",
     value: "148",
     icon: ClipboardCheck,
     description: "24 para esta semana",
-    colorClass: "bg-status-complete/10 text-status-complete dark:text-emerald-400",
+    colorClass: "bg-status-complete/10 text-status-complete dark:text-status-complete",
   },
   {
     title: "Garantias",
     value: "57",
     icon: ShieldCheck,
     description: "12 em atendimento",
-    colorClass: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
+    colorClass: "bg-status-progress/10 text-status-progress dark:text-status-progress",
   },
   {
     title: "Taxa de Satisfação",
     value: "94%",
     icon: Activity,
     description: "+2% desde o mês passado",
-    colorClass: "bg-status-pending/10 text-status-pending dark:text-amber-400",
+    colorClass: "bg-status-pending/10 text-status-pending dark:text-status-pending",
   },
 ];
 

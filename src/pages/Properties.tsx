@@ -180,9 +180,9 @@ const Properties = () => {
                 {filteredProperties.map((property) => {
                   const percentage = Math.round((property.completedUnits / property.units) * 100);
                   const statusColors: Record<string, string> = {
-                    pending: "bg-amber-500",
-                    progress: "bg-company",
-                    complete: "bg-emerald-500"
+                    pending: "bg-status-pending",
+                    progress: "bg-brand",
+                    complete: "bg-status-complete"
                   };
                   return (
                     <TableRow key={property.id} className="group hover:bg-muted/30">
@@ -197,13 +197,13 @@ const Properties = () => {
                       <TableCell className="hidden md:table-cell text-muted-foreground">{property.location}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3 min-w-[120px] max-w-[200px]">
-                          <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden border">
+                          <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden border">
                             <div 
-                              className={cn("h-full transition-all duration-700", statusColors[property.status] || "bg-company")}
+                              className={cn("h-full transition-all duration-700", statusColors[property.status] || "bg-brand")}
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
-                          <span className="text-xs font-bold text-slate-700 whitespace-nowrap">{percentage}%</span>
+                          <span className="text-xs font-bold text-foreground whitespace-nowrap">{percentage}%</span>
                         </div>
                       </TableCell>
 

@@ -95,22 +95,22 @@ export default function ClientLogin() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background">
       {/* Enhanced Header */}
-      <header className="border-b bg-white/90 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
+        <div className="container-responsive py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
                 A2
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">A2 Incorporadora</h1>
-                <p className="text-sm text-blue-600 font-medium">Portal do Cliente</p>
+                <h1 className="text-2xl font-bold text-foreground">A2 Incorporadora</h1>
+                <p className="text-sm text-brand font-medium">Portal do Cliente</p>
               </div>
             </Link>
             <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+              <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Phone className="h-4 w-4" />
                   <span>(11) 9999-9999</span>
@@ -120,7 +120,7 @@ export default function ClientLogin() {
                   <span>Seg-Sex 8h-18h</span>
                 </div>
               </div>
-              <Link to="/admin/login" className="text-sm text-gray-600 hover:text-blue-600 transition-colors">
+              <Link to="/admin/login" className="text-sm text-muted-foreground hover:text-brand transition-colors">
                 Área Administrativa
               </Link>
             </div>

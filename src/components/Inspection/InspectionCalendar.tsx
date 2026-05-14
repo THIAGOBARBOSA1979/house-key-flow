@@ -31,7 +31,7 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
   return (
     <Card className="shadow-sm">
       <CardContent className="p-0">
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4-sem border-b">
           <h2 className="text-lg font-semibold capitalize">
             {format(currentMonth, "MMMM yyyy", { locale: ptBR })}
           </h2>
@@ -65,14 +65,14 @@ export function InspectionCalendar({ inspections }: InspectionCalendarProps) {
               <div 
                 key={day.toISOString()} 
                 className={cn(
-                  "border-r border-b p-1 flex flex-col gap-1 overflow-hidden transition-colors hover:bg-muted/10",
-                  isToday(day) && "bg-company/5"
+                   "border-r border-b p-1-sem flex flex-col gap-1 overflow-hidden transition-colors hover:bg-muted/10",
+                   isToday(day) && "bg-brand/5"
                 )}
               >
                 <div className="flex justify-between items-center p-1">
                   <span className={cn(
                     "text-sm font-medium h-6 w-6 flex items-center justify-center rounded-full",
-                    isToday(day) && "bg-company text-white"
+                    isToday(day) && "bg-brand text-brand-foreground"
                   )}>
                     {format(day, "d")}
                   </span>
