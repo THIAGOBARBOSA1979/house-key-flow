@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
+import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { useToast } from "@/hooks/use-toast";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
