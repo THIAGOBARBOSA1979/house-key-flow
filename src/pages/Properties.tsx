@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Building, Plus, SearchX, LayoutGrid, List } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
@@ -33,6 +34,7 @@ const properties = [
 ];
 
 const Properties = () => {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -56,7 +58,7 @@ const Properties = () => {
         title="Empreendimentos"
         description="Gerenciamento de todos os empreendimentos"
       >
-        <Button>
+        <Button onClick={() => toast({ title: "Novo empreendimento", description: "Abrindo formulário para cadastrar um novo empreendimento." })}>
           <Plus className="mr-2 h-4 w-4" />
           Novo Empreendimento
         </Button>
@@ -136,8 +138,8 @@ const Properties = () => {
                         <StatusBadge status={property.status} />
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">Ver</Button>
-                        <Button variant="ghost" size="sm">Editar</Button>
+                        <Button variant="ghost" size="sm" onClick={() => toast({ title: "Visualizando empreendimento", description: `Abrindo detalhes de ${property.name}.` })}>Ver</Button>
+                        <Button variant="ghost" size="sm" onClick={() => toast({ title: "Editando empreendimento", description: `Abrindo formulário de edição de ${property.name}.` })}>Editar</Button>
                       </TableCell>
                     </TableRow>
                   );
