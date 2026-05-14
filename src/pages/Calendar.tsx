@@ -10,6 +10,7 @@ import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspec
 import { appointments, type Appointment } from "@/components/Calendar/AppointmentData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar as CalendarIcon, List } from "lucide-react";
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
