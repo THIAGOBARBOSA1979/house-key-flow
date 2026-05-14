@@ -33,8 +33,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { ChecklistSelector } from "./ChecklistSelector";
+import { inspectionService } from "@/services/InspectionService";
+import { ptBR } from "date-fns/locale";
 
-// Schema for form validation
 const formSchema = z.object({
   inspectionType: z.string({
     required_error: "Selecione o tipo de vistoria",
@@ -53,7 +54,9 @@ const formSchema = z.object({
   }),
   notes: z.string().optional(),
   notifyClient: z.boolean().default(true),
+  requestId: z.string().optional(),
 });
+
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -76,10 +79,12 @@ const timeSlots = [
   "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
 ];
 
+
 export const ScheduleInspectionForm = ({ 
   onSuccess, 
   clientId,
-  propertyInfo
+  propertyInfo,
+  requestId
 }: { 
   onSuccess?: () => void,
   clientId?: string,
@@ -87,23 +92,29 @@ export const ScheduleInspectionForm = ({
     property: string;
     unit: string;
     client: string;
-  }
+  },
+  requestId?: string
 }) => {
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      inspectionType: "",
+      date: new Date(),
+      time: "",
+      technician: "",
+      checklist: "",
       notes: "",
-      notifyClient: true
+      notifyClient: true,
+      requestId: requestId || ""
     },
   });
 
+
   const onSubmit = (data: FormValues) => {
-    console.log("Form submitted:", data);
-    
-    // Here you would send the data to your backend
-    // For now we'll just simulate success
+    inspectionService.schedule(data as any, propertyInfo);
+
 
     toast({
       title: "Vistoria agendada com sucesso",
@@ -121,6 +132,7 @@ export const ScheduleInspectionForm = ({
       onSuccess();
     }
   };
+
 
   return (
     <Form {...form}>

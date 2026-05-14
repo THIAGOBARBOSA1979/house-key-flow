@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, SearchX, LayoutGrid, List } from "lucide-react";
+import { Building, Plus, SearchX, LayoutGrid, List, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -22,33 +22,88 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { Badge } from "@/components/ui/badge";
-
-const properties = [
-  { id: "1", name: "Edifício Aurora", location: "São Paulo, SP", units: 120, completedUnits: 85, status: "progress" as const },
-  { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete" as const },
-  { id: "3", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending" as const },
-  { id: "4", name: "Residencial Parque das Flores", location: "Curitiba, PR", units: 60, completedUnits: 60, status: "complete" as const },
-  { id: "5", name: "Condomínio Vista Mar", location: "Salvador, BA", units: 40, completedUnits: 35, status: "progress" as const },
-  { id: "6", name: "Edifício Horizonte", location: "Brasília, DF", units: 80, completedUnits: 0, status: "pending" as const },
-];
+import { propertyService, type Property } from "@/services/PropertyService";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { PropertyForm } from "@/components/Properties/PropertyForm";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Properties = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [properties, setProperties] = useState<Property[]>(propertyService.getAll());
+  
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
 
-  const filteredProperties = properties.filter(property => {
-    const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || property.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredProperties = useMemo(() => {
+    return properties.filter(property => {
+      const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           property.location.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus = statusFilter === "all" || property.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [properties, searchTerm, statusFilter]);
+
 
   const clearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
+  };
+
+  const refreshList = () => {
+    setProperties(propertyService.getAll());
+  };
+
+  const handleCreate = (data: Property) => {
+    propertyService.create(data);
+    refreshList();
+    setIsFormOpen(false);
+    toast({ title: "Sucesso", description: "Empreendimento criado com sucesso." });
+  };
+
+  const handleUpdate = (data: Property) => {
+    if (editingProperty?.id) {
+      propertyService.update(editingProperty.id, data);
+      refreshList();
+      setEditingProperty(null);
+      toast({ title: "Sucesso", description: "Empreendimento atualizado com sucesso." });
+    }
+  };
+
+  const handleDelete = () => {
+    if (propertyToDelete?.id) {
+      propertyService.delete(propertyToDelete.id);
+      refreshList();
+      setPropertyToDelete(null);
+      toast({ title: "Sucesso", description: "Empreendimento removido com sucesso." });
+    }
+  };
+
+  const openEdit = (property: Property) => {
+    setEditingProperty(property);
   };
 
   return (
@@ -58,7 +113,7 @@ const Properties = () => {
         title="Empreendimentos"
         description="Gerenciamento de todos os empreendimentos"
       >
-        <Button onClick={() => toast({ title: "Novo empreendimento", description: "Abrindo formulário para cadastrar um novo empreendimento." })}>
+        <Button onClick={() => setIsFormOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Novo Empreendimento
         </Button>
@@ -99,17 +154,21 @@ const Properties = () => {
         viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard 
+                key={property.id} 
+                property={property} 
+                onEdit={() => openEdit(property)}
+                onDelete={() => setPropertyToDelete(property)}
+              />
             ))}
           </div>
         ) : (
-          <div className="rounded-md border bg-card overflow-hidden">
+          <div className="rounded-md border bg-card overflow-hidden shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Nome</TableHead>
-                  <TableHead>Localização</TableHead>
-                  <TableHead>Unidades</TableHead>
+                  <TableHead className="hidden md:table-cell">Localização</TableHead>
                   <TableHead>Progresso</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
@@ -119,27 +178,49 @@ const Properties = () => {
                 {filteredProperties.map((property) => {
                   const percentage = Math.round((property.completedUnits / property.units) * 100);
                   return (
-                    <TableRow key={property.id}>
-                      <TableCell className="font-medium">{property.name}</TableCell>
-                      <TableCell>{property.location}</TableCell>
-                      <TableCell>{property.completedUnits} / {property.units}</TableCell>
+                    <TableRow key={property.id} className="group">
+                      <TableCell className="font-medium">
+                        <div>
+                          {property.name}
+                          <div className="md:hidden text-xs text-muted-foreground font-normal mt-0.5">
+                            {property.location}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">{property.location}</TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2 min-w-[120px]">
+                        <div className="flex items-center gap-2 min-w-[100px] max-w-[150px]">
                           <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                             <div 
                               className="h-full bg-company" 
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
-                          <span className="text-xs text-muted-foreground">{percentage}%</span>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">{percentage}%</span>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <StatusBadge status={property.status} />
+                        <StatusBadge status={property.status} size="sm" />
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm" onClick={() => toast({ title: "Visualizando empreendimento", description: `Abrindo detalhes de ${property.name}.` })}>Ver</Button>
-                        <Button variant="ghost" size="sm" onClick={() => toast({ title: "Editando empreendimento", description: `Abrindo formulário de edição de ${property.name}.` })}>Editar</Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => openEdit(property)}>
+                              <Pencil className="mr-2 h-4 w-4" /> Editar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="text-destructive focus:text-destructive" 
+                              onClick={() => setPropertyToDelete(property)}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" /> Excluir
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   );
@@ -149,17 +230,62 @@ const Properties = () => {
           </div>
         )
       ) : (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <SearchX className="h-12 w-12 text-muted-foreground/50 mb-4" />
+        <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed">
+          <SearchX className="h-12 w-12 text-muted-foreground/30 mb-4" />
           <h3 className="text-lg font-medium mb-1">Nenhum empreendimento encontrado</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Nenhum resultado corresponde aos filtros aplicados.
+          <p className="text-sm text-muted-foreground mb-6">
+            Tente ajustar seus filtros ou cadastre um novo.
           </p>
           <Button variant="outline" onClick={clearFilters}>
             Limpar filtros
           </Button>
         </div>
       )}
+
+      {/* Create Dialog */}
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <DialogContent className="sm:max-w-[550px]">
+          <DialogHeader>
+            <DialogTitle>Novo Empreendimento</DialogTitle>
+          </DialogHeader>
+          <PropertyForm onSubmit={handleCreate} onCancel={() => setIsFormOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={!!editingProperty} onOpenChange={(open) => !open && setEditingProperty(null)}>
+        <DialogContent className="sm:max-w-[550px]">
+          <DialogHeader>
+            <DialogTitle>Editar Empreendimento</DialogTitle>
+          </DialogHeader>
+          {editingProperty && (
+            <PropertyForm 
+              initialData={editingProperty} 
+              onSubmit={handleUpdate} 
+              onCancel={() => setEditingProperty(null)} 
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={!!propertyToDelete} onOpenChange={(open) => !open && setPropertyToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente o empreendimento
+              <strong> {propertyToDelete?.name}</strong> e todos os dados associados.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
+              Excluir Empreendimento
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

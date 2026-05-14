@@ -243,6 +243,9 @@ class WarrantyAutomationService {
       movedBy
     });
 
+    // Special case: if moving to 'inspection_scheduled', this is usually triggered by a form,
+    // but if dragged here, we might need extra handling or just prevent it if data is missing.
+    
     // Use flow service to change status (includes validation)
     const result = warrantyFlowService.changeStatus(
       requestId,
@@ -255,7 +258,11 @@ class WarrantyAutomationService {
     if (result.success && result.request) {
       // Trigger automation for the status change
       this.onStatusChange(requestId, fromStage, toStage, movedBy, false);
+      
+      // If we moved to inspection_scheduled but date is not set, we might want to flag it
+      // or in a real app, open the scheduling dialog automatically.
     }
+
 
     return { success: result.success, error: result.error };
   }
