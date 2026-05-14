@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
-import { format, isValid } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { isValid } from "date-fns";
+import { safeFormat } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -81,7 +81,7 @@ export const InspectionAcceptance = ({
           <div>
             <h3 className="font-medium text-green-900">Vistoria aceita</h3>
             <p className="text-sm text-green-700">
-              Aceita em {acceptedAt && isValid(new Date(acceptedAt)) ? format(new Date(acceptedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
+              Aceita em {safeFormat(acceptedAt, "dd/MM/yyyy 'às' HH:mm")}
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export const InspectionAcceptance = ({
           <div>
             <h3 className="font-medium text-red-900">Vistoria recusada</h3>
             <p className="text-sm text-red-700">
-              Recusada em {rejectedAt && isValid(new Date(rejectedAt)) ? format(new Date(rejectedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
+              Recusada em {safeFormat(rejectedAt, "dd/MM/yyyy 'às' HH:mm")}
             </p>
             {rejectionReason && (
               <p className="text-sm text-red-600 mt-1">
