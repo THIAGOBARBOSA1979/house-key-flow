@@ -5,6 +5,8 @@ import { Building, Plus, SearchX, LayoutGrid, List, MoreHorizontal, Pencil, Tras
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
+import { cn } from "@/lib/utils";
+
 import { 
   Select, 
   SelectContent, 
@@ -177,28 +179,34 @@ const Properties = () => {
               <TableBody>
                 {filteredProperties.map((property) => {
                   const percentage = Math.round((property.completedUnits / property.units) * 100);
+                  const statusColors: Record<string, string> = {
+                    pending: "bg-amber-500",
+                    progress: "bg-company",
+                    complete: "bg-emerald-500"
+                  };
                   return (
-                    <TableRow key={property.id} className="group">
+                    <TableRow key={property.id} className="group hover:bg-muted/30">
                       <TableCell className="font-medium">
-                        <div>
+                        <div className="flex flex-col">
                           {property.name}
                           <div className="md:hidden text-xs text-muted-foreground font-normal mt-0.5">
                             {property.location}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">{property.location}</TableCell>
+                      <TableCell className="hidden md:table-cell text-muted-foreground">{property.location}</TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2 min-w-[100px] max-w-[150px]">
-                          <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="flex items-center gap-3 min-w-[120px] max-w-[200px]">
+                          <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden border">
                             <div 
-                              className="h-full bg-company" 
+                              className={cn("h-full transition-all duration-700", statusColors[property.status] || "bg-company")}
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
-                          <span className="text-xs text-muted-foreground whitespace-nowrap">{percentage}%</span>
+                          <span className="text-xs font-bold text-slate-700 whitespace-nowrap">{percentage}%</span>
                         </div>
                       </TableCell>
+
                       <TableCell>
                         <StatusBadge status={property.status} size="sm" />
                       </TableCell>

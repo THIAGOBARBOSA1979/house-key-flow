@@ -1,37 +1,11 @@
 
-import React, { useState } from "react";
+
+import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// Example data - in a real app, these would come from your database
-const checklists = [
-  {
-    id: "checklist1",
-    name: "Checklist Padrão - Entrega de Apartamento",
-    description: "Verificação completa para entrega de unidades residenciais",
-    itemCount: 35,
-  },
-  {
-    id: "checklist2",
-    name: "Checklist Verificação Hidráulica",
-    description: "Foco em instalações hidráulicas, torneiras, válvulas e escoamento",
-    itemCount: 12,
-  },
-  {
-    id: "checklist3",
-    name: "Checklist Verificação Elétrica",
-    description: "Verificação de instalações elétricas, tomadas e interruptores",
-    itemCount: 18,
-  },
-  {
-    id: "checklist4",
-    name: "Checklist Pós-obra",
-    description: "Para vistorias após a conclusão de correções",
-    itemCount: 15,
-  },
-];
+import { checklistService } from "@/services/ChecklistService";
 
 export const ChecklistSelector = ({ 
   onSelect 
@@ -39,6 +13,7 @@ export const ChecklistSelector = ({
   onSelect: (id: string) => void 
 }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const templates = useMemo(() => checklistService.getAllTemplates(), []);
   
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -47,31 +22,36 @@ export const ChecklistSelector = ({
   
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {checklists.map((checklist) => (
+      <div className="grid grid-cols-1 gap-3">
+        {templates.map((checklist) => (
           <Card 
             key={checklist.id}
             className={cn(
-              "cursor-pointer border-2 transition-all", 
+              "cursor-pointer border transition-all duration-200", 
               selectedId === checklist.id 
-                ? "border-primary" 
-                : "hover:border-primary/30"
+                ? "border-company bg-company/5 ring-1 ring-company" 
+                : "hover:border-company/50"
             )}
             onClick={() => handleSelect(checklist.id)}
           >
             <CardContent className="p-4">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <ClipboardList className="h-4 w-4 text-muted-foreground" />
-                    <h4 className="font-medium">{checklist.name}</h4>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "p-2 rounded-lg",
+                    selectedId === checklist.id ? "bg-company text-white" : "bg-muted text-muted-foreground"
+                  )}>
+                    <ClipboardList className="h-5 w-5" />
                   </div>
-                  <p className="text-sm text-muted-foreground">{checklist.description}</p>
-                  <p className="text-xs text-muted-foreground">{checklist.itemCount} itens</p>
+                  <div className="space-y-0.5">
+                    <h4 className="font-semibold text-sm">{checklist.title}</h4>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{checklist.description}</p>
+                    <p className="text-[10px] font-medium text-company uppercase tracking-wider">{checklist.items.length} itens de verificação</p>
+                  </div>
                 </div>
                 {selectedId === checklist.id && (
-                  <div className="p-1 bg-primary rounded-full text-primary-foreground">
-                    <Check className="h-4 w-4" />
+                  <div className="p-1 bg-company rounded-full text-white">
+                    <Check className="h-3 w-3" />
                   </div>
                 )}
               </div>
@@ -83,12 +63,16 @@ export const ChecklistSelector = ({
       <Button 
         variant="outline" 
         type="button" 
-        className="w-full border-dashed"
-        onClick={() => console.log("Would open checklist management")}
+        size="sm"
+        className="w-full border-dashed text-xs h-9"
+        onClick={() => window.location.href = "/admin/checklist"}
       >
-        <ClipboardList className="mr-2 h-4 w-4" /> 
-        Criar novo checklist
+        <Plus className="mr-2 h-3 w-3" /> 
+        Gerenciar modelos de checklist
       </Button>
     </div>
   );
 };
+
+import { Plus } from "lucide-react";
+

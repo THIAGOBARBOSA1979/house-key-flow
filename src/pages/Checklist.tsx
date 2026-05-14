@@ -7,7 +7,7 @@ import { ChecklistBuilder } from '@/components/Checklists/ChecklistBuilder';
 import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
 import { ChecklistExecution } from '@/components/Checklists/ChecklistExecution';
-import { ChecklistItem, ChecklistService } from '@/services/ChecklistService';
+import { ChecklistItem, checklistService } from '@/services/ChecklistService';
 import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { useToast } from "@/components/ui/use-toast";
@@ -41,7 +41,7 @@ export default function Checklist() {
 
   const handleSaveChecklist = async (title: string, description: string, items: ChecklistItem[]) => {
     try {
-      await ChecklistService.createChecklist(items, { title, description });
+      await checklistService.createTemplate({ title, description, items });
       toast({ title: "Template salvo", description: "O novo template de checklist foi criado com sucesso." });
       setCurrentView('templates');
     } catch (error) {

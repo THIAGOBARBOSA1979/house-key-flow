@@ -1,5 +1,7 @@
 
-import { useState } from "react";
+
+
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Stats } from "@/components/Dashboard/Stats";
@@ -7,80 +9,15 @@ import { DashboardCharts } from "@/components/Dashboard/DashboardCharts";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
-import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity } from "lucide-react";
+import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { propertyService } from "@/services/PropertyService";
+import { inspectionService } from "@/services/InspectionService";
+import { warrantyFlowService } from "@/services/WarrantyFlowService";
 
-// Mock data
-const recentProperties = [
-  {
-    id: "1",
-    name: "Edifício Aurora",
-    location: "São Paulo, SP",
-    units: 120,
-    completedUnits: 85,
-    status: "progress" as const,
-  },
-  {
-    id: "2",
-    name: "Residencial Bosque Verde",
-    location: "Rio de Janeiro, RJ",
-    units: 75,
-    completedUnits: 75,
-    status: "complete" as const,
-  },
-  {
-    id: "3",
-    name: "Condomínio Monte Azul",
-    location: "Belo Horizonte, MG",
-    units: 50,
-    completedUnits: 10,
-    status: "pending" as const,
-  },
-];
-
-const upcomingInspections = [
-  {
-    id: "1",
-    property: "Edifício Aurora",
-    unit: "507",
-    client: "Carlos Silva",
-    scheduledDate: new Date(2025, 4, 19, 10, 0),
-    status: "pending" as const,
-  },
-  {
-    id: "2",
-    property: "Edifício Aurora",
-    unit: "204",
-    client: "Maria Oliveira",
-    scheduledDate: new Date(2025, 4, 19, 14, 30),
-    status: "pending" as const,
-  },
-];
-
-const recentWarrantyClaims = [
-  {
-    id: "1",
-    title: "Infiltração no banheiro",
-    property: "Residencial Bosque Verde",
-    unit: "305",
-    client: "Ana Santos",
-    description: "Identificada infiltração na parede do box do banheiro social. Já está causando mofo e descascamento da pintura.",
-    createdAt: new Date(2025, 4, 15),
-    status: "critical" as const,
-  },
-  {
-    id: "2",
-    title: "Porta empenada",
-    property: "Edifício Aurora",
-    unit: "108",
-    client: "João Mendes",
-    description: "A porta do quarto principal está empenada e não fecha corretamente.",
-    createdAt: new Date(2025, 4, 16),
-    status: "progress" as const,
-  },
-];
 
 const recentActivities = [
   { id: 1, user: "Roberto Oliveira", action: "aprovou a vistoria", target: "Unidade 507 - Aurora", time: "2 horas atrás", type: "inspection" },
@@ -92,19 +29,35 @@ const recentActivities = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  
+  const properties = useMemo(() => propertyService.getAll().slice(0, 3), []);
+  const inspections = useMemo(() => inspectionService.getAll().slice(0, 3), []);
+  const warrantyClaims = useMemo(() => warrantyFlowService.getAllRequests().slice(0, 2), []);
+
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      toast({ title: "Dados atualizados", description: "O dashboard foi sincronizado com os dados mais recentes." });
+    }, 800);
+  };
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-8 pb-10 animate-in fade-in duration-500">
       <PageHeader
         icon={Home}
-        title="Dashboard"
-        description="Visão geral do sistema de gestão de entregas e garantias"
+        title="Painel de Controle"
+        description="Bem-vindo ao centro de operações da construtora"
       >
+        <Button variant="outline" size="icon" onClick={handleRefresh} disabled={loading}>
+          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+        </Button>
         <Button variant="outline" onClick={() => navigate("/admin/calendar")}>
           <Calendar className="mr-2 h-4 w-4" />
           Calendário
         </Button>
-        <Button onClick={() => navigate("/admin/properties")}>
+        <Button onClick={() => navigate("/admin/properties")} className="bg-company hover:bg-company/90">
           <Plus className="mr-2 h-4 w-4" />
           Novo Empreendimento
         </Button>
@@ -114,40 +67,39 @@ const Dashboard = () => {
       
       <DashboardCharts />
       
-      {/* Recent Properties */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Empreendimentos Recentes</h2>
-          <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/properties")}>
-            Ver todos
-            <ChevronRight size={16} />
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recentProperties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </div>
-      </section>
-      
-      {/* Two columns for bottom sections */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-2 space-y-8">
+          {/* Recent Properties */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold tracking-tight">Empreendimentos Ativos</h2>
+              <Button variant="ghost" size="sm" className="gap-1 text-company" onClick={() => navigate("/admin/properties")}>
+                Ver todos
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {properties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          </section>
+
           {/* Inspections */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <ClipboardCheck size={20} />
-                Próximas Vistorias
+              <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+                <ClipboardCheck size={20} className="text-company" />
+                Vistorias Agendadas
               </h2>
-              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/inspections")}>
+              <Button variant="ghost" size="sm" className="gap-1 text-company" onClick={() => navigate("/admin/inspections")}>
                 Ver todas
                 <ChevronRight size={16} />
               </Button>
             </div>
             <div className="space-y-3">
-              {upcomingInspections.map((inspection) => (
-                <Card key={inspection.id} className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30">
+              {inspections.map((inspection) => (
+                <Card key={inspection.id} className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-company/30 border-l-4 border-l-company/50">
                   <CardContent className="p-0">
                     <InspectionItem inspection={inspection} />
                   </CardContent>
@@ -155,77 +107,66 @@ const Dashboard = () => {
               ))}
             </div>
           </section>
-          
-          {/* Warranty Claims */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <ShieldCheck size={20} />
-                Solicitações de Garantia Recentes
-              </h2>
-              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/warranty")}>
-                Ver todas
-                <ChevronRight size={16} />
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {recentWarrantyClaims.map((claim) => (
-                <WarrantyClaim 
-                  key={claim.id} 
-                  claim={claim}
-                  onAtender={() => toast({ title: "Atendimento iniciado", description: `Garantia "${claim.title}" está sendo atendida. Sincronizando com workflow...` })}
-                  onGerenciarProblemas={() => toast({ title: "Gerenciando problemas", description: `Abrindo gerenciamento de problemas para "${claim.title}".` })}
-                />
-              ))}
-            </div>
-          </section>
         </div>
 
-        {/* Right Sidebar on Dashboard */}
         <div className="space-y-8">
+          {/* Warranty Claims - Moved to sidebar for compact view */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <Activity size={20} />
-                Atividades Recentes
+              <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+                <ShieldCheck size={20} className="text-amber-500" />
+                Garantias Urgentes
               </h2>
             </div>
-            <Card>
+            <div className="space-y-4">
+              {warrantyClaims.map((claim) => (
+                <div key={claim.id} className="bg-card border rounded-lg p-4 shadow-sm hover:border-amber-200 transition-colors cursor-pointer" onClick={() => navigate("/admin/warranty")}>
+                  <div className="flex justify-between items-start mb-2">
+                    <Badge variant={claim.priority === 'high' || claim.priority === 'critical' ? 'destructive' : 'outline'}>
+                      {claim.priority === 'high' ? 'Alta' : 'Crítica'}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">{claim.id}</span>
+                  </div>
+                  <h4 className="font-semibold text-sm line-clamp-1">{claim.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">{claim.propertyName} - Un. {claim.unitNumber}</p>
+                </div>
+              ))}
+              <Button variant="outline" className="w-full text-xs" onClick={() => navigate("/admin/warranty")}>
+                Gerenciar todas as garantias
+              </Button>
+            </div>
+          </section>
+
+          {/* Recent Activities */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+                <Activity size={20} className="text-blue-500" />
+                Feed de Atividades
+              </h2>
+            </div>
+            <Card className="border-none shadow-sm">
               <CardContent className="p-0">
                 <div className="divide-y">
                   {recentActivities.map((activity) => (
-                    <div key={activity.id} className="p-4 hover:bg-muted/50 transition-colors">
-                      <p className="text-sm">
-                        <span className="font-semibold">{activity.user}</span>{" "}
-                        {activity.action} em{" "}
+                    <div key={activity.id} className="p-4 hover:bg-muted/30 transition-colors">
+                      <p className="text-sm leading-tight">
+                        <span className="font-semibold text-company">{activity.user}</span>{" "}
+                        <span className="text-muted-foreground">{activity.action}</span> em{" "}
                         <span className="font-medium">{activity.target}</span>
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-1">
+                        <Activity size={10} />
+                        {activity.time}
+                      </p>
                     </div>
                   ))}
                 </div>
                 <div className="p-4 border-t text-center">
-                  <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => toast({ title: "Histórico completo", description: "Carregando todo o log de atividades do sistema..." })}>
-                    Ver todo o histórico
+                  <Button variant="link" size="sm" className="w-full text-xs text-muted-foreground">
+                    Ver logs de auditoria
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          <section>
-            <Card className="bg-primary text-primary-foreground overflow-hidden">
-              <CardContent className="p-6 space-y-4 relative">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                  <ShieldCheck size={80} />
-                </div>
-                <h3 className="font-bold text-lg">Suporte Premium</h3>
-                <p className="text-sm opacity-90 leading-relaxed">
-                  Precisa de ajuda com alguma configuração avançada do sistema?
-                </p>
-                <Button variant="secondary" size="sm" className="w-full font-semibold relative z-10" onClick={() => toast({ title: "Suporte", description: "Conectando ao canal de suporte prioritário..." })}>
-                  Falar com Consultor
-                </Button>
               </CardContent>
             </Card>
           </section>
@@ -236,3 +177,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
