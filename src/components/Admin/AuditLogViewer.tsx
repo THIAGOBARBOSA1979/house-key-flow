@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Search, User, Shield, ChevronLeft, ChevronRight } from "lucide-react";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services/AuditLogService";
 
 interface AuditLogViewerProps {
@@ -129,7 +130,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
                 {paginatedLogs.map(log => (
                   <tr key={log.id} className="hover:bg-accent/5">
                     <td className="py-2 px-3 text-muted-foreground whitespace-nowrap">
-                      {format(log.timestamp, "dd/MM/yy HH:mm")}
+                      {isValid(new Date(log.timestamp)) ? format(new Date(log.timestamp), "dd/MM/yy HH:mm", { locale: ptBR }) : "—"}
                     </td>
                     <td className="py-2 px-3">
                       <div className="flex items-center gap-1.5">
