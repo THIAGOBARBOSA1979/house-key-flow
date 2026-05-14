@@ -14,7 +14,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { EnhancedWarrantyRequestForm } from "@/components/Warranty/EnhancedWarrantyRequestForm";
 import { WarrantyItemSelector } from "@/components/Warranty/WarrantyItemSelector";
 import { useToast } from "@/components/ui/use-toast";
@@ -442,7 +443,7 @@ const ClientWarranty = () => {
                       </div>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                         <Calendar className="h-3 w-3" />
-                        <span>{format(item.createdAt, "dd/MM/yyyy")}</span>
+                        <span>{isValid(new Date(item.createdAt)) ? format(new Date(item.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "—"}</span>
                       </div>
                     </div>
                   ))
@@ -475,7 +476,7 @@ const ClientWarranty = () => {
                           {claim.title}
                         </CardTitle>
                         <CardDescription>
-                          Solicitação criada em {format(claim.createdAt, "dd 'de' MMMM 'de' yyyy")}
+                          Solicitação criada em {isValid(new Date(claim.createdAt)) ? format(new Date(claim.createdAt), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) : "—"}
                         </CardDescription>
                       </div>
                       <StatusBadge status={claim.status} />
