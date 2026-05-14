@@ -92,27 +92,30 @@ export const WarrantyHeader = ({ onExportData }: WarrantyHeaderProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Filtros e Visualização</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => toast({ title: "Filtros avançados", description: "Abrindo painel de filtros avançados." })}>
+          <DropdownMenuItem onClick={() => toast({ title: "Filtros rápidos", description: "Use os filtros no topo do Kanban para busca avançada." })}>
             <Filter className="mr-2 h-4 w-4" />
-            Filtros avançados
+            Filtros rápidos
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Notificações</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => toast({ title: "Configurações de notificação", description: "Abrindo configurações de alertas e notificações." })}>
+          <DropdownMenuItem onClick={() => toast({ title: "Alertas SLA", description: "Configurações de alertas por e-mail e push em breve." })}>
             <Bell className="mr-2 h-4 w-4" />
             Configurar alertas
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => toast({ title: "Lembretes", description: "Configurando lembretes automáticos." })}>
+          <DropdownMenuItem onClick={() => toast({ title: "Lembretes", description: "Lembretes automáticos para técnicos habilitados." })}>
             <Calendar className="mr-2 h-4 w-4" />
             Lembretes automáticos
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Manutenção</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => toast({ title: "Arquivando garantias antigas", description: "Garantias concluídas há mais de 6 meses serão arquivadas." })}>
+          <DropdownMenuItem onClick={() => {
+            const result = warrantyFlowService.getAllRequests().filter(r => r.currentStage === 'completed');
+            toast({ title: `${result.length} itens prontos`, description: "Funcionalidade de arquivamento em lote em desenvolvimento." });
+          }}>
             <Archive className="mr-2 h-4 w-4" />
-            Arquivar antigas
+            Arquivar concluídas
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => toast({ title: "Limpeza de dados", description: "Removendo dados temporários e otimizando o sistema." })}>
+          <DropdownMenuItem className="text-destructive" onClick={() => toast({ title: "Ação restrita", description: "Apenas super-admins podem realizar limpeza de dados." })}>
             <Trash2 className="mr-2 h-4 w-4" />
             Limpeza de dados
           </DropdownMenuItem>
