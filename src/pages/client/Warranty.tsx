@@ -14,8 +14,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { format, isValid } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { isValid } from "date-fns";
+import { safeFormat } from "@/lib/utils";
 import { EnhancedWarrantyRequestForm } from "@/components/Warranty/EnhancedWarrantyRequestForm";
 import { WarrantyItemSelector } from "@/components/Warranty/WarrantyItemSelector";
 import { useToast } from "@/components/ui/use-toast";
@@ -443,7 +443,7 @@ const ClientWarranty = () => {
                       </div>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
                         <Calendar className="h-3 w-3" />
-                        <span>{isValid(new Date(item.createdAt)) ? format(new Date(item.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "—"}</span>
+                        <span>{safeFormat(item.createdAt, "dd/MM/yyyy")}</span>
                       </div>
                     </div>
                   ))
@@ -476,7 +476,7 @@ const ClientWarranty = () => {
                           {claim.title}
                         </CardTitle>
                         <CardDescription>
-                          Solicitação criada em {isValid(new Date(claim.createdAt)) ? format(new Date(claim.createdAt), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }) : "—"}
+                          Solicitação criada em {safeFormat(claim.createdAt, "dd 'de' MMMM 'de' yyyy")}
                         </CardDescription>
                       </div>
                       <StatusBadge status={claim.status} />
@@ -560,7 +560,7 @@ const ClientWarranty = () => {
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                               <p className="font-medium">{update.author}</p>
                               <p className="text-sm text-muted-foreground">
-                                {isValid(new Date(update.date)) ? format(new Date(update.date), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
+                                {safeFormat(update.date, "dd/MM/yyyy 'às' HH:mm")}
                               </p>
                             </div>
                             <p className="text-sm">
