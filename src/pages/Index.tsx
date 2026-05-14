@@ -14,13 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
-
-const recentActivities = [
-  { id: 1, user: "Roberto Oliveira", action: "aprovou a vistoria", target: "Unidade 507 - Aurora", time: "2 horas atrás", type: "inspection" },
-  { id: 2, user: "Sistemas", action: "gerou lembrete de SLA", target: "Garantia #128", time: "4 horas atrás", type: "system" },
-  { id: 3, user: "Ana Paula", action: "anexou documento", target: "Memorial Descritivo - Bosque", time: "5 horas atrás", type: "document" },
-  { id: 4, user: "Carlos Eduardo", action: "iniciou atendimento", target: "Garantia #135", time: "Ontem", type: "warranty" },
-];
+import { auditLogService } from "@/services/AuditLogService";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -30,6 +24,7 @@ const Dashboard = () => {
   const properties = useMemo(() => propertyService.getAll().slice(0, 3), []);
   const inspections = useMemo(() => inspectionService.getAll().slice(0, 3), []);
   const warrantyClaims = useMemo(() => warrantyFlowService.getAllRequests().slice(0, 2), []);
+  const recentActivities = useMemo(() => auditLogService.getRecentLogs(5), []);
 
   const handleRefresh = () => {
     setLoading(true);
@@ -153,13 +148,12 @@ const Dashboard = () => {
                   {recentActivities.map((activity) => (
                     <div key={activity.id} className="p-4 hover:bg-primary/5 transition-colors">
                       <p className="text-sem-body-sm leading-tight">
-                        <span className="font-bold text-primary">{activity.user}</span>{" "}
-                        <span className="text-muted-foreground font-medium">{activity.action}</span> em{" "}
-                        <span className="font-bold">{activity.target}</span>
+                        <span className="font-bold text-primary">{activity.performedByName}</span>{" "}
+                        <span className="text-muted-foreground font-medium">{activity.details}</span>
                       </p>
                       <p className="text-sem-tiny text-muted-foreground mt-2 flex items-center gap-1.5 font-bold uppercase tracking-tighter">
                         <Clock size={10} />
-                        {activity.time}
+                        {new Date(activity.timestamp).toLocaleDateString('pt-BR')} {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
                   ))}

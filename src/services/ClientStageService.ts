@@ -78,11 +78,49 @@ const mockEvents: ClientEvent[] = [
 class ClientStageService {
   private clientProfiles: Map<string, ClientProfile> = new Map();
   private clientEvents: Map<string, ClientEvent[]> = new Map();
+  private storageKeyProfiles = 'a2_client_profiles';
+  private storageKeyEvents = 'a2_client_events';
 
   constructor() {
-    // Initialize with mock data
+    const storedProfiles = localStorage.getItem(this.storageKeyProfiles);
+    const storedEvents = localStorage.getItem(this.storageKeyEvents);
+
+    if (storedProfiles && storedEvents) {
+      try {
+        const parsedProfiles = JSON.parse(storedProfiles);
+        const parsedEvents = JSON.parse(storedEvents);
+        
+        Object.entries(parsedProfiles).forEach(([id, profile]: [string, any]) => {
+          this.clientProfiles.set(id, {
+            ...profile,
+            createdAt: new Date(profile.createdAt),
+            stageHistory: profile.stageHistory.map((h: any) => ({ ...h, changedAt: new Date(h.changedAt) }))
+          });
+        });
+
+        Object.entries(parsedEvents).forEach(([id, events]: [string, any]) => {
+          this.clientEvents.set(id, events.map((e: any) => ({ ...e, createdAt: new Date(e.createdAt) })));
+        });
+      } catch (e) {
+        console.error("Failed to load client stage data", e);
+        this.initializeMocks();
+      }
+    } else {
+      this.initializeMocks();
+    }
+  }
+
+  private initializeMocks() {
     this.clientProfiles.set('client-1', mockClientProfile);
     this.clientEvents.set('client-1', mockEvents);
+    this.persist();
+  }
+
+  private persist() {
+    const profilesObj = Object.fromEntries(this.clientProfiles);
+    const eventsObj = Object.fromEntries(this.clientEvents);
+    localStorage.setItem(this.storageKeyProfiles, JSON.stringify(profilesObj));
+    localStorage.setItem(this.storageKeyEvents, JSON.stringify(eventsObj));
   }
 
   // Get client profile
@@ -154,6 +192,7 @@ class ClientStageService {
     profile.currentStage = newStage;
     
     this.clientProfiles.set(clientId, profile);
+    this.persist();
 
     // Record event
     const event: ClientEvent = {
@@ -172,6 +211,7 @@ class ClientStageService {
     const events = this.clientEvents.get(clientId) || [];
     events.push(event);
     this.clientEvents.set(clientId, events);
+    this.persist();
 
     return { success: true };
   }

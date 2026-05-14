@@ -16,6 +16,7 @@ import {
   DEFAULT_SLA_CONFIGS
 } from '@/types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
+import { auditLogService } from './AuditLogService';
 
 // Mock warranty requests data
 const initialMockRequests: WarrantyRequestFlow[] = [
@@ -281,6 +282,17 @@ class WarrantyFlowService {
     updatedRequest.slaDeadline = slaInfo.deadline;
     
     this.requests.set(requestId, updatedRequest);
+    this.persist();
+    
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: newStatus === 'opened' ? 'created' : (newStatus === 'approved' ? 'accepted' : (newStatus === 'rejected' ? 'rejected' : 'stage_changed')),
+      performedBy: changedBy,
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Cliente',
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'client',
+      details: notes || `Solicitação movida para a etapa ${WARRANTY_STAGES[newStatus].label}`
+    });
     
     console.log('[WarrantyFlowService] Status changed:', {
       requestId,

@@ -237,13 +237,13 @@ export function ChecklistExecution({
       </Card>
 
       {/* Ações */}
-      {!readOnly && (
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 pt-6 border-t border-border/10">
           <div className="flex gap-2">
             <Button 
               variant="outline" 
               onClick={() => setCurrentSection(Math.max(0, currentSection - 1))}
               disabled={currentSection === 0}
+              className="rounded-lg font-bold"
             >
               Seção Anterior
             </Button>
@@ -251,23 +251,23 @@ export function ChecklistExecution({
               variant="outline"
               onClick={() => setCurrentSection(Math.min(sections.length - 1, currentSection + 1))}
               disabled={currentSection === sections.length - 1}
+              className="rounded-lg font-bold"
             >
               Próxima Seção
             </Button>
           </div>
 
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => onSave(completedItems, notes)}>
+            <Button variant="outline" onClick={() => onSave(completedItems, notes)} className="rounded-lg font-bold">
               <Save className="mr-2 h-4 w-4" />
               Salvar Rascunho
             </Button>
-            <Button onClick={() => onSubmit(completedItems, notes)}>
+            <Button onClick={() => onSubmit(completedItems, notes)} className="rounded-lg font-bold bg-primary hover:bg-primary/90">
               <Send className="mr-2 h-4 w-4" />
               Finalizar Checklist
             </Button>
           </div>
         </div>
-      )}
     </div>
   );
 }

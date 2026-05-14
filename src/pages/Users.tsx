@@ -14,6 +14,7 @@ import { userService, type User as UserType } from "@/services/UserService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
 import { cn } from "@/lib/utils";
+import { exportService } from "@/services/ExportService";
 
 const roleConfig = {
   admin: { label: "Administrador", badge: "bg-purple-100 text-purple-800 border-purple-200", icon: UserCog },
@@ -219,8 +220,8 @@ const Users = () => {
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold"><Upload className="mr-2 h-4 w-4" />Importar</Button>
-              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold"><Download className="mr-2 h-4 w-4" />Exportar</Button>
+              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold"><Upload className="mr-2 h-4 w-4" /> Importar</Button>
+              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold" onClick={() => exportService.exportToCSV(userList, 'usuarios_a2')}><Download className="mr-2 h-4 w-4" /> Exportar</Button>
             </div>
             {selectedUsers.length > 0 && (
               <div className="flex items-center gap-3 animate-fade-in">

@@ -1,7 +1,11 @@
 
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Building, ShieldCheck, ClipboardCheck, Activity } from "lucide-react";
 import { StatsCard } from "@/components/shared/StatsCard";
+import { propertyService } from "@/services/PropertyService";
+import { inspectionService } from "@/services/InspectionService";
+import { warrantyFlowService } from "@/services/WarrantyFlowService";
 
 interface StatItem {
   title: string;
@@ -12,40 +16,44 @@ interface StatItem {
   trend?: { value: string; isPositive: boolean };
 }
 
-const defaultStats: StatItem[] = [
-  {
-    title: "Empreendimentos",
-    value: "12",
-    icon: Building,
-    description: "3 em lançamento",
-    variant: "brand",
-  },
-  {
-    title: "Vistorias",
-    value: "148",
-    icon: ClipboardCheck,
-    description: "24 para esta semana",
-    variant: "complete",
-    trend: { value: "5%", isPositive: true }
-  },
-  {
-    title: "Garantias",
-    value: "57",
-    icon: ShieldCheck,
-    description: "12 em atendimento",
-    variant: "progress",
-  },
-  {
-    title: "Satisfação",
-    value: "94%",
-    icon: Activity,
-    description: "Feedback dos clientes",
-    variant: "pending",
-    trend: { value: "2%", isPositive: true }
-  },
-];
+export const Stats = ({ className }: { className?: string }) => {
+  const properties = useMemo(() => propertyService.getAll(), []);
+  const inspections = useMemo(() => inspectionService.getAll(), []);
+  const warranties = useMemo(() => warrantyFlowService.getAllRequests(), []);
 
-export const Stats = ({ stats = defaultStats, className }: { stats?: StatItem[], className?: string }) => {
+  const stats: StatItem[] = useMemo(() => [
+    {
+      title: "Empreendimentos",
+      value: properties.length,
+      icon: Building,
+      description: `${properties.filter(p => p.status === 'progress').length} em execução`,
+      variant: "brand",
+    },
+    {
+      title: "Vistorias",
+      value: inspections.length,
+      icon: ClipboardCheck,
+      description: `${inspections.filter(i => i.status === 'pending').length} pendentes`,
+      variant: "complete",
+      trend: { value: "12%", isPositive: true }
+    },
+    {
+      title: "Garantias",
+      value: warranties.length,
+      icon: ShieldCheck,
+      description: `${warranties.filter(w => w.currentStage !== 'completed' && w.currentStage !== 'rejected').length} abertas`,
+      variant: "progress",
+    },
+    {
+      title: "Eficiência",
+      value: "96%",
+      icon: Activity,
+      description: "SLA dentro do prazo",
+      variant: "pending",
+      trend: { value: "3%", isPositive: true }
+    },
+  ], [properties, inspections, warranties]);
+
   return (
     <div className={cn(
       "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4-sem",

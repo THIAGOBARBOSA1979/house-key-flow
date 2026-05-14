@@ -35,7 +35,22 @@ class AuditLogService {
   private logs: AuditLogEntry[] = [];
 
   constructor() {
-    this.seedMockData();
+    const stored = localStorage.getItem('a2_audit_logs');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        this.logs = parsed.map((l: any) => ({ ...l, timestamp: new Date(l.timestamp) }));
+      } catch (e) {
+        console.error("Failed to load audit logs", e);
+        this.seedMockData();
+      }
+    } else {
+      this.seedMockData();
+    }
+  }
+
+  private persist() {
+    localStorage.setItem('a2_audit_logs', JSON.stringify(this.logs));
   }
 
   private seedMockData() {
@@ -96,6 +111,7 @@ class AuditLogService {
       timestamp: new Date(),
     };
     this.logs.unshift(newEntry);
+    this.persist();
     console.log('[AuditLog]', newEntry.action, newEntry.entityType, newEntry.entityId, newEntry.details);
     return newEntry;
   }
