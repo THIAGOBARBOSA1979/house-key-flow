@@ -1,5 +1,6 @@
 
 import { z } from "zod";
+import { auditLogService } from "./AuditLogService";
 
 export const propertySchema = z.object({
   id: z.string().optional(),
@@ -56,6 +57,15 @@ class PropertyService {
     };
     this.properties.push(newProperty);
     this.persist();
+    auditLogService.log({
+      entityType: 'inspection' as any, // Temporary mapping until more types added
+      entityId: newProperty.id,
+      action: 'created',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Empreendimento ${newProperty.name} criado.`
+    });
     return newProperty;
   }
 

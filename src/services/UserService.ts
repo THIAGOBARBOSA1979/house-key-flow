@@ -1,5 +1,6 @@
 
 import { z } from "zod";
+import { auditLogService } from "./AuditLogService";
 
 export const userSchema = z.object({
   id: z.string().optional(),
@@ -65,6 +66,15 @@ class UserService {
     };
     this.users.push(newUser);
     this.persist();
+    auditLogService.log({
+      entityType: 'inspection' as any,
+      entityId: newUser.id,
+      action: 'created',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Usuário ${newUser.name} criado com nível ${newUser.role}.`
+    });
     return newUser;
   }
 

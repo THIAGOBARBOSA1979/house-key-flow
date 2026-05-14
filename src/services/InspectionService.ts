@@ -2,6 +2,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { auditLogService } from "./AuditLogService";
 
 interface ScheduleInspectionData {
   inspectionType: string;
@@ -81,6 +82,16 @@ class InspectionService {
 
     this.inspections.push(newInspection);
     this.persist();
+    
+    auditLogService.log({
+      entityType: 'inspection',
+      entityId: newInspection.id,
+      action: 'scheduled',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Vistoria do tipo ${newInspection.type} agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`
+    });
 
     // If linked to a warranty request, update it
     if (data.requestId) {
