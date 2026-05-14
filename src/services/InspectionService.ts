@@ -15,8 +15,24 @@ interface ScheduleInspectionData {
   priority?: "low" | "medium" | "high";
 }
 
+export interface Inspection {
+  id: string;
+  property: string;
+  unit: string;
+  client: string;
+  date: Date;
+  time: string;
+  status: string;
+  type: string;
+  technician: string;
+  notes?: string;
+  requestId?: string;
+  priority?: "low" | "medium" | "high";
+  createdAt?: Date;
+}
+
 class InspectionService {
-  private inspections: any[] = [
+  private inspections: Inspection[] = [
     { 
       id: "1", 
       property: "Edifício Aurora", 
@@ -141,6 +157,24 @@ class InspectionService {
       i.technician === technicianId &&
       i.status !== "cancelled"
     );
+  }
+
+  getAllConflicts() {
+    const conflicts: { date: string; technician: string; count: number }[] = [];
+    const grouped = this.inspections.reduce((acc, current) => {
+      if (current.status === 'cancelled') return acc;
+      const key = `${current.date.toDateString()}|${current.technician}`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    Object.entries(grouped).forEach(([key, count]) => {
+      if (count > 1) {
+        const [date, technician] = key.split('|');
+        conflicts.push({ date, technician, count });
+      }
+    });
+    return conflicts;
   }
 
   delete(id: string) {

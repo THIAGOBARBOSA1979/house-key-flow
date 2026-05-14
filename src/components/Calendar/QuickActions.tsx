@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,10 +12,12 @@ import {
   Plus,
   Filter,
   Download,
-  Settings
+  Settings,
+  ChevronRight
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from "@/components/shared/StatsCard";
+import { inspectionService } from "@/services/InspectionService";
 
 interface QuickActionsProps {
   todayAppointments: number;
@@ -33,6 +35,11 @@ export const QuickActions = ({
   setFilterSheetOpen
 }: QuickActionsProps) => {
   const { toast } = useToast();
+  const [conflicts, setConflicts] = useState<any[]>([]);
+
+  useEffect(() => {
+    setConflicts(inspectionService.getAllConflicts());
+  }, []);
 
   const handleQuickAction = (action: string) => {
     toast({
@@ -100,12 +107,30 @@ export const QuickActions = ({
               Configurações
             </Button>
             
-            <div className="ml-auto flex items-center">
-              <Badge variant="outline" className="bg-status-critical/10 text-status-critical border-status-critical/20 rounded-lg text-sem-tiny font-black px-3 py-1">
-                <AlertCircle className="mr-1.5 h-3 w-3" />
-                3 CONFLITOS DETECTADOS
-              </Badge>
-            </div>
+            {conflicts.length > 0 && (
+              <div className="ml-auto flex items-center">
+                <Badge variant="outline" className="bg-status-critical/10 text-status-critical border-status-critical/20 rounded-lg text-sem-tiny font-black px-3 py-1 flex items-center gap-2 cursor-help group relative">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  {conflicts.length} {conflicts.length === 1 ? 'CONFLITO DETECTADO' : 'CONFLITOS DETECTADOS'}
+                  
+                  {/* Tooltip implementation */}
+                  <div className="absolute bottom-full right-0 mb-2 w-64 p-3 bg-white border border-border rounded-xl shadow-sem-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
+                    <p className="text-foreground text-xs font-bold mb-2">Conflitos de Agenda:</p>
+                    <div className="space-y-2">
+                      {conflicts.slice(0, 3).map((c, i) => (
+                        <div key={i} className="flex items-center justify-between text-[10px] text-muted-foreground border-b border-border/10 pb-1">
+                          <span>{c.technician}</span>
+                          <span className="font-bold text-status-critical">{c.date}</span>
+                        </div>
+                      ))}
+                      {conflicts.length > 3 && (
+                        <p className="text-[9px] italic text-center">E mais {conflicts.length - 3}...</p>
+                      )}
+                    </div>
+                  </div>
+                </Badge>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
