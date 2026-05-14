@@ -1,4 +1,5 @@
 
+
 import {
   WarrantyStage,
   WarrantyRequestFlow,
@@ -17,7 +18,7 @@ import {
 import { warrantySLAService } from './WarrantySLAService';
 
 // Mock warranty requests data
-const mockWarrantyRequests: WarrantyRequestFlow[] = [
+const initialMockRequests: WarrantyRequestFlow[] = [
   {
     id: "wr-001",
     clientId: "client-1",
@@ -111,178 +112,46 @@ const mockWarrantyRequests: WarrantyRequestFlow[] = [
         notes: "Vistoria agendada para 10/02/2026"
       }
     ]
-  },
-  {
-    id: "wr-003",
-    clientId: "client-3",
-    clientName: "Paulo Ferreira",
-    propertyId: "prop-1",
-    propertyName: "Edifício Aurora",
-    unitNumber: "101",
-    title: "Problema elétrico na cozinha",
-    description: "Tomadas da cozinha não estão funcionando.",
-    category: "Elétrica",
-    priority: "critical",
-    currentStage: "opened",
-    stageStartedAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-    slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Elétrica")!,
-    slaDeadline: new Date(Date.now() + 44 * 60 * 60 * 1000),
-    slaStatus: "on_track",
-    assignedTo: null,
-    assignedToName: null,
-    history: [
-      {
-        id: "hist-006",
-        requestId: "wr-003",
-        fromStatus: null,
-        toStatus: "opened",
-        changedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-        changedBy: "client-3",
-        isAutomatic: false
-      }
-    ]
-  },
-  {
-    id: "wr-004",
-    clientId: "client-1",
-    clientName: "Maria Oliveira",
-    propertyId: "prop-1",
-    propertyName: "Edifício Aurora",
-    unitNumber: "204",
-    title: "Rachadura na parede da sala",
-    description: "Surgiu uma rachadura visível na parede da sala de estar.",
-    category: "Estrutural",
-    priority: "high",
-    currentStage: "approved",
-    stageStartedAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    createdAt: new Date(Date.now() - 120 * 60 * 60 * 1000), // 5 days ago
-    updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-    slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Estrutural")!,
-    slaDeadline: new Date(Date.now() + 700 * 60 * 60 * 1000),
-    slaStatus: "on_track",
-    assignedTo: "tech-1",
-    assignedToName: "Carlos Técnico",
-    inspectionDate: new Date(Date.now() - 48 * 60 * 60 * 1000),
-    inspectionNotes: "Rachadura superficial, não compromete estrutura",
-    approvalDate: new Date(Date.now() - 2 * 60 * 60 * 1000),
-    approvalNotes: "Aprovado para reparo",
-    history: [
-      {
-        id: "hist-007",
-        requestId: "wr-004",
-        fromStatus: null,
-        toStatus: "opened",
-        changedAt: new Date(Date.now() - 120 * 60 * 60 * 1000),
-        changedBy: "client-1",
-        isAutomatic: false
-      },
-      {
-        id: "hist-008",
-        requestId: "wr-004",
-        fromStatus: "opened",
-        toStatus: "in_analysis",
-        changedAt: new Date(Date.now() - 96 * 60 * 60 * 1000),
-        changedBy: "admin-1",
-        isAutomatic: false
-      },
-      {
-        id: "hist-009",
-        requestId: "wr-004",
-        fromStatus: "in_analysis",
-        toStatus: "inspection_scheduled",
-        changedAt: new Date(Date.now() - 72 * 60 * 60 * 1000),
-        changedBy: "admin-1",
-        isAutomatic: false
-      },
-      {
-        id: "hist-010",
-        requestId: "wr-004",
-        fromStatus: "inspection_scheduled",
-        toStatus: "inspection_completed",
-        changedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        changedBy: "tech-1",
-        isAutomatic: false
-      },
-      {
-        id: "hist-011",
-        requestId: "wr-004",
-        fromStatus: "inspection_completed",
-        toStatus: "approved",
-        changedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-        changedBy: "admin-1",
-        isAutomatic: false,
-        notes: "Aprovado para reparo"
-      }
-    ]
-  },
-  {
-    id: "wr-005",
-    clientId: "client-4",
-    clientName: "Carla Lima",
-    propertyId: "prop-2",
-    propertyName: "Residencial Bosque Verde",
-    unitNumber: "102",
-    title: "Vazamento no teto",
-    description: "Vazamento aparente no teto do banheiro.",
-    category: "Impermeabilização",
-    priority: "critical",
-    currentStage: "in_execution",
-    stageStartedAt: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2 days ago
-    createdAt: new Date(Date.now() - 168 * 60 * 60 * 1000), // 7 days ago
-    updatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-    slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Impermeabilização")!,
-    slaDeadline: new Date(Date.now() + 312 * 60 * 60 * 1000),
-    slaStatus: "on_track",
-    assignedTo: "tech-3",
-    assignedToName: "Roberto Obras",
-    inspectionDate: new Date(Date.now() - 120 * 60 * 60 * 1000),
-    inspectionNotes: "Falha na impermeabilização do andar superior",
-    approvalDate: new Date(Date.now() - 72 * 60 * 60 * 1000),
-    approvalNotes: "Urgente - aprovar imediatamente",
-    executionStartDate: new Date(Date.now() - 48 * 60 * 60 * 1000),
-    executionNotes: "Equipe iniciou os trabalhos",
-    history: []
-  },
-  {
-    id: "wr-006",
-    clientId: "client-5",
-    clientName: "Fernando Costa",
-    propertyId: "prop-1",
-    propertyName: "Edifício Aurora",
-    unitNumber: "501",
-    title: "Piso solto na varanda",
-    description: "Algumas peças do piso cerâmico estão soltas na varanda.",
-    category: "Revestimentos Cerâmicos",
-    priority: "low",
-    currentStage: "completed",
-    stageStartedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 240 * 60 * 60 * 1000), // 10 days ago
-    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Revestimentos Cerâmicos")!,
-    slaDeadline: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    slaStatus: "on_track",
-    assignedTo: "tech-1",
-    assignedToName: "Carlos Técnico",
-    completionDate: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    completionNotes: "Piso reinstalado com sucesso",
-    history: []
   }
 ];
 
-/**
- * Service for managing warranty flow and history
- */
 class WarrantyFlowService {
   private requests: Map<string, WarrantyRequestFlow> = new Map();
+  private storageKey = "a2_warranty_requests";
 
   constructor() {
-    // Initialize with mock data
-    mockWarrantyRequests.forEach(request => {
-      this.requests.set(request.id, request);
-    });
+    const stored = localStorage.getItem(this.storageKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        parsed.forEach((req: any) => {
+          this.requests.set(req.id, {
+            ...req,
+            stageStartedAt: new Date(req.stageStartedAt),
+            createdAt: new Date(req.createdAt),
+            updatedAt: new Date(req.updatedAt),
+            slaDeadline: req.slaDeadline ? new Date(req.slaDeadline) : undefined,
+            inspectionDate: req.inspectionDate ? new Date(req.inspectionDate) : undefined,
+            history: req.history.map((h: any) => ({ ...h, changedAt: new Date(h.changedAt) }))
+          });
+        });
+      } catch (e) {
+        console.error("Failed to load warranty requests", e);
+      }
+    }
+
+    if (this.requests.size === 0) {
+      initialMockRequests.forEach(request => {
+        this.requests.set(request.id, request);
+      });
+      this.persist();
+    }
   }
+
+  private persist() {
+    localStorage.setItem(this.storageKey, JSON.stringify(Array.from(this.requests.values())));
+  }
+
 
   /**
    * Get all warranty requests
