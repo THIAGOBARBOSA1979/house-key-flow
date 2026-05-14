@@ -1,88 +1,124 @@
 
+
 import { cn } from "@/lib/utils";
 import { Clock, Loader2, CheckCircle2, AlertTriangle, Info, XCircle } from "lucide-react";
 
-export type StatusType = "pending" | "progress" | "complete" | "critical" | "success" | "warning" | "error" | "info" | "neutral";
+/**
+ * Status Types supported by the Design System
+ */
+export type StatusType = 
+  | "pending" 
+  | "progress" 
+  | "complete" 
+  | "critical" 
+  | "success" 
+  | "warning" 
+  | "error" 
+  | "info" 
+  | "neutral";
 
 interface StatusBadgeProps {
+  /** The current status to display */
   status: StatusType;
+  /** Optional custom label (defaults to standard status name) */
   label?: string;
+  /** Whether to show the status icon */
   showIcon?: boolean;
-  size?: "sm" | "default";
+  /** The size variation of the badge */
+  size?: "sm" | "default" | "lg";
+  /** Additional CSS classes */
   className?: string;
 }
 
 const statusConfig: Record<StatusType, { 
-  class: string; 
+  badgeClass: string; 
   defaultLabel: string;
   icon: typeof Clock;
 }> = {
   pending: {
-    class: "status-pending",
+    badgeClass: "badge-pending",
     defaultLabel: "Pendente",
     icon: Clock,
   },
   progress: {
-    class: "status-progress",
+    badgeClass: "badge-progress",
     defaultLabel: "Em Andamento",
     icon: Loader2,
   },
   complete: {
-    class: "status-complete",
+    badgeClass: "badge-complete",
     defaultLabel: "Concluído",
     icon: CheckCircle2,
   },
   critical: {
-    class: "status-critical",
+    badgeClass: "badge-critical",
     defaultLabel: "Crítico",
     icon: AlertTriangle,
   },
   success: {
-    class: "status-success",
+    badgeClass: "badge-complete", // Map semantic success to complete
     defaultLabel: "Sucesso",
     icon: CheckCircle2,
   },
   warning: {
-    class: "status-warning",
+    badgeClass: "badge-pending", // Map semantic warning to pending style
     defaultLabel: "Atenção",
     icon: AlertTriangle,
   },
   error: {
-    class: "status-error",
+    badgeClass: "badge-critical", // Map semantic error to critical
     defaultLabel: "Erro",
     icon: XCircle,
   },
   info: {
-    class: "status-info",
+    badgeClass: "badge-progress", // Map semantic info to progress style
     defaultLabel: "Info",
     icon: Info,
   },
   neutral: {
-    class: "status-neutral",
+    badgeClass: "bg-muted text-muted-foreground border-muted-foreground/20",
     defaultLabel: "Neutro",
     icon: Info,
   },
 };
 
+/**
+ * Reusable StatusBadge component following the Design System guidelines.
+ */
 export const StatusBadge = ({ 
   status, 
   label, 
-  showIcon = false,
+  showIcon = true,
   size = "default",
   className 
 }: StatusBadgeProps) => {
-  const config = statusConfig[status];
+  const config = statusConfig[status] || statusConfig.neutral;
   const Icon = config.icon;
   
   return (
-    <span className={cn(
-      "status-badge",
-      config.class,
-      size === "sm" && "text-[10px] px-2 py-0.5",
-      className
-    )}>
-      {showIcon && <Icon className={cn("mr-1", size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5")} />}
-      {label || config.defaultLabel}
+    <span 
+      role="status"
+      aria-label={`${config.defaultLabel}: ${label || config.defaultLabel}`}
+      className={cn(
+        "badge-status transition-all duration-200",
+        config.badgeClass,
+        size === "sm" && "px-2 py-0.5 text-[10px] gap-1",
+        size === "lg" && "px-4 py-1.5 text-sm gap-2",
+        className
+      )}
+    >
+      {showIcon && (
+        <Icon 
+          className={cn(
+            "shrink-0",
+            size === "sm" ? "h-3 w-3" : (size === "lg" ? "h-4 w-4" : "h-3.5 w-3.5"),
+            status === "progress" && "animate-spin"
+          )} 
+          aria-hidden="true"
+        />
+      )}
+      <span className="truncate">{label || config.defaultLabel}</span>
     </span>
   );
 };
+
