@@ -118,6 +118,7 @@
     --opacity-disabled: 0.4;
     --opacity-muted: 0.6;
     --opacity-hover: 0.9;
+    --opacity-active: 0.8;
     --opacity-full: 1;
 
     /* --- Shadows & Elevations --- */
@@ -249,11 +250,15 @@
 
   /* Interactive States & Focus */
   .interactive-active {
-    @apply active:scale-[0.98] transition-transform duration-150;
+    @apply active:scale-[0.98] active:opacity-active transition-all duration-150;
+  }
+
+  .interactive-hover {
+    @apply hover:opacity-hover transition-all duration-200;
   }
 
   .interactive-disabled {
-    @apply opacity-disabled cursor-not-allowed pointer-events-none;
+    @apply opacity-disabled cursor-not-allowed pointer-events-none grayscale-[0.5];
   }
 
   .focus-ring {

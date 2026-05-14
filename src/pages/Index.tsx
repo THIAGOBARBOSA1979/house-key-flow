@@ -72,8 +72,8 @@ const Dashboard = () => {
           {/* Recent Properties */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold tracking-tight">Empreendimentos Ativos</h2>
-              <Button variant="ghost" size="sm" className="gap-1 text-primary" onClick={() => navigate("/admin/properties")}>
+              <h2 className="text-h2">Empreendimentos Ativos</h2>
+              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/properties")}>
                 Ver todos
                 <ChevronRight size={16} />
               </Button>
@@ -88,11 +88,11 @@ const Dashboard = () => {
           {/* Inspections */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
-                <ClipboardCheck size={20} className="text-company" />
+              <h2 className="text-h2 flex items-center gap-2">
+                <ClipboardCheck size={24} className="text-primary" />
                 Vistorias Agendadas
               </h2>
-              <Button variant="ghost" size="sm" className="gap-1 text-primary" onClick={() => navigate("/admin/inspections")}>
+              <Button variant="ghost" size="sm" className="gap-1" onClick={() => navigate("/admin/inspections")}>
                 Ver todas
                 <ChevronRight size={16} />
               </Button>
@@ -113,22 +113,26 @@ const Dashboard = () => {
           {/* Warranty Claims - Moved to sidebar for compact view */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
-                <ShieldCheck size={20} className="text-amber-500" />
+              <h2 className="text-h2 flex items-center gap-2">
+                <ShieldCheck size={24} className="text-status-critical" />
                 Garantias Urgentes
               </h2>
             </div>
             <div className="space-y-4">
               {warrantyClaims.map((claim) => (
-                <div key={claim.id} className="bg-card border rounded-lg p-4 shadow-sm hover:border-amber-200 transition-colors cursor-pointer" onClick={() => navigate("/admin/warranty")}>
+                <div 
+                  key={claim.id} 
+                  className="card-standard p-4 interactive-active interactive-hover hover:border-amber-400/50 cursor-pointer" 
+                  onClick={() => navigate("/admin/warranty")}
+                >
                   <div className="flex justify-between items-start mb-2">
                     <Badge variant={claim.priority === 'high' || claim.priority === 'critical' ? 'destructive' : 'outline'}>
                       {claim.priority === 'high' ? 'Alta' : 'Crítica'}
                     </Badge>
-                    <span className="text-xs text-muted-foreground">{claim.id}</span>
+                    <span className="text-sem-tiny text-muted-foreground">{claim.id}</span>
                   </div>
-                  <h4 className="font-semibold text-sm line-clamp-1">{claim.title}</h4>
-                  <p className="text-xs text-muted-foreground mt-1">{claim.propertyName} - Un. {claim.unitNumber}</p>
+                  <h4 className="text-label line-clamp-1">{claim.title}</h4>
+                  <p className="text-body-sm text-muted-foreground mt-1">{claim.propertyName} - Un. {claim.unitNumber}</p>
                 </div>
               ))}
               <Button variant="outline" className="w-full text-xs" onClick={() => navigate("/admin/warranty")}>
@@ -140,8 +144,8 @@ const Dashboard = () => {
           {/* Recent Activities */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
-                <Activity size={20} className="text-blue-500" />
+              <h2 className="text-h2 flex items-center gap-2">
+                <Activity size={24} className="text-primary" />
                 Feed de Atividades
               </h2>
             </div>
