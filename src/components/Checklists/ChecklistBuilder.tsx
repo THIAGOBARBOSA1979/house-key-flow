@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { uuidv4 } from '@/lib/utils';
+// uuid will be generated with Date.now() for demo purposes
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -74,7 +74,7 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
       : newItemDescription;
       
     const newItem: ChecklistItem = {
-      id: uuidv4(),
+      id: `item-${Date.now()}`,
       description: formattedDescription,
       required: newItemRequired,
       evidence: []
