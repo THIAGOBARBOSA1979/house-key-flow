@@ -409,7 +409,7 @@ const ClientInspections = () => {
                             <div>
                               <h3 className="font-medium">Relatório de Vistoria - {inspection.title}</h3>
                               <p className="text-sm text-muted-foreground">
-                                Finalizado em {format(new Date(2025, 3, 10), "dd/MM/yyyy")}
+                                Finalizado em {format(new Date(2025, 3, 10), "dd/MM/yyyy", { locale: ptBR })}
                               </p>
                               <div className="mt-2">
                                 <Button variant="outline" size="sm" onClick={handleViewPdf}>
@@ -424,7 +424,7 @@ const ClientInspections = () => {
                           <h3 className="font-medium mb-2">Resumo</h3>
                           <div className="space-y-1 text-sm">
                             <p><span className="font-medium">Vistoria realizada por:</span> {inspection.inspector}</p>
-                            <p><span className="font-medium">Data da vistoria:</span> {format(inspection.scheduledDate, "dd/MM/yyyy")}</p>
+                            <p><span className="font-medium">Data da vistoria:</span> {isValid(new Date(inspection.scheduledDate)) ? format(new Date(inspection.scheduledDate), "dd/MM/yyyy", { locale: ptBR }) : "—"}</p>
                             <p><span className="font-medium">Total de itens verificados:</span> {inspection.checklist.length}</p>
                             <p><span className="font-medium">Itens conformes:</span> {inspection.checklist.filter(i => i.completed).length}</p>
                             <p><span className="font-medium">Itens não conformes:</span> {inspection.checklist.filter(i => !i.completed).length}</p>
