@@ -63,18 +63,30 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom colors for our property management system
-				company: {
-					DEFAULT: '#1E40AF', // Deep blue for primary brand color
-					light: '#DBEAFE',
-					dark: '#1E3A8A',
+				// Design System Tokens
+				brand: {
+					DEFAULT: 'hsl(var(--brand))',
+					foreground: 'hsl(var(--brand-foreground))',
 				},
 				status: {
-					pending: '#FCD34D',   // Amber for pending status
-					progress: '#60A5FA', // Blue for in progress
-					complete: '#34D399', // Green for completed
-					critical: '#F87171', // Red for critical issues
+					pending: {
+						DEFAULT: 'hsl(var(--status-pending))',
+						foreground: 'hsl(var(--status-pending-foreground))',
+					},
+					progress: {
+						DEFAULT: 'hsl(var(--status-progress))',
+						foreground: 'hsl(var(--status-progress-foreground))',
+					},
+					complete: {
+						DEFAULT: 'hsl(var(--status-complete))',
+						foreground: 'hsl(var(--status-complete-foreground))',
+					},
+					critical: {
+						DEFAULT: 'hsl(var(--status-critical))',
+						foreground: 'hsl(var(--status-critical-foreground))',
+					},
 				}
+
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
