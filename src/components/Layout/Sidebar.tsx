@@ -13,7 +13,8 @@ import {
   FileText,
   ChevronLeft,
   ChevronRight,
-  Layout
+  Layout,
+  LogOut
 } from "lucide-react";
 
 import { SidebarGroup } from "./SidebarGroup";
@@ -88,15 +89,25 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
       </nav>
       
       {!collapsed && (
-        <div className="p-4-sem border-t border-sidebar-border animate-fade-in">
-          <div className="flex items-center gap-3-sem">
-            <div className="w-8 h-8 rounded-lg bg-sidebar-accent flex items-center justify-center text-sidebar-accent-foreground font-bold shadow-sem-sm">
-              A
+        <div className="p-4-sem border-t border-sidebar-border animate-fade-in bg-sidebar-accent/5">
+          <div className="flex items-center justify-between gap-3-sem">
+            <div className="flex items-center gap-3-sem min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-sidebar-accent flex items-center justify-center text-sidebar-accent-foreground font-bold shadow-sem-sm border border-sidebar-border shrink-0">
+                A
+              </div>
+              <div className="min-w-0">
+                <p className="text-body-sm font-bold text-sidebar-foreground truncate">Administrador</p>
+                <p className="text-sem-tiny text-sidebar-foreground/60 truncate font-medium">Sessão ativa</p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <p className="text-body-sm font-bold text-sidebar-foreground truncate">Admin</p>
-              <p className="text-sem-tiny text-sidebar-foreground/70 truncate">admin@construtora.com</p>
-            </div>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-sidebar-foreground/60 hover:text-status-critical hover:bg-status-critical/10 rounded-lg h-9 w-9"
+              onClick={() => window.location.href = '/login'}
+            >
+              <LogOut size={18} />
+            </Button>
           </div>
         </div>
       )}
