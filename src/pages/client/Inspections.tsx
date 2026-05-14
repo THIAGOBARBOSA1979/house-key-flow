@@ -218,13 +218,13 @@ const ClientInspections = () => {
                       <h3 className="font-medium">{item.title}</h3>
                       <div className="flex items-center gap-1.5">
                         {item.acceptanceStatus === "pending_acceptance" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800">Aceite pendente</span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-pending/10 text-status-pending border-status-pending/20">Aceite pendente</span>
                         )}
                         {item.acceptanceStatus === "accepted" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-800">Aceita</span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-complete/10 text-status-complete border-status-complete/20">Aceita</span>
                         )}
                         {item.acceptanceStatus === "rejected" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-100 text-red-800">Recusada</span>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-critical/10 text-status-critical border-status-critical/20">Recusada</span>
                         )}
                         <StatusBadge status={item.status} />
                       </div>
