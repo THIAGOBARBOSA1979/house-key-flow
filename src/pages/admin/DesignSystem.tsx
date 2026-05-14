@@ -314,7 +314,7 @@ const DesignSystem = () => {
                     <p className="text-sem-body-sm text-center italic">
                       Todos os formulários em modais devem seguir a estrutura:
                       <br/>
-                      <strong>Header -> Content -> Footer (Sticky)</strong>
+                      <strong>Header &gt; Content &gt; Footer (Sticky)</strong>
                     </p>
                   </div>
                   <div className="flex justify-end gap-3 pt-4 border-t border-border/10">
