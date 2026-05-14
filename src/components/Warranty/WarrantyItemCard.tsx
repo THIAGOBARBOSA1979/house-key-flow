@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { WarrantyItem, WarrantyEligibilityResult, CATEGORY_ICONS } from "@/types/warranty";
 import { WarrantyEligibilityBadge } from "./WarrantyEligibilityBadge";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { 
   Droplets, Shield, Grid3x3, DoorOpen, Building, Zap, 
@@ -102,10 +102,10 @@ export function WarrantyItemCard({
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>
-                    Início: {format(item.dataInicioGarantia, "dd/MM/yyyy", { locale: ptBR })}
+                    Início: {isValid(new Date(item.dataInicioGarantia)) ? format(new Date(item.dataInicioGarantia), "dd/MM/yyyy", { locale: ptBR }) : "—"}
                   </span>
                   <span>
-                    Fim: {format(item.dataFimGarantia, "dd/MM/yyyy", { locale: ptBR })}
+                    Fim: {isValid(new Date(item.dataFimGarantia)) ? format(new Date(item.dataFimGarantia), "dd/MM/yyyy", { locale: ptBR }) : "—"}
                   </span>
                 </div>
               </div>
@@ -115,13 +115,13 @@ export function WarrantyItemCard({
             {!eligibility.isEligible && (
               <div className="text-xs text-muted-foreground">
                 {eligibility.reason === "expired" && (
-                  <span>Expirou em {format(item.dataFimGarantia, "dd/MM/yyyy", { locale: ptBR })}</span>
+                  <span>Expirou em {isValid(new Date(item.dataFimGarantia)) ? format(new Date(item.dataFimGarantia), "dd/MM/yyyy", { locale: ptBR }) : "—"}</span>
                 )}
                 {eligibility.reason === "cancelled" && (
                   <span>Garantia cancelada</span>
                 )}
                 {eligibility.reason === "not_started" && (
-                  <span>Inicia em {format(item.dataInicioGarantia, "dd/MM/yyyy", { locale: ptBR })}</span>
+                  <span>Inicia em {isValid(new Date(item.dataInicioGarantia)) ? format(new Date(item.dataInicioGarantia), "dd/MM/yyyy", { locale: ptBR }) : "—"}</span>
                 )}
               </div>
             )}
