@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Stats } from "@/components/Dashboard/Stats";
 import { DashboardCharts } from "@/components/Dashboard/DashboardCharts";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
+import { QuickActions } from "@/components/Dashboard/QuickActions";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
 import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw, Layers, Clock } from "lucide-react";
@@ -16,8 +17,11 @@ import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { auditLogService } from "@/services/AuditLogService";
 
+import { useAuth } from "@/contexts/AuthContext";
+
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   
@@ -30,6 +34,15 @@ const Dashboard = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      auditLogService.log({
+        entityType: 'system',
+        entityId: 'dashboard',
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: 'Dashboard sincronizado manualmente.'
+      });
       toast({ title: "Dados atualizados", description: "O dashboard foi sincronizado com os dados mais recentes." });
     }, 800);
   };
@@ -38,7 +51,7 @@ const Dashboard = () => {
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
       <PageHeader
         icon={Home}
-        title="Painel de Controle"
+        title={`Olá, ${user?.name?.split(' ')[0] || 'Administrador'}`}
         description="Gestão integrada de empreendimentos, vistorias e garantias."
       >
         <div className="flex items-center gap-2">
@@ -59,6 +72,8 @@ const Dashboard = () => {
       <Stats />
       
       <DashboardCharts />
+      
+      <QuickActions />
       
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-2 space-y-8">
@@ -159,7 +174,12 @@ const Dashboard = () => {
                   ))}
                 </div>
                 <div className="p-4 border-t border-border/10 text-center">
-                  <Button variant="ghost" size="sm" className="w-full text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary"
+                    onClick={() => navigate("/admin/audit-logs")}
+                  >
                     Ver logs de auditoria
                   </Button>
                 </div>

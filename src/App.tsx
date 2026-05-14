@@ -27,6 +27,7 @@ import Users from "./pages/Users";
 import ClientArea from "./pages/ClientArea";
 import Checklist from "./pages/Checklist";
 import Settings from "./pages/Settings";
+import AuditLogs from "./pages/admin/AuditLogs";
 
 
 // Client pages and layout
@@ -134,6 +135,11 @@ const App = () => {
                 <Route path="/admin/design-system" element={
                   <ProtectedRoute requiredRole="admin">
                     <AppLayout><DesignSystem /></AppLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/audit-logs" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><AuditLogs /></AppLayout>
                   </ProtectedRoute>
                 } />
 

@@ -26,6 +26,7 @@ import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
@@ -35,6 +36,13 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -42,20 +50,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription,
-  DialogTrigger
-} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { exportService } from "@/services/ExportService";
+import { BulkActions } from "@/components/Documents/BulkActions";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -63,6 +64,9 @@ const AdminDocuments = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const categories = documentService.getCategories();
 
   useEffect(() => {
     setDocuments(documentService.getAllDocuments());
@@ -71,7 +75,8 @@ const AdminDocuments = () => {
   const filteredDocs = documents.filter(doc => 
     (doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     doc.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (activeTab === "all" || doc.status === activeTab)
+    (activeTab === "all" || doc.status === activeTab) &&
+    (selectedCategory === "all" || doc.category === selectedCategory)
   );
 
   const handleDelete = (id: string) => {
@@ -150,6 +155,13 @@ const AdminDocuments = () => {
         </Card>
       </div>
 
+      <BulkActions 
+        documents={filteredDocs}
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+        onActionComplete={() => setDocuments(documentService.getAllDocuments())}
+      />
+
       <Card className="card-standard border-none bg-background/50 backdrop-blur-sm overflow-hidden">
         <CardContent className="p-0">
           <div className="p-4 border-b bg-muted/20 flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -161,7 +173,19 @@ const AdminDocuments = () => {
               </TabsList>
             </Tabs>
             
-            <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full md:w-40 h-10 bg-background border-none shadow-sm font-bold text-xs">
+                  <SelectValue placeholder="Categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas Categorias</SelectItem>
+                  {categories.map(cat => (
+                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <div className="relative flex-1 md:w-64">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input 
@@ -195,6 +219,13 @@ const AdminDocuments = () => {
                       <TableRow key={doc.id} className="group hover:bg-muted/20 transition-colors border-b-border/5">
                         <TableCell className="py-4">
                           <div className="flex items-center gap-3">
+                            <Checkbox 
+                              checked={selectedIds.includes(doc.id)} 
+                              onCheckedChange={(checked) => {
+                                if (checked) setSelectedIds([...selectedIds, doc.id]);
+                                else setSelectedIds(selectedIds.filter(id => id !== doc.id));
+                              }}
+                            />
                             <div className="p-2 rounded bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
                               <FileText className="w-5 h-5" />
                             </div>
@@ -257,7 +288,13 @@ const AdminDocuments = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
               {filteredDocs.map(doc => (
-                <Card key={doc.id} className="card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all">
+                <Card key={doc.id} className={cn(
+                  "card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all",
+                  selectedIds.includes(doc.id) && "ring-2 ring-primary bg-primary/5"
+                )} onClick={() => {
+                  if (selectedIds.includes(doc.id)) setSelectedIds(selectedIds.filter(id => id !== doc.id));
+                  else setSelectedIds([...selectedIds, doc.id]);
+                }}>
                    <div className="flex justify-between items-start">
                       <div className="p-3 bg-card rounded-xl shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-all border border-border/10">
                         <FileText size={22} />

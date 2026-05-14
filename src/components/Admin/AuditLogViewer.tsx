@@ -6,10 +6,11 @@ import { Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, User, Shield, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, User, Shield, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services/AuditLogService";
+import { exportService } from "@/services/ExportService";
 
 interface AuditLogViewerProps {
   entityType?: AuditEntityType;
@@ -30,6 +31,10 @@ const ACTION_LABELS: Record<AuditAction, string> = {
   comment_added: "Comentário",
   info_added: "Info Adicional",
   assigned: "Atribuição",
+  exported: "Exportação",
+  logged_in: "Login",
+  logged_out: "Logout",
+  settings_updated: "Configuração",
 };
 
 const ACTION_COLORS: Record<AuditAction, string> = {
@@ -44,6 +49,10 @@ const ACTION_COLORS: Record<AuditAction, string> = {
   comment_added: "bg-muted text-muted-foreground border-border",
   info_added: "bg-status-progress/10 text-status-progress border-status-progress/20",
   assigned: "bg-brand/10 text-brand border-brand/20",
+  exported: "bg-status-progress/10 text-status-progress border-status-progress/20",
+  logged_in: "bg-status-complete/10 text-status-complete border-status-complete/20",
+  logged_out: "bg-muted text-muted-foreground border-border",
+  settings_updated: "bg-brand/10 text-brand border-brand/20",
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -75,9 +84,18 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
   const paginatedLogs = filteredLogs.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   return (
-    <Card>
-      <CardHeader className={compact ? "pb-3" : undefined}>
-        <CardTitle className="text-lg">{title || "Logs de Auditoria"}</CardTitle>
+    <Card className="border-none bg-card/50 backdrop-blur-sm shadow-sem-sm">
+      <CardHeader className={compact ? "pb-3" : "pb-4 border-b border-border/10"}>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">{title || "Logs de Auditoria"}</CardTitle>
+          {!compact && (
+            <Button variant="outline" size="sm" className="h-8 font-bold text-xs" onClick={() => {
+              exportService.exportToCSV(allLogs, "logs_auditoria");
+            }}>
+              <Download className="w-3 h-3 mr-2" /> Exportar
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Filters */}
