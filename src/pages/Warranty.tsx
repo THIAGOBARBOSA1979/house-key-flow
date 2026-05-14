@@ -110,7 +110,41 @@ const Warranty = () => {
                 <TabsTrigger value="chat">Comunicação</TabsTrigger>
                 <TabsTrigger value="logs">Logs</TabsTrigger>
               </TabsList>
-              <TabsContent value="timeline">
+              <TabsContent value="timeline" className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <UserPlus className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Responsável Atual</p>
+                      <p className="text-sm font-bold">{selectedRequest.assignedToName || "Não atribuído"}</p>
+                    </div>
+                  </div>
+                  <Select 
+                    value={selectedRequest.assignedTo || "unassigned"} 
+                    onValueChange={(value) => {
+                      const tech = TECHNICIANS.find(t => t.id === value);
+                      if (tech) {
+                        const result = warrantyFlowService.assignTechnician(selectedRequest.id, tech.id, tech.name, 'admin-1');
+                        if (result.success && result.request) {
+                          setSelectedRequest(result.request);
+                          toast({ title: "Técnico alterado", description: `Responsável agora é ${tech.name}` });
+                        }
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Alterar responsável" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unassigned">Sem responsável</SelectItem>
+                      {TECHNICIANS.map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <WarrantyRequestTimeline request={selectedRequest} />
               </TabsContent>
               <TabsContent value="problems">
