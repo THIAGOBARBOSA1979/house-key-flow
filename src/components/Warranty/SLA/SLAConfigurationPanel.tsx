@@ -113,11 +113,11 @@ export function SLAConfigurationPanel() {
         <div className="flex items-start gap-3 p-3 mb-4 rounded-lg bg-blue-50 border border-blue-200">
           <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-blue-700">
-            <p className="font-medium">Como funciona o SLA</p>
+            <p className="font-medium">Como funciona o SLA (Horário Comercial)</p>
             <p className="mt-1">
-              O SLA define o prazo máximo para cada etapa do atendimento. 
+              O SLA define o prazo máximo em <strong>horas úteis</strong> (Seg-Sex, 08h-18h). 
               Quando o prazo é excedido, a solicitação é marcada como atrasada 
-              e alertas são gerados automaticamente.
+              e alertas são gerados. Solicitações <strong>pausadas</strong> não consomem SLA.
             </p>
           </div>
         </div>
