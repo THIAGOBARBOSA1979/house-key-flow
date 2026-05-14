@@ -471,6 +471,14 @@ const ClientInspections = () => {
           onComplete={handleInspectionComplete}
         />
       )}
+
+      {scheduleDialogOpen && (
+        <ScheduleInspectionDialog 
+          triggerButton={<div className="hidden" />} 
+          onSuccess={() => setScheduleDialogOpen(false)}
+          clientId={clientId}
+        />
+      )}
     </div>
   );
 };
