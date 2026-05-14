@@ -90,6 +90,9 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
           {getTypeBadge(appointment.type)}
           <h3 className="text-h4 font-bold group-hover:text-primary transition-colors">{appointment.title}</h3>
           {getStatusBadge(appointment.status)}
+          {appointment.priority === "high" && (
+            <Badge variant="destructive" className="animate-pulse py-0 h-5 text-[10px]">ALTA PRIORIDADE</Badge>
+          )}
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
