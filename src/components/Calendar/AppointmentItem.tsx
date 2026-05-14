@@ -5,18 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock } from "lucide-react";
 
-export interface Appointment {
-  id: string;
-  title: string;
-  property: string;
-  unit: string;
-  client: string;
-  date: Date;
-  type: "inspection" | "warranty";
-  status: "pending" | "confirmed" | "completed" | "cancelled";
-}
+import { Appointment } from "./AppointmentData";
 
-interface AppointmentItemProps {
+export interface AppointmentItemProps {
   appointment: Appointment;
   onViewDetails: (id: string) => void;
   compact?: boolean;
@@ -34,6 +25,8 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
         return <Badge variant="destructive" className="bg-status-critical/10 text-status-critical border-status-critical/20 rounded-lg text-sem-tiny font-bold uppercase"><X className="h-3 w-3 mr-1" />Cancelado</Badge>;
       case "completed":
         return <Badge className="bg-status-progress/10 text-status-progress border-status-progress/20 rounded-lg text-sem-tiny font-bold uppercase"><FileCheck className="h-3 w-3 mr-1" />Concluído</Badge>;
+      case "rescheduled":
+        return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 rounded-lg text-sem-tiny font-bold uppercase"><CalendarClock className="h-3 w-3 mr-1" />Reagendado</Badge>;
       default:
         return <Badge variant="outline">—</Badge>;
     }
@@ -41,9 +34,18 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
   
   // Get appointment type badge
   const getTypeBadge = (type: string) => {
-    return type === "inspection"
-      ? <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg text-sem-tiny font-black uppercase tracking-tighter">Vistoria</Badge>
-      : <Badge className="bg-status-pending/10 text-status-pending border-status-pending/20 rounded-lg text-sem-tiny font-black uppercase tracking-tighter">Garantia</Badge>;
+    switch (type) {
+      case "inspection":
+        return <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg text-sem-tiny font-black uppercase tracking-tighter">Vistoria</Badge>;
+      case "warranty":
+        return <Badge className="bg-status-pending/10 text-status-pending border-status-pending/20 rounded-lg text-sem-tiny font-black uppercase tracking-tighter">Garantia</Badge>;
+      case "delivery":
+        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 rounded-lg text-sem-tiny font-black uppercase tracking-tighter">Entrega</Badge>;
+      case "technical_visit":
+        return <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 rounded-lg text-sem-tiny font-black uppercase tracking-tighter">Visita Técnica</Badge>;
+      default:
+        return <Badge variant="outline">Outro</Badge>;
+    }
   };
 
   if (compact) {

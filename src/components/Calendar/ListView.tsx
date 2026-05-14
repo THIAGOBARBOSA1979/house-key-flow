@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { AppointmentItem, Appointment } from "./AppointmentItem";
+import { AppointmentItem } from "./AppointmentItem";
+import { Appointment } from "./AppointmentData";
 import { CalendarIcon, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

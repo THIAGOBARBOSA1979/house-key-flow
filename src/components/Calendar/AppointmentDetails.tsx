@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { Appointment } from "./AppointmentItem";
+import { Appointment } from "./AppointmentData";
 
 interface AppointmentDetailsProps {
   selectedAppointment: string | null;
@@ -43,6 +43,8 @@ export function AppointmentDetails({
         return <span className="inline-flex items-center rounded-md bg-status-critical/10 px-2 py-1 text-xs font-medium text-status-critical ring-1 ring-inset ring-status-critical/20">Cancelado</span>;
       case "completed":
         return <span className="inline-flex items-center rounded-md bg-status-progress/10 px-2 py-1 text-xs font-medium text-status-progress ring-1 ring-inset ring-status-progress/20">Concluído</span>;
+      case "rescheduled":
+        return <span className="inline-flex items-center rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 ring-1 ring-inset ring-amber-500/20">Reagendado</span>;
       default:
         return <span>—</span>;
     }
@@ -96,10 +98,16 @@ export function AppointmentDetails({
           </div>
           
           <div>
+            <Label>Responsável Técnico</Label>
+            <div className="mt-1 text-sm">{appointment.technician || "Não atribuído"}</div>
+          </div>
+          
+          <div>
             <Label>Observações</Label>
             <Textarea 
               placeholder="Adicionar observações..."
               className="mt-1"
+              defaultValue={appointment.notes}
             />
           </div>
           
@@ -122,6 +130,10 @@ export function AppointmentDetails({
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="cancelled" id="cancelled" />
                   <Label htmlFor="cancelled" className="font-normal">Cancelado</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="rescheduled" id="rescheduled" />
+                  <Label htmlFor="rescheduled" className="font-normal">Reagendado</Label>
                 </div>
               </RadioGroup>
             </div>

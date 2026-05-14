@@ -58,6 +58,10 @@ const Calendar = () => {
 
   const handleStatusChange = (id: string, newStatus: string) => {
     console.log(`Changing status of appointment ${id} to ${newStatus}`);
+    import("@/services/InspectionService").then(({ inspectionService }) => {
+      inspectionService.updateStatus(id, newStatus);
+      // Actual toast is already used in the component scope
+    });
   };
 
   return (
