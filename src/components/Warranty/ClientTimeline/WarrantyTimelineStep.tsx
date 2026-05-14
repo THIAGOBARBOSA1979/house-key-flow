@@ -15,7 +15,7 @@ import {
   XCircle,
   Wrench
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 // Icon mapping
@@ -123,7 +123,7 @@ export function WarrantyTimelineStep({
           <div className="flex items-center gap-2">
             {status === "completed" && completedAt && (
               <span className="text-xs text-muted-foreground">
-                {format(completedAt, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                {isValid(new Date(completedAt)) ? format(new Date(completedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
               </span>
             )}
             {status === "current" && (
@@ -158,7 +158,7 @@ export function WarrantyTimelineStep({
         {/* Start date for current */}
         {status === "current" && startedAt && (
           <p className="mt-2 text-xs text-muted-foreground">
-            Iniciado em {format(startedAt, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+            Iniciado em {isValid(new Date(startedAt)) ? format(new Date(startedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
           </p>
         )}
       </div>
