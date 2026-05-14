@@ -21,8 +21,9 @@ interface InspectionItemProps {
     property: string;
     unit: string;
     client: string;
-    scheduledDate: Date;
-    status: "pending" | "progress" | "complete";
+    date: Date;
+    time: string;
+    status: string;
   };
 }
 
@@ -73,13 +74,13 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <Calendar size={12} className="text-muted-foreground/60" />
-              <span>{safeFormat(inspection.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
+              <span>{safeFormat(inspection.date, "dd/MM/yyyy")} às {inspection.time}</span>
             </div>
           </div>
         </div>
         
         <div className="flex gap-2 items-center shrink-0">
-          <StatusBadge status={inspection.status} size="sm" showIcon />
+          <StatusBadge status={inspection.status as any} size="sm" showIcon />
           
           <div className="h-6 w-px bg-border/40 mx-1 hidden md:block" />
 

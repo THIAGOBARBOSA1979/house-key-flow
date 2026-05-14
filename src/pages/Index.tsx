@@ -109,7 +109,7 @@ const Dashboard = () => {
               {inspections.map((inspection) => (
                 <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/50 backdrop-blur-sm card-hover-effect">
                   <CardContent className="p-0">
-                    <InspectionItem inspection={inspection} />
+                    <InspectionItem inspection={inspection as any} />
                   </CardContent>
                 </Card>
               ))}

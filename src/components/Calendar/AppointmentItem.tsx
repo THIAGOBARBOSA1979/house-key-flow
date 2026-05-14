@@ -3,7 +3,7 @@ import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock } from "lucide-react";
+import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock, Users } from "lucide-react";
 
 import { Appointment } from "./AppointmentData";
 
@@ -112,6 +112,12 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
             <div className="p-1.5 bg-muted rounded-lg"><Clock size={14} className="text-primary/60" /></div>
             <span className="text-foreground font-bold">{safeFormat(appointment.date, "HH:mm")}</span>
           </div>
+          {appointment.technician && (
+            <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
+              <div className="p-1.5 bg-muted rounded-lg"><Users size={14} className="text-primary/60" /></div>
+              <span className="truncate">{appointment.technician}</span>
+            </div>
+          )}
         </div>
       </div>
       
