@@ -118,18 +118,18 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background">
       {/* Header */}
-      <header className="border-b bg-white/90 backdrop-blur-md">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
+        <div className="container-responsive py-4">
           <div className="flex items-center justify-center">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
                 A2
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">A2 Incorporadora</h1>
-                <p className="text-sm text-slate-600 font-medium">Sistema de Gestão</p>
+                <h1 className="text-2xl font-bold text-foreground">A2 Incorporadora</h1>
+                <p className="text-sm text-muted-foreground font-medium">Sistema de Gestão</p>
               </div>
             </Link>
           </div>
