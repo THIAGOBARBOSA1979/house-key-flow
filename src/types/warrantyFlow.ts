@@ -364,6 +364,7 @@ export interface WarrantyFilters {
   slaStatus?: SLAStatus;
   dateFrom?: Date;
   dateTo?: Date;
+  isPaused?: boolean;
 }
 
 // Notification types for warranty events
