@@ -57,7 +57,7 @@ const Dashboard = () => {
           <Calendar className="mr-2 h-4 w-4" />
           Calendário
         </Button>
-        <Button onClick={() => navigate("/admin/properties")} className="bg-company hover:bg-company/90">
+        <Button onClick={() => navigate("/admin/properties")} className="bg-primary hover:bg-primary/90">
           <Plus className="mr-2 h-4 w-4" />
           Novo Empreendimento
         </Button>
@@ -73,7 +73,7 @@ const Dashboard = () => {
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold tracking-tight">Empreendimentos Ativos</h2>
-              <Button variant="ghost" size="sm" className="gap-1 text-company" onClick={() => navigate("/admin/properties")}>
+              <Button variant="ghost" size="sm" className="gap-1 text-primary" onClick={() => navigate("/admin/properties")}>
                 Ver todos
                 <ChevronRight size={16} />
               </Button>
@@ -92,14 +92,14 @@ const Dashboard = () => {
                 <ClipboardCheck size={20} className="text-company" />
                 Vistorias Agendadas
               </h2>
-              <Button variant="ghost" size="sm" className="gap-1 text-company" onClick={() => navigate("/admin/inspections")}>
+              <Button variant="ghost" size="sm" className="gap-1 text-primary" onClick={() => navigate("/admin/inspections")}>
                 Ver todas
                 <ChevronRight size={16} />
               </Button>
             </div>
             <div className="space-y-3">
               {inspections.map((inspection) => (
-                <Card key={inspection.id} className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-company/30 border-l-4 border-l-company/50">
+                <Card key={inspection.id} className="card-standard overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/30 border-l-4 border-l-primary/50">
                   <CardContent className="p-0">
                     <InspectionItem inspection={inspection} />
                   </CardContent>
@@ -151,7 +151,7 @@ const Dashboard = () => {
                   {recentActivities.map((activity) => (
                     <div key={activity.id} className="p-4 hover:bg-muted/30 transition-colors">
                       <p className="text-sm leading-tight">
-                        <span className="font-semibold text-company">{activity.user}</span>{" "}
+                        <span className="font-semibold text-primary">{activity.user}</span>{" "}
                         <span className="text-muted-foreground">{activity.action}</span> em{" "}
                         <span className="font-medium">{activity.target}</span>
                       </p>
