@@ -43,6 +43,9 @@ export function KanbanCard({
     expired: "border-l-red-500"
   };
 
+  // Check if request is stalled (not updated in > 48h)
+  const isStalled = new Date().getTime() - new Date(request.updatedAt).getTime() > 48 * 60 * 60 * 1000 && !dragDisabled;
+
   return (
     <Card
       onClick={onClick}
