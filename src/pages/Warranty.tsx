@@ -325,7 +325,7 @@ const Warranty = () => {
                     </Button>
                   </div>
                 </div>
-              </TabsContent>
+              <TabsContent value="logs">
                 <AuditLogViewer 
                   entityType="warranty" 
                   entityId={selectedRequest.id} 
