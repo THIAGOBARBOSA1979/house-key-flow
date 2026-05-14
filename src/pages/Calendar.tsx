@@ -6,6 +6,7 @@ import { ListView } from "@/components/Calendar/ListView";
 import { AppointmentDetails } from "@/components/Calendar/AppointmentDetails";
 import { CalendarFilters } from "@/components/Calendar/CalendarFilters";
 import { QuickActions } from "@/components/Calendar/QuickActions";
+import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { appointments, type Appointment } from "@/components/Calendar/AppointmentData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,6 +21,7 @@ const Calendar = () => {
     property: "all",
   });
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
 
   const filteredAppointments = appointments.filter(apt => {
     const matchesType = filters.type === "all" || apt.type === filters.type;
@@ -50,7 +52,7 @@ const Calendar = () => {
   ).length;
 
   const handleNewAppointment = () => {
-    console.log("Opening new appointment form");
+    setScheduleDialogOpen(true);
   };
 
   const handleStatusChange = (id: string, newStatus: string) => {
@@ -72,6 +74,7 @@ const Calendar = () => {
         pendingAppointments={pendingAppointments}
         completedThisWeek={completedThisWeek}
         onNewAppointment={handleNewAppointment}
+        setFilterSheetOpen={setFilterSheetOpen}
       />
 
       <CalendarFilters
@@ -87,8 +90,8 @@ const Calendar = () => {
         setFilterSheetOpen={setFilterSheetOpen}
       />
 
-      <Tabs defaultValue="calendar">
-        <TabsList>
+      <Tabs defaultValue="calendar" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="calendar">Visualização do Calendário</TabsTrigger>
           <TabsTrigger value="list">Lista de Agendamentos</TabsTrigger>
         </TabsList>
@@ -124,6 +127,13 @@ const Calendar = () => {
           isOpen={!!selectedAppointment}
           onOpenChange={(open) => !open && setSelectedAppointment(null)}
           onStatusChange={handleStatusChange}
+        />
+      )}
+
+      {scheduleDialogOpen && (
+        <ScheduleInspectionDialog 
+          triggerButton={<div className="hidden" />} 
+          onSuccess={() => setScheduleDialogOpen(false)}
         />
       )}
     </div>
