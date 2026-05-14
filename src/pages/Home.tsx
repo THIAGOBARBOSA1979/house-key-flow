@@ -53,7 +53,7 @@ export default function Home() {
                 A2
               </div>
               <div>
-                <h1 className="text-h2">A2 Incorporadora</h1>
+                <h1 className="text-h2 font-black tracking-tighter">A2 Incorporadora</h1>
                 <p className="text-label text-brand">Excelência em Construção</p>
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function Home() {
                   <stat.icon className="h-8 w-8 text-brand" />
                 </div>
                 <div className="text-display mb-2">{stat.value}</div>
-                <div className="text-body-base text-muted-foreground">{stat.label}</div>
+                <div className="text-body-base text-muted-foreground font-bold">{stat.label}</div>
               </div>
             ))}
           </div>
