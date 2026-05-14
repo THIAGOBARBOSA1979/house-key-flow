@@ -36,15 +36,15 @@ export function AppointmentDetails({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">Pendente</span>;
+        return <span className="inline-flex items-center rounded-md bg-status-pending/10 px-2 py-1 text-xs font-medium text-status-pending ring-1 ring-inset ring-status-pending/20">Pendente</span>;
       case "confirmed":
-        return <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Confirmado</span>;
+        return <span className="inline-flex items-center rounded-md bg-status-complete/10 px-2 py-1 text-xs font-medium text-status-complete ring-1 ring-inset ring-status-complete/20">Confirmado</span>;
       case "cancelled":
-        return <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Cancelado</span>;
+        return <span className="inline-flex items-center rounded-md bg-status-critical/10 px-2 py-1 text-xs font-medium text-status-critical ring-1 ring-inset ring-status-critical/20">Cancelado</span>;
       case "completed":
-        return <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Concluído</span>;
+        return <span className="inline-flex items-center rounded-md bg-status-progress/10 px-2 py-1 text-xs font-medium text-status-progress ring-1 ring-inset ring-status-progress/20">Concluído</span>;
       default:
-        return <span>-</span>;
+        return <span>—</span>;
     }
   };
 
@@ -68,9 +68,9 @@ export function AppointmentDetails({
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold">{appointment.title}</h3>
             {appointment.type === "inspection" ? (
-              <span className="bg-violet-100 text-violet-800 text-xs px-2.5 py-0.5 rounded-md">Vistoria</span>
+              <span className="bg-primary/10 text-primary text-xs px-2.5 py-0.5 rounded-md border border-primary/20">Vistoria</span>
             ) : (
-              <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-md">Garantia</span>
+              <span className="bg-status-pending/10 text-status-pending text-xs px-2.5 py-0.5 rounded-md border border-status-pending/20">Garantia</span>
             )}
           </div>
           
