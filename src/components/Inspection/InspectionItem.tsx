@@ -81,7 +81,7 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
         <div className="flex gap-2 items-center shrink-0">
           <StatusBadge status={inspection.status} size="sm" showIcon />
           
-          <div className="h-6 w-[1px] bg-border/40 mx-1 hidden md:block" />
+          <div className="h-6 w-px bg-border/40 mx-1 hidden md:block" />
 
           <Button 
             variant="ghost" 

@@ -59,6 +59,9 @@ const DesignSystem = () => {
           <TabsTrigger value="layout" className="text-xs font-bold gap-2 py-2">
             <Grid className="w-3.5 h-3.5" /> Layout & Grid
           </TabsTrigger>
+          <TabsTrigger value="states" className="text-xs font-bold gap-2 py-2">
+            <MousePointer2 className="w-3.5 h-3.5" /> Estados & Feedback
+          </TabsTrigger>
         </TabsList>
 
         {/* --- GUIDE CONTENT --- */}
@@ -68,7 +71,7 @@ const DesignSystem = () => {
             <p className="text-body-base text-muted-foreground">
               Nosso sistema utiliza tokens semânticos para garantir que a intenção do design seja preservada 
               independente do tema ou da plataforma. Nunca utilize valores hex/rgb fixos ou classes arbitrárias 
-              do Tailwind (ex: <code>text-[#333]</code>) se houver um token correspondente.
+              do Tailwind (ex: <code>text-[#333]</code> ou <code>w-[240px]</code>) se houver um token correspondente.
             </p>
             
             <div className="grid md:grid-cols-2 gap-6 mt-8">
@@ -93,6 +96,10 @@ const DesignSystem = () => {
                     <div className="p-1 bg-primary/10 rounded text-primary font-mono text-[10px]">container-*</div>
                     <div className="text-body-sm">Utilidades para grids e containers responsivos.</div>
                   </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-1 bg-primary/10 rounded text-primary font-mono text-[10px]">card-*</div>
+                    <div className="text-body-sm">Padrões de cards (standard, hover, info).</div>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -105,6 +112,7 @@ const DesignSystem = () => {
                     <li>Use <strong>text-h1</strong> apenas uma vez por página.</li>
                     <li>Prefira <strong>gap-layout-gap</strong> para grids de conteúdo.</li>
                     <li>Utilize <strong>card-standard</strong> para todos os containers de conteúdo.</li>
+                    <li>Use utilitários de <strong>transição</strong> para estados hover/focus.</li>
                     <li>Sempre valide o contraste no tema <strong>Escuro</strong>.</li>
                   </ul>
                 </CardContent>
@@ -162,6 +170,117 @@ const DesignSystem = () => {
 
         {/* --- COMPONENTS CONTENT --- */}
         <TabsContent value="components" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
+          {/* Cards */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Square className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Cards</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-3">
+                <p className="text-tiny uppercase font-bold text-muted-foreground">Standard</p>
+                <Card className="card-standard">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-h4">Card Title</CardTitle>
+                    <CardDescription>Description of the card content.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-body-sm">Standard padding and border radius tokens.</p>
+                  </CardContent>
+                </Card>
+                <code className="text-[10px] bg-muted p-1 block">.card-standard</code>
+              </div>
+              
+              <div className="space-y-3">
+                <p className="text-tiny uppercase font-bold text-muted-foreground">Interactive (Hover)</p>
+                <Card className="card-standard hover:border-primary/40 hover:shadow-md transition-all cursor-pointer group">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-h4 group-hover:text-primary transition-colors">Interactive Card</CardTitle>
+                    <CardDescription>Hover to see the effect.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-body-sm text-muted-foreground">Consumes primary border and shadow on hover.</p>
+                  </CardContent>
+                </Card>
+                <code className="text-[10px] bg-muted p-1 block">hover:border-primary/40 ...</code>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-tiny uppercase font-bold text-muted-foreground">Small (Compact)</p>
+                <Card className="card-standard p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Box className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="text-label">Compact Card</h4>
+                      <p className="text-caption">Smaller padding.</p>
+                    </div>
+                  </div>
+                </Card>
+                <code className="text-[10px] bg-muted p-1 block">.card-standard p-4</code>
+              </div>
+            </div>
+          </section>
+
+          {/* Stats */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Activity className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Stats & Indicadores</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="card-standard p-4">
+                <p className="text-tiny uppercase font-bold text-muted-foreground tracking-wider mb-1">Total Clientes</p>
+                <div className="flex items-end justify-between">
+                  <h3 className="text-h2 leading-none">1,284</h3>
+                  <Badge variant="success" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-[10px]">
+                    +12%
+                  </Badge>
+                </div>
+              </Card>
+
+              <Card className="card-standard p-4 border-l-4 border-l-primary">
+                <p className="text-tiny uppercase font-bold text-muted-foreground tracking-wider mb-1">Taxa Conversão</p>
+                <div className="flex items-end justify-between">
+                  <h3 className="text-h2 leading-none">64.2%</h3>
+                  <Activity className="w-4 h-4 text-primary" />
+                </div>
+              </Card>
+            </div>
+          </section>
+
+          {/* Tables */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Layout className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Tabelas Padronizadas</h2>
+            </div>
+            <div className="border rounded-xl overflow-hidden bg-card">
+              <table className="w-full text-left">
+                <thead className="bg-muted/50 border-b">
+                  <tr>
+                    <th className="px-4 py-3 text-tiny uppercase font-bold text-muted-foreground">ID</th>
+                    <th className="px-4 py-3 text-tiny uppercase font-bold text-muted-foreground">Status</th>
+                    <th className="px-4 py-3 text-tiny uppercase font-bold text-muted-foreground">Responsável</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  <tr className="hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-3 text-body-sm font-medium">#1234</td>
+                    <td className="px-4 py-3"><StatusBadge status="complete" /></td>
+                    <td className="px-4 py-3 text-body-sm text-muted-foreground">Admin User</td>
+                  </tr>
+                  <tr className="hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-3 text-body-sm font-medium">#1235</td>
+                    <td className="px-4 py-3"><StatusBadge status="progress" /></td>
+                    <td className="px-4 py-3 text-body-sm text-muted-foreground">Support Team</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
           <section className="space-y-6">
             <div className="flex items-center gap-2 border-b pb-2">
               <Box className="w-5 h-5 text-primary" />
@@ -217,6 +336,55 @@ const DesignSystem = () => {
                 </div>
               </CardContent>
             </Card>
+          </section>
+        </TabsContent>
+
+        {/* --- STATES & FEEDBACK --- */}
+        <TabsContent value="states" className="space-y-12 animate-in fade-in slide-in-from-bottom-2">
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <MousePointer2 className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Estados de Interação</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <h3 className="text-h4">Botões & Ações</h3>
+                <div className="flex flex-wrap gap-4">
+                  <div className="space-y-2">
+                    <p className="text-caption">Normal / Default</p>
+                    <Button>Botão Primário</Button>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-caption">Disabled</p>
+                    <Button disabled>Desabilitado</Button>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-caption">Focus Ring</p>
+                    <Button className="ring-2 ring-primary ring-offset-2">Foco Visível</Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="text-h4">Alertas & Feedback</h3>
+                <div className="space-y-4">
+                  <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex gap-3 items-center">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                    <div>
+                      <p className="text-body-sm font-bold text-emerald-700 dark:text-emerald-400">Sucesso!</p>
+                      <p className="text-caption text-emerald-600/80">Operação concluída.</p>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg flex gap-3 items-center">
+                    <AlertTriangle className="w-5 h-5 text-amber-500" />
+                    <div>
+                      <p className="text-body-sm font-bold text-amber-700 dark:text-amber-400">Aviso</p>
+                      <p className="text-caption text-amber-600/80">Verifique os dados.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
         </TabsContent>
       </Tabs>
