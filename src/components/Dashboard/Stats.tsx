@@ -71,7 +71,7 @@ export const Stats = ({ stats = defaultStats, className }: StatsProps) => {
                   <p className="text-tiny">{stat.title}</p>
                   <p className="text-2xl font-black tracking-tight">{stat.value}</p>
                   {stat.description && (
-                    <p className="text-[10px] font-bold text-muted-foreground/80 mt-1">{stat.description}</p>
+                    <p className="text-tiny font-bold text-muted-foreground/80 mt-1">{stat.description}</p>
                   )}
                 </div>
                 <div className={cn(

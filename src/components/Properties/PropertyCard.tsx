@@ -82,7 +82,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, className }: Property
         </div>
         
         <div className="space-y-2">
-          <div className="flex justify-between items-center text-[11px] font-bold">
+          <div className="flex justify-between items-center text-tiny font-bold">
             <span className="text-muted-foreground">PROGRESSO DA ENTREGA</span>
             <span className="text-primary">{completionPercentage}%</span>
           </div>
