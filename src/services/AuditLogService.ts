@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist';
+export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system';
 export type AuditAction = 
   | 'created' 
   | 'updated' 
@@ -12,7 +12,11 @@ export type AuditAction =
   | 'stage_changed'
   | 'comment_added'
   | 'info_added'
-  | 'assigned';
+  | 'assigned'
+  | 'exported'
+  | 'logged_in'
+  | 'logged_out'
+  | 'settings_updated';
 
 export type AuditRole = 'admin' | 'client';
 
