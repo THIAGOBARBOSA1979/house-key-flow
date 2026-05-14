@@ -21,6 +21,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -451,22 +460,24 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
           }
         }}
       >
-        <DialogContent className={cn(transitionDialog.toStage === "inspection_scheduled" && "sm:max-w-[600px]")}>
+        <DialogContent className={cn(transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1 && "sm:max-w-[600px]")}>
           <DialogHeader>
             <DialogTitle>
-              {transitionDialog.toStage === "inspection_scheduled" 
+              {transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1
                 ? "Agendar Vistoria para Mudança de Status" 
-                : `Confirmar mudança para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
+                : transitionDialog.cardIds.length > 1
+                  ? `Mover ${transitionDialog.cardIds.length} solicitações para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
+                  : `Confirmar mudança para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
               }
             </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4">
-            {transitionDialog.toStage === "inspection_scheduled" ? (
+            {transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1 ? (
               <div className="py-2">
                 {/* Reusing existing scheduling form */}
                 <ScheduleInspectionForm 
-                  requestId={transitionDialog.cardId}
+                  requestId={transitionDialog.cardIds[0]}
                   onSuccess={() => {
                     toast({
                       title: "Vistoria agendada e status atualizado",
@@ -476,7 +487,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
                     setTransitionDialog(prev => ({ ...prev, open: false }));
                   }}
                   propertyInfo={(() => {
-                    const req = warrantyFlowService.getRequest(transitionDialog.cardId);
+                    const req = warrantyFlowService.getRequest(transitionDialog.cardIds[0]);
                     return req ? {
                       property: req.propertyName,
                       unit: req.unitNumber,
@@ -496,6 +507,11 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
                     placeholder="Adicione observações sobre esta mudança de status..."
                     rows={3}
                   />
+                  {transitionDialog.cardIds.length > 1 && (
+                    <p className="text-xs text-muted-foreground mt-2">
+                      * Observação aplicada a todos os itens selecionados.
+                    </p>
+                  )}
                 </div>
                 
                 <div className="flex justify-end gap-2">
@@ -510,7 +526,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
                   </Button>
                   <Button
                     onClick={() => executeTransition(
-                      transitionDialog.cardId,
+                      transitionDialog.cardIds,
                       transitionDialog.fromStage,
                       transitionDialog.toStage,
                       transitionNotes

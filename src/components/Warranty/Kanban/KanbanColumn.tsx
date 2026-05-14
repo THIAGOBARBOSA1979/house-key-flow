@@ -15,6 +15,8 @@ interface KanbanColumnProps {
   setDraggedCard: (cardId: string | null) => void;
   draggedFromStage: WarrantyStage | null;
   setDraggedFromStage: (stage: WarrantyStage | null) => void;
+  selectedCards: Set<string>;
+  onToggleSelection: (cardId: string) => void;
 }
 
 export function KanbanColumn({
@@ -26,7 +28,9 @@ export function KanbanColumn({
   draggedCard,
   setDraggedCard,
   draggedFromStage,
-  setDraggedFromStage
+  setDraggedFromStage,
+  selectedCards,
+  onToggleSelection
 }: KanbanColumnProps) {
   // Column color based on stage
   const columnColors: Record<string, string> = {
@@ -131,6 +135,12 @@ export function KanbanColumn({
                   data={card}
                   isDragging={draggedCard === card.id}
                   onClick={() => onCardClick(card.id)}
+                  selected={selectedCards.has(card.id)}
+                  onToggleSelection={(e) => {
+                    e.stopPropagation();
+                    onToggleSelection(card.id);
+                  }}
+                  showSelection
                 />
               </div>
             ))
