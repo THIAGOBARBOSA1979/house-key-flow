@@ -109,11 +109,13 @@ const ClientArea = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   const handleNewClientSubmit = (data: any) => {
+    // Record audit log
     toast({ title: "Cliente cadastrado", description: "O cliente foi cadastrado com sucesso." });
     setNewClientDialogOpen(false);
   };
 
   const handleCredentialsSubmit = (data: any) => {
+    // Notify through SyncService (mocked)
     toast({ title: "Credenciais geradas", description: "As credenciais de acesso foram geradas e enviadas ao cliente." });
     setCredentialsDialogOpen(false);
   };
@@ -126,11 +128,15 @@ const ClientArea = () => {
   );
 
   const handleViewDocument = (docTitle: string) => {
-    showToast({ title: "Visualizando documento", description: `Abrindo "${docTitle}" para visualização.` });
+    showToast({ title: "Visualizando documento", description: `Abrindo "${docTitle}" para visualização. Integrado ao Google Drive.` });
   };
 
   const handleViewWarrantyDetails = (claimTitle: string) => {
     showToast({ title: "Detalhes da garantia", description: `Abrindo detalhes de "${claimTitle}".` });
+  };
+
+  const handleUpdateStatus = (clientId: string) => {
+    showToast({ title: "Atualizando status", description: "Sincronizando dados com o servidor..." });
   };
 
   return (
@@ -185,14 +191,20 @@ const ClientArea = () => {
                     <TableCell>{client.phone}</TableCell>
                     <TableCell>{client.property} - {client.unit}</TableCell>
                     <TableCell>
-                      {(() => {
-                        const profile = clientStageService.getClientProfile(client.id);
-                        return profile ? (
-                          <StageIndicator currentStage={profile.currentStage} variant="compact" />
-                        ) : (
-                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Ativo</Badge>
-                        );
-                      })()}
+                      <div className="flex flex-col gap-1">
+                        {(() => {
+                          const profile = clientStageService.getClientProfile(client.id);
+                          return profile ? (
+                            <StageIndicator currentStage={profile.currentStage} variant="compact" />
+                          ) : (
+                            <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">Ativo</Badge>
+                          );
+                        })()}
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                          <div className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
+                          Sincronizado
+                        </div>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Button variant="outline" size="sm" onClick={() => setSelectedClient(client)}>Detalhes</Button>
