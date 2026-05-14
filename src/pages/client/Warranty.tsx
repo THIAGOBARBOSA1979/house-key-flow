@@ -122,29 +122,33 @@ const WarrantyStatus = ({ status }: { status: "pending" | "progress" | "complete
   const statusConfig = {
     pending: {
       icon: Clock,
-      color: "text-amber-500",
-      bg: "bg-amber-50",
+      color: "text-status-pending",
+      bg: "bg-status-pending/10",
+      border: "border-status-pending/20",
       text: "Aguardando Análise",
       description: "Sua solicitação foi registrada e está aguardando análise da equipe técnica."
     },
     progress: {
       icon: MessageSquare,
-      color: "text-blue-500",
-      bg: "bg-blue-50",
+      color: "text-status-progress",
+      bg: "bg-status-progress/10",
+      border: "border-status-progress/20",
       text: "Em Atendimento",
       description: "Um técnico foi designado e está trabalhando na sua solicitação."
     },
     complete: {
       icon: ShieldCheck,
-      color: "text-green-500",
-      bg: "bg-green-50",
+      color: "text-status-complete",
+      bg: "bg-status-complete/10",
+      border: "border-status-complete/20",
       text: "Finalizado",
       description: "O atendimento foi concluído com sucesso."
     },
     critical: {
       icon: AlertTriangle,
-      color: "text-red-500",
-      bg: "bg-red-50",
+      color: "text-status-critical",
+      bg: "bg-status-critical/10",
+      border: "border-status-critical/20",
       text: "Crítico",
       description: "Sua solicitação foi classificada como crítica e está sendo tratada com prioridade."
     }
@@ -154,7 +158,7 @@ const WarrantyStatus = ({ status }: { status: "pending" | "progress" | "complete
   const Icon = config.icon;
 
   return (
-    <div className={`p-4 ${config.bg} rounded-lg`}>
+    <div className={`p-4 ${config.bg} border ${config.border} rounded-lg`}>
       <div className="flex gap-3 items-center">
         <Icon className={`h-8 w-8 ${config.color}`} />
         <div>
