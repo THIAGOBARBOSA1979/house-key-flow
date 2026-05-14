@@ -382,6 +382,17 @@ const Settings = () => {
                   </div>
                 </div>
                 <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-border/10 pb-4">
+                    <div>
+                      <Label className="font-bold">Audit Log Viewer</Label>
+                      <p className="text-sem-tiny text-muted-foreground font-medium">Ativar visualizador de logs no painel</p>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4 pt-4">
                   <Label className="font-bold">Política de Exibição de Dados</Label>
                   <Select defaultValue="strict">
                     <SelectTrigger className="h-11 rounded-lg">
@@ -397,7 +408,8 @@ const Settings = () => {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-end pt-6 border-t border-border/10">
+            <CardFooter className="flex flex-col sm:flex-row justify-between gap-4 pt-6 border-t border-border/10">
+              <Button variant="outline" className="rounded-lg font-bold" onClick={() => window.location.href='/admin/design-system'}>Ver Auditoria Completa</Button>
               <Button onClick={handleSaveSettings} className="rounded-lg font-bold bg-primary hover:bg-primary/90">Aplicar Políticas</Button>
             </CardFooter>
           </Card>
