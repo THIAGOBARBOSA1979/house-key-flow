@@ -89,11 +89,12 @@ const Warranty = () => {
           </DialogHeader>
           {selectedRequest && (
             <Tabs defaultValue="timeline" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="timeline">Acompanhamento</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="timeline">Timeline</TabsTrigger>
                 <TabsTrigger value="problems">Problemas</TabsTrigger>
-                <TabsTrigger value="costs">Custos/Materiais</TabsTrigger>
-                <TabsTrigger value="logs">Histórico/Logs</TabsTrigger>
+                <TabsTrigger value="costs">Custos</TabsTrigger>
+                <TabsTrigger value="chat">Comunicação</TabsTrigger>
+                <TabsTrigger value="logs">Logs</TabsTrigger>
               </TabsList>
               <TabsContent value="timeline">
                 <WarrantyRequestTimeline request={selectedRequest} />
