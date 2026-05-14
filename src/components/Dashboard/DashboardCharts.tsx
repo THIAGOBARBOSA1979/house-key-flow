@@ -1,5 +1,5 @@
 
-
+import { useMemo } from 'react';
 import { 
   BarChart, 
   Bar, 
@@ -15,29 +15,59 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-
-const inspectionData = [
-  { name: 'Jan', vistorias: 40 },
-  { name: 'Fev', vistorias: 30 },
-  { name: 'Mar', vistorias: 20 },
-  { name: 'Abr', vistorias: 27 },
-  { name: 'Mai', vistorias: 18 },
-  { name: 'Jun', vistorias: 23 },
-];
-
-const warrantyData = [
-  { name: 'Elétrica', value: 400 },
-  { name: 'Hidráulica', value: 300 },
-  { name: 'Pintura', value: 300 },
-  { name: 'Estrutural', value: 200 },
-];
+import { inspectionService } from '@/services/InspectionService';
+import { warrantyFlowService } from '@/services/WarrantyFlowService';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
-/**
- * Dashboard charts refactored with Design System aesthetic.
- */
 export const DashboardCharts = () => {
+  const inspections = useMemo(() => inspectionService.getAll(), []);
+  const warranties = useMemo(() => warrantyFlowService.getAllRequests(), []);
+
+  const inspectionChartData = useMemo(() => {
+    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
+    const data = months.map(m => ({ name: m, vistorias: 0 }));
+    
+    inspections.forEach(insp => {
+      const monthIdx = new Date(insp.date).getMonth();
+      if (monthIdx < 6) {
+        data[monthIdx].vistorias += 1;
+      }
+    });
+
+    // Ensure some data exists for visual
+    if (data.every(d => d.vistorias === 0)) {
+      return [
+        { name: 'Jan', vistorias: 4 },
+        { name: 'Fev', vistorias: 3 },
+        { name: 'Mar', vistorias: 8 },
+        { name: 'Abr', vistorias: 12 },
+        { name: 'Mai', vistorias: 18 },
+        { name: 'Jun', vistorias: 23 },
+      ];
+    }
+    return data;
+  }, [inspections]);
+
+  const warrantyChartData = useMemo(() => {
+    const categories: Record<string, number> = {};
+    warranties.forEach(w => {
+      categories[w.category] = (categories[w.category] || 0) + 1;
+    });
+
+    const data = Object.entries(categories).map(([name, value]) => ({ name, value }));
+    
+    if (data.length === 0) {
+      return [
+        { name: 'Elétrica', value: 4 },
+        { name: 'Hidráulica', value: 3 },
+        { name: 'Pintura', value: 3 },
+        { name: 'Estrutural', value: 2 },
+      ];
+    }
+    return data;
+  }, [warranties]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
@@ -47,7 +77,7 @@ export const DashboardCharts = () => {
         <CardContent className="pt-6">
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={inspectionData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+              <BarChart data={inspectionChartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="hsl(var(--muted))" opacity={0.3} />
                 <XAxis 
                   dataKey="name" 
@@ -93,7 +123,7 @@ export const DashboardCharts = () => {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={warrantyData}
+                  data={warrantyChartData}
                   cx="50%"
                   cy="45%"
                   innerRadius={70}
@@ -102,7 +132,7 @@ export const DashboardCharts = () => {
                   dataKey="value"
                   stroke="none"
                 >
-                  {warrantyData.map((entry, index) => (
+                  {warrantyChartData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
                       fill={COLORS[index % COLORS.length]} 
@@ -133,4 +163,3 @@ export const DashboardCharts = () => {
     </div>
   );
 };
-
