@@ -1,4 +1,6 @@
 
+import { inspectionService } from "@/services/InspectionService";
+
 export type AppointmentType = "inspection" | "warranty" | "delivery" | "technical_visit";
 export type AppointmentStatus = "pending" | "confirmed" | "completed" | "cancelled" | "rescheduled";
 
@@ -16,8 +18,29 @@ export interface Appointment {
   checklist?: string;
 }
 
-// Mock data for appointments
+// Convert service data to Appointment format
+const getAppointmentsFromService = (): Appointment[] => {
+  const inspections = inspectionService.getAll();
+  return inspections.map(ins => ({
+    id: ins.id,
+    title: ins.type === 'keyDelivery' ? 'Entrega de chaves' : 
+           ins.type === 'technicalInspection' ? 'Vistoria técnica' : 
+           ins.type === 'postWork' ? 'Pós-obra' : 'Vistoria',
+    property: ins.property,
+    unit: ins.unit,
+    client: ins.client,
+    date: new Date(ins.date.getFullYear(), ins.date.getMonth(), ins.date.getDate(), 
+                  parseInt(ins.time.split(':')[0] || '0'), parseInt(ins.time.split(':')[1] || '0')),
+    type: "inspection",
+    status: ins.status as AppointmentStatus,
+    technician: ins.technician,
+    notes: ins.notes
+  }));
+};
+
+// Initial data for appointments
 export const appointments: Appointment[] = [
+  ...getAppointmentsFromService(),
   {
     id: "1",
     title: "Vistoria de entrega",
