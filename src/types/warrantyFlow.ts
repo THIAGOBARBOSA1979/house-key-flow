@@ -292,12 +292,15 @@ export interface WarrantyProblemDetail {
   description: string;
   severity: "minor" | "moderate" | "severe";
   photos: string[];
-  status: "pending" | "resolved" | "unresolved";
+  status: "pending" | "resolved" | "unresolved" | "canceled" | "in_progress";
   resolvedAt?: Date;
   estimatedCost?: number;
   actualCost?: number;
   evidence?: string[]; // Array of photo URLs
   internalComments?: string;
+  assignedTo?: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // Timeline step for client view
