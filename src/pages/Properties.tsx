@@ -156,6 +156,7 @@ const Properties = () => {
       <DataView
         items={filteredProperties}
         viewMode={viewMode}
+        itemsPerPage={6}
         renderGrid={(property) => (
           <PropertyCard 
             key={property.id} 

@@ -189,11 +189,11 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
           </div>
         </form>
         
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>
+        <DialogFooter className="pt-6 border-t border-border/10">
+          <Button type="button" variant="outline" onClick={onClose} className="rounded-lg font-bold">
             Cancelar
           </Button>
-          <Button type="submit" onClick={handleSubmit}>
+          <Button type="submit" onClick={handleSubmit} className="rounded-lg font-bold bg-primary hover:bg-primary/90">
             {editingUser ? "Salvar Alterações" : "Criar Usuário"}
           </Button>
         </DialogFooter>

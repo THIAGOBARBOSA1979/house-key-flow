@@ -261,7 +261,7 @@ const Users = () => {
           <TabsTrigger value="clients" className="rounded-lg py-2 font-bold text-xs">Clientes ({filteredUsers.filter(u => u.role === "client").length})</TabsTrigger>
         </TabsList>
         <TabsContent value="all" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <DataView items={filteredUsers} renderGrid={renderUserCard} emptyState={{ title: "Nenhum usuário encontrado", description: "Tente ajustar seus filtros." }} />
+          <DataView items={filteredUsers} renderGrid={renderUserCard} itemsPerPage={8} emptyState={{ title: "Nenhum usuário encontrado", description: "Tente ajustar seus filtros." }} />
         </TabsContent>
         <TabsContent value="admin" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <DataView items={filteredUsers.filter(user => user.role === "admin" || user.role === "manager")} renderGrid={renderUserCard} />

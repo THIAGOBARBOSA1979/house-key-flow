@@ -316,9 +316,9 @@ export const ScheduleInspectionForm = ({
           )}
         />
         
-        <div className="flex gap-3 justify-end">
-          <Button type="button" variant="outline">Cancelar</Button>
-          <Button type="submit">Agendar Vistoria</Button>
+        <div className="flex gap-3 justify-end pt-6 border-t border-border/10">
+          <Button type="button" variant="outline" className="rounded-lg font-bold">Cancelar</Button>
+          <Button type="submit" className="rounded-lg font-bold bg-primary hover:bg-primary/90">Agendar Vistoria</Button>
         </div>
       </form>
     </Form>
