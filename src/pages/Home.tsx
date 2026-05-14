@@ -80,7 +80,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20">
+      <section className="section-padding">
         <div className="container-responsive">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
             <Badge variant="outline" className="bg-brand/10 text-brand border-brand/20">
