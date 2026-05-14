@@ -29,7 +29,7 @@ const roleConfig = {
 };
 
 const Users = () => {
-  const { toast } = useToast();
+  const { toast: showToast } = useToast();
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -60,24 +60,24 @@ const Users = () => {
     if (editingUser) {
       setUserList(users => users.map(user => user.id === editingUser.id ? { ...user, ...userData } : user));
       setEditingUser(null);
-      toast({ title: "Usuário atualizado", description: "As informações do usuário foram atualizadas com sucesso." });
+      showToast({ title: "Usuário atualizado", description: "As informações do usuário foram atualizadas com sucesso." });
     } else {
       const newUser = { id: Date.now().toString(), ...userData, status: "active", lastLogin: "-", avatar: userData.name.split(" ").map((n: string) => n[0]).join("").toUpperCase() };
       setUserList(users => [...users, newUser]);
-      toast({ title: "Usuário criado", description: "Novo usuário foi criado com sucesso." });
+      showToast({ title: "Usuário criado", description: "Novo usuário foi criado com sucesso." });
     }
   };
 
   const handleEditUser = (user: any) => { setEditingUser(user); setIsUserFormOpen(true); };
-  const handleDeleteUser = (userId: string) => { setUserList(users => users.filter(user => user.id !== userId)); toast({ title: "Usuário removido", description: "O usuário foi removido do sistema.", variant: "destructive" }); };
-  const handleToggleUserStatus = (userId: string) => { setUserList(users => users.map(user => user.id === userId ? { ...user, status: user.status === "active" ? "inactive" : "active" } : user)); toast({ title: "Status atualizado", description: "O status do usuário foi alterado." }); };
+  const handleDeleteUser = (userId: string) => { setUserList(users => users.filter(user => user.id !== userId)); showToast({ title: "Usuário removido", description: "O usuário foi removido do sistema.", variant: "destructive" }); };
+  const handleToggleUserStatus = (userId: string) => { setUserList(users => users.map(user => user.id === userId ? { ...user, status: user.status === "active" ? "inactive" : "active" } : user)); showToast({ title: "Status atualizado", description: "O status do usuário foi alterado." }); };
 
   const handleBulkAction = (action: string) => {
-    if (selectedUsers.length === 0) { toast({ title: "Nenhum usuário selecionado", description: "Selecione pelo menos um usuário para executar esta ação.", variant: "destructive" }); return; }
+    if (selectedUsers.length === 0) { showToast({ title: "Nenhum usuário selecionado", description: "Selecione pelo menos um usuário para executar esta ação.", variant: "destructive" }); return; }
     switch (action) {
-      case "activate": setUserList(users => users.map(user => selectedUsers.includes(user.id) ? { ...user, status: "active" } : user)); toast({ title: "Usuários ativados", description: `${selectedUsers.length} usuário(s) foram ativados.` }); break;
-      case "deactivate": setUserList(users => users.map(user => selectedUsers.includes(user.id) ? { ...user, status: "inactive" } : user)); toast({ title: "Usuários desativados", description: `${selectedUsers.length} usuário(s) foram desativados.` }); break;
-      case "delete": setUserList(users => users.filter(user => !selectedUsers.includes(user.id))); toast({ title: "Usuários removidos", description: `${selectedUsers.length} usuário(s) foram removidos.`, variant: "destructive" }); break;
+      case "activate": setUserList(users => users.map(user => selectedUsers.includes(user.id) ? { ...user, status: "active" } : user)); showToast({ title: "Usuários ativados", description: `${selectedUsers.length} usuário(s) foram ativados.` }); break;
+      case "deactivate": setUserList(users => users.map(user => selectedUsers.includes(user.id) ? { ...user, status: "inactive" } : user)); showToast({ title: "Usuários desativados", description: `${selectedUsers.length} usuário(s) foram desativados.` }); break;
+      case "delete": setUserList(users => users.filter(user => !selectedUsers.includes(user.id))); showToast({ title: "Usuários removidos", description: `${selectedUsers.length} usuário(s) foram removidos.`, variant: "destructive" }); break;
     }
     setSelectedUsers([]);
   };
@@ -102,7 +102,7 @@ const Users = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => toast({ title: "Perfil do usuário", description: `Visualizando perfil de ${user.name}.` })}>
+                <DropdownMenuItem onClick={() => showToast({ title: "Perfil do usuário", description: `Visualizando perfil de ${user.name}.` })}>
                   <Eye className="mr-2 h-4 w-4" />Ver perfil
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleEditUser(user)}><Edit className="mr-2 h-4 w-4" />Editar</DropdownMenuItem>
