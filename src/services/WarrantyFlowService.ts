@@ -1,5 +1,3 @@
-
-
 import {
   WarrantyStage,
   WarrantyRequestFlow,
@@ -13,7 +11,8 @@ import {
   FINAL_STAGES,
   isValidTransition,
   isFinalStage,
-  DEFAULT_SLA_CONFIGS
+  DEFAULT_SLA_CONFIGS,
+  WarrantyProblemDetail
 } from '@/types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService } from './AuditLogService';
@@ -470,14 +469,14 @@ class WarrantyFlowService {
   }
 
   /**
-   * Assign technician to request
+   * Assign or change technician
    */
   assignTechnician(
     requestId: string,
     technicianId: string,
     technicianName: string,
     assignedBy: string
-  ): { success: boolean; error?: string } {
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     const request = this.requests.get(requestId);
     
     if (!request) {
@@ -492,14 +491,47 @@ class WarrantyFlowService {
     };
     
     this.requests.set(requestId, updatedRequest);
+    this.persist();
     
-    console.log('[WarrantyFlowService] Technician assigned:', {
-      requestId,
-      technicianId,
-      technicianName
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'assigned',
+      performedBy: assignedBy,
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Solicitação atribuída ao técnico ${technicianName}.`
     });
     
-    return { success: true };
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Update problem details
+   */
+  updateProblem(
+    requestId: string,
+    problemId: string,
+    data: Partial<WarrantyProblemDetail>,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
+
+    const problems = request.problems.map(p => 
+      p.id === problemId ? { ...p, ...data } : p
+    );
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems,
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    return { success: true, request: updatedRequest };
   }
 
   /**

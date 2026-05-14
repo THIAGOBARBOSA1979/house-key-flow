@@ -41,13 +41,17 @@ export function KanbanFilters({
     onFiltersChange({});
   };
 
-  const updateFilter = (key: keyof WarrantyFilters, value: string | undefined) => {
-    if (value === "" || value === "all") {
+  const updateFilter = (key: keyof WarrantyFilters, value: any) => {
+    if (value === "" || value === "all" || value === undefined) {
       const newFilters = { ...filters };
       delete newFilters[key];
       onFiltersChange(newFilters);
     } else {
-      onFiltersChange({ ...filters, [key]: value });
+      let finalValue = value;
+      if ((key === "dateFrom" || key === "dateTo") && typeof value === "string") {
+        finalValue = new Date(value);
+      }
+      onFiltersChange({ ...filters, [key]: finalValue });
     }
   };
 
@@ -170,6 +174,23 @@ export function KanbanFilters({
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Data de Abertura (Início)</label>
+              <Input
+                type="date"
+                value={filters.dateFrom ? filters.dateFrom.toISOString().split('T')[0] : ""}
+                onChange={(e) => updateFilter("dateFrom", e.target.value ? new Date(e.target.value).toISOString() : undefined)}
+              />
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block">Data de Abertura (Fim)</label>
+              <Input
+                type="date"
+                value={filters.dateTo ? filters.dateTo.toISOString().split('T')[0] : ""}
+                onChange={(e) => updateFilter("dateTo", e.target.value ? new Date(e.target.value).toISOString() : undefined)}
+              />
             </div>
           </div>
         </SheetContent>
