@@ -26,6 +26,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RefreshCw, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ScheduleInspectionForm } from "@/components/Inspection/ScheduleInspectionForm";
+import { cn } from "@/lib/utils";
+
 
 // Kanban columns configuration (excluding rejected for main flow)
 const KANBAN_COLUMNS: WarrantyStage[] = [
@@ -163,6 +166,21 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
   const handleDrop = (cardId: string, fromStage: WarrantyStage, toStage: WarrantyStage) => {
     if (fromStage === toStage) return;
     
+    // Check for special case: moving to inspection_scheduled
+    if (toStage === "inspection_scheduled") {
+      const request = warrantyFlowService.getRequest(cardId);
+      if (request) {
+        setTransitionDialog({
+          open: true,
+          cardId,
+          fromStage,
+          toStage,
+          requiresNotes: false // We'll show the scheduling form instead
+        });
+        return;
+      }
+    }
+
     const requiresNotes = transitionRequiresNotes(toStage);
     
     if (requiresNotes) {
@@ -177,6 +195,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       executeTransition(cardId, fromStage, toStage, "");
     }
   };
+
 
   // Execute status transition
   const executeTransition = (
@@ -292,49 +311,80 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
           }
         }}
       >
-        <DialogContent>
+        <DialogContent className={cn(transitionDialog.toStage === "inspection_scheduled" && "sm:max-w-[600px]")}>
           <DialogHeader>
             <DialogTitle>
-              Confirmar mudança para {WARRANTY_STAGES[transitionDialog.toStage]?.label}
+              {transitionDialog.toStage === "inspection_scheduled" 
+                ? "Agendar Vistoria para Mudança de Status" 
+                : `Confirmar mudança para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
+              }
             </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="notes">Observações</Label>
-              <Textarea
-                id="notes"
-                value={transitionNotes}
-                onChange={(e) => setTransitionNotes(e.target.value)}
-                placeholder="Adicione observações sobre esta mudança de status..."
-                rows={3}
-              />
-            </div>
-            
-            <div className="flex justify-end gap-2">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setTransitionDialog(prev => ({ ...prev, open: false }));
-                  setTransitionNotes("");
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={() => executeTransition(
-                  transitionDialog.cardId,
-                  transitionDialog.fromStage,
-                  transitionDialog.toStage,
-                  transitionNotes
-                )}
-              >
-                Confirmar
-              </Button>
-            </div>
+            {transitionDialog.toStage === "inspection_scheduled" ? (
+              <div className="py-2">
+                {/* Reusing existing scheduling form */}
+                <ScheduleInspectionForm 
+                  requestId={transitionDialog.cardId}
+                  onSuccess={() => {
+                    toast({
+                      title: "Vistoria agendada e status atualizado",
+                      description: "A solicitação foi movida para agendamento de vistoria."
+                    });
+                    loadData();
+                    setTransitionDialog(prev => ({ ...prev, open: false }));
+                  }}
+                  propertyInfo={(() => {
+                    const req = warrantyFlowService.getRequest(transitionDialog.cardId);
+                    return req ? {
+                      property: req.propertyName,
+                      unit: req.unitNumber,
+                      client: req.clientName
+                    } : undefined;
+                  })()}
+                />
+              </div>
+            ) : (
+              <>
+                <div>
+                  <Label htmlFor="notes">Observações</Label>
+                  <Textarea
+                    id="notes"
+                    value={transitionNotes}
+                    onChange={(e) => setTransitionNotes(e.target.value)}
+                    placeholder="Adicione observações sobre esta mudança de status..."
+                    rows={3}
+                  />
+                </div>
+                
+                <div className="flex justify-end gap-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setTransitionDialog(prev => ({ ...prev, open: false }));
+                      setTransitionNotes("");
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    onClick={() => executeTransition(
+                      transitionDialog.cardId,
+                      transitionDialog.fromStage,
+                      transitionDialog.toStage,
+                      transitionNotes
+                    )}
+                  >
+                    Confirmar
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
+
     </div>
   );
 }
