@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { 
   Plus, 
   FileUp, 
-  UserPlus, 
+  User, 
   CalendarClock, 
   ShieldCheck,
   Building
@@ -16,32 +16,36 @@ export const QuickActions = () => {
 
   const actions = [
     { 
-      label: "Novo Empreendimento", 
+      label: "Nova Obra", 
       icon: Building, 
       onClick: () => navigate("/admin/properties"),
       color: "text-blue-500",
-      bgColor: "bg-blue-50"
+      bgColor: "bg-blue-50",
+      description: "Cadastrar empreendimento"
+    },
+    { 
+      label: "Novo Chamado", 
+      icon: ShieldCheck, 
+      onClick: () => navigate("/admin/warranty"),
+      color: "text-status-critical",
+      bgColor: "bg-status-critical/10",
+      description: "Solicitação de assistência"
+    },
+    { 
+      label: "Área do Cliente", 
+      icon: User, 
+      onClick: () => navigate("/admin/client-area"),
+      color: "text-emerald-500",
+      bgColor: "bg-emerald-50",
+      description: "Ver portal do cliente"
     },
     { 
       label: "Upload Documento", 
       icon: FileUp, 
       onClick: () => navigate("/admin/documents"),
       color: "text-purple-500",
-      bgColor: "bg-purple-50"
-    },
-    { 
-      label: "Cadastrar Usuário", 
-      icon: UserPlus, 
-      onClick: () => navigate("/admin/users"),
-      color: "text-emerald-500",
-      bgColor: "bg-emerald-50"
-    },
-    { 
-      label: "Agendar Vistoria", 
-      icon: CalendarClock, 
-      onClick: () => navigate("/admin/inspections"),
-      color: "text-orange-500",
-      bgColor: "bg-orange-50"
+      bgColor: "bg-purple-50",
+      description: "Enviar para cliente"
     },
   ];
 
@@ -55,13 +59,16 @@ export const QuickActions = () => {
           <Button
             key={index}
             variant="outline"
-            className="h-auto py-6 flex flex-col gap-3 border-none bg-card/50 backdrop-blur-sm shadow-sem-sm hover:shadow-sem-md hover:bg-primary/5 transition-all group active:scale-95"
+            className="h-auto py-5 flex flex-col gap-3 border-none bg-card/50 backdrop-blur-sm shadow-sem-sm hover:shadow-sem-md hover:bg-primary/5 transition-all group active:scale-95"
             onClick={action.onClick}
           >
             <div className={`p-3 rounded-xl ${action.bgColor} ${action.color} group-hover:scale-110 transition-transform`}>
               <action.icon size={24} />
             </div>
-            <span className="text-xs font-bold text-foreground uppercase tracking-wider">{action.label}</span>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-bold text-foreground uppercase tracking-wider">{action.label}</span>
+              <span className="text-[10px] text-muted-foreground font-medium">{action.description}</span>
+            </div>
           </Button>
         ))}
       </div>
