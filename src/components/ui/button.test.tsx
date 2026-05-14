@@ -21,6 +21,6 @@ describe('Design System: Button Component', () => {
     render(<Button disabled>Disabled</Button>);
     const button = screen.getByText('Disabled');
     expect(button).toBeDisabled();
-    expect(button).toHaveClass('disabled:opacity-50');
+    expect(button).toHaveClass('disabled:interactive-disabled');
   });
 });
