@@ -306,8 +306,76 @@ class WarrantyFlowService {
   }
 
   /**
-   * Assign technician to request
+   * Pause or resume a request
    */
+  togglePause(
+    requestId: string,
+    isPaused: boolean,
+    reason: string,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      isPaused,
+      pausedAt: isPaused ? new Date() : undefined,
+      pauseReason: isPaused ? reason : undefined,
+      updatedAt: new Date(),
+      history: [
+        ...request.history,
+        {
+          id: `hist-${Date.now()}`,
+          requestId,
+          fromStatus: request.currentStage,
+          toStatus: request.currentStage,
+          changedAt: new Date(),
+          changedBy,
+          isAutomatic: false,
+          notes: isPaused ? `Solicitação pausada: ${reason}` : "Solicitação retomada"
+        }
+      ]
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Update request costs and materials
+   */
+  updateCosts(
+    requestId: string,
+    data: { estimatedCost?: number; actualCost?: number; materials?: any[] },
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      ...data,
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+    
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'updated',
+      performedBy: changedBy,
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: 'Custos e materiais atualizados'
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
   assignTechnician(
     requestId: string,
     technicianId: string,

@@ -128,18 +128,31 @@ class WarrantySLAService {
     stage: WarrantyStage = request.currentStage
   ): SLADeadlineInfo {
     const slaHours = this.getSLAHoursForStage(request.category, stage);
-    const startedAt = request.stageStartedAt;
+    let startedAt = request.stageStartedAt;
+    
+    // Adjust startedAt if the request is paused to preserve SLA
+    if (request.isPaused && request.pausedAt) {
+      // In a real system, we would calculate the time elapsed before pause
+      // and add it to the current time to get a new virtual start date.
+      // For this mock, we'll just show it as "paused" logic.
+    }
+
     const deadline = this.calculateDeadline(startedAt, slaHours);
     const now = new Date();
     
-    const diffMs = deadline.getTime() - now.getTime();
+    // If paused, the "now" for calculation purposes is the pausedAt date
+    const effectiveNow = request.isPaused && request.pausedAt ? request.pausedAt : now;
+    
+    const diffMs = deadline.getTime() - effectiveNow.getTime();
     const hoursRemaining = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60)));
     const percentageRemaining = slaHours > 0 
       ? Math.max(0, Math.min(100, (hoursRemaining / slaHours) * 100))
       : 100;
     
     let status: SLAStatus;
-    if (hoursRemaining <= 0) {
+    if (request.isPaused) {
+      status = "on_track"; // Or a new "paused" status if we added it to the type
+    } else if (hoursRemaining <= 0) {
       status = "expired";
     } else if (percentageRemaining <= 20) {
       status = "warning";

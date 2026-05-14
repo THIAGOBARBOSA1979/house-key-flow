@@ -239,6 +239,9 @@ export interface WarrantyRequestFlow {
   stageStartedAt: Date;
   createdAt: Date;
   updatedAt: Date;
+  isPaused?: boolean;
+  pausedAt?: Date;
+  pauseReason?: string;
   
   // SLA tracking
   slaConfig: SLAConfig;
@@ -248,6 +251,11 @@ export interface WarrantyRequestFlow {
   // Assignment
   assignedTo: string | null;
   assignedToName: string | null;
+  
+  // Cost tracking
+  estimatedCost?: number;
+  actualCost?: number;
+  materials?: Array<{ id: string; name: string; quantity: number; unit: string; cost?: number }>;
   
   // Stage-specific data
   inspectionDate?: Date;
@@ -265,6 +273,10 @@ export interface WarrantyRequestFlow {
   completionDate?: Date;
   completionNotes?: string;
   
+  // Internal data (not shown to client)
+  internalNotes?: string;
+  tags?: string[];
+  
   // History
   history: WarrantyStatusHistory[];
   
@@ -280,6 +292,10 @@ export interface WarrantyProblemDetail {
   description: string;
   severity: "minor" | "moderate" | "severe";
   photos: string[];
+  status: "pending" | "resolved" | "unresolved";
+  resolvedAt?: Date;
+  estimatedCost?: number;
+  actualCost?: number;
 }
 
 // Timeline step for client view
