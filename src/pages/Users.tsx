@@ -118,7 +118,7 @@ const Users = () => {
   };
   
   const handleSelectAll = () => { 
-    if (selectedUsers.length === filteredUsers.length) { 
+    if (selectedUsers.length === filteredUsers.length && filteredUsers.length > 0) { 
       setSelectedUsers([]); 
     } else { 
       setSelectedUsers(filteredUsers.map(user => user.id!)); 
@@ -144,7 +144,7 @@ const Users = () => {
               </div>
               <div className="min-w-0">
                 <h3 className="font-bold text-base truncate group-hover:text-primary transition-colors">{user.name}</h3>
-                <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">Login: {user.lastLogin}</p>
+                <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">Login: {user.lastLogin || '-'}</p>
               </div>
             </div>
             <DropdownMenu>

@@ -97,7 +97,7 @@ class ChecklistService {
     this.templates.push(newTemplate);
     this.persist();
     auditLogService.log({
-      entityType: 'inspection' as any,
+      entityType: 'checklist',
       entityId: newTemplate.id,
       action: 'created',
       performedBy: 'admin-1',
@@ -106,6 +106,23 @@ class ChecklistService {
       details: `Template de checklist "${newTemplate.title}" criado.`
     });
     return newTemplate;
+  }
+
+  logExecution(templateId: string, items: ChecklistItem[], notes: string) {
+    const template = this.getTemplateById(templateId);
+    const okCount = items.filter(i => i.status === 'ok').length;
+    const totalCount = items.length;
+
+    auditLogService.log({
+      entityType: 'checklist',
+      entityId: templateId,
+      action: 'completed',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Execução do checklist "${template?.title || templateId}" concluída. (${okCount}/${totalCount} OK).`,
+      metadata: { notes, okCount, totalCount }
+    });
   }
 
   static async signChecklist(checklistId: string, signature: any) {

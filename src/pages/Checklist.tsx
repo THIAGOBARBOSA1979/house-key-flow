@@ -60,6 +60,12 @@ export default function Checklist() {
   const handleSubmitExecution = (completedItems: ChecklistItem[], notes: string) => {
     toast({ title: "Checklist finalizado", description: "A execução foi registrada e sincronizada com o sistema." });
     console.log('Finalizando execução:', { completedItems, notes });
+    
+    // Log the activity
+    if (selectedTemplate) {
+      checklistService.logExecution(selectedTemplate.id, completedItems, notes);
+    }
+    
     setCurrentView('templates');
   };
 
