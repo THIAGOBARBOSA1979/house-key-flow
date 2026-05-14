@@ -63,6 +63,7 @@ import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { exportService } from "@/services/ExportService";
+import { BulkActions } from "@/components/Documents/BulkActions";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -71,6 +72,7 @@ const AdminDocuments = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [activeTab, setActiveTab] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const categories = documentService.getCategories();
 
   useEffect(() => {
@@ -217,6 +219,13 @@ const AdminDocuments = () => {
                       <TableRow key={doc.id} className="group hover:bg-muted/20 transition-colors border-b-border/5">
                         <TableCell className="py-4">
                           <div className="flex items-center gap-3">
+                            <Checkbox 
+                              checked={selectedIds.includes(doc.id)} 
+                              onCheckedChange={(checked) => {
+                                if (checked) setSelectedIds([...selectedIds, doc.id]);
+                                else setSelectedIds(selectedIds.filter(id => id !== doc.id));
+                              }}
+                            />
                             <div className="p-2 rounded bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
                               <FileText className="w-5 h-5" />
                             </div>
@@ -279,7 +288,13 @@ const AdminDocuments = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
               {filteredDocs.map(doc => (
-                <Card key={doc.id} className="card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all">
+                <Card key={doc.id} className={cn(
+                  "card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all",
+                  selectedIds.includes(doc.id) && "ring-2 ring-primary bg-primary/5"
+                )} onClick={() => {
+                  if (selectedIds.includes(doc.id)) setSelectedIds(selectedIds.filter(id => id !== doc.id));
+                  else setSelectedIds([...selectedIds, doc.id]);
+                }}>
                    <div className="flex justify-between items-start">
                       <div className="p-3 bg-card rounded-xl shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-all border border-border/10">
                         <FileText size={22} />
