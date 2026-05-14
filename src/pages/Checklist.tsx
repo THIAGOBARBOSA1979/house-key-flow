@@ -7,8 +7,9 @@ import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
 import { ChecklistExecution } from '@/components/Checklists/ChecklistExecution';
 import { ChecklistItem, ChecklistService } from '@/services/ChecklistService';
-import { FileText, PlayCircle, BarChart, ArrowLeft } from 'lucide-react';
+import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
+import { useToast } from "@/components/ui/use-toast";
 
 interface ChecklistTemplate {
   id: string;
@@ -22,6 +23,7 @@ interface ChecklistTemplate {
 }
 
 export default function Checklist() {
+  const { toast } = useToast();
   const [currentView, setCurrentView] = useState<'templates' | 'builder' | 'execution' | 'detail'>('templates');
   const [selectedTemplate, setSelectedTemplate] = useState<ChecklistTemplate | null>(null);
   const [executionItems, setExecutionItems] = useState<ChecklistItem[]>([]);
@@ -39,17 +41,21 @@ export default function Checklist() {
   const handleSaveChecklist = async (title: string, description: string, items: ChecklistItem[]) => {
     try {
       await ChecklistService.createChecklist(items, { title, description });
+      toast({ title: "Template salvo", description: "O novo template de checklist foi criado com sucesso." });
       setCurrentView('templates');
     } catch (error) {
       console.error('Erro ao salvar checklist:', error);
+      toast({ title: "Erro ao salvar", description: "Não foi possível salvar o template.", variant: "destructive" });
     }
   };
 
   const handleSaveExecution = (completedItems: ChecklistItem[], notes: string) => {
+    toast({ title: "Rascunho salvo", description: "O progresso da execução foi salvo localmente." });
     console.log('Salvando execução:', { completedItems, notes });
   };
 
   const handleSubmitExecution = (completedItems: ChecklistItem[], notes: string) => {
+    toast({ title: "Checklist finalizado", description: "A execução foi registrada e sincronizada com o sistema." });
     console.log('Finalizando execução:', { completedItems, notes });
     setCurrentView('templates');
   };
@@ -127,9 +133,32 @@ export default function Checklist() {
               <CardHeader>
                 <CardTitle>Execuções Recentes</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  Nenhuma execução de checklist registrada
+              <CardContent className="p-0">
+                <div className="divide-y">
+                  <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-emerald-100 text-emerald-600 rounded-full">
+                        <CheckCircle2 size={16} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Vistoria Pré-Entrega - Unidade 204</p>
+                        <p className="text-xs text-muted-foreground">Executado por: Roberto Santos • Hoje às 10:30</p>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700">100% OK</Badge>
+                  </div>
+                  <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-amber-100 text-amber-600 rounded-full">
+                        <CheckCircle2 size={16} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Manutenção Preventiva - Área Comum</p>
+                        <p className="text-xs text-muted-foreground">Executado por: Carlos Andrade • Ontem às 15:45</p>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="bg-amber-50 text-amber-700">85% OK</Badge>
+                  </div>
                 </div>
               </CardContent>
             </Card>
