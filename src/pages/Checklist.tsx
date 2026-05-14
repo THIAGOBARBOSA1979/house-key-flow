@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { ChecklistBuilder } from '@/components/Checklists/ChecklistBuilder';
 import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
