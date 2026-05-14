@@ -152,7 +152,14 @@ const AdminDocuments = () => {
           <div className="flex items-center justify-between mb-2">
             <p className="text-sem-tiny uppercase font-bold tracking-widest text-muted-foreground/80">Armazenamento</p>
             <span className="text-sem-tiny font-black text-primary">18%</span>
-          </div>
+      </div>
+
+      <BulkActions 
+        documents={filteredDocs}
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+        onActionComplete={() => setDocuments(documentService.getAllDocuments())}
+      />
           <div className="flex items-baseline gap-2 mb-3">
             <h3 className="text-sem-h3 font-bold text-foreground leading-tight">1.8 GB</h3>
             <span className="text-sem-caption text-muted-foreground">de 10 GB</span>
