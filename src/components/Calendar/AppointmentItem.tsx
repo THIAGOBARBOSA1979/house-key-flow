@@ -27,23 +27,23 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return <Badge variant="outline" className="flex gap-1"><Clock className="h-3 w-3" />Pendente</Badge>;
+        return <Badge variant="outline" className="flex gap-1 bg-status-pending/10 text-status-pending border-status-pending/20"><Clock className="h-3 w-3" />Pendente</Badge>;
       case "confirmed":
-        return <Badge variant="default" className="bg-green-600 flex gap-1"><Check className="h-3 w-3" />Confirmado</Badge>;
+        return <Badge className="bg-status-complete text-status-complete-foreground flex gap-1"><Check className="h-3 w-3" />Confirmado</Badge>;
       case "cancelled":
-        return <Badge variant="destructive" className="flex gap-1"><X className="h-3 w-3" />Cancelado</Badge>;
+        return <Badge variant="destructive" className="bg-status-critical text-status-critical-foreground flex gap-1"><X className="h-3 w-3" />Cancelado</Badge>;
       case "completed":
-        return <Badge variant="default" className="bg-blue-600 flex gap-1"><FileCheck className="h-3 w-3" />Concluído</Badge>;
+        return <Badge className="bg-status-progress text-status-progress-foreground flex gap-1"><FileCheck className="h-3 w-3" />Concluído</Badge>;
       default:
-        return <Badge variant="outline">-</Badge>;
+        return <Badge variant="outline">—</Badge>;
     }
   };
   
   // Get appointment type badge
   const getTypeBadge = (type: string) => {
     return type === "inspection"
-      ? <Badge variant="secondary" className="bg-violet-100 text-violet-800 hover:bg-violet-200">Vistoria</Badge>
-      : <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-200">Garantia</Badge>;
+      ? <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">Vistoria</Badge>
+      : <Badge className="bg-status-pending/10 text-status-pending border-status-pending/20 hover:bg-status-pending/20">Garantia</Badge>;
   };
 
   if (compact) {
