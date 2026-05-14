@@ -12,10 +12,29 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Common date formatter
  */
-export const formatDate = (date: Date | string) => {
-  const d = typeof date === 'string' ? new Date(date) : date;
+export const formatDate = (date: Date | string | number | null | undefined) => {
+  if (!date) return "—";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "Data inválida";
   return d.toLocaleDateString('pt-BR');
 };
+
+/**
+ * Safe date formatter for date-fns format function
+ */
+export function safeFormat(
+  date: Date | string | number | null | undefined,
+  formatStr: string,
+  options?: any
+) {
+  if (!date) return "—";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "Data inválida";
+  
+  // Dynamic import of format to avoid circular deps if any
+  const { format } = require('date-fns');
+  return format(d, formatStr, options);
+}
 
 /**
  * Truncate text with ellipsis
