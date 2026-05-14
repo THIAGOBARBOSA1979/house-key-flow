@@ -253,31 +253,31 @@ const AdminDocuments = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
               {filteredDocs.map(doc => (
-                <Card key={doc.id} className="card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer">
+                <Card key={doc.id} className="card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all">
                    <div className="flex justify-between items-start">
-                      <div className="p-3 bg-background rounded-lg shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                        <FileText size={24} />
+                      <div className="p-3 bg-card rounded-xl shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-all border border-border/10">
+                        <FileText size={22} />
                       </div>
                       <div className="flex flex-col items-end gap-1">
                         {getStatusBadge(doc.status)}
                       </div>
                    </div>
                    <div className="mt-4">
-                      <h4 className="text-sm font-bold truncate pr-6">{doc.title}</h4>
-                      <p className="text-[10px] text-muted-foreground font-bold uppercase mt-1">
+                      <h4 className="text-label font-bold truncate pr-6 group-hover:text-primary transition-colors">{doc.title}</h4>
+                      <p className="text-sem-tiny text-muted-foreground font-bold uppercase tracking-tighter mt-1">
                         {doc.category} • {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
                       </p>
                    </div>
                    <div className="absolute top-4 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background shadow-sm">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background shadow-md border border-border/10">
                             <MoreHorizontal size={14} />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem className="text-xs font-bold"><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
-                          <DropdownMenuItem className="text-xs font-bold" onClick={() => handleDelete(doc.id)}><Trash2 size={14} className="mr-2 text-destructive" /> Excluir</DropdownMenuItem>
+                        <DropdownMenuContent align="end" className="w-40 animate-in zoom-in-95">
+                          <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer"><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
+                          <DropdownMenuItem className="text-xs font-bold py-2 text-destructive focus:text-destructive cursor-pointer" onClick={() => handleDelete(doc.id)}><Trash2 size={14} className="mr-2" /> Excluir</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                    </div>
