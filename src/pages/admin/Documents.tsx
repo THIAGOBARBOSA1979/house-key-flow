@@ -621,7 +621,7 @@ export default function AdminDocuments() {
           />
 
           {/* Lista de documentos com histórico de versões */}
-          <div className="grid gap-4">
+          <div className={currentView === "grid" ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" : "grid gap-4"}>
             {filteredDocuments.map((doc) => (
               <Card key={doc.id} className="hover:shadow-md transition-shadow">
                 <CardHeader>
@@ -679,7 +679,7 @@ export default function AdminDocuments() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className={currentView === "grid" ? "pt-0" : ""}>
                   <div className="space-y-3">
                     <div className="text-sm text-muted-foreground">
                       <strong>Associado a:</strong> {
