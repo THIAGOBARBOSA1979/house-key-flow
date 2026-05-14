@@ -74,6 +74,7 @@ const Calendar = () => {
         pendingAppointments={pendingAppointments}
         completedThisWeek={completedThisWeek}
         onNewAppointment={handleNewAppointment}
+        setFilterSheetOpen={setFilterSheetOpen}
       />
 
       <CalendarFilters
@@ -89,8 +90,8 @@ const Calendar = () => {
         setFilterSheetOpen={setFilterSheetOpen}
       />
 
-      <Tabs defaultValue="calendar">
-        <TabsList>
+      <Tabs defaultValue="calendar" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="calendar">Visualização do Calendário</TabsTrigger>
           <TabsTrigger value="list">Lista de Agendamentos</TabsTrigger>
         </TabsList>

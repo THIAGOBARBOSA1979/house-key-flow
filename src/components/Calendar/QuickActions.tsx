@@ -21,13 +21,15 @@ interface QuickActionsProps {
   pendingAppointments: number;
   completedThisWeek: number;
   onNewAppointment: () => void;
+  setFilterSheetOpen: (open: boolean) => void;
 }
 
 export const QuickActions = ({ 
   todayAppointments, 
   pendingAppointments, 
   completedThisWeek,
-  onNewAppointment 
+  onNewAppointment,
+  setFilterSheetOpen
 }: QuickActionsProps) => {
   const { toast } = useToast();
 
@@ -109,7 +111,7 @@ export const QuickActions = ({
               Novo Agendamento
             </Button>
             
-            <Button variant="outline" onClick={() => handleQuickAction("Filtros avançados")}>
+            <Button variant="outline" onClick={() => setFilterSheetOpen(true)}>
               <Filter className="mr-2 h-4 w-4" />
               Filtros Avançados
             </Button>

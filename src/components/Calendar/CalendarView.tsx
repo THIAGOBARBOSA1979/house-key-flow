@@ -49,7 +49,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-md border pointer-events-auto"
+            className="rounded-md border pointer-events-auto w-full"
             modifiers={{
               hasAppointment: (day) => getAppointmentsForDate(day).length > 0,
             }}
