@@ -63,6 +63,8 @@ const AdminDocuments = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const categories = documentService.getCategories();
 
   useEffect(() => {
     setDocuments(documentService.getAllDocuments());
@@ -71,7 +73,8 @@ const AdminDocuments = () => {
   const filteredDocs = documents.filter(doc => 
     (doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     doc.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (activeTab === "all" || doc.status === activeTab)
+    (activeTab === "all" || doc.status === activeTab) &&
+    (selectedCategory === "all" || doc.category === selectedCategory)
   );
 
   const handleDelete = (id: string) => {
@@ -160,6 +163,18 @@ const AdminDocuments = () => {
                 <TabsTrigger value="draft" className="text-xs font-bold">Rascunhos</TabsTrigger>
               </TabsList>
             </Tabs>
+            
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full md:w-40 h-10 bg-background border-none shadow-sm font-bold text-xs">
+                <SelectValue placeholder="Categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas Categorias</SelectItem>
+                {categories.map(cat => (
+                  <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             
             <div className="flex items-center gap-2 w-full md:w-auto">
               <div className="relative flex-1 md:w-64">
