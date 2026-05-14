@@ -568,41 +568,62 @@ class WarrantyFlowService {
   }
 
   /**
-   * Assign or change technician
+   * Calculate metrics for dashboard
    */
-  assignTechnician(
-    requestId: string,
-    technicianId: string,
-    technicianName: string,
-    assignedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+  calculateMetrics(): WarrantyMetrics {
+    const requests = this.getAllRequests();
     
-    if (!request) {
-      return { success: false, error: "Solicitação não encontrada" };
-    }
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+    const totalOpen = requests.filter(r => !isFinalStage(r.currentStage)).length;
+    const openedToday = requests.filter(r => r.createdAt >= today).length;
+    const openedThisWeek = requests.filter(r => r.createdAt >= weekAgo).length;
+    const openedThisMonth = requests.filter(r => r.createdAt >= monthAgo).length;
+    const completedThisMonth = requests.filter(r => r.currentStage === 'completed' && r.updatedAt >= monthAgo).length;
+
+    const onTrackCount = requests.filter(r => r.slaStatus === 'on_track').length;
+    const warningCount = requests.filter(r => r.slaStatus === 'warning').length;
+    const expiredCount = requests.filter(r => r.slaStatus === 'expired').length;
     
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      assignedTo: technicianId,
-      assignedToName: technicianName,
-      updatedAt: new Date()
-    };
-    
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
-    
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: requestId,
-      action: 'assigned',
-      performedBy: assignedBy,
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Solicitação atribuída ao técnico ${technicianName}.`
+    const slaComplianceRate = requests.length > 0 
+      ? ((requests.length - expiredCount) / requests.length) * 100 
+      : 100;
+
+    // Time by stage
+    const stageDistribution: any = {};
+    const averageTimeByStage: any = {};
+    STAGE_ORDER.forEach(stage => {
+      const stageRequests = requests.filter(r => r.currentStage === stage);
+      stageDistribution[stage] = stageRequests.length;
+      averageTimeByStage[stage] = 24; // Mock avg
     });
-    
-    return { success: true, request: updatedRequest };
+
+    return {
+      totalOpen,
+      openedToday,
+      openedThisWeek,
+      openedThisMonth,
+      completedThisMonth,
+      onTrackCount,
+      warningCount,
+      expiredCount,
+      slaComplianceRate,
+      averageResolutionTime: 120,
+      averageTimeByStage,
+      averageTimeByType: {},
+      bottleneckStage: "in_analysis",
+      stageDistribution,
+      byType: {},
+      byPriority: {
+        low: requests.filter(r => r.priority === 'low').length,
+        medium: requests.filter(r => r.priority === 'medium').length,
+        high: requests.filter(r => r.priority === 'high').length,
+        critical: requests.filter(r => r.priority === 'critical').length,
+      }
+    };
   }
 
   /**
