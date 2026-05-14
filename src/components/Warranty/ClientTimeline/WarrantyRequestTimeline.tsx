@@ -14,7 +14,7 @@ import { SLAIndicator } from "./SLAIndicator";
 import { History, AlertTriangle, ShieldCheck, Clock, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 interface WarrantyRequestTimelineProps {
@@ -158,7 +158,7 @@ export function WarrantyRequestTimeline({ request, compact = false }: WarrantyRe
               Acompanhamento da Solicitação
             </CardTitle>
             <CardDescription>
-              Protocolo #{request.id} • Aberta em {format(request.createdAt, "dd/MM/yyyy", { locale: ptBR })}
+              Protocolo #{request.id} • Aberta em {isValid(new Date(request.createdAt)) ? format(new Date(request.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "—"}
             </CardDescription>
           </div>
           
@@ -186,7 +186,7 @@ export function WarrantyRequestTimeline({ request, compact = false }: WarrantyRe
             </div>
             {request.completionDate && (
               <p className="text-sm text-emerald-600 mt-1">
-                Finalizada em {format(request.completionDate, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                Finalizada em {isValid(new Date(request.completionDate)) ? format(new Date(request.completionDate), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
               </p>
             )}
             {request.completionNotes && (
@@ -306,7 +306,7 @@ export function WarrantyRequestList({
             </div>
             
             <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{format(request.createdAt, "dd/MM/yyyy", { locale: ptBR })}</span>
+              <span>{isValid(new Date(request.createdAt)) ? format(new Date(request.createdAt), "dd/MM/yyyy", { locale: ptBR }) : "—"}</span>
               <span>•</span>
               <span>{request.category}</span>
             </div>
