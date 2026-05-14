@@ -58,6 +58,13 @@ const Calendar = () => {
 
   const handleStatusChange = (id: string, newStatus: string) => {
     console.log(`Changing status of appointment ${id} to ${newStatus}`);
+    import("@/services/InspectionService").then(({ inspectionService }) => {
+      inspectionService.updateStatus(id, newStatus);
+      toast({
+        title: "Status atualizado",
+        description: `O agendamento foi marcado como ${newStatus}.`,
+      });
+    });
   };
 
   return (
