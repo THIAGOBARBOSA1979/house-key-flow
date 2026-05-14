@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest';
 describe('Design System: StatusBadge Component', () => {
   it('should render correctly with default status', () => {
     render(<StatusBadge status="complete" label="Concluído" />);
-    const badge = screen.getByText('Concluído');
+    const badge = screen.getByRole('status');
     expect(badge).toBeInTheDocument();
     expect(badge).toHaveClass('badge-complete');
   });
@@ -25,9 +25,9 @@ describe('Design System: StatusBadge Component', () => {
 
   it('should apply size classes correctly', () => {
     const { container: smContainer } = render(<StatusBadge status="success" size="sm" />);
-    expect(smContainer.firstChild).toHaveClass('text-tiny');
+    expect(smContainer.querySelector('span[role="status"]')).toHaveClass('text-tiny');
 
     const { container: lgContainer } = render(<StatusBadge status="success" size="lg" />);
-    expect(lgContainer.firstChild).toHaveClass('text-sem-body-sm');
+    expect(lgContainer.querySelector('span[role="status"]')).toHaveClass('text-sem-body-sm');
   });
 });
