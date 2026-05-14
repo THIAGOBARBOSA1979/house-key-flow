@@ -19,20 +19,25 @@ export function PageHeader({
 }: PageHeaderProps) {
   return (
     <div className={cn(
-      "flex flex-col md:flex-row md:items-center md:justify-between gap-4",
+      "flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-2 border-b border-border/10 mb-6",
       className
     )}>
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-          {Icon && <Icon className="h-8 w-8 text-primary" />}
-          {title}
+      <div className="space-y-1">
+        <h1 className="text-h1 flex items-center gap-3">
+          {Icon && (
+            <div className="p-2 bg-primary/10 rounded-xl">
+              <Icon className="h-6 w-6 text-primary" />
+            </div>
+          )}
+          <span className="animate-in slide-in-from-left-2 duration-300 font-bold">{title}</span>
         </h1>
         {description && (
-          <p className="text-muted-foreground mt-1">
+          <p className="text-small animate-in slide-in-from-left-4 duration-500">
             {description}
           </p>
         )}
       </div>
+
       {children && (
         <div className="flex items-center gap-2">
           {children}
