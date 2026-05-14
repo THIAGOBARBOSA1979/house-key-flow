@@ -55,6 +55,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
+import { exportService } from "@/services/ExportService";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -100,6 +101,9 @@ const AdminDocuments = () => {
         description="Centralize todos os arquivos técnicos, contratos e alvarás"
       >
         <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold" onClick={() => exportService.exportToCSV(documents, 'documentos_admin')}>
+            <Download className="w-4 h-4 mr-2" /> Exportar CSV
+          </Button>
           <Button variant="outline" size="sm" className="interactive-active h-9 font-bold">
             <FolderPlus className="w-4 h-4 mr-2" /> Nova Pasta
           </Button>

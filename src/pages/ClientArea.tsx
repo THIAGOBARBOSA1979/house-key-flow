@@ -23,6 +23,7 @@ import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
 import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { exportService } from "@/services/ExportService";
 
 // Mock data - expanded
 const clients = [
@@ -151,6 +152,10 @@ const ClientArea = () => {
         title="Área do Cliente"
         description="Gestão centralizada de clientes e acesso"
       >
+        <Button variant="outline" onClick={() => exportService.exportToCSV(clients, 'clientes_a2')}>
+          <Download className="mr-2 h-4 w-4" />
+          Exportar
+        </Button>
         <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
           <Key className="mr-2 h-4 w-4" />
           Gerar Credenciais

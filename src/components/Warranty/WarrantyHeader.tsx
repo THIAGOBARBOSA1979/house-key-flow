@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { PageHeader } from "@/components/Layout/PageHeader";
+import { exportService } from "@/services/ExportService";
+import { warrantyFlowService } from "@/services/WarrantyFlowService";
 
 interface WarrantyHeaderProps {
   onExportData: () => void;
@@ -54,7 +56,7 @@ export const WarrantyHeader = ({ onExportData }: WarrantyHeaderProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Exportar Dados</DropdownMenuLabel>
-          <DropdownMenuItem onClick={onExportData}>
+          <DropdownMenuItem onClick={() => exportService.exportToCSV(warrantyFlowService.getAllRequests(), 'garantias_a2')}>
             <Download className="mr-2 h-4 w-4" />
             Exportar CSV
           </DropdownMenuItem>
