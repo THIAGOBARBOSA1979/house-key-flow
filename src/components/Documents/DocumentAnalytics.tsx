@@ -15,9 +15,9 @@ export function DocumentAnalytics() {
   const mostDownloaded = documents.sort((a, b) => b.downloads - a.downloads)[0];
   
   const statusDistribution = [
-    { status: 'published', label: 'Publicados', count: stats.published, color: 'bg-green-500' },
-    { status: 'draft', label: 'Rascunhos', count: stats.draft, color: 'bg-yellow-500' },
-    { status: 'archived', label: 'Arquivados', count: stats.archived, color: 'bg-gray-500' }
+    { status: 'published', label: 'Publicados', count: stats.published, color: 'bg-status-complete' },
+    { status: 'draft', label: 'Rascunhos', count: stats.draft, color: 'bg-status-pending' },
+    { status: 'archived', label: 'Arquivados', count: stats.archived, color: 'bg-muted-foreground' }
   ];
 
   const priorityStats = {
@@ -38,7 +38,7 @@ export function DocumentAnalytics() {
                 <p className="text-2xl font-bold">{totalDownloads}</p>
                 <p className="text-xs text-muted-foreground">Média: {avgDownloads} por doc</p>
               </div>
-              <Download className="h-8 w-8 text-blue-500" />
+              <Download className="h-8 w-8 text-brand" />
             </div>
           </CardContent>
         </Card>
@@ -51,7 +51,7 @@ export function DocumentAnalytics() {
                 <p className="text-lg font-bold truncate">{mostDownloaded?.title || 'N/A'}</p>
                 <p className="text-xs text-muted-foreground">{mostDownloaded?.downloads || 0} downloads</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-500" />
+              <TrendingUp className="h-8 w-8 text-status-complete" />
             </div>
           </CardContent>
         </Card>
@@ -66,7 +66,7 @@ export function DocumentAnalytics() {
                 </p>
                 <p className="text-xs text-muted-foreground">{stats.published}/{stats.total}</p>
               </div>
-              <Star className="h-8 w-8 text-yellow-500" />
+              <Star className="h-8 w-8 text-status-pending" />
             </div>
           </CardContent>
         </Card>
@@ -79,7 +79,7 @@ export function DocumentAnalytics() {
                 <p className="text-2xl font-bold text-red-600">{stats.expiring}</p>
                 <p className="text-xs text-muted-foreground">Próximos 30 dias</p>
               </div>
-              <Clock className="h-8 w-8 text-red-500" />
+              <Clock className="h-8 w-8 text-status-critical" />
             </div>
           </CardContent>
         </Card>
