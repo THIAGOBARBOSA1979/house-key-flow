@@ -32,14 +32,32 @@ const initialMockRequests: WarrantyRequestFlow[] = [
     category: "Instalações Hidráulicas",
     priority: "high",
     currentStage: "in_analysis",
-    stageStartedAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2 days ago
+    stageStartedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
     slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Instalações Hidráulicas")!,
     slaDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000),
     slaStatus: "on_track",
     assignedTo: "tech-1",
     assignedToName: "Carlos Técnico",
+    estimatedCost: 850,
+    actualCost: 120,
+    materials: [
+      { id: "mat-1", name: "Vedante Silicone", quantity: 2, unit: "un", cost: 40 },
+      { id: "mat-2", name: "Rejunte Impermeável", quantity: 1, unit: "kg", cost: 25 }
+    ],
+    internalNotes: "Análise inicial sugere falha no rejuntamento.",
+    problems: [
+      {
+        id: "prob-1",
+        category: "Hidráulica",
+        location: "Banheiro Social",
+        description: "Vazamento no registro",
+        severity: "moderate",
+        photos: [],
+        status: "pending"
+      }
+    ],
     history: [
       {
         id: "hist-001",
@@ -74,15 +92,18 @@ const initialMockRequests: WarrantyRequestFlow[] = [
     category: "Esquadrias",
     priority: "medium",
     currentStage: "inspection_scheduled",
-    stageStartedAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
-    createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000), // 3 days ago
+    stageStartedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
     slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Esquadrias")!,
     slaDeadline: new Date(Date.now() + 60 * 60 * 60 * 1000),
     slaStatus: "on_track",
+    isPaused: true,
+    pausedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
+    pauseReason: "Aguardando disponibilidade do morador",
     assignedTo: "tech-2",
     assignedToName: "Ana Vistoriadora",
-    inspectionDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
+    inspectionDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
     history: [
       {
         id: "hist-003",
