@@ -65,7 +65,6 @@ import {
 } from "@/components/ui/table";
 
 const DesignSystem = () => {
-const DesignSystem = () => {
   const [playgroundState, setPlaygroundState] = useState({
     disabled: false,
     loading: false,
