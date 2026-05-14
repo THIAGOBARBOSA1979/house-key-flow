@@ -244,6 +244,10 @@ class WarrantyFlowService {
     if (filters.dateTo) {
       requests = requests.filter(r => r.createdAt <= filters.dateTo!);
     }
+
+    if (filters.isPaused !== undefined) {
+      requests = requests.filter(r => r.isPaused === filters.isPaused);
+    }
     
     return requests;
   }

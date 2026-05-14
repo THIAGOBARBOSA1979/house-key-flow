@@ -21,7 +21,7 @@ export function WarrantyMetricsDashboard() {
   const { toast } = useToast();
   const [metrics, setMetrics] = useState<WarrantyMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [period, setPeriod] = useState("month");
+  const [period, setPeriod] = useState("quarter");
 
   const loadMetrics = () => {
     setIsLoading(true);

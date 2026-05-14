@@ -191,7 +191,18 @@ export function KanbanFilters({
                 value={filters.dateTo ? filters.dateTo.toISOString().split('T')[0] : ""}
                 onChange={(e) => updateFilter("dateTo", e.target.value ? new Date(e.target.value).toISOString() : undefined)}
               />
+            <div>
+              <label className="flex items-center gap-2 cursor-pointer py-2">
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                  checked={filters.isPaused === true}
+                  onChange={(e) => updateFilter("isPaused", e.target.checked ? true : undefined)}
+                />
+                <span className="text-sm font-medium">Apenas pausadas</span>
+              </label>
             </div>
+          </div>
           </div>
         </SheetContent>
       </Sheet>
