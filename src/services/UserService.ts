@@ -67,7 +67,7 @@ class UserService {
     this.users.push(newUser);
     this.persist();
     auditLogService.log({
-      entityType: 'inspection' as any,
+      entityType: 'user',
       entityId: newUser.id,
       action: 'created',
       performedBy: 'admin-1',

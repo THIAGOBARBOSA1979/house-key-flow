@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export type AuditEntityType = 'inspection' | 'warranty';
+export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist';
 export type AuditAction = 
   | 'created' 
   | 'updated' 

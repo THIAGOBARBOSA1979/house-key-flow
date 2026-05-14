@@ -29,8 +29,8 @@ export const ChecklistSelector = ({
             className={cn(
               "cursor-pointer border transition-all duration-200", 
               selectedId === checklist.id 
-                ? "border-company bg-company/5 ring-1 ring-company" 
-                : "hover:border-company/50"
+                ? "border-primary bg-primary/5 ring-1 ring-primary" 
+                : "hover:border-primary/50"
             )}
             onClick={() => handleSelect(checklist.id)}
           >
@@ -39,18 +39,18 @@ export const ChecklistSelector = ({
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "p-2 rounded-lg",
-                    selectedId === checklist.id ? "bg-company text-white" : "bg-muted text-muted-foreground"
+                    selectedId === checklist.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                   )}>
                     <ClipboardList className="h-5 w-5" />
                   </div>
                   <div className="space-y-0.5">
                     <h4 className="font-semibold text-sm">{checklist.title}</h4>
                     <p className="text-xs text-muted-foreground line-clamp-1">{checklist.description}</p>
-                    <p className="text-[10px] font-medium text-company uppercase tracking-wider">{checklist.items.length} itens de verificação</p>
+                    <p className="text-[10px] font-medium text-primary uppercase tracking-wider">{checklist.items.length} itens de verificação</p>
                   </div>
                 </div>
                 {selectedId === checklist.id && (
-                  <div className="p-1 bg-company rounded-full text-white">
+                  <div className="p-1 bg-primary rounded-full text-white">
                     <Check className="h-3 w-3" />
                   </div>
                 )}

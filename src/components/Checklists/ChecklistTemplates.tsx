@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ChecklistItem } from "@/services/ChecklistService";
+import { ChecklistItem, checklistService } from "@/services/ChecklistService";
 import { Plus, FileText, Copy, Edit, Trash, Search, Star } from "lucide-react";
 
 interface ChecklistTemplate {
@@ -28,80 +28,18 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Templates predefinidos
-  const templates: ChecklistTemplate[] = [
-    {
-      id: "1",
-      name: "Vistoria Pré-Entrega",
-      description: "Checklist completo para vistoria antes da entrega do imóvel",
-      category: "Vistoria",
-      itemCount: 25,
-      isDefault: true,
-      createdAt: new Date(2025, 4, 1),
-      items: [
-        {
-          id: "1",
-          description: "Estrutural: Verificar rachaduras nas paredes",
-          required: true,
-          evidence: []
-        },
-        {
-          id: "2", 
-          description: "Hidráulica: Testar funcionamento de todas as torneiras",
-          required: true,
-          evidence: []
-        },
-        {
-          id: "3",
-          description: "Elétrica: Verificar funcionamento de todas as tomadas",
-          required: true,
-          evidence: []
-        }
-      ]
-    },
-    {
-      id: "2",
-      name: "Inspeção de Garantia",
-      description: "Verificações durante o período de garantia",
-      category: "Garantia",
-      itemCount: 18,
-      isDefault: true,
-      createdAt: new Date(2025, 4, 5),
-      items: [
-        {
-          id: "4",
-          description: "Estrutural: Verificar possíveis infiltrações",
-          required: true,
-          evidence: []
-        },
-        {
-          id: "5",
-          description: "Acabamento: Verificar estado da pintura",
-          required: false,
-          evidence: []
-        }
-      ]
-    },
-    {
-      id: "3",
-      name: "Manutenção Preventiva",
-      description: "Checklist para manutenção preventiva regular",
-      category: "Manutenção",
-      itemCount: 15,
-      isDefault: false,
-      createdAt: new Date(2025, 4, 10),
-      items: [
-        {
-          id: "6",
-          description: "Hidráulica: Verificar pressão da água",
-          required: true,
-          evidence: []
-        }
-      ]
-    }
-  ];
+  const templates = checklistService.getAllTemplates().map(t => ({
+    id: t.id,
+    name: t.title,
+    description: t.description,
+    category: t.title.includes("Hidráulica") ? "Hidráulica" : "Vistoria",
+    itemCount: t.items.length,
+    isDefault: t.id.startsWith("checklist"),
+    createdAt: t.createdAt,
+    items: t.items
+  }));
 
-  const categories = ["all", "Vistoria", "Garantia", "Manutenção"];
+  const categories = ["all", "Vistoria", "Garantia", "Manutenção", "Hidráulica"];
 
   const filteredTemplates = templates.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

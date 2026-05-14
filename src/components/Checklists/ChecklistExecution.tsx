@@ -49,7 +49,7 @@ export function ChecklistExecution({
 
   const sections = Object.keys(groupedItems);
   const totalItems = completedItems.length;
-  const completedCount = completedItems.filter(item => item.status && item.status !== 'na').length;
+  const completedCount = completedItems.filter(item => item.status && (item.status === 'ok' || item.status === 'issue')).length;
   const progressPercentage = totalItems > 0 ? (completedCount / totalItems) * 100 : 0;
 
   const handleItemStatusChange = (itemId: string, status: 'ok' | 'issue' | 'na') => {

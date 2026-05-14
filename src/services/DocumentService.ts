@@ -214,7 +214,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     
     this.documents.push(newDocument);
     auditLogService.log({
-      entityType: 'inspection' as any,
+      entityType: 'document',
       entityId: newDocument.id,
       action: 'created',
       performedBy: 'admin-1',
