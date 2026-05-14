@@ -89,10 +89,36 @@ export default {
 
 			},
 			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				lg: 'var(--radius-lg)',
+				md: 'var(--radius-md)',
+				sm: 'var(--radius-sm)',
+				xs: 'var(--radius-xs)',
+				xl: 'var(--radius-xl)',
+				full: 'var(--radius-full)',
 			},
+			zIndex: {
+				dropdown: 'var(--z-dropdown)',
+				sticky: 'var(--z-sticky)',
+				fixed: 'var(--z-fixed)',
+				modal: 'var(--z-modal)',
+				popover: 'var(--z-popover)',
+				tooltip: 'var(--z-tooltip)',
+			},
+			opacity: {
+				disabled: 'var(--opacity-disabled)',
+				muted: 'var(--opacity-muted)',
+				hover: 'var(--opacity-hover)',
+			},
+			spacing: {
+				'1-sem': 'var(--space-1)',
+				'2-sem': 'var(--space-2)',
+				'3-sem': 'var(--space-3)',
+				'4-sem': 'var(--space-4)',
+				'6-sem': 'var(--space-6)',
+				'8-sem': 'var(--space-8)',
+				'12-sem': 'var(--space-12)',
+			},
+
 			keyframes: {
 				'accordion-down': {
 					from: {
