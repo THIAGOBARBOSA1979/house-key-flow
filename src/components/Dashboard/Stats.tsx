@@ -41,7 +41,7 @@ export const Stats = ({ className }: { className?: string }) => {
       title: "Garantias",
       value: warranties.length,
       icon: ShieldCheck,
-      description: `${warranties.filter(w => w.currentStage !== 'closed' && w.currentStage !== 'rejected').length} abertas`,
+      description: `${warranties.filter(w => w.currentStage !== 'completed' && w.currentStage !== 'rejected').length} abertas`,
       variant: "progress",
     },
     {
