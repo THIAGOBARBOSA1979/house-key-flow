@@ -7,7 +7,7 @@ import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { QuickActions } from "@/components/Dashboard/QuickActions";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
-import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw, Layers, Clock } from "lucide-react";
+import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw, Layers, Clock, History as HistoryIcon } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -194,7 +194,7 @@ const Dashboard = () => {
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h2 flex items-center gap-2">
-                <History size={24} className="text-primary" />
+                <HistoryIcon size={24} className="text-primary" />
                 Logs de Auditoria
               </h2>
             </div>
