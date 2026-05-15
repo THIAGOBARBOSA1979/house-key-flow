@@ -40,6 +40,18 @@ export interface Document {
   attachments?: DocumentAttachment[];
   viewCount: number;
   viewers?: string[];
+  signatures?: DocumentSignature[];
+}
+
+export interface DocumentSignature {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: "pending" | "signed" | "rejected";
+  signedAt?: Date;
+  ipAddress?: string;
+  confirmationMethod: "email" | "sms";
 }
 
 export interface ApprovalHistoryEntry {
