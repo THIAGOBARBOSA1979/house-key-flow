@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ChecklistItem, ChecklistTemplate, checklistService } from "@/services/ChecklistService";
-import { Plus, FileText, Copy, Edit, Trash, Search, Star } from "lucide-react";
+import { Plus, FileText, Copy, Edit, Trash, Search, Star, LayoutGrid, List, Archive } from "lucide-react";
+import { cn } from "@/lib/utils";
+
 
 interface ChecklistTemplatesProps {
   onSelectTemplate: (template: ChecklistTemplate) => void;
@@ -16,6 +18,7 @@ interface ChecklistTemplatesProps {
 export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistTemplatesProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const templates = checklistService.getAllTemplates();
   const categories = ["all", "vistoria", "garantia", "manutencao", "hidraulica", "eletrica", "entrega"];
@@ -29,14 +32,19 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   });
 
   const handleDuplicateTemplate = (template: ChecklistTemplate) => {
-    const { id, createdAt, lastUpdated, ...rest } = template;
+    const { id, createdAt, lastUpdated, version, ...rest } = template;
     checklistService.createTemplate({
       ...rest,
       title: `${template.title} (Cópia)`,
-    }).then(() => {
-      // Forçar atualização se necessário ou mostrar toast
     });
   };
+
+  const handleArchiveTemplate = async (id: string) => {
+    await checklistService.archiveTemplate(id);
+    // Force re-render would typically happen via state update in a real app
+    // Here we might need a local state for templates if we wanted immediate UI update
+  };
+
 
   return (
     <div className="space-y-6">
@@ -52,13 +60,33 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
           />
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 bg-muted/30 p-1 rounded-lg">
+          <Button
+            variant={viewMode === "grid" ? "secondary" : "ghost"}
+            size="icon"
+            onClick={() => setViewMode("grid")}
+            className="h-8 w-8"
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === "list" ? "secondary" : "ghost"}
+            size="icon"
+            onClick={() => setViewMode("list")}
+            className="h-8 w-8"
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
           {categories.map((category) => (
             <Button
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedCategory(category)}
+              className="capitalize"
             >
               {category === "all" ? "Todos" : category}
             </Button>
@@ -135,8 +163,48 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <Card className="overflow-hidden border-none shadow-sm">
+          <div className="divide-y divide-border/50">
+            {filteredTemplates.map((template) => (
+              <div key={template.id} className="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold flex items-center gap-2">
+                      {template.title}
+                      {template.id.startsWith("checklist") && <Star className="h-3 w-3 text-yellow-500 fill-current" />}
+                    </h4>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{template.description}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="hidden md:flex gap-2">
+                    <Badge variant="secondary" className="text-[10px]">{template.items?.length || 0} Itens</Badge>
+                    <Badge variant="outline" className="text-[10px] capitalize">{template.category}</Badge>
+                  </div>
+                  
+                  <div className="flex gap-1">
+                    <Button size="sm" onClick={() => onSelectTemplate(template)}>Usar</Button>
+                    <Button size="sm" variant="ghost" onClick={() => handleDuplicateTemplate(template)}>
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    {!template.id.startsWith("checklist") && (
+                      <Button size="sm" variant="ghost" onClick={() => handleArchiveTemplate(template.id)} className="text-destructive">
+                        <Archive className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Empty state */}
       {filteredTemplates.length === 0 && (
