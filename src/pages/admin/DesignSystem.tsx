@@ -122,13 +122,13 @@ const DesignSystem = () => {
                 </Card>
                 <Card className="card-standard p-5 border-rose-500/20 bg-rose-500/5">
                   <h4 className="text-label mb-3 flex items-center gap-2 text-rose-600">
-                    <AlertTriangle className="w-4 h-4" /> Evite
+                    <AlertTriangle className="w-4 h-4" /> Checklist de Estados
                   </h4>
                   <ul className="text-caption space-y-2 list-disc list-inside font-medium text-muted-foreground">
-                    <li>Não utilize cores fixas (ex: <code>#ffffff</code>) no JSX</li>
-                    <li>Evite margens/paddings arbitrários</li>
-                    <li>Não crie novos componentes sem antes checar o <code>/shared</code></li>
-                    <li>Evite quebrar a hierarquia de Z-Index</li>
+                    <li><strong>Hover:</strong> Transições suaves de cor/escala</li>
+                    <li><strong>Focus:</strong> Anéis de foco (ring) visíveis e nítidos</li>
+                    <li><strong>Disabled:</strong> Opacidade 0.4 e cursor não permitido</li>
+                    <li><strong>Active:</strong> Efeito de clique (scale 0.95-0.98)</li>
                   </ul>
                 </Card>
               </div>
@@ -149,6 +149,7 @@ const DesignSystem = () => {
             </div>
           </section>
         </TabsContent>
+
 
         {/* --- TOKENS CONTENT --- */}
         <TabsContent value="tokens" className="space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-normal">
