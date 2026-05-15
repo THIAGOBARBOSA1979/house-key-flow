@@ -43,21 +43,27 @@ export function ListView({ appointments, onViewDetails, filterOptions }: ListVie
   const filteredAppointments = getFilteredAppointmentsList();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {filteredAppointments.length === 0 ? (
-        <div className="flex flex-col items-center justify-center section-padding bg-muted/20 rounded-xl border-2 border-dashed border-muted-foreground/10 animate-fade-in">
-          <div className="p-4 bg-muted/20 rounded-full mb-4">
+        <div className="flex flex-col items-center justify-center py-20 bg-muted/10 rounded-2xl border-2 border-dashed border-muted-foreground/10 animate-in fade-in zoom-in-95 duration-300">
+          <div className="p-6 bg-muted/20 rounded-full mb-6">
             <CalendarIcon className="h-12 w-12 text-muted-foreground/30" />
           </div>
-          <h3 className="text-h3 font-bold text-foreground mb-1">Nenhum agendamento encontrado</h3>
-          <p className="text-body-base text-muted-foreground mb-6 text-center max-w-md">Tente ajustar os filtros ou adicione um novo agendamento para começar.</p>
-          <Button onClick={() => {}} className="rounded-lg h-10 px-6 font-bold">
-            <Plus className="mr-2 h-4 w-4" />
+          <h3 className="text-h3 font-bold text-foreground mb-2">Nenhum agendamento encontrado</h3>
+          <p className="text-body-base text-muted-foreground mb-8 text-center max-w-sm px-6">Tente ajustar seus filtros ou buscar por outro termo para encontrar o que procura.</p>
+          <Button onClick={() => {}} className="rounded-xl h-12 px-8 font-bold active:scale-95 transition-all shadow-sem-md">
+            <Plus className="mr-2 h-5 w-5" />
             Novo Agendamento
           </Button>
         </div>
       ) : (
-        <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden divide-y divide-border/10">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-2">
+            <span className="text-sem-tiny font-black uppercase tracking-widest text-muted-foreground">
+              {filteredAppointments.length} resultados encontrados
+            </span>
+          </div>
+          <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden divide-y divide-border/10 shadow-sem-lg">
           {filteredAppointments.map((appointment) => (
             <AppointmentItem 
               key={appointment.id} 
