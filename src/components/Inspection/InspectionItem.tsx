@@ -68,6 +68,7 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
       title: "Vistoria concluída",
       description: "O status da vistoria foi atualizado para concluído.",
     });
+    if (onUpdate) onUpdate();
   };
 
   const startInspection = () => {
