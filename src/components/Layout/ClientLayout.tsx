@@ -243,6 +243,7 @@ const ClientLayout = () => {
           <ClientNavLink to="/client/inspections" icon={ClipboardCheck} onClick={handleLinkClick}>Vistorias</ClientNavLink>
           <ClientNavLink to="/client/warranty" icon={ShieldCheck} onClick={handleLinkClick}>Garantias</ClientNavLink>
           <ClientNavLink to="/client/notifications" icon={Bell} onClick={handleLinkClick} badgeCount={unreadCount}>Notificações</ClientNavLink>
+          <ClientNavLink to="/client/profile" icon={User} onClick={handleLinkClick}>Meu Perfil</ClientNavLink>
           
           <Separator className="my-4" />
           
