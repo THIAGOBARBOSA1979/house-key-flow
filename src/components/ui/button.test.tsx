@@ -23,4 +23,9 @@ describe('Design System: Button Component', () => {
     expect(button).toBeDisabled();
     expect(button).toHaveClass('disabled:interactive-disabled');
   });
+
+  it('should match the design snapshot', () => {
+    const { asFragment } = render(<Button>Snapshot Button</Button>);
+    expect(asFragment()).toMatchSnapshot();
+  });
 });
