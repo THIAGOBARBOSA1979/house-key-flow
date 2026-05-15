@@ -64,14 +64,15 @@ export function ListView({ appointments, onViewDetails, filterOptions }: ListVie
             </span>
           </div>
           <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden divide-y divide-border/10 shadow-sem-lg">
-          {filteredAppointments.map((appointment) => (
-            <AppointmentItem 
-              key={appointment.id} 
-              appointment={appointment} 
-              onViewDetails={onViewDetails}
-            />
-          ))}
-        </Card>
+            {filteredAppointments.map((appointment) => (
+              <AppointmentItem 
+                key={appointment.id} 
+                appointment={appointment} 
+                onViewDetails={onViewDetails}
+              />
+            ))}
+          </Card>
+        </div>
       )}
     </div>
   );
