@@ -79,31 +79,31 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
   
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <div className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <div className="space-y-6">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome completo <span className="text-destructive">*</span></FormLabel>
+                <FormLabel>Nome completo <span className="text-destructive">*</span></FormLabel>
                 <FormControl>
-                  <Input placeholder="Ex: Maria Oliveira" className="h-11 rounded-xl" {...field} />
+                  <Input placeholder="Ex: Maria Oliveira" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Email <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Email <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="cliente@email.com" type="email" className="h-11 rounded-xl" {...field} />
+                    <Input placeholder="cliente@email.com" type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,9 +115,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Telefone <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Telefone <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="(11) 99999-9999" className="h-11 rounded-xl" {...field} />
+                    <Input placeholder="(11) 99999-9999" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,29 +130,29 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
             name="document"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">CPF/CNPJ <span className="text-destructive">*</span></FormLabel>
+                <FormLabel>CPF/CNPJ <span className="text-destructive">*</span></FormLabel>
                 <FormControl>
-                  <Input placeholder="000.000.000-00" className="h-11 rounded-xl" {...field} />
+                  <Input placeholder="000.000.000-00" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             <FormField
               control={form.control}
               name="property"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Empreendimento <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Empreendimento <span className="text-destructive">*</span></FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="h-11 rounded-xl">
+                      <SelectTrigger>
                         <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="shadow-sem-xl border-none">
                       {mockProperties.map(property => (
                         <SelectItem key={property.id} value={property.id}>
                           {property.name}
@@ -170,9 +170,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
               name="unit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Unidade <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Unidade <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Apto 101 Bloco A" className="h-11 rounded-xl" {...field} />
+                    <Input placeholder="Ex: Apto 101 Bloco A" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,9 +185,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Endereço complementar</FormLabel>
+                <FormLabel>Endereço complementar</FormLabel>
                 <FormControl>
-                  <Input placeholder="Endereço completo (opcional)" className="h-11 rounded-xl" {...field} />
+                  <Input placeholder="Endereço completo (opcional)" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -195,13 +195,13 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
           />
         </div>
         
-        <div className="flex justify-end gap-3 pt-6 border-t border-border/10">
+        <div className="flex justify-end gap-3 pt-6 border-t border-border/10 -mx-6 px-6 bg-muted/5">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel} className="h-11 px-6 rounded-xl font-bold transition-all">
+            <Button type="button" variant="outline" onClick={onCancel} className="px-6">
               Cancelar
             </Button>
           )}
-          <Button type="submit" className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-[10px] bg-primary hover:bg-primary/90 shadow-sem-md active:scale-95 transition-all">
+          <Button type="submit" className="px-8 font-black uppercase tracking-widest text-[10px]">
             Cadastrar Cliente
           </Button>
         </div>
