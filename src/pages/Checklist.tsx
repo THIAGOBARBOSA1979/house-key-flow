@@ -81,7 +81,17 @@ export default function Checklist() {
     setCurrentView('detail');
   };
 
-  if (currentView === 'builder') {
+  if (currentView === 'detail' && selectedExecution) {
+    return (
+      <ChecklistDetail
+        title={selectedExecution.templateTitle}
+        description={`Executado por ${selectedExecution.performedByName} em ${new Date(selectedExecution.date).toLocaleString()}`}
+        groups={selectedExecution.groups}
+        readOnly={true}
+        onBack={handleBack}
+      />
+    );
+  }
     return (
       <div className="space-y-6 animate-fade-in">
         <ChecklistBuilder
