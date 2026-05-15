@@ -15,6 +15,8 @@ import { ClientStageManager } from "@/components/Admin/ClientStageManager";
 import { ClientEventHistory } from "@/components/Admin/ClientEventHistory";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
 import { clientStageService } from "@/services/ClientStageService";
+import { notificationService } from "@/services/NotificationService";
+import { auditLogService } from "@/services/AuditLogService";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -109,19 +111,45 @@ const clients = [
 const ClientArea = () => {
   const { toast: showToast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedClient, setSelectedClient] = useState<typeof clients[0] | null>(null);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
   const [isNewClientDialogOpen, setNewClientDialogOpen] = useState(false);
   const [isCredentialsDialogOpen, setCredentialsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
   const handleNewClientSubmit = (data: any) => {
     // Record audit log
+    auditLogService.log({
+      entityType: 'user',
+      entityId: `new-${Date.now()}`,
+      action: 'created',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Novo cliente cadastrado: ${data.name}`
+    });
     showToast({ title: "Cliente cadastrado", description: "O cliente foi cadastrado com sucesso." });
     setNewClientDialogOpen(false);
   };
 
   const handleCredentialsSubmit = (data: any) => {
-    // Notify through SyncService (mocked)
+    // Record audit log
+    auditLogService.log({
+      entityType: 'user',
+      entityId: data.clientId,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Credenciais de acesso geradas para o cliente.`
+    });
+    
+    notificationService.createNotification(data.clientId, 'stage_changed', {
+      relatedEntityType: 'stage'
+    }, {
+      title: 'Acesso Liberado',
+      message: 'Suas credenciais de acesso ao portal foram geradas e enviadas por email.'
+    });
+
     showToast({ title: "Credenciais geradas", description: "As credenciais de acesso foram geradas e enviadas ao cliente." });
     setCredentialsDialogOpen(false);
   };
@@ -379,8 +407,9 @@ const ClientArea = () => {
                 </div>
               </TabsContent>
             </Tabs>
-          </CardContent>
-        </Card>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
 
       {/* Dialogs */}

@@ -1,4 +1,4 @@
-import { Outlet, Link, NavLink } from "react-router-dom";
+import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText } from "lucide-react";
@@ -8,6 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useClientStage } from "@/hooks/useClientStage";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const ClientNavLink = ({
   to,
@@ -33,44 +36,37 @@ const ClientNavLink = ({
     </NavLink>;
 };
 
-const NotificationPanel = () => {
-  const notifications = [{
-    id: "1",
-    title: "Agendamento confirmado",
-    message: "Sua vistoria de entrega foi confirmada para 20/05/2025 às 14:30",
-    date: "Há 2 horas",
-    read: false
-  }, {
-    id: "2",
-    title: "Solicitação de garantia atualizada",
-    message: "O status da sua solicitação foi atualizado para 'Em andamento'",
-    date: "Há 1 dia",
-    read: true
-  }, {
-    id: "3",
-    title: "Lembrete de vistoria",
-    message: "Sua vistoria de pré-entrega está agendada para amanhã às 10:00",
-    date: "Há 2 dias",
-    read: true
-  }];
-  return <div className="w-[380px] max-h-[60vh] flex flex-col">
+const NotificationPanel = ({ 
+  notifications, 
+  unreadCount, 
+  markAllAsRead 
+}: { 
+  notifications: any[]; 
+  unreadCount: number; 
+  markAllAsRead: () => void;
+}) => {
+  return <div className="w-[380px] max-h-[80vh] flex flex-col">
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="font-medium text-lg">Notificações</h3>
-        <Button variant="ghost" size="sm" className="text-xs">
-          Marcar todas como lidas
-        </Button>
+        {unreadCount > 0 && (
+          <Button variant="ghost" size="sm" className="text-xs" onClick={markAllAsRead}>
+            Marcar todas como lidas
+          </Button>
+        )}
       </div>
       
       <div className="flex-1 overflow-auto">
         {notifications.length > 0 ? <div className="divide-y">
-            {notifications.map(notification => <div key={notification.id} className={cn("p-4 hover:bg-muted/50 cursor-pointer", !notification.read && "bg-primary/5 border-l-2 border-primary")}>
-                <div className="flex items-start justify-between">
-                  <h4 className={cn("font-medium", !notification.read && "text-primary")}>
+            {notifications.map(notification => <div key={notification.id} className={cn("p-4 hover:bg-muted/50 cursor-pointer transition-colors border-b last:border-0", !notification.read && "bg-primary/5 border-l-2 border-primary")}>
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className={cn("font-bold text-sm leading-tight", !notification.read ? "text-primary" : "text-foreground")}>
                     {notification.title}
                   </h4>
-                  <span className="text-xs text-muted-foreground">{notification.date}</span>
+                  <span className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground shrink-0 mt-0.5">
+                    {new Date(notification.createdAt).toLocaleDateString()}
+                  </span>
                 </div>
-                <p className="text-sm mt-1 text-muted-foreground">{notification.message}</p>
+                <p className="text-xs mt-1.5 text-muted-foreground leading-relaxed line-clamp-2">{notification.message}</p>
               </div>)}
           </div> : <div className="flex flex-col items-center justify-center p-8 text-center">
             <Bell className="h-10 w-10 text-muted-foreground/30 mb-3" />
@@ -172,8 +168,18 @@ const Input = ({
 };
 
 const ClientLayout = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const clientId = user?.id || "client-1";
+  const { profile } = useClientStage(clientId);
+  const { unreadCount, notifications, markAllAsRead } = useNotifications(clientId);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   // Check if the screen is mobile size
   useEffect(() => {
@@ -216,11 +222,13 @@ const ClientLayout = () => {
         <div className="p-4 border-b">
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarFallback>MO</AvatarFallback>
+              <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium">Maria Oliveira</p>
-              <p className="text-xs text-muted-foreground">Edifício Aurora - Unidade 204</p>
+              <p className="font-medium">{user?.name || "Cliente"}</p>
+              <p className="text-xs text-muted-foreground">
+                {profile?.propertyName ? `${profile.propertyName} - Unidade ${profile.unitNumber}` : "Carregando..."}
+              </p>
             </div>
           </div>
         </div>
@@ -229,9 +237,9 @@ const ClientLayout = () => {
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           <ClientNavLink to="/client" icon={Home} onClick={handleLinkClick}>Início</ClientNavLink>
           <ClientNavLink to="/client/properties" icon={Building} onClick={handleLinkClick}>Meu Imóvel</ClientNavLink>
-          <ClientNavLink to="/client/documents" icon={FileText} badgeCount={4} onClick={handleLinkClick}>Documentos</ClientNavLink>
-          <ClientNavLink to="/client/inspections" icon={ClipboardCheck} badgeCount={2} onClick={handleLinkClick}>Vistorias</ClientNavLink>
-          <ClientNavLink to="/client/warranty" icon={ShieldCheck} badgeCount={1} onClick={handleLinkClick}>Garantias</ClientNavLink>
+          <ClientNavLink to="/client/documents" icon={FileText} onClick={handleLinkClick}>Documentos</ClientNavLink>
+          <ClientNavLink to="/client/inspections" icon={ClipboardCheck} onClick={handleLinkClick}>Vistorias</ClientNavLink>
+          <ClientNavLink to="/client/warranty" icon={ShieldCheck} onClick={handleLinkClick}>Garantias</ClientNavLink>
           
           <Separator className="my-4" />
           
@@ -255,12 +263,10 @@ const ClientLayout = () => {
         
         {/* User controls */}
         <div className="p-4 border-t">
-          <Link to="/">
-            <Button variant="outline" className="w-full" onClick={handleLinkClick}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sair
-            </Button>
-          </Link>
+          <Button variant="outline" className="w-full" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            Sair
+          </Button>
         </div>
       </div>
       
@@ -279,13 +285,19 @@ const ClientLayout = () => {
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" className="relative">
                   <Bell size={18} />
-                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-[10px] text-primary-foreground flex items-center justify-center">
-                    3
-                  </span>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-[10px] text-primary-foreground flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="p-0">
-                <NotificationPanel />
+                <NotificationPanel 
+                  notifications={notifications} 
+                  unreadCount={unreadCount} 
+                  markAllAsRead={markAllAsRead} 
+                />
               </SheetContent>
             </Sheet>
             
@@ -304,10 +316,10 @@ const ClientLayout = () => {
             {/* User menu */}
             <div className="flex items-center gap-2">
               <Avatar>
-                <AvatarFallback>MO</AvatarFallback>
+                <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
               </Avatar>
               <div className="hidden md:block">
-                <p className="text-sm font-medium">Maria Oliveira</p>
+                <p className="text-sm font-medium">{user?.name || "Cliente"}</p>
                 <p className="text-xs text-muted-foreground">Cliente</p>
               </div>
             </div>
