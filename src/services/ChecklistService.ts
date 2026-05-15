@@ -93,29 +93,14 @@ class ChecklistService {
     }
   ];
 
-  private executions: ChecklistExecutionRecord[] = [
-    {
-      id: "exec1",
-      templateId: "checklist1",
-      templateTitle: "Vistoria Pré-Entrega - Unidade 204",
-      performedBy: "user1",
-      performedByName: "Roberto Santos",
-      date: new Date(),
-      status: "completed",
-      conformityRate: 100,
-      notes: "Tudo em ordem para entrega.",
-      items: [],
-      location: { unit: "204" }
-    }
-  ];
-
-  private storageKey = "a2_checklist_templates";
+  private executions: ChecklistExecutionRecord[] = [];
+  private storageKeyExecutions = "a2_checklist_executions";
 
   constructor() {
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
+    const storedTemplates = localStorage.getItem(this.storageKey);
+    if (storedTemplates) {
       try {
-        const parsed = JSON.parse(stored);
+        const parsed = JSON.parse(storedTemplates);
         this.templates = parsed.map((t: any) => ({
           ...t,
           createdAt: new Date(t.createdAt),
@@ -125,11 +110,44 @@ class ChecklistService {
         console.error("Failed to load checklist templates", e);
       }
     }
+
+    const storedExecutions = localStorage.getItem(this.storageKeyExecutions);
+    if (storedExecutions) {
+      try {
+        this.executions = JSON.parse(storedExecutions).map((e: any) => ({
+          ...e,
+          date: new Date(e.date)
+        }));
+      } catch (e) {
+        console.error("Failed to load checklist executions", e);
+      }
+    } else {
+      this.executions = [
+        {
+          id: "exec1",
+          templateId: "checklist1",
+          templateTitle: "Vistoria Pré-Entrega - Unidade 204",
+          performedBy: "user1",
+          performedByName: "Roberto Santos",
+          date: new Date(),
+          status: "completed",
+          conformityRate: 100,
+          notes: "Tudo em ordem para entrega.",
+          items: [],
+          location: { unit: "204" }
+        }
+      ];
+    }
   }
 
   private persist() {
     localStorage.setItem(this.storageKey, JSON.stringify(this.templates));
   }
+
+  private persistExecutions() {
+    localStorage.setItem(this.storageKeyExecutions, JSON.stringify(this.executions));
+  }
+
 
   getAllTemplates(): ChecklistTemplate[] {
     return [...this.templates];
