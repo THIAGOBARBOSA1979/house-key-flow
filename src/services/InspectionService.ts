@@ -161,20 +161,22 @@ class InspectionService {
     return newInspection;
   }
   
-  updateStatus(id: string, status: string) {
+  updateStatus(id: string, status: string, details?: string) {
     const inspection = this.inspections.find(i => i.id === id);
     if (inspection) {
+      const oldStatus = inspection.status;
       inspection.status = status;
       this.persist();
       
       auditLogService.log({
         entityType: 'inspection',
         entityId: id,
-        action: 'stage_changed',
+        action: 'status_changed',
         performedBy: 'admin-1',
         performedByName: 'Administrador',
         performedByRole: 'admin',
-        details: `Status da vistoria alterado para ${status}.`
+        details: details || `Status da vistoria alterado de ${oldStatus} para ${status}.`,
+        metadata: { oldStatus, newStatus: status }
       });
     }
   }

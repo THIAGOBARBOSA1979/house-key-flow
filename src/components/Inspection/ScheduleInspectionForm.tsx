@@ -120,7 +120,8 @@ export const ScheduleInspectionForm = ({
     if (watchDate && watchTechnician) {
       const conflicts = inspectionService.getConflicts(watchDate, watchTechnician);
       if (conflicts.length > 0) {
-        setConflictWarning(`Atenção: O técnico já possui ${conflicts.length} agendamento(s) nesta data.`);
+        const slots = conflicts.map(c => c.time).join(", ");
+        setConflictWarning(`Atenção: O técnico já possui ${conflicts.length} agendamento(s) nesta data nos horários: ${slots}.`);
       } else {
         setConflictWarning(null);
       }
