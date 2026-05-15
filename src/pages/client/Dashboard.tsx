@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
+import { NextSteps } from "@/components/ClientFlow/NextSteps";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -246,13 +247,42 @@ const Dashboard = () => {
           </CardFooter>
         </Card>
       </div>
-
-      {/* Timeline Section */}
-      <ClientTimeline 
-        timeline={timeline} 
-        title="Sua Jornada"
-        description="Acompanhe cada etapa do processo do seu imóvel"
-      />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
+        <div className="lg:col-span-2">
+          <ClientTimeline 
+            timeline={timeline} 
+            title="Sua Jornada"
+            description="Acompanhe cada etapa do processo do seu imóvel"
+          />
+        </div>
+        <div>
+          <NextSteps 
+            steps={[
+              { 
+                id: '1', 
+                title: 'Assinar Termo de Entrega', 
+                description: 'Necessário para liberação das chaves', 
+                status: 'current',
+                link: '/client/documents'
+              },
+              { 
+                id: '2', 
+                title: 'Realizar Vistoria Técnica', 
+                description: 'Agendamento disponível em breve', 
+                status: 'upcoming'
+              },
+              { 
+                id: '3', 
+                title: 'Pagamento Parcela de Maio', 
+                description: 'Vencimento em 10/05/2024', 
+                status: 'upcoming',
+                link: '/client/financial'
+              }
+            ]} 
+          />
+        </div>
+      </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-layout-gap">
