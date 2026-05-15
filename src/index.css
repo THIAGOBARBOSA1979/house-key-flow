@@ -58,45 +58,53 @@
     --sidebar-ring: 221 83% 53%;
 
     /* --- Radius Tokens --- */
-    --radius-xs: 0.2rem;
-    --radius-sm: 0.4rem;
-    --radius-md: 0.6rem;
-    --radius-lg: 0.8rem;
-    --radius-xl: 1rem;
-    --radius-2xl: 1.5rem;
+    --radius-xs: 0.25rem;    /* 4px */
+    --radius-sm: 0.5rem;     /* 8px */
+    --radius-md: 0.75rem;    /* 12px */
+    --radius-lg: 1rem;       /* 16px */
+    --radius-xl: 1.25rem;    /* 20px */
+    --radius-2xl: 1.5rem;    /* 24px */
     --radius-full: 9999px;
 
-    /* --- Spacing Tokens (Semantic) --- */
-    --space-0-5: 0.125rem;
-    --space-1: 0.25rem;
-    --space-1-5: 0.375rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-    --space-20: 5rem;
-    --space-24: 6rem;
-    --space-32: 8rem;
+    /* --- Spacing Tokens (Numerical) --- */
+    --space-px: 1px;
+    --space-0-5: 0.125rem;  /* 2px */
+    --space-1: 0.25rem;     /* 4px */
+    --space-1-5: 0.375rem;  /* 6px */
+    --space-2: 0.5rem;      /* 8px */
+    --space-2-5: 0.625rem;  /* 10px */
+    --space-3: 0.75rem;     /* 12px */
+    --space-3-5: 0.875rem;  /* 14px */
+    --space-4: 1rem;        /* 16px */
+    --space-5: 1.25rem;     /* 20px */
+    --space-6: 1.5rem;      /* 24px */
+    --space-7: 1.75rem;     /* 28px */
+    --space-8: 2rem;        /* 32px */
+    --space-9: 2.25rem;     /* 36px */
+    --space-10: 2.5rem;     /* 40px */
+    --space-12: 3rem;       /* 48px */
+    --space-14: 3.5rem;     /* 56px */
+    --space-16: 4rem;       /* 64px */
+    --space-20: 5rem;       /* 80px */
+    --space-24: 6rem;       /* 96px */
+    --space-28: 7rem;       /* 112px */
+    --space-32: 8rem;       /* 128px */
 
     /* --- Layout Tokens --- */
-    --layout-gap: 1.5rem;
-    --section-gap: 3rem;
+    --layout-gap: var(--space-6);
+    --section-gap: var(--space-12);
     --container-max-width: 80rem; /* 1280px */
 
     /* --- Typography Tokens --- */
-    --font-display: 3.75rem; /* 60px */
-    --font-h1: 2.5rem;      /* 40px */
-    --font-h2: 2rem;        /* 32px */
-    --font-h3: 1.5rem;      /* 24px */
-    --font-h4: 1.25rem;     /* 20px */
+    --font-display: 3.75rem;  /* 60px */
+    --font-h1: 2.25rem;       /* 36px */
+    --font-h2: 1.875rem;      /* 30px */
+    --font-h3: 1.5rem;        /* 24px */
+    --font-h4: 1.25rem;       /* 20px */
     --font-body-lg: 1.125rem; /* 18px */
     --font-body-base: 1rem;   /* 16px */
     --font-body-sm: 0.875rem; /* 14px */
+    --font-body-xs: 0.75rem;  /* 12px */
     --font-label: 0.875rem;   /* 14px */
     --font-caption: 0.75rem;  /* 12px */
     --font-tiny: 0.625rem;    /* 10px */
