@@ -189,10 +189,10 @@ const Dashboard = () => {
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Sem garantias urgentes</p>
                 </div>
               )}
-              <Button variant="outline" className="w-full text-xs font-bold rounded-lg h-10 border-dashed" onClick={() => navigate("/admin/warranty")}>
-                Gerenciar todas as garantias
-              </Button>
-            </div>
+            </ResponsiveGrid>
+            <Button variant="outline" className="w-full text-xs font-bold rounded-lg h-10 border-dashed mt-4" onClick={() => navigate("/admin/warranty")}>
+              Gerenciar todas as garantias
+            </Button>
           </section>
 
           {/* Recent Activities */}
