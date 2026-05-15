@@ -27,12 +27,12 @@ export const StatsCard = ({
   className
 }: StatsCardProps) => {
   const variantStyles = {
-    default: "bg-card border-border",
-    pending: "bg-status-pending/5 border-status-pending/20 text-status-pending shadow-sem-sm hover:shadow-status-pending/20",
-    progress: "bg-status-progress/5 border-status-progress/20 text-status-progress shadow-sem-sm hover:shadow-status-progress/20",
-    complete: "bg-status-complete/5 border-status-complete/20 text-status-complete shadow-sem-sm hover:shadow-status-complete/20",
-    critical: "bg-status-critical/5 border-status-critical/20 text-status-critical shadow-sem-sm hover:shadow-status-critical/20",
-    brand: "bg-brand/5 border-brand/20 text-brand shadow-sem-sm hover:shadow-brand/20",
+    default: "bg-card/40 backdrop-blur-md border-border/40",
+    pending: "bg-status-pending/5 backdrop-blur-md border-status-pending/20 text-status-pending shadow-sem-sm hover:shadow-status-pending/20",
+    progress: "bg-status-progress/5 backdrop-blur-md border-status-progress/20 text-status-progress shadow-sem-sm hover:shadow-status-progress/20",
+    complete: "bg-status-complete/5 backdrop-blur-md border-status-complete/20 text-status-complete shadow-sem-sm hover:shadow-status-complete/20",
+    critical: "bg-status-critical/5 backdrop-blur-md border-status-critical/20 text-status-critical shadow-sem-sm hover:shadow-status-critical/20",
+    brand: "bg-brand/5 backdrop-blur-md border-brand/20 text-brand shadow-sem-sm hover:shadow-brand/20",
   };
 
   const iconStyles = {
@@ -46,11 +46,11 @@ export const StatsCard = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden group transition-all duration-500 border border-border/40 shadow-sem-sm hover:shadow-sem-md", 
+      "overflow-hidden group transition-all duration-500 border border-border/40 shadow-sem-sm hover:shadow-sem-lg rounded-2xl", 
       variantStyles[variant], 
       className
     )}>
-      <CardContent className="p-5">
+      <CardContent className="p-6">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/80 mb-2 truncate">
@@ -77,10 +77,10 @@ export const StatsCard = ({
           </div>
           {Icon && (
             <div className={cn(
-              "p-3 rounded-lg transition-all duration-300 group-hover:scale-110 shadow-sem-sm border border-border/10",
+              "p-4 rounded-xl transition-all duration-300 group-hover:scale-110 shadow-sem-md border border-border/10",
               iconStyles[variant]
             )}>
-              <Icon size={20} strokeWidth={2.5} />
+              <Icon size={24} strokeWidth={2.5} />
             </div>
           )}
         </div>
