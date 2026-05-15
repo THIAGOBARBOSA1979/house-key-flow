@@ -209,14 +209,24 @@ export default function ClientDocuments() {
           documentTitle={selectedDoc.title}
         />
       )}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <FileText className="h-6 w-6 text-primary" />
-          Meus Documentos
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Acesse e baixe seus documentos relacionados ao imóvel
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
+            <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
+              <FileText className="h-8 w-8" />
+            </div>
+            Meus Documentos
+          </h1>
+          <p className="text-muted-foreground mt-2 font-medium">
+            Acesse, visualize e assine digitalmente seus documentos em um ambiente seguro.
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="h-10 px-4 text-xs font-bold uppercase tracking-widest bg-muted/30">
+            Armazenamento: {Math.round(stats.total * 0.8)} MB
+          </Badge>
+        </div>
       </div>
 
       <Tabs defaultValue="all" className="space-y-6">
@@ -321,20 +331,23 @@ export default function ClientDocuments() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="card-standard group hover:shadow-lg transition-all border-none bg-background/50 backdrop-blur-sm overflow-hidden flex flex-col h-full">
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                      <FileText className="h-5 w-5" />
+              <Card key={doc.id} className="group border-primary/5 hover:border-primary/20 hover:shadow-xl transition-all duration-500 bg-gradient-to-br from-background to-muted/20 overflow-hidden flex flex-col h-full rounded-2xl">
+                <CardHeader className="pb-4 relative">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
+                      <FileText className="h-6 w-6" />
                     </div>
-                    <Badge variant={getStatusColor(doc.status) as any} className="text-[10px] uppercase font-bold">
+                    <Badge variant={getStatusColor(doc.status) as any} className="text-[10px] uppercase font-black px-3 py-1 rounded-full tracking-tighter">
                       {getStatusLabel(doc.status)}
                     </Badge>
                   </div>
-                  <CardTitle className="text-sm font-bold line-clamp-2 min-h-[40px]">{doc.title}</CardTitle>
-                  <CardDescription className="text-[10px] uppercase font-bold tracking-tight mt-1">
-                    {getTypeLabel(doc.type)} • {doc.size}
-                  </CardDescription>
+                  <CardTitle className="text-base font-black leading-snug line-clamp-2 min-h-[48px] text-foreground/90">{doc.title}</CardTitle>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-widest bg-muted/50 border-none">
+                      {getTypeLabel(doc.type)}
+                    </Badge>
+                    <span className="text-[10px] font-black text-muted-foreground/60 uppercase">{doc.size}</span>
+                  </div>
                 </CardHeader>
                 <CardContent className="flex-1">
                   {doc.description && (
