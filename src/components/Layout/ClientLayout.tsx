@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
+import { ScheduleMeetingDialog } from "@/components/ClientFlow/ScheduleMeetingDialog";
 
 const ClientNavLink = ({
   to,
