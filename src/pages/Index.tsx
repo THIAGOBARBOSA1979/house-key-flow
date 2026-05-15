@@ -164,7 +164,7 @@ const Dashboard = () => {
                 Garantias Urgentes
               </h2>
             </div>
-            <ResponsiveGrid columns={1} gap="sm">
+            <ResponsiveGrid columns={1} gap="sm-sem">
               {warrantyClaims.length > 0 ? (
                 warrantyClaims.map((claim) => (
                   <div 

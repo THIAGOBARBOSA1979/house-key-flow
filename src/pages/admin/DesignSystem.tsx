@@ -155,6 +155,31 @@ const DesignSystem = () => {
           <section className="space-y-6">
             <div className="flex items-center gap-2 border-b pb-2">
               <Layers className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Cores Semânticas</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <ColorToken name="Primary" token="--primary" color="hsl(var(--primary))" />
+              <ColorToken name="Secondary" token="--secondary" color="hsl(var(--secondary))" />
+              <ColorToken name="Destructive" token="--destructive" color="hsl(var(--destructive))" />
+              <ColorToken name="Background" token="--background" color="hsl(var(--background))" />
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Layout className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Espaçamento & Grid</h2>
+            </div>
+            <div className="bg-card border rounded-xl overflow-hidden divide-y">
+              <SpacingItem label="Layout Gap" token="gap-layout-gap" size="24px / 1.5rem" />
+              <SpacingItem label="Space 4" token="gap-4-sem" size="16px / 1rem" />
+              <SpacingItem label="Space 2" token="gap-2-sem" size="8px / 0.5rem" />
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Layers className="w-5 h-5 text-primary" />
               <h2 className="text-h2">Elevação & Opacidade</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -172,14 +197,15 @@ const DesignSystem = () => {
             </div>
             <div className="bg-card border rounded-xl overflow-hidden divide-y">
               <TypographyItem label="Display" className="text-sem-display" size="60px / 3.75rem" />
-              <TypographyItem label="Heading 1" className="text-sem-h1" size="40px / 2.5rem" />
-              <TypographyItem label="Heading 2" className="text-sem-h2" size="32px / 2rem" />
+              <TypographyItem label="Heading 1" className="text-sem-h1" size="36px / 2.25rem" />
+              <TypographyItem label="Heading 2" className="text-sem-h2" size="30px / 1.875rem" />
               <TypographyItem label="Heading 3" className="text-sem-h3" size="24px / 1.5rem" />
               <TypographyItem label="Body Base" className="text-sem-body-base" size="16px / 1rem" />
               <TypographyItem label="Caption" className="text-sem-caption uppercase" size="12px / 0.75rem" />
             </div>
           </section>
         </TabsContent>
+
 
         {/* --- COMPONENTS CONTENT --- */}
         <TabsContent value="components" className="space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-normal">
@@ -376,6 +402,31 @@ const DesignSystem = () => {
 };
 
 // --- HELPER COMPONENTS ---
+
+const ColorToken = ({ name, token, color }: { name: string, token: string, color: string }) => (
+  <div className="p-4 rounded-xl border bg-background flex flex-col gap-3">
+    <div className="h-12 rounded-lg border" style={{ backgroundColor: color }} />
+    <div className="flex flex-col">
+      <span className="text-sem-label">{name}</span>
+      <code className="text-sem-tiny text-muted-foreground">{token}</code>
+    </div>
+  </div>
+);
+
+const SpacingItem = ({ label, token, size }: { label: string, token: string, size: string }) => (
+  <div className="p-6 flex items-center justify-between">
+    <div className="flex items-center gap-6 flex-1">
+      <div className="h-6 bg-primary/20 rounded border border-primary/20 flex items-center justify-center transition-all" style={{ width: size.split(' / ')[0] }}>
+        <div className="h-full w-full bg-primary/40 rounded" />
+      </div>
+      <div className="space-y-1">
+        <p className="text-sem-label">{label}</p>
+        <code className="text-sem-tiny text-muted-foreground">{token}</code>
+      </div>
+    </div>
+    <span className="text-sem-tiny font-black bg-muted/50 px-3 py-1 rounded-lg">{size}</span>
+  </div>
+);
 
 const BreakpointItem = ({ icon: Icon, label, value }: { icon: any, label: string, value: string }) => (
   <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/10">
