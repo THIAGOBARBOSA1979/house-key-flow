@@ -191,8 +191,8 @@
     --sidebar-ring: 224.3 76.3% 48%;
 
     /* --- Layout Dark Tokens --- */
-    --layout-gap: 1.5rem;
-    --section-gap: 3.5rem;
+    --layout-gap: var(--space-6);
+    --section-gap: var(--space-14);
   }
 
   :root {
