@@ -260,6 +260,7 @@ const ClientLayout = () => {
           <div className="px-3 py-2">
             <h4 className="text-sm font-medium text-muted-foreground mb-2">Suporte e ajuda</h4>
             <div className="space-y-1">
+              <ClientNavLink to="/client/support" icon={HelpCircle} onClick={handleLinkClick}>Central de Ajuda</ClientNavLink>
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" className="w-full justify-start" onClick={handleLinkClick}>
