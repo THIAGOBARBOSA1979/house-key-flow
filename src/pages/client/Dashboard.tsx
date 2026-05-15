@@ -16,7 +16,8 @@ import {
   Building2,
   MapPin,
   TrendingUp,
-  Clock
+  Clock,
+  MessageSquare
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
