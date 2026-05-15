@@ -16,6 +16,7 @@ import { useClientStage } from "@/hooks/useClientStage";
 import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptance";
 import { InspectionAcceptanceStatus } from "@/types/clientFlow";
 import { eventAutomationService } from "@/services/EventAutomationService";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Mock data
 const initialInspections = [

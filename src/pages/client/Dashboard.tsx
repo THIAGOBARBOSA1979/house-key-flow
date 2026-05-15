@@ -21,6 +21,7 @@ import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Dashboard = () => {
   // Get client stage data

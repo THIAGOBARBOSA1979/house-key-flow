@@ -26,6 +26,7 @@ import { useClientStage } from "@/hooks/useClientStage";
 import { eventAutomationService } from "@/services/EventAutomationService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { WarrantyRequestTimeline, WarrantyRequestList } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Mock data
 const warrantyClaims = [
