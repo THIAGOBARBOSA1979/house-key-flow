@@ -687,7 +687,6 @@ OBSERVAÇÕES: {{observacoes}}`,
     const doc = this.getDocumentById(documentId);
     return doc?.signatures || [];
   }
-  }
 }
 
 export const documentService = new DocumentService();
