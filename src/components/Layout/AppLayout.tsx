@@ -67,7 +67,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <DropdownMenuContent align="end" className="w-56 mt-2 animate-in zoom-in-95 duration-normal shadow-sem-lg">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1-sem py-1-sem">
-                      <p className="text-body-sm font-bold leading-none">{user?.name}</p>
+                      <p className="text-sem-body-sm font-bold leading-none">{user?.name}</p>
                       <p className="text-sem-tiny text-muted-foreground truncate">{user?.email}</p>
                     </div>
                   </DropdownMenuLabel>
