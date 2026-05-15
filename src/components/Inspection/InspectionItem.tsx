@@ -157,6 +157,7 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
         triggerButton={<span className="hidden" />}
         open={rescheduleDialogOpen}
         onOpenChange={setRescheduleDialogOpen}
+        onSuccess={onUpdate}
         propertyInfo={{
           property: inspection.property,
           unit: inspection.unit,
