@@ -4,11 +4,15 @@ import { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface EmptyStateProps {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   description: string;
   actionLabel?: string;
   onAction?: () => void;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
   children?: ReactNode;
 }
 
