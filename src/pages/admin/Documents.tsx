@@ -382,7 +382,76 @@ const AdminDocuments = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 p-4">
                     {documents.map(doc => (
                       <Card key={doc.id} className={cn(
-                        "card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all",
+                        "card-standard group relative overflow-hidden h-56 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all",
+                        selectedDoc?.id === doc.id && "ring-2 ring-primary bg-primary/5"
+                      )}
+                      onClick={() => {
+                        setSelectedDoc(doc);
+                        documentService.logView(doc.id);
+                        refreshDocuments();
+                      }}
+                      >
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-start">
+                            <div className="p-2.5 rounded-xl bg-background shadow-sm text-primary group-hover:scale-110 transition-transform duration-300">
+                              <FileText className="w-6 h-6" />
+                            </div>
+                            <div className="flex gap-1">
+                              {getStatusBadge(doc.status)}
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h3 className="font-bold text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">{doc.title}</h3>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              <Badge variant="outline" className="text-[9px] h-4 uppercase font-bold border-muted-foreground/10">{doc.category}</Badge>
+                              {doc.tags?.slice(0, 2).map(tag => (
+                                <span key={tag} className="text-[9px] bg-primary/10 text-primary px-1 rounded font-bold">#{tag}</span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-border/10 flex items-center justify-between mt-auto">
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Criado em</span>
+                            <span className="text-xs font-bold">{new Date(doc.createdAt).toLocaleDateString('pt-BR')}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="secondary" className="text-[10px] font-bold h-6">
+                              <Eye className="w-3 h-3 mr-1 opacity-50" /> {doc.viewCount || 0}
+                            </Badge>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full bg-background/50 hover:bg-background shadow-sm" onClick={(e) => e.stopPropagation()}>
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48 animate-in zoom-in-95">
+                                <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedDoc(doc);
+                                  setIsPreviewOpen(true);
+                                }}>
+                                  <Eye className="w-3.5 h-3.5 mr-2" /> Visualizar
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                  e.stopPropagation();
+                                  documentService.downloadDocument(doc.id);
+                                }}>
+                                  <Download className="w-3.5 h-3.5 mr-2" /> Baixar
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs font-bold text-destructive focus:text-destructive cursor-pointer" onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(doc.id);
+                                }}>
+                                  <Trash2 className="w-3.5 h-3.5 mr-2" /> {doc.status === 'trash' ? 'Excluir' : 'Lixeira'}
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </div>
+                      </Card>
                         (selectedIds.includes(doc.id) || selectedDoc?.id === doc.id) && "ring-2 ring-primary bg-primary/5"
                       )} onClick={() => setSelectedDoc(doc)}>
                          <div className="flex justify-between items-start">
