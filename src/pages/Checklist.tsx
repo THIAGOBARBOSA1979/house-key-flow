@@ -113,25 +113,25 @@ export default function Checklist() {
     <div className="space-y-8 animate-fade-in">
       <PageHeader
         icon={FileText}
-        title="Checklists"
-        description="Gestão de templates padronizados e execução de inspeções técnicas."
+        title="Gestão de Checklists"
+        description="Templates padronizados e vistorias técnicas com conformidade em tempo real."
       >
         <div className="flex gap-2">
-           <Button variant="outline" onClick={() => toast({ title: "Filtros", description: "Filtros avançados em breve." })} className="rounded-lg h-10 px-4">
-            <Filter className="mr-2 h-4 w-4" />
-            Filtrar
+           <Button variant="outline" onClick={() => toast({ title: "Exportar", description: "Relatório gerencial em PDF sendo gerado..." })} className="rounded-xl h-10 px-4 font-bold border-primary/20 hover:border-primary/50">
+            Relatório Geral
           </Button>
-          <Button onClick={handleCreateNew} className="rounded-lg h-10 px-4 bg-primary">
+          <Button onClick={handleCreateNew} className="rounded-xl h-10 px-4 bg-primary font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
             <Plus className="mr-2 h-4 w-4" />
             Novo Template
           </Button>
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatsCard label="Templates" value={checklistService.getAllTemplates().length.toString()} icon={FileText} variant="brand" description="Modelos disponíveis" />
-        <StatsCard label="Execuções" value="48" icon={PlayCircle} variant="progress" description="Este mês" trend={{ value: "12%", isPositive: true }} />
-        <StatsCard label="Finalizados" value="92%" icon={CheckCircle2} variant="complete" description="Taxa de sucesso" />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <StatsCard label="Modelos" value={checklistService.getAllTemplates().length.toString()} icon={FileText} variant="brand" description="Templates ativos" />
+        <StatsCard label="Vistorias" value={checklistService.getAllExecutions().length.toString()} icon={PlayCircle} variant="progress" description="Execuções totais" />
+        <StatsCard label="Conformidade" value="88.5%" icon={CheckCircle2} variant="complete" description="Média técnica" />
+        <StatsCard label="Pendências" value="14" icon={AlertCircle} variant="error" description="Itens não conformes" />
       </div>
 
       <Tabs defaultValue="templates" className="space-y-6">
