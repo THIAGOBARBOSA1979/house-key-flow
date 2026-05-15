@@ -28,11 +28,11 @@ export const StatsCard = ({
 }: StatsCardProps) => {
   const variantStyles = {
     default: "bg-card border-border",
-    pending: "bg-status-pending/5 border-status-pending/20 text-status-pending",
-    progress: "bg-status-progress/5 border-status-progress/20 text-status-progress",
-    complete: "bg-status-complete/5 border-status-complete/20 text-status-complete",
-    critical: "bg-status-critical/5 border-status-critical/20 text-status-critical",
-    brand: "bg-brand/5 border-brand/20 text-brand",
+    pending: "bg-status-pending/5 border-status-pending/20 text-status-pending shadow-sem-sm hover:shadow-status-pending/20",
+    progress: "bg-status-progress/5 border-status-progress/20 text-status-progress shadow-sem-sm hover:shadow-status-progress/20",
+    complete: "bg-status-complete/5 border-status-complete/20 text-status-complete shadow-sem-sm hover:shadow-status-complete/20",
+    critical: "bg-status-critical/5 border-status-critical/20 text-status-critical shadow-sem-sm hover:shadow-status-critical/20",
+    brand: "bg-brand/5 border-brand/20 text-brand shadow-sem-sm hover:shadow-brand/20",
   };
 
   const iconStyles = {
@@ -45,15 +45,15 @@ export const StatsCard = ({
   };
 
   return (
-    <Card className={cn("card-standard overflow-hidden group transition-all duration-300", variantStyles[variant], className)}>
-      <CardContent className="p-5">
+    <Card className={cn("overflow-hidden group transition-all duration-500 border-none", variantStyles[variant], className)}>
+      <CardContent className="p-6">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <p className="text-sem-tiny uppercase font-bold tracking-widest text-muted-foreground/80 mb-1 truncate">
+            <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/80 mb-2 truncate">
               {label}
             </p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-sem-h3 font-bold text-foreground leading-tight">
+              <h3 className="text-3xl font-black text-foreground leading-tight tracking-tight">
                 {value}
               </h3>
               {trend && (

@@ -119,29 +119,29 @@ export function ChecklistExecution({
   return (
     <div className="space-y-6 pb-20">
       {/* Header com progresso sticky para mobile */}
-      <Card className="sticky top-0 z-20 shadow-lg border-primary/10 backdrop-blur-md bg-card/90">
-        <CardHeader className="py-4">
+      <Card className="sticky top-0 z-20 shadow-sem-lg border-primary/10 backdrop-blur-md bg-card/90 sm:rounded-3xl">
+        <CardHeader className="py-6">
           <div className="flex justify-between items-start gap-4">
             <div className="min-w-0">
-              <CardTitle className="text-lg md:text-xl truncate">{title}</CardTitle>
-              <p className="text-xs text-muted-foreground mt-1 font-bold">
+              <CardTitle className="text-xl md:text-2xl truncate font-black tracking-tight">{title}</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1 font-black uppercase tracking-widest">
                 {completedCount} / {totalItems} ITENS VERIFICADOS
               </p>
             </div>
             <div className="flex flex-col items-end">
               <Badge variant={progressPercentage === 100 ? "default" : "outline"} className={cn(
-                "font-black tracking-tighter text-sm px-3",
-                progressPercentage === 100 && "bg-status-complete"
+                "font-black tracking-widest text-xs px-4 py-1 rounded-full uppercase",
+                progressPercentage === 100 && "bg-status-complete shadow-sem-md"
               )}>
-                {Math.round(progressPercentage)}%
+                {Math.round(progressPercentage)}% CONCLUÍDO
               </Badge>
             </div>
           </div>
-          <div className="mt-4 relative h-2 bg-muted rounded-full overflow-hidden">
+          <div className="mt-6 relative h-2.5 bg-muted rounded-full overflow-hidden shadow-sem-inner">
             <motion.div 
               initial={{ width: 0 }}
               animate={{ width: `${progressPercentage}%` }}
-              className="absolute h-full bg-primary"
+              className="absolute h-full bg-primary shadow-[0_0_10px_rgba(var(--primary),0.3)]"
             />
           </div>
         </CardHeader>
@@ -149,7 +149,7 @@ export function ChecklistExecution({
 
 
       {/* Navegação por seções otimizada */}
-      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth snap-x">
+      <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar scroll-smooth snap-x">
         {completedGroups.map((group, index) => (
           <Button
             key={group.id}
@@ -157,12 +157,12 @@ export function ChecklistExecution({
             size="sm"
             onClick={() => setCurrentSection(index)}
             className={cn(
-              "whitespace-nowrap rounded-xl font-bold transition-all snap-start",
-              currentSection === index ? "shadow-md scale-105" : "opacity-70"
+              "whitespace-nowrap rounded-2xl font-black uppercase tracking-widest text-[10px] h-10 px-5 transition-all snap-start",
+              currentSection === index ? "shadow-sem-md scale-105" : "opacity-60 hover:opacity-100"
             )}
           >
             {group.name}
-            <Badge variant="secondary" className="ml-2 bg-white/20 text-[10px]">
+            <Badge variant="secondary" className="ml-2 bg-white/20 text-[10px] rounded-md px-1.5">
               {group.items.filter(item => item.status && item.status !== 'na').length}/
               {group.items.length}
             </Badge>
@@ -360,11 +360,11 @@ export function ChecklistExecution({
       </Card>
 
       {/* Ações Fixas no Rodapé (Mobile optimized) */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border/50 z-30 flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background/80 backdrop-blur-xl border-t border-border/50 z-30 flex gap-4 sm:px-12 md:px-24">
         <Button 
           variant="outline" 
           onClick={() => onSave(completedGroups, notes)} 
-          className="flex-1 rounded-xl h-12 font-black uppercase tracking-tighter"
+          className="flex-1 rounded-2xl h-14 font-black uppercase tracking-widest text-xs border-2 shadow-sem-sm hover:shadow-sem-md active:scale-95 transition-all"
         >
           <Save className="mr-2 h-4 w-4" />
           Rascunho
@@ -382,13 +382,13 @@ export function ChecklistExecution({
             }
             onSubmit(completedGroups, notes);
           }} 
-          className="flex-[2] rounded-xl h-12 font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 uppercase tracking-tighter flex items-center justify-center gap-2"
+          className="flex-[2] rounded-2xl h-14 font-black bg-primary hover:bg-primary/90 shadow-sem-lg hover:shadow-primary/30 uppercase tracking-widest text-xs flex items-center justify-center gap-2 active:scale-95 transition-all"
         >
           <div className="flex flex-col items-center leading-tight">
-            <span className="text-xs opacity-70">Finalizar</span>
+            <span className="text-[10px] opacity-70">Finalizar</span>
             <span className="text-sm">VISTORIA TÉCNICA</span>
           </div>
-          <Send className="h-4 w-4" />
+          <Send className="h-5 w-5" />
         </Button>
       </div>
     </div>

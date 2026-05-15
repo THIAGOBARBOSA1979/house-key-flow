@@ -88,7 +88,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
           <DialogTitle className="text-2xl font-black tracking-tight">{editingUser ? "Editar Usuário" : "Novo Usuário"}</DialogTitle>
           <DialogDescription className="text-sm font-medium">
@@ -97,49 +97,46 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6 p-8 max-h-[70vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome completo <span className="text-destructive">*</span></Label>
+              <Label htmlFor="name">Nome completo <span className="text-destructive">*</span></Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 placeholder="Ex: João Silva"
-                className="h-11 rounded-xl"
                 required
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Email institucional <span className="text-destructive">*</span></Label>
+              <Label htmlFor="email">Email institucional <span className="text-destructive">*</span></Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 placeholder="email@exemplo.com"
-                className="h-11 rounded-xl"
                 required
               />
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Telefone / WhatsApp</Label>
+              <Label htmlFor="phone">Telefone / WhatsApp</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 placeholder="(11) 99999-9999"
-                className="h-11 rounded-xl"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="role" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nível de Acesso</Label>
+              <Label htmlFor="role">Nível de Acesso</Label>
               <Select value={formData.role} onValueChange={(value) => handleChange("role", value)}>
-                <SelectTrigger className="h-11 rounded-xl">
+                <SelectTrigger>
                   <SelectValue placeholder="Selecione o acesso" />
                 </SelectTrigger>
                 <SelectContent>
@@ -153,11 +150,11 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
           </div>
           
           {formData.role === "client" && (
-            <div className="grid grid-cols-2 gap-4 border-t border-dashed pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-dashed pt-6">
               <div className="space-y-2">
-                <Label htmlFor="propertyId" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Vincular Empreendimento</Label>
+                <Label htmlFor="propertyId">Vincular Empreendimento</Label>
                 <Select value={formData.propertyId} onValueChange={(value) => handleChange("propertyId", value)}>
-                  <SelectTrigger className="h-11 rounded-xl">
+                  <SelectTrigger>
                     <SelectValue placeholder="Selecione..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -169,36 +166,35 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="unit" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Unidade / Apartamento</Label>
+                <Label htmlFor="unit">Unidade / Apartamento</Label>
                 <Input
                   id="unit"
                   value={formData.unit}
                   onChange={(e) => handleChange("unit", e.target.value)}
                   placeholder="Ex: 102 Bloco B"
-                  className="h-11 rounded-xl"
                 />
               </div>
             </div>
           )}
           
           <div className="space-y-2">
-            <Label htmlFor="notes" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Observações Administrativas</Label>
+            <Label htmlFor="notes">Observações Administrativas</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => handleChange("notes", e.target.value)}
               placeholder="Notas internas sobre o usuário..."
-              className="min-h-[100px] rounded-xl resize-none"
+              className="min-h-[100px] resize-none"
               rows={3}
             />
           </div>
         </form>
         
         <DialogFooter className="p-8 border-t border-border/10 bg-muted/5">
-          <Button type="button" variant="outline" onClick={onClose} className="h-12 px-8 rounded-xl font-bold transition-all">
+          <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>
-          <Button type="submit" onClick={handleSubmit} className="h-12 px-10 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md active:scale-95 transition-all">
+          <Button type="submit" onClick={handleSubmit} className="px-10 font-black uppercase tracking-widest text-xs">
             {editingUser ? "Salvar Alterações" : "Criar Usuário"}
           </Button>
         </DialogFooter>

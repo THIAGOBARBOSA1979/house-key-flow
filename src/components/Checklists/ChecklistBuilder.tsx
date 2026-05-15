@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   Select, 
   SelectContent, 
@@ -408,54 +409,57 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
 
       {/* Modal fake de adição de item (poderia usar um Dialog do shadcn) */}
       {isAddItemOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
-            <CardHeader>
-              <CardTitle>Novo Item de Verificação</CardTitle>
-              <CardDescription>Adicione uma pergunta ou ponto de inspeção</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <Dialog open={isAddItemOpen} onOpenChange={(open) => !open && setIsAddItemOpen(false)}>
+          <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none shadow-2xl">
+            <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
+              <DialogTitle className="text-2xl font-black tracking-tight">Novo Item de Verificação</DialogTitle>
+              <DialogDescription className="text-sm font-medium">Adicione uma pergunta ou ponto de inspeção técnico.</DialogDescription>
+            </DialogHeader>
+            <div className="p-8 space-y-6">
               <div className="space-y-2">
                 <Label>Descrição do Item</Label>
                 <Textarea 
                   value={newItemDescription} 
                   onChange={(e) => setNewItemDescription(e.target.value)}
                   placeholder="O que deve ser verificado?"
+                  className="min-h-[100px] resize-none"
                   autoFocus
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label>Severidade</Label>
                   <Select value={newItemSeverity} onValueChange={(val: any) => setNewItemSeverity(val)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="shadow-sem-xl border-none">
                       {severities.map(s => (
                         <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex flex-col justify-end pb-2">
-                  <div className="flex items-center space-x-2">
+                <div className="flex flex-col justify-end">
+                  <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-xl hover:bg-muted/50 transition-all cursor-pointer">
                     <Checkbox 
                       id="req-new" 
                       checked={newItemRequired} 
                       onCheckedChange={(val) => setNewItemRequired(val === true)} 
                     />
-                    <Label htmlFor="req-new" className="text-sm font-bold">Obrigatório</Label>
+                    <Label htmlFor="req-new" className="text-sm font-bold cursor-pointer mb-0 normal-case tracking-normal">Obrigatório</Label>
                   </div>
                 </div>
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-end gap-2 border-t pt-4">
-              <Button variant="ghost" onClick={() => setIsAddItemOpen(false)}>Cancelar</Button>
-              <Button onClick={handleAddItem} disabled={!newItemDescription.trim()}>Adicionar</Button>
-            </CardFooter>
-          </Card>
-        </div>
+            </div>
+            <DialogFooter className="p-8 border-t border-border/10 bg-muted/5">
+              <Button variant="outline" onClick={() => setIsAddItemOpen(false)}>Cancelar</Button>
+              <Button onClick={handleAddItem} disabled={!newItemDescription.trim()} className="px-8 font-black uppercase tracking-widest text-xs">
+                Adicionar Item
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

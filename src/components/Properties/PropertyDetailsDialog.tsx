@@ -42,36 +42,36 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0 border-none shadow-2xl rounded-3xl overflow-hidden">
-        <div className="relative h-48 bg-muted">
+      <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0 border-none shadow-2xl overflow-hidden">
+        <div className="relative h-60 bg-muted shrink-0">
           {property.imageUrl ? (
             <img src={property.imageUrl} alt={property.name} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-              <Building size={64} className="text-primary/20" />
+              <Building size={80} className="text-primary/10" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-6 left-8">
-            <h2 className="text-3xl font-black text-white tracking-tight">{property.name}</h2>
-            <div className="flex items-center gap-2 text-white/80 text-sm mt-1">
-              <MapPin size={14} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          <div className="absolute bottom-8 left-10">
+            <h2 className="text-4xl font-black text-white tracking-tighter mb-2">{property.name}</h2>
+            <div className="flex items-center gap-3 text-white/90 text-sm font-bold bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 w-fit">
+              <MapPin size={16} className="text-primary-foreground" />
               <span>{property.location}</span>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8">
-          <Tabs defaultValue="overview" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1 rounded-2xl">
-              <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-background transition-all">
-                <Info size={16} className="mr-2" /> Visão Geral
+        <div className="flex-1 overflow-y-auto p-10">
+          <Tabs defaultValue="overview" className="space-y-10">
+            <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1.5 rounded-2xl max-w-xl mx-auto border border-border/5">
+              <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md font-bold transition-all py-2.5">
+                <Info size={18} className="mr-2" /> Visão Geral
               </TabsTrigger>
-              <TabsTrigger value="milestones" className="rounded-xl data-[state=active]:bg-background transition-all">
-                <ListChecks size={16} className="mr-2" /> Cronograma
+              <TabsTrigger value="milestones" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md font-bold transition-all py-2.5">
+                <ListChecks size={18} className="mr-2" /> Cronograma
               </TabsTrigger>
-              <TabsTrigger value="units" className="rounded-xl data-[state=active]:bg-background transition-all">
-                <LayoutGrid size={16} className="mr-2" /> Unidades
+              <TabsTrigger value="units" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md font-bold transition-all py-2.5">
+                <LayoutGrid size={18} className="mr-2" /> Unidades
               </TabsTrigger>
             </TabsList>
 
