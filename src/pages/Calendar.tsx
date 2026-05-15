@@ -131,22 +131,34 @@ const Calendar = () => {
         </TabsList>
         
         <TabsContent value="calendar" className="animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <CalendarView
-            appointments={filteredAppointments}
-            onViewDetails={setSelectedAppointment}
-          />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <CalendarView
+              appointments={filteredAppointments}
+              onViewDetails={setSelectedAppointment}
+            />
+          )}
         </TabsContent>
         
         <TabsContent value="list" className="animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <ListView
-            appointments={filteredAppointments}
-            onViewDetails={setSelectedAppointment}
-            filterOptions={{
-              filterType: filters.type,
-              filterProperty: filters.property,
-              filterStatus: filters.status,
-            }}
-          />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <ListView
+              appointments={filteredAppointments}
+              onViewDetails={setSelectedAppointment}
+              filterOptions={{
+                filterType: filters.type,
+                filterProperty: filters.property,
+                filterStatus: filters.status,
+              }}
+            />
+          )}
         </TabsContent>
       </Tabs>
 
