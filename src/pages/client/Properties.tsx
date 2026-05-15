@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,39 +9,48 @@ import { useClientStage } from "@/hooks/useClientStage";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
-// Mock data
-const property = {
-  id: "1",
-  name: "Edifício Aurora",
-  unit: "204",
-  address: "Rua das Flores, 1500, Centro",
-  city: "São Paulo",
-  state: "SP",
-  size: "72m²",
-  bedrooms: 2,
-  bathrooms: 2,
-  deliveryDate: "15/04/2025",
-  warrantyExpiration: "15/04/2030",
-  documents: [
-    { id: "1", title: "Manual do Proprietário", type: "manual" },
-    { id: "2", title: "Termo de Garantia", type: "warranty" },
-    { id: "3", title: "Planta Baixa", type: "blueprint" },
-    { id: "4", title: "Contrato de Compra", type: "contract" }
-  ]
-};
+import { propertyService, Property } from "@/services/PropertyService";
 
 const ClientProperties = () => {
   const { user } = useAuth();
   const clientId = user?.id || "client-1";
-  const { profile, isLoading } = useClientStage(clientId);
+  const { profile, isLoading: stageLoading } = useClientStage(clientId);
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  // Use property service to get real property data
+  const [propertyData, setPropertyData] = useState<Property | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // In a real app, we'd fetch property details by propertyId from profile
-  const propertyData = {
-    ...property,
-    name: profile?.propertyName || property.name,
-    unit: profile?.unitNumber || property.unit,
+  useEffect(() => {
+    if (profile?.propertyId) {
+      const p = propertyService.getById(profile.propertyId);
+      if (p) {
+        setPropertyData(p);
+      }
+    } else {
+      // Fallback to first property for demo if none associated
+      const all = propertyService.getAll();
+      if (all.length > 0) setPropertyData(all[0]);
+    }
+    setIsLoading(false);
+  }, [profile?.propertyId]);
+
+  const propertyDetails = {
+    address: propertyData?.location || "Rua das Flores, 1500, Centro",
+    city: "São Paulo",
+    state: "SP",
+    size: propertyData?.totalArea ? `${Math.round(propertyData.totalArea / 120)}m²` : "72m²",
+    bedrooms: 2,
+    bathrooms: 2,
+    deliveryDate: propertyData?.deliveryDate ? propertyData.deliveryDate.toLocaleDateString() : "15/04/2025",
+    warrantyExpiration: "15/04/2030",
+    documents: [
+      { id: "1", title: "Manual do Proprietário", type: "manual" },
+      { id: "2", title: "Termo de Garantia", type: "warranty" },
+      { id: "3", title: "Planta Baixa", type: "blueprint" },
+      { id: "4", title: "Contrato de Compra", type: "contract" }
+    ]
   };
 
   const handleViewDocument = (title: string) => {
@@ -85,30 +95,30 @@ const ClientProperties = () => {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold">{propertyData.name}</h2>
-              <p className="text-xl mt-1">Unidade {propertyData.unit}</p>
+              <h2 className="text-2xl font-bold">{propertyData?.name || "Seu Imóvel"}</h2>
+              <p className="text-xl mt-1">Unidade {profile?.unitNumber || "204"}</p>
               <div className="flex items-center gap-1 mt-2 text-muted-foreground">
                 <MapPin size={16} />
-                <span>{property.address}, {property.city}-{property.state}</span>
+                <span>{propertyDetails.address}</span>
               </div>
             </div>
             <div className="flex flex-col justify-center">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="bg-background rounded-lg p-3 shadow-sm">
                   <div className="text-muted-foreground text-sm">Área</div>
-                  <div className="text-xl font-medium mt-1">{property.size}</div>
+                  <div className="text-xl font-medium mt-1">{propertyDetails.size}</div>
                 </div>
                 <div className="bg-background rounded-lg p-3 shadow-sm">
                   <div className="text-muted-foreground text-sm">Quartos</div>
-                  <div className="text-xl font-medium mt-1">{property.bedrooms}</div>
+                  <div className="text-xl font-medium mt-1">{propertyDetails.bedrooms}</div>
                 </div>
                 <div className="bg-background rounded-lg p-3 shadow-sm">
                   <div className="text-muted-foreground text-sm">Banheiros</div>
-                  <div className="text-xl font-medium mt-1">{property.bathrooms}</div>
+                  <div className="text-xl font-medium mt-1">{propertyDetails.bathrooms}</div>
                 </div>
                 <div className="bg-background rounded-lg p-3 shadow-sm">
                   <div className="text-muted-foreground text-sm">Entrega</div>
-                  <div className="text-xl font-medium mt-1">{property.deliveryDate}</div>
+                  <div className="text-xl font-medium mt-1">{propertyDetails.deliveryDate}</div>
                 </div>
               </div>
             </div>
@@ -133,7 +143,7 @@ const ClientProperties = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {property.documents.map((doc) => (
+              {propertyDetails.documents.map((doc) => (
                 <Card key={doc.id} className="border">
                   <CardContent className="p-4 flex justify-between items-center">
                     <div className="flex items-center gap-3">
@@ -179,7 +189,7 @@ const ClientProperties = () => {
                     <div className="grid grid-cols-2 gap-4 mt-2">
                       <div>
                         <span className="text-sm text-muted-foreground">Área privativa:</span>
-                        <p className="font-medium">{property.size}</p>
+                        <p className="font-medium">{propertyDetails.size}</p>
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Pé direito:</span>
@@ -187,11 +197,11 @@ const ClientProperties = () => {
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Quartos:</span>
-                        <p className="font-medium">{property.bedrooms}</p>
+                        <p className="font-medium">{propertyDetails.bedrooms}</p>
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Banheiros:</span>
-                        <p className="font-medium">{property.bathrooms}</p>
+                        <p className="font-medium">{propertyDetails.bathrooms}</p>
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Vagas:</span>
@@ -247,11 +257,11 @@ const ClientProperties = () => {
                     <div className="mt-2 space-y-2">
                       <div>
                         <span className="text-sm text-muted-foreground">Nome:</span>
-                        <p className="font-medium">{property.name}</p>
+                        <p className="font-medium">{propertyData?.name}</p>
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Endereço:</span>
-                        <p className="font-medium">{property.address}, {property.city}-{property.state}</p>
+                        <p className="font-medium">{propertyDetails.address}</p>
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Número de torres:</span>
@@ -280,7 +290,7 @@ const ClientProperties = () => {
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Entrega:</span>
-                        <p className="font-medium">{property.deliveryDate}</p>
+                        <p className="font-medium">{propertyDetails.deliveryDate}</p>
                       </div>
                       <div>
                         <span className="text-sm text-muted-foreground">Vistoria:</span>
@@ -331,7 +341,7 @@ const ClientProperties = () => {
                       <tr>
                         <td className="py-3 px-4">Fundação e estrutura</td>
                         <td className="py-3 px-4">5 anos</td>
-                        <td className="py-3 px-4">{property.warrantyExpiration}</td>
+                        <td className="py-3 px-4">{propertyDetails.warrantyExpiration}</td>
                       </tr>
                       <tr>
                         <td className="py-3 px-4">Impermeabilização</td>

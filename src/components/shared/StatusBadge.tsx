@@ -15,7 +15,9 @@ export type StatusType =
   | "warning" 
   | "error" 
   | "info" 
-  | "neutral";
+  | "neutral"
+  | "reschedule_requested"
+  | "presence_confirmed";
 
 interface StatusBadgeProps {
   /** The current status to display */
@@ -79,6 +81,16 @@ const statusConfig: Record<StatusType, {
     badgeClass: "badge-neutral",
     defaultLabel: "Neutro",
     icon: Info,
+  },
+  reschedule_requested: {
+    badgeClass: "badge-pending",
+    defaultLabel: "Reagendamento Solicitado",
+    icon: Clock,
+  },
+  presence_confirmed: {
+    badgeClass: "badge-complete",
+    defaultLabel: "Presença Confirmada",
+    icon: CheckCircle2,
   },
 };
 
