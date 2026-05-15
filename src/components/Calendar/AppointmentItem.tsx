@@ -101,7 +101,7 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
   
   // Full version for list view
   return (
-    <div className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-5-sem transition-all duration-300 hover:bg-muted/30 group">
+    <div className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 transition-all duration-300 hover:bg-muted/30 group border-b border-border/10 last:border-0">
       <div className="space-y-3 flex-1 min-w-0">
         <div className="flex items-center gap-3 flex-wrap">
           {getTypeBadge(appointment.type)}
