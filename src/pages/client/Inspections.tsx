@@ -111,7 +111,7 @@ const ClientInspections = () => {
   const [activeInspection, setActiveInspection] = useState<string | null>(null);
   const { toast } = useToast();
   
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const clientId = user?.id || "client-1";
   const { canScheduleInspection, permissions } = useClientStage(clientId);
   
