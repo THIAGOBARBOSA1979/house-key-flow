@@ -150,30 +150,34 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
         {/* Release Actions */}
         <div className="space-y-3">
           <span className="text-sm font-medium">Ações de Liberação:</span>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Button
               variant="outline"
-              className="justify-start"
+              className="justify-start h-14 rounded-2xl border-2 hover:border-primary/30 hover:bg-primary/5 transition-all group"
               disabled={!canReleaseInspection}
               onClick={() => handleOpenRelease('inspection')}
             >
-              <ClipboardCheck className="h-4 w-4 mr-2" />
-              <span className="flex-1 text-left">Liberar Vistoria</span>
+              <div className="p-2 rounded-lg bg-muted group-hover:bg-primary/10 group-hover:text-primary transition-colors mr-3">
+                <ClipboardCheck className="h-5 w-5" />
+              </div>
+              <span className="flex-1 text-left font-bold text-sm">Liberar Vistoria</span>
               {!canReleaseInspection && (
-                <Badge variant="secondary" className="ml-2">Liberado</Badge>
+                <Badge variant="success" className="ml-2">Liberado</Badge>
               )}
             </Button>
             
             <Button
               variant="outline"
-              className="justify-start"
+              className="justify-start h-14 rounded-2xl border-2 hover:border-primary/30 hover:bg-primary/5 transition-all group"
               disabled={!canReleaseWarranty}
               onClick={() => handleOpenRelease('warranty')}
             >
-              <ShieldCheck className="h-4 w-4 mr-2" />
-              <span className="flex-1 text-left">Liberar Garantia</span>
+              <div className="p-2 rounded-lg bg-muted group-hover:bg-primary/10 group-hover:text-primary transition-colors mr-3">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <span className="flex-1 text-left font-bold text-sm">Liberar Garantia</span>
               {!canReleaseWarranty && (
-                <Badge variant="secondary" className="ml-2">Liberado</Badge>
+                <Badge variant="success" className="ml-2">Liberado</Badge>
               )}
             </Button>
           </div>
@@ -186,22 +190,27 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
             {profile.stageHistory.slice().reverse().map((change) => (
               <div 
                 key={change.id} 
-                className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg"
+                className="flex items-start gap-4 p-4 bg-muted/20 rounded-2xl border border-border/5 hover:bg-muted/30 transition-all group"
               >
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant={change.isAutomatic ? "secondary" : "outline"}>
-                      {change.isAutomatic ? 'Automático' : 'Manual'}
-                    </Badge>
-                    <span className="text-sm font-medium">
-                      {STAGE_CONFIG[change.toStage].label}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Badge variant={change.isAutomatic ? "info" : "outline"} size="sm">
+                        {change.isAutomatic ? 'Automático' : 'Manual'}
+                      </Badge>
+                      <span className="text-sm font-black text-foreground uppercase tracking-tight">
+                        {STAGE_CONFIG[change.toStage].label}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {format(change.changedAt, "dd/MM/yy HH:mm")}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {change.reason}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {format(change.changedAt, "dd/MM/yyyy 'às' HH:mm")} • Por: {change.changedBy}
+                  <p className="text-[10px] text-primary font-black uppercase tracking-widest mt-3 flex items-center gap-1.5">
+                    <User className="h-3 w-3" /> Executor: {change.changedBy}
                   </p>
                 </div>
               </div>
