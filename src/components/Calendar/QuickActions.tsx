@@ -94,7 +94,7 @@ export const QuickActions = ({
         />
         <StatsCard 
           label="SLA Médio" 
-          value="4.2d" 
+          value={sla} 
           icon={Clock} 
           variant="brand" 
           description="Tempo médio de resposta"
