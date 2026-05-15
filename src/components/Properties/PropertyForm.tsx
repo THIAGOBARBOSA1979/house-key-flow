@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -6,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn, safeFormat } from "@/lib/utils";
 import { propertySchema, type Property } from "@/services/PropertyService";
 
 interface PropertyFormProps {
@@ -111,16 +116,41 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-3">
             <FormField
               control={form.control}
-              name="manager"
+              name="deliveryDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Responsável / Gerente</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome do gerente" {...field} />
-                  </FormControl>
+                <FormItem className="flex flex-col">
+                  <FormLabel>Entrega</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal h-10",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            safeFormat(field.value, "MMM yyyy")
+                          ) : (
+                            <span>Data</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -128,15 +158,30 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
             
             <FormField
               control={form.control}
+              name="manager"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Responsável</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Gerente" {...field} className="h-10" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="totalArea"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Área Total (m²)</FormLabel>
+                  <FormLabel>Área (m²)</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
-                      placeholder="Área construída"
+                      placeholder="m²"
                       {...field} 
+                      className="h-10"
                       onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                     />
                   </FormControl>

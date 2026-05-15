@@ -33,6 +33,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PropertyForm } from "@/components/Properties/PropertyForm";
+import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,6 +60,7 @@ const Properties = () => {
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
   const [metrics, setMetrics] = useState(propertyService.getMetrics());
 
@@ -83,6 +85,10 @@ const Properties = () => {
 
   const refreshList = () => {
     setProperties(propertyService.getAll());
+    if (selectedProperty) {
+      const updated = propertyService.getById(selectedProperty.id!);
+      if (updated) setSelectedProperty(updated);
+    }
   };
 
   const handleCreate = (data: Property) => {
@@ -205,6 +211,7 @@ const Properties = () => {
           <PropertyCard 
             key={property.id} 
             property={property} 
+            onClick={() => setSelectedProperty(property)}
             onEdit={() => openEdit(property)}
             onDelete={() => setPropertyToDelete(property)}
           />
@@ -225,7 +232,11 @@ const Properties = () => {
                 {filteredProperties.map((property) => {
                   const percentage = Math.round((property.completedUnits / property.units) * 100);
                   return (
-                    <TableRow key={property.id} className="group hover:bg-muted/20 transition-all border-b border-border/50">
+                    <TableRow 
+                      key={property.id} 
+                      className="group hover:bg-muted/20 transition-all border-b border-border/50 cursor-pointer"
+                      onClick={() => setSelectedProperty(property)}
+                    >
                       <TableCell className="py-4 px-6">
                         <div className="flex flex-col">
                           <span className="text-label group-hover:text-primary transition-colors">{property.name}</span>
@@ -255,7 +266,7 @@ const Properties = () => {
                       </TableCell>
                       <TableCell className="text-right py-4 px-6">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5 active:scale-95 transition-all">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
@@ -334,6 +345,13 @@ const Properties = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <PropertyDetailsDialog 
+        property={selectedProperty} 
+        open={!!selectedProperty} 
+        onOpenChange={(open) => !open && setSelectedProperty(null)}
+        onUpdate={refreshList}
+      />
     </div>
   );
 };
