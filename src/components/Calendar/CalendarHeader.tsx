@@ -18,19 +18,43 @@ export function CalendarHeader({ onChangeView }: CalendarHeaderProps) {
       <ScheduleInspectionDialog />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">
+          <Button variant="outline" className="hidden lg:flex rounded-xl font-bold shadow-sem-sm">
             <Filter className="mr-2 h-4 w-4" />
-            Visualizar por
+            Exportar dados
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => onChangeView("calendar")}>
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            Calendário
+        <DropdownMenuContent align="end" className="rounded-xl p-1 shadow-sem-lg border-border/10">
+          <DropdownMenuItem 
+            className="rounded-lg py-2 cursor-pointer font-medium"
+            onClick={() => {
+              import("@/services/InspectionService").then(({ inspectionService }) => {
+                const data = inspectionService.exportData('csv');
+                const blob = new Blob([data], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `relatorio-agendamentos.csv`;
+                a.click();
+              });
+            }}
+          >
+            Exportar como CSV
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onChangeView("list")}>
-            <FileCheck className="mr-2 h-4 w-4" />
-            Lista
+          <DropdownMenuItem 
+            className="rounded-lg py-2 cursor-pointer font-medium"
+            onClick={() => {
+              import("@/services/InspectionService").then(({ inspectionService }) => {
+                const data = inspectionService.exportData('json');
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `relatorio-agendamentos.json`;
+                a.click();
+              });
+            }}
+          >
+            Exportar como JSON
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
