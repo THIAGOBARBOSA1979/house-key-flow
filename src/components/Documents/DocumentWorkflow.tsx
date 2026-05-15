@@ -57,9 +57,9 @@ export function DocumentWorkflow({ document, onUpdate }: DocumentWorkflowProps) 
   };
 
   return (
-    <Card className="border-dashed">
+    <Card className="card-standard border-dashed bg-background/50 backdrop-blur-sm overflow-hidden">
       <CardHeader className="py-3">
-        <CardTitle className="text-sm font-bold flex items-center justify-between">
+        <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center justify-between">
           Fluxo de Aprovação
           {getStatusBadge()}
         </CardTitle>
@@ -108,25 +108,25 @@ export function DocumentWorkflow({ document, onUpdate }: DocumentWorkflowProps) 
           <div className="space-y-3">
             <Textarea
               placeholder="Adicione um comentário de aprovação ou motivo da rejeição..."
-              className="text-xs resize-none"
+              className="text-xs resize-none min-h-[100px] rounded-lg border-muted-foreground/20 focus:border-primary transition-all"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button 
                 size="sm" 
-                className="flex-1 bg-green-600 hover:bg-green-700 font-bold" 
+                className="flex-1 bg-green-600 hover:bg-green-700 font-bold h-10 shadow-sem-sm" 
                 onClick={() => handleApproval("approved")}
               >
-                <CheckCircle2 className="w-3 h-3 mr-1" /> Aprovar
+                <CheckCircle2 className="w-4 h-4 mr-2" /> Aprovar
               </Button>
               <Button 
                 size="sm" 
                 variant="destructive" 
-                className="flex-1 font-bold"
+                className="flex-1 font-bold h-10 shadow-sem-sm"
                 onClick={() => handleApproval("rejected")}
               >
-                <XCircle className="w-3 h-3 mr-1" /> Rejeitar
+                <XCircle className="w-4 h-4 mr-2" /> Rejeitar
               </Button>
             </div>
           </div>
