@@ -53,18 +53,18 @@ export function ScheduleInspectionDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden border-none shadow-2xl">
-        <DialogHeader className="px-8 pt-8 pb-6 bg-muted/5 border-b">
-          <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-2">
-            <Plus className="w-6 h-6 text-primary" />
+      <DialogContent className="sm:max-w-[750px] p-0 overflow-hidden border-none shadow-sem-xl rounded-3xl bg-background/95 backdrop-blur-2xl">
+        <DialogHeader className="px-10 pt-10 pb-8 bg-primary/5 border-b border-border/10">
+          <DialogTitle className="text-display tracking-tighter flex items-center gap-4 text-3xl md:text-4xl">
+            <Plus className="w-8 h-8 text-primary" strokeWidth={3} />
             Agendar Nova Vistoria
           </DialogTitle>
-          <DialogDescription className="text-sm font-medium">
-            Preencha os dados abaixo para organizar o cronograma de entrega ou verificação técnica.
+          <DialogDescription className="text-sem-body-base font-medium text-muted-foreground/60 mt-2 max-w-lg">
+            Organize o cronograma de entrega técnica com precisão e controle total.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="p-8 max-h-[70vh] overflow-y-auto">
+        <div className="p-10 max-h-[75vh] overflow-y-auto custom-scrollbar">
           <ScheduleInspectionForm 
             onSuccess={handleSuccess} 
             clientId={clientId}
