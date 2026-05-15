@@ -253,8 +253,10 @@ export function ChecklistExecution({
                 </div>
               </CardContent>
             </Card>
-          );
+              );
+            })}
           </motion.div>
+
         </AnimatePresence>
       </div>
 
