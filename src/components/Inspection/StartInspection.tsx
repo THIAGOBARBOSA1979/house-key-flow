@@ -6,11 +6,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Check, X, Upload, Camera, MessageSquare, CheckCircle, AlertCircle } from "lucide-react";
-
 import { checklistService, ChecklistTemplate, ChecklistGroup } from "@/services/ChecklistService";
 import { inspectionService } from "@/services/InspectionService";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+type InspectionItem = {
+  id: string;
+  name: string;
+  conformity: "pending" | "conform" | "nonconform";
+  notes?: string;
+  attachments?: string[];
+};
+
+type InspectionGroup = ChecklistGroup;
 
 // Example data for an inspection checklist
 const mockInspectionData: InspectionGroup[] = [
