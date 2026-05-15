@@ -59,20 +59,20 @@ const Warranty = () => {
       <WarrantyHeader onExportData={handleExportData} />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full max-w-lg grid-cols-4">
-          <TabsTrigger value="kanban" className="gap-2">
+        <TabsList className="grid w-full max-w-lg grid-cols-4 bg-muted/50 p-1 rounded-xl">
+          <TabsTrigger value="kanban" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <Kanban className="h-4 w-4" />
             <span className="hidden sm:inline">Kanban</span>
           </TabsTrigger>
-          <TabsTrigger value="dashboard" className="gap-2">
+          <TabsTrigger value="dashboard" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <BarChart3 className="h-4 w-4" />
             <span className="hidden sm:inline">Métricas</span>
           </TabsTrigger>
-          <TabsTrigger value="sla" className="gap-2">
+          <TabsTrigger value="sla" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <Settings className="h-4 w-4" />
             <span className="hidden sm:inline">SLA</span>
           </TabsTrigger>
-          <TabsTrigger value="logs" className="gap-2">
+          <TabsTrigger value="logs" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <History className="h-4 w-4" />
             <span className="hidden sm:inline">Logs</span>
           </TabsTrigger>
@@ -108,12 +108,12 @@ const Warranty = () => {
           </DialogHeader>
           {selectedRequest && (
             <Tabs defaultValue="timeline" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="timeline">Timeline</TabsTrigger>
-                <TabsTrigger value="problems">Problemas</TabsTrigger>
-                <TabsTrigger value="costs">Custos</TabsTrigger>
-                <TabsTrigger value="chat">Chat</TabsTrigger>
-                <TabsTrigger value="logs">Logs</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-5 p-1 bg-muted/50 rounded-xl">
+                <TabsTrigger value="timeline" className="rounded-lg data-[state=active]:shadow-sm">Timeline</TabsTrigger>
+                <TabsTrigger value="problems" className="rounded-lg data-[state=active]:shadow-sm">Problemas</TabsTrigger>
+                <TabsTrigger value="costs" className="rounded-lg data-[state=active]:shadow-sm">Custos</TabsTrigger>
+                <TabsTrigger value="chat" className="rounded-lg data-[state=active]:shadow-sm">Chat</TabsTrigger>
+                <TabsTrigger value="logs" className="rounded-lg data-[state=active]:shadow-sm">Logs</TabsTrigger>
               </TabsList>
               
               <TabsContent value="timeline" className="space-y-4">

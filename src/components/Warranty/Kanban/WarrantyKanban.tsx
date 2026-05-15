@@ -398,8 +398,8 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       
       {/* Main View Area */}
       {viewMode === "kanban" ? (
-        <ScrollArea className="w-full">
-          <div className="flex gap-4 pb-4 min-h-[500px]">
+        <ScrollArea className="w-full whitespace-nowrap rounded-xl">
+          <div className="flex gap-6 pb-6 min-h-[600px] p-1">
             {KANBAN_COLUMNS.map(stage => (
               <KanbanColumn
                 key={stage}
@@ -417,7 +417,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
               />
             ))}
           </div>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="horizontal" className="bg-muted/30" />
         </ScrollArea>
       ) : (
         <div className="space-y-4">
