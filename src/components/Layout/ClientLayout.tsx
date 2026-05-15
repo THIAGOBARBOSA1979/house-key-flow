@@ -1,7 +1,7 @@
 import { Outlet, Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays } from "lucide-react";
+import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -248,6 +248,7 @@ const ClientLayout = () => {
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           <ClientNavLink to="/client" icon={Home} onClick={handleLinkClick}>Início</ClientNavLink>
           <ClientNavLink to="/client/properties" icon={Building} onClick={handleLinkClick}>Meu Imóvel</ClientNavLink>
+          <ClientNavLink to="/client/financial" icon={DollarSign} onClick={handleLinkClick}>Financeiro</ClientNavLink>
           <ClientNavLink to="/client/documents" icon={FileText} onClick={handleLinkClick}>Documentos</ClientNavLink>
           <ClientNavLink to="/client/inspections" icon={ClipboardCheck} onClick={handleLinkClick}>Vistorias</ClientNavLink>
           <ClientNavLink to="/client/warranty" icon={ShieldCheck} onClick={handleLinkClick}>Garantias</ClientNavLink>
