@@ -147,25 +147,40 @@ export const StartInspection = ({
 
     setIsSubmitting(true);
     
+    // Count non-conforming items
+    const nonConformCount = groups.reduce((acc, group) => 
+      acc + group.items.filter(item => item.conformity === "nonconform").length, 0);
+    
+    // Simulate submission to backend
     setTimeout(() => {
+      const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}.`;
+      inspectionService.updateStatus(inspectionId, "complete", completionDetails);
+
       toast({
-        title: "Vistoria finalizada!",
-        description: `Enviado com sucesso. Assinado por: ${signature}`,
+        title: "Vistoria finalizada com sucesso!",
+        description: `${nonConformCount} itens necessitam de atenção. Assinado por: ${signature}`,
       });
       
-      inspectionService.updateStatus(inspectionId, "complete");
       localStorage.removeItem(`inspection_progress_${inspectionId}`);
+      
+      if (nonConformCount > 0) {
+        toast({
+          title: "Solicitações de serviço geradas",
+          description: `Foram geradas ${nonConformCount} solicitações de serviço automaticamente baseadas nos itens não conformes.`,
+        });
+      }
       
       if (onComplete) {
         onComplete({
           inspectionId,
+          completedAt: new Date(),
           groups,
-          nonConformCount: nonConformItems.length,
+          nonConformCount,
           signature
         });
       }
       setIsSubmitting(false);
-    }, 1000);
+    }, 1500);
   };
   
   if (loading) {
