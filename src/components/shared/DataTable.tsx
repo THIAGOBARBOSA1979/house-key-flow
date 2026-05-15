@@ -67,7 +67,7 @@ export function DataTable<T>({
                 <TableHead 
                   key={idx} 
                   className={cn(
-                    "font-black text-sem-tiny uppercase tracking-widest text-muted-foreground py-5 px-6 h-auto",
+                    "font-black text-sem-tiny uppercase tracking-widest text-muted-foreground py-5-sem px-6-sem h-auto",
                     column.className
                   )}
                 >
@@ -90,7 +90,7 @@ export function DataTable<T>({
                   <TableCell 
                     key={colIdx} 
                     className={cn(
-                      "py-4.5 px-6 text-sem-body-sm font-medium text-foreground/90 group-hover:text-primary transition-colors",
+                      "py-4.5-sem px-6-sem text-sem-body-sm font-medium text-foreground/90 group-hover:text-primary transition-colors",
                       column.className
                     )}
                   >
@@ -110,12 +110,12 @@ export function DataTable<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-6 space-y-5 interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20"
+            className="card-standard p-6-sem space-y-5-sem interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20"
             onClick={() => onRowClick?.(item)}
           >
             {columns.map((column, colIdx) => (
               <div key={colIdx} className={cn(
-                "flex justify-between items-center gap-4 pb-3 border-b border-border/10 last:border-0 last:pb-0",
+                "flex justify-between items-center gap-4-sem pb-3-sem border-b border-border/10 last:border-0 last:pb-0",
                 column.hideOnMobile && "hidden"
               )}>
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 shrink-0">
