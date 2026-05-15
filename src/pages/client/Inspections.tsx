@@ -179,7 +179,7 @@ const ClientInspections = () => {
   };
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-layout-gap pb-20 md:pb-6">
       <DocumentPreviewDialog 
         isOpen={isPreviewOpen} 
         onClose={() => setIsPreviewOpen(false)}
@@ -249,7 +249,7 @@ const ClientInspections = () => {
         redirectLabel="Voltar ao painel"
         variant="overlay"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
           {/* Inspections list */}
           <div className="lg:col-span-1 space-y-4">
             <Card>
@@ -257,7 +257,7 @@ const ClientInspections = () => {
                 <CardTitle>Vistorias Agendadas</CardTitle>
                 <CardDescription>Selecione uma vistoria para ver detalhes</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-2-sem">
                 {inspections.length > 0 ? (
                   inspections.map((item) => (
                     <div 
@@ -322,7 +322,7 @@ const ClientInspections = () => {
           {/* Inspection details */}
           <div className="lg:col-span-2">
             {inspection ? (
-              <Tabs defaultValue="details" className="animate-in fade-in slide-in-from-right-4 duration-500">
+              <Tabs defaultValue="details" className="animate-in fade-in slide-in-from-right-4 duration-slow">
                 <TabsList className="bg-muted/50 p-1 rounded-2xl">
                   <TabsTrigger value="details" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Detalhes</TabsTrigger>
                   <TabsTrigger value="checklist" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Checklist</TabsTrigger>

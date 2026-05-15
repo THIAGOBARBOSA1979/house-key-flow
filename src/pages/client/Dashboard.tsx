@@ -114,7 +114,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
+    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header with Stage Indicator */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -138,7 +138,7 @@ const Dashboard = () => {
       </div>
 
       {/* Property Info Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
         <Card className="md:col-span-2 bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-xl overflow-hidden relative rounded-3xl group">
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700 group-hover:scale-110">
             <Home className="h-32 w-32" />

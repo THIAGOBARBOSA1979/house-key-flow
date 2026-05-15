@@ -79,7 +79,7 @@ const ClientProperties = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
+    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -117,7 +117,7 @@ const ClientProperties = () => {
                 <span className="text-sm font-medium">{propertyDetails.address}</span>
               </div>
               
-              <div className="grid grid-cols-2 gap-3 mt-6">
+              <div className="grid grid-cols-2 gap-4-sem mt-6-sem">
                 <div className="p-3 bg-background rounded-lg border shadow-sm">
                   <div className="text-muted-foreground text-xs uppercase font-bold tracking-wider mb-1">Status Entrega</div>
                   <div className="text-sm font-black text-status-complete flex items-center gap-1">
@@ -133,7 +133,7 @@ const ClientProperties = () => {
 
             <div className="w-full md:w-1/3 bg-muted/20 p-6 flex flex-col justify-center">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Especificações Rápidas</h3>
-              <div className="space-y-4">
+              <div className="space-y-4-sem">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Ruler size={16} className="text-primary" />
@@ -162,7 +162,7 @@ const ClientProperties = () => {
       </Card>
 
       {/* Tabs for property information */}
-      <Tabs defaultValue="documents" className="mt-6">
+      <Tabs defaultValue="documents" className="mt-6-sem">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1 bg-muted/50 rounded-2xl">
           <TabsTrigger value="documents" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Documentos</TabsTrigger>
           <TabsTrigger value="features" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Características</TabsTrigger>
@@ -170,7 +170,7 @@ const ClientProperties = () => {
           <TabsTrigger value="warranty" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Garantias</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="documents" className="space-y-4 pt-4">
+        <TabsContent value="documents" className="space-y-4-sem pt-4-sem">
           <Card>
             <CardHeader>
               <CardTitle>Documentos do Imóvel</CardTitle>
