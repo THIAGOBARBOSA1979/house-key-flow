@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
-import { CalendarIcon, Check, Info, AlertTriangle } from "lucide-react";
+import { CalendarIcon, Check, Info, AlertTriangle, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
