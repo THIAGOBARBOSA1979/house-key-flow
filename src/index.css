@@ -275,7 +275,7 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-xl border shadow-sem-sm hover:shadow-sem-md transition-all duration-300;
+    @apply bg-card text-card-foreground rounded-lg border shadow-sem-sm hover:shadow-sem-md transition-all duration-300;
   }
 
   .card-hover-effect {
