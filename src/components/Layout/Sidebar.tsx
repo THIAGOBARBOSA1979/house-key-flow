@@ -91,21 +91,24 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
       </nav>
       
       {!collapsed && (
-        <div className="p-4-sem border-t border-sidebar-border animate-fade-in bg-sidebar-accent/5">
+        <div className="p-4-sem border-t border-sidebar-border animate-fade-in bg-sidebar-accent/5 mt-auto">
           <div className="flex items-center justify-between gap-3-sem">
             <div className="flex items-center gap-3-sem min-w-0">
-              <div className="w-10 h-10 rounded-xl bg-sidebar-accent flex items-center justify-center text-sidebar-accent-foreground font-bold shadow-sem-sm border border-sidebar-border shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary/20 to-sidebar-accent flex items-center justify-center text-sidebar-primary font-black shadow-sem-sm border border-sidebar-border shrink-0">
                 A
               </div>
               <div className="min-w-0">
-                <p className="text-body-sm font-bold text-sidebar-foreground truncate">Administrador</p>
-                <p className="text-sem-tiny text-sidebar-foreground/60 truncate font-medium">Sessão ativa</p>
+                <p className="text-sem-label font-bold text-sidebar-foreground truncate">Administrador</p>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-status-complete animate-pulse" />
+                  <p className="text-sem-tiny text-sidebar-foreground/50 truncate font-black uppercase tracking-tighter">Sessão ativa</p>
+                </div>
               </div>
             </div>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-sidebar-foreground/60 hover:text-status-critical hover:bg-status-critical/10 rounded-lg h-9 w-9"
+              className="text-sidebar-foreground/40 hover:text-status-critical hover:bg-status-critical/10 rounded-xl h-10 w-10 transition-all active:scale-95"
               onClick={() => window.location.href = '/login'}
             >
               <LogOut size={18} />
