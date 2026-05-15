@@ -2,6 +2,26 @@
 import { z } from "zod";
 import { auditLogService } from "./AuditLogService";
 
+export const propertyMilestoneSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  targetDate: z.date(),
+  completed: z.boolean().default(false),
+  completedAt: z.date().optional(),
+});
+
+export type PropertyMilestone = z.infer<typeof propertyMilestoneSchema>;
+
+export const propertyUnitSchema = z.object({
+  id: z.string(),
+  number: z.string(),
+  floor: z.string().optional(),
+  status: z.enum(["available", "sold", "delivered"]).default("available"),
+  type: z.string().optional(), // e.g. "Standard", "Penthouse"
+});
+
+export type PropertyUnit = z.infer<typeof propertyUnitSchema>;
+
 export const propertySchema = z.object({
   id: z.string().optional(),
   name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
@@ -14,6 +34,8 @@ export const propertySchema = z.object({
   totalArea: z.number().optional(),
   deliveryDate: z.date().optional(),
   manager: z.string().optional(),
+  milestones: z.array(propertyMilestoneSchema).optional(),
+  unitsList: z.array(propertyUnitSchema).optional(),
 });
 
 export type Property = z.infer<typeof propertySchema>;
