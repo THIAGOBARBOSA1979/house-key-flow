@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Design System: Button Component > should match the design snapshot 1`] = `
+<DocumentFragment>
+  <button
+    class="inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-lg font-bold ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:interactive-disabled interactive-active [&_svg]:pointer-events-none [&_svg]:size-4.5 [&_svg]:shrink-0 active:scale-95 bg-primary text-primary-foreground shadow-sem-md hover:bg-primary/90 hover:shadow-sem-lg interactive-hover h-11 px-5 py-2"
+  >
+    Snapshot Button
+  </button>
+</DocumentFragment>
+`;

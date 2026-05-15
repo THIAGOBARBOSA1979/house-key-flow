@@ -8,14 +8,18 @@ Este documento define os padrões visuais e componentes do sistema de gestão im
 
 ### Hierarquia de Títulos
 
-| Elemento | Classes | Uso |
-|----------|---------|-----|
-| H1 (Página) | `text-3xl font-bold tracking-tight` | Título principal de cada página |
-| H2 (Seção) | `text-xl font-semibold` | Cabeçalho de seções |
-| H3 (Card) | `text-lg font-medium` | Título de cards |
-| H4 (Subseção) | `text-base font-medium` | Subtítulos |
-| Body | `text-sm` | Texto padrão (14px) |
-| Caption | `text-xs text-muted-foreground` | Textos auxiliares |
+| Elemento | Token | Classes | Uso |
+|----------|-------|---------|-----|
+| Display | `text-sem-display` | `text-6xl font-extrabold tracking-tight` | Títulos heróis e destaque |
+| H1 | `text-sem-h1` | `text-[2.25rem] font-bold tracking-tight` | Título principal da página |
+| H2 | `text-sem-h2` | `text-[1.875rem] font-bold` | Títulos de seções |
+| H3 | `text-sem-h3` | `text-[1.5rem] font-semibold` | Títulos de cards |
+| H4 | `text-sem-h4` | `text-[1.25rem] font-semibold` | Subtítulos |
+| Body LG | `text-sem-body-lg` | `text-[1.125rem]` | Texto de destaque |
+| Body Base | `text-sem-body-base` | `text-[1rem]` | Texto padrão (16px) |
+| Body SM | `text-sem-body-sm` | `text-[0.875rem]` | Texto secundário (14px) |
+| Body XS | `text-sem-body-xs` | `text-[0.75rem]` | Textos auxiliares (12px) |
+| Caption | `text-sem-caption` | `text-[0.75rem] font-medium uppercase` | Rótulos e metadados |
 
 ### Espaçamentos de Texto
 - Entre título e descrição: `mt-1`
@@ -54,14 +58,25 @@ Este documento define os padrões visuais e componentes do sistema de gestão im
 
 ## 3. ESPAÇAMENTOS E GRID
 
-### Escala de Espaçamento
-| Token | Valor | Classes |
-|-------|-------|---------|
-| xs | 4px | `gap-1`, `p-1` |
-| sm | 8px | `gap-2`, `p-2` |
-| md | 16px | `gap-4`, `p-4` |
-| lg | 24px | `gap-6`, `p-6` |
-| xl | 32px | `gap-8`, `p-8` |
+### Escala de Espaçamento (Tokens Semânticos)
+| Token | Valor (rem) | Valor (px) | Uso |
+|-------|-------------|------------|-----|
+| `0.5-sem` | 0.125rem | 2px | Micro ajustes |
+| `1-sem` | 0.25rem | 4px | Gaps internos |
+| `2-sem` | 0.5rem | 8px | Padding botão |
+| `3-sem` | 0.75rem | 12px | Gaps médios |
+| `4-sem` | 1rem | 16px | Padding card sm |
+| `6-sem` | 1.5rem | 24px | Padding card default |
+| `8-sem` | 2rem | 32px | Gaps de seção |
+| `12-sem` | 3rem | 48px | Espaçamento vertical grande |
+
+### Arredondamento (Radius)
+| Token | Valor (rem) | Valor (px) | Uso |
+|-------|-------------|------------|-----|
+| `radius-sm` | 0.5rem | 8px | Checkbox, Inputs |
+| `radius-md` | 0.75rem | 12px | Buttons, Small Cards |
+| `radius-lg` | 1rem | 16px | Cards, Dialogs |
+| `radius-full` | 9999px | - | Badges, Avatars |
 
 ### Grids Padrão
 - **Dashboard Cards**: `grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
@@ -88,10 +103,10 @@ Este documento define os padrões visuais e componentes do sistema de gestão im
 | Destrutivo | `Button variant="destructive"` | Excluir, Remover |
 
 **Tamanhos:**
-- Default: `h-10` (40px)
-- Small: `size="sm"` (36px) - tabelas, inline
-- Large: `size="lg"` (44px) - CTAs
-- Icon: `size="icon"` (40x40)
+- Default: `h-11` (44px) - Padrão do sistema
+- Small: `size="sm"` (36px) - Tabelas, ações inline
+- Large: `size="lg"` (56px) - CTAs de marketing ou heróis
+- Icon: `size="icon"` (44x44) - Botões de ação isolados
 
 ### Cards
 
