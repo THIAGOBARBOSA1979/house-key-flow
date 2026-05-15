@@ -19,15 +19,15 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return <Badge variant="outline" className="bg-status-pending/10 text-status-pending border-status-pending/20 rounded-lg text-sem-tiny font-bold uppercase"><Clock className="h-3 w-3 mr-1" />Pendente</Badge>;
+        return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30 rounded-lg text-sem-tiny font-bold uppercase"><Clock className="h-3 w-3 mr-1" />Pendente</Badge>;
       case "confirmed":
-        return <Badge className="bg-status-complete/10 text-status-complete border-status-complete/20 rounded-lg text-sem-tiny font-bold uppercase"><Check className="h-3 w-3 mr-1" />Confirmado</Badge>;
+        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30 rounded-lg text-sem-tiny font-bold uppercase"><Check className="h-3 w-3 mr-1" />Confirmado</Badge>;
       case "cancelled":
-        return <Badge variant="destructive" className="bg-status-critical/10 text-status-critical border-status-critical/20 rounded-lg text-sem-tiny font-bold uppercase"><X className="h-3 w-3 mr-1" />Cancelado</Badge>;
+        return <Badge variant="destructive" className="bg-red-500/10 text-red-600 border-red-500/30 rounded-lg text-sem-tiny font-bold uppercase"><X className="h-3 w-3 mr-1" />Cancelado</Badge>;
       case "completed":
-        return <Badge className="bg-status-progress/10 text-status-progress border-status-progress/20 rounded-lg text-sem-tiny font-bold uppercase"><FileCheck className="h-3 w-3 mr-1" />Concluído</Badge>;
+        return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30 rounded-lg text-sem-tiny font-bold uppercase"><FileCheck className="h-3 w-3 mr-1" />Concluído</Badge>;
       case "rescheduled":
-        return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 rounded-lg text-sem-tiny font-bold uppercase"><CalendarClock className="h-3 w-3 mr-1" />Reagendado</Badge>;
+        return <Badge variant="outline" className="bg-purple-500/10 text-purple-600 border-purple-500/30 rounded-lg text-sem-tiny font-bold uppercase"><CalendarClock className="h-3 w-3 mr-1" />Reagendado</Badge>;
       default:
         return <Badge variant="outline">—</Badge>;
     }
