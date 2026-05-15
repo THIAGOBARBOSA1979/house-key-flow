@@ -102,7 +102,9 @@ const ChecklistBadge = ({ status }: { status: boolean }) => {
 };
 
 const ClientInspections = () => {
-  const [inspections, setInspections] = useState(initialInspections);
+  const { user } = useAuth();
+  const allInspections = useMemo(() => inspectionService.getAll().filter(i => i.client === (user?.name || "João Silva")), [user?.name]);
+  const [inspections, setInspections] = useState<any[]>(allInspections);
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
