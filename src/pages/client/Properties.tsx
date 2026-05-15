@@ -32,9 +32,16 @@ const property = {
 const ClientProperties = () => {
   const { user } = useAuth();
   const clientId = user?.id || "client-1";
-  const { profile } = useClientStage(clientId);
+  const { profile, isLoading } = useClientStage(clientId);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // In a real app, we'd fetch property details by propertyId from profile
+  const propertyData = {
+    ...property,
+    name: profile?.propertyName || property.name,
+    unit: profile?.unitNumber || property.unit,
+  };
 
   const handleViewDocument = (title: string) => {
     toast({ title: "Abrindo documento", description: `Abrindo "${title}" para visualização.` });
@@ -51,6 +58,14 @@ const ClientProperties = () => {
   const handleRequestWarranty = () => {
     navigate("/client/warranty");
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -70,8 +85,8 @@ const ClientProperties = () => {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold">{profile?.propertyName || property.name}</h2>
-              <p className="text-xl mt-1">Unidade {profile?.unitNumber || property.unit}</p>
+              <h2 className="text-2xl font-bold">{propertyData.name}</h2>
+              <p className="text-xl mt-1">Unidade {propertyData.unit}</p>
               <div className="flex items-center gap-1 mt-2 text-muted-foreground">
                 <MapPin size={16} />
                 <span>{property.address}, {property.city}-{property.state}</span>

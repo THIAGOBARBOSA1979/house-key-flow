@@ -170,8 +170,8 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-label">Documentos</p>
-                <p className="text-h1">4</p>
-                <p className="text-caption">3 disponíveis</p>
+                <p className="text-h1">{allDocs.length}</p>
+                <p className="text-caption">{recentDocuments.length} recentes</p>
               </div>
               <FileText className="h-8 w-8 text-primary" />
             </div>
@@ -182,9 +182,9 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-label">Vistorias</p>
-                <p className="text-h1">2</p>
+                <p className="text-h1">{allInspections.length}</p>
                 <p className="text-caption">
-                  {canScheduleInspection ? '1 agendada' : 'Aguardando liberação'}
+                  {upcomingInspections.length > 0 ? `${upcomingInspections.length} agendada(s)` : 'Nenhuma pendente'}
                 </p>
               </div>
               <ClipboardCheck className="h-8 w-8 text-primary" />
@@ -196,9 +196,9 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-label">Garantias</p>
-                <p className="text-h1">{canRequestWarranty ? '2' : '-'}</p>
+                <p className="text-h1">{canRequestWarranty ? warrantyRequests.length : '-'}</p>
                 <p className="text-caption">
-                  {canRequestWarranty ? '1 em andamento' : 'Aguardando liberação'}
+                  {canRequestWarranty ? 'Veja suas solicitações' : 'Aguardando liberação'}
                 </p>
               </div>
               <ShieldCheck className="h-8 w-8 text-primary" />
@@ -212,7 +212,7 @@ const Dashboard = () => {
                 <p className="text-label">Notificações</p>
                 <p className="text-h1">{unreadCount}</p>
                 <p className="text-caption">
-                  {urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'nenhuma urgente'}
+                  {urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'Nenhuma urgente'}
                 </p>
               </div>
               <Bell className="h-8 w-8 text-primary" />

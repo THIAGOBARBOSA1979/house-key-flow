@@ -282,6 +282,9 @@ export interface WarrantyRequestFlow {
   
   // Problems breakdown (from existing system)
   problems?: WarrantyProblemDetail[];
+  
+  // Updates/Comments (Chat/Timeline)
+  updates?: Array<{ id: string; date: Date; author: string; text: string }>;
 }
 
 // Problem detail for breakdown

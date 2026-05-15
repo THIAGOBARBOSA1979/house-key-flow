@@ -308,6 +308,40 @@ class InspectionService {
   getByTechnician(technicianId: string) {
     return this.inspections.filter(i => i.technician === technicianId);
   }
+
+  requestReschedule(id: string, clientId: string) {
+    const inspection = this.inspections.find(i => i.id === id);
+    if (inspection) {
+      auditLogService.log({
+        entityType: 'inspection',
+        entityId: id,
+        action: 'updated',
+        performedBy: clientId,
+        performedByName: inspection.client,
+        performedByRole: 'client',
+        details: `Cliente solicitou reagendamento da vistoria.`
+      });
+      return true;
+    }
+    return false;
+  }
+
+  confirmPresence(id: string, clientId: string) {
+    const inspection = this.inspections.find(i => i.id === id);
+    if (inspection) {
+      auditLogService.log({
+        entityType: 'inspection',
+        entityId: id,
+        action: 'updated',
+        performedBy: clientId,
+        performedByName: inspection.client,
+        performedByRole: 'client',
+        details: `Cliente confirmou presença na vistoria.`
+      });
+      return true;
+    }
+    return false;
+  }
 }
 
 export const inspectionService = new InspectionService();

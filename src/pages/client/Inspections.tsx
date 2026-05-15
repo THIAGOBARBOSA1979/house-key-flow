@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import { InspectionAcceptanceStatus } from "@/types/clientFlow";
 import { eventAutomationService } from "@/services/EventAutomationService";
 import { useAuth } from "@/contexts/AuthContext";
 import { inspectionService, Inspection } from "@/services/InspectionService";
-import { useMemo } from "react";
+import { checklistService } from "@/services/ChecklistService";
 
 // Inspections are fetched from inspectionService
 
@@ -37,22 +37,47 @@ const ChecklistBadge = ({ status }: { status: boolean }) => {
 
 const ClientInspections = () => {
   const { user } = useAuth();
-  const allInspections = useMemo(() => inspectionService.getAll()
-    .filter(i => i.client === (user?.name || "João Silva"))
-    .map(i => ({
-      ...i,
-      title: i.type === 'technicalInspection' ? 'Vistoria Técnica' : i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Reparo',
-      scheduledDate: i.date,
-      inspector: i.technician,
-      description: i.notes || "Vistoria para verificação das condições da unidade.",
-      checklist: [
+  const allInspections = useMemo(() => {
+    const rawInspections = inspectionService.getAll()
+      .filter(i => i.client === (user?.name || "João Silva"));
+    
+    return rawInspections.map(i => {
+      // Get items from checklist service if ID exists, else use defaults
+      let checklistItems = [
         { id: "1", name: "Verificação de paredes e pinturas", completed: i.status === 'complete' },
         { id: "2", name: "Teste de instalações elétricas", completed: i.status === 'complete' },
         { id: "3", name: "Teste de instalações hidráulicas", completed: i.status === 'complete' },
-      ],
-      canStart: i.status === 'pending'
-    })), [user?.name]);
+      ];
+
+      if (i.checklistId) {
+        const template = checklistService.getTemplateById(i.checklistId);
+        if (template) {
+          checklistItems = template.groups.flatMap(g => g.items.map(item => ({
+            id: item.id,
+            name: item.description,
+            completed: i.status === 'complete'
+          })));
+        }
+      }
+
+      return {
+        ...i,
+        title: i.type === 'technicalInspection' ? 'Vistoria Técnica' : i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Reparo',
+        scheduledDate: i.date,
+        inspector: i.technician,
+        description: i.notes || "Vistoria para verificação das condições da unidade.",
+        checklist: checklistItems,
+        canStart: i.status === 'pending'
+      };
+    });
+  }, [user?.name]);
+
   const [inspections, setInspections] = useState<any[]>(allInspections);
+  
+  // Keep local state in sync with memoized data when it changes
+  useEffect(() => {
+    setInspections(allInspections);
+  }, [allInspections]);
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
@@ -82,19 +107,37 @@ const ClientInspections = () => {
   };
 
   const handleConfirmPresence = () => {
-    toast({ title: "Presença confirmada", description: "Obrigado por confirmar sua presença na vistoria." });
+    if (selectedInspection && user?.id) {
+      const success = inspectionService.confirmPresence(selectedInspection, user.id);
+      if (success) {
+        toast({ title: "Presença confirmada", description: "Obrigado por confirmar sua presença na vistoria." });
+      }
+    }
   };
-
+  
   const handleRequestReschedule = () => {
-    toast({ title: "Solicitação de remarcação enviada", description: "Em breve entraremos em contato para agendar uma nova data." });
+    if (selectedInspection && user?.id) {
+      const success = inspectionService.requestReschedule(selectedInspection, user.id);
+      if (success) {
+        toast({ title: "Solicitação de remarcação enviada", description: "Em breve entraremos em contato para agendar uma nova data." });
+      }
+    }
   };
-
+  
   const handleContactTeam = () => {
+    // In a real app, this could open a chat or send a notification
     toast({ title: "Mensagem enviada", description: "Nossa equipe receberá sua mensagem e entrará em contato em breve." });
   };
-
+  
   const handleViewPdf = () => {
-    toast({ title: "Abrindo documento", description: "O relatório em PDF será aberto em uma nova aba." });
+    if (selectedInspection) {
+      const report = inspectionService.getReport(selectedInspection);
+      if (report) {
+        toast({ title: "Abrindo documento", description: "O relatório em PDF será aberto em uma nova aba." });
+        // Simulating PDF opening
+        console.log("Opening report:", report);
+      }
+    }
   };
 
   const handleAcceptInspection = (inspectionId: string) => {
