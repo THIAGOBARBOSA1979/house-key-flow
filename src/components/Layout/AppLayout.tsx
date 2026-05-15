@@ -54,7 +54,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10-sem rounded-xl gap-2 pl-2 pr-3 hover:bg-primary/5 group active:scale-95 transition-all">
+                  <Button variant="ghost" className="h-10-sem rounded-lg gap-2 pl-2 pr-3 hover:bg-primary/5 group active:scale-95 transition-all">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase group-hover:bg-primary group-hover:text-white transition-all">
                       {user?.name?.charAt(0) || "U"}
                     </div>
