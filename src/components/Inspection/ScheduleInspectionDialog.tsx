@@ -16,6 +16,8 @@ interface ScheduleInspectionDialogProps {
   triggerButton?: React.ReactNode;
   clientId?: string;
   onSuccess?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   propertyInfo?: {
     property: string;
     unit: string;
