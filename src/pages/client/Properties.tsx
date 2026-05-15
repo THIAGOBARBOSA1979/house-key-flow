@@ -117,7 +117,7 @@ const ClientProperties = () => {
                 <span className="text-sm font-medium">{propertyDetails.address}</span>
               </div>
               
-              <div className="grid grid-cols-2 gap-3 mt-6">
+              <div className="grid grid-cols-2 gap-4-sem mt-6-sem">
                 <div className="p-3 bg-background rounded-lg border shadow-sm">
                   <div className="text-muted-foreground text-xs uppercase font-bold tracking-wider mb-1">Status Entrega</div>
                   <div className="text-sm font-black text-status-complete flex items-center gap-1">
@@ -133,7 +133,7 @@ const ClientProperties = () => {
 
             <div className="w-full md:w-1/3 bg-muted/20 p-6 flex flex-col justify-center">
               <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Especificações Rápidas</h3>
-              <div className="space-y-4">
+              <div className="space-y-4-sem">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Ruler size={16} className="text-primary" />

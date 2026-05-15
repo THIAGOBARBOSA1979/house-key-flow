@@ -207,7 +207,7 @@ const ClientLayout = () => {
       <MobileHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       
       {/* Sidebar for desktop and mobile */}
-      <div className={cn("fixed inset-y-0 left-0 z-50 w-64 bg-background border-r transform transition-transform duration-200 ease-in-out md:translate-x-0", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
+      <div className={cn("fixed inset-y-0 left-0 z-fixed w-sidebar-width bg-background border-r transform transition-transform duration-normal ease-in-out md:translate-x-0", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
         {/* Sidebar header */}
         <div className="h-16 flex items-center justify-between px-4 border-b">
           <Link to="/client" className="flex items-center gap-2" onClick={handleLinkClick}>
@@ -280,7 +280,7 @@ const ClientLayout = () => {
       {sidebarOpen && <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />}
       
       {/* Main content */}
-      <div className="md:ml-64 min-h-screen flex flex-col">
+      <div className="md:ml-sidebar-width min-h-screen flex flex-col">
         {/* Desktop header - simplified without images */}
         <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-16 px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">Portal do Cliente</h1>

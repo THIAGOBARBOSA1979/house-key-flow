@@ -120,7 +120,7 @@ export function TimelineItemComponent({ item, isLast = false }: TimelineItemProp
         "flex-1 pb-6 pt-1"
       )}>
         <div className={cn(
-          "p-3 rounded-lg border",
+          "p-4 rounded-xl border shadow-sem-sm hover:shadow-sem-md transition-all duration-normal",
           styles.container
         )}>
           <div className="flex items-start justify-between gap-2">
