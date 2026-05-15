@@ -7,7 +7,7 @@ import { ChecklistBuilder } from '@/components/Checklists/ChecklistBuilder';
 import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
 import { ChecklistExecution } from '@/components/Checklists/ChecklistExecution';
-import { ChecklistItem, checklistService } from '@/services/ChecklistService';
+import { ChecklistItem, ChecklistGroup, checklistService } from '@/services/ChecklistService';
 import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, Filter, History, AlertCircle } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { useToast } from "@/components/ui/use-toast";
