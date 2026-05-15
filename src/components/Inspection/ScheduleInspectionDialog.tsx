@@ -53,7 +53,7 @@ export function ScheduleInspectionDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="px-8 pt-8 pb-6 bg-muted/5 border-b">
           <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-2">
             <Plus className="w-6 h-6 text-primary" />
