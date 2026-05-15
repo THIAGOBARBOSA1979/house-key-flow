@@ -13,4 +13,13 @@ describe('Design System: Card Component', () => {
     const card = screen.getByText('Test Card').closest('.card-standard');
     expect(card).toBeInTheDocument();
   });
+
+  it('should match the design snapshot', () => {
+    const { asFragment } = render(
+      <Card>
+        <CardTitle>Snapshot Card</CardTitle>
+      </Card>
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
 });
