@@ -259,8 +259,10 @@ class WarrantyAutomationService {
       // Trigger automation for the status change
       this.onStatusChange(requestId, fromStage, toStage, movedBy, false);
       
-      // If we moved to inspection_scheduled but date is not set, we might want to flag it
-      // or in a real app, open the scheduling dialog automatically.
+      // Auto-assign task if moving to execution and no responsible yet
+      if (toStage === 'in_execution' && !result.request.assignedTo) {
+        // Logic for auto-assignment could be implemented here
+      }
     }
 
 

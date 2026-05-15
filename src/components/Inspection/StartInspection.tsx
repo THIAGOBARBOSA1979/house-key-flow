@@ -165,8 +165,9 @@ export const StartInspection = ({
       
       if (nonConformCount > 0) {
         toast({
-          title: "Solicitações de serviço geradas",
-          description: `Foram geradas ${nonConformCount} solicitações de serviço automaticamente baseadas nos itens não conformes.`,
+          title: "Não Conformidades registradas",
+          description: `${nonConformCount} itens foram marcados como 'Não Conforme'. Recomenda-se gerar solicitações de assistência técnica.`,
+          variant: "destructive"
         });
       }
       

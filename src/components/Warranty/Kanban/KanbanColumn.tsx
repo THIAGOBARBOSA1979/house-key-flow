@@ -80,7 +80,7 @@ export function KanbanColumn({
   return (
     <div 
       className={cn(
-        "flex flex-col bg-muted/30 rounded-lg border-t-4 min-w-[280px] max-w-[320px]",
+        "flex flex-col bg-muted/20 rounded-xl border-t-4 min-w-[300px] max-w-[340px] shadow-sm",
         columnColors[config.color] || "border-t-muted"
       )}
       onDragOver={handleDragOver}
@@ -113,40 +113,45 @@ export function KanbanColumn({
         )}
       </div>
       
-      {/* Cards */}
-      <ScrollArea className="flex-1 p-2">
-        <div className="space-y-2">
-          {cards.length === 0 ? (
-            <div className="p-4 text-center text-sm text-muted-foreground border-2 border-dashed rounded-lg">
-              Nenhuma solicitação
-            </div>
-          ) : (
-            cards.map(card => (
-              <div
-                key={card.id}
-                draggable={!card.dragDisabled}
-                onDragStart={() => handleDragStart(card.id)}
-                onDragEnd={() => {
-                  setDraggedCard(null);
-                  setDraggedFromStage(null);
-                }}
-              >
-                <KanbanCard
-                  data={card}
-                  isDragging={draggedCard === card.id}
-                  onClick={() => onCardClick(card.id)}
-                  selected={selectedCards.has(card.id)}
-                  onToggleSelection={(e) => {
-                    e.stopPropagation();
-                    onToggleSelection(card.id);
-                  }}
-                  showSelection
-                />
+      {/* Cards container */}
+      <div className="flex-1 overflow-hidden relative">
+        <ScrollArea className="h-full p-2">
+          <div className="space-y-3 pb-4">
+            {cards.length === 0 ? (
+              <div className="py-12 px-4 text-center text-xs text-muted-foreground/60 border-2 border-dashed rounded-xl border-muted/50 mt-2">
+                Nenhuma solicitação nesta etapa
               </div>
-            ))
-          )}
-        </div>
-      </ScrollArea>
+            ) : (
+              cards.map(card => (
+                <div
+                  key={card.id}
+                  draggable={!card.dragDisabled}
+                  onDragStart={() => handleDragStart(card.id)}
+                  onDragEnd={() => {
+                    setDraggedCard(null);
+                    setDraggedFromStage(null);
+                  }}
+                  className="transition-transform active:scale-95 touch-none"
+                >
+                  <KanbanCard
+                    data={card}
+                    isDragging={draggedCard === card.id}
+                    onClick={() => onCardClick(card.id)}
+                    selected={selectedCards.has(card.id)}
+                    onToggleSelection={(e) => {
+                      e.stopPropagation();
+                      onToggleSelection(card.id);
+                    }}
+                    showSelection
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        </ScrollArea>
+        {/* Subtle gradient at the bottom for scroll indication */}
+        <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-muted/20 to-transparent pointer-events-none rounded-b-lg" />
+      </div>
     </div>
   );
 }
