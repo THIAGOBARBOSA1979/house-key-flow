@@ -1,10 +1,10 @@
-
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+// REMOVED DUPLICATE StatusBadge import
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -29,13 +29,11 @@ import { checklistService } from "@/services/ChecklistService";
 // Helper component for the checklist status badges
 const ChecklistBadge = ({ status }: { status: boolean }) => {
   return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-      status 
-        ? "bg-green-100 text-green-800" 
-        : "bg-amber-100 text-amber-800"
-    }`}>
-      {status ? "Concluído" : "Pendente"}
-    </span>
+    <StatusBadge 
+      status={status ? "complete" : "pending"} 
+      label={status ? "Concluído" : "Pendente"} 
+      size="sm"
+    />
   );
 };
 
@@ -359,7 +357,7 @@ const ClientInspections = () => {
                             {safeFormat(inspection.scheduledDate, "dd 'de' MMMM 'de' yyyy 'às' HH:mm")}
                           </CardDescription>
                         </div>
-                        <StatusBadge status={inspection.status} />
+                        <StatusBadge status={inspection.status} size="lg" />
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
