@@ -39,6 +39,7 @@ import ClientWarranty from "./pages/client/Warranty";
 import ClientProperties from "./pages/client/Properties";
 import ClientNotifications from "./pages/client/Notifications";
 import ClientProfile from "./pages/client/Profile";
+import ClientFinancial from "./pages/client/Financial";
 
 const App = () => {
   console.log('App: Inicializando componente App...');
@@ -159,6 +160,7 @@ const App = () => {
                   <Route path="properties" element={<ClientProperties />} />
                   <Route path="notifications" element={<ClientNotifications />} />
                   <Route path="profile" element={<ClientProfile />} />
+                  <Route path="financial" element={<ClientFinancial />} />
                 </Route>
 
                 {/* Legacy redirects for backward compatibility */}
