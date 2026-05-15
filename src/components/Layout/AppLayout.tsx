@@ -44,7 +44,6 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <div className="w-full flex items-center justify-between px-4-sem sm:px-6-sem transition-all duration-normal">
             <div className="flex items-center gap-4-sem">
               {isMobile && <div className="w-10-sem" />}
-              <Breadcrumbs />
             </div>
 
             <div className="flex items-center gap-3-sem">
