@@ -115,6 +115,8 @@ class ClientStageService {
   private storageKeyEvents = 'a2_client_events';
 
   constructor() {
+    localStorage.removeItem(this.storageKeyProfiles); // Temporary reset
+    localStorage.removeItem(this.storageKeyEvents);   // Temporary reset
     const storedProfiles = localStorage.getItem(this.storageKeyProfiles);
     const storedEvents = localStorage.getItem(this.storageKeyEvents);
 
