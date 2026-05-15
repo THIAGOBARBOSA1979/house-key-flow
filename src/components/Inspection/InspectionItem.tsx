@@ -113,55 +113,55 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
           </div>
         </div>
         
-        <div className="flex gap-2 items-center shrink-0">
+        <div className="flex gap-2 items-center shrink-0 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-3 md:pt-0 mt-2 md:mt-0">
           <StatusBadge status={inspection.status as any} size="sm" showIcon />
           
-          <div className="h-6 w-px bg-border/40 mx-1 hidden md:block" />
-
-          {(inspection.status === "pending" || inspection.status === "progress") && (
-            <Button 
-              variant="default" 
-              size="sm"
-              onClick={startInspection}
-              className="h-9 px-4 text-xs font-bold bg-primary hover:bg-primary/90 transition-all active:scale-95 shadow-sem-sm"
-            >
-              <Play className="h-3.5 w-3.5 mr-2" /> 
-              {inspection.status === "progress" ? "Continuar" : "Iniciar"}
-            </Button>
-          )}
-
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={handleViewDetails}
-            className="h-9 px-3 text-xs font-bold hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
-          >
-            <Eye className="h-3.5 w-3.5 mr-2" /> 
-            Detalhes
-          </Button>
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted transition-all">
-                <MoreVertical className="h-4 w-4" />
+          <div className="flex gap-2 items-center">
+            {(inspection.status === "pending" || inspection.status === "progress") && (
+              <Button 
+                variant="default" 
+                size="sm"
+                onClick={startInspection}
+                className="h-9 px-4 text-xs font-bold bg-primary hover:bg-primary/90 transition-all active:scale-95 shadow-md rounded-xl"
+              >
+                <Play className="h-3.5 w-3.5 mr-2 fill-current" /> 
+                {inspection.status === "progress" ? "Continuar" : "Iniciar"}
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 animate-in zoom-in-95 duration-200">
-              <DropdownMenuItem onClick={() => setRescheduleDialogOpen(true)} className="text-xs font-bold py-2.5 cursor-pointer">
-                <CalendarClock className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
-                Reagendar Vistoria
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSendReminder} className="text-xs font-bold py-2.5 cursor-pointer">
-                <BellRing className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
-                Enviar Lembrete
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleCancelInspection} className="text-xs font-bold py-2.5 text-destructive focus:text-destructive cursor-pointer">
-                <Trash2 className="h-3.5 w-3.5 mr-2" />
-                Cancelar Vistoria
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            )}
+
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleViewDetails}
+              className="h-9 px-3 text-xs font-bold hover:bg-primary/5 hover:text-primary transition-all active:scale-95 rounded-xl border border-transparent hover:border-primary/20"
+            >
+              <Eye className="h-3.5 w-3.5 mr-2" /> 
+              Visualizar
+            </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted transition-all">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl animate-in zoom-in-95 duration-200 shadow-xl border-none">
+                <DropdownMenuItem onClick={() => setRescheduleDialogOpen(true)} className="text-xs font-bold py-3 px-4 cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary">
+                  <CalendarClock className="h-4 w-4 mr-3 text-muted-foreground" />
+                  Reagendar Vistoria
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSendReminder} className="text-xs font-bold py-3 px-4 cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary">
+                  <BellRing className="h-4 w-4 mr-3 text-muted-foreground" />
+                  Enviar Notificação
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="my-2" />
+                <DropdownMenuItem onClick={handleCancelInspection} className="text-xs font-bold py-3 px-4 text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer rounded-xl">
+                  <Trash2 className="h-4 w-4 mr-3" />
+                  Cancelar Vistoria
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 
