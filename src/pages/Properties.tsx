@@ -221,79 +221,74 @@ const Properties = () => {
           />
         )}
         renderList={() => (
-          <div className="rounded-xl border bg-card overflow-hidden shadow-sem-sm">
-            <Table>
-              <TableHeader className="bg-muted/30">
-                <TableRow>
-                  <TableHead className="font-bold py-4 px-6">Nome</TableHead>
-                  <TableHead className="hidden md:table-cell font-bold py-4 px-6">Localização</TableHead>
-                  <TableHead className="font-bold py-4 px-6">Progresso</TableHead>
-                  <TableHead className="font-bold py-4 px-6">Status</TableHead>
-                  <TableHead className="text-right font-bold py-4 px-6">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredProperties.map((property) => {
-                  const percentage = Math.round((property.completedUnits / property.units) * 100);
+          <DataTable
+            columns={[
+              { 
+                header: "Nome", 
+                accessorKey: "name",
+                cell: (p) => (
+                  <div className="flex flex-col">
+                    <span className="text-label group-hover:text-primary transition-colors">{p.name}</span>
+                    <span className="md:hidden text-caption mt-0.5 text-muted-foreground">{p.location}</span>
+                  </div>
+                )
+              },
+              { header: "Localização", accessorKey: "location", className: "hidden md:table-cell text-muted-foreground" },
+              { 
+                header: "Progresso", 
+                accessorKey: "progress",
+                cell: (p) => {
+                  const percentage = Math.round((p.completedUnits / p.units) * 100);
                   return (
-                    <TableRow 
-                      key={property.id} 
-                      className="group hover:bg-muted/20 transition-all border-b border-border/50 cursor-pointer"
-                      onClick={() => setSelectedProperty(property)}
-                    >
-                      <TableCell className="py-4 px-6">
-                        <div className="flex flex-col">
-                          <span className="text-label group-hover:text-primary transition-colors">{property.name}</span>
-                          <span className="md:hidden text-caption mt-0.5 text-muted-foreground">
-                            {property.location}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell text-body-sm text-muted-foreground py-4 px-6">{property.location}</TableCell>
-                      <TableCell className="py-4 px-6">
-                        <div className="flex items-center gap-3 min-w-[120px] max-w-[200px]">
-                          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
-                            <div 
-                              className={cn(
-                                "h-full transition-all duration-700",
-                                property.status === 'complete' ? "bg-status-complete" : "bg-primary"
-                              )}
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                          <span className="text-sem-tiny font-bold text-foreground whitespace-nowrap">{percentage}%</span>
-                        </div>
-                      </TableCell>
-
-                      <TableCell className="py-4 px-6">
-                        <StatusBadge status={property.status} size="sm" />
-                      </TableCell>
-                      <TableCell className="text-right py-4 px-6">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5 active:scale-95 transition-all">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-40 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
-                            <DropdownMenuItem onClick={() => openEdit(property)} className="cursor-pointer py-2.5 font-medium">
-                              <Pencil className="mr-2 h-4 w-4 text-muted-foreground" /> Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              className="text-destructive focus:text-destructive cursor-pointer py-2.5 font-bold" 
-                              onClick={() => setPropertyToDelete(property)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" /> Excluir
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                    <div className="flex items-center gap-3 min-w-[120px]">
+                      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
+                        <div 
+                          className={cn(
+                            "h-full transition-all duration-700",
+                            p.status === 'complete' ? "bg-status-complete" : "bg-primary"
+                          )}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <span className="text-sem-tiny font-black text-foreground">{percentage}%</span>
+                    </div>
                   );
-                })}
-              </TableBody>
-            </Table>
-          </div>
+                }
+              },
+              { 
+                header: "Status", 
+                accessorKey: "status", 
+                cell: (p) => <StatusBadge status={p.status} size="sm" /> 
+              },
+              {
+                header: "Ações",
+                accessorKey: "id",
+                className: "text-right",
+                cell: (p) => (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40 shadow-sem-lg">
+                      <DropdownMenuItem onClick={() => openEdit(p)} className="cursor-pointer">
+                        <Pencil className="mr-2 h-4 w-4" /> Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className="text-destructive font-bold" 
+                        onClick={() => setPropertyToDelete(p)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Excluir
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )
+              }
+            ]}
+            data={filteredProperties}
+            onRowClick={(p) => setSelectedProperty(p)}
+          />
         )}
         emptyState={{
           title: "Nenhum empreendimento encontrado",
