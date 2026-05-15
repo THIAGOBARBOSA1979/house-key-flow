@@ -182,6 +182,61 @@ class InspectionService {
     this.inspections = this.inspections.filter(i => i.id !== id);
     this.persist();
   }
+
+  update(id: string, data: Partial<Inspection>) {
+    const index = this.inspections.findIndex(i => i.id === id);
+    if (index !== -1) {
+      this.inspections[index] = { ...this.inspections[index], ...data };
+      this.persist();
+      
+      auditLogService.log({
+        entityType: 'inspection',
+        entityId: id,
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Agendamento ${id} atualizado.`
+      });
+      return true;
+    }
+    return false;
+  }
+
+  exportData(format: 'json' | 'csv' = 'json') {
+    if (format === 'json') {
+      return JSON.stringify(this.inspections, null, 2);
+    }
+    
+    const headers = ['ID', 'Propriedade', 'Unidade', 'Cliente', 'Data', 'Hora', 'Status', 'Tipo', 'Técnico'];
+    const rows = this.inspections.map(i => [
+      i.id,
+      i.property,
+      i.unit,
+      i.client,
+      i.date.toLocaleDateString(),
+      i.time,
+      i.status,
+      i.type,
+      i.technician
+    ]);
+    
+    return [headers, ...rows].map(e => e.join(",")).join("\n");
+  }
+
+  getSLAMetrics() {
+    const completed = this.inspections.filter(i => i.status === 'completed' && i.createdAt);
+    if (completed.length === 0) return "0d";
+    
+    const totalDays = completed.reduce((acc, curr) => {
+      const created = new Date(curr.createdAt!);
+      const diffTime = Math.abs(curr.date.getTime() - created.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return acc + diffDays;
+    }, 0);
+    
+    return (totalDays / completed.length).toFixed(1) + "d";
+  }
 }
 
 export const inspectionService = new InspectionService();
