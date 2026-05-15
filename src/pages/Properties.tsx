@@ -60,6 +60,7 @@ const Properties = () => {
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
   const [metrics, setMetrics] = useState(propertyService.getMetrics());
 
