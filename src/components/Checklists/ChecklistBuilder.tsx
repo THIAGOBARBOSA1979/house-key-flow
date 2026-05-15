@@ -458,4 +458,3 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
     </div>
   );
 };
-};
