@@ -76,7 +76,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
               <Skeleton className="h-4 w-1/4" />
               <Skeleton className="h-3 w-1/2" />
             </div>
-            <Skeleton className="h-8 w-20 rounded-lg" />
+            <Skeleton className="h-8 w-20 rounded-md" />
           </div>
         ))}
       </div>
