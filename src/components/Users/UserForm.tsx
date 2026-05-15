@@ -152,6 +152,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
             </div>
           </div>
           
+          {formData.role === "client" && (
             <div className="grid grid-cols-2 gap-4 border-t border-dashed pt-6">
               <div className="space-y-2">
                 <Label htmlFor="propertyId" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Vincular Empreendimento</Label>
@@ -167,6 +168,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
                 </Select>
               </div>
               
+              <div className="space-y-2">
                 <Label htmlFor="unit" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Unidade / Apartamento</Label>
                 <Input
                   id="unit"
