@@ -181,6 +181,9 @@ class WarrantyFlowService {
    */
   createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
     const id = data.id || `wr-${Date.now()}`;
+    const category = data.category || "Outros";
+    const slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === category) || DEFAULT_SLA_CONFIGS[0];
+    
     const newRequest: WarrantyRequestFlow = {
       id,
       clientId: data.clientId || "",
@@ -190,13 +193,14 @@ class WarrantyFlowService {
       unitNumber: data.unitNumber || "",
       title: data.title || "",
       description: data.description || "",
-      category: data.category || "Outros",
+      category,
       priority: data.priority || "medium",
       currentStage: "opened",
       stageStartedAt: new Date(),
       createdAt: new Date(),
       updatedAt: new Date(),
       slaStatus: "on_track",
+      slaConfig,
       history: [
         {
           id: `hist-${Date.now()}`,
@@ -209,14 +213,18 @@ class WarrantyFlowService {
           notes: "Solicitação aberta pelo cliente"
         }
       ],
-      problems: data.problems || [],
-      ...data
+      problems: (data.problems || []).map(p => ({
+        ...p,
+        id: p.id || `prob-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        status: p.status || "pending",
+        createdAt: p.createdAt || new Date(),
+        updatedAt: p.updatedAt || new Date()
+      })) as WarrantyProblemDetail[],
     };
 
     // Calculate initial SLA
     const slaInfo = warrantySLAService.calculateSLADeadlineInfo(newRequest);
     newRequest.slaDeadline = slaInfo.deadline;
-    newRequest.slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === newRequest.category) || DEFAULT_SLA_CONFIGS[0];
 
     this.requests.set(id, newRequest);
     this.persist();
