@@ -45,18 +45,18 @@ export function DataView<T>({
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center section-padding bg-muted/20 rounded-xl border-2 border-dashed border-muted-foreground/10 animate-fade-in py-20">
-        <div className="p-4 bg-muted/20 rounded-full mb-4">
-          {emptyState?.icon || <SearchX className="h-12 w-12 text-muted-foreground/30" />}
+      <div className="flex flex-col items-center justify-center section-padding bg-muted/20 rounded-3xl border-2 border-dashed border-muted-foreground/10 animate-fade-in py-24 shadow-sem-inner">
+        <div className="p-6 bg-muted/40 rounded-3xl mb-6 shadow-sem-sm">
+          {emptyState?.icon || <SearchX className="h-14 w-14 text-muted-foreground/40" />}
         </div>
-        <h3 className="text-h3 font-bold text-foreground mb-1">
+        <h3 className="text-2xl font-black text-foreground mb-2 tracking-tight">
           {emptyState?.title || "Nenhum registro encontrado"}
         </h3>
-        <p className="text-body-base text-muted-foreground mb-6 text-center max-w-md">
+        <p className="text-sem-body-base text-muted-foreground mb-8 text-center max-w-md leading-relaxed">
           {emptyState?.description || "Tente ajustar seus filtros para encontrar o que procura."}
         </p>
         {emptyState?.action && (
-          <Button onClick={emptyState.action.onClick} className="rounded-lg h-10 px-6 font-bold active:scale-95 transition-all">
+          <Button onClick={emptyState.action.onClick} className="h-12 px-8 font-black uppercase tracking-widest text-xs">
             {emptyState.action.label}
           </Button>
         )}
@@ -99,29 +99,29 @@ export function DataView<T>({
       {renderContent()}
       
       {isPaginationEnabled && (
-        <div className="flex items-center justify-between py-4 border-t border-border/10">
-          <p className="text-sem-body-sm text-muted-foreground">
-            Mostrando <span className="font-bold text-foreground">{(effectivePage - 1) * itemsPerPage + 1}</span> a <span className="font-bold text-foreground">{Math.min(effectivePage * itemsPerPage, totalItems)}</span> de <span className="font-bold text-foreground">{totalItems}</span> registros
+        <div className="flex flex-col sm:flex-row items-center justify-between py-6 border-t border-border/10 gap-4">
+          <p className="text-sem-body-sm text-muted-foreground font-medium">
+            Mostrando <span className="font-black text-foreground">{(effectivePage - 1) * itemsPerPage + 1}</span> a <span className="font-black text-foreground">{Math.min(effectivePage * itemsPerPage, totalItems)}</span> de <span className="font-black text-foreground">{totalItems}</span> registros
           </p>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="icon"
-              className="h-9 w-9 rounded-lg"
+              className="h-10 w-10 rounded-xl border-2"
               disabled={effectivePage === 1}
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={18} />
             </Button>
-            <div className="flex items-center gap-1 mx-2">
+            <div className="flex items-center gap-1.5 mx-2">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <Button
                   key={page}
                   variant={effectivePage === page ? "default" : "ghost"}
                   size="icon"
                   className={cn(
-                    "h-9 w-9 rounded-lg text-xs font-bold transition-all",
-                    effectivePage === page ? "shadow-sem-md" : "text-muted-foreground"
+                    "h-10 w-10 rounded-xl text-xs font-black transition-all",
+                    effectivePage === page ? "shadow-sem-md scale-110" : "text-muted-foreground hover:bg-muted"
                   )}
                   onClick={() => setCurrentPage(page)}
                 >
@@ -132,11 +132,11 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-9 w-9 rounded-lg"
+              className="h-10 w-10 rounded-xl border-2"
               disabled={effectivePage === totalPages}
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={18} />
             </Button>
           </div>
         </div>
