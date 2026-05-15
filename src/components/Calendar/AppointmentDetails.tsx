@@ -68,7 +68,7 @@ export function AppointmentDetails({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+      <DialogContent className="sm:max-w-2xl p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
           <DialogTitle className="text-2xl font-black tracking-tight">Detalhes do Agendamento</DialogTitle>
           <DialogDescription className="text-sm font-medium">
@@ -76,75 +76,85 @@ export function AppointmentDetails({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-black text-foreground">{appointment.title}</h3>
+        <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+          <div className="flex items-center justify-between border-b border-dashed border-border/20 pb-6">
+            <h3 className="text-2xl font-black text-foreground tracking-tight">{appointment.title}</h3>
             {appointment.type === "inspection" ? (
-              <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg font-black uppercase text-[10px]">Vistoria</Badge>
+              <Badge variant="info" className="px-4 py-1.5 rounded-full">Vistoria</Badge>
             ) : (
-              <Badge className="bg-status-pending/10 text-status-pending border-status-pending/20 rounded-lg font-black uppercase text-[10px]">Garantia</Badge>
+              <Badge variant="warning" className="px-4 py-1.5 rounded-full">Garantia</Badge>
             )}
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status Atual</Label>
-              <div className="mt-1">{getStatusBadge(appointment.status)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="space-y-1.5">
+                <Label>Status Atual</Label>
+                <div className="mt-1">{getStatusBadge(appointment.status)}</div>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Data e Hora</Label>
+                <div className="mt-1 text-sm font-bold bg-muted/30 p-3 rounded-xl border border-border/5">
+                  {safeFormat(appointment.date, "dd/MM/yyyy 'às' HH:mm")}
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Responsável Técnico</Label>
+                <div className="mt-1 text-sm font-bold bg-muted/30 p-3 rounded-xl border border-border/5">
+                  {appointment.technician || "Não atribuído"}
+                </div>
+              </div>
             </div>
-            <div>
-              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Data e Hora</Label>
-              <div className="mt-1 text-sm">{safeFormat(appointment.date, "dd/MM/yyyy 'às' HH:mm")}</div>
+
+            <div className="space-y-6">
+              <div className="space-y-1.5">
+                <Label>Cliente</Label>
+                <div className="mt-1 text-sm font-bold bg-muted/30 p-3 rounded-xl border border-border/5">
+                  {appointment.client}
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Propriedade</Label>
+                <div className="mt-1 text-sm font-bold bg-muted/30 p-3 rounded-xl border border-border/5">
+                  {appointment.property} - Unidade {appointment.unit}
+                </div>
+              </div>
             </div>
           </div>
           
-          <div>
-            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cliente</Label>
-            <div className="mt-1 text-sm">{appointment.client}</div>
-          </div>
-          
-          <div>
-            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Propriedade</Label>
-            <div className="mt-1 text-sm">{appointment.property} - Unidade {appointment.unit}</div>
-          </div>
-          
-          <div>
-            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Responsável Técnico</Label>
-            <div className="mt-1 text-sm">{appointment.technician || "Não atribuído"}</div>
-          </div>
-          
-          <div>
-            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Observações de Campo</Label>
+          <div className="space-y-2">
+            <Label>Observações de Campo</Label>
             <Textarea 
               placeholder="Adicionar notas internas sobre este agendamento..."
-              className="mt-2 rounded-xl min-h-[100px] resize-none border-muted-foreground/20 focus:border-primary transition-all"
+              className="mt-2 min-h-[120px] resize-none"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
           </div>
           
           {appointment.status !== "completed" && appointment.status !== "cancelled" && (
-            <div>
-              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-3">Atualizar Status do Fluxo</Label>
-              <RadioGroup defaultValue={appointment.status} className="mt-2">
-                <div className="flex items-center space-x-2">
+            <div className="p-6 bg-muted/30 rounded-3xl border border-border/5 space-y-4">
+              <Label className="block mb-2">Atualizar Status do Fluxo</Label>
+              <RadioGroup defaultValue={appointment.status} className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="flex items-center space-x-3 p-3 bg-background rounded-xl border border-border/10 hover:bg-accent transition-colors cursor-pointer">
                   <RadioGroupItem value="pending" id="pending" />
-                  <Label htmlFor="pending" className="font-normal">Pendente</Label>
+                  <Label htmlFor="pending" className="font-bold mb-0 normal-case tracking-normal cursor-pointer">Pendente</Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3 p-3 bg-background rounded-xl border border-border/10 hover:bg-accent transition-colors cursor-pointer">
                   <RadioGroupItem value="confirmed" id="confirmed" />
-                  <Label htmlFor="confirmed" className="font-normal">Confirmado</Label>
+                  <Label htmlFor="confirmed" className="font-bold mb-0 normal-case tracking-normal cursor-pointer">Confirmado</Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3 p-3 bg-background rounded-xl border border-border/10 hover:bg-accent transition-colors cursor-pointer">
                   <RadioGroupItem value="completed" id="completed" />
-                  <Label htmlFor="completed" className="font-normal">Concluído</Label>
+                  <Label htmlFor="completed" className="font-bold mb-0 normal-case tracking-normal cursor-pointer">Concluído</Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3 p-3 bg-background rounded-xl border border-border/10 hover:bg-accent transition-colors cursor-pointer">
                   <RadioGroupItem value="cancelled" id="cancelled" />
-                  <Label htmlFor="cancelled" className="font-normal">Cancelado</Label>
+                  <Label htmlFor="cancelled" className="font-bold mb-0 normal-case tracking-normal cursor-pointer text-destructive">Cancelado</Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3 p-3 bg-background rounded-xl border border-border/10 hover:bg-accent transition-colors cursor-pointer">
                   <RadioGroupItem value="rescheduled" id="rescheduled" />
-                  <Label htmlFor="rescheduled" className="font-normal">Reagendado</Label>
+                  <Label htmlFor="rescheduled" className="font-bold mb-0 normal-case tracking-normal cursor-pointer">Reagendado</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -155,7 +165,7 @@ export function AppointmentDetails({
             {appointment.status === "pending" && (
               <Button 
                 variant="ghost" 
-                className="h-12 px-6 rounded-xl font-bold text-destructive hover:bg-destructive/10 hover:text-destructive transition-all"
+                className="px-6 text-destructive hover:bg-destructive/10 hover:text-destructive"
                 onClick={() => {
                   onStatusChange(appointment.id, "cancelled");
                   onOpenChange(false);
@@ -168,13 +178,12 @@ export function AppointmentDetails({
           <div className="flex items-center gap-3">
             <Button 
               variant="outline"
-              className="h-12 px-6 rounded-xl font-bold transition-all"
               onClick={() => onOpenChange(false)}
             >
               Fechar
             </Button>
             <Button 
-              className="h-12 px-10 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md active:scale-95 transition-all"
+              className="px-10 font-black uppercase tracking-widest text-xs"
               onClick={() => {
                 if (onUpdate) {
                   onUpdate(appointment.id, { notes });
