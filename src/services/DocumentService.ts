@@ -278,7 +278,19 @@ OBSERVAÇÕES: {{observacoes}}`,
     const index = this.documents.findIndex(doc => doc.id === id);
     if (index === -1) return false;
 
-    console.log('DocumentService: Documento excluído:', this.documents[index].title);
+    const doc = this.documents[index];
+    console.log('DocumentService: Documento excluído:', doc.title);
+    
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'archived',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento "${doc.title}" foi excluído.`
+    });
+
     this.documents.splice(index, 1);
     return true;
   }
@@ -345,6 +357,16 @@ OBSERVAÇÕES: {{observacoes}}`,
 
     // Incrementar contador de downloads
     this.updateDocument(documentId, { downloads: document.downloads + 1 });
+
+    auditLogService.log({
+      entityType: 'document',
+      entityId: documentId,
+      action: 'downloaded',
+      performedBy: 'user-current',
+      performedByName: 'Usuário Atual',
+      performedByRole: 'admin',
+      details: `Download realizado do documento: ${document.title}`
+    });
 
     if (document.type === 'manual' && document.fileUrl) {
       // Simular download de arquivo usando window.document ao invés de document
