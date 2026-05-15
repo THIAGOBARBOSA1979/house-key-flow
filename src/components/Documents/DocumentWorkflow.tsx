@@ -82,18 +82,18 @@ export function DocumentWorkflow({ document, onUpdate }: DocumentWorkflowProps) 
             <div className="flex gap-2">
               <Button 
                 size="sm" 
-                className="flex-1 bg-green-600 hover:bg-green-700" 
+                className="flex-1 bg-green-600 hover:bg-green-700 font-bold" 
                 onClick={() => handleApproval("approved")}
               >
-                Aprovar
+                <CheckCircle2 className="w-3 h-3 mr-1" /> Aprovar
               </Button>
               <Button 
                 size="sm" 
                 variant="destructive" 
-                className="flex-1"
+                className="flex-1 font-bold"
                 onClick={() => handleApproval("rejected")}
               >
-                Rejeitar
+                <XCircle className="w-3 h-3 mr-1" /> Rejeitar
               </Button>
             </div>
           </div>

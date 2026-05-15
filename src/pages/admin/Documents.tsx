@@ -106,13 +106,13 @@ const AdminDocuments = () => {
         description="Centralize todos os arquivos técnicos, contratos e alvarás"
       >
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold" onClick={() => exportService.exportToCSV(documents, 'documentos_admin')}>
+          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold border-primary/20 hover:border-primary/50" onClick={() => exportService.exportToCSV(documents, 'documentos_admin')}>
             <Download className="w-4 h-4 mr-2" /> Exportar CSV
           </Button>
-          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold" onClick={() => setIsUploadOpen(true)}>
-            <FolderPlus className="w-4 h-4 mr-2" /> Novo Documento
+          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold border-primary/20 hover:border-primary/50" onClick={() => setIsUploadOpen(true)}>
+            <FolderPlus className="w-4 h-4 mr-2" /> Nova Pasta
           </Button>
-          <Button size="sm" className="interactive-active h-9 font-bold bg-primary hover:bg-primary/90" onClick={() => setIsUploadOpen(true)}>
+          <Button size="sm" className="interactive-active h-9 font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20" onClick={() => setIsUploadOpen(true)}>
             <FileUp className="w-4 h-4 mr-2" /> Upload de Arquivos
           </Button>
         </div>
