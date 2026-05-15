@@ -16,15 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { documentService, Document } from "@/services/DocumentService";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 
 interface ClientDocument extends Omit<Document, 'status'> {
   size?: string;
@@ -75,7 +70,7 @@ export default function ClientDocuments() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
-  const [previewTitle, setPreviewTitle] = useState("");
+  const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -83,11 +78,9 @@ export default function ClientDocuments() {
   }, []);
 
   const loadClientDocuments = () => {
-    // Simular cliente logado
     const clientName = "João Silva";
     const clientDocs = documentService.getDocumentsByClient(clientName);
     
-    // Converter para formato do cliente
     const formattedDocs: ClientDocument[] = clientDocs.map(doc => ({
       ...doc,
       size: doc.fileSize || `${Math.floor(Math.random() * 2000 + 500)} KB`,
@@ -112,13 +105,6 @@ export default function ClientDocuments() {
     if (statusFilter !== "all" && doc.status !== statusFilter) return false;
     return true;
   });
-
-  const groupedDocuments = filteredDocuments.reduce((acc, doc) => {
-    const category = doc.type === "auto" ? "Automáticos" : "Manuais";
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(doc);
-    return acc;
-  }, {} as Record<string, ClientDocument[]>);
 
   const handleDownload = (doc: ClientDocument) => {
     if (doc.status === "processando") {
@@ -156,7 +142,6 @@ export default function ClientDocuments() {
     }
 
     if (doc.type === "auto" && doc.template) {
-      // Gerar preview com dados do cliente
       const clientData = {
         nome_cliente: "João Silva",
         endereco: "Rua das Flores, 123 - Apt 204",
@@ -174,7 +159,7 @@ export default function ClientDocuments() {
       try {
         const preview = documentService.generateDocument(doc.id, clientData);
         setPreviewContent(preview);
-        setPreviewTitle(doc.title);
+        setSelectedDoc(doc as any);
         setIsPreviewOpen(true);
       } catch (error) {
         toast({
@@ -184,7 +169,6 @@ export default function ClientDocuments() {
         });
       }
     } else {
-      // Para documentos manuais, simular abertura
       toast({
         title: "Abrindo documento",
         description: `Carregando ${doc.title}...`
@@ -205,10 +189,9 @@ export default function ClientDocuments() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <FileText className="h-6 w-6" />
+          <FileText className="h-6 w-6 text-primary" />
           Meus Documentos
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -241,55 +224,33 @@ export default function ClientDocuments() {
         </TabsList>
 
         <TabsContent value="all" className="space-y-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total</p>
-                    <p className="text-2xl font-bold">{stats.total}</p>
-                  </div>
-                  <FileText className="h-8 w-8 text-muted-foreground" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Disponíveis</p>
-                    <p className="text-2xl font-bold text-green-600">{stats.disponivel}</p>
-                  </div>
-                  <CheckCircle className="h-8 w-8 text-green-600" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Processando</p>
-                    <p className="text-2xl font-bold text-yellow-600">{stats.processando}</p>
-                  </div>
-                  <Clock className="h-8 w-8 text-yellow-600" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Este Mês</p>
-                    <p className="text-2xl font-bold text-blue-600">{stats.thisMonth}</p>
-                  </div>
-                  <Calendar className="h-8 w-8 text-blue-600" />
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatsCard 
+              label="Total de Arquivos" 
+              value={stats.total} 
+              icon={FileText} 
+              variant="brand" 
+            />
+            <StatsCard 
+              label="Disponíveis" 
+              value={stats.disponivel} 
+              icon={CheckCircle} 
+              variant="complete" 
+            />
+            <StatsCard 
+              label="Processando" 
+              value={stats.processando} 
+              icon={Clock} 
+              variant="pending" 
+            />
+            <StatsCard 
+              label="Novos este Mês" 
+              value={stats.thisMonth} 
+              icon={Calendar} 
+              variant="brand" 
+            />
           </div>
 
-          {/* Enhanced Filters */}
           <Card>
             <CardContent className="p-4">
               <div className="flex flex-col md:flex-row gap-4">
@@ -338,135 +299,93 @@ export default function ClientDocuments() {
             </CardContent>
           </Card>
 
-          {/* Enhanced Documents Grid */}
-          <div className="grid gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <FileText className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="space-y-1 flex-1">
-                        <h3 className="font-medium leading-none">{doc.title}</h3>
-                        {doc.description && (
-                          <p className="text-sm text-muted-foreground">{doc.description}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          {doc.createdAt.toLocaleDateString()}
-                          <Separator orientation="vertical" className="h-3" />
-                          <span>{doc.size}</span>
-                          <Separator orientation="vertical" className="h-3" />
-                          <span>{doc.downloads} downloads</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={getTypeColor(doc.type) as any} className="text-xs">
-                            {getTypeLabel(doc.type)}
-                          </Badge>
-                          <Badge variant={getStatusColor(doc.status) as any} className="text-xs">
-                            {getStatusLabel(doc.status)}
-                          </Badge>
-                          {doc.tags && doc.tags.slice(0, 2).map((tag, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
+              <Card key={doc.id} className="card-standard group hover:shadow-lg transition-all border-none bg-background/50 backdrop-blur-sm overflow-hidden flex flex-col h-full">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                      <FileText className="h-5 w-5" />
                     </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="gap-2"
-                        onClick={() => handlePreview(doc)}
-                        disabled={doc.status === "processando"}
-                      >
-                        <Eye className="h-4 w-4" />
-                        {doc.type === "auto" ? "Preview" : "Abrir"}
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        className="gap-2"
-                        onClick={() => handleDownload(doc)}
-                        disabled={doc.status === "processando"}
-                      >
-                        <Download className="h-4 w-4" />
-                        Baixar
-                      </Button>
-                    </div>
+                    <Badge variant={getStatusColor(doc.status) as any} className="text-[10px] uppercase font-bold">
+                      {getStatusLabel(doc.status)}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-sm font-bold line-clamp-2 min-h-[40px]">{doc.title}</CardTitle>
+                  <CardDescription className="text-[10px] uppercase font-bold tracking-tight mt-1">
+                    {getTypeLabel(doc.type)} • {doc.size}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex-1">
+                  {doc.description && (
+                    <p className="text-xs text-muted-foreground line-clamp-2 italic mb-4">{doc.description}</p>
+                  )}
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold mt-auto border-t pt-3">
+                    <Calendar className="h-3 w-3" />
+                    {doc.createdAt.toLocaleDateString()}
+                    <Separator orientation="vertical" className="h-3" />
+                    <span>{doc.downloads} downloads</span>
                   </div>
                 </CardContent>
+                <div className="p-4 pt-0 grid grid-cols-2 gap-2 mt-auto">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-8 text-[10px] font-bold uppercase"
+                    onClick={() => handlePreview(doc)}
+                    disabled={doc.status === "processando"}
+                  >
+                    <Eye className="h-3.5 w-3.5 mr-1" />
+                    Preview
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    className="h-8 text-[10px] font-bold uppercase"
+                    onClick={() => handleDownload(doc)}
+                    disabled={doc.status === "processando"}
+                  >
+                    <Download className="h-3.5 w-3.5 mr-1" />
+                    Baixar
+                  </Button>
+                </div>
               </Card>
             ))}
           </div>
         </TabsContent>
 
         <TabsContent value="favorites">
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {documents.filter(d => d.isFavorite).map((doc) => (
-              <Card key={doc.id} className="hover:shadow-md transition-shadow border-yellow-200">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <FileText className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="space-y-1 flex-1">
-                        <h3 className="font-medium leading-none">{doc.title}</h3>
-                        {doc.description && (
-                          <p className="text-sm text-muted-foreground">{doc.description}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          {doc.createdAt.toLocaleDateString()}
-                          <Separator orientation="vertical" className="h-3" />
-                          <span>{doc.size}</span>
-                          <Separator orientation="vertical" className="h-3" />
-                          <span>{doc.downloads} downloads</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={getTypeColor(doc.type) as any} className="text-xs">
-                            {getTypeLabel(doc.type)}
-                          </Badge>
-                          <Badge variant={getStatusColor(doc.status) as any} className="text-xs">
-                            {getStatusLabel(doc.status)}
-                          </Badge>
-                          {doc.tags && doc.tags.slice(0, 2).map((tag, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
+              <Card key={doc.id} className="card-standard border-yellow-200/50 bg-yellow-50/10">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-600">
+                      <Star className="h-5 w-5 fill-current" />
                     </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="gap-2"
-                        onClick={() => handlePreview(doc)}
-                        disabled={doc.status === "processando"}
-                      >
-                        <Eye className="h-4 w-4" />
-                        {doc.type === "auto" ? "Preview" : "Abrir"}
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        className="gap-2"
-                        onClick={() => handleDownload(doc)}
-                        disabled={doc.status === "processando"}
-                      >
-                        <Download className="h-4 w-4" />
-                        Baixar
-                      </Button>
-                    </div>
+                    <Badge variant={getStatusColor(doc.status) as any} className="text-[10px] uppercase font-bold">
+                      {getStatusLabel(doc.status)}
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-sm font-bold line-clamp-2">{doc.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold mt-2">
+                    <Calendar className="h-3 w-3" />
+                    {doc.createdAt.toLocaleDateString()}
+                    <Separator orientation="vertical" className="h-3" />
+                    <span>{doc.downloads} downloads</span>
                   </div>
                 </CardContent>
+                <div className="p-4 pt-0">
+                  <Button 
+                    size="sm" 
+                    className="w-full h-8 text-[10px] font-bold uppercase"
+                    onClick={() => handleDownload(doc)}
+                  >
+                    <Download className="h-3.5 w-3.5 mr-1" />
+                    Baixar
+                  </Button>
+                </div>
               </Card>
             ))}
           </div>
@@ -476,68 +395,22 @@ export default function ClientDocuments() {
           <div className="grid gap-4">
             {documents
               .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-              .slice(0, 10)
+              .slice(0, 5)
               .map((doc) => (
-                <Card key={doc.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-start gap-3 flex-1">
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                          <FileText className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="space-y-1 flex-1">
-                          <h3 className="font-medium leading-none">{doc.title}</h3>
-                          {doc.description && (
-                            <p className="text-sm text-muted-foreground">{doc.description}</p>
-                          )}
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Calendar className="h-3 w-3" />
-                            {doc.createdAt.toLocaleDateString()}
-                            <Separator orientation="vertical" className="h-3" />
-                            <span>{doc.size}</span>
-                            <Separator orientation="vertical" className="h-3" />
-                            <span>{doc.downloads} downloads</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Badge variant={getTypeColor(doc.type) as any} className="text-xs">
-                              {getTypeLabel(doc.type)}
-                            </Badge>
-                            <Badge variant={getStatusColor(doc.status) as any} className="text-xs">
-                              {getStatusLabel(doc.status)}
-                            </Badge>
-                            {doc.tags && doc.tags.slice(0, 2).map((tag, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="gap-2"
-                          onClick={() => handlePreview(doc)}
-                          disabled={doc.status === "processando"}
-                        >
-                          <Eye className="h-4 w-4" />
-                          {doc.type === "auto" ? "Preview" : "Abrir"}
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          className="gap-2"
-                          onClick={() => handleDownload(doc)}
-                          disabled={doc.status === "processando"}
-                        >
-                          <Download className="h-4 w-4" />
-                          Baixar
-                        </Button>
-                      </div>
+                <div key={doc.id} className="flex items-center justify-between p-4 border rounded-lg bg-background/50">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 bg-muted rounded-md">
+                      <FileText className="h-5 w-5 text-muted-foreground" />
                     </div>
-                  </CardContent>
-                </Card>
+                    <div>
+                      <p className="text-sm font-bold">{doc.title}</p>
+                      <p className="text-xs text-muted-foreground">{doc.createdAt.toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="ghost" onClick={() => handleDownload(doc)}>
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
               ))}
           </div>
         </TabsContent>
@@ -545,64 +418,16 @@ export default function ClientDocuments() {
         <TabsContent value="contracts">
           <div className="grid gap-4">
             {documents.filter(d => d.category === "contrato").map((doc) => (
-              <Card key={doc.id} className="hover:shadow-md transition-shadow border-blue-200">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <FileText className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="space-y-1 flex-1">
-                        <h3 className="font-medium leading-none">{doc.title}</h3>
-                        {doc.description && (
-                          <p className="text-sm text-muted-foreground">{doc.description}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          {doc.createdAt.toLocaleDateString()}
-                          <Separator orientation="vertical" className="h-3" />
-                          <span>{doc.size}</span>
-                          <Separator orientation="vertical" className="h-3" />
-                          <span>{doc.downloads} downloads</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={getTypeColor(doc.type) as any} className="text-xs">
-                            {getTypeLabel(doc.type)}
-                          </Badge>
-                          <Badge variant={getStatusColor(doc.status) as any} className="text-xs">
-                            {getStatusLabel(doc.status)}
-                          </Badge>
-                          {doc.tags && doc.tags.slice(0, 2).map((tag, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="gap-2"
-                        onClick={() => handlePreview(doc)}
-                        disabled={doc.status === "processando"}
-                      >
-                        <Eye className="h-4 w-4" />
-                        {doc.type === "auto" ? "Preview" : "Abrir"}
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        className="gap-2"
-                        onClick={() => handleDownload(doc)}
-                        disabled={doc.status === "processando"}
-                      >
-                        <Download className="h-4 w-4" />
-                        Baixar
-                      </Button>
-                    </div>
-                  </div>
+              <Card key={doc.id} className="border-blue-200 bg-blue-50/5">
+                <CardHeader>
+                  <CardTitle className="text-sm font-bold">{doc.title}</CardTitle>
+                  <CardDescription>{doc.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex justify-between items-center">
+                   <Badge variant="outline">{getStatusLabel(doc.status)}</Badge>
+                   <Button size="sm" onClick={() => handleDownload(doc)}>
+                     <Download className="h-4 w-4 mr-2" /> Baixar Contrato
+                   </Button>
                 </CardContent>
               </Card>
             ))}
@@ -621,7 +446,7 @@ export default function ClientDocuments() {
                     const count = documents.filter(d => d.category === cat.id).length;
                     return (
                       <div key={cat.id} className="flex justify-between items-center">
-                        <span>{cat.name}</span>
+                        <span className="text-sm font-medium">{cat.name}</span>
                         <Badge variant="secondary">{count}</Badge>
                       </div>
                     );
@@ -632,7 +457,7 @@ export default function ClientDocuments() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Atividade de Downloads</CardTitle>
+                <CardTitle>Mais Acessados</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -641,8 +466,8 @@ export default function ClientDocuments() {
                     .slice(0, 5)
                     .map(doc => (
                       <div key={doc.id} className="flex justify-between items-center">
-                        <span className="text-sm">{doc.title}</span>
-                        <Badge variant="outline">{doc.downloads} downloads</Badge>
+                        <span className="text-sm truncate mr-4">{doc.title}</span>
+                        <Badge variant="outline" className="shrink-0">{doc.downloads} downloads</Badge>
                       </div>
                     ))}
                 </div>
@@ -652,29 +477,12 @@ export default function ClientDocuments() {
         </TabsContent>
       </Tabs>
 
-      {/* Preview Dialog */}
-      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh]">
-          <DialogHeader>
-            <DialogTitle>Preview: {previewTitle}</DialogTitle>
-            <DialogDescription>
-              Visualização do documento gerado
-            </DialogDescription>
-          </DialogHeader>
-          <div className="max-h-[60vh] overflow-y-auto">
-            <div className="p-4 bg-white border rounded">
-              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                {previewContent}
-              </pre>
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Button onClick={() => setIsPreviewOpen(false)}>
-              Fechar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DocumentPreviewDialog 
+        document={selectedDoc}
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        generatedContent={previewContent}
+      />
     </div>
   );
 }
