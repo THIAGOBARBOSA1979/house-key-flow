@@ -22,9 +22,10 @@ export interface Document {
   createdAt: Date;
   updatedAt: Date;
   downloads: number;
-  status: "draft" | "published" | "archived";
+  status: "draft" | "published" | "archived" | "trash";
   approvalStatus: "pending" | "approved" | "rejected";
   approvalComment?: string;
+  approvalHistory?: ApprovalHistoryEntry[];
   tags?: string[];
   isFavorite?: boolean;
   version: number;
@@ -35,6 +36,27 @@ export interface Document {
   createdBy: string;
   approvedBy?: string;
   approvedAt?: Date;
+  deletedAt?: Date;
+  attachments?: DocumentAttachment[];
+  viewCount: number;
+  viewers?: string[];
+}
+
+export interface ApprovalHistoryEntry {
+  id: string;
+  status: "pending" | "approved" | "rejected";
+  comment?: string;
+  performedBy: string;
+  performedAt: Date;
+}
+
+export interface DocumentAttachment {
+  id: string;
+  name: string;
+  url: string;
+  size: string;
+  type: string;
+  createdAt: Date;
 }
 
 export interface DocumentVersion {
@@ -72,6 +94,7 @@ class DocumentService {
       type: "auto",
       category: "contrato",
       folderId: "f1",
+      viewCount: 45,
       template: `CONTRATO DE COMPRA E VENDA
 
 VENDEDOR: A2 Incorporadora LTDA
@@ -104,6 +127,7 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       type: "manual",
       category: "manual",
       folderId: "f1",
+      viewCount: 120,
       fileUrl: "/docs/manual-proprietario.pdf",
       fileName: "manual-proprietario.pdf",
       fileSize: "850 KB",
@@ -127,6 +151,7 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       type: "auto",
       category: "relatorio",
       folderId: "f2",
+      viewCount: 12,
       template: `RELATÓRIO DE VISTORIA
 
 CLIENTE: {{nome_cliente}}
@@ -215,7 +240,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     );
   }
 
-  createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus'>): Document {
+  createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus' | 'viewCount'>): Document {
     const newDocument: Document = {
       ...data,
       id: uuidv4(),
@@ -223,7 +248,8 @@ OBSERVAÇÕES: {{observacoes}}`,
       updatedAt: new Date(),
       downloads: 0,
       version: 1,
-      approvalStatus: 'pending'
+      approvalStatus: 'pending',
+      viewCount: 0
     };
     
     this.documents.push(newDocument);
@@ -281,7 +307,28 @@ OBSERVAÇÕES: {{observacoes}}`,
     if (index === -1) return false;
 
     const doc = this.documents[index];
-    console.log('DocumentService: Documento excluído:', doc.title);
+    
+    // Soft delete logic
+    if (doc.status !== 'trash') {
+      this.updateDocument(id, { 
+        status: 'trash', 
+        deletedAt: new Date() 
+      });
+      
+      auditLogService.log({
+        entityType: 'document',
+        entityId: id,
+        action: 'archived',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Documento "${doc.title}" enviado para a lixeira.`
+      });
+      return true;
+    }
+
+    // Permanent delete if already in trash
+    console.log('DocumentService: Documento excluído permanentemente:', doc.title);
     
     auditLogService.log({
       entityType: 'document',
@@ -290,11 +337,77 @@ OBSERVAÇÕES: {{observacoes}}`,
       performedBy: 'admin-1',
       performedByName: 'Administrador',
       performedByRole: 'admin',
-      details: `Documento "${doc.title}" foi excluído.`
+      details: `Documento "${doc.title}" foi excluído permanentemente.`
     });
 
     this.documents.splice(index, 1);
     return true;
+  }
+
+  restoreDocument(id: string): boolean {
+    const doc = this.getDocumentById(id);
+    if (!doc || doc.status !== 'trash') return false;
+
+    this.updateDocument(id, { 
+      status: 'published',
+      deletedAt: undefined 
+    });
+
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento "${doc.title}" restaurado da lixeira.`
+    });
+
+    return true;
+  }
+
+  moveDocument(id: string, folderId: string | undefined): boolean {
+    const doc = this.getDocumentById(id);
+    if (!doc) return false;
+
+    this.updateDocument(id, { folderId });
+
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento "${doc.title}" movido para pasta ${folderId || 'Raiz'}.`
+    });
+
+    return true;
+  }
+
+  logView(id: string, userId: string = 'user-current'): void {
+    const doc = this.getDocumentById(id);
+    if (!doc) return;
+
+    const viewers = doc.viewers || [];
+    if (!viewers.includes(userId)) {
+      viewers.push(userId);
+    }
+
+    this.updateDocument(id, { 
+      viewCount: (doc.viewCount || 0) + 1,
+      viewers 
+    });
+
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'updated',
+      performedBy: userId,
+      performedByName: 'Usuário',
+      performedByRole: 'admin',
+      details: `Documento "${doc.title}" visualizado.`
+    });
   }
 
   deleteMultipleDocuments(ids: string[]): number {
