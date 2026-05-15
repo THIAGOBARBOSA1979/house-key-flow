@@ -35,6 +35,7 @@ interface InspectionItemProps {
 export const InspectionItem = ({ inspection }: InspectionItemProps) => {
   const { toast } = useToast();
   const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
+  const [startInspectionDialogOpen, setStartInspectionDialogOpen] = useState(false);
   
   const handleViewDetails = () => {
     toast({
@@ -44,11 +45,14 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
   };
 
   const handleCancelInspection = () => {
+    inspectionService.updateStatus(inspection.id, "cancelled");
     toast({
       title: "Vistoria cancelada",
-      description: `A vistoria de ${inspection.client} foi removida.`,
+      description: `A vistoria de ${inspection.client} foi cancelada.`,
       variant: "destructive",
     });
+    // Forcing refresh would be better, but we don't have a callback here. 
+    // In a real app, we'd use a context or global state.
   };
 
   const handleSendReminder = () => {
@@ -56,6 +60,21 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
       title: "Lembrete enviado",
       description: `Notificação enviada para ${inspection.client}.`,
     });
+  };
+
+  const handleInspectionComplete = (data: any) => {
+    inspectionService.updateStatus(inspection.id, "complete");
+    toast({
+      title: "Vistoria concluída",
+      description: "O status da vistoria foi atualizado para concluído.",
+    });
+  };
+
+  const startInspection = () => {
+    setStartInspectionDialogOpen(true);
+    if (inspection.status === "pending") {
+      inspectionService.updateStatus(inspection.id, "progress");
+    }
   };
 
   return (
