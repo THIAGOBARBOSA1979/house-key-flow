@@ -208,12 +208,17 @@ export const StartInspection = ({
   return (
     <div className="space-y-6">
       {/* Progress bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm">
-          <span>Progresso: {progress}%</span>
-          <span>{completedItems}/{totalItems} itens verificados</span>
+      <div className="space-y-3 bg-muted/30 p-4 rounded-xl border border-border/10">
+        <div className="flex justify-between items-center text-sm">
+          <div className="flex flex-col">
+            <span className="font-bold text-primary uppercase text-[10px] tracking-widest mb-1">Status da Vistoria</span>
+            <span className="text-muted-foreground font-medium">{progress}% concluído ({completedItems}/{totalItems} itens)</span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={handleReset} className="h-8 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 font-bold uppercase tracking-tighter">
+            Resetar
+          </Button>
         </div>
-        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+        <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden shadow-inner">
           <div 
             className="h-full bg-primary" 
             style={{ width: `${progress}%` }}
