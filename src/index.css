@@ -267,11 +267,15 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-md border shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-card text-card-foreground rounded-xl border shadow-sem-sm hover:shadow-sem-md transition-all duration-300;
   }
 
   .card-hover-effect {
     @apply hover:-translate-y-1 hover:border-primary/30;
+  }
+
+  .card-glass {
+    @apply bg-background/80 backdrop-blur-md border border-white/20 dark:border-white/5;
   }
 
   /* Status Badges */
@@ -293,6 +297,14 @@
 
   .badge-critical {
     @apply bg-status-critical/10 text-status-critical border-status-critical/20 dark:text-status-critical;
+  }
+
+  .badge-info {
+    @apply bg-primary/10 text-primary border-primary/20 dark:text-primary;
+  }
+
+  .badge-neutral {
+    @apply bg-muted text-muted-foreground border-muted-foreground/20;
   }
 
   /* Typography Semantic Utilities */
@@ -318,6 +330,19 @@
 
   .animate-scale-in {
     animation: scale-in var(--duration-normal) var(--ease-spring) forwards;
+  }
+
+  /* Utilities for glassmorphism and modern effects */
+  .glass-effect {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/60;
+  }
+
+  .surface-elevation {
+    @apply bg-card border shadow-sem-sm hover:shadow-sem-lg transition-all duration-300;
   }
 
   @keyframes scale-in {
