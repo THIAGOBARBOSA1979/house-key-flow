@@ -279,11 +279,13 @@ class WarrantyValidationService {
       description: data.problems.map(p => p.description).join("; "),
       category: item.category,
       problems: data.problems.map(p => ({
+        id: `prob-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
         category: p.category,
         location: p.location,
         description: p.description,
         severity: p.severity,
-        photos: p.photos
+        photos: p.photos,
+        status: "pending"
       }))
     });
 
