@@ -116,7 +116,8 @@ export function AppointmentDetails({
             <Textarea 
               placeholder="Adicionar observações..."
               className="mt-1"
-              defaultValue={appointment.notes}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
             />
           </div>
           
