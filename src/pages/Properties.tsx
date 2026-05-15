@@ -141,31 +141,32 @@ const Properties = () => {
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard 
+      <ResponsiveGrid columns={4} gap="md">
+        <StatsCard 
           label="Total de Projetos" 
           value={metrics.total} 
           icon={Building} 
-          trend="+1 este mês"
+          trend={{ value: "1 este mês", isPositive: true }}
         />
-        <MetricCard 
+        <StatsCard 
           label="Em Andamento" 
           value={metrics.byStatus.progress || 0} 
           icon={TrendingUp} 
-          color="text-primary"
+          variant="progress"
         />
-        <MetricCard 
+        <StatsCard 
           label="Total de Unidades" 
           value={metrics.totalUnits} 
           icon={PieChart} 
+          variant="brand"
         />
-        <MetricCard 
+        <StatsCard 
           label="Progresso Médio" 
           value={`${metrics.averageProgress}%`} 
           icon={BarChart3} 
-          color="text-emerald-600"
+          variant="complete"
         />
-      </div>
+      </ResponsiveGrid>
 
       <FilterBar
         searchPlaceholder="Buscar por nome ou cidade..."
