@@ -52,8 +52,7 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
       description: `A vistoria de ${inspection.client} foi cancelada.`,
       variant: "destructive",
     });
-    // Forcing refresh would be better, but we don't have a callback here. 
-    // In a real app, we'd use a context or global state.
+    if (onUpdate) onUpdate();
   };
 
   const handleSendReminder = () => {
