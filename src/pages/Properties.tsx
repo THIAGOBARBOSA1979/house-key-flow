@@ -303,27 +303,37 @@ const Properties = () => {
 
       {/* Create Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-[550px]">
-          <DialogHeader>
-            <DialogTitle>Novo Empreendimento</DialogTitle>
+        <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b bg-muted/5">
+            <DialogTitle className="flex items-center gap-2">
+              <Building className="w-5 h-5 text-primary" />
+              Novo Empreendimento
+            </DialogTitle>
           </DialogHeader>
-          <PropertyForm onSubmit={handleCreate} onCancel={() => setIsFormOpen(false)} />
+          <div className="p-6">
+            <PropertyForm onSubmit={handleCreate} onCancel={() => setIsFormOpen(false)} />
+          </div>
         </DialogContent>
       </Dialog>
 
       {/* Edit Dialog */}
       <Dialog open={!!editingProperty} onOpenChange={(open) => !open && setEditingProperty(null)}>
-        <DialogContent className="sm:max-w-[550px]">
-          <DialogHeader>
-            <DialogTitle>Editar Empreendimento</DialogTitle>
+        <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b bg-muted/5">
+            <DialogTitle className="flex items-center gap-2">
+              <Pencil className="w-5 h-5 text-primary" />
+              Editar Empreendimento
+            </DialogTitle>
           </DialogHeader>
-          {editingProperty && (
-            <PropertyForm 
-              initialData={editingProperty} 
-              onSubmit={handleUpdate} 
-              onCancel={() => setEditingProperty(null)} 
-            />
-          )}
+          <div className="p-6">
+            {editingProperty && (
+              <PropertyForm 
+                initialData={editingProperty} 
+                onSubmit={handleUpdate} 
+                onCancel={() => setEditingProperty(null)} 
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 

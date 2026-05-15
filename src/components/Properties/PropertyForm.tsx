@@ -49,9 +49,9 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome do empreendimento <span className="text-destructive">*</span></FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome do empreendimento <span className="text-destructive">*</span></FormLabel>
                 <FormControl>
-                  <Input placeholder="Ex: Residencial Vista Verde" {...field} />
+                  <Input placeholder="Ex: Residencial Vista Verde" className="h-11 rounded-xl" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -63,11 +63,11 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
             name="location"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Localização <span className="text-destructive">*</span></FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Localização <span className="text-destructive">*</span></FormLabel>
                 <FormControl>
-                  <Input placeholder="Ex: São Paulo, SP" {...field} />
+                  <Input placeholder="Ex: São Paulo, SP" className="h-11 rounded-xl" {...field} />
                 </FormControl>
-                <FormDescription>Cidade e Estado</FormDescription>
+                <FormDescription className="text-[10px] uppercase font-bold tracking-tight text-muted-foreground">Cidade e Estado</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -79,10 +79,11 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
               name="units"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Total de Unidades <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Total de Unidades <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
+                      className="h-11 rounded-xl"
                       {...field} 
                       onChange={e => field.onChange(parseInt(e.target.value) || 0)} 
                     />
@@ -97,10 +98,10 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Status <span className="text-destructive">*</span></FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-11 rounded-xl">
                         <SelectValue placeholder="Selecione o status" />
                       </SelectTrigger>
                     </FormControl>
@@ -122,32 +123,33 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
               name="deliveryDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Entrega</FormLabel>
+                  <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Entrega</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-full pl-3 text-left font-normal h-10",
+                            "w-full pl-3 text-left font-bold h-11 rounded-xl",
                             !field.value && "text-muted-foreground"
                           )}
                         >
                           {field.value ? (
                             safeFormat(field.value, "MMM yyyy")
                           ) : (
-                            <span>Data</span>
+                            <span>Data prevista</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-0 rounded-xl overflow-hidden shadow-sem-lg border-none" align="start">
                       <Calendar
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
                         initialFocus
+                        className="p-3"
                       />
                     </PopoverContent>
                   </Popover>
@@ -161,9 +163,9 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
               name="manager"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Responsável</FormLabel>
+                  <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Responsável</FormLabel>
                   <FormControl>
-                    <Input placeholder="Gerente" {...field} className="h-10" />
+                    <Input placeholder="Gerente" {...field} className="h-11 rounded-xl" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,13 +177,13 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
               name="totalArea"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Área (m²)</FormLabel>
+                  <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Área (m²)</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
                       placeholder="m²"
                       {...field} 
-                      className="h-10"
+                      className="h-11 rounded-xl"
                       onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                     />
                   </FormControl>
@@ -196,12 +198,12 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Descrição</FormLabel>
+                <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Descrição</FormLabel>
                 <FormControl>
                   <Textarea 
                     placeholder="Breve descrição do empreendimento..." 
                     {...field} 
-                    className="min-h-[100px] resize-none"
+                    className="min-h-[120px] resize-none rounded-xl"
                   />
                 </FormControl>
                 <FormMessage />
@@ -210,13 +212,13 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
           />
         </div>
         
-        <div className="flex justify-end gap-3 pt-6 border-t border-border/10">
+        <div className="flex justify-end gap-3 pt-6 border-t border-border/10 -mx-6 px-6 bg-muted/5">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel} className="rounded-lg font-bold">
+            <Button type="button" variant="outline" onClick={onCancel} className="h-11 px-6 rounded-xl font-bold transition-all">
               Cancelar
             </Button>
           )}
-          <Button type="submit" className="rounded-lg font-bold bg-primary hover:bg-primary/90">
+          <Button type="submit" className="h-11 px-8 rounded-xl font-bold bg-primary hover:bg-primary/90 shadow-sem-md transition-all active:scale-95">
             {initialData ? "Salvar Alterações" : "Criar Empreendimento"}
           </Button>
         </div>
