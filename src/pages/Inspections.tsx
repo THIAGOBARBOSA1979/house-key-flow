@@ -12,7 +12,8 @@ import {
   Filter, 
   Download,
   Users,
-  Building
+  Building,
+  ClipboardList
 } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
@@ -52,6 +53,7 @@ export default function Inspections() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterTechnician, setFilterTechnician] = useState("all");
   const [filterProperty, setFilterProperty] = useState("all");
+  const [filterChecklist, setFilterChecklist] = useState("all");
   const [activeTab, setActiveTab] = useState("list");
   const [inspections, setInspections] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
@@ -75,16 +77,18 @@ export default function Inspections() {
       const matchesStatus = filterStatus === "all" || inspection.status === filterStatus;
       const matchesTech = filterTechnician === "all" || inspection.technician === filterTechnician;
       const matchesProperty = filterProperty === "all" || inspection.property === filterProperty;
+      const matchesChecklist = filterChecklist === "all" || inspection.checklistId === filterChecklist;
       
-      return matchesSearch && matchesStatus && matchesTech && matchesProperty;
+      return matchesSearch && matchesStatus && matchesTech && matchesProperty && matchesChecklist;
     });
-  }, [inspections, searchTerm, filterStatus, filterTechnician, filterProperty]);
+  }, [inspections, searchTerm, filterStatus, filterTechnician, filterProperty, filterChecklist]);
 
   const clearFilters = () => {
     setSearchTerm("");
     setFilterStatus("all");
     setFilterTechnician("all");
     setFilterProperty("all");
+    setFilterChecklist("all");
   };
 
   const handleExport = () => {
@@ -235,6 +239,20 @@ export default function Inspections() {
                   <SelectItem value="Carlos Andrade">Carlos Andrade</SelectItem>
                   <SelectItem value="Luiza Mendes">Luiza Mendes</SelectItem>
                   <SelectItem value="Roberto Santos">Roberto Santos</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filterChecklist} onValueChange={setFilterChecklist}>
+                <SelectTrigger className="w-full sm:w-[180px] rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <ClipboardList className="h-3 w-3 text-muted-foreground" />
+                    <SelectValue placeholder="Checklist" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os checklists</SelectItem>
+                  <SelectItem value="checklist1">Entrega de Apartamento</SelectItem>
+                  <SelectItem value="checklist2">Verificação Hidráulica</SelectItem>
                 </SelectContent>
               </Select>
             </div>
