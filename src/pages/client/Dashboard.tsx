@@ -280,7 +280,7 @@ const Dashboard = () => {
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-body-base font-semibold">{inspection.title}</p>
+                      <p className="text-body-base font-semibold">{inspection.type === 'technicalInspection' ? 'Vistoria Técnica' : 'Vistoria de Chaves'}</p>
                       <p className="text-caption">{inspection.date.toLocaleDateString()}</p>
                     </div>
                   </div>
