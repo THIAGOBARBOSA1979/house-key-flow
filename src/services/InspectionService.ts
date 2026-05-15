@@ -263,6 +263,27 @@ class InspectionService {
     
     return (totalDays / completed.length).toFixed(1) + "d";
   }
+
+  getStatsByStatus() {
+    return this.inspections.reduce((acc, curr) => {
+      acc[curr.status] = (acc[curr.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+  }
+
+  getStatsByType() {
+    return this.inspections.reduce((acc, curr) => {
+      acc[curr.type] = (acc[curr.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+  }
+
+  getStatsByTechnician() {
+    return this.inspections.reduce((acc, curr) => {
+      acc[curr.technician] = (acc[curr.technician] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+  }
 }
 
 export const inspectionService = new InspectionService();
