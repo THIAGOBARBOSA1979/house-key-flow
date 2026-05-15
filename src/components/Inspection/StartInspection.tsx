@@ -254,6 +254,15 @@ export const StartInspection = ({
     }
   };
   
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 space-y-4">
+        <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-muted-foreground font-medium">Carregando checklist...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Progress bar */}
@@ -269,7 +278,7 @@ export const StartInspection = ({
         </div>
         <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden shadow-inner">
           <div 
-            className="h-full bg-primary" 
+            className="h-full bg-primary transition-all duration-500" 
             style={{ width: `${progress}%` }}
           />
         </div>
