@@ -186,7 +186,7 @@ const ClientWarranty = () => {
   const { toast } = useToast();
   
   // Mock client ID - in real app, get from auth context
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const clientId = user?.id || "client-1";
   
   // Get client stage permissions
