@@ -7,8 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChecklistItem } from "@/services/ChecklistService";
-import { Check, X, AlertCircle, Camera, Save, Send, PenTool, User, ShieldCheck } from "lucide-react";
+import { ChecklistItem, ChecklistGroup } from "@/services/ChecklistService";
+import { Check, X, AlertCircle, Camera, Save, Send, PenTool, User, ShieldCheck, MapPin, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,66 +16,81 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ChecklistExecutionProps {
   title: string;
-  items: ChecklistItem[];
-  onSave: (completedItems: ChecklistItem[], notes: string) => void;
-  onSubmit: (completedItems: ChecklistItem[], notes: string) => void;
+  groups: ChecklistGroup[];
+  onSave: (completedGroups: ChecklistGroup[], notes: string) => void;
+  onSubmit: (completedGroups: ChecklistGroup[], notes: string) => void;
   readOnly?: boolean;
 }
 
 export function ChecklistExecution({ 
   title, 
-  items, 
+  groups, 
   onSave, 
   onSubmit, 
   readOnly = false 
 }: ChecklistExecutionProps) {
   const { toast } = useToast();
-  const [completedItems, setCompletedItems] = useState<ChecklistItem[]>(items);
+  const [completedGroups, setCompletedGroups] = useState<ChecklistGroup[]>(groups);
   const [notes, setNotes] = useState("");
   const [currentSection, setCurrentSection] = useState(0);
-  const [showSignature, setShowSignature] = useState(false);
-  const [signature, setSignature] = useState("");
-  const [clientSignature, setClientSignature] = useState("");
-
-
-  // Agrupar itens por categoria
-  const groupedItems = completedItems.reduce((acc, item) => {
-    let category = "Outros";
-    const match = item.description.match(/^([^:]+):\s(.+)$/);
-    
-    if (match) {
-      category = match[1];
-    }
-    
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    
-    acc[category].push(item);
-    return acc;
-  }, {} as Record<string, ChecklistItem[]>);
-
-  const sections = Object.keys(groupedItems);
-  const totalItems = completedItems.length;
-  const completedCount = completedItems.filter(item => item.status && (item.status === 'ok' || item.status === 'issue')).length;
+  
+  // Stats
+  const allItems = completedGroups.flatMap(g => g.items);
+  const totalItems = allItems.length;
+  const completedCount = allItems.filter(item => item.status && item.status !== 'na').length;
   const progressPercentage = totalItems > 0 ? (completedCount / totalItems) * 100 : 0;
 
-  const handleItemStatusChange = (itemId: string, status: 'ok' | 'issue' | 'na') => {
-    setCompletedItems(prev => 
-      prev.map(item => 
-        item.id === itemId ? { ...item, status } : item
+  const handleItemStatusChange = (groupId: string, itemId: string, status: 'ok' | 'issue' | 'na') => {
+    setCompletedGroups(prev => 
+      prev.map(group => 
+        group.id === groupId 
+          ? { 
+              ...group, 
+              items: group.items.map(item => 
+                item.id === itemId ? { ...item, status } : item
+              ) 
+            }
+          : group
       )
     );
+
+    // Auto-alert for critical non-conformity
+    const item = allItems.find(i => i.id === itemId);
+    if (status === 'issue' && item?.severity === 'critical') {
+      toast({
+        title: "ALERTA CRÍTICO",
+        description: `Não conformidade crítica detectada: ${item.description}`,
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleFileUpload = (itemId: string, files: FileList | null) => {
+  const handleFileUpload = (groupId: string, itemId: string, files: FileList | null) => {
     if (!files) return;
     
-    setCompletedItems(prev => 
-      prev.map(item => 
-        item.id === itemId 
-          ? { ...item, evidence: Array.from(files) }
-          : item
+    setCompletedGroups(prev => 
+      prev.map(group => 
+        group.id === groupId 
+          ? { 
+              ...group, 
+              items: group.items.map(item => 
+                item.id === itemId 
+                  ? { 
+                      ...item, 
+                      evidence: [
+                        ...(item.evidence || []),
+                        ...Array.from(files).map(f => ({ 
+                          id: `ev-${Date.now()}-${Math.random()}`, 
+                          file: f, 
+                          url: URL.createObjectURL(f), 
+                          timestamp: new Date() 
+                        }))
+                      ] 
+                    }
+                  : item
+              ) 
+            }
+          : group
       )
     );
   };
@@ -98,7 +113,8 @@ export function ChecklistExecution({
     }
   };
 
-  const currentSectionItems = groupedItems[sections[currentSection]] || [];
+  const currentSectionGroup = completedGroups[currentSection] || { items: [] };
+  const currentSectionItems = currentSectionGroup.items;
 
   return (
     <div className="space-y-6 pb-20">
@@ -134,9 +150,9 @@ export function ChecklistExecution({
 
       {/* Navegação por seções otimizada */}
       <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth snap-x">
-        {sections.map((section, index) => (
+        {completedGroups.map((group, index) => (
           <Button
-            key={section}
+            key={group.id}
             variant={currentSection === index ? "default" : "outline"}
             size="sm"
             onClick={() => setCurrentSection(index)}
@@ -145,10 +161,10 @@ export function ChecklistExecution({
               currentSection === index ? "shadow-md scale-105" : "opacity-70"
             )}
           >
-            {section}
+            {group.name}
             <Badge variant="secondary" className="ml-2 bg-white/20 text-[10px]">
-              {groupedItems[section].filter(item => item.status && item.status !== 'na').length}/
-              {groupedItems[section].length}
+              {group.items.filter(item => item.status && item.status !== 'na').length}/
+              {group.items.length}
             </Badge>
           </Button>
         ))}
@@ -158,7 +174,7 @@ export function ChecklistExecution({
       <div className="space-y-4">
         <AnimatePresence mode="wait">
           <motion.div
-            key={sections[currentSection]}
+            key={completedGroups[currentSection]?.id}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -178,21 +194,28 @@ export function ChecklistExecution({
                 )}>
                   <CardContent className="p-4">
 
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{itemText}</span>
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-gray-800">{item.description}</span>
                         {item.required && (
-                          <Badge variant="destructive" className="text-xs">
+                          <Badge variant="destructive" className="text-[10px] font-black uppercase py-0 px-2">
                             Obrigatório
                           </Badge>
                         )}
+                        <Badge variant="outline" className={cn(
+                          "text-[10px] font-black uppercase py-0 px-2",
+                          item.severity === 'critical' ? 'border-red-500 text-red-500' :
+                          item.severity === 'high' ? 'border-orange-500 text-orange-500' : 'border-blue-500 text-blue-500'
+                        )}>
+                          {item.severity}
+                        </Badge>
                       </div>
                     </div>
 
                     <div className={cn(
-                      "px-3 py-1 text-xs font-medium rounded-full",
+                      "px-3 py-1 text-xs font-black uppercase rounded-lg shrink-0",
                       getStatusColor(item.status)
                     )}>
                       {getStatusText(item.status)}
@@ -200,56 +223,77 @@ export function ChecklistExecution({
                   </div>
 
                   {!readOnly && (
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-3 gap-2">
                       <Button
                         size="sm"
                         variant={item.status === "ok" ? "default" : "outline"}
-                        onClick={() => handleItemStatusChange(item.id, 'ok')}
+                        onClick={() => handleItemStatusChange(completedGroups[currentSection].id, item.id, 'ok')}
+                        className={cn("rounded-lg font-bold", item.status === 'ok' && "bg-status-complete")}
                       >
                         <Check className="h-4 w-4 mr-1" />
-                        OK
+                        CONFORME
                       </Button>
                       <Button
                         size="sm"
                         variant={item.status === "issue" ? "destructive" : "outline"}
-                        onClick={() => handleItemStatusChange(item.id, 'issue')}
+                        onClick={() => handleItemStatusChange(completedGroups[currentSection].id, item.id, 'issue')}
+                        className="rounded-lg font-bold"
                       >
                         <X className="h-4 w-4 mr-1" />
-                        Problema
+                        FALHA
                       </Button>
                       <Button
                         size="sm"
                         variant={item.status === "na" ? "secondary" : "outline"}
-                        onClick={() => handleItemStatusChange(item.id, 'na')}
+                        onClick={() => handleItemStatusChange(completedGroups[currentSection].id, item.id, 'na')}
+                        className="rounded-lg font-bold"
                       >
                         N/A
                       </Button>
                     </div>
                   )}
 
-                  {/* Upload de evidências */}
-                  {!readOnly && (
-                    <div className="space-y-2">
-                      <Label className="text-sm">Evidências (Fotos)</Label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={(e) => handleFileUpload(item.id, e.target.files)}
-                          className="text-sm"
-                        />
-                        <Button size="sm" variant="outline">
-                          <Camera className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      {item.evidence && item.evidence.length > 0 && (
-                        <p className="text-xs text-muted-foreground">
-                          {item.evidence.length} arquivo(s) anexado(s)
-                        </p>
+                  {/* Evidências */}
+                  <div className="space-y-3 bg-muted/30 p-3 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-black uppercase text-muted-foreground flex items-center gap-2">
+                        <Camera size={14} /> Evidências Fotográficas
+                      </Label>
+                      {!readOnly && (
+                        <div className="relative">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => handleFileUpload(completedGroups[currentSection].id, item.id, e.target.files)}
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                          />
+                          <Button size="sm" variant="outline" className="h-8 rounded-lg font-bold text-[10px] uppercase">
+                            Adicionar Fotos
+                          </Button>
+                        </div>
                       )}
                     </div>
-                  )}
+
+                    {item.evidence && item.evidence.length > 0 ? (
+                      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                        {item.evidence.map((ev, idx) => (
+                          <div key={ev.id} className="relative group shrink-0">
+                            <img 
+                              src={ev.url} 
+                              alt="Evidência" 
+                              className="h-20 w-20 object-cover rounded-lg border-2 border-white shadow-sm"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                              <Info size={16} className="text-white" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground italic">Nenhuma foto anexada a este item.</p>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -319,29 +363,32 @@ export function ChecklistExecution({
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border/50 z-30 flex gap-3">
         <Button 
           variant="outline" 
-          onClick={() => onSave(completedItems, notes)} 
-          className="flex-1 rounded-xl h-12 font-bold uppercase tracking-tighter"
+          onClick={() => onSave(completedGroups, notes)} 
+          className="flex-1 rounded-xl h-12 font-black uppercase tracking-tighter"
         >
           <Save className="mr-2 h-4 w-4" />
-          Pausar
+          Rascunho
         </Button>
         <Button 
           onClick={() => {
-            const pending = completedItems.filter(i => i.required && !i.status);
+            const pending = allItems.filter(i => i.required && !i.status);
             if (pending.length > 0) {
               toast({
-                title: "Itens Obrigatórios",
-                description: `Ainda restam ${pending.length} itens obrigatórios sem preenchimento.`,
+                title: "Pendências Obrigatórias",
+                description: `Existem ${pending.length} itens obrigatórios não verificados.`,
                 variant: "destructive"
               });
               return;
             }
-            onSubmit(completedItems, notes);
+            onSubmit(completedGroups, notes);
           }} 
-          className="flex-[2] rounded-xl h-12 font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 uppercase tracking-tighter"
+          className="flex-[2] rounded-xl h-12 font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 uppercase tracking-tighter flex items-center justify-center gap-2"
         >
-          <Send className="mr-2 h-4 w-4" />
-          Finalizar Vistoria
+          <div className="flex flex-col items-center leading-tight">
+            <span className="text-xs opacity-70">Finalizar</span>
+            <span className="text-sm">VISTORIA TÉCNICA</span>
+          </div>
+          <Send className="h-4 w-4" />
         </Button>
       </div>
     </div>

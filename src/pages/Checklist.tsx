@@ -7,24 +7,25 @@ import { ChecklistBuilder } from '@/components/Checklists/ChecklistBuilder';
 import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
 import { ChecklistExecution } from '@/components/Checklists/ChecklistExecution';
-import { ChecklistItem, checklistService } from '@/services/ChecklistService';
+import { ChecklistItem, ChecklistGroup, checklistService } from '@/services/ChecklistService';
 import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, Filter, History, AlertCircle } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from '@/components/shared/StatsCard';
 import { cn } from '@/lib/utils';
 
-import { ChecklistTemplate } from '@/services/ChecklistService';
+import { ChecklistTemplate, ChecklistExecutionRecord } from '@/services/ChecklistService';
 
 export default function Checklist() {
   const { toast } = useToast();
   const [currentView, setCurrentView] = useState<'templates' | 'builder' | 'execution' | 'detail'>('templates');
   const [selectedTemplate, setSelectedTemplate] = useState<ChecklistTemplate | null>(null);
-  const [executionItems, setExecutionItems] = useState<ChecklistItem[]>([]);
+  const [selectedExecution, setSelectedExecution] = useState<ChecklistExecutionRecord | null>(null);
+  const [executionGroups, setExecutionGroups] = useState<ChecklistGroup[]>([]);
 
   const handleSelectTemplate = (template: ChecklistTemplate) => {
     setSelectedTemplate(template);
-    setExecutionItems(template.items || []);
+    setExecutionGroups(template.groups || []);
     setCurrentView('execution');
   };
 
@@ -32,12 +33,12 @@ export default function Checklist() {
     setCurrentView('builder');
   };
 
-  const handleSaveChecklist = async (title: string, description: string, items: ChecklistItem[]) => {
+  const handleSaveChecklist = async (title: string, description: string, groups: ChecklistGroup[]) => {
     try {
       await checklistService.createTemplate({ 
         title, 
         description, 
-        items,
+        groups,
         category: "vistoria" 
       });
       toast({ title: "Template salvo", description: "O novo template de checklist foi criado com sucesso." });
@@ -48,20 +49,20 @@ export default function Checklist() {
     }
   };
 
-  const handleSaveExecution = (completedItems: ChecklistItem[], notes: string) => {
+  const handleSaveExecution = (completedGroups: ChecklistGroup[], notes: string) => {
     if (selectedTemplate) {
-      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "in_progress");
+      checklistService.logExecution(selectedTemplate.id, completedGroups, notes, undefined, "in_progress");
       toast({ title: "Rascunho salvo", description: "O progresso da vistoria foi persistido." });
     }
   };
 
 
-  const handleSubmitExecution = (completedItems: ChecklistItem[], notes: string) => {
+  const handleSubmitExecution = (completedGroups: ChecklistGroup[], notes: string) => {
     toast({ title: "Vistoria finalizada", description: "A inspeção foi registrada com sucesso e o laudo técnico gerado." });
     
     // Log the activity
     if (selectedTemplate) {
-      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "completed");
+      checklistService.logExecution(selectedTemplate.id, completedGroups, notes, undefined, "completed");
     }
     
     setCurrentView('templates');
@@ -71,8 +72,26 @@ export default function Checklist() {
   const handleBack = () => {
     setCurrentView('templates');
     setSelectedTemplate(null);
-    setExecutionItems([]);
+    setSelectedExecution(null);
+    setExecutionGroups([]);
   };
+
+  const handleViewExecution = (exec: ChecklistExecutionRecord) => {
+    setSelectedExecution(exec);
+    setCurrentView('detail');
+  };
+
+  if (currentView === 'detail' && selectedExecution) {
+    return (
+      <ChecklistDetail
+        title={selectedExecution.templateTitle}
+        description={`Executado por ${selectedExecution.performedByName} em ${new Date(selectedExecution.date).toLocaleString()}`}
+        groups={selectedExecution.groups}
+        readOnly={true}
+        onBack={handleBack}
+      />
+    );
+  }
 
   if (currentView === 'builder') {
     return (
@@ -101,7 +120,7 @@ export default function Checklist() {
         </div>
         <ChecklistExecution
           title={selectedTemplate.title}
-          items={executionItems}
+          groups={executionGroups}
           onSave={handleSaveExecution}
           onSubmit={handleSubmitExecution}
         />
@@ -168,7 +187,7 @@ export default function Checklist() {
                 <div className="divide-y divide-border/10">
                   {checklistService.getAllExecutions().length > 0 ? (
                     checklistService.getAllExecutions().map((exec) => (
-                      <div key={exec.id} className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all cursor-pointer group">
+                      <div key={exec.id} onClick={() => handleViewExecution(exec)} className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all cursor-pointer group">
                         <div className="flex items-center gap-4">
                           <div className={cn(
                             "p-3 rounded-xl border group-hover:scale-110 transition-transform",

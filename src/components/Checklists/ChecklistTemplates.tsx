@@ -121,7 +121,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Itens:</span>
-                    <Badge variant="secondary">{template.items?.length || 0}</Badge>
+                    <Badge variant="secondary">{template.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0}</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
@@ -182,7 +182,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                 
                 <div className="flex items-center gap-4">
                   <div className="hidden md:flex gap-2">
-                    <Badge variant="secondary" className="text-[10px]">{template.items?.length || 0} Itens</Badge>
+                    <Badge variant="secondary" className="text-[10px]">{template.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0} Itens</Badge>
                     <Badge variant="outline" className="text-[10px] capitalize">{template.category}</Badge>
                   </div>
                   
