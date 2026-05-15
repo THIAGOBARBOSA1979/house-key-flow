@@ -79,7 +79,7 @@ const ClientProperties = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
+    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -162,7 +162,7 @@ const ClientProperties = () => {
       </Card>
 
       {/* Tabs for property information */}
-      <Tabs defaultValue="documents" className="mt-6">
+      <Tabs defaultValue="documents" className="mt-6-sem">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1 bg-muted/50 rounded-2xl">
           <TabsTrigger value="documents" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Documentos</TabsTrigger>
           <TabsTrigger value="features" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Características</TabsTrigger>
@@ -170,7 +170,7 @@ const ClientProperties = () => {
           <TabsTrigger value="warranty" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Garantias</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="documents" className="space-y-4 pt-4">
+        <TabsContent value="documents" className="space-y-4-sem pt-4-sem">
           <Card>
             <CardHeader>
               <CardTitle>Documentos do Imóvel</CardTitle>
