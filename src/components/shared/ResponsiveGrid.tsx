@@ -16,9 +16,9 @@ export function ResponsiveGrid({
   className
 }: ResponsiveGridProps) {
   const gapClasses = {
-    sm: "gap-2",
-    md: "gap-4",
-    lg: "gap-8",
+    sm: "gap-2-sem",
+    md: "gap-4-sem",
+    lg: "gap-8-sem",
     layout: "gap-layout-gap"
   };
 
