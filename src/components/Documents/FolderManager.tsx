@@ -3,6 +3,7 @@ import { documentService } from "@/services/DocumentService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 export interface FolderItem {
   id: string;
@@ -11,6 +12,7 @@ export interface FolderItem {
 }
 
 export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string | null) => void }) {
+  const { toast } = useToast();
   const folders = documentService.getFolderStructure();
 
   const getFolderIcon = (iconName: string) => {
@@ -38,6 +40,26 @@ export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string 
           variant="ghost" 
           className="w-full justify-start text-xs font-medium" 
           onClick={() => onFolderSelect(null)}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.currentTarget.classList.add('bg-primary/5');
+          }}
+          onDragLeave={(e) => {
+            e.currentTarget.classList.remove('bg-primary/5');
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.currentTarget.classList.remove('bg-primary/5');
+            const docId = e.dataTransfer.getData('documentId');
+            if (docId) {
+              documentService.moveDocument(docId, 'root');
+              toast({
+                title: "Documento Movido",
+                description: `O arquivo foi movido para a pasta Raiz.`
+              });
+              onFolderSelect('root');
+            }
+          }}
         >
           <Folder className="h-4 w-4 mr-2" /> Raiz
         </Button>
@@ -50,6 +72,26 @@ export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string 
               folder.parentId !== 'root' && "pl-8 text-muted-foreground"
             )}
             onClick={() => onFolderSelect(folder.id)}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.currentTarget.classList.add('bg-primary/5');
+            }}
+            onDragLeave={(e) => {
+              e.currentTarget.classList.remove('bg-primary/5');
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.currentTarget.classList.remove('bg-primary/5');
+              const docId = e.dataTransfer.getData('documentId');
+              if (docId) {
+                documentService.moveDocument(docId, folder.id);
+                toast({
+                  title: "Documento Movido",
+                  description: `O arquivo foi movido para a pasta ${folder.name}.`
+                });
+                onFolderSelect(folder.id);
+              }
+            }}
           >
             {getFolderIcon(folder.icon)} {folder.name}
           </Button>
