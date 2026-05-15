@@ -628,6 +628,66 @@ OBSERVAÇÕES: {{observacoes}}`,
 
     return filtered;
   }
+
+  addSigner(documentId: string, signer: Omit<DocumentSignature, 'id' | 'status'>): DocumentSignature | null {
+    const doc = this.getDocumentById(documentId);
+    if (!doc) return null;
+
+    const newSignature: DocumentSignature = {
+      ...signer,
+      id: uuidv4(),
+      status: 'pending'
+    };
+
+    if (!doc.signatures) doc.signatures = [];
+    doc.signatures.push(newSignature);
+    
+    this.updateDocument(documentId, { signatures: doc.signatures });
+    
+    auditLogService.log({
+      entityType: 'document',
+      entityId: documentId,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Signatário ${signer.name} adicionado ao documento "${doc.title}".`
+    });
+
+    return newSignature;
+  }
+
+  signDocument(documentId: string, signerId: string, ipAddress: string): boolean {
+    const doc = this.getDocumentById(documentId);
+    if (!doc || !doc.signatures) return false;
+
+    const signature = doc.signatures.find(s => s.id === signerId);
+    if (!signature || signature.status !== 'pending') return false;
+
+    signature.status = 'signed';
+    signature.signedAt = new Date();
+    signature.ipAddress = ipAddress;
+
+    this.updateDocument(documentId, { signatures: doc.signatures });
+
+    auditLogService.log({
+      entityType: 'document',
+      entityId: documentId,
+      action: 'updated',
+      performedBy: signature.email,
+      performedByName: signature.name,
+      performedByRole: 'client',
+      details: `Documento "${doc.title}" assinado digitalmente por ${signature.name}.`
+    });
+
+    return true;
+  }
+
+  getSignatureHistory(documentId: string): DocumentSignature[] {
+    const doc = this.getDocumentById(documentId);
+    return doc?.signatures || [];
+  }
+  }
 }
 
 export const documentService = new DocumentService();
