@@ -59,9 +59,9 @@ export function DataTable<T>({
   return (
     <div className={cn("w-full overflow-hidden", className)}>
       {/* Desktop Table View */}
-      <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm overflow-hidden bg-card">
+      <div className="hidden md:block rounded-lg border border-border/50 shadow-sem-sm overflow-hidden bg-card">
         <Table>
-          <TableHeader className="bg-muted/30">
+          <TableHeader className="bg-muted/10">
             <TableRow className="hover:bg-transparent">
               {columns.map((column, idx) => (
                 <TableHead 
