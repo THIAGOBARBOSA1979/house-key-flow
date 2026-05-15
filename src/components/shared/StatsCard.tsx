@@ -45,21 +45,25 @@ export const StatsCard = ({
   };
 
   return (
-    <Card className={cn("overflow-hidden group transition-all duration-500 border-none", variantStyles[variant], className)}>
-      <CardContent className="p-6">
+    <Card className={cn(
+      "overflow-hidden group transition-all duration-500 border border-border/40 shadow-sem-sm hover:shadow-sem-md", 
+      variantStyles[variant], 
+      className
+    )}>
+      <CardContent className="p-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/80 mb-2 truncate">
               {label}
             </p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-3xl font-black text-foreground leading-tight tracking-tight">
+              <h3 className="text-2xl font-black text-foreground leading-tight tracking-tight">
                 {value}
               </h3>
               {trend && (
                 <span className={cn(
-                  "text-sem-tiny font-bold",
-                  trend.isPositive ? "text-status-complete" : "text-status-critical"
+                  "text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter",
+                  trend.isPositive ? "text-emerald-600 bg-emerald-50" : "text-status-critical bg-status-critical/5"
                 )}>
                   {trend.isPositive ? '+' : ''}{trend.value}
                 </span>
@@ -73,10 +77,10 @@ export const StatsCard = ({
           </div>
           {Icon && (
             <div className={cn(
-              "p-3 rounded-xl transition-all duration-300 group-hover:scale-110",
+              "p-3 rounded-2xl transition-all duration-300 group-hover:scale-110 shadow-sem-sm border border-border/10",
               iconStyles[variant]
             )}>
-              <Icon size={22} strokeWidth={2.5} />
+              <Icon size={20} strokeWidth={2.5} />
             </div>
           )}
         </div>
