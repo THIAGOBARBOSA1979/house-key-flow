@@ -102,6 +102,7 @@ export function DocumentWorkflow({ document, onUpdate }: DocumentWorkflowProps) 
               </div>
             ))}
           </div>
+        )}
 
         {document.approvalStatus === "pending" && (
           <div className="space-y-3">
