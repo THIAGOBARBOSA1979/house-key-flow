@@ -58,10 +58,10 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
       {/* Busca principal */}
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar documentos por título, descrição ou tags..."
-            className="pl-8"
+            placeholder="Buscar documentos..."
+            className="pl-10 h-11 bg-background/50"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -72,16 +72,19 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
             onKeyPress={(e) => e.key === "Enter" && handleSearch()}
           />
         </div>
-        <Button onClick={handleSearch}>Buscar</Button>
+        <Button onClick={handleSearch} className="h-11 px-6 font-bold shadow-sem-sm">Buscar</Button>
         <Button 
           variant="outline" 
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="relative"
+          className={cn(
+            "relative h-11 px-6 font-bold transition-all",
+            showAdvanced && "bg-muted ring-1 ring-border shadow-inner"
+          )}
         >
           <Filter className="h-4 w-4 mr-2" />
           Filtros
           {getActiveFilterCount() > 0 && (
-            <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs">
+            <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-[10px] font-black shadow-lg">
               {getActiveFilterCount()}
             </Badge>
           )}
@@ -90,8 +93,8 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
 
       {/* Filtros avançados */}
       {showAdvanced && (
-        <Card>
-          <CardContent className="p-4">
+        <Card className="border-none shadow-sem-md bg-muted/20 animate-in slide-in-from-top-2 duration-300">
+          <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Categoria</label>
@@ -153,7 +156,7 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
                 <label className="text-sm font-medium">Período</label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-left font-normal">
+                    <Button variant="outline" className="w-full justify-start text-left font-normal h-11 bg-background">
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {dateRange.from ? (
                         dateRange.to ? (

@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -25,11 +26,11 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0">
+        <DialogHeader className="flex flex-row items-center justify-between p-6">
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5 text-primary" />
-            Pré-visualização: {document.title}
+            <span className="truncate max-w-[200px] sm:max-w-md">{document.title}</span>
           </DialogTitle>
           <div className="flex gap-2 mr-6">
             <div className="flex items-center gap-1 mr-4 border-r pr-4">
@@ -53,34 +54,51 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
           </div>
         </DialogHeader>
         
-        <div className="flex-1 overflow-hidden border rounded-md bg-white p-8 shadow-inner">
-          <ScrollArea className="h-full pr-4">
-            <div 
-              className="max-w-2xl mx-auto prose prose-sm transition-all duration-300"
-              style={{ 
-                transform: `scale(${zoom / 100}) rotate(${rotation}deg)`,
-                transformOrigin: 'top center'
-              }}
-            >
-              {document.type === "auto" ? (
-                <pre className="whitespace-pre-wrap font-serif text-base text-gray-800 bg-transparent p-0 border-none shadow-none">
-                  {generatedContent || document.template}
-                </pre>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-                  <FileText size={64} className="mb-4 opacity-20" />
-                  <p>Este é um documento manual (PDF/Imagem).</p>
-                  <p className="text-xs">O preview integrado está disponível apenas para templates dinâmicos.</p>
-                  <Button variant="link" className="mt-4">Clique aqui para abrir em nova aba</Button>
+        <div className="flex-1 overflow-hidden bg-muted/10 p-4 sm:p-8">
+          <div className="h-full bg-white rounded-xl shadow-sem-lg border border-border/50 overflow-hidden flex flex-col">
+            <ScrollArea className="h-full">
+              <div className="p-8 sm:p-12 min-h-full flex flex-col items-center">
+                <div 
+                  className="w-full max-w-3xl prose prose-sm transition-all duration-300 origin-top"
+                  style={{ 
+                    transform: `scale(${zoom / 100})`,
+                    marginBottom: `${(zoom / 100) * 20}px`
+                  }}
+                >
+                  <div style={{ transform: `rotate(${rotation}deg)` }}>
+                    {document.type === "auto" ? (
+                      <pre className="whitespace-pre-wrap font-serif text-base text-gray-800 bg-transparent p-0 border-none shadow-none leading-relaxed">
+                        {generatedContent || document.template}
+                      </pre>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground text-center">
+                        <div className="p-6 rounded-full bg-muted/30 mb-6">
+                          <FileText size={64} className="opacity-20" />
+                        </div>
+                        <h3 className="text-lg font-bold text-foreground mb-2">Documento Manual</h3>
+                        <p className="max-w-xs mx-auto">Este arquivo (PDF/Imagem) foi enviado manualmente e não possui visualização dinâmica.</p>
+                        <Button variant="outline" className="mt-6 font-bold">
+                          <Download className="w-4 h-4 mr-2" /> Baixar para Visualizar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          </ScrollArea>
+              </div>
+            </ScrollArea>
+          </div>
         </div>
         
-        <div className="flex justify-end pt-4">
-          <Button variant="outline" onClick={onClose}>Fechar</Button>
-        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} className="font-bold">Fechar</Button>
+          <div className="flex-1" />
+          <Button variant="outline" className="font-bold hidden sm:flex">
+            <Printer className="h-4 w-4 mr-2" /> Imprimir
+          </Button>
+          <Button className="font-bold">
+            <Download className="h-4 w-4 mr-2" /> Download PDF
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

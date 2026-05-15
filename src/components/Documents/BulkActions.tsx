@@ -161,7 +161,7 @@ export function BulkActions({ documents, selectedIds, onSelectionChange, onActio
   if (documents.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
+    <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-primary/5 rounded-xl border border-primary/10 shadow-sem-sm animate-in fade-in slide-in-from-top-4 duration-500">
       <div className="flex items-center gap-2">
         <Checkbox
           checked={isAllSelected}
@@ -188,9 +188,9 @@ export function BulkActions({ documents, selectedIds, onSelectionChange, onActio
       </div>
 
       {selectedIds.length > 0 && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <Select value={bulkAction} onValueChange={setBulkAction}>
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-full sm:w-[220px] h-11 bg-background font-bold border-primary/20">
               <SelectValue placeholder="Ações em massa" />
             </SelectTrigger>
             <SelectContent>
@@ -228,16 +228,16 @@ export function BulkActions({ documents, selectedIds, onSelectionChange, onActio
           </Select>
 
           {bulkAction && (
-            <Button onClick={executeBulkAction} size="sm">
+            <Button onClick={executeBulkAction} size="sm" className="h-11 px-6 font-black uppercase tracking-widest text-[10px] shadow-sem-sm">
               Executar
             </Button>
           )}
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm">
+              <Button variant="destructive" size="sm" className="h-11 px-4 font-bold shadow-sem-sm">
                 <Trash2 className="h-4 w-4 mr-2" />
-                Excluir ({selectedIds.length})
+                Excluir Seleção
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -258,11 +258,12 @@ export function BulkActions({ documents, selectedIds, onSelectionChange, onActio
           </AlertDialog>
 
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
+            className="h-11 px-4 font-bold text-muted-foreground hover:text-foreground"
             onClick={() => onSelectionChange([])}
           >
-            Limpar seleção
+            Limpar
           </Button>
         </div>
       )}

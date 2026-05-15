@@ -290,36 +290,36 @@ const DesignSystem = () => {
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="card-standard p-6 border-none bg-card/50 backdrop-blur-sm">
                 <CardHeader className="px-0 pt-0">
-                  <CardTitle className="text-label font-bold">Input & Label</CardTitle>
+                  <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground">Input & Label</CardTitle>
                 </CardHeader>
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div className="space-y-2">
-                    <Label className="text-label">Nome do Usuário</Label>
-                    <Input placeholder="Ex: João Silva" className="rounded-lg h-11" />
-                    <p className="text-sem-tiny text-muted-foreground font-medium">Use labels claros e placeholders de exemplo.</p>
+                    <Label className="text-label font-bold">Nome do Usuário</Label>
+                    <Input placeholder="Ex: João Silva" />
+                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Use labels claros e placeholders de exemplo.</p>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-label">Email Institucional</Label>
-                    <Input type="email" defaultValue="erro@exemplo" className="rounded-lg h-11 border-status-critical focus-visible:ring-status-critical" />
-                    <p className="text-sem-tiny text-status-critical font-bold">Este campo requer um email válido.</p>
+                    <Label className="text-label font-bold">Email Institucional</Label>
+                    <Input type="email" defaultValue="erro@exemplo" className="border-destructive focus-visible:ring-destructive/20 focus-visible:border-destructive" />
+                    <p className="text-[10px] text-destructive font-black uppercase tracking-tight">Este campo requer um email válido.</p>
                   </div>
                 </div>
               </Card>
               <Card className="card-standard p-6 border-none bg-card/50 backdrop-blur-sm">
                 <CardHeader className="px-0 pt-0">
-                  <CardTitle className="text-label font-bold">Estrutura de Diálogo</CardTitle>
+                  <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground">Estrutura de Diálogo</CardTitle>
                 </CardHeader>
-                <div className="space-y-4">
-                  <div className="p-4 bg-muted/20 rounded-xl border border-dashed border-border/40">
-                    <p className="text-sem-body-sm text-center italic">
+                <div className="space-y-6">
+                  <div className="p-6 bg-muted/20 rounded-xl border border-dashed border-border/40">
+                    <p className="text-xs text-center font-bold text-muted-foreground">
                       Todos os formulários em modais devem seguir a estrutura:
                       <br/>
-                      <strong>Header &gt; Content &gt; Footer (Sticky)</strong>
+                      <span className="text-primary mt-2 block uppercase tracking-widest">Header &gt; Content (Scroll) &gt; Footer (Sticky)</span>
                     </p>
                   </div>
-                  <div className="flex justify-end gap-3 pt-4 border-t border-border/10">
-                    <Button variant="outline" className="rounded-lg font-bold">Cancelar</Button>
-                    <Button className="rounded-lg font-bold">Salvar Alterações</Button>
+                  <div className="flex justify-end gap-3 pt-6 border-t border-border/10">
+                    <Button variant="outline" className="h-11 px-6 font-bold">Cancelar</Button>
+                    <Button className="h-11 px-6 font-bold shadow-sem-md">Salvar Alterações</Button>
                   </div>
                 </div>
               </Card>
