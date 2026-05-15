@@ -166,6 +166,7 @@ const ClientProperties = () => {
         <TabsList>
           <TabsTrigger value="documents">Documentos</TabsTrigger>
           <TabsTrigger value="features">Características</TabsTrigger>
+          <TabsTrigger value="photos">Galeria de Fotos</TabsTrigger>
           <TabsTrigger value="warranty">Garantias</TabsTrigger>
         </TabsList>
         
