@@ -112,26 +112,26 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
           )}
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><MapPin size={14} className="text-primary/60" /></div>
-            <span className="truncate">{appointment.property} • Unidade {appointment.unit}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <MapPin size={14} className="text-primary" />
+            <span className="truncate">{appointment.property} • {appointment.unit}</span>
           </div>
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><User size={14} className="text-primary/60" /></div>
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <User size={14} className="text-primary" />
             <span className="truncate">{appointment.client}</span>
           </div>
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><CalendarClock size={14} className="text-primary/60" /></div>
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <CalendarClock size={14} className="text-primary" />
             <span>{safeFormat(appointment.date, "dd/MM/yyyy")}</span>
           </div>
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><Clock size={14} className="text-primary/60" /></div>
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <Clock size={14} className="text-primary" />
             <span className="text-foreground font-bold">{safeFormat(appointment.date, "HH:mm")}</span>
           </div>
           {appointment.technician && (
-            <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-              <div className="p-1.5 bg-muted rounded-lg"><Users size={14} className="text-primary/60" /></div>
+            <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+              <Users size={14} className="text-primary" />
               <span className="truncate">{appointment.technician}</span>
             </div>
           )}
