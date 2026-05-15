@@ -337,6 +337,13 @@ const Properties = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <PropertyDetailsDialog 
+        property={selectedProperty} 
+        open={!!selectedProperty} 
+        onOpenChange={(open) => !open && setSelectedProperty(null)}
+        onUpdate={refreshList}
+      />
     </div>
   );
 };
