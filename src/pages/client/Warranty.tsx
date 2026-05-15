@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History, Star } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dialog,
@@ -133,12 +134,14 @@ const WarrantyStatus = ({ status }: { status: "pending" | "progress" | "complete
   const Icon = config.icon;
 
   return (
-    <div className={`p-4 ${config.bg} border ${config.border} rounded-lg`}>
-      <div className="flex gap-3 items-center">
-        <Icon className={`h-8 w-8 ${config.color}`} />
+    <div className={`p-5 ${config.bg} border-2 ${config.border} rounded-2xl shadow-sm animate-in slide-in-from-top-2 duration-500`}>
+      <div className="flex gap-4 items-center">
+        <div className={cn("p-3 rounded-xl bg-white shadow-sm", config.color)}>
+          <Icon className="h-6 w-6" />
+        </div>
         <div>
-          <h3 className="font-medium">{config.text}</h3>
-          <p className="text-sm text-muted-foreground">{config.description}</p>
+          <h3 className="font-black text-base tracking-tight">{config.text}</h3>
+          <p className="text-xs text-muted-foreground font-medium leading-relaxed">{config.description}</p>
         </div>
       </div>
     </div>
@@ -306,7 +309,7 @@ const ClientWarranty = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -469,11 +472,11 @@ const ClientWarranty = () => {
         {/* Right column - Claim Details */}
         <div className="lg:col-span-2">
           {claim ? (
-            <Tabs defaultValue="details">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="details">Detalhes</TabsTrigger>
-                <TabsTrigger value="timeline">Linha do Tempo</TabsTrigger>
-                <TabsTrigger value="updates">Atualizações</TabsTrigger>
+            <Tabs defaultValue="details" className="animate-in fade-in slide-in-from-right-4 duration-500">
+              <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1 rounded-2xl">
+                <TabsTrigger value="details" className="rounded-xl font-black uppercase text-[10px] tracking-widest">Detalhes</TabsTrigger>
+                <TabsTrigger value="timeline" className="rounded-xl font-black uppercase text-[10px] tracking-widest">Linha do Tempo</TabsTrigger>
+                <TabsTrigger value="updates" className="rounded-xl font-black uppercase text-[10px] tracking-widest">Atualizações</TabsTrigger>
               </TabsList>
               
               <TabsContent value="details" className="space-y-4 pt-4">

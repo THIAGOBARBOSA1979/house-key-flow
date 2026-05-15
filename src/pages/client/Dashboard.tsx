@@ -114,7 +114,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
       {/* Header with Stage Indicator */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -130,31 +130,34 @@ const Dashboard = () => {
             <StageIndicator currentStage={stage} showDescription />
           )}
           <div className="h-10 w-px bg-border mx-2 hidden md:block" />
-          <div className="flex flex-col items-end hidden md:flex">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Status da Obra</span>
-            <span className="text-sm font-bold text-primary">{Math.round(contractProgress)}% Concluído</span>
+          <div className="flex flex-col items-end hidden lg:flex bg-primary/5 px-4 py-2 rounded-xl border border-primary/10 shadow-sm">
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Status da Obra</span>
+            <span className="text-lg font-black text-primary leading-none">{Math.round(contractProgress)}% Concluído</span>
           </div>
         </div>
       </div>
 
       {/* Property Info Card */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-2 bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-sm overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-4 opacity-10">
-            <Home className="h-24 w-24" />
+        <Card className="md:col-span-2 bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-xl overflow-hidden relative rounded-3xl group">
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700 group-hover:scale-110">
+            <Home className="h-32 w-32" />
           </div>
-          <CardHeader>
+          <CardHeader className="relative z-10">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-primary" />
+                <CardTitle className="text-2xl font-black flex items-center gap-3 tracking-tight">
+                  <div className="p-2 bg-primary/10 rounded-xl">
+                    <Building2 className="h-6 w-6 text-primary" />
+                  </div>
                   {userInfo.property}
                 </CardTitle>
-                <CardDescription className="text-lg font-semibold text-foreground mt-1">
-                  Unidade {userInfo.unit}
+                <CardDescription className="text-xl font-bold text-foreground/80 mt-2 flex items-center gap-2">
+                  <span className="bg-muted px-2 py-0.5 rounded-lg text-sm font-black text-muted-foreground uppercase tracking-widest">Unidade</span>
+                  {userInfo.unit}
                 </CardDescription>
               </div>
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-bold uppercase tracking-tight">
+              <Badge variant="outline" className="bg-primary text-primary-foreground border-none font-black uppercase tracking-tighter text-[10px] px-3 py-1.5 shadow-lg animate-pulse">
                 {daysToDelivery > 0 ? `${daysToDelivery} dias para entrega` : "Imóvel Entregue"}
               </Badge>
             </div>
@@ -171,15 +174,21 @@ const Dashboard = () => {
                   <p className="font-bold">{userInfo.deliveryDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</p>
                 </div>
               </div>
-              <Progress value={contractProgress} className="h-3 bg-primary/10" />
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 p-2 rounded-md">
-                  <Calendar className="h-4 w-4" />
-                  <span>Contrato: <span className="font-medium text-foreground">{userInfo.contractDate.toLocaleDateString()}</span></span>
+              <Progress value={contractProgress} className="h-4 bg-primary/10 rounded-full overflow-hidden" />
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <div className="flex items-center gap-3 text-sm text-muted-foreground bg-white/50 backdrop-blur-sm p-3 rounded-2xl border border-primary/5 shadow-sm group-hover:bg-white transition-colors">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 leading-none mb-1">Assinatura</p>
+                    <span className="font-bold text-foreground">{userInfo.contractDate.toLocaleDateString()}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 p-2 rounded-md">
-                  <MapPin className="h-4 w-4" />
-                  <span>Localização: <span className="font-medium text-foreground">São Paulo, SP</span></span>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground bg-white/50 backdrop-blur-sm p-3 rounded-2xl border border-primary/5 shadow-sm group-hover:bg-white transition-colors">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 leading-none mb-1">Localização</p>
+                    <span className="font-bold text-foreground">São Paulo, SP</span>
+                  </div>
                 </div>
               </div>
             </div>

@@ -322,12 +322,12 @@ const ClientInspections = () => {
           {/* Inspection details */}
           <div className="lg:col-span-2">
             {inspection ? (
-              <Tabs defaultValue="details">
-                <TabsList>
-                  <TabsTrigger value="details">Detalhes</TabsTrigger>
-                  <TabsTrigger value="checklist">Checklist</TabsTrigger>
+              <Tabs defaultValue="details" className="animate-in fade-in slide-in-from-right-4 duration-500">
+                <TabsList className="bg-muted/50 p-1 rounded-2xl">
+                  <TabsTrigger value="details" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Detalhes</TabsTrigger>
+                  <TabsTrigger value="checklist" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Checklist</TabsTrigger>
                   {inspection.status === "complete" && (
-                    <TabsTrigger value="report">Relatório</TabsTrigger>
+                    <TabsTrigger value="report" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Relatório</TabsTrigger>
                   )}
                 </TabsList>
                 

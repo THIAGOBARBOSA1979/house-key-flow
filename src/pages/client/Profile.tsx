@@ -30,7 +30,7 @@ const ClientProfile = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-700">
       <div>
         <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
           <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
@@ -46,18 +46,18 @@ const ClientProfile = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column: Avatar and Summary */}
         <div className="md:col-span-1 space-y-6">
-          <Card className="text-center overflow-hidden border-primary/10 shadow-md">
-            <div className="h-24 bg-gradient-to-r from-primary/20 to-primary/5 w-full" />
-            <CardContent className="pt-0 -mt-12">
+          <Card className="text-center overflow-hidden border-primary/10 shadow-xl rounded-3xl group">
+            <div className="h-32 bg-gradient-to-br from-primary/30 via-primary/10 to-transparent w-full group-hover:scale-110 transition-transform duration-700" />
+            <CardContent className="pt-0 -mt-16 relative z-10">
               <div className="relative inline-block">
-                <Avatar className="h-24 w-24 border-4 border-background mx-auto shadow-lg">
+                <Avatar className="h-32 w-32 border-8 border-background mx-auto shadow-2xl group-hover:scale-105 transition-transform duration-500">
                   <AvatarImage src="/placeholder.svg" />
-                  <AvatarFallback className="text-2xl font-bold bg-primary text-primary-foreground">
+                  <AvatarFallback className="text-4xl font-black bg-primary text-primary-foreground">
                     {profileData.name.substring(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="absolute bottom-0 right-0 p-1.5 bg-primary text-primary-foreground rounded-full border-2 border-background cursor-pointer hover:scale-110 transition-transform">
-                  <Shield className="h-4 w-4" />
+                <div className="absolute bottom-2 right-2 p-2.5 bg-primary text-primary-foreground rounded-full border-4 border-background shadow-lg group-hover:rotate-12 transition-transform">
+                  <Shield className="h-5 w-5" />
                 </div>
               </div>
               <h2 className="mt-4 text-xl font-bold">{profileData.name}</h2>
@@ -95,23 +95,25 @@ const ClientProfile = () => {
 
         {/* Right Column: Form and Settings */}
         <div className="md:col-span-2 space-y-6">
-          <Card className="border-primary/10 shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-primary" />
+          <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-6">
+              <CardTitle className="flex items-center gap-3 text-xl font-black tracking-tight">
+                <div className="p-2 bg-primary/10 rounded-xl">
+                  <Shield className="h-6 w-6 text-primary" />
+                </div>
                 Informações Pessoais
               </CardTitle>
-              <CardDescription>Dados utilizados para comunicações e contratos.</CardDescription>
+              <CardDescription className="font-medium">Dados fundamentais para comunicações e contratos.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome Completo</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                  <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Nome Completo</Label>
+                  <div className="relative group">
+                    <User className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
                     <Input 
                       id="name" 
-                      className="pl-10" 
+                      className="pl-10 h-11 rounded-xl border-2 focus-visible:ring-primary/20 transition-all"
                       value={profileData.name} 
                       readOnly={!isEditing}
                       onChange={(e) => setProfileData({...profileData, name: e.target.value})}
@@ -119,12 +121,12 @@ const ClientProfile = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-muted-foreground">E-mail</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                  <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">E-mail</Label>
+                  <div className="relative group">
+                    <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
                     <Input 
                       id="email" 
-                      className="pl-10" 
+                      className="pl-10 h-11 rounded-xl border-2 focus-visible:ring-primary/20 transition-all"
                       value={profileData.email} 
                       readOnly={!isEditing}
                       onChange={(e) => setProfileData({...profileData, email: e.target.value})}
@@ -132,12 +134,12 @@ const ClientProfile = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Telefone / WhatsApp</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                  <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Telefone / WhatsApp</Label>
+                  <div className="relative group">
+                    <Phone className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
                     <Input 
                       id="phone" 
-                      className="pl-10" 
+                      className="pl-10 h-11 rounded-xl border-2 focus-visible:ring-primary/20 transition-all"
                       value={profileData.phone} 
                       readOnly={!isEditing}
                       onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
@@ -145,12 +147,12 @@ const ClientProfile = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="address" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Endereço Principal</Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                  <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Endereço Principal</Label>
+                  <div className="relative group">
+                    <MapPin className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
                     <Input 
                       id="address" 
-                      className="pl-10" 
+                      className="pl-10 h-11 rounded-xl border-2 focus-visible:ring-primary/20 transition-all"
                       value={profileData.address} 
                       readOnly={!isEditing}
                       onChange={(e) => setProfileData({...profileData, address: e.target.value})}

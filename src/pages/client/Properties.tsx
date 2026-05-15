@@ -79,7 +79,7 @@ const ClientProperties = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -163,11 +163,11 @@ const ClientProperties = () => {
 
       {/* Tabs for property information */}
       <Tabs defaultValue="documents" className="mt-6">
-        <TabsList>
-          <TabsTrigger value="documents">Documentos</TabsTrigger>
-          <TabsTrigger value="features">Características</TabsTrigger>
-          <TabsTrigger value="photos">Galeria de Fotos</TabsTrigger>
-          <TabsTrigger value="warranty">Garantias</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1 bg-muted/50 rounded-2xl">
+          <TabsTrigger value="documents" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Documentos</TabsTrigger>
+          <TabsTrigger value="features" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Características</TabsTrigger>
+          <TabsTrigger value="photos" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Galeria</TabsTrigger>
+          <TabsTrigger value="warranty" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Garantias</TabsTrigger>
         </TabsList>
         
         <TabsContent value="documents" className="space-y-4 pt-4">
@@ -361,17 +361,17 @@ const ClientProperties = () => {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="group relative aspect-square rounded-xl overflow-hidden border bg-muted cursor-pointer hover:shadow-lg transition-all">
+                  <div key={i} className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-muted bg-muted cursor-pointer hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
                     <img 
                       src={`https://images.unsplash.com/photo-${1580000000000 + i * 1000}?auto=format&fit=crop&q=80&w=400`} 
                       alt={`Progresso ${i}`}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button variant="secondary" size="sm" className="font-bold text-[10px] uppercase">Ver Foto</Button>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <Button variant="secondary" size="sm" className="font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg">Ver Detalhes</Button>
                     </div>
-                    <div className="absolute bottom-2 left-2 right-2">
-                      <Badge className="bg-black/60 text-[8px] uppercase tracking-tighter border-none">Mês {i}</Badge>
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <Badge className="bg-primary/90 text-[9px] font-black uppercase tracking-tighter border-none px-2 py-1 shadow-md">Mês {i}</Badge>
                     </div>
                   </div>
                 ))}
