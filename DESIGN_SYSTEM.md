@@ -103,10 +103,10 @@ Este documento define os padrões visuais e componentes do sistema de gestão im
 | Destrutivo | `Button variant="destructive"` | Excluir, Remover |
 
 **Tamanhos:**
-- Default: `h-10` (40px)
-- Small: `size="sm"` (36px) - tabelas, inline
-- Large: `size="lg"` (44px) - CTAs
-- Icon: `size="icon"` (40x40)
+- Default: `h-11` (44px) - Padrão do sistema
+- Small: `size="sm"` (36px) - Tabelas, ações inline
+- Large: `size="lg"` (56px) - CTAs de marketing ou heróis
+- Icon: `size="icon"` (44x44) - Botões de ação isolados
 
 ### Cards
 
