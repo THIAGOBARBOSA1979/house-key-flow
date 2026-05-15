@@ -126,6 +126,53 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 <StatusBadge status="progress" label="Em Andamento" />
 <StatusBadge status="complete" />
 <StatusBadge status="critical" />
+<StatusBadge status="info" />
+```
+
+### DataTable (Responsivo)
+
+Componente que alterna entre tabela (desktop) e cards (mobile):
+
+```tsx
+import { DataTable } from "@/components/shared/DataTable";
+
+<DataTable 
+  columns={[
+    { header: "Nome", accessorKey: "name" },
+    { header: "Status", accessorKey: "status", cell: (item) => <StatusBadge status={item.status} /> }
+  ]}
+  data={items}
+  onRowClick={(item) => console.log(item)}
+/>
+```
+
+### DataView
+
+Wrapper de alto nível para listagens com busca, filtros e paginação:
+
+```tsx
+import { DataView } from "@/components/shared/DataView";
+
+<DataView
+  items={data}
+  renderGrid={(item) => <PropertyCard item={item} />}
+  isLoading={loading}
+  itemsPerPage={6}
+/>
+```
+
+### EmptyState & SkeletonLoader
+
+Usar para feedbacks de carregamento e listas vazias:
+
+```tsx
+<EmptyState 
+  title="Nenhum item" 
+  description="Clique no botão abaixo para criar seu primeiro item." 
+  action={{ label: "Criar", onClick: handleCreate }}
+/>
+
+<SkeletonLoader type="card" count={3} />
 ```
 
 ### Formulários
@@ -133,15 +180,15 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 ```tsx
 <div className="space-y-4">
   <div>
-    <Label className="text-sm font-medium">Campo</Label>
-    <Input className="h-10" />
+    <Label className="text-sem-label">Campo</Label>
+    <Input className="h-12 rounded-xl" />
   </div>
 </div>
 
 {/* Botões de ação */}
-<div className="flex justify-end gap-2">
+<div className="flex justify-end gap-3 mt-6">
   <Button variant="outline">Cancelar</Button>
-  <Button>Confirmar</Button>
+  <Button shadow="lg">Confirmar</Button>
 </div>
 ```
 
