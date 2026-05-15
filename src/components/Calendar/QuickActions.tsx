@@ -117,9 +117,9 @@ export const QuickActions = ({
               Filtros Avançados
             </Button>
             
-            <Button variant="outline" onClick={() => handleQuickAction("Exportar agenda")} className="rounded-lg font-bold">
+            <Button variant="outline" onClick={() => handleExport("csv")} className="rounded-lg font-bold">
               <Download className="mr-2 h-4 w-4" />
-              Exportar Agenda
+              Exportar Agenda (CSV)
             </Button>
             
             <Button variant="outline" onClick={() => handleQuickAction("Configurações")} className="rounded-lg font-bold">
