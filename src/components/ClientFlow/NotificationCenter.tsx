@@ -32,6 +32,8 @@ export function NotificationCenter({ clientId }: NotificationCenterProps) {
         </div>
       </div>
     );
+  }
+
   return (
     <div className="w-[380px] md:w-[420px] max-h-[70vh] flex flex-col bg-card rounded-2xl shadow-2xl border border-primary/10 overflow-hidden">
       {/* Header */}
