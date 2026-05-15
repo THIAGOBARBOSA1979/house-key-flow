@@ -494,6 +494,15 @@ const ClientWarranty = () => {
                   <CardContent className="space-y-4">
                     <WarrantyStatus status={claim.status} />
                     
+                    {claim.status === 'complete' && !surveyDone[claim.id] && (
+                      <div className="mt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                        <SatisfactionSurvey 
+                          requestId={claim.id} 
+                          onComplete={() => setSurveyDone(prev => ({ ...prev, [claim.id]: true }))} 
+                        />
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                       <div>
                         <h3 className="font-medium mb-2">Detalhes da Solicitação:</h3>
