@@ -42,7 +42,7 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto p-0 border-none shadow-2xl rounded-3xl">
+      <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0 border-none shadow-2xl rounded-3xl overflow-hidden">
         <div className="relative h-48 bg-muted">
           {property.imageUrl ? (
             <img src={property.imageUrl} alt={property.name} className="w-full h-full object-cover" />
@@ -61,7 +61,7 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
           </div>
         </div>
 
-        <div className="p-8">
+        <div className="flex-1 overflow-y-auto p-8">
           <Tabs defaultValue="overview" className="space-y-8">
             <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1 rounded-2xl">
               <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-background transition-all">
@@ -111,10 +111,10 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
                   </p>
                   
                   <div className="pt-4 flex gap-3">
-                    <Button className="flex-1 rounded-xl font-bold uppercase text-xs h-12 shadow-md">
+                    <Button className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 shadow-sem-md">
                       Editar Detalhes
                     </Button>
-                    <Button variant="outline" className="flex-1 rounded-xl font-bold uppercase text-xs h-12 border-border/50">
+                    <Button variant="outline" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest h-12 border-border/50 bg-background/50 backdrop-blur-sm">
                       Exportar Dossier
                     </Button>
                   </div>

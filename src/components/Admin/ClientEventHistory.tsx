@@ -74,17 +74,14 @@ export function ClientEventHistory({ clientId }: ClientEventHistoryProps) {
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <History className="h-5 w-5" />
+    <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+      <CardHeader className="px-6 py-5 border-b bg-muted/5">
+        <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+          <History className="h-4 w-4 text-primary" />
           Histórico de Eventos
         </CardTitle>
-        <CardDescription>
-          Todos os eventos registrados para este cliente
-        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ScrollArea className="h-[400px] pr-4">
           <div className="space-y-4">
             {sortedEvents.map((event, index) => {

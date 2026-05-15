@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, MessageSquare, UserPlus, Image as ImageIcon } from "lucide-react";
+import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, MessageSquare, UserPlus, ShieldCheck, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,15 +97,17 @@ const Warranty = () => {
 
       {/* Request Detail Dialog */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3">
-              Detalhes da Solicitação
+        <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+          <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
+            <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <ShieldCheck className="w-6 h-6 text-primary" />
+              Solicitação #{selectedRequest?.id.split('-')[0].toUpperCase()}
               {selectedRequest?.isPaused && (
                 <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Pausada</Badge>
               )}
             </DialogTitle>
           </DialogHeader>
+          <div className="flex-1 overflow-y-auto p-8">
           {selectedRequest && (
             <Tabs defaultValue="timeline" className="space-y-4">
               <TabsList className="grid w-full grid-cols-5 p-1 bg-muted/50 rounded-xl">
@@ -140,7 +142,7 @@ const Warranty = () => {
                       }
                     }}
                   >
-                    <SelectTrigger className="w-full md:w-[240px]">
+                    <SelectTrigger className="w-full md:w-[240px] h-11 rounded-xl bg-background shadow-sem-sm">
                       <SelectValue placeholder="Alterar responsável" />
                     </SelectTrigger>
                     <SelectContent>
@@ -200,7 +202,7 @@ const Warranty = () => {
                               size="sm"
                               variant={prob.status === 'resolved' ? 'default' : 'outline'}
                               className={cn(
-                                "h-9 px-4 gap-2 font-bold",
+                                "h-10 px-6 gap-2 rounded-xl font-bold shadow-sem-sm transition-all",
                                 prob.status === 'resolved' ? "bg-emerald-600 hover:bg-emerald-700" : "border-amber-500 text-amber-700 hover:bg-amber-100"
                               )}
                               onClick={() => {
@@ -289,7 +291,7 @@ const Warranty = () => {
                         <Plus className="h-3 w-3" /> Registrar Material
                       </Button>
                     </CardHeader>
-                    <CardContent className="max-h-[200px] overflow-y-auto">
+                    <CardContent className="max-h-[300px] overflow-y-auto p-4">
                       {selectedRequest.materials && selectedRequest.materials.length > 0 ? (
                         <div className="space-y-2">
                           {selectedRequest.materials.map((m, i) => (
@@ -349,6 +351,7 @@ const Warranty = () => {
               </TabsContent>
             </Tabs>
           )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

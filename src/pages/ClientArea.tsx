@@ -264,17 +264,19 @@ const ClientArea = () => {
 
       {/* Selected Client Details */}
       {selectedClient && (
-        <Card>
-          <CardHeader>
+        <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <CardHeader className="px-8 py-6 border-b bg-muted/5">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
+              <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+                <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                  <User className="h-5 w-5" />
+                </div>
                 Detalhes do Cliente
               </CardTitle>
-              <Button variant="outline" size="sm" onClick={() => setSelectedClient(null)}>Fechar</Button>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedClient(null)} className="font-bold hover:bg-destructive/10 hover:text-destructive">Fechar</Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
                 <TabsTrigger value="overview" className="gap-2">
@@ -383,22 +385,26 @@ const ClientArea = () => {
 
       {/* Dialogs */}
       <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Cadastrar Novo Cliente</DialogTitle>
-            <DialogDescription>Preencha os campos abaixo para cadastrar um novo cliente.</DialogDescription>
+        <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+          <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
+            <DialogTitle className="text-2xl font-black tracking-tight">Cadastrar Novo Cliente</DialogTitle>
+            <DialogDescription className="text-sm font-medium">Preencha os campos abaixo para cadastrar um novo cliente no sistema.</DialogDescription>
           </DialogHeader>
-          <NewClientForm onSubmit={handleNewClientSubmit} onCancel={() => setNewClientDialogOpen(false)} />
+          <div className="p-8 max-h-[70vh] overflow-y-auto">
+            <NewClientForm onSubmit={handleNewClientSubmit} onCancel={() => setNewClientDialogOpen(false)} />
+          </div>
         </DialogContent>
       </Dialog>
 
       <Dialog open={isCredentialsDialogOpen} onOpenChange={setCredentialsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Gerar Credenciais de Acesso</DialogTitle>
-            <DialogDescription>Configure as credenciais de acesso para o cliente.</DialogDescription>
+        <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+          <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
+            <DialogTitle className="text-2xl font-black tracking-tight">Gerar Credenciais</DialogTitle>
+            <DialogDescription className="text-sm font-medium">Configure as credenciais de acesso para o portal do cliente.</DialogDescription>
           </DialogHeader>
-          <GenerateCredentialsForm onSubmit={handleCredentialsSubmit} onCancel={() => setCredentialsDialogOpen(false)} />
+          <div className="p-8 max-h-[70vh] overflow-y-auto">
+            <GenerateCredentialsForm onSubmit={handleCredentialsSubmit} onCancel={() => setCredentialsDialogOpen(false)} />
+          </div>
         </DialogContent>
       </Dialog>
     </div>

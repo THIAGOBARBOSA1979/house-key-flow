@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Appointment } from "./AppointmentData";
+import { Badge } from "@/components/ui/badge";
 
 interface AppointmentDetailsProps {
   selectedAppointment: string | null;
@@ -67,55 +68,55 @@ export function AppointmentDetails({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Detalhes do Agendamento</DialogTitle>
-          <DialogDescription>
-            Visualize e gerencie os detalhes do agendamento
+      <DialogContent className="sm:max-w-xl p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+        <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
+          <DialogTitle className="text-2xl font-black tracking-tight">Detalhes do Agendamento</DialogTitle>
+          <DialogDescription className="text-sm font-medium">
+            Visualize e gerencie as informações da atividade programada.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid gap-4 py-4">
+        <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">{appointment.title}</h3>
+            <h3 className="text-xl font-black text-foreground">{appointment.title}</h3>
             {appointment.type === "inspection" ? (
-              <span className="bg-primary/10 text-primary text-xs px-2.5 py-0.5 rounded-md border border-primary/20">Vistoria</span>
+              <Badge className="bg-primary/10 text-primary border-primary/20 rounded-lg font-black uppercase text-[10px]">Vistoria</Badge>
             ) : (
-              <span className="bg-status-pending/10 text-status-pending text-xs px-2.5 py-0.5 rounded-md border border-status-pending/20">Garantia</span>
+              <Badge className="bg-status-pending/10 text-status-pending border-status-pending/20 rounded-lg font-black uppercase text-[10px]">Garantia</Badge>
             )}
           </div>
           
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Status</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status Atual</Label>
               <div className="mt-1">{getStatusBadge(appointment.status)}</div>
             </div>
             <div>
-              <Label>Data e Hora</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Data e Hora</Label>
               <div className="mt-1 text-sm">{safeFormat(appointment.date, "dd/MM/yyyy 'às' HH:mm")}</div>
             </div>
           </div>
           
           <div>
-            <Label>Cliente</Label>
+            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cliente</Label>
             <div className="mt-1 text-sm">{appointment.client}</div>
           </div>
           
           <div>
-            <Label>Propriedade</Label>
+            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Propriedade</Label>
             <div className="mt-1 text-sm">{appointment.property} - Unidade {appointment.unit}</div>
           </div>
           
           <div>
-            <Label>Responsável Técnico</Label>
+            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Responsável Técnico</Label>
             <div className="mt-1 text-sm">{appointment.technician || "Não atribuído"}</div>
           </div>
           
           <div>
-            <Label>Observações</Label>
+            <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Observações de Campo</Label>
             <Textarea 
-              placeholder="Adicionar observações..."
-              className="mt-1"
+              placeholder="Adicionar notas internas sobre este agendamento..."
+              className="mt-2 rounded-xl min-h-[100px] resize-none border-muted-foreground/20 focus:border-primary transition-all"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -123,7 +124,7 @@ export function AppointmentDetails({
           
           {appointment.status !== "completed" && appointment.status !== "cancelled" && (
             <div>
-              <Label>Atualizar Status</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-3">Atualizar Status do Fluxo</Label>
               <RadioGroup defaultValue={appointment.status} className="mt-2">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="pending" id="pending" />
@@ -149,32 +150,45 @@ export function AppointmentDetails({
             </div>
           )}
         </div>
-        <DialogFooter>
-          {appointment.status === "pending" && (
+        <DialogFooter className="p-8 border-t border-border/10 bg-muted/5 flex-row sm:justify-between items-center gap-4">
+          <div className="flex-1">
+            {appointment.status === "pending" && (
+              <Button 
+                variant="ghost" 
+                className="h-12 px-6 rounded-xl font-bold text-destructive hover:bg-destructive/10 hover:text-destructive transition-all"
+                onClick={() => {
+                  onStatusChange(appointment.id, "cancelled");
+                  onOpenChange(false);
+                }}
+              >
+                <X className="mr-2 h-4 w-4" /> Cancelar
+              </Button>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
             <Button 
-              variant="outline" 
+              variant="outline"
+              className="h-12 px-6 rounded-xl font-bold transition-all"
+              onClick={() => onOpenChange(false)}
+            >
+              Fechar
+            </Button>
+            <Button 
+              className="h-12 px-10 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md active:scale-95 transition-all"
               onClick={() => {
-                onStatusChange(appointment.id, "Cancelado");
+                if (onUpdate) {
+                  onUpdate(appointment.id, { notes });
+                }
+                toast({
+                  title: "Alterações salvas",
+                  description: "Os dados do agendamento foram sincronizados.",
+                });
                 onOpenChange(false);
               }}
             >
-              <X className="mr-2 h-4 w-4" /> Cancelar Agendamento
+              Salvar Alterações
             </Button>
-          )}
-          <Button 
-            onClick={() => {
-              if (onUpdate) {
-                onUpdate(appointment.id, { notes });
-              }
-              toast({
-                title: "Alterações salvas",
-                description: "As observações do agendamento foram salvas.",
-              });
-              onOpenChange(false);
-            }}
-          >
-            Salvar Alterações
-          </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
