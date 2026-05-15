@@ -42,7 +42,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
           <Skeleton className="h-10 w-64" />
           <Skeleton className="h-10 w-32" />
         </div>
-        <div className="border rounded-xl overflow-hidden shadow-sem-sm">
+        <div className="border rounded-lg overflow-hidden shadow-sem-sm">
           <div className="bg-muted/50 p-4 border-b">
             <div className="grid grid-cols-4 gap-4">
               <Skeleton className="h-4 w-24" />
