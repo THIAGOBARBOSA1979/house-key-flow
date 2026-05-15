@@ -14,12 +14,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from '@/components/shared/StatsCard';
 import { cn } from '@/lib/utils';
 
-import { ChecklistTemplate } from '@/services/ChecklistService';
+import { ChecklistTemplate, ChecklistExecutionRecord } from '@/services/ChecklistService';
 
 export default function Checklist() {
   const { toast } = useToast();
   const [currentView, setCurrentView] = useState<'templates' | 'builder' | 'execution' | 'detail'>('templates');
   const [selectedTemplate, setSelectedTemplate] = useState<ChecklistTemplate | null>(null);
+  const [selectedExecution, setSelectedExecution] = useState<ChecklistExecutionRecord | null>(null);
   const [executionGroups, setExecutionGroups] = useState<ChecklistGroup[]>([]);
 
   const handleSelectTemplate = (template: ChecklistTemplate) => {
@@ -71,10 +72,26 @@ export default function Checklist() {
   const handleBack = () => {
     setCurrentView('templates');
     setSelectedTemplate(null);
+    setSelectedExecution(null);
     setExecutionGroups([]);
   };
 
-  if (currentView === 'builder') {
+  const handleViewExecution = (exec: ChecklistExecutionRecord) => {
+    setSelectedExecution(exec);
+    setCurrentView('detail');
+  };
+
+  if (currentView === 'detail' && selectedExecution) {
+    return (
+      <ChecklistDetail
+        title={selectedExecution.templateTitle}
+        description={`Executado por ${selectedExecution.performedByName} em ${new Date(selectedExecution.date).toLocaleString()}`}
+        groups={selectedExecution.groups}
+        readOnly={true}
+        onBack={handleBack}
+      />
+    );
+  }
     return (
       <div className="space-y-6 animate-fade-in">
         <ChecklistBuilder
@@ -168,7 +185,7 @@ export default function Checklist() {
                 <div className="divide-y divide-border/10">
                   {checklistService.getAllExecutions().length > 0 ? (
                     checklistService.getAllExecutions().map((exec) => (
-                      <div key={exec.id} className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all cursor-pointer group">
+                      <div key={exec.id} onClick={() => handleViewExecution(exec)} className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all cursor-pointer group">
                         <div className="flex items-center gap-4">
                           <div className={cn(
                             "p-3 rounded-xl border group-hover:scale-110 transition-transform",
