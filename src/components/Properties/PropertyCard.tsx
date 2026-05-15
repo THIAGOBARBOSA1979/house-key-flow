@@ -27,7 +27,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, className }: Property
   const completionPercentage = Math.round((property.completedUnits / property.units) * 100);
   
   return (
-    <Card className={cn("card-standard card-hover-effect overflow-hidden border-none bg-background/50 backdrop-blur-sm", className)}>
+    <Card className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/40 backdrop-blur-md flex flex-col h-full", className)}>
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
         {property.imageUrl ? (
           <img 
@@ -102,22 +102,22 @@ export const PropertyCard = ({ property, onEdit, onDelete, className }: Property
         </div>
       </CardContent>
 
-      <CardFooter className="gap-2 pt-2 border-t border-border/10">
-        <Button variant="ghost" size="sm" className="flex-1 text-xs font-bold hover:bg-primary/10 hover:text-primary active:scale-95 transition-all">
-          Gerenciar
+      <CardFooter className="gap-2 pt-4 border-t border-border/5 bg-muted/5">
+        <Button variant="default" size="sm" className="flex-1 text-xs font-black uppercase tracking-widest h-9 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none active:scale-95 transition-all">
+          Painel Geral
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted">
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted/50 border border-border/10">
               <MoreHorizontal size={16} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem onClick={onEdit} className="text-xs font-medium cursor-pointer">
-              <Pencil className="mr-2 h-3.5 w-3.5" /> Editar
+          <DropdownMenuContent align="end" className="w-48 p-2 rounded-2xl shadow-sem-lg border-none animate-in fade-in zoom-in-95">
+            <DropdownMenuItem onClick={onEdit} className="text-xs font-black uppercase tracking-tight cursor-pointer py-3 rounded-xl focus:bg-primary/5 focus:text-primary">
+              <Pencil className="mr-3 h-3.5 w-3.5 opacity-70" /> Editar Projeto
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-xs font-medium text-destructive focus:text-destructive cursor-pointer" onClick={onDelete}>
-              <Trash2 className="mr-2 h-3.5 w-3.5" /> Excluir
+            <DropdownMenuItem className="text-xs font-black uppercase tracking-tight text-destructive focus:text-destructive cursor-pointer py-3 rounded-xl focus:bg-destructive/5" onClick={onDelete}>
+              <Trash2 className="mr-3 h-3.5 w-3.5 opacity-70" /> Remover Registro
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
