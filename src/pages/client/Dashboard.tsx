@@ -431,54 +431,69 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Ações Rápidas</CardTitle>
-          <CardDescription>Acesse rapidamente as funcionalidades mais utilizadas</CardDescription>
+      {/* Enhanced Quick Actions */}
+      <Card className="border-none bg-muted/30">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <CardTitle className="text-xl font-bold">Serviços e Atalhos</CardTitle>
+          </div>
+          <CardDescription>Acesso rápido aos principais recursos do seu portal</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-layout-gap">
-            <Link to="/client/documents">
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                <FileText className="h-6 w-6" />
-                Meus Documentos
-              </Button>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link to="/client/documents" className="group">
+              <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                  <FileText className="h-6 w-6 text-primary group-hover:text-white" />
+                </div>
+                <span className="font-bold text-sm">Meus Documentos</span>
+              </div>
             </Link>
             
             {canScheduleInspection ? (
-              <Link to="/client/inspections">
-                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                  <ClipboardCheck className="h-6 w-6" />
-                  Agendar Vistoria
-                </Button>
+              <Link to="/client/inspections" className="group">
+                <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                  <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                    <ClipboardCheck className="h-6 w-6 text-primary group-hover:text-white" />
+                  </div>
+                  <span className="font-bold text-sm">Vistorias Agendadas</span>
+                </div>
               </Link>
             ) : (
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2" disabled>
-                <Lock className="h-6 w-6" />
-                Agendar Vistoria
-              </Button>
+              <div className="h-full p-4 rounded-xl border bg-muted/50 cursor-not-allowed flex flex-col items-center justify-center gap-3 text-center opacity-60">
+                <div className="p-3 rounded-full bg-muted">
+                  <Lock className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <span className="font-bold text-sm text-muted-foreground">Vistorias (Bloqueado)</span>
+              </div>
             )}
             
             {canRequestWarranty ? (
-              <Link to="/client/warranty">
-                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                  <ShieldCheck className="h-6 w-6" />
-                  Solicitar Garantia
-                </Button>
+              <Link to="/client/warranty" className="group">
+                <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                  <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                    <ShieldCheck className="h-6 w-6 text-primary group-hover:text-white" />
+                  </div>
+                  <span className="font-bold text-sm">Solicitar Garantia</span>
+                </div>
               </Link>
             ) : (
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2" disabled>
-                <Lock className="h-6 w-6" />
-                Solicitar Garantia
-              </Button>
+              <div className="h-full p-4 rounded-xl border bg-muted/50 cursor-not-allowed flex flex-col items-center justify-center gap-3 text-center opacity-60">
+                <div className="p-3 rounded-full bg-muted">
+                  <Lock className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <span className="font-bold text-sm text-muted-foreground">Garantias (Bloqueado)</span>
+              </div>
             )}
             
-            <Link to="/client/properties">
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                <Home className="h-6 w-6" />
-                Meu Imóvel
-              </Button>
+            <Link to="/client/properties" className="group">
+              <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                  <Building className="h-6 w-6 text-primary group-hover:text-white" />
+                </div>
+                <span className="font-bold text-sm">Dados do Imóvel</span>
+              </div>
             </Link>
           </div>
         </CardContent>
