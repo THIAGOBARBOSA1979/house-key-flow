@@ -121,11 +121,19 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
       </CardContent>
 
       <CardFooter className="gap-2 pt-4 border-t border-border/5 bg-muted/5">
-        <Button variant="default" size="sm" className="flex-1 text-xs font-black uppercase tracking-widest h-9 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none active:scale-95 transition-all">
+        <Button 
+          variant="default" 
+          size="sm" 
+          className="flex-1 text-xs font-black uppercase tracking-widest h-9 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none active:scale-95 transition-all"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick?.();
+          }}
+        >
           Painel Geral
         </Button>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted/50 border border-border/10">
               <MoreHorizontal size={16} />
             </Button>
