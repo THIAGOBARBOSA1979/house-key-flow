@@ -458,8 +458,9 @@ const ClientWarranty = () => {
         <div className="lg:col-span-2">
           {claim ? (
             <Tabs defaultValue="details">
-              <TabsList>
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="details">Detalhes</TabsTrigger>
+                <TabsTrigger value="timeline">Linha do Tempo</TabsTrigger>
                 <TabsTrigger value="updates">Atualizações</TabsTrigger>
               </TabsList>
               
@@ -532,6 +533,10 @@ const ClientWarranty = () => {
                     </Button>
                   </CardFooter>
                 </Card>
+              </TabsContent>
+              
+              <TabsContent value="timeline" className="pt-4">
+                <WarrantyRequestTimeline request={claim} />
               </TabsContent>
               
               <TabsContent value="updates" className="space-y-4 pt-4">
