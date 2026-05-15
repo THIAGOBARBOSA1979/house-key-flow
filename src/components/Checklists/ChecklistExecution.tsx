@@ -7,8 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChecklistItem } from "@/services/ChecklistService";
-import { Check, X, AlertCircle, Camera, Save, Send, PenTool, User, ShieldCheck } from "lucide-react";
+import { ChecklistItem, ChecklistGroup } from "@/services/ChecklistService";
+import { Check, X, AlertCircle, Camera, Save, Send, PenTool, User, ShieldCheck, MapPin, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -98,7 +98,8 @@ export function ChecklistExecution({
     }
   };
 
-  const currentSectionItems = groupedItems[sections[currentSection]] || [];
+  const currentSectionGroup = completedGroups[currentSection] || { items: [] };
+  const currentSectionItems = currentSectionGroup.items;
 
   return (
     <div className="space-y-6 pb-20">
@@ -134,9 +135,9 @@ export function ChecklistExecution({
 
       {/* Navegação por seções otimizada */}
       <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth snap-x">
-        {sections.map((section, index) => (
+        {completedGroups.map((group, index) => (
           <Button
-            key={section}
+            key={group.id}
             variant={currentSection === index ? "default" : "outline"}
             size="sm"
             onClick={() => setCurrentSection(index)}
@@ -145,10 +146,10 @@ export function ChecklistExecution({
               currentSection === index ? "shadow-md scale-105" : "opacity-70"
             )}
           >
-            {section}
+            {group.name}
             <Badge variant="secondary" className="ml-2 bg-white/20 text-[10px]">
-              {groupedItems[section].filter(item => item.status && item.status !== 'na').length}/
-              {groupedItems[section].length}
+              {group.items.filter(item => item.status && item.status !== 'na').length}/
+              {group.items.length}
             </Badge>
           </Button>
         ))}
@@ -158,7 +159,7 @@ export function ChecklistExecution({
       <div className="space-y-4">
         <AnimatePresence mode="wait">
           <motion.div
-            key={sections[currentSection]}
+            key={completedGroups[currentSection]?.id}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -319,29 +320,32 @@ export function ChecklistExecution({
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border/50 z-30 flex gap-3">
         <Button 
           variant="outline" 
-          onClick={() => onSave(completedItems, notes)} 
-          className="flex-1 rounded-xl h-12 font-bold uppercase tracking-tighter"
+          onClick={() => onSave(completedGroups, notes)} 
+          className="flex-1 rounded-xl h-12 font-black uppercase tracking-tighter"
         >
           <Save className="mr-2 h-4 w-4" />
-          Pausar
+          Rascunho
         </Button>
         <Button 
           onClick={() => {
-            const pending = completedItems.filter(i => i.required && !i.status);
+            const pending = allItems.filter(i => i.required && !i.status);
             if (pending.length > 0) {
               toast({
-                title: "Itens Obrigatórios",
-                description: `Ainda restam ${pending.length} itens obrigatórios sem preenchimento.`,
+                title: "Pendências Obrigatórias",
+                description: `Existem ${pending.length} itens obrigatórios não verificados.`,
                 variant: "destructive"
               });
               return;
             }
-            onSubmit(completedItems, notes);
+            onSubmit(completedGroups, notes);
           }} 
-          className="flex-[2] rounded-xl h-12 font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 uppercase tracking-tighter"
+          className="flex-[2] rounded-xl h-12 font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 uppercase tracking-tighter flex items-center justify-center gap-2"
         >
-          <Send className="mr-2 h-4 w-4" />
-          Finalizar Vistoria
+          <div className="flex flex-col items-center leading-tight">
+            <span className="text-xs opacity-70">Finalizar</span>
+            <span className="text-sm">VISTORIA TÉCNICA</span>
+          </div>
+          <Send className="h-4 w-4" />
         </Button>
       </div>
     </div>
