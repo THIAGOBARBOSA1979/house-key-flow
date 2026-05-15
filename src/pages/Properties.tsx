@@ -207,6 +207,7 @@ const Properties = () => {
           <PropertyCard 
             key={property.id} 
             property={property} 
+            onClick={() => setSelectedProperty(property)}
             onEdit={() => openEdit(property)}
             onDelete={() => setPropertyToDelete(property)}
           />
