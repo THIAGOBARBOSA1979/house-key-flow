@@ -1,0 +1,215 @@
+
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { User, Mail, Phone, MapPin, Shield, Lock, BellRing } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+
+const ClientProfile = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: user?.name || "João Silva",
+    email: user?.email || "cliente@exemplo.com",
+    phone: "(11) 99999-8888",
+    address: "Rua das Flores, 123 - Edifício Aurora, Apto 101",
+  });
+
+  const handleSave = () => {
+    setIsEditing(false);
+    toast({
+      title: "Perfil atualizado",
+      description: "Suas informações foram salvas com sucesso.",
+    });
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
+          <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
+            <User className="h-8 w-8" />
+          </div>
+          Meu Perfil
+        </h1>
+        <p className="text-muted-foreground mt-2 font-medium">
+          Gerencie suas informações pessoais e preferências de conta.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Left Column: Avatar and Summary */}
+        <div className="md:col-span-1 space-y-6">
+          <Card className="text-center overflow-hidden border-primary/10 shadow-md">
+            <div className="h-24 bg-gradient-to-r from-primary/20 to-primary/5 w-full" />
+            <CardContent className="pt-0 -mt-12">
+              <div className="relative inline-block">
+                <Avatar className="h-24 w-24 border-4 border-background mx-auto shadow-lg">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback className="text-2xl font-bold bg-primary text-primary-foreground">
+                    {profileData.name.substring(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute bottom-0 right-0 p-1.5 bg-primary text-primary-foreground rounded-full border-2 border-background cursor-pointer hover:scale-110 transition-transform">
+                  <Shield className="h-4 w-4" />
+                </div>
+              </div>
+              <h2 className="mt-4 text-xl font-bold">{profileData.name}</h2>
+              <p className="text-sm text-muted-foreground font-medium">Cliente A2</p>
+              
+              <div className="mt-6 flex flex-col gap-2">
+                <Button 
+                  variant={isEditing ? "outline" : "default"} 
+                  className="w-full font-bold uppercase tracking-widest text-xs"
+                  onClick={() => setIsEditing(!isEditing)}
+                >
+                  {isEditing ? "Cancelar" : "Editar Perfil"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-primary/10 shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Estatísticas da Conta</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Desde</span>
+                <span className="text-sm font-bold">Jan 2024</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Status</span>
+                <span className="text-xs font-black bg-green-100 text-green-700 px-2 py-1 rounded uppercase tracking-tighter">Ativo</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column: Form and Settings */}
+        <div className="md:col-span-2 space-y-6">
+          <Card className="border-primary/10 shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-primary" />
+                Informações Pessoais
+              </CardTitle>
+              <CardDescription>Dados utilizados para comunicações e contratos.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome Completo</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                    <Input 
+                      id="name" 
+                      className="pl-10" 
+                      value={profileData.name} 
+                      readOnly={!isEditing}
+                      onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-muted-foreground">E-mail</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                    <Input 
+                      id="email" 
+                      className="pl-10" 
+                      value={profileData.email} 
+                      readOnly={!isEditing}
+                      onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Telefone / WhatsApp</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                    <Input 
+                      id="phone" 
+                      className="pl-10" 
+                      value={profileData.phone} 
+                      readOnly={!isEditing}
+                      onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Endereço Principal</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                    <Input 
+                      id="address" 
+                      className="pl-10" 
+                      value={profileData.address} 
+                      readOnly={!isEditing}
+                      onChange={(e) => setProfileData({...profileData, address: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            {isEditing && (
+              <CardFooter className="bg-muted/30 border-t flex justify-end gap-3 pt-4">
+                <Button variant="outline" onClick={() => setIsEditing(false)}>Cancelar</Button>
+                <Button onClick={handleSave} className="font-bold">Salvar Alterações</Button>
+              </CardFooter>
+            )}
+          </Card>
+
+          <Card className="border-primary/10 shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5 text-primary" />
+                Segurança
+              </CardTitle>
+              <CardDescription>Gerencie sua senha e acessos.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border">
+                <div className="space-y-1">
+                  <p className="font-bold text-sm">Alterar Senha</p>
+                  <p className="text-xs text-muted-foreground">Recomendamos trocar sua senha a cada 90 dias.</p>
+                </div>
+                <Button variant="outline" size="sm" className="font-bold uppercase tracking-tighter text-[10px]">Alterar</Button>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border">
+                <div className="space-y-1">
+                  <p className="font-bold text-sm">Autenticação em Duas Etapas</p>
+                  <p className="text-xs text-muted-foreground">Adicione uma camada extra de segurança via SMS.</p>
+                </div>
+                <Button variant="outline" size="sm" className="font-bold uppercase tracking-tighter text-[10px]">Ativar</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-primary/10 shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BellRing className="h-5 w-5 text-primary" />
+                Preferências de Notificação
+              </CardTitle>
+              <CardDescription>Defina como você quer receber alertas do sistema.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm text-muted-foreground font-medium">
+              <p>Gerencie estas preferências na <Button variant="link" className="p-0 h-auto font-bold text-primary">Central de Notificações</Button>.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ClientProfile;

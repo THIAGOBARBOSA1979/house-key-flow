@@ -166,6 +166,7 @@ const ClientProperties = () => {
         <TabsList>
           <TabsTrigger value="documents">Documentos</TabsTrigger>
           <TabsTrigger value="features">Características</TabsTrigger>
+          <TabsTrigger value="photos">Galeria de Fotos</TabsTrigger>
           <TabsTrigger value="warranty">Garantias</TabsTrigger>
         </TabsList>
         
@@ -348,7 +349,37 @@ const ClientProperties = () => {
             </CardContent>
           </Card>
         </TabsContent>
-        
+        <TabsContent value="photos" className="space-y-4 pt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-primary" />
+                Progresso da Unidade
+              </CardTitle>
+              <CardDescription>Acompanhe a evolução da construção do seu imóvel.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="group relative aspect-square rounded-xl overflow-hidden border bg-muted cursor-pointer hover:shadow-lg transition-all">
+                    <img 
+                      src={`https://images.unsplash.com/photo-${1580000000000 + i * 1000}?auto=format&fit=crop&q=80&w=400`} 
+                      alt={`Progresso ${i}`}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button variant="secondary" size="sm" className="font-bold text-[10px] uppercase">Ver Foto</Button>
+                    </div>
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <Badge className="bg-black/60 text-[8px] uppercase tracking-tighter border-none">Mês {i}</Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="warranty" className="space-y-4 pt-4">
           <Card>
             <CardHeader>

@@ -1,7 +1,7 @@
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText } from "lucide-react";
+import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
+import { ScheduleMeetingDialog } from "@/components/ClientFlow/ScheduleMeetingDialog";
 
 const ClientNavLink = ({
   to,
@@ -243,6 +244,7 @@ const ClientLayout = () => {
           <ClientNavLink to="/client/inspections" icon={ClipboardCheck} onClick={handleLinkClick}>Vistorias</ClientNavLink>
           <ClientNavLink to="/client/warranty" icon={ShieldCheck} onClick={handleLinkClick}>Garantias</ClientNavLink>
           <ClientNavLink to="/client/notifications" icon={Bell} onClick={handleLinkClick} badgeCount={unreadCount}>Notificações</ClientNavLink>
+          <ClientNavLink to="/client/profile" icon={User} onClick={handleLinkClick}>Meu Perfil</ClientNavLink>
           
           <Separator className="my-4" />
           
@@ -260,6 +262,7 @@ const ClientLayout = () => {
                   <ChatSupportPanel />
                 </SheetContent>
               </Sheet>
+              <ScheduleMeetingDialog />
             </div>
           </div>
         </nav>
@@ -317,15 +320,15 @@ const ClientLayout = () => {
             </Sheet>
             
             {/* User menu */}
-            <div className="flex items-center gap-2">
+            <Link to="/client/profile" className="flex items-center gap-2 hover:bg-muted p-1 rounded-lg transition-colors">
               <Avatar>
                 <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
               </Avatar>
               <div className="hidden md:block">
                 <p className="text-sm font-medium">{user?.name || "Cliente"}</p>
-                <p className="text-xs text-muted-foreground">Cliente</p>
+                <p className="text-xs text-muted-foreground">Ver perfil</p>
               </div>
-            </div>
+            </Link>
           </div>
         </header>
         

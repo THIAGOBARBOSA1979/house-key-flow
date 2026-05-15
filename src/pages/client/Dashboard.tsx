@@ -16,7 +16,8 @@ import {
   Building2,
   MapPin,
   TrendingUp,
-  Clock
+  Clock,
+  MessageSquare
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
@@ -29,6 +30,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { documentService } from "@/services/DocumentService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
 import { useMemo } from "react";
 
 const Dashboard = () => {
@@ -498,6 +500,24 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2">
+          <ClientFAQ />
+        </div>
+        <Card className="bg-primary/5 border-primary/10 flex flex-col justify-center items-center p-6 text-center shadow-sm rounded-2xl">
+          <div className="p-4 rounded-2xl bg-primary/10 mb-4 shadow-inner">
+            <MessageSquare className="h-8 w-8 text-primary" />
+          </div>
+          <h3 className="font-bold text-lg mb-2 text-foreground/90 tracking-tight">Suporte Especializado</h3>
+          <p className="text-sm text-muted-foreground mb-6 font-medium leading-relaxed">
+            Ainda tem dúvidas? Nossa equipe técnica está pronta para te atender via chat.
+          </p>
+          <Button className="w-full font-bold uppercase tracking-widest text-xs py-6 shadow-md rounded-xl">
+            Falar com Consultor
+          </Button>
+        </Card>
+      </div>
     </div>
   );
 };

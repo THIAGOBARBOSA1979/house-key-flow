@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History } from "lucide-react";
+import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History, Star } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,6 +27,7 @@ import { eventAutomationService } from "@/services/EventAutomationService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { WarrantyRequestTimeline, WarrantyRequestList } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { useAuth } from "@/contexts/AuthContext";
+import { SatisfactionSurvey } from "@/components/Warranty/SatisfactionSurvey";
 
 // Warranty requests are fetched from warrantyFlowService
 
@@ -153,6 +154,7 @@ const ClientWarranty = () => {
   const [addInfoDialogOpen, setAddInfoDialogOpen] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [commentText, setCommentText] = useState("");
+  const [surveyDone, setSurveyDone] = useState<Record<string, boolean>>({});
   const { user } = useAuth();
   const allClaims = useMemo(() => warrantyFlowService.getClientRequests(user?.id || "client-1"), [user?.id]);
   const [claims, setClaims] = useState<any[]>(allClaims);
@@ -492,6 +494,15 @@ const ClientWarranty = () => {
                   <CardContent className="space-y-4">
                     <WarrantyStatus status={claim.status} />
                     
+                    {claim.status === 'complete' && !surveyDone[claim.id] && (
+                      <div className="mt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                        <SatisfactionSurvey 
+                          requestId={claim.id} 
+                          onComplete={() => setSurveyDone(prev => ({ ...prev, [claim.id]: true }))} 
+                        />
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                       <div>
                         <h3 className="font-medium mb-2">Detalhes da Solicitação:</h3>
