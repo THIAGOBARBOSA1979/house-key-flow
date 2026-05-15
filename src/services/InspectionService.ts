@@ -42,7 +42,8 @@ class InspectionService {
       time: "09:00",
       status: "pending",
       type: "technicalInspection",
-      technician: "Carlos Andrade"
+      technician: "Carlos Andrade",
+      createdAt: new Date(Date.now() - 86400000 * 2)
     },
     { 
       id: "2", 
@@ -53,7 +54,32 @@ class InspectionService {
       time: "14:30",
       status: "progress",
       type: "keyDelivery",
-      technician: "Luiza Mendes"
+      technician: "Luiza Mendes",
+      createdAt: new Date(Date.now() - 86400000 * 1)
+    },
+    { 
+      id: "3", 
+      property: "Condomínio Monte Azul", 
+      unit: "505", 
+      client: "Pedro Oliveira", 
+      date: new Date(Date.now() - 86400000 * 3), 
+      time: "10:00",
+      status: "complete",
+      type: "postWork",
+      technician: "Carlos Andrade",
+      createdAt: new Date(Date.now() - 86400000 * 5)
+    },
+    { 
+      id: "4", 
+      property: "Edifício Aurora", 
+      unit: "202", 
+      client: "Ana Costa", 
+      date: new Date(Date.now() + 86400000 * 2), 
+      time: "11:00",
+      status: "pending",
+      type: "keyDelivery",
+      technician: "Roberto Santos",
+      createdAt: new Date()
     },
   ];
 
