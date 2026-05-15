@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { SearchX, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "./EmptyState";
+import { SkeletonLoader } from "./SkeletonLoader";
 
 interface DataViewProps<T> {
   items: T[];
@@ -9,10 +11,11 @@ interface DataViewProps<T> {
   renderList?: () => React.ReactNode;
   viewMode?: 'grid' | 'list';
   isLoading?: boolean;
+  skeletonType?: 'card' | 'table' | 'page' | 'list';
   emptyState?: {
     title: string;
     description: string;
-    icon?: React.ReactNode;
+    icon?: LucideIcon;
     action?: {
       label: string;
       onClick: () => void;
@@ -28,6 +31,7 @@ export function DataView<T>({
   renderList,
   viewMode = 'grid',
   isLoading = false,
+  skeletonType = 'card',
   emptyState,
   gridClassName,
   itemsPerPage = 0
@@ -35,32 +39,17 @@ export function DataView<T>({
   const [currentPage, setCurrentPage] = useState(1);
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
-        <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
-        <p className="text-sem-body-base text-muted-foreground">Carregando dados...</p>
-      </div>
-    );
+    return <SkeletonLoader type={skeletonType} count={itemsPerPage || 6} />;
   }
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center section-padding bg-muted/20 rounded-3xl border-2 border-dashed border-muted-foreground/10 animate-fade-in py-24 shadow-sem-inner">
-        <div className="p-6 bg-muted/40 rounded-3xl mb-6 shadow-sem-sm">
-          {emptyState?.icon || <SearchX className="h-14 w-14 text-muted-foreground/40" />}
-        </div>
-        <h3 className="text-2xl font-black text-foreground mb-2 tracking-tight">
-          {emptyState?.title || "Nenhum registro encontrado"}
-        </h3>
-        <p className="text-sem-body-base text-muted-foreground mb-8 text-center max-w-md leading-relaxed">
-          {emptyState?.description || "Tente ajustar seus filtros para encontrar o que procura."}
-        </p>
-        {emptyState?.action && (
-          <Button onClick={emptyState.action.onClick} className="h-12 px-8 font-black uppercase tracking-widest text-xs">
-            {emptyState.action.label}
-          </Button>
-        )}
-      </div>
+      <EmptyState 
+        title={emptyState?.title || "Nenhum registro encontrado"}
+        description={emptyState?.description || "Tente ajustar seus filtros para encontrar o que procura."}
+        icon={emptyState?.icon}
+        action={emptyState?.action}
+      />
     );
   }
 
