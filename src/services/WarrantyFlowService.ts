@@ -1078,7 +1078,7 @@ class WarrantyFlowService {
 
     const updatedRequest: WarrantyRequestFlow = {
       ...request,
-      updates: [...(request as any).updates || [], newUpdate],
+      updates: [...request.updates || [], newUpdate],
       updatedAt: new Date()
     };
 
@@ -1108,46 +1108,6 @@ class WarrantyFlowService {
       return true;
     }
     return false;
-  }
-
-  /**
-   * Schedule an inspection for a warranty request
-   */
-  scheduleInspection(
-    requestId: string,
-    date: Date,
-    technicianId: string,
-    technicianName: string,
-    changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
-    if (!request) return { success: false, error: "Solicitação não encontrada" };
-
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      currentStage: "inspection_scheduled",
-      inspectionDate: date,
-      assignedTo: technicianId,
-      assignedToName: technicianName,
-      updatedAt: new Date(),
-      history: [
-        ...request.history,
-        {
-          id: `hist-${Date.now()}`,
-          requestId,
-          fromStatus: request.currentStage,
-          toStatus: "inspection_scheduled",
-          changedAt: new Date(),
-          changedBy,
-          isAutomatic: false,
-          notes: `Vistoria agendada para ${date.toLocaleDateString()}`
-        }
-      ]
-    };
-
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
-    return { success: true, request: updatedRequest };
   }
 }
 
