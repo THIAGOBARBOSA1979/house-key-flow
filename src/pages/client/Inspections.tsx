@@ -37,7 +37,21 @@ const ChecklistBadge = ({ status }: { status: boolean }) => {
 
 const ClientInspections = () => {
   const { user } = useAuth();
-  const allInspections = useMemo(() => inspectionService.getAll().filter(i => i.client === (user?.name || "João Silva")), [user?.name]);
+  const allInspections = useMemo(() => inspectionService.getAll()
+    .filter(i => i.client === (user?.name || "João Silva"))
+    .map(i => ({
+      ...i,
+      title: i.type === 'technicalInspection' ? 'Vistoria Técnica' : i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Reparo',
+      scheduledDate: i.date,
+      inspector: i.technician,
+      description: i.notes || "Vistoria para verificação das condições da unidade.",
+      checklist: [
+        { id: "1", name: "Verificação de paredes e pinturas", completed: i.status === 'complete' },
+        { id: "2", name: "Teste de instalações elétricas", completed: i.status === 'complete' },
+        { id: "3", name: "Teste de instalações hidráulicas", completed: i.status === 'complete' },
+      ],
+      canStart: i.status === 'pending'
+    })), [user?.name]);
   const [inspections, setInspections] = useState<any[]>(allInspections);
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
