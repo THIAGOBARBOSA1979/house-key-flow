@@ -105,6 +105,18 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
           
           <div className="h-6 w-px bg-border/40 mx-1 hidden md:block" />
 
+          {(inspection.status === "pending" || inspection.status === "progress") && (
+            <Button 
+              variant="default" 
+              size="sm"
+              onClick={startInspection}
+              className="h-9 px-4 text-xs font-bold bg-primary hover:bg-primary/90 transition-all active:scale-95 shadow-sem-sm"
+            >
+              <Play className="h-3.5 w-3.5 mr-2" /> 
+              {inspection.status === "progress" ? "Continuar" : "Iniciar"}
+            </Button>
+          )}
+
           <Button 
             variant="ghost" 
             size="sm"
