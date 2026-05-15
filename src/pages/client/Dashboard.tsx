@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { 
   Home, 
   FileText, 
@@ -113,7 +114,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-6">
       {/* Header with Stage Indicator */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -186,29 +187,40 @@ const Dashboard = () => {
         </Card>
 
         {/* Quick Summary Card */}
-        <Card className="bg-primary text-primary-foreground shadow-lg flex flex-col justify-between">
+        <Card className="bg-primary text-primary-foreground shadow-lg flex flex-col justify-between border-none overflow-hidden relative group">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <CardHeader>
             <CardTitle className="text-lg font-bold">Resumo Geral</CardTitle>
-            <CardDescription className="text-primary-foreground/70">Status dos seus serviços</CardDescription>
+            <CardDescription className="text-primary-foreground/70">Status dos seus serviços ativos</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-2 bg-white/10 rounded-lg">
-              <span className="text-sm">Documentos prontos</span>
-              <span className="font-bold">{allDocs.length}</span>
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors">
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-white/70" />
+                <span className="text-sm font-medium">Documentos</span>
+              </div>
+              <span className="font-black">{allDocs.length}</span>
             </div>
-            <div className="flex items-center justify-between p-2 bg-white/10 rounded-lg">
-              <span className="text-sm">Vistorias realizadas</span>
-              <span className="font-bold">{allInspections.filter(i => i.status === 'complete').length}</span>
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors">
+              <div className="flex items-center gap-2">
+                <ClipboardCheck className="h-4 w-4 text-white/70" />
+                <span className="text-sm font-medium">Vistorias</span>
+              </div>
+              <span className="font-black">{allInspections.filter(i => i.status === 'complete').length}</span>
             </div>
-            <div className="flex items-center justify-between p-2 bg-white/10 rounded-lg">
-              <span className="text-sm">Chamados abertos</span>
-              <span className="font-bold">{warrantyRequests.filter(r => r.currentStage !== 'completed' && r.currentStage !== 'rejected').length}</span>
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-white/70" />
+                <span className="text-sm font-medium">Garantias</span>
+              </div>
+              <span className="font-black">{warrantyRequests.filter(r => r.currentStage !== 'completed' && r.currentStage !== 'rejected').length}</span>
             </div>
           </CardContent>
           <CardFooter className="pt-0">
             <Link to="/client/notifications" className="w-full">
-              <Button variant="secondary" className="w-full font-bold">
-                Ver Notificações ({unreadCount})
+              <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11 shadow-md">
+                <Bell className="mr-2 h-4 w-4" />
+                Notificações ({unreadCount})
               </Button>
             </Link>
           </CardFooter>
@@ -297,20 +309,30 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            {recentDocuments.map((doc) => (
-              <div key={doc.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-body-base font-semibold">{doc.title}</p>
-                    <p className="text-caption">{doc.date.toLocaleDateString()}</p>
+            {recentDocuments.length > 0 ? (
+              recentDocuments.map((doc) => (
+                <div key={doc.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border transition-all group">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                      <FileText className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold truncate max-w-[150px] md:max-w-[200px]">{doc.title}</p>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase">{new Intl.DateTimeFormat('pt-BR').format(doc.date)}</p>
+                    </div>
                   </div>
+                  <StatusBadge 
+                    status={doc.status === "disponivel" || doc.status === "published" ? "complete" : (doc.status === "processando" ? "progress" : "pending")} 
+                    label={getStatusLabel(doc.status)}
+                    size="sm"
+                  />
                 </div>
-                <Badge variant={getStatusColor(doc.status) as any} className="text-xs">
-                  {getStatusLabel(doc.status)}
-                </Badge>
+              ))
+            ) : (
+              <div className="py-8 text-center bg-muted/20 rounded-xl border border-dashed">
+                <p className="text-sm text-muted-foreground">Nenhum documento disponível</p>
               </div>
-            ))}
+            )}
           </CardContent>
         </Card>
 
@@ -335,17 +357,21 @@ const Dashboard = () => {
           <CardContent className="space-y-3">
             {canScheduleInspection ? (
               upcomingInspections.map((inspection) => (
-                <div key={inspection.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                <div key={inspection.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border transition-all group">
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                      <Calendar className="h-4 w-4" />
+                    </div>
                     <div>
-                      <p className="text-body-base font-semibold">{inspection.type === 'technicalInspection' ? 'Vistoria Técnica' : 'Vistoria de Chaves'}</p>
-                      <p className="text-caption">{inspection.date.toLocaleDateString()}</p>
+                      <p className="text-sm font-bold">{inspection.type === 'technicalInspection' ? 'Vistoria Técnica' : 'Vistoria de Chaves'}</p>
+                      <p className="text-[10px] font-medium text-muted-foreground uppercase">{new Intl.DateTimeFormat('pt-BR').format(inspection.date)}</p>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(inspection.status) as any} className="text-xs">
-                    {getStatusLabel(inspection.status)}
-                  </Badge>
+                  <StatusBadge 
+                    status={inspection.status === "complete" ? "complete" : "pending"} 
+                    label={getStatusLabel(inspection.status)}
+                    size="sm"
+                  />
                 </div>
               ))
             ) : (
@@ -380,17 +406,21 @@ const Dashboard = () => {
           <CardContent className="space-y-3">
             {canRequestWarranty ? (
               warrantyRequests.map((request) => (
-                <div key={request.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50">
+                <div key={request.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border transition-all group">
                   <div className="flex items-center gap-3">
-                    <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                      <ShieldCheck className="h-4 w-4" />
+                    </div>
                     <div>
-                      <p className="text-body-base font-semibold">{request.title}</p>
-                      <p className="text-caption">Prioridade: {request.priority}</p>
+                      <p className="text-sm font-bold truncate max-w-[150px]">{request.title}</p>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{request.priority}</p>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(request.currentStage) as any} className="text-xs">
-                    {getStatusLabel(request.currentStage)}
-                  </Badge>
+                  <StatusBadge 
+                    status={request.currentStage === "completed" ? "complete" : (request.currentStage === "rejected" ? "critical" : "progress")} 
+                    label={getStatusLabel(request.currentStage)}
+                    size="sm"
+                  />
                 </div>
               ))
             ) : (
@@ -415,18 +445,21 @@ const Dashboard = () => {
           <CardContent className="space-y-3">
             {urgentNotifications.length > 0 ? (
               urgentNotifications.slice(0, 3).map((notification) => (
-                <div key={notification.id} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50">
-                  <AlertCircle className="h-4 w-4 text-primary mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-body-base font-semibold">{notification.title}</p>
-                    <p className="text-caption">{notification.message}</p>
+                <div key={notification.id} className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 hover:bg-primary/10 border border-primary/10 transition-all group">
+                  <div className="p-2 bg-white rounded-lg shadow-sm border border-primary/10 text-primary">
+                    <AlertCircle className="h-4 w-4" />
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold truncate">{notification.title}</p>
+                    <p className="text-[11px] text-muted-foreground line-clamp-1">{notification.message}</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-primary/40 group-hover:translate-x-1 transition-transform" />
                 </div>
               ))
             ) : (
-              <div className="flex items-center gap-3 p-2">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <p className="text-sm text-muted-foreground">Nenhuma notificação urgente</p>
+              <div className="flex flex-col items-center justify-center py-6 bg-muted/20 rounded-xl border border-dashed">
+                <CheckCircle className="h-8 w-8 text-green-600/30 mb-2" />
+                <p className="text-xs font-bold text-muted-foreground uppercase">Tudo em dia!</p>
               </div>
             )}
           </CardContent>

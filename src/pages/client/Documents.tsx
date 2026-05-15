@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -200,7 +201,7 @@ export default function ClientDocuments() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-6">
       {selectedDoc && (
         <DigitalSignatureDialog
           isOpen={isSignatureOpen}
@@ -329,78 +330,96 @@ export default function ClientDocuments() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="group border-primary/5 hover:border-primary/20 hover:shadow-xl transition-all duration-500 bg-gradient-to-br from-background to-muted/20 overflow-hidden flex flex-col h-full rounded-2xl">
-                <CardHeader className="pb-4 relative">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
-                      <FileText className="h-6 w-6" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredDocuments.length > 0 ? (
+              filteredDocuments.map((doc) => (
+                <Card key={doc.id} className="group border-primary/5 hover:border-primary/20 hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-background to-muted/20 overflow-hidden flex flex-col h-full rounded-2xl shadow-sm border">
+                  <CardHeader className="pb-4 relative">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
+                        <FileText className="h-6 w-6" />
+                      </div>
+                      <StatusBadge 
+                        status={doc.status === "disponivel" ? "complete" : (doc.status === "processando" ? "progress" : "critical")} 
+                        label={getStatusLabel(doc.status)}
+                        size="sm"
+                      />
                     </div>
-                    <Badge variant={getStatusColor(doc.status) as any} className="text-[10px] uppercase font-black px-3 py-1 rounded-full tracking-tighter">
-                      {getStatusLabel(doc.status)}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-base font-black leading-snug line-clamp-2 min-h-[48px] text-foreground/90">{doc.title}</CardTitle>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-widest bg-muted/50 border-none">
-                      {getTypeLabel(doc.type)}
-                    </Badge>
-                    <span className="text-[10px] font-black text-muted-foreground/60 uppercase">{doc.size}</span>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1 pb-4">
-                  {doc.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2 italic mb-4 leading-relaxed bg-muted/30 p-2 rounded-lg">{doc.description}</p>
-                  )}
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground font-black uppercase mt-auto pt-4 border-t border-dashed">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5 text-primary/60" />
-                      {doc.createdAt.toLocaleDateString()}
+                    <CardTitle className="text-base font-black leading-snug line-clamp-2 min-h-[48px] text-foreground/90 group-hover:text-primary transition-colors">{doc.title}</CardTitle>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter bg-muted/50 border-none">
+                        {getTypeLabel(doc.type)}
+                      </Badge>
+                      <span className="text-[10px] font-black text-muted-foreground/60 uppercase">{doc.size}</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Download className="h-3.5 w-3.5 text-primary/60" />
-                      <span>{doc.downloads}</span>
+                  </CardHeader>
+                  <CardContent className="flex-1 pb-4">
+                    {doc.description && (
+                      <div className="bg-muted/30 p-3 rounded-xl border border-dashed border-muted-foreground/10 group-hover:bg-muted/50 transition-colors">
+                        <p className="text-[11px] text-muted-foreground line-clamp-2 italic leading-relaxed">{doc.description}</p>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between text-[10px] text-muted-foreground font-black uppercase mt-6 pt-4 border-t border-dashed">
+                      <div className="flex items-center gap-1.5 bg-muted/40 px-2 py-1 rounded-lg">
+                        <Calendar className="h-3.5 w-3.5 text-primary/60" />
+                        {new Intl.DateTimeFormat('pt-BR').format(doc.createdAt)}
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-muted/40 px-2 py-1 rounded-lg">
+                        <Download className="h-3.5 w-3.5 text-primary/60" />
+                        <span>{doc.downloads}</span>
+                      </div>
                     </div>
+                  </CardContent>
+                  <div className="p-5 pt-0 grid grid-cols-1 gap-3 mt-auto">
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="h-10 text-[10px] font-black uppercase tracking-widest border-2 hover:bg-primary/5 rounded-xl transition-all shadow-sm"
+                        onClick={() => handlePreview(doc)}
+                        disabled={doc.status === "processando"}
+                      >
+                        <Eye className="h-4 w-4 mr-1.5" />
+                        Preview
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        className="h-10 text-[10px] font-black uppercase tracking-widest shadow-md rounded-xl transition-all hover:translate-y-[-2px]"
+                        onClick={() => handleDownload(doc)}
+                        disabled={doc.status === "processando"}
+                      >
+                        <Download className="h-4 w-4 mr-1.5" />
+                        Baixar
+                      </Button>
+                    </div>
+                    
+                    {doc.category === 'contrato' && (
+                      <Button 
+                        size="sm" 
+                        variant="secondary"
+                        className="w-full h-11 text-[11px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary/20 border-none rounded-xl shadow-inner transition-all hover:scale-[1.01]"
+                        onClick={() => handleOpenSignature(doc)}
+                      >
+                        <PenTool className="h-4 w-4 mr-1.5" />
+                        Assinar Digitalmente
+                      </Button>
+                    )}
                   </div>
-                </CardContent>
-                <div className="p-5 pt-0 grid grid-cols-1 gap-3 mt-auto">
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="h-10 text-[10px] font-black uppercase tracking-widest border-2 hover:bg-primary/5 rounded-xl"
-                      onClick={() => handlePreview(doc)}
-                      disabled={doc.status === "processando"}
-                    >
-                      <Eye className="h-4 w-4 mr-1.5" />
-                      Preview
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      className="h-10 text-[10px] font-black uppercase tracking-widest shadow-md rounded-xl"
-                      onClick={() => handleDownload(doc)}
-                      disabled={doc.status === "processando"}
-                    >
-                      <Download className="h-4 w-4 mr-1.5" />
-                      Baixar
-                    </Button>
-                  </div>
-                  
-                  {doc.category === 'contrato' && (
-                    <Button 
-                      size="sm" 
-                      variant="secondary"
-                      className="w-full h-11 text-[11px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary/20 border-none rounded-xl"
-                      onClick={() => handleOpenSignature(doc)}
-                    >
-                      <PenTool className="h-4 w-4 mr-1.5" />
-                      Assinar Digitalmente
-                    </Button>
-                  )}
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-full py-20 flex flex-col items-center justify-center text-center bg-muted/20 rounded-3xl border-2 border-dashed border-muted-foreground/20">
+                <FileText className="h-16 w-16 text-muted-foreground/20 mb-4" />
+                <h3 className="text-xl font-black text-foreground/80 tracking-tight">Nenhum documento encontrado</h3>
+                <p className="text-sm text-muted-foreground max-w-xs mt-2 font-medium">Não encontramos nenhum arquivo com os filtros aplicados.</p>
+                <Button variant="outline" className="mt-6 font-bold" onClick={() => {
+                  setSearch("");
+                  setCategoryFilter("all");
+                  setTypeFilter("all");
+                  setStatusFilter("all");
+                }}>Limpar Filtros</Button>
+              </div>
+            )}
           </div>
         </TabsContent>
 

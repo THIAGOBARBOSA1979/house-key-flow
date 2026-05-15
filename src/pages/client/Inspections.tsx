@@ -1,7 +1,7 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock } from "lucide-react";
+import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,13 +28,11 @@ import { checklistService } from "@/services/ChecklistService";
 // Helper component for the checklist status badges
 const ChecklistBadge = ({ status }: { status: boolean }) => {
   return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-      status 
-        ? "bg-green-100 text-green-800" 
-        : "bg-amber-100 text-amber-800"
-    }`}>
-      {status ? "Concluído" : "Pendente"}
-    </span>
+    <StatusBadge 
+      status={status ? "complete" : "pending"} 
+      label={status ? "Concluído" : "Pendente"} 
+      size="sm"
+    />
   );
 };
 
@@ -181,7 +179,7 @@ const ClientInspections = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-6">
       <DocumentPreviewDialog 
         isOpen={isPreviewOpen} 
         onClose={() => setIsPreviewOpen(false)}
@@ -260,35 +258,49 @@ const ClientInspections = () => {
                 <CardDescription>Selecione uma vistoria para ver detalhes</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                {inspections.map((item) => (
-                  <div 
-                    key={item.id} 
-                    className={`p-3 border rounded-md cursor-pointer transition-colors ${
-                      selectedInspection === item.id ? "border-primary bg-primary/5" : "hover:bg-accent"
-                    }`}
-                    onClick={() => setSelectedInspection(item.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-medium">{item.title}</h3>
-                      <div className="flex items-center gap-1.5">
-                        {item.acceptanceStatus === "pending_acceptance" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-pending/10 text-status-pending border-status-pending/20">Aceite pendente</span>
-                        )}
-                        {item.acceptanceStatus === "accepted" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-complete/10 text-status-complete border-status-complete/20">Aceita</span>
-                        )}
-                        {item.acceptanceStatus === "rejected" && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-status-critical/10 text-status-critical border-status-critical/20">Recusada</span>
-                        )}
-                        <StatusBadge status={item.status} />
+                {inspections.length > 0 ? (
+                  inspections.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={`p-4 border rounded-xl cursor-pointer transition-all duration-300 hover:shadow-md ${
+                        selectedInspection === item.id 
+                          ? "border-primary bg-primary/5 ring-1 ring-primary/20" 
+                          : "hover:bg-accent border-border/50"
+                      }`}
+                      onClick={() => setSelectedInspection(item.id)}
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="min-w-0">
+                          <h3 className="font-bold truncate text-foreground/90">{item.title}</h3>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter bg-muted/50">
+                              {item.type === 'technicalInspection' ? 'Técnica' : 'Chaves'}
+                            </Badge>
+                            {item.acceptanceStatus === "pending_acceptance" && (
+                              <Badge className="bg-amber-500 hover:bg-amber-600 text-white text-[9px] font-black uppercase tracking-tighter border-none">
+                                Aceite Pendente
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        <StatusBadge status={item.status} size="sm" />
+                      </div>
+                      <div className="flex items-center justify-between mt-4 text-[11px] font-medium text-muted-foreground">
+                        <div className="flex items-center gap-1.5 bg-muted/40 px-2 py-1 rounded-lg">
+                          <Clock className="h-3.5 w-3.5 text-primary" />
+                          <span className="font-bold text-foreground/80">{safeFormat(item.scheduledDate, "dd/MM/yyyy HH:mm")}</span>
+                        </div>
+                        <span className="text-[9px] font-black uppercase text-muted-foreground/60 italic">#{item.id.substring(0, 6)}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2 bg-muted/20 p-2 rounded">
-                      <Clock className="h-3 w-3" />
-                      <span className="font-medium text-foreground">{safeFormat(item.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 px-4 bg-muted/20 rounded-2xl border border-dashed">
+                    <ClipboardCheck className="h-10 w-10 mx-auto text-muted-foreground/20 mb-3" />
+                    <p className="text-sm font-bold text-muted-foreground">Nenhuma vistoria agendada</p>
+                    <p className="text-xs text-muted-foreground/60 mt-1">Sua agenda aparecerá aqui quando disponível.</p>
                   </div>
-                ))}
+                )}
               </CardContent>
             </Card>
             
@@ -344,7 +356,7 @@ const ClientInspections = () => {
                             {safeFormat(inspection.scheduledDate, "dd 'de' MMMM 'de' yyyy 'às' HH:mm")}
                           </CardDescription>
                         </div>
-                        <StatusBadge status={inspection.status} />
+                        <StatusBadge status={inspection.status} size="lg" />
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -369,23 +381,47 @@ const ClientInspections = () => {
                         </div>
                       </div>
                       
-                      {inspection.status !== "complete" && (
-                        <div className="pt-2 border-t">
-                          <h3 className="font-medium mb-2">Próximos passos:</h3>
-                          <ul className="space-y-2 text-sm">
-                            <li className="flex items-center gap-2">
+                      {inspection.status === "complete" ? (
+                        <div className="pt-4 border-t space-y-4">
+                          <h3 className="font-bold text-lg flex items-center gap-2">
+                            <CheckCircle className="h-5 w-5 text-status-complete" />
+                            Próximos Passos
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 bg-status-complete/5 border border-status-complete/20 rounded-xl space-y-2">
+                              <h4 className="font-bold text-sm">Aceite Digital</h4>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                Se tudo estiver em ordem, realize o aceite digital para liberar o módulo de garantias e finalizar o processo.
+                              </p>
+                            </div>
+                            <div className="p-4 bg-status-pending/5 border border-status-pending/20 rounded-xl space-y-2">
+                              <h4 className="font-bold text-sm">Solicitar Ajustes</h4>
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                Caso identifique não conformidades, recuse a vistoria descrevendo os pontos para que nossa equipe técnica possa corrigi-los.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="pt-4 border-t">
+                          <h3 className="font-bold mb-3 flex items-center gap-2">
+                            <Info className="h-4 w-4 text-primary" />
+                            Preparação para a Vistoria
+                          </h3>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg">
                               <CheckCircle className="h-4 w-4 text-green-600" />
-                              <span>Compareça no horário agendado</span>
-                            </li>
-                            <li className="flex items-center gap-2">
+                              <span className="text-xs font-medium">Documento com foto</span>
+                            </div>
+                            <div className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg">
                               <CheckCircle className="h-4 w-4 text-green-600" />
-                              <span>Traga um documento com foto</span>
-                            </li>
-                            <li className="flex items-center gap-2">
+                              <span className="text-xs font-medium">Pontualidade</span>
+                            </div>
+                            <div className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg">
                               <CheckCircle className="h-4 w-4 text-green-600" />
-                              <span>Anote todas as observações durante a vistoria</span>
-                            </li>
-                          </ul>
+                              <span className="text-xs font-medium">Caneta e Papel</span>
+                            </div>
+                          </div>
                         </div>
                       )}
                       
