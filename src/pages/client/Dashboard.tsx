@@ -499,6 +499,20 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2">
+          <ClientFAQ />
+        </div>
+        <Card className="bg-primary/5 border-primary/10 flex flex-col justify-center items-center p-6 text-center">
+          <div className="p-4 rounded-full bg-primary/10 mb-4">
+            <MessageSquare className="h-8 w-8 text-primary" />
+          </div>
+          <h3 className="font-bold text-lg mb-2">Suporte 24/7</h3>
+          <p className="text-sm text-muted-foreground mb-6 font-medium">Ainda tem dúvidas? Nossa equipe está disponível via chat para te ajudar.</p>
+          <Button className="w-full font-bold uppercase tracking-widest text-xs py-6">Falar com Consultor</Button>
+        </Card>
+      </div>
     </div>
   );
 };
