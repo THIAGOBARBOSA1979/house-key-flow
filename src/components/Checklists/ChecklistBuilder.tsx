@@ -38,6 +38,13 @@ const itemCategories = [
   "Outros"
 ];
 
+const severities = [
+  { value: "low", label: "Baixa", color: "bg-blue-100 text-blue-800" },
+  { value: "medium", label: "Média", color: "bg-yellow-100 text-yellow-800" },
+  { value: "high", label: "Alta", color: "bg-orange-100 text-orange-800" },
+  { value: "critical", label: "Crítica", color: "bg-red-100 text-red-800" },
+];
+
 export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -47,10 +54,10 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
   const [newItemDescription, setNewItemDescription] = useState("");
   const [newItemCategory, setNewItemCategory] = useState(itemCategories[0]);
   const [newItemRequired, setNewItemRequired] = useState(true);
+  const [newItemSeverity, setNewItemSeverity] = useState<"low" | "medium" | "high" | "critical">("medium");
   
   // Group items by category
   const groupedItems = items.reduce((acc, item) => {
-    // Extract category from description if it follows format "Category: Description"
     let category = "Outros";
     const match = item.description.match(/^([^:]+):\s(.+)$/);
     
@@ -77,12 +84,14 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
       id: `item-${Date.now()}`,
       description: formattedDescription,
       required: newItemRequired,
+      severity: newItemSeverity,
       evidence: []
     };
     
     setItems([...items, newItem]);
     setNewItemDescription("");
   };
+
   
   const handleRemoveItem = (id: string) => {
     setItems(items.filter(item => item.id !== id));
@@ -160,6 +169,22 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
                   ))}
                 </SelectContent>
               </Select>
+
+              <Select
+                value={newItemSeverity}
+                onValueChange={(val: any) => setNewItemSeverity(val)}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Severidade" />
+                </SelectTrigger>
+                <SelectContent>
+                  {severities.map(s => (
+                    <SelectItem key={s.value} value={s.value}>
+                      {s.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               
               <Button onClick={handleAddItem} disabled={!newItemDescription.trim()}>
                 <Plus className="mr-2 h-4 w-4" />
@@ -173,10 +198,10 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
                 checked={newItemRequired} 
                 onCheckedChange={(checked) => setNewItemRequired(checked === true)}
               />
-              <Label htmlFor="required">Item obrigatório</Label>
+              <Label htmlFor="required">Item obrigatório para conformidade total</Label>
             </div>
           </div>
-          
+
           {/* Display added items grouped by category */}
           <div className="mt-6 space-y-4">
             {Object.keys(groupedItems).length > 0 ? (
