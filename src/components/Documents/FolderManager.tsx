@@ -1,6 +1,8 @@
-import { Folder, FileText, Plus, FolderPlus, Upload } from "lucide-react";
+import { Folder, FileText, Plus, FolderPlus, Upload, ClipboardCheck, LayoutGrid, ShieldCheck, Zap, Grid, CheckCircle2 } from "lucide-react";
+import { documentService } from "@/services/DocumentService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export interface FolderItem {
   id: string;
@@ -9,13 +11,19 @@ export interface FolderItem {
 }
 
 export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string | null) => void }) {
-  const folders: FolderItem[] = [
-    { id: "f1", name: "Contratos" },
-    { id: "f2", name: "Vistorias 2025" },
-    { id: "f3", name: "Alvarás" },
-    { id: "f4", name: "Projetos Estruturais" },
-    { id: "f5", name: "Licenças Ambientais" },
-  ];
+  const folders = documentService.getFolderStructure();
+
+  const getFolderIcon = (iconName: string) => {
+    switch(iconName) {
+      case 'FileText': return <FileText className="h-4 w-4 mr-2" />;
+      case 'ClipboardCheck': return <CheckCircle2 className="h-4 w-4 mr-2" />;
+      case 'Layout': return <LayoutGrid className="h-4 w-4 mr-2" />;
+      case 'Shield': return <ShieldCheck className="h-4 w-4 mr-2" />;
+      case 'Zap': return <Zap className="h-4 w-4 mr-2" />;
+      case 'Grid': return <Grid className="h-4 w-4 mr-2" />;
+      default: return <Folder className="h-4 w-4 mr-2" />;
+    }
+  };
 
   return (
     <div className="space-y-2">
@@ -33,14 +41,17 @@ export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string 
         >
           <Folder className="h-4 w-4 mr-2" /> Raiz
         </Button>
-        {folders.map(folder => (
+        {folders.filter(f => f.id !== 'root').map(folder => (
           <Button 
             key={folder.id} 
             variant="ghost" 
-            className="w-full justify-start text-xs font-medium"
+            className={cn(
+              "w-full justify-start text-xs font-medium",
+              folder.parentId !== 'root' && "pl-8 text-muted-foreground"
+            )}
             onClick={() => onFolderSelect(folder.id)}
           >
-            <Folder className="h-4 w-4 mr-2" /> {folder.name}
+            {getFolderIcon(folder.icon)} {folder.name}
           </Button>
         ))}
       </div>

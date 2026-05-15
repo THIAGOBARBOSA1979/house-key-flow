@@ -290,14 +290,22 @@ const AdminDocuments = () => {
                                     <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
                                       e.stopPropagation();
                                       setSelectedDoc(doc);
-                                      // Implementar compartilhamento
-                                      toast({ title: "Compartilhamento", description: "Link de compartilhamento gerado para este documento." });
+                                      const link = documentService.shareDocument(doc.id);
+                                      navigator.clipboard.writeText(link);
+                                      toast({ 
+                                        title: "Link Copiado", 
+                                        description: "Link de compartilhamento seguro copiado para a área de transferência." 
+                                      });
                                     }}>
-                                      <Share2 className="w-3.5 h-3.5 mr-2" /> Compartilhar
+                                      <Share2 className="w-3.5 h-3.5 mr-2" /> Compartilhar Link
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
                                       e.stopPropagation();
                                       documentService.downloadDocument(doc.id);
+                                      toast({
+                                        title: "Download Iniciado",
+                                        description: `Baixando arquivo: ${doc.title}`
+                                      });
                                     }}>
                                       <Download className="w-3.5 h-3.5 mr-2" /> Baixar arquivo
                                     </DropdownMenuItem>
