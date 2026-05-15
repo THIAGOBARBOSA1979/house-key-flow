@@ -78,7 +78,7 @@ const Dashboard = () => {
       
       <QuickActions />
       
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-layout-gap">
         <div className="xl:col-span-2 space-y-8">
           {/* Recent Properties */}
           <section>
@@ -89,7 +89,7 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Button>
             </div>
-            <ResponsiveGrid columns={2} gap="md">
+            <ResponsiveGrid columns={2} gap="layout">
               {properties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
@@ -108,7 +108,7 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4-sem">
               {inspections.map((inspection) => (
                 <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/50 backdrop-blur-sm card-hover-effect">
                   <CardContent className="p-0">
@@ -164,7 +164,7 @@ const Dashboard = () => {
                 Garantias Urgentes
               </h2>
             </div>
-            <ResponsiveGrid columns={1} gap="sm">
+            <ResponsiveGrid columns={1} gap="sm-sem">
               {warrantyClaims.length > 0 ? (
                 warrantyClaims.map((claim) => (
                   <div 

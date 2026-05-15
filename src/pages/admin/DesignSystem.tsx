@@ -122,13 +122,13 @@ const DesignSystem = () => {
                 </Card>
                 <Card className="card-standard p-5 border-rose-500/20 bg-rose-500/5">
                   <h4 className="text-label mb-3 flex items-center gap-2 text-rose-600">
-                    <AlertTriangle className="w-4 h-4" /> Evite
+                    <AlertTriangle className="w-4 h-4" /> Checklist de Estados
                   </h4>
                   <ul className="text-caption space-y-2 list-disc list-inside font-medium text-muted-foreground">
-                    <li>Não utilize cores fixas (ex: <code>#ffffff</code>) no JSX</li>
-                    <li>Evite margens/paddings arbitrários</li>
-                    <li>Não crie novos componentes sem antes checar o <code>/shared</code></li>
-                    <li>Evite quebrar a hierarquia de Z-Index</li>
+                    <li><strong>Hover:</strong> Transições suaves de cor/escala</li>
+                    <li><strong>Focus:</strong> Anéis de foco (ring) visíveis e nítidos</li>
+                    <li><strong>Disabled:</strong> Opacidade 0.4 e cursor não permitido</li>
+                    <li><strong>Active:</strong> Efeito de clique (scale 0.95-0.98)</li>
                   </ul>
                 </Card>
               </div>
@@ -150,8 +150,34 @@ const DesignSystem = () => {
           </section>
         </TabsContent>
 
+
         {/* --- TOKENS CONTENT --- */}
         <TabsContent value="tokens" className="space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-normal">
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Layers className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Cores Semânticas</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <ColorToken name="Primary" token="--primary" color="hsl(var(--primary))" />
+              <ColorToken name="Secondary" token="--secondary" color="hsl(var(--secondary))" />
+              <ColorToken name="Destructive" token="--destructive" color="hsl(var(--destructive))" />
+              <ColorToken name="Background" token="--background" color="hsl(var(--background))" />
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            <div className="flex items-center gap-2 border-b pb-2">
+              <Layout className="w-5 h-5 text-primary" />
+              <h2 className="text-h2">Espaçamento & Grid</h2>
+            </div>
+            <div className="bg-card border rounded-xl overflow-hidden divide-y">
+              <SpacingItem label="Layout Gap" token="gap-layout-gap" size="24px / 1.5rem" />
+              <SpacingItem label="Space 4" token="gap-4-sem" size="16px / 1rem" />
+              <SpacingItem label="Space 2" token="gap-2-sem" size="8px / 0.5rem" />
+            </div>
+          </section>
+
           <section className="space-y-6">
             <div className="flex items-center gap-2 border-b pb-2">
               <Layers className="w-5 h-5 text-primary" />
@@ -172,14 +198,15 @@ const DesignSystem = () => {
             </div>
             <div className="bg-card border rounded-xl overflow-hidden divide-y">
               <TypographyItem label="Display" className="text-sem-display" size="60px / 3.75rem" />
-              <TypographyItem label="Heading 1" className="text-sem-h1" size="40px / 2.5rem" />
-              <TypographyItem label="Heading 2" className="text-sem-h2" size="32px / 2rem" />
+              <TypographyItem label="Heading 1" className="text-sem-h1" size="36px / 2.25rem" />
+              <TypographyItem label="Heading 2" className="text-sem-h2" size="30px / 1.875rem" />
               <TypographyItem label="Heading 3" className="text-sem-h3" size="24px / 1.5rem" />
               <TypographyItem label="Body Base" className="text-sem-body-base" size="16px / 1rem" />
               <TypographyItem label="Caption" className="text-sem-caption uppercase" size="12px / 0.75rem" />
             </div>
           </section>
         </TabsContent>
+
 
         {/* --- COMPONENTS CONTENT --- */}
         <TabsContent value="components" className="space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-normal">
@@ -377,52 +404,74 @@ const DesignSystem = () => {
 
 // --- HELPER COMPONENTS ---
 
-const BreakpointItem = ({ icon: Icon, label, value }: { icon: any; label: string; value: string }) => (
-  <div className="flex items-center justify-between p-3 bg-background rounded-lg border border-border/50">
-    <div className="flex items-center gap-3">
-      <div className="p-2 bg-primary/10 rounded-md text-primary">
-        <Icon size={16} />
-      </div>
-      <span className="text-body-sm font-semibold">{label}</span>
+const ColorToken = ({ name, token, color }: { name: string, token: string, color: string }) => (
+  <div className="p-4 rounded-xl border bg-background flex flex-col gap-3">
+    <div className="h-12 rounded-lg border" style={{ backgroundColor: color }} />
+    <div className="flex flex-col">
+      <span className="text-sem-label">{name}</span>
+      <code className="text-sem-tiny text-muted-foreground">{token}</code>
     </div>
-    <code className="text-[10px] font-mono bg-muted px-2 py-0.5 rounded">{value}</code>
   </div>
 );
 
-const ShadowItem = ({ name, token }: { name: string; token: string }) => (
+const SpacingItem = ({ label, token, size }: { label: string, token: string, size: string }) => (
+  <div className="p-6 flex items-center justify-between">
+    <div className="flex items-center gap-6 flex-1">
+      <div className="h-6 bg-primary/20 rounded border border-primary/20 flex items-center justify-center transition-all" style={{ width: size.split(' / ')[0] }}>
+        <div className="h-full w-full bg-primary/40 rounded" />
+      </div>
+      <div className="space-y-1">
+        <p className="text-sem-label">{label}</p>
+        <code className="text-sem-tiny text-muted-foreground">{token}</code>
+      </div>
+    </div>
+    <span className="text-sem-tiny font-black bg-muted/50 px-3 py-1 rounded-lg">{size}</span>
+  </div>
+);
+
+const BreakpointItem = ({ icon: Icon, label, value }: { icon: any, label: string, value: string }) => (
+  <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/10">
+    <div className="flex items-center gap-3">
+      <div className="p-2 bg-primary/10 rounded-lg text-primary">
+        <Icon className="w-4 h-4" />
+      </div>
+      <span className="text-sem-label">{label}</span>
+    </div>
+    <span className="text-sem-tiny font-black text-muted-foreground uppercase">{value}</span>
+  </div>
+);
+
+const ShadowItem = ({ name, token }: { name: string, token: string }) => (
   <div className="space-y-3">
-    <div className={cn("h-24 bg-card border rounded-xl flex items-center justify-center transition-all hover:-translate-y-1", token)}>
-      <span className="text-tiny font-bold text-muted-foreground uppercase">{name}</span>
+    <div className={cn("h-24 bg-card border rounded-xl flex items-center justify-center transition-all", token)}>
+      <div className="w-12 h-12 bg-primary/20 rounded-lg border border-primary/20" />
     </div>
-    <code className="text-[10px] bg-muted p-1 block text-center">.{token}</code>
+    <div className="flex flex-col">
+      <span className="text-sem-label">{name}</span>
+      <code className="text-sem-tiny text-muted-foreground">shadow-{token}</code>
+    </div>
   </div>
 );
 
-const TypographyItem = ({ label, className, size }: { label: string; className: string; size: string }) => (
-  <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-muted/30 transition-colors">
+const TypographyItem = ({ label, className, size }: { label: string, className: string, size: string }) => (
+  <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div className="space-y-1">
-      <p className="text-tiny font-bold text-muted-foreground uppercase tracking-wider">{label}</p>
-      <p className={cn(className, "truncate")}>O rato roeu a roupa do rei.</p>
+      <p className="text-sem-caption text-muted-foreground uppercase">{label}</p>
+      <p className={cn("font-bold", className)}>The quick brown fox jumps over the lazy dog</p>
     </div>
-    <div className="flex items-center gap-3">
-      <code className="text-[10px] bg-muted px-2 py-1 rounded">.{className}</code>
-      <span className="text-[10px] text-muted-foreground font-mono">{size}</span>
-    </div>
+    <code className="text-sem-tiny bg-muted/50 px-3 py-1.5 rounded-lg border border-border/20 self-start md:self-auto font-black">{size}</code>
   </div>
 );
 
-const A11yCard = ({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) => (
-  <Card className="card-standard border-t-4 border-t-primary/40">
-    <CardHeader className="pb-2">
-      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
-        <Icon size={16} />
-      </div>
-      <CardTitle className="text-label">{title}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <p className="text-caption text-muted-foreground leading-relaxed">{desc}</p>
-    </CardContent>
+const A11yCard = ({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) => (
+  <Card className="card-standard p-6 border-none bg-card/40 backdrop-blur-sm">
+    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
+      <Icon className="w-5 h-5" />
+    </div>
+    <h4 className="text-label mb-2">{title}</h4>
+    <p className="text-sem-body-sm text-muted-foreground leading-relaxed">{desc}</p>
   </Card>
 );
 
 export default DesignSystem;
+
