@@ -19,7 +19,8 @@ import {
   TrendingUp,
   Clock,
   MessageSquare,
-  DollarSign
+  DollarSign,
+  LifeBuoy
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
