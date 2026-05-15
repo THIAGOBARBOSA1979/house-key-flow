@@ -380,11 +380,11 @@ export const StartInspection = ({
                   </div>
                   
                   {item.conformity === "nonconform" && (
-                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-md flex gap-3">
-                      <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-md flex gap-3 animate-in zoom-in-95">
+                      <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
                       <div className="text-sm">
-                        <p className="font-medium text-amber-800">Item não conforme</p>
-                        <p className="text-amber-700">Uma solicitação de serviço será gerada automaticamente ao finalizar a vistoria.</p>
+                        <p className="font-bold text-red-800 uppercase text-[10px] tracking-tight">Item não conforme</p>
+                        <p className="text-red-700 leading-tight">Uma solicitação de serviço será gerada automaticamente ao finalizar esta vistoria.</p>
                       </div>
                     </div>
                   )}
