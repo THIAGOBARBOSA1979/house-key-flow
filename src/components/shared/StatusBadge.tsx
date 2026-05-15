@@ -56,27 +56,27 @@ const statusConfig: Record<StatusType, {
     icon: AlertTriangle,
   },
   success: {
-    badgeClass: "badge-complete", // Map semantic success to complete
+    badgeClass: "badge-complete",
     defaultLabel: "Sucesso",
     icon: CheckCircle2,
   },
   warning: {
-    badgeClass: "badge-pending", // Map semantic warning to pending style
+    badgeClass: "badge-pending",
     defaultLabel: "Atenção",
     icon: AlertTriangle,
   },
   error: {
-    badgeClass: "badge-critical", // Map semantic error to critical
+    badgeClass: "badge-critical",
     defaultLabel: "Erro",
     icon: XCircle,
   },
   info: {
-    badgeClass: "badge-progress", // Map semantic info to progress style
+    badgeClass: "badge-info",
     defaultLabel: "Info",
     icon: Info,
   },
   neutral: {
-    badgeClass: "bg-muted text-muted-foreground border-muted-foreground/20",
+    badgeClass: "badge-neutral",
     defaultLabel: "Neutro",
     icon: Info,
   },
