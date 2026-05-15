@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   FileText, Download, Search, Calendar, Eye, Filter, Clock, CheckCircle, 
-  Star, AlertTriangle, Archive, BarChart
+  Star, AlertTriangle, Archive, BarChart, PenTool
 } from "lucide-react";
+import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -76,6 +77,7 @@ export default function ClientDocuments() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
+  const [isSignatureOpen, setIsSignatureOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -182,6 +184,11 @@ export default function ClientDocuments() {
     }
   };
 
+  const handleOpenSignature = (doc: ClientDocument) => {
+    setSelectedDoc(doc as any);
+    setIsSignatureOpen(true);
+  };
+
   const categories = documentService.getCategories();
   
   const stats = {
@@ -194,6 +201,14 @@ export default function ClientDocuments() {
 
   return (
     <div className="space-y-6">
+      {selectedDoc && (
+        <DigitalSignatureDialog
+          isOpen={isSignatureOpen}
+          onClose={() => setIsSignatureOpen(false)}
+          documentId={selectedDoc.id}
+          documentTitle={selectedDoc.title}
+        />
+      )}
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <FileText className="h-6 w-6 text-primary" />
@@ -332,26 +347,40 @@ export default function ClientDocuments() {
                     <span>{doc.downloads} downloads</span>
                   </div>
                 </CardContent>
-                <div className="p-4 pt-0 grid grid-cols-2 gap-2 mt-auto">
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-8 text-[10px] font-bold uppercase"
-                    onClick={() => handlePreview(doc)}
-                    disabled={doc.status === "processando"}
-                  >
-                    <Eye className="h-3.5 w-3.5 mr-1" />
-                    Preview
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    className="h-8 text-[10px] font-bold uppercase"
-                    onClick={() => handleDownload(doc)}
-                    disabled={doc.status === "processando"}
-                  >
-                    <Download className="h-3.5 w-3.5 mr-1" />
-                    Baixar
-                  </Button>
+                <div className="p-4 pt-0 grid grid-cols-1 gap-2 mt-auto">
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="h-8 text-[10px] font-bold uppercase"
+                      onClick={() => handlePreview(doc)}
+                      disabled={doc.status === "processando"}
+                    >
+                      <Eye className="h-3.5 w-3.5 mr-1" />
+                      Preview
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      className="h-8 text-[10px] font-bold uppercase"
+                      onClick={() => handleDownload(doc)}
+                      disabled={doc.status === "processando"}
+                    >
+                      <Download className="h-3.5 w-3.5 mr-1" />
+                      Baixar
+                    </Button>
+                  </div>
+                  
+                  {doc.category === 'contrato' && (
+                    <Button 
+                      size="sm" 
+                      variant="secondary"
+                      className="w-full h-8 text-[10px] font-bold uppercase bg-primary/10 text-primary hover:bg-primary/20 border-none"
+                      onClick={() => handleOpenSignature(doc)}
+                    >
+                      <PenTool className="h-3.5 w-3.5 mr-1" />
+                      Assinar Digitalmente
+                    </Button>
+                  )}
                 </div>
               </Card>
             ))}
