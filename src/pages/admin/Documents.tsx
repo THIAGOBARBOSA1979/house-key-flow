@@ -46,6 +46,8 @@ import { DocumentsDashboard } from "@/components/Documents/DocumentsDashboard";
 import { FolderManager } from "@/components/Documents/FolderManager";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { DocumentWorkflow } from "@/components/Documents/DocumentWorkflow";
+import { UploadDocumentDialog } from "@/components/Documents/UploadDocumentDialog";
+import { DocumentVersionHistory } from "@/components/Documents/DocumentVersionHistory";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -61,8 +63,10 @@ const AdminDocuments = () => {
     folderId: null
   });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
-  
+
   const categories = documentService.getCategories();
 
   useEffect(() => {
@@ -359,6 +363,20 @@ const AdminDocuments = () => {
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
       />
+
+      <UploadDocumentDialog 
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onSuccess={refreshDocuments}
+      />
+
+      {selectedDoc && (
+        <DocumentVersionHistory 
+          document={selectedDoc} 
+          isOpen={isHistoryOpen} 
+          onOpenChange={setIsHistoryOpen}
+        />
+      )}
     </div>
   );
 };

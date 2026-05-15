@@ -158,11 +158,13 @@ OBSERVAÇÕES: {{observacoes}}`,
   ];
 
   private categories: DocumentCategory[] = [
-    { id: "contrato", name: "Contratos", description: "Contratos e acordos", icon: "FileText", color: "blue" },
-    { id: "manual", name: "Manuais", description: "Manuais e guias", icon: "Book", color: "green" },
-    { id: "relatorio", name: "Relatórios", description: "Relatórios e laudos", icon: "BarChart", color: "purple" },
-    { id: "certificado", name: "Certificados", description: "Certificados e documentos oficiais", icon: "Award", color: "orange" },
-    { id: "outros", name: "Outros", description: "Outros documentos", icon: "File", color: "gray" }
+    { id: "contrato", name: "Contratos", description: "Contratos e acordos comerciais", icon: "FileText", color: "blue" },
+    { id: "manual", name: "Manuais", description: "Manuais de uso e guias técnicos", icon: "Book", color: "green" },
+    { id: "relatorio", name: "Relatórios", description: "Relatórios e laudos de vistoria", icon: "BarChart", color: "purple" },
+    { id: "certificado", name: "Certificados", description: "Certidões, alvarás e documentos oficiais", icon: "Award", color: "orange" },
+    { id: "projeto", name: "Projetos", description: "Plantas e projetos arquitetônicos", icon: "Layout", color: "cyan" },
+    { id: "financeiro", name: "Financeiro", description: "Comprovantes e notas fiscais", icon: "DollarSign", color: "emerald" },
+    { id: "outros", name: "Outros", description: "Outros documentos diversos", icon: "File", color: "gray" }
   ];
 
   private templateVariables: TemplateVariable[] = [
