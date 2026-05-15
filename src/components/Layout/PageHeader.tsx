@@ -32,7 +32,7 @@ export function PageHeader({
         <div className="space-y-2 max-w-2xl">
           <div className="flex items-center gap-4">
             {Icon && (
-              <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-primary/10 border border-primary/20 shadow-sem-sm animate-in zoom-in duration-500">
+              <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-primary/10 border border-primary/20 shadow-sem-sm animate-in zoom-in duration-500">
                 <Icon className="h-6 w-6 text-primary" />
               </div>
             )}
