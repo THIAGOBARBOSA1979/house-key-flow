@@ -16,15 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { documentService, Document } from "@/services/DocumentService";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 
 interface ClientDocument extends Omit<Document, 'status'> {
   size?: string;
@@ -76,6 +71,7 @@ export default function ClientDocuments() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
+  const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -208,7 +204,7 @@ export default function ClientDocuments() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <FileText className="h-6 w-6" />
+          <FileText className="h-6 w-6 text-primary" />
           Meus Documentos
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -242,51 +238,31 @@ export default function ClientDocuments() {
 
         <TabsContent value="all" className="space-y-6">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total</p>
-                    <p className="text-2xl font-bold">{stats.total}</p>
-                  </div>
-                  <FileText className="h-8 w-8 text-muted-foreground" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Disponíveis</p>
-                    <p className="text-2xl font-bold text-green-600">{stats.disponivel}</p>
-                  </div>
-                  <CheckCircle className="h-8 w-8 text-green-600" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Processando</p>
-                    <p className="text-2xl font-bold text-yellow-600">{stats.processando}</p>
-                  </div>
-                  <Clock className="h-8 w-8 text-yellow-600" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Este Mês</p>
-                    <p className="text-2xl font-bold text-blue-600">{stats.thisMonth}</p>
-                  </div>
-                  <Calendar className="h-8 w-8 text-blue-600" />
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatsCard 
+              label="Total de Arquivos" 
+              value={stats.total} 
+              icon={FileText} 
+              variant="brand" 
+            />
+            <StatsCard 
+              label="Disponíveis" 
+              value={stats.disponivel} 
+              icon={CheckCircle} 
+              variant="complete" 
+            />
+            <StatsCard 
+              label="Processando" 
+              value={stats.processando} 
+              icon={Clock} 
+              variant="pending" 
+            />
+            <StatsCard 
+              label="Novos este Mês" 
+              value={stats.thisMonth} 
+              icon={Calendar} 
+              variant="brand" 
+            />
           </div>
 
           {/* Enhanced Filters */}
