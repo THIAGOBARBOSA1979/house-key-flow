@@ -60,9 +60,24 @@ export const StartInspection = ({
   onComplete?: (data: any) => void;
 }) => {
   const { toast } = useToast();
-  const [groups, setGroups] = useState<InspectionGroup[]>(mockInspectionData);
+  const [groups, setGroups] = useState<InspectionGroup[]>(() => {
+    const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse saved progress", e);
+      }
+    }
+    return mockInspectionData;
+  });
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Save progress whenever groups change
+  React.useEffect(() => {
+    localStorage.setItem(`inspection_progress_${inspectionId}`, JSON.stringify(groups));
+  }, [groups, inspectionId]);
   
   // Calculate progress
   const totalItems = groups.reduce((acc, group) => acc + group.items.length, 0);
