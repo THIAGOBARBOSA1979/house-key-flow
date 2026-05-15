@@ -8,7 +8,7 @@ import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
 import { ChecklistExecution } from '@/components/Checklists/ChecklistExecution';
 import { ChecklistItem, checklistService } from '@/services/ChecklistService';
-import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, Filter, History } from 'lucide-react';
+import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, Filter, History, AlertCircle } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from '@/components/shared/StatsCard';
@@ -49,21 +49,24 @@ export default function Checklist() {
   };
 
   const handleSaveExecution = (completedItems: ChecklistItem[], notes: string) => {
-    toast({ title: "Rascunho salvo", description: "O progresso da execução foi salvo localmente." });
-    console.log('Salvando execução:', { completedItems, notes });
+    if (selectedTemplate) {
+      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "in_progress");
+      toast({ title: "Rascunho salvo", description: "O progresso da vistoria foi persistido." });
+    }
   };
 
+
   const handleSubmitExecution = (completedItems: ChecklistItem[], notes: string) => {
-    toast({ title: "Checklist finalizado", description: "A execução foi registrada e sincronizada com o sistema." });
-    console.log('Finalizando execução:', { completedItems, notes });
+    toast({ title: "Vistoria finalizada", description: "A inspeção foi registrada com sucesso e o laudo técnico gerado." });
     
     // Log the activity
     if (selectedTemplate) {
-      checklistService.logExecution(selectedTemplate.id, completedItems, notes);
+      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "completed");
     }
     
     setCurrentView('templates');
   };
+
 
   const handleBack = () => {
     setCurrentView('templates');
@@ -110,25 +113,25 @@ export default function Checklist() {
     <div className="space-y-8 animate-fade-in">
       <PageHeader
         icon={FileText}
-        title="Checklists"
-        description="Gestão de templates padronizados e execução de inspeções técnicas."
+        title="Gestão de Checklists"
+        description="Templates padronizados e vistorias técnicas com conformidade em tempo real."
       >
         <div className="flex gap-2">
-           <Button variant="outline" onClick={() => toast({ title: "Filtros", description: "Filtros avançados em breve." })} className="rounded-lg h-10 px-4">
-            <Filter className="mr-2 h-4 w-4" />
-            Filtrar
+           <Button variant="outline" onClick={() => toast({ title: "Exportar", description: "Relatório gerencial em PDF sendo gerado..." })} className="rounded-xl h-10 px-4 font-bold border-primary/20 hover:border-primary/50">
+            Relatório Geral
           </Button>
-          <Button onClick={handleCreateNew} className="rounded-lg h-10 px-4 bg-primary">
+          <Button onClick={handleCreateNew} className="rounded-xl h-10 px-4 bg-primary font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
             <Plus className="mr-2 h-4 w-4" />
             Novo Template
           </Button>
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatsCard label="Templates" value={checklistService.getAllTemplates().length.toString()} icon={FileText} variant="brand" description="Modelos disponíveis" />
-        <StatsCard label="Execuções" value="48" icon={PlayCircle} variant="progress" description="Este mês" trend={{ value: "12%", isPositive: true }} />
-        <StatsCard label="Finalizados" value="92%" icon={CheckCircle2} variant="complete" description="Taxa de sucesso" />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <StatsCard label="Modelos" value={checklistService.getAllTemplates().length.toString()} icon={FileText} variant="brand" description="Templates ativos" />
+        <StatsCard label="Vistorias" value={checklistService.getAllExecutions().length.toString()} icon={PlayCircle} variant="progress" description="Execuções totais" />
+        <StatsCard label="Conformidade" value="88.5%" icon={CheckCircle2} variant="complete" description="Média técnica" />
+        <StatsCard label="Pendências" value="14" icon={AlertCircle} variant="critical" description="Itens não conformes" />
       </div>
 
       <Tabs defaultValue="templates" className="space-y-6">

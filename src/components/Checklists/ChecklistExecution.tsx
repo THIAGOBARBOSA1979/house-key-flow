@@ -8,8 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChecklistItem } from "@/services/ChecklistService";
-import { Check, X, AlertCircle, Camera, Save, Send } from "lucide-react";
+import { Check, X, AlertCircle, Camera, Save, Send, PenTool, User, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 interface ChecklistExecutionProps {
   title: string;
@@ -26,9 +29,14 @@ export function ChecklistExecution({
   onSubmit, 
   readOnly = false 
 }: ChecklistExecutionProps) {
+  const { toast } = useToast();
   const [completedItems, setCompletedItems] = useState<ChecklistItem[]>(items);
   const [notes, setNotes] = useState("");
   const [currentSection, setCurrentSection] = useState(0);
+  const [showSignature, setShowSignature] = useState(false);
+  const [signature, setSignature] = useState("");
+  const [clientSignature, setClientSignature] = useState("");
+
 
   // Agrupar itens por categoria
   const groupedItems = completedItems.reduce((acc, item) => {
@@ -93,37 +101,52 @@ export function ChecklistExecution({
   const currentSectionItems = groupedItems[sections[currentSection]] || [];
 
   return (
-    <div className="space-y-6">
-      {/* Header com progresso */}
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle>{title}</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                {completedCount} de {totalItems} itens verificados
+    <div className="space-y-6 pb-20">
+      {/* Header com progresso sticky para mobile */}
+      <Card className="sticky top-0 z-20 shadow-lg border-primary/10 backdrop-blur-md bg-card/90">
+        <CardHeader className="py-4">
+          <div className="flex justify-between items-start gap-4">
+            <div className="min-w-0">
+              <CardTitle className="text-lg md:text-xl truncate">{title}</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1 font-bold">
+                {completedCount} / {totalItems} ITENS VERIFICADOS
               </p>
             </div>
-            <Badge variant="outline">
-              {Math.round(progressPercentage)}% completo
-            </Badge>
+            <div className="flex flex-col items-end">
+              <Badge variant={progressPercentage === 100 ? "default" : "outline"} className={cn(
+                "font-black tracking-tighter text-sm px-3",
+                progressPercentage === 100 && "bg-status-complete"
+              )}>
+                {Math.round(progressPercentage)}%
+              </Badge>
+            </div>
           </div>
-          <Progress value={progressPercentage} className="mt-4" />
+          <div className="mt-4 relative h-2 bg-muted rounded-full overflow-hidden">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercentage}%` }}
+              className="absolute h-full bg-primary"
+            />
+          </div>
         </CardHeader>
       </Card>
 
-      {/* Navegação por seções */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
+
+      {/* Navegação por seções otimizada */}
+      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth snap-x">
         {sections.map((section, index) => (
           <Button
             key={section}
             variant={currentSection === index ? "default" : "outline"}
             size="sm"
             onClick={() => setCurrentSection(index)}
-            className="whitespace-nowrap"
+            className={cn(
+              "whitespace-nowrap rounded-xl font-bold transition-all snap-start",
+              currentSection === index ? "shadow-md scale-105" : "opacity-70"
+            )}
           >
             {section}
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ml-2 bg-white/20 text-[10px]">
               {groupedItems[section].filter(item => item.status && item.status !== 'na').length}/
               {groupedItems[section].length}
             </Badge>
@@ -131,16 +154,30 @@ export function ChecklistExecution({
         ))}
       </div>
 
-      {/* Itens da seção atual */}
+      {/* Itens da seção atual com animação */}
       <div className="space-y-4">
-        {currentSectionItems.map((item) => {
-          const itemText = item.description.includes(': ') 
-            ? item.description.split(': ')[1] 
-            : item.description;
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={sections[currentSection]}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-4"
+          >
+            {currentSectionItems.map((item) => {
+              const itemText = item.description.includes(': ') 
+                ? item.description.split(': ')[1] 
+                : item.description;
 
-          return (
-            <Card key={item.id}>
-              <CardContent className="p-4">
+              return (
+                <Card key={item.id} className={cn(
+                  "border-l-4 transition-all hover:shadow-md",
+                  item.status === 'ok' ? "border-l-status-complete" : 
+                  item.status === 'issue' ? "border-l-status-error" : 
+                  item.status === 'na' ? "border-l-muted" : "border-l-status-pending"
+                )}>
+                  <CardContent className="p-4">
+
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -216,9 +253,13 @@ export function ChecklistExecution({
                 </div>
               </CardContent>
             </Card>
-          );
-        })}
+              );
+            })}
+          </motion.div>
+
+        </AnimatePresence>
       </div>
+
 
       {/* Observações gerais */}
       <Card>
@@ -236,38 +277,74 @@ export function ChecklistExecution({
         </CardContent>
       </Card>
 
-      {/* Ações */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4 pt-6 border-t border-border/10">
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              onClick={() => setCurrentSection(Math.max(0, currentSection - 1))}
-              disabled={currentSection === 0}
+      {/* Seção de Assinaturas (Modal/Sheet ou expandido) */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <PenTool size={20} className="text-primary" />
+            Formalização Técnica
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <Label className="font-bold flex items-center gap-2">
+              <ShieldCheck size={16} /> Assinatura do Inspetor
+            </Label>
+            <div className="h-40 border-2 border-dashed border-primary/20 rounded-xl bg-white flex items-center justify-center cursor-crosshair hover:bg-muted/30 transition-colors">
+              <p className="text-xs text-muted-foreground uppercase font-black opacity-20">Espaço para assinatura digital</p>
+            </div>
+            <Input 
+              placeholder="Nome do Inspetor" 
+              defaultValue="Administrador"
               className="rounded-lg font-bold"
-            >
-              Seção Anterior
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={() => setCurrentSection(Math.min(sections.length - 1, currentSection + 1))}
-              disabled={currentSection === sections.length - 1}
-              className="rounded-lg font-bold"
-            >
-              Próxima Seção
-            </Button>
+            />
           </div>
+          
+          <div className="space-y-4">
+            <Label className="font-bold flex items-center gap-2">
+              <User size={16} /> Assinatura do Cliente / Responsável
+            </Label>
+            <div className="h-40 border-2 border-dashed border-primary/20 rounded-xl bg-white flex items-center justify-center cursor-crosshair hover:bg-muted/30 transition-colors">
+              <p className="text-xs text-muted-foreground uppercase font-black opacity-20">Espaço para assinatura digital</p>
+            </div>
+            <Input 
+              placeholder="Nome do Cliente / Responsável" 
+              className="rounded-lg font-bold"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => onSave(completedItems, notes)} className="rounded-lg font-bold">
-              <Save className="mr-2 h-4 w-4" />
-              Salvar Rascunho
-            </Button>
-            <Button onClick={() => onSubmit(completedItems, notes)} className="rounded-lg font-bold bg-primary hover:bg-primary/90">
-              <Send className="mr-2 h-4 w-4" />
-              Finalizar Checklist
-            </Button>
-          </div>
-        </div>
+      {/* Ações Fixas no Rodapé (Mobile optimized) */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border/50 z-30 flex gap-3">
+        <Button 
+          variant="outline" 
+          onClick={() => onSave(completedItems, notes)} 
+          className="flex-1 rounded-xl h-12 font-bold uppercase tracking-tighter"
+        >
+          <Save className="mr-2 h-4 w-4" />
+          Pausar
+        </Button>
+        <Button 
+          onClick={() => {
+            const pending = completedItems.filter(i => i.required && !i.status);
+            if (pending.length > 0) {
+              toast({
+                title: "Itens Obrigatórios",
+                description: `Ainda restam ${pending.length} itens obrigatórios sem preenchimento.`,
+                variant: "destructive"
+              });
+              return;
+            }
+            onSubmit(completedItems, notes);
+          }} 
+          className="flex-[2] rounded-xl h-12 font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 uppercase tracking-tighter"
+        >
+          <Send className="mr-2 h-4 w-4" />
+          Finalizar Vistoria
+        </Button>
+      </div>
     </div>
   );
 }
+

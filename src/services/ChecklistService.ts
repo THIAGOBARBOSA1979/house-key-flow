@@ -1,11 +1,10 @@
 
-
 import { SyncService } from './SyncService';
 import { auditLogService } from './AuditLogService';
 
 export interface ChecklistItem {
   id: string;
-  name?: string; // Standardized name field
+  name?: string;
   description: string;
   required: boolean;
   conditional?: {
@@ -14,8 +13,9 @@ export interface ChecklistItem {
   };
   evidence?: any[];
   status?: 'ok' | 'issue' | 'na';
-  conformity?: "pending" | "conform" | "nonconform"; // Standardized conformity field
+  conformity?: "pending" | "conform" | "nonconform";
   notes?: string;
+  severity?: "low" | "medium" | "high" | "critical";
 }
 
 export interface ChecklistGroup {
@@ -52,9 +52,13 @@ export interface ChecklistExecutionRecord {
     property?: string;
     unit?: string;
   };
+  signature?: string;
+  clientSignature?: string;
 }
 
 class ChecklistService {
+  private storageKey = "a2_checklist_templates";
+  private storageKeyExecutions = "a2_checklist_executions";
   private templates: ChecklistTemplate[] = [
     {
       id: "checklist1",
@@ -93,29 +97,17 @@ class ChecklistService {
     }
   ];
 
-  private executions: ChecklistExecutionRecord[] = [
-    {
-      id: "exec1",
-      templateId: "checklist1",
-      templateTitle: "Vistoria Pré-Entrega - Unidade 204",
-      performedBy: "user1",
-      performedByName: "Roberto Santos",
-      date: new Date(),
-      status: "completed",
-      conformityRate: 100,
-      notes: "Tudo em ordem para entrega.",
-      items: [],
-      location: { unit: "204" }
-    }
-  ];
-
-  private storageKey = "a2_checklist_templates";
+  private executions: ChecklistExecutionRecord[] = [];
 
   constructor() {
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
+    this.loadFromStorage();
+  }
+
+  private loadFromStorage() {
+    const storedTemplates = localStorage.getItem(this.storageKey);
+    if (storedTemplates) {
       try {
-        const parsed = JSON.parse(stored);
+        const parsed = JSON.parse(storedTemplates);
         this.templates = parsed.map((t: any) => ({
           ...t,
           createdAt: new Date(t.createdAt),
@@ -125,14 +117,30 @@ class ChecklistService {
         console.error("Failed to load checklist templates", e);
       }
     }
+
+    const storedExecutions = localStorage.getItem(this.storageKeyExecutions);
+    if (storedExecutions) {
+      try {
+        this.executions = JSON.parse(storedExecutions).map((e: any) => ({
+          ...e,
+          date: new Date(e.date)
+        }));
+      } catch (e) {
+        console.error("Failed to load checklist executions", e);
+      }
+    }
   }
 
   private persist() {
     localStorage.setItem(this.storageKey, JSON.stringify(this.templates));
   }
 
+  private persistExecutions() {
+    localStorage.setItem(this.storageKeyExecutions, JSON.stringify(this.executions));
+  }
+
   getAllTemplates(): ChecklistTemplate[] {
-    return [...this.templates];
+    return this.templates.filter(t => t.status !== 'archived');
   }
 
   getTemplateById(id: string): ChecklistTemplate | undefined {
@@ -162,11 +170,33 @@ class ChecklistService {
     return newTemplate;
   }
 
+  async updateTemplate(id: string, updates: Partial<ChecklistTemplate>): Promise<ChecklistTemplate | null> {
+    const index = this.templates.findIndex(t => t.id === id);
+    if (index === -1) return null;
+
+    // Se o template já tiver execuções, poderíamos criar uma nova versão aqui
+    // Para simplificar agora, apenas atualizamos e incrementamos a versão
+    const updated = {
+      ...this.templates[index],
+      ...updates,
+      lastUpdated: new Date(),
+      version: this.templates[index].version + 1
+    };
+
+    this.templates[index] = updated;
+    this.persist();
+    return updated;
+  }
+
+  async archiveTemplate(id: string) {
+    return this.updateTemplate(id, { status: 'archived' });
+  }
+
   getAllExecutions(): ChecklistExecutionRecord[] {
     return [...this.executions];
   }
 
-  logExecution(templateId: string, items: ChecklistItem[], notes: string, location?: { property?: string, unit?: string }) {
+  logExecution(templateId: string, items: ChecklistItem[], notes: string, location?: { property?: string, unit?: string }, status: "completed" | "in_progress" = "completed") {
     const template = this.getTemplateById(templateId);
     const okCount = items.filter(i => i.status === 'ok').length;
     const totalCount = items.length;
@@ -181,23 +211,28 @@ class ChecklistService {
       date: new Date(),
       items,
       notes,
-      status: "completed",
+      status,
       conformityRate,
       location
     };
 
     this.executions.unshift(newExecution);
+    this.persistExecutions();
 
-    auditLogService.log({
-      entityType: 'checklist',
-      entityId: templateId,
-      action: 'completed',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Execução do checklist "${template?.title || templateId}" concluída. (${okCount}/${totalCount} OK).`,
-      metadata: { notes, okCount, totalCount, conformityRate }
-    });
+    if (status === "completed") {
+      auditLogService.log({
+        entityType: 'checklist',
+        entityId: templateId,
+        action: 'completed',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Execução do checklist "${template?.title || templateId}" concluída. (${okCount}/${totalCount} OK).`,
+        metadata: { notes, okCount, totalCount, conformityRate }
+      });
+    }
+    
+    return newExecution;
   }
 
   static async signChecklist(checklistId: string, signature: any) {
@@ -211,4 +246,3 @@ class ChecklistService {
 }
 
 export const checklistService = new ChecklistService();
-
