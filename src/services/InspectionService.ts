@@ -312,6 +312,9 @@ class InspectionService {
   requestReschedule(id: string, clientId: string) {
     const inspection = this.inspections.find(i => i.id === id);
     if (inspection) {
+      inspection.status = "reschedule_requested";
+      this.persist();
+      
       auditLogService.log({
         entityType: 'inspection',
         entityId: id,
@@ -329,6 +332,9 @@ class InspectionService {
   confirmPresence(id: string, clientId: string) {
     const inspection = this.inspections.find(i => i.id === id);
     if (inspection) {
+      inspection.status = "presence_confirmed";
+      this.persist();
+      
       auditLogService.log({
         entityType: 'inspection',
         entityId: id,
