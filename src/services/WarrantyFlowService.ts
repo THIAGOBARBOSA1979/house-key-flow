@@ -201,6 +201,9 @@ class WarrantyFlowService {
       updatedAt: new Date(),
       slaStatus: "on_track",
       slaConfig,
+      slaDeadline: new Date(), // placeholder, updated below
+      assignedTo: undefined,
+      assignedToName: undefined,
       history: [
         {
           id: `hist-${Date.now()}`,
@@ -222,7 +225,7 @@ class WarrantyFlowService {
       })) as WarrantyProblemDetail[],
     };
 
-    // Calculate initial SLA
+    // Calculate actual initial SLA
     const slaInfo = warrantySLAService.calculateSLADeadlineInfo(newRequest);
     newRequest.slaDeadline = slaInfo.deadline;
 
