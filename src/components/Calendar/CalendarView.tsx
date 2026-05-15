@@ -37,33 +37,41 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Calendar */}
-      <Card className="xl:col-span-2 card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
-        <CardHeader>
-          <CardTitle className="text-h4">Calendário de Agendamentos</CardTitle>
-          <CardDescription className="text-sem-body-sm font-medium">
-            Selecione uma data para ver os agendamentos detalhados
-          </CardDescription>
+      <Card className="lg:col-span-7 xl:col-span-8 card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div className="space-y-1">
+            <CardTitle className="text-h4">Calendário de Agendamentos</CardTitle>
+            <CardDescription className="text-sem-body-sm font-medium">
+              Visualize e selecione datas para detalhes
+            </CardDescription>
+          </div>
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-primary"></div>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase">Com agenda</span>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="p-4 sm:p-6">
+        <CardContent className="p-2 sm:p-6 flex-1 flex flex-col justify-center">
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-xl border border-border/10 pointer-events-auto w-full bg-background/30"
+            className="rounded-xl border border-border/10 pointer-events-auto w-full max-w-full mx-auto bg-background/30"
             modifiers={{
               hasAppointment: (day) => getAppointmentsForDate(day).length > 0,
             }}
             modifiersClassNames={{
-              hasAppointment: "bg-primary/10 text-primary font-bold hover:bg-primary/20",
+              hasAppointment: "relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-primary font-bold text-primary",
             }}
           />
         </CardContent>
       </Card>
 
       {/* Appointments for selected date */}
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+      <Card className="lg:col-span-5 xl:col-span-4 card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col min-h-[400px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-border/10">
           <div>
             <CardTitle className="text-h4">
@@ -83,7 +91,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
             />
           )}
         </CardHeader>
-        <CardContent className="p-0 max-h-[600px] overflow-y-auto divide-y divide-border/10">
+        <CardContent className="p-0 flex-1 overflow-y-auto divide-y divide-border/10 custom-scrollbar">
           {filteredAppointments.length === 0 ? (
             <div className="text-center py-20 px-6 animate-fade-in">
               <div className="p-4 bg-muted/20 rounded-full w-fit mx-auto mb-4">

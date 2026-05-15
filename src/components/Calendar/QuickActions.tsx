@@ -36,10 +36,30 @@ export const QuickActions = ({
 }: QuickActionsProps) => {
   const { toast } = useToast();
   const [conflicts, setConflicts] = useState<any[]>([]);
+  const [sla, setSla] = useState("...");
 
   useEffect(() => {
     setConflicts(inspectionService.getAllConflicts());
+    setSla(inspectionService.getSLAMetrics());
   }, []);
+
+  const handleExport = (format: 'json' | 'csv') => {
+    const data = inspectionService.exportData(format);
+    const blob = new Blob([data], { type: format === 'json' ? 'application/json' : 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agenda-${new Date().toISOString().split('T')[0]}.${format}`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast({
+      title: "Exportação concluída",
+      description: `Sua agenda foi exportada com sucesso em formato ${format.toUpperCase()}.`,
+    });
+  };
 
   const handleQuickAction = (action: string) => {
     toast({
@@ -74,7 +94,7 @@ export const QuickActions = ({
         />
         <StatsCard 
           label="SLA Médio" 
-          value="4.2d" 
+          value={sla} 
           icon={Clock} 
           variant="brand" 
           description="Tempo médio de resposta"
@@ -97,9 +117,9 @@ export const QuickActions = ({
               Filtros Avançados
             </Button>
             
-            <Button variant="outline" onClick={() => handleQuickAction("Exportar agenda")} className="rounded-lg font-bold">
+            <Button variant="outline" onClick={() => handleExport("csv")} className="rounded-lg font-bold">
               <Download className="mr-2 h-4 w-4" />
-              Exportar Agenda
+              Exportar Agenda (CSV)
             </Button>
             
             <Button variant="outline" onClick={() => handleQuickAction("Configurações")} className="rounded-lg font-bold">

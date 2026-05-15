@@ -3,7 +3,8 @@ import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock, Users } from "lucide-react";
+import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock, Users, AlertCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { Appointment } from "./AppointmentData";
 
@@ -18,15 +19,15 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return <Badge variant="outline" className="bg-status-pending/10 text-status-pending border-status-pending/20 rounded-lg text-sem-tiny font-bold uppercase"><Clock className="h-3 w-3 mr-1" />Pendente</Badge>;
+        return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30 rounded-lg text-sem-tiny font-bold uppercase"><Clock className="h-3 w-3 mr-1" />Pendente</Badge>;
       case "confirmed":
-        return <Badge className="bg-status-complete/10 text-status-complete border-status-complete/20 rounded-lg text-sem-tiny font-bold uppercase"><Check className="h-3 w-3 mr-1" />Confirmado</Badge>;
+        return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30 rounded-lg text-sem-tiny font-bold uppercase"><Check className="h-3 w-3 mr-1" />Confirmado</Badge>;
       case "cancelled":
-        return <Badge variant="destructive" className="bg-status-critical/10 text-status-critical border-status-critical/20 rounded-lg text-sem-tiny font-bold uppercase"><X className="h-3 w-3 mr-1" />Cancelado</Badge>;
+        return <Badge variant="destructive" className="bg-red-500/10 text-red-600 border-red-500/30 rounded-lg text-sem-tiny font-bold uppercase"><X className="h-3 w-3 mr-1" />Cancelado</Badge>;
       case "completed":
-        return <Badge className="bg-status-progress/10 text-status-progress border-status-progress/20 rounded-lg text-sem-tiny font-bold uppercase"><FileCheck className="h-3 w-3 mr-1" />Concluído</Badge>;
+        return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30 rounded-lg text-sem-tiny font-bold uppercase"><FileCheck className="h-3 w-3 mr-1" />Concluído</Badge>;
       case "rescheduled":
-        return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 rounded-lg text-sem-tiny font-bold uppercase"><CalendarClock className="h-3 w-3 mr-1" />Reagendado</Badge>;
+        return <Badge variant="outline" className="bg-purple-500/10 text-purple-600 border-purple-500/30 rounded-lg text-sem-tiny font-bold uppercase"><CalendarClock className="h-3 w-3 mr-1" />Reagendado</Badge>;
       default:
         return <Badge variant="outline">—</Badge>;
     }
@@ -51,34 +52,50 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
   if (compact) {
     // Compact version for calendar view
     return (
-      <div 
-        className="p-5 hover:bg-primary/5 transition-all cursor-pointer group border-b border-border/10 last:border-0"
-        onClick={() => onViewDetails(appointment.id)}
-      >
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-label font-bold truncate group-hover:text-primary transition-colors">{appointment.title}</h3>
-          {getTypeBadge(appointment.type)}
-        </div>
-        
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <Clock className="h-3.5 w-3.5 text-primary/60" />
-            <span className="text-foreground font-bold">{safeFormat(appointment.date, "HH:mm")}</span>
-            <span className="text-muted-foreground/30">•</span>
-            {getStatusBadge(appointment.status)}
+      <TooltipProvider>
+        <div 
+          className="p-5 hover:bg-primary/5 transition-all cursor-pointer group border-b border-border/10 last:border-0"
+          onClick={() => onViewDetails(appointment.id)}
+        >
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="text-label font-bold truncate group-hover:text-primary transition-colors max-w-[150px]">{appointment.title}</h3>
+            {getTypeBadge(appointment.type)}
           </div>
           
-          <div className="flex items-center gap-2 text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">
-            <MapPin size={12} className="text-primary/60" />
-            <span className="truncate">{appointment.property} • Un. {appointment.unit}</span>
-          </div>
-          
-          <div className="flex items-center gap-2 text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">
-            <User size={12} className="text-primary/60" />
-            <span className="truncate">{appointment.client}</span>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
+              <Clock className="h-3.5 w-3.5 text-primary/60" />
+              <span className="text-foreground font-bold">{safeFormat(appointment.date, "HH:mm")}</span>
+              <span className="text-muted-foreground/30">•</span>
+              {getStatusBadge(appointment.status)}
+            </div>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2 text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter cursor-help">
+                  <MapPin size={12} className="text-primary/60" />
+                  <span className="truncate max-w-[180px]">{appointment.property} • Un. {appointment.unit}</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{appointment.property} • Unidade {appointment.unit}</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2 text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter cursor-help">
+                  <User size={12} className="text-primary/60" />
+                  <span className="truncate max-w-[180px]">{appointment.client}</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{appointment.client}</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
-      </div>
+      </TooltipProvider>
     );
   }
   

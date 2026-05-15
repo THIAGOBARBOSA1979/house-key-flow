@@ -20,92 +20,77 @@ export interface Appointment {
 }
 
 // Convert service data to Appointment format
-const getAppointmentsFromService = (): Appointment[] => {
-  const inspections = inspectionService.getAll();
-  return inspections.map(ins => ({
-    id: ins.id,
-    title: ins.type === 'keyDelivery' ? 'Entrega de chaves' : 
-           ins.type === 'technicalInspection' ? 'Vistoria técnica' : 
-           ins.type === 'postWork' ? 'Pós-obra' : 'Vistoria',
-    property: ins.property,
-    unit: ins.unit,
-    client: ins.client,
-    date: new Date(ins.date.getFullYear(), ins.date.getMonth(), ins.date.getDate(), 
-                  parseInt(ins.time.split(':')[0] || '0'), parseInt(ins.time.split(':')[1] || '0')),
-    type: "inspection",
-    status: ins.status as AppointmentStatus,
-    technician: ins.technician,
-    notes: ins.notes
-  }));
-};
+const mapServiceToAppointment = (ins: any): Appointment => ({
+  id: ins.id,
+  title: ins.type === 'keyDelivery' ? 'Entrega de chaves' : 
+         ins.type === 'technicalInspection' ? 'Vistoria técnica' : 
+         ins.type === 'postWork' ? 'Pós-obra' : 
+         ins.type === 'inspection' ? 'Vistoria de entrega' :
+         ins.type === 'warranty' ? 'Atendimento técnico' :
+         ins.type === 'technical_visit' ? 'Visita Técnica' : 'Agendamento',
+  property: ins.property,
+  unit: ins.unit,
+  client: ins.client,
+  date: new Date(ins.date.getFullYear(), ins.date.getMonth(), ins.date.getDate(), 
+                parseInt(ins.time.split(':')[0] || '0'), parseInt(ins.time.split(':')[1] || '0')),
+  type: (ins.type === 'keyDelivery' || ins.type === 'technicalInspection' || ins.type === 'postWork' || ins.type === 'inspection') ? 'inspection' : 
+        ins.type === 'warranty' ? 'warranty' : 
+        ins.type === 'delivery' ? 'delivery' : 'technical_visit',
+  status: ins.status as AppointmentStatus,
+  technician: ins.technician,
+  notes: ins.notes,
+  priority: ins.priority || "medium"
+});
 
-// Initial data for appointments
-export const appointments: Appointment[] = [
-  ...getAppointmentsFromService(),
+// Mock static data to seed if service is empty (first run)
+const staticMockData: any[] = [
   {
-    id: "1",
-    title: "Vistoria de entrega",
+    id: "m1",
+    type: "inspection",
     property: "Edifício Aurora",
     unit: "507",
     client: "Carlos Silva",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 10, 0),
-    type: "inspection",
+    date: new Date(),
+    time: "10:00",
     status: "pending",
     priority: "high"
   },
   {
-    id: "2",
-    title: "Vistoria de entrega",
+    id: "m2",
+    type: "inspection",
     property: "Edifício Aurora",
     unit: "204",
     client: "Maria Oliveira",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 14, 30),
-    type: "inspection",
+    date: new Date(),
+    time: "14:30",
     status: "confirmed",
     priority: "medium"
   },
   {
-    id: "3",
-    title: "Atendimento técnico",
+    id: "m3",
+    type: "warranty",
     property: "Residencial Bosque Verde",
     unit: "102",
     client: "Roberto Pereira",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1, 9, 0),
-    type: "warranty",
+    date: new Date(new Date().setDate(new Date().getDate() - 1)),
+    time: "09:00",
     status: "completed",
     priority: "low"
-  },
-  {
-    id: "4",
-    title: "Vistoria pré-entrega",
-    property: "Condomínio Monte Azul",
-    unit: "301",
-    client: "Juliana Costa",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 1, 15, 0),
-    type: "inspection",
-    status: "confirmed",
-    priority: "high"
-  },
-  {
-    id: "5",
-    title: "Atendimento técnico",
-    property: "Residencial Bosque Verde",
-    unit: "405",
-    client: "Fernando Martins",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 10, 30),
-    type: "warranty",
-    status: "pending",
-    priority: "medium"
-  },
-  {
-    id: "6",
-    title: "Entrega de chaves",
-    property: "Edifício Aurora",
-    unit: "602",
-    client: "Luciana Santos",
-    date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 11, 0),
-    type: "inspection",
-    status: "cancelled",
-    priority: "medium"
-  },
+  }
 ];
+
+// Combine service data and provide as a single exported variable
+export const getUnifiedAppointments = (): Appointment[] => {
+  const serviceInspections = inspectionService.getAll();
+  
+  // If no service data, return static mock for UI demo purposes
+  if (serviceInspections.length <= 2 && !localStorage.getItem("a2_inspections")) {
+     // The service starts with 2 items by default, we can add static mock if needed
+     // But for now let's just use what's in the service
+  }
+  
+  return serviceInspections.map(mapServiceToAppointment);
+};
+
+// For backward compatibility while we refactor components
+export const appointments = getUnifiedAppointments();

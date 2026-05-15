@@ -7,12 +7,14 @@ import { AppointmentDetails } from "@/components/Calendar/AppointmentDetails";
 import { CalendarFilters } from "@/components/Calendar/CalendarFilters";
 import { QuickActions } from "@/components/Calendar/QuickActions";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { appointments, type Appointment } from "@/components/Calendar/AppointmentData";
+import { getUnifiedAppointments, type Appointment } from "@/components/Calendar/AppointmentData";
+import { useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar as CalendarIcon, List } from "lucide-react";
 
 const Calendar = () => {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
   const [selectedAppointment, setSelectedAppointment] = useState<string | null>(null);
@@ -23,6 +25,21 @@ const Calendar = () => {
   });
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadAppointments = useCallback(() => {
+    setIsLoading(true);
+    // Simulate loading for better UX
+    setTimeout(() => {
+      const data = getUnifiedAppointments();
+      setAppointments(data);
+      setIsLoading(false);
+    }, 300);
+  }, []);
+
+  useEffect(() => {
+    loadAppointments();
+  }, [loadAppointments]);
 
   const filteredAppointments = appointments.filter(apt => {
     const matchesType = filters.type === "all" || apt.type === filters.type;
@@ -57,10 +74,16 @@ const Calendar = () => {
   };
 
   const handleStatusChange = (id: string, newStatus: string) => {
-    console.log(`Changing status of appointment ${id} to ${newStatus}`);
     import("@/services/InspectionService").then(({ inspectionService }) => {
       inspectionService.updateStatus(id, newStatus);
-      // Actual toast is already used in the component scope
+      loadAppointments(); // Refresh list
+    });
+  };
+
+  const handleUpdateAppointment = (id: string, data: any) => {
+    import("@/services/InspectionService").then(({ inspectionService }) => {
+      inspectionService.update(id, data);
+      loadAppointments();
     });
   };
 
@@ -108,22 +131,34 @@ const Calendar = () => {
         </TabsList>
         
         <TabsContent value="calendar" className="animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <CalendarView
-            appointments={filteredAppointments}
-            onViewDetails={setSelectedAppointment}
-          />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <CalendarView
+              appointments={filteredAppointments}
+              onViewDetails={setSelectedAppointment}
+            />
+          )}
         </TabsContent>
         
         <TabsContent value="list" className="animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <ListView
-            appointments={filteredAppointments}
-            onViewDetails={setSelectedAppointment}
-            filterOptions={{
-              filterType: filters.type,
-              filterProperty: filters.property,
-              filterStatus: filters.status,
-            }}
-          />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <ListView
+              appointments={filteredAppointments}
+              onViewDetails={setSelectedAppointment}
+              filterOptions={{
+                filterType: filters.type,
+                filterProperty: filters.property,
+                filterStatus: filters.status,
+              }}
+            />
+          )}
         </TabsContent>
       </Tabs>
 
@@ -134,13 +169,17 @@ const Calendar = () => {
           isOpen={!!selectedAppointment}
           onOpenChange={(open) => !open && setSelectedAppointment(null)}
           onStatusChange={handleStatusChange}
+          onUpdate={handleUpdateAppointment}
         />
       )}
 
       {scheduleDialogOpen && (
         <ScheduleInspectionDialog 
           triggerButton={<div className="hidden" />} 
-          onSuccess={() => setScheduleDialogOpen(false)}
+          onSuccess={() => {
+            setScheduleDialogOpen(false);
+            loadAppointments();
+          }}
         />
       )}
     </div>

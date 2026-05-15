@@ -1,4 +1,5 @@
 
+import React from "react";
 import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -16,6 +17,7 @@ interface AppointmentDetailsProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onStatusChange: (id: string, newStatus: string) => void;
+  onUpdate?: (id: string, data: any) => void;
 }
 
 export function AppointmentDetails({ 
@@ -23,9 +25,16 @@ export function AppointmentDetails({
   appointments, 
   isOpen, 
   onOpenChange,
-  onStatusChange
+  onStatusChange,
+  onUpdate
 }: AppointmentDetailsProps) {
   const { toast } = useToast();
+  const [notes, setNotes] = React.useState("");
+  
+  React.useEffect(() => {
+    const apt = appointments.find(a => a.id === selectedAppointment);
+    if (apt) setNotes(apt.notes || "");
+  }, [selectedAppointment, appointments]);
   
   // Get appointment details
   const getAppointmentDetails = (id: string) => {
@@ -107,7 +116,8 @@ export function AppointmentDetails({
             <Textarea 
               placeholder="Adicionar observações..."
               className="mt-1"
-              defaultValue={appointment.notes}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
             />
           </div>
           
@@ -153,9 +163,12 @@ export function AppointmentDetails({
           )}
           <Button 
             onClick={() => {
+              if (onUpdate) {
+                onUpdate(appointment.id, { notes });
+              }
               toast({
                 title: "Alterações salvas",
-                description: "As alterações no agendamento foram salvas com sucesso.",
+                description: "As observações do agendamento foram salvas.",
               });
               onOpenChange(false);
             }}

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
-import { CalendarIcon, Check, Info } from "lucide-react";
+import { CalendarIcon, Check, Info, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -97,6 +97,7 @@ export const ScheduleInspectionForm = ({
   requestId?: string
 }) => {
   const { toast } = useToast();
+  const [conflictWarning, setConflictWarning] = React.useState<string | null>(null);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -111,6 +112,20 @@ export const ScheduleInspectionForm = ({
       requestId: requestId || ""
     },
   });
+
+  const watchDate = form.watch("date");
+  const watchTechnician = form.watch("technician");
+
+  React.useEffect(() => {
+    if (watchDate && watchTechnician) {
+      const conflicts = inspectionService.getConflicts(watchDate, watchTechnician);
+      if (conflicts.length > 0) {
+        setConflictWarning(`Atenção: O técnico já possui ${conflicts.length} agendamento(s) nesta data.`);
+      } else {
+        setConflictWarning(null);
+      }
+    }
+  }, [watchDate, watchTechnician]);
 
 
   const onSubmit = (data: FormValues) => {
@@ -189,6 +204,12 @@ export const ScheduleInspectionForm = ({
                   </SelectContent>
                 </Select>
                 <FormMessage />
+                {conflictWarning && (
+                  <div className="flex items-center gap-2 mt-2 p-2 bg-amber-50 rounded-lg text-amber-700 text-[10px] font-bold border border-amber-200 animate-in fade-in slide-in-from-top-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {conflictWarning}
+                  </div>
+                )}
               </FormItem>
             )}
           />

@@ -44,57 +44,66 @@ export function CalendarFilters({
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <Select 
-        defaultValue={filterType}
-        value={filterType}
-        onValueChange={setFilterType}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Tipo" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos os tipos</SelectItem>
-          <SelectItem value="inspection">Vistorias</SelectItem>
-          <SelectItem value="warranty">Garantias</SelectItem>
-          <SelectItem value="delivery">Entregas</SelectItem>
-          <SelectItem value="technical_visit">Visitas Técnicas</SelectItem>
-        </SelectContent>
-      </Select>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="space-y-2">
+        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Tipo</label>
+        <Select 
+          defaultValue={filterType}
+          value={filterType}
+          onValueChange={setFilterType}
+        >
+          <SelectTrigger className="h-11 rounded-xl bg-card/50">
+            <SelectValue placeholder="Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os tipos</SelectItem>
+            <SelectItem value="inspection">Vistorias</SelectItem>
+            <SelectItem value="warranty">Garantias</SelectItem>
+            <SelectItem value="delivery">Entregas</SelectItem>
+            <SelectItem value="technical_visit">Visitas Técnicas</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       
-      <Select 
-        defaultValue={filterProperty}
-        value={filterProperty}
-        onValueChange={setFilterProperty}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Empreendimento" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all-properties">Todos</SelectItem>
-          <SelectItem value="aurora">Edifício Aurora</SelectItem>
-          <SelectItem value="bosque">Residencial Bosque Verde</SelectItem>
-          <SelectItem value="monte">Condomínio Monte Azul</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="space-y-2">
+        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Empreendimento</label>
+        <Select 
+          defaultValue={filterProperty}
+          value={filterProperty}
+          onValueChange={setFilterProperty}
+        >
+          <SelectTrigger className="h-11 rounded-xl bg-card/50">
+            <SelectValue placeholder="Empreendimento" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all-properties">Todos</SelectItem>
+            <SelectItem value="aurora">Edifício Aurora</SelectItem>
+            <SelectItem value="bosque">Residencial Bosque Verde</SelectItem>
+            <SelectItem value="monte">Condomínio Monte Azul</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       
-      <Select 
-        defaultValue={filterStatus}
-        value={filterStatus}
-        onValueChange={setFilterStatus}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos os status</SelectItem>
-          <SelectItem value="pending">Pendente</SelectItem>
-          <SelectItem value="confirmed">Confirmado</SelectItem>
-          <SelectItem value="completed">Concluído</SelectItem>
-          <SelectItem value="cancelled">Cancelado</SelectItem>
-          <SelectItem value="rescheduled">Reagendado</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Status</label>
+        <Select 
+          defaultValue={filterStatus}
+          value={filterStatus}
+          onValueChange={setFilterStatus}
+        >
+          <SelectTrigger className="h-11 rounded-xl bg-card/50">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os status</SelectItem>
+            <SelectItem value="pending">Pendente</SelectItem>
+            <SelectItem value="confirmed">Confirmado</SelectItem>
+            <SelectItem value="completed">Concluído</SelectItem>
+            <SelectItem value="cancelled">Cancelado</SelectItem>
+            <SelectItem value="rescheduled">Reagendado</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       
       {searchQuery !== undefined && setSearchQuery && (
         <div className="relative sm:col-span-2">
