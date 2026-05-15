@@ -64,10 +64,14 @@ export const ChecklistSelector = ({
         variant="outline" 
         type="button" 
         size="sm"
-        className="w-full border-dashed text-xs h-9"
-        onClick={() => window.location.href = "/admin/checklist"}
+        className="w-full border-dashed text-xs h-9 font-bold active:scale-95 transition-all"
+        onClick={() => {
+          if (window.confirm("As alterações não salvas serão perdidas. Deseja continuar para o gerenciamento de checklists?")) {
+            window.location.href = "/admin/checklist";
+          }
+        }}
       >
-        <Plus className="mr-2 h-3 w-3" /> 
+        <Plus className="mr-2 h-3.5 w-3.5" /> 
         Gerenciar modelos de checklist
       </Button>
     </div>
