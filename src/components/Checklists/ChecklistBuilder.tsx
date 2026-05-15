@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
 // uuid will be generated with Date.now() for demo purposes
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -149,7 +148,7 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-3">
               <Input
                 value={newItemDescription}
                 onChange={(e) => setNewItemDescription(e.target.value)}
@@ -215,8 +214,16 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
                       <div key={item.id} className="flex items-center justify-between p-3">
                         <div className="flex items-center gap-2">
                           {item.required && (
-                            <span className="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded-full">
+                            <span className="text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
                               Obrigatório
+                            </span>
+                          )}
+                          {item.severity && (
+                            <span className={cn(
+                              "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider",
+                              severities.find(s => s.value === item.severity)?.color
+                            )}>
+                              {severities.find(s => s.value === item.severity)?.label}
                             </span>
                           )}
                           <span>{item.description.split(': ')[1] || item.description}</span>
