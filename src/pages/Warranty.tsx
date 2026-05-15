@@ -271,11 +271,22 @@ const Warranty = () => {
                         size="sm" 
                         className="h-7 text-[10px] font-bold gap-1 text-primary"
                         onClick={() => {
-                          const result = warrantyFlowService.addMaterial(selectedRequest.id, { name: "Novo Material", quantity: 1, unit: "un", cost: 0 }, 'admin-1');
-                          if (result.success && result.request) setSelectedRequest(result.request);
+                          const name = window.prompt("Nome do material:");
+                          const quantity = Number(window.prompt("Quantidade:", "1"));
+                          const unit = window.prompt("Unidade (un, m2, kg):", "un");
+                          const cost = Number(window.prompt("Custo unitário:", "0"));
+                          
+                          if (name) {
+                            const result = warrantyFlowService.addMaterial(
+                              selectedRequest.id, 
+                              { name, quantity, unit: unit || "un", cost: cost * quantity }, 
+                              'admin-1'
+                            );
+                            if (result.success && result.request) setSelectedRequest(result.request);
+                          }
                         }}
                       >
-                        <Plus className="h-3 w-3" /> Adicionar
+                        <Plus className="h-3 w-3" /> Registrar Material
                       </Button>
                     </CardHeader>
                     <CardContent className="max-h-[200px] overflow-y-auto">
