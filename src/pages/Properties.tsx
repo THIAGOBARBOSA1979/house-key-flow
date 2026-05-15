@@ -365,23 +365,5 @@ const Properties = () => {
   );
 };
 
-const MetricCard = ({ label, value, icon: Icon, trend, color }: any) => (
-  <div className="bg-card/50 backdrop-blur-sm border-none p-5 rounded-2xl shadow-sem-sm flex flex-col gap-3">
-    <div className="flex justify-between items-start">
-      <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
-        <Icon size={18} />
-      </div>
-      {trend && (
-        <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-tighter">
-          {trend}
-        </span>
-      )}
-    </div>
-    <div>
-      <p className="text-tiny font-black text-muted-foreground uppercase tracking-widest">{label}</p>
-      <p className={cn("text-2xl font-black mt-0.5", color || "text-foreground")}>{value}</p>
-    </div>
-  </div>
-);
 
 export default Properties;
