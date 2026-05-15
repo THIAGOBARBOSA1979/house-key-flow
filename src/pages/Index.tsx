@@ -108,7 +108,7 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Button>
             </div>
-            <div className="space-y-4-sem">
+            <div className="space-y-4-sem animate-in fade-in slide-in-from-left-4 duration-slow">
               {inspections.map((inspection) => (
                 <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/50 backdrop-blur-sm card-hover-effect">
                   <CardContent className="p-0">
@@ -164,7 +164,7 @@ const Dashboard = () => {
                 Garantias Urgentes
               </h2>
             </div>
-            <ResponsiveGrid columns={1} gap="sm-sem">
+            <ResponsiveGrid columns={1} gap="sm-sem" className="animate-in fade-in slide-in-from-right-4 duration-slow">
               {warrantyClaims.length > 0 ? (
                 warrantyClaims.map((claim) => (
                   <div 

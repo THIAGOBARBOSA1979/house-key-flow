@@ -173,8 +173,10 @@ const DesignSystem = () => {
             </div>
             <div className="bg-card border rounded-xl overflow-hidden divide-y">
               <SpacingItem label="Layout Gap" token="gap-layout-gap" size="24px / 1.5rem" />
+              <SpacingItem label="Space 6" token="gap-6-sem" size="24px / 1.5rem" />
               <SpacingItem label="Space 4" token="gap-4-sem" size="16px / 1rem" />
               <SpacingItem label="Space 2" token="gap-2-sem" size="8px / 0.5rem" />
+              <SpacingItem label="Space 1" token="gap-1-sem" size="4px / 0.25rem" />
             </div>
           </section>
 
