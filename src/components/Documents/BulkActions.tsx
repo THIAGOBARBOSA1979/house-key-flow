@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Archive, Star, Download, Copy } from "lucide-react";
+import { Trash2, Archive, Star, Download, Copy, CheckCircle, Clock } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
