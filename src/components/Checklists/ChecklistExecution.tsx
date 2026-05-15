@@ -16,66 +16,81 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ChecklistExecutionProps {
   title: string;
-  items: ChecklistItem[];
-  onSave: (completedItems: ChecklistItem[], notes: string) => void;
-  onSubmit: (completedItems: ChecklistItem[], notes: string) => void;
+  groups: ChecklistGroup[];
+  onSave: (completedGroups: ChecklistGroup[], notes: string) => void;
+  onSubmit: (completedGroups: ChecklistGroup[], notes: string) => void;
   readOnly?: boolean;
 }
 
 export function ChecklistExecution({ 
   title, 
-  items, 
+  groups, 
   onSave, 
   onSubmit, 
   readOnly = false 
 }: ChecklistExecutionProps) {
   const { toast } = useToast();
-  const [completedItems, setCompletedItems] = useState<ChecklistItem[]>(items);
+  const [completedGroups, setCompletedGroups] = useState<ChecklistGroup[]>(groups);
   const [notes, setNotes] = useState("");
   const [currentSection, setCurrentSection] = useState(0);
-  const [showSignature, setShowSignature] = useState(false);
-  const [signature, setSignature] = useState("");
-  const [clientSignature, setClientSignature] = useState("");
-
-
-  // Agrupar itens por categoria
-  const groupedItems = completedItems.reduce((acc, item) => {
-    let category = "Outros";
-    const match = item.description.match(/^([^:]+):\s(.+)$/);
-    
-    if (match) {
-      category = match[1];
-    }
-    
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    
-    acc[category].push(item);
-    return acc;
-  }, {} as Record<string, ChecklistItem[]>);
-
-  const sections = Object.keys(groupedItems);
-  const totalItems = completedItems.length;
-  const completedCount = completedItems.filter(item => item.status && (item.status === 'ok' || item.status === 'issue')).length;
+  
+  // Stats
+  const allItems = completedGroups.flatMap(g => g.items);
+  const totalItems = allItems.length;
+  const completedCount = allItems.filter(item => item.status && item.status !== 'na').length;
   const progressPercentage = totalItems > 0 ? (completedCount / totalItems) * 100 : 0;
 
-  const handleItemStatusChange = (itemId: string, status: 'ok' | 'issue' | 'na') => {
-    setCompletedItems(prev => 
-      prev.map(item => 
-        item.id === itemId ? { ...item, status } : item
+  const handleItemStatusChange = (groupId: string, itemId: string, status: 'ok' | 'issue' | 'na') => {
+    setCompletedGroups(prev => 
+      prev.map(group => 
+        group.id === groupId 
+          ? { 
+              ...group, 
+              items: group.items.map(item => 
+                item.id === itemId ? { ...item, status } : item
+              ) 
+            }
+          : group
       )
     );
+
+    // Auto-alert for critical non-conformity
+    const item = allItems.find(i => i.id === itemId);
+    if (status === 'issue' && item?.severity === 'critical') {
+      toast({
+        title: "ALERTA CRÍTICO",
+        description: `Não conformidade crítica detectada: ${item.description}`,
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleFileUpload = (itemId: string, files: FileList | null) => {
+  const handleFileUpload = (groupId: string, itemId: string, files: FileList | null) => {
     if (!files) return;
     
-    setCompletedItems(prev => 
-      prev.map(item => 
-        item.id === itemId 
-          ? { ...item, evidence: Array.from(files).map(f => ({ id: `ev-${Date.now()}`, file: f, url: URL.createObjectURL(f), timestamp: new Date() })) }
-          : item
+    setCompletedGroups(prev => 
+      prev.map(group => 
+        group.id === groupId 
+          ? { 
+              ...group, 
+              items: group.items.map(item => 
+                item.id === itemId 
+                  ? { 
+                      ...item, 
+                      evidence: [
+                        ...(item.evidence || []),
+                        ...Array.from(files).map(f => ({ 
+                          id: `ev-${Date.now()}-${Math.random()}`, 
+                          file: f, 
+                          url: URL.createObjectURL(f), 
+                          timestamp: new Date() 
+                        }))
+                      ] 
+                    }
+                  : item
+              ) 
+            }
+          : group
       )
     );
   };
