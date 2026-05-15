@@ -13,19 +13,19 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
     return (
       <div className={cn("grid-layout", className)}>
         {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="card-standard p-6 space-y-5 rounded-2xl bg-card/20 border-none shadow-none">
-            <div className="flex items-center gap-4">
+          <div key={i} className="card-standard p-6-sem space-y-5-sem rounded-2xl bg-card/20 border-none shadow-none">
+            <div className="flex items-center gap-4-sem">
               <Skeleton className="h-14 w-14 rounded-xl" />
-              <div className="space-y-2 flex-1">
+              <div className="space-y-2-sem flex-1">
                 <Skeleton className="h-4 w-1/2" />
                 <Skeleton className="h-3 w-1/3" />
               </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3-sem">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-4/5" />
             </div>
-            <div className="flex justify-between items-center pt-4 border-t border-border/10">
+            <div className="flex justify-between items-center pt-4-sem border-t border-border/10">
               <Skeleton className="h-10 w-24 rounded-xl" />
               <Skeleton className="h-6 w-16 rounded-full" />
             </div>
@@ -37,14 +37,14 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
 
   if (type === 'table') {
     return (
-      <div className={cn("space-y-6", className)}>
-        <div className="flex justify-between items-center mb-6">
+      <div className={cn("space-y-6-sem", className)}>
+        <div className="flex justify-between items-center mb-6-sem">
           <Skeleton className="h-12 w-64 rounded-xl" />
           <Skeleton className="h-12 w-32 rounded-xl" />
         </div>
         <div className="border border-border/20 rounded-2xl overflow-hidden shadow-none bg-card/10 backdrop-blur-sm">
-          <div className="bg-muted/30 p-5 border-b border-border/10">
-            <div className="grid grid-cols-4 gap-6">
+          <div className="bg-muted/30 p-5-sem border-b border-border/10">
+            <div className="grid grid-cols-4 gap-6-sem">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-4 w-24" />
@@ -52,8 +52,8 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
             </div>
           </div>
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="p-5 border-b border-border/5 last:border-0">
-              <div className="grid grid-cols-4 gap-6">
+            <div key={i} className="p-5-sem border-b border-border/5 last:border-0">
+              <div className="grid grid-cols-4 gap-6-sem">
                 <Skeleton className="h-5 w-40" />
                 <Skeleton className="h-5 w-24" />
                 <Skeleton className="h-6 w-20 rounded-full" />
@@ -68,11 +68,11 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
 
   if (type === 'list') {
     return (
-      <div className={cn("space-y-4", className)}>
+      <div className={cn("space-y-4-sem", className)}>
         {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="flex items-center gap-5 p-5 card-standard rounded-2xl bg-card/20 border-none shadow-none">
+          <div key={i} className="flex items-center gap-5-sem p-5-sem card-standard rounded-2xl bg-card/20 border-none shadow-none">
             <Skeleton className="h-12 w-12 rounded-xl" />
-            <div className="flex-1 space-y-2">
+            <div className="flex-1 space-y-2-sem">
               <Skeleton className="h-4 w-1/5" />
               <Skeleton className="h-3 w-1/3" />
             </div>
@@ -84,8 +84,8 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
   }
 
   return (
-    <div className={cn("space-y-10 animate-pulse", className)}>
-      <div className="space-y-4">
+    <div className={cn("space-y-10-sem animate-pulse", className)}>
+      <div className="space-y-4-sem">
         <Skeleton className="h-14 w-1/4 rounded-2xl" />
         <Skeleton className="h-7 w-1/2 rounded-xl" />
       </div>

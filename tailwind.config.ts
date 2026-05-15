@@ -124,6 +124,7 @@ export default {
 				'3-sem': 'var(--space-3)',
 				'3.5-sem': 'var(--space-3-5)',
 				'4-sem': 'var(--space-4)',
+				'4.5-sem': 'var(--space-4-5)',
 				'5-sem': 'var(--space-5)',
 				'6-sem': 'var(--space-6)',
 				'7-sem': 'var(--space-7)',
