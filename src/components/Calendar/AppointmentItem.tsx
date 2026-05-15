@@ -101,7 +101,7 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
   
   // Full version for list view
   return (
-    <div className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-5-sem transition-all duration-300 hover:bg-muted/30 group">
+    <div className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-5 transition-all duration-300 hover:bg-muted/30 group border-b border-border/10 last:border-0">
       <div className="space-y-3 flex-1 min-w-0">
         <div className="flex items-center gap-3 flex-wrap">
           {getTypeBadge(appointment.type)}
@@ -112,38 +112,38 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
           )}
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><MapPin size={14} className="text-primary/60" /></div>
-            <span className="truncate">{appointment.property} • Unidade {appointment.unit}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <MapPin size={14} className="text-primary" />
+            <span className="truncate">{appointment.property} • {appointment.unit}</span>
           </div>
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><User size={14} className="text-primary/60" /></div>
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <User size={14} className="text-primary" />
             <span className="truncate">{appointment.client}</span>
           </div>
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><CalendarClock size={14} className="text-primary/60" /></div>
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <CalendarClock size={14} className="text-primary" />
             <span>{safeFormat(appointment.date, "dd/MM/yyyy")}</span>
           </div>
-          <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-            <div className="p-1.5 bg-muted rounded-lg"><Clock size={14} className="text-primary/60" /></div>
+          <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+            <Clock size={14} className="text-primary" />
             <span className="text-foreground font-bold">{safeFormat(appointment.date, "HH:mm")}</span>
           </div>
           {appointment.technician && (
-            <div className="flex items-center gap-2 text-sem-body-sm text-muted-foreground font-medium">
-              <div className="p-1.5 bg-muted rounded-lg"><Users size={14} className="text-primary/60" /></div>
+            <div className="flex items-center gap-2.5 text-sem-body-sm text-muted-foreground font-medium bg-muted/30 p-2 rounded-xl">
+              <Users size={14} className="text-primary" />
               <span className="truncate">{appointment.technician}</span>
             </div>
           )}
         </div>
       </div>
       
-      <div className="flex gap-2 shrink-0 md:pl-4 md:border-l md:border-border/10">
+      <div className="flex flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto md:pl-4 md:border-l md:border-border/10">
         <Button 
           variant="outline" 
           size="sm"
           onClick={() => onViewDetails(appointment.id)}
-          className="rounded-lg h-10 font-bold active:scale-95 transition-all"
+          className="flex-1 md:flex-none rounded-xl h-10 font-bold active:scale-95 transition-all bg-card/50 hover:bg-primary/5 border-border/10"
         >
           Ver detalhes
         </Button>

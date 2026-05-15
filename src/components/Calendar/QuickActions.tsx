@@ -101,50 +101,50 @@ export const QuickActions = ({
         />
       </div>
 
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-h4">Ações Rápidas</CardTitle>
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm shadow-sem-sm">
+        <CardHeader className="pb-3 pt-4 px-5 sm:px-6">
+          <CardTitle className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground">Ações Rápidas</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-3">
-            <Button onClick={onNewAppointment} className="rounded-lg font-bold">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Button onClick={onNewAppointment} className="rounded-xl font-bold h-11 shadow-sem-sm active:scale-95 transition-all">
               <Plus className="mr-2 h-4 w-4" />
               Novo Agendamento
             </Button>
             
-            <Button variant="outline" onClick={() => setFilterSheetOpen(true)} className="rounded-lg font-bold">
+            <Button variant="outline" onClick={() => setFilterSheetOpen(true)} className="rounded-xl font-bold h-11 bg-card/50 border-border/10 hover:bg-primary/5 active:scale-95 transition-all">
               <Filter className="mr-2 h-4 w-4" />
               Filtros Avançados
             </Button>
             
-            <Button variant="outline" onClick={() => handleExport("csv")} className="rounded-lg font-bold">
+            <Button variant="outline" onClick={() => handleExport("csv")} className="rounded-xl font-bold h-11 bg-card/50 border-border/10 hover:bg-primary/5 active:scale-95 transition-all">
               <Download className="mr-2 h-4 w-4" />
               Exportar Agenda (CSV)
             </Button>
             
-            <Button variant="outline" onClick={() => handleQuickAction("Configurações")} className="rounded-lg font-bold">
+            <Button variant="outline" onClick={() => handleQuickAction("Configurações")} className="rounded-xl font-bold h-11 bg-card/50 border-border/10 hover:bg-primary/5 active:scale-95 transition-all">
               <Settings className="mr-2 h-4 w-4" />
               Configurações
             </Button>
             
             {conflicts.length > 0 && (
-              <div className="ml-auto flex items-center">
-                <Badge variant="outline" className="bg-status-critical/10 text-status-critical border-status-critical/20 rounded-lg text-sem-tiny font-black px-3 py-1 flex items-center gap-2 cursor-help group relative">
-                  <AlertCircle className="h-3.5 w-3.5" />
-                  {conflicts.length} {conflicts.length === 1 ? 'CONFLITO DETECTADO' : 'CONFLITOS DETECTADOS'}
+              <div className="sm:col-span-2 lg:col-span-4 flex items-center mt-2">
+                <Badge variant="outline" className="bg-red-500/10 text-red-600 border-red-500/20 rounded-xl text-[10px] font-black px-4 py-2 flex items-center gap-2 cursor-help group relative w-full sm:w-auto">
+                  <AlertCircle className="h-4 w-4" />
+                  {conflicts.length} {conflicts.length === 1 ? 'CONFLITO DE AGENDA DETECTADO' : 'CONFLITOS DE AGENDA DETECTADOS'}
                   
                   {/* Tooltip implementation */}
-                  <div className="absolute bottom-full right-0 mb-2 w-64 p-3 bg-white border border-border rounded-xl shadow-sem-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
-                    <p className="text-foreground text-xs font-bold mb-2">Conflitos de Agenda:</p>
-                    <div className="space-y-2">
-                      {conflicts.slice(0, 3).map((c, i) => (
-                        <div key={i} className="flex items-center justify-between text-[10px] text-muted-foreground border-b border-border/10 pb-1">
-                          <span>{c.technician}</span>
-                          <span className="font-bold text-status-critical">{c.date}</span>
+                  <div className="absolute bottom-full left-0 mb-3 w-72 p-4 bg-white border border-border rounded-2xl shadow-sem-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-all z-50 transform translate-y-2 group-hover:translate-y-0">
+                    <p className="text-foreground text-xs font-black uppercase tracking-widest mb-3 border-b border-border/10 pb-2">Detalhes dos Conflitos:</p>
+                    <div className="space-y-3">
+                      {conflicts.slice(0, 4).map((c, i) => (
+                        <div key={i} className="flex items-center justify-between text-[11px] text-muted-foreground bg-muted/20 p-2 rounded-lg">
+                          <span className="font-bold">Técnico {c.technician}</span>
+                          <span className="font-black text-red-600 bg-red-500/5 px-2 py-0.5 rounded border border-red-500/10">{c.date}</span>
                         </div>
                       ))}
-                      {conflicts.length > 3 && (
-                        <p className="text-[9px] italic text-center">E mais {conflicts.length - 3}...</p>
+                      {conflicts.length > 4 && (
+                        <p className="text-[10px] font-bold text-primary italic text-center pt-1">+ {conflicts.length - 4} outros conflitos</p>
                       )}
                     </div>
                   </div>
