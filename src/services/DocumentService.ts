@@ -11,6 +11,7 @@ export interface Document {
   fileName?: string;
   fileSize?: string;
   category: "contrato" | "manual" | "relatorio" | "certificado" | "outros";
+  folderId?: string;
   associatedTo: {
     client?: string;
     property?: string;
@@ -22,6 +23,8 @@ export interface Document {
   updatedAt: Date;
   downloads: number;
   status: "draft" | "published" | "archived";
+  approvalStatus: "pending" | "approved" | "rejected";
+  approvalComment?: string;
   tags?: string[];
   isFavorite?: boolean;
   version: number;
@@ -68,6 +71,7 @@ class DocumentService {
       title: "Contrato de Compra e Venda",
       type: "auto",
       category: "contrato",
+      folderId: "f1",
       template: `CONTRATO DE COMPRA E VENDA
 
 VENDEDOR: A2 Incorporadora LTDA
@@ -84,6 +88,7 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       updatedAt: new Date(2025, 4, 10),
       downloads: 5,
       status: "published",
+      approvalStatus: "approved",
       tags: ["contrato", "venda"],
       isFavorite: false,
       version: 1,
@@ -98,6 +103,7 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       title: "Manual do Proprietário",
       type: "manual",
       category: "manual",
+      folderId: "f1",
       fileUrl: "/docs/manual-proprietario.pdf",
       fileName: "manual-proprietario.pdf",
       fileSize: "850 KB",
@@ -107,6 +113,7 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       updatedAt: new Date(2025, 4, 12),
       downloads: 12,
       status: "published",
+      approvalStatus: "approved",
       tags: ["manual", "proprietário"],
       isFavorite: true,
       version: 2,
@@ -119,6 +126,7 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       title: "Relatório de Vistoria",
       type: "auto",
       category: "relatorio",
+      folderId: "f2",
       template: `RELATÓRIO DE VISTORIA
 
 CLIENTE: {{nome_cliente}}
@@ -138,6 +146,7 @@ OBSERVAÇÕES: {{observacoes}}`,
       updatedAt: new Date(2025, 4, 15),
       downloads: 3,
       status: "published",
+      approvalStatus: "pending",
       tags: ["vistoria", "relatório"],
       isFavorite: false,
       version: 1,
@@ -212,7 +221,7 @@ OBSERVAÇÕES: {{observacoes}}`,
       version: 1,
       approvalStatus: 'pending'
     };
-
+    
     this.documents.push(newDocument);
     auditLogService.log({
       entityType: 'document',
@@ -385,6 +394,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     status?: string;
     priority?: string;
     dateRange?: { from: Date; to: Date };
+    folderId?: string;
   }): Document[] {
     let filtered = this.documents;
 
@@ -416,6 +426,10 @@ OBSERVAÇÕES: {{observacoes}}`,
         doc.createdAt >= filters.dateRange!.from && 
         doc.createdAt <= filters.dateRange!.to
       );
+    }
+
+    if (filters?.folderId) {
+      filtered = filtered.filter(doc => doc.folderId === filters.folderId);
     }
 
     return filtered;
