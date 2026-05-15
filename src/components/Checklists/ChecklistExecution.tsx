@@ -194,21 +194,28 @@ export function ChecklistExecution({
                 )}>
                   <CardContent className="p-4">
 
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{itemText}</span>
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-gray-800">{item.description}</span>
                         {item.required && (
-                          <Badge variant="destructive" className="text-xs">
+                          <Badge variant="destructive" className="text-[10px] font-black uppercase py-0 px-2">
                             Obrigatório
                           </Badge>
                         )}
+                        <Badge variant="outline" className={cn(
+                          "text-[10px] font-black uppercase py-0 px-2",
+                          item.severity === 'critical' ? 'border-red-500 text-red-500' :
+                          item.severity === 'high' ? 'border-orange-500 text-orange-500' : 'border-blue-500 text-blue-500'
+                        )}>
+                          {item.severity}
+                        </Badge>
                       </div>
                     </div>
 
                     <div className={cn(
-                      "px-3 py-1 text-xs font-medium rounded-full",
+                      "px-3 py-1 text-xs font-black uppercase rounded-lg shrink-0",
                       getStatusColor(item.status)
                     )}>
                       {getStatusText(item.status)}
@@ -216,56 +223,77 @@ export function ChecklistExecution({
                   </div>
 
                   {!readOnly && (
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-3 gap-2">
                       <Button
                         size="sm"
                         variant={item.status === "ok" ? "default" : "outline"}
-                        onClick={() => handleItemStatusChange(item.id, 'ok')}
+                        onClick={() => handleItemStatusChange(completedGroups[currentSection].id, item.id, 'ok')}
+                        className={cn("rounded-lg font-bold", item.status === 'ok' && "bg-status-complete")}
                       >
                         <Check className="h-4 w-4 mr-1" />
-                        OK
+                        CONFORME
                       </Button>
                       <Button
                         size="sm"
                         variant={item.status === "issue" ? "destructive" : "outline"}
-                        onClick={() => handleItemStatusChange(item.id, 'issue')}
+                        onClick={() => handleItemStatusChange(completedGroups[currentSection].id, item.id, 'issue')}
+                        className="rounded-lg font-bold"
                       >
                         <X className="h-4 w-4 mr-1" />
-                        Problema
+                        FALHA
                       </Button>
                       <Button
                         size="sm"
                         variant={item.status === "na" ? "secondary" : "outline"}
-                        onClick={() => handleItemStatusChange(item.id, 'na')}
+                        onClick={() => handleItemStatusChange(completedGroups[currentSection].id, item.id, 'na')}
+                        className="rounded-lg font-bold"
                       >
                         N/A
                       </Button>
                     </div>
                   )}
 
-                  {/* Upload de evidências */}
-                  {!readOnly && (
-                    <div className="space-y-2">
-                      <Label className="text-sm">Evidências (Fotos)</Label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={(e) => handleFileUpload(item.id, e.target.files)}
-                          className="text-sm"
-                        />
-                        <Button size="sm" variant="outline">
-                          <Camera className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      {item.evidence && item.evidence.length > 0 && (
-                        <p className="text-xs text-muted-foreground">
-                          {item.evidence.length} arquivo(s) anexado(s)
-                        </p>
+                  {/* Evidências */}
+                  <div className="space-y-3 bg-muted/30 p-3 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-black uppercase text-muted-foreground flex items-center gap-2">
+                        <Camera size={14} /> Evidências Fotográficas
+                      </Label>
+                      {!readOnly && (
+                        <div className="relative">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => handleFileUpload(completedGroups[currentSection].id, item.id, e.target.files)}
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                          />
+                          <Button size="sm" variant="outline" className="h-8 rounded-lg font-bold text-[10px] uppercase">
+                            Adicionar Fotos
+                          </Button>
+                        </div>
                       )}
                     </div>
-                  )}
+
+                    {item.evidence && item.evidence.length > 0 ? (
+                      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                        {item.evidence.map((ev, idx) => (
+                          <div key={ev.id} className="relative group shrink-0">
+                            <img 
+                              src={ev.url} 
+                              alt="Evidência" 
+                              className="h-20 w-20 object-cover rounded-lg border-2 border-white shadow-sm"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                              <Info size={16} className="text-white" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground italic">Nenhuma foto anexada a este item.</p>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>

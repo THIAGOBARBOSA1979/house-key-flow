@@ -101,7 +101,7 @@ export default function Checklist() {
         </div>
         <ChecklistExecution
           title={selectedTemplate.title}
-          items={executionGroups as any}
+          groups={executionGroups}
           onSave={handleSaveExecution}
           onSubmit={handleSubmitExecution}
         />
