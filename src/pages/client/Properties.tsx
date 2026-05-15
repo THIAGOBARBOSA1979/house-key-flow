@@ -163,11 +163,11 @@ const ClientProperties = () => {
 
       {/* Tabs for property information */}
       <Tabs defaultValue="documents" className="mt-6">
-        <TabsList>
-          <TabsTrigger value="documents">Documentos</TabsTrigger>
-          <TabsTrigger value="features">Características</TabsTrigger>
-          <TabsTrigger value="photos">Galeria de Fotos</TabsTrigger>
-          <TabsTrigger value="warranty">Garantias</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1 bg-muted/50 rounded-2xl">
+          <TabsTrigger value="documents" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Documentos</TabsTrigger>
+          <TabsTrigger value="features" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Características</TabsTrigger>
+          <TabsTrigger value="photos" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Galeria</TabsTrigger>
+          <TabsTrigger value="warranty" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Garantias</TabsTrigger>
         </TabsList>
         
         <TabsContent value="documents" className="space-y-4 pt-4">
