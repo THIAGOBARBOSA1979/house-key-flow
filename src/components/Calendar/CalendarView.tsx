@@ -29,11 +29,13 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
     
   // Function to get appointments for a specific date (for highlighting days with appointments)
   const getAppointmentsForDate = (day: Date) => {
-    return appointments.filter(appointment => 
-      appointment.date.getDate() === day.getDate() &&
-      appointment.date.getMonth() === day.getMonth() &&
-      appointment.date.getFullYear() === day.getFullYear()
-    );
+    return appointments.filter(appointment => {
+      const aptDate = new Date(appointment.date);
+      return aptDate.getDate() === day.getDate() &&
+             aptDate.getMonth() === day.getMonth() &&
+             aptDate.getFullYear() === day.getFullYear() &&
+             appointment.status !== 'cancelled';
+    });
   };
 
   return (
