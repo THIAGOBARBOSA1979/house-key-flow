@@ -39,6 +39,8 @@ const ACTION_LABELS: Record<AuditAction, string> = {
   archived: "Arquivamento",
   published: "Publicação",
   favorited: "Favoritado",
+  deleted: "Exclusão",
+  viewed: "Visualização",
 };
 
 const ACTION_COLORS: Record<AuditAction, string> = {
@@ -61,6 +63,8 @@ const ACTION_COLORS: Record<AuditAction, string> = {
   archived: "bg-muted text-muted-foreground border-border",
   published: "bg-status-complete/10 text-status-complete border-status-complete/20",
   favorited: "bg-status-pending/10 text-status-pending border-status-pending/20",
+  deleted: "bg-status-critical/10 text-status-critical border-status-critical/20",
+  viewed: "bg-muted text-muted-foreground border-border",
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -137,6 +141,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
                 <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
                 <SelectItem value="client">Cliente</SelectItem>
+                <SelectItem value="user">Usuário</SelectItem>
               </SelectContent>
             </Select>
           </div>
