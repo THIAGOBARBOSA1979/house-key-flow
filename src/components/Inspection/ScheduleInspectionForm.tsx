@@ -343,8 +343,8 @@ export const ScheduleInspectionForm = ({
         />
         
         <div className="flex gap-3 justify-end pt-6 border-t border-border/10">
-          <Button type="button" variant="outline" className="rounded-lg font-bold">Cancelar</Button>
-          <Button type="submit" className="rounded-lg font-bold bg-primary hover:bg-primary/90">Agendar Vistoria</Button>
+          <Button type="button" variant="outline" className="rounded-xl font-bold h-11 px-6 active:scale-95 transition-all">Cancelar</Button>
+          <Button type="submit" className="rounded-xl font-bold bg-primary hover:bg-primary/90 h-11 px-8 active:scale-95 transition-all shadow-md">Agendar Vistoria</Button>
         </div>
       </form>
     </Form>

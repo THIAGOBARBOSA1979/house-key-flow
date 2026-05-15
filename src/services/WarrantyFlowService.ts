@@ -285,6 +285,8 @@ class WarrantyFlowService {
       }
     }
     
+    // Business Rule: moving to approved requires at least one problem to be confirmed/analyzed (simplified for now)
+    
     if (!isValidTransition(request.currentStage, newStatus)) {
       return { 
         success: false, 
@@ -318,6 +320,12 @@ class WarrantyFlowService {
     const slaInfo = warrantySLAService.calculateSLADeadlineInfo(updatedRequest);
     updatedRequest.slaDeadline = slaInfo.deadline;
     
+    // Auto-assignment if moving to in_analysis and no technician
+    if (newStatus === 'in_analysis' && !updatedRequest.assignedTo) {
+      // In a real app, logic for auto-assignment would go here
+      // For now, we'll keep it manual but prepare the structure
+    }
+
     this.requests.set(requestId, updatedRequest);
     this.persist();
     
@@ -328,15 +336,8 @@ class WarrantyFlowService {
       performedBy: changedBy,
       performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Cliente',
       performedByRole: changedBy === 'admin-1' ? 'admin' : 'client',
-      details: notes || `Solicitação movida para a etapa ${WARRANTY_STAGES[newStatus].label}`
-    });
-    
-    console.log('[WarrantyFlowService] Status changed:', {
-      requestId,
-      from: request.currentStage,
-      to: newStatus,
-      changedBy,
-      isAutomatic
+      details: notes || `Solicitação movida para a etapa ${WARRANTY_STAGES[newStatus].label}`,
+      metadata: { fromStatus: request.currentStage, toStatus: newStatus }
     });
     
     return { success: true, request: updatedRequest };
