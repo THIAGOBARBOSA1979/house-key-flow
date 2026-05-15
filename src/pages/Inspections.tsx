@@ -124,7 +124,15 @@ export default function Inspections() {
         title="Vistorias"
         description="Gerenciamento de vistorias e entregas de unidades"
       >
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button 
+            variant="outline"
+            onClick={handleExport}
+            className="interactive-active"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Relatório
+          </Button>
           <Button 
             variant={viewMode === "calendar" ? "default" : "outline"}
             onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
@@ -133,7 +141,7 @@ export default function Inspections() {
             {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
             {viewMode === "calendar" ? "Lista" : "Calendário"}
           </Button>
-          <ScheduleInspectionDialog onSuccess={() => setInspections(inspectionService.getAll())} />
+          <ScheduleInspectionDialog onSuccess={loadData} />
         </div>
       </PageHeader>
 
