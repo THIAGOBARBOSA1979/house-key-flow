@@ -28,17 +28,17 @@ export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string 
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <h4 className="text-sm font-bold text-muted-foreground uppercase">Pastas</h4>
-        <Button variant="ghost" size="icon" className="h-6 w-6">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between px-1">
+        <h4 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Pastas</h4>
+        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full hover:bg-primary/10 hover:text-primary transition-all">
           <FolderPlus className="h-4 w-4" />
         </Button>
       </div>
-      <div className="space-y-1">
+      <div className="space-y-1 bg-muted/20 p-2 rounded-xl border border-border/50 shadow-sem-sm">
         <Button 
           variant="ghost" 
-          className="w-full justify-start text-xs font-medium" 
+          className="w-full justify-start text-xs font-bold h-9 px-3 hover:bg-primary/5 hover:text-primary rounded-lg transition-all" 
           onClick={() => onFolderSelect(null)}
           onDragOver={(e) => {
             e.preventDefault();
@@ -68,7 +68,7 @@ export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string 
             key={folder.id} 
             variant="ghost" 
             className={cn(
-              "w-full justify-start text-xs font-medium",
+              "w-full justify-start text-xs font-bold h-9 px-3 hover:bg-primary/5 hover:text-primary rounded-lg transition-all",
               folder.parentId !== 'root' && "pl-8 text-muted-foreground"
             )}
             onClick={() => onFolderSelect(folder.id)}
