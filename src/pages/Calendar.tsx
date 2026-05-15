@@ -74,10 +74,16 @@ const Calendar = () => {
   };
 
   const handleStatusChange = (id: string, newStatus: string) => {
-    console.log(`Changing status of appointment ${id} to ${newStatus}`);
     import("@/services/InspectionService").then(({ inspectionService }) => {
       inspectionService.updateStatus(id, newStatus);
-      // Actual toast is already used in the component scope
+      loadAppointments(); // Refresh list
+    });
+  };
+
+  const handleUpdateAppointment = (id: string, data: any) => {
+    import("@/services/InspectionService").then(({ inspectionService }) => {
+      inspectionService.update(id, data);
+      loadAppointments();
     });
   };
 
