@@ -159,10 +159,10 @@ const AdminDocuments = () => {
       </div>
 
       <BulkActions 
-        documents={filteredDocs}
+        documents={documents}
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
-        onActionComplete={() => setDocuments(documentService.getAllDocuments())}
+        onActionComplete={refreshDocuments}
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -301,7 +301,7 @@ const AdminDocuments = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-              {filteredDocs.map(doc => (
+              {documents.map(doc => (
                 <Card key={doc.id} className={cn(
                   "card-standard group relative overflow-hidden h-44 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all",
                   selectedIds.includes(doc.id) && "ring-2 ring-primary bg-primary/5"
@@ -331,7 +331,7 @@ const AdminDocuments = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-40 animate-in zoom-in-95">
-                          <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer"><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
+                          <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={() => setIsPreviewOpen(true)}><Eye size={14} className="mr-2" /> Ver</DropdownMenuItem>
                           <DropdownMenuItem className="text-xs font-bold py-2 text-destructive focus:text-destructive cursor-pointer" onClick={() => handleDelete(doc.id)}><Trash2 size={14} className="mr-2" /> Excluir</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
