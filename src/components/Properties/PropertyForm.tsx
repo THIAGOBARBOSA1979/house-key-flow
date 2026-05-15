@@ -116,13 +116,13 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-3">
             <FormField
               control={form.control}
               name="deliveryDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Previsão de Entrega</FormLabel>
+                  <FormLabel>Entrega</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -134,9 +134,9 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
                           )}
                         >
                           {field.value ? (
-                            safeFormat(field.value, "PPP")
+                            safeFormat(field.value, "MMM yyyy")
                           ) : (
-                            <span>Selecione uma data</span>
+                            <span>Data</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -161,27 +161,27 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
               name="manager"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Responsável / Gerente</FormLabel>
+                  <FormLabel>Responsável</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome do gerente" {...field} className="h-10" />
+                    <Input placeholder="Gerente" {...field} className="h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-            
+
             <FormField
               control={form.control}
               name="totalArea"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Área Total (m²)</FormLabel>
+                  <FormLabel>Área (m²)</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
-                      placeholder="Área construída"
+                      placeholder="m²"
                       {...field} 
+                      className="h-10"
                       onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                     />
                   </FormControl>
@@ -189,6 +189,7 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
                 </FormItem>
               )}
             />
+          </div>
           </div>
 
           <FormField
