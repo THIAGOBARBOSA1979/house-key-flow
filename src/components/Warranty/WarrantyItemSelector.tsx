@@ -119,13 +119,13 @@ export function WarrantyItemSelector({
   return (
     <div className="space-y-4">
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="relative group">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
         <Input
-          placeholder="Buscar item de garantia..."
+          placeholder="Buscar item (ex: hidráulica, torneira, piso)..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
+          className="pl-10 h-12 rounded-xl border-2 focus-visible:ring-primary/20 bg-muted/10 transition-all"
         />
       </div>
       
@@ -144,23 +144,26 @@ export function WarrantyItemSelector({
           
           <TabsContent value="eligible" className="mt-4">
             <ScrollArea className="h-[320px] pr-4">
-              <div className="space-y-3">
+              <div className="space-y-3 pt-2">
                 {filteredEligible.length > 0 ? (
                   filteredEligible.map(item => {
                     const eligibility = warrantyValidationService.getEligibility(item, clientId);
                     return (
-                      <WarrantyItemCard
-                        key={item.id}
-                        item={item}
-                        eligibility={eligibility}
-                        isSelected={selectedItemId === item.id}
-                        onSelect={() => handleSelect(item)}
-                      />
+                      <div key={item.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <WarrantyItemCard
+                          item={item}
+                          eligibility={eligibility}
+                          isSelected={selectedItemId === item.id}
+                          onSelect={() => handleSelect(item)}
+                        />
+                      </div>
                     );
                   })
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Nenhum item encontrado com a busca "{searchQuery}"
+                  <div className="flex flex-col items-center justify-center py-12 text-center bg-muted/20 rounded-2xl border border-dashed border-muted-foreground/20">
+                    <Search className="h-10 w-10 text-muted-foreground/30 mb-2" />
+                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Nenhum item elegível</p>
+                    <p className="text-xs text-muted-foreground mt-1">Tente outro termo na busca acima.</p>
                   </div>
                 )}
               </div>
