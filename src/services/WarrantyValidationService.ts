@@ -6,6 +6,8 @@ import {
   WarrantyRequest,
   WarrantyProblemData
 } from "@/types/warranty";
+import { warrantyFlowService } from "./WarrantyFlowService";
+import { clientStageService } from "./ClientStageService";
 
 // Mock data for warranty items
 const mockWarrantyItems: WarrantyItem[] = [
@@ -265,6 +267,28 @@ class WarrantyValidationService {
       additionalInfo: data.additionalInfo,
     };
     
+    // Create the persistent request in WarrantyFlowService
+    const profile = clientStageService.getClientProfile(clientId);
+    const requestFlow = warrantyFlowService.createRequest({
+      clientId,
+      clientName: profile?.name || "Cliente",
+      propertyId: item.propertyId,
+      propertyName: item.propertyName,
+      unitNumber: item.unitNumber,
+      title: data.title,
+      description: data.problems.map(p => p.description).join("; "),
+      category: item.category,
+      problems: data.problems.map(p => ({
+        id: `prob-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        category: p.category,
+        location: p.location,
+        description: p.description,
+        severity: p.severity,
+        photos: p.photos,
+        status: "pending"
+      }))
+    });
+
     return { success: true, request };
   }
 

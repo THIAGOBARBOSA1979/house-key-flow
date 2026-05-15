@@ -17,74 +17,10 @@ import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptan
 import { InspectionAcceptanceStatus } from "@/types/clientFlow";
 import { eventAutomationService } from "@/services/EventAutomationService";
 import { useAuth } from "@/contexts/AuthContext";
+import { inspectionService, Inspection } from "@/services/InspectionService";
+import { useMemo } from "react";
 
-// Mock data
-const initialInspections = [
-  {
-    id: "1",
-    title: "Vistoria de Pré-entrega",
-    property: "Edifício Aurora",
-    unit: "204",
-    scheduledDate: new Date(2025, 4, 15, 10, 0),
-    status: "pending" as const,
-    inspector: "Carlos Andrade",
-    description: "Vistoria para verificação das condições da unidade antes da entrega oficial.",
-    checklist: [
-      { id: "1", name: "Verificação de paredes e pinturas", completed: false },
-      { id: "2", name: "Teste de instalações elétricas", completed: false },
-      { id: "3", name: "Teste de instalações hidráulicas", completed: false },
-      { id: "4", name: "Verificação de esquadrias e vidros", completed: false },
-      { id: "5", name: "Verificação de pisos e revestimentos", completed: false },
-    ],
-    canStart: true,
-    acceptanceStatus: undefined as InspectionAcceptanceStatus | undefined,
-    acceptedAt: undefined as Date | undefined,
-    rejectedAt: undefined as Date | undefined,
-    rejectionReason: undefined as string | undefined,
-  },
-  {
-    id: "2",
-    title: "Entrega de Chaves",
-    property: "Edifício Aurora",
-    unit: "204",
-    scheduledDate: new Date(2025, 4, 20, 14, 30),
-    status: "pending" as const,
-    inspector: "Luiza Mendes",
-    description: "Vistoria final e entrega oficial das chaves do imóvel.",
-    checklist: [
-      { id: "1", name: "Verificação final de acabamentos", completed: false },
-      { id: "2", name: "Conferência de documentação", completed: false },
-      { id: "3", name: "Demonstração de funcionamento de equipamentos", completed: false },
-      { id: "4", name: "Entrega de manuais e garantias", completed: false },
-      { id: "5", name: "Assinatura de termo de recebimento", completed: false },
-    ],
-    canStart: false,
-    acceptanceStatus: undefined as InspectionAcceptanceStatus | undefined,
-    acceptedAt: undefined as Date | undefined,
-    rejectedAt: undefined as Date | undefined,
-    rejectionReason: undefined as string | undefined,
-  },
-  {
-    id: "3",
-    title: "Vistoria de Reparo",
-    property: "Edifício Aurora",
-    unit: "204",
-    scheduledDate: new Date(2025, 3, 10, 9, 0),
-    status: "complete" as const,
-    inspector: "Roberto Santos",
-    description: "Vistoria para verificar a correção dos itens identificados na vistoria anterior.",
-    checklist: [
-      { id: "1", name: "Verificação do reparo da infiltração no banheiro", completed: true },
-      { id: "2", name: "Verificação do reparo da maçaneta da porta", completed: true },
-    ],
-    canStart: false,
-    report: "https://example.com/report.pdf",
-    acceptanceStatus: "pending_acceptance" as InspectionAcceptanceStatus | undefined,
-    acceptedAt: undefined as Date | undefined,
-    rejectedAt: undefined as Date | undefined,
-    rejectionReason: undefined as string | undefined,
-  }
-];
+// Inspections are fetched from inspectionService
 
 // Helper component for the checklist status badges
 const ChecklistBadge = ({ status }: { status: boolean }) => {
@@ -100,14 +36,30 @@ const ChecklistBadge = ({ status }: { status: boolean }) => {
 };
 
 const ClientInspections = () => {
-  const [inspections, setInspections] = useState(initialInspections);
+  const { user } = useAuth();
+  const allInspections = useMemo(() => inspectionService.getAll()
+    .filter(i => i.client === (user?.name || "João Silva"))
+    .map(i => ({
+      ...i,
+      title: i.type === 'technicalInspection' ? 'Vistoria Técnica' : i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Reparo',
+      scheduledDate: i.date,
+      inspector: i.technician,
+      description: i.notes || "Vistoria para verificação das condições da unidade.",
+      checklist: [
+        { id: "1", name: "Verificação de paredes e pinturas", completed: i.status === 'complete' },
+        { id: "2", name: "Teste de instalações elétricas", completed: i.status === 'complete' },
+        { id: "3", name: "Teste de instalações hidráulicas", completed: i.status === 'complete' },
+      ],
+      canStart: i.status === 'pending'
+    })), [user?.name]);
+  const [inspections, setInspections] = useState<any[]>(allInspections);
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [activeInspection, setActiveInspection] = useState<string | null>(null);
   const { toast } = useToast();
   
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const clientId = user?.id || "client-1";
   const { canScheduleInspection, permissions } = useClientStage(clientId);
   

@@ -22,6 +22,10 @@ import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
+import { documentService } from "@/services/DocumentService";
+import { inspectionService } from "@/services/InspectionService";
+import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { useMemo } from "react";
 
 const Dashboard = () => {
   // Get client stage data
@@ -48,29 +52,31 @@ const Dashboard = () => {
     contractDate: new Date(2024, 10, 20)
   };
 
-  const recentDocuments = [
-    { id: "1", title: "Contrato de Compra e Venda", date: new Date(2025, 3, 15), status: "disponivel" },
-    { id: "2", title: "Manual do Proprietário", date: new Date(2025, 3, 20), status: "disponivel" },
-    { id: "3", title: "Relatório de Vistoria", date: new Date(2025, 4, 10), status: "disponivel" }
-  ];
+  const allDocs = useMemo(() => documentService.getDocumentsByClient(user?.name || "João Silva"), [user?.name]);
+  const recentDocuments = allDocs.slice(0, 3).map(doc => ({
+    ...doc,
+    date: doc.createdAt,
+    status: doc.status === "published" ? "disponivel" : "pendente"
+  }));
 
-  const upcomingInspections = [
-    { id: "1", title: "Vistoria de Pré-entrega", date: new Date(2025, 5, 10), status: "agendada" },
-    { id: "2", title: "Vistoria de Entrega", date: new Date(2025, 5, 15), status: "pendente" }
-  ];
+  const allInspections = useMemo(() => inspectionService.getAll().filter(i => i.client === (user?.name || "João Silva")), [user?.name]);
+  const upcomingInspections = allInspections
+    .filter(i => i.status === "pending")
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .slice(0, 2);
 
-  const warrantyRequests = [
-    { id: "1", title: "Reparo na torneira do banheiro", status: "em_andamento", priority: "media" },
-    { id: "2", title: "Ajuste na porta da cozinha", status: "concluido", priority: "baixa" }
-  ];
+  const warrantyRequests = useMemo(() => warrantyFlowService.getClientRequests(clientId).slice(0, 2), [clientId]);
 
   const getStatusColor = (status: string) => {
     const colors = {
       disponivel: "default",
+      published: "default",
       agendada: "default",
-      pendente: "secondary",
+      pending: "secondary",
+      progress: "secondary",
       em_andamento: "secondary",
-      concluido: "outline"
+      concluido: "outline",
+      complete: "outline"
     };
     return colors[status as keyof typeof colors] || "outline";
   };
@@ -78,10 +84,13 @@ const Dashboard = () => {
   const getStatusLabel = (status: string) => {
     const labels = {
       disponivel: "Disponível",
+      published: "Publicado",
       agendada: "Agendada",
-      pendente: "Pendente",
+      pending: "Pendente",
+      progress: "Em Progresso",
       em_andamento: "Em Andamento",
-      concluido: "Concluído"
+      concluido: "Concluído",
+      complete: "Concluído"
     };
     return labels[status as keyof typeof labels] || status;
   };
@@ -271,7 +280,7 @@ const Dashboard = () => {
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-body-base font-semibold">{inspection.title}</p>
+                      <p className="text-body-base font-semibold">{inspection.type === 'technicalInspection' ? 'Vistoria Técnica' : 'Vistoria de Chaves'}</p>
                       <p className="text-caption">{inspection.date.toLocaleDateString()}</p>
                     </div>
                   </div>
@@ -320,8 +329,8 @@ const Dashboard = () => {
                       <p className="text-caption">Prioridade: {request.priority}</p>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(request.status) as any} className="text-xs">
-                    {getStatusLabel(request.status)}
+                  <Badge variant={getStatusColor(request.currentStage) as any} className="text-xs">
+                    {getStatusLabel(request.currentStage)}
                   </Badge>
                 </div>
               ))

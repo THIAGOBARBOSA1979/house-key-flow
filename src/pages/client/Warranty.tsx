@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,34 +28,7 @@ import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { WarrantyRequestTimeline, WarrantyRequestList } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Mock data
-const warrantyClaims = [
-  {
-    id: "1",
-    title: "Infiltração no banheiro",
-    description: "Identificada infiltração na parede do box do banheiro social. Já está causando mofo e descascamento da pintura.",
-    property: "Edifício Aurora",
-    unit: "204",
-    createdAt: new Date(2025, 4, 5),
-    status: "pending" as const,
-    category: "Hidráulica",
-    priority: "medium",
-    updates: [
-      {
-        id: "1",
-        date: new Date(2025, 4, 5),
-        author: "Sistema",
-        text: "Solicitação registrada com sucesso.",
-      },
-      {
-        id: "2",
-        date: new Date(2025, 4, 6),
-        author: "Técnico",
-        text: "Solicitação em análise pela equipe técnica.",
-      }
-    ]
-  }
-];
+// Warranty requests are fetched from warrantyFlowService
 
 // Warranty categories
 const categories = [
@@ -180,11 +153,13 @@ const ClientWarranty = () => {
   const [addInfoDialogOpen, setAddInfoDialogOpen] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [commentText, setCommentText] = useState("");
-  const [claims, setClaims] = useState(warrantyClaims);
+  const { user } = useAuth();
+  const allClaims = useMemo(() => warrantyFlowService.getClientRequests(user?.id || "client-1"), [user?.id]);
+  const [claims, setClaims] = useState<any[]>(allClaims);
   const { toast } = useToast();
   
   // Mock client ID - in real app, get from auth context
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const clientId = user?.id || "client-1";
   
   // Get client stage permissions

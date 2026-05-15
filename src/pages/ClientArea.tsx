@@ -25,86 +25,7 @@ import { DataView } from "@/components/shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportService } from "@/services/ExportService";
 
-// Mock data - expanded
-const clients = [
-  {
-    id: "client-1",
-    name: "Maria Oliveira",
-    email: "maria.oliveira@email.com",
-    phone: "(11) 97777-6666",
-    status: "active",
-    property: "Edifício Aurora",
-    unit: "204",
-    createdAt: new Date(2024, 2, 15),
-    lastLogin: new Date(2024, 3, 10),
-    documents: [
-      { id: "1", title: "Contrato de Compra", uploadedAt: new Date(2024, 2, 15) },
-      { id: "2", title: "Manual do Proprietário", uploadedAt: new Date(2024, 3, 10) }
-    ],
-    inspections: [
-      { id: "1", title: "Vistoria de Pré-entrega", date: new Date(2025, 4, 15, 10, 0), status: "scheduled" }
-    ],
-    warrantyClaims: [
-      { id: "1", title: "Infiltração no banheiro", description: "Identificada infiltração na parede do box do banheiro social.", createdAt: new Date(2025, 5, 5), status: "pending" }
-    ]
-  },
-  {
-    id: "client-2",
-    name: "João Silva",
-    email: "cliente@exemplo.com",
-    phone: "(11) 98888-5555",
-    status: "active",
-    property: "Edifício Aurora",
-    unit: "507",
-    createdAt: new Date(2024, 1, 10),
-    lastLogin: new Date(2024, 3, 12),
-    documents: [
-      { id: "3", title: "Contrato de Compra", uploadedAt: new Date(2024, 1, 10) }
-    ],
-    inspections: [
-      { id: "2", title: "Vistoria de Entrega", date: new Date(2025, 4, 19, 10, 0), status: "scheduled" }
-    ],
-    warrantyClaims: []
-  },
-  {
-    id: "client-3",
-    name: "Ana Santos",
-    email: "ana.santos@email.com",
-    phone: "(21) 99999-1234",
-    status: "active",
-    property: "Residencial Bosque Verde",
-    unit: "305",
-    createdAt: new Date(2024, 0, 20),
-    lastLogin: new Date(2024, 3, 8),
-    documents: [
-      { id: "4", title: "Contrato de Compra", uploadedAt: new Date(2024, 0, 20) },
-      { id: "5", title: "Manual do Proprietário", uploadedAt: new Date(2024, 1, 5) },
-      { id: "6", title: "Termo de Garantia", uploadedAt: new Date(2024, 1, 5) }
-    ],
-    inspections: [],
-    warrantyClaims: [
-      { id: "2", title: "Infiltração no banheiro", description: "Identificada infiltração na parede do box do banheiro social. Já está causando mofo.", createdAt: new Date(2025, 4, 15), status: "pending" }
-    ]
-  },
-  {
-    id: "client-4",
-    name: "Roberto Pereira",
-    email: "roberto.pereira@email.com",
-    phone: "(11) 95555-4444",
-    status: "active",
-    property: "Residencial Bosque Verde",
-    unit: "102",
-    createdAt: new Date(2024, 3, 1),
-    lastLogin: new Date(2024, 3, 14),
-    documents: [
-      { id: "7", title: "Contrato de Compra", uploadedAt: new Date(2024, 3, 1) }
-    ],
-    inspections: [
-      { id: "3", title: "Vistoria de Pré-entrega", date: new Date(2025, 5, 1, 14, 0), status: "scheduled" }
-    ],
-    warrantyClaims: []
-  },
-];
+// Clients are managed via clientStageService
 
 const ClientArea = () => {
   const { toast: showToast } = useToast();
@@ -150,11 +71,13 @@ const ClientArea = () => {
     setCredentialsDialogOpen(false);
   };
 
-  const filteredClients = clients.filter(client =>
+  const allProfiles = useMemo(() => clientStageService.getAllProfiles(), []);
+
+  const filteredClients = allProfiles.filter(client =>
     client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.phone.includes(searchQuery) ||
-    client.property.toLowerCase().includes(searchQuery.toLowerCase())
+    (client.phone && client.phone.includes(searchQuery)) ||
+    client.propertyName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleViewDocument = (docTitle: string) => {
@@ -176,7 +99,7 @@ const ClientArea = () => {
         title="Área do Cliente"
         description="Gestão centralizada de clientes e acesso"
       >
-        <Button variant="outline" onClick={() => exportService.exportToCSV(clients, 'clientes_a2')}>
+        <Button variant="outline" onClick={() => exportService.exportToCSV(allProfiles, 'clientes_a2')}>
           <Download className="mr-2 h-4 w-4" />
           Exportar
         </Button>
@@ -197,7 +120,7 @@ const ClientArea = () => {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <StatsCard label="Total Clientes" value={clients.length} icon={User} variant="brand" />
+        <StatsCard label="Total Clientes" value={allProfiles.length} icon={User} variant="brand" />
         <StatsCard label="Acessos Recentes" value="28" icon={UserCheck} variant="complete" />
         <StatsCard label="Novos Leads" value="15" icon={Plus} variant="progress" />
       </div>
@@ -234,7 +157,7 @@ const ClientArea = () => {
                         </div>
                       </TableCell>
                       <TableCell className="hidden lg:table-cell py-4 px-6 text-sem-body-sm text-muted-foreground font-medium">
-                        {client.property} • {client.unit}
+                        {client.propertyName} • {client.unitNumber}
                       </TableCell>
                       <TableCell className="py-4 px-6">
                         <div className="flex flex-col gap-1.5">

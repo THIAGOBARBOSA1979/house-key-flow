@@ -149,6 +149,11 @@ class ClientStageService {
     localStorage.setItem(this.storageKeyEvents, JSON.stringify(eventsObj));
   }
 
+  // Get all client profiles
+  getAllProfiles(): ClientProfile[] {
+    return Array.from(this.clientProfiles.values());
+  }
+
   // Get client profile
   getClientProfile(clientId: string): ClientProfile | null {
     return this.clientProfiles.get(clientId) || null;
