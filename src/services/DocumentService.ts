@@ -202,16 +202,17 @@ OBSERVAÇÕES: {{observacoes}}`,
     );
   }
 
-  createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version'>): Document {
+  createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus'>): Document {
     const newDocument: Document = {
       ...data,
       id: uuidv4(),
       createdAt: new Date(),
       updatedAt: new Date(),
       downloads: 0,
-      version: 1
+      version: 1,
+      approvalStatus: 'pending'
     };
-    
+
     this.documents.push(newDocument);
     auditLogService.log({
       entityType: 'document',
