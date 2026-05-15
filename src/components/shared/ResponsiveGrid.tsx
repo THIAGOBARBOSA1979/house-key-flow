@@ -17,12 +17,12 @@ export function ResponsiveGrid({
 }: ResponsiveGridProps) {
   const gapClasses = {
     sm: "gap-2-sem",
-    md: "gap-4-sem",
-    lg: "gap-8-sem",
+    md: "gap-6-sem",
+    lg: "gap-12-sem",
     layout: "gap-layout-gap",
     'sm-sem': "gap-2-sem",
-    'md-sem': "gap-4-sem",
-    'lg-sem': "gap-8-sem",
+    'md-sem': "gap-6-sem",
+    'lg-sem': "gap-12-sem",
     '4-sem': "gap-4-sem"
   };
 
