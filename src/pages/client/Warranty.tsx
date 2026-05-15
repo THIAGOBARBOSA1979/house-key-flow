@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History, Star } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dialog,
