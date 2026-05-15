@@ -151,11 +151,12 @@ class InspectionService {
     }
   }
   
-  getConflicts(date: Date, technicianId: string) {
+  getConflicts(date: Date, technicianId: string, excludeId?: string) {
     return this.inspections.filter(i => 
       i.date.toDateString() === date.toDateString() && 
       i.technician === technicianId &&
-      i.status !== "cancelled"
+      i.status !== "cancelled" &&
+      i.id !== excludeId
     );
   }
 
