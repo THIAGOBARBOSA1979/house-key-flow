@@ -311,10 +311,10 @@ export const StartInspection = ({
           <CardTitle>{currentGroup.name}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {currentGroup.items.map(item => (
-            <div key={item.id} className="border rounded-md p-4 space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <h4 className="font-medium">{item.name}</h4>
+          {currentGroup.items?.map(item => (
+            <div key={item.id} className="border rounded-md p-4 space-y-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <h4 className="font-bold text-sm text-foreground/90">{item.name || item.description}</h4>
                 
                 <div className="flex gap-2">
                   <Button
