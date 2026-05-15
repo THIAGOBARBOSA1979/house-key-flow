@@ -133,12 +133,14 @@ const WarrantyStatus = ({ status }: { status: "pending" | "progress" | "complete
   const Icon = config.icon;
 
   return (
-    <div className={`p-4 ${config.bg} border ${config.border} rounded-lg`}>
-      <div className="flex gap-3 items-center">
-        <Icon className={`h-8 w-8 ${config.color}`} />
+    <div className={`p-5 ${config.bg} border-2 ${config.border} rounded-2xl shadow-sm animate-in slide-in-from-top-2 duration-500`}>
+      <div className="flex gap-4 items-center">
+        <div className={cn("p-3 rounded-xl bg-white shadow-sm", config.color)}>
+          <Icon className="h-6 w-6" />
+        </div>
         <div>
-          <h3 className="font-medium">{config.text}</h3>
-          <p className="text-sm text-muted-foreground">{config.description}</p>
+          <h3 className="font-black text-base tracking-tight">{config.text}</h3>
+          <p className="text-xs text-muted-foreground font-medium leading-relaxed">{config.description}</p>
         </div>
       </div>
     </div>
@@ -306,7 +308,7 @@ const ClientWarranty = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
