@@ -271,23 +271,76 @@ export default function Inspections() {
 
 
         <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="card-standard bg-card/50 backdrop-blur-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-h4">Distribuição por Status</CardTitle>
                 <CardDescription>Resumo atual do pipeline de vistorias</CardDescription>
               </CardHeader>
-              <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground italic">
-                Gráfico de distribuição (Mock)
+              <CardContent className="h-[350px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={Object.entries(inspectionService.getStatsByStatus()).map(([name, value]) => ({ name, value }))}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {Object.entries(inspectionService.getStatsByStatus()).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={['#F59E0B', '#3B82F6', '#10B981', '#EF4444'][index % 4]} />
+                      ))}
+                    </Pie>
+                    <Legend verticalAlign="bottom" height={36}/>
+                    <ReTooltip />
+                  </PieChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
-            <Card className="card-standard bg-card/50 backdrop-blur-sm">
+
+            <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-h4">Evolução Mensal</CardTitle>
-                <CardDescription>Volume de vistorias concluídas por mês</CardDescription>
+                <CardTitle className="text-h4">Vistorias por Técnico</CardTitle>
+                <CardDescription>Carga de trabalho por profissional</CardDescription>
               </CardHeader>
-              <CardContent className="h-[300px] flex items-center justify-center text-muted-foreground italic">
-                Gráfico de tendência (Mock)
+              <CardContent className="h-[350px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ReBarChart
+                    data={Object.entries(inspectionService.getStatsByTechnician()).map(([name, value]) => ({ name, value }))}
+                    layout="vertical"
+                    margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                  >
+                    <XAxis type="number" hide />
+                    <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} />
+                    <ReTooltip />
+                    <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20} />
+                  </ReBarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card className="card-standard lg:col-span-2 border-none bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-h4">Tipos de Vistoria</CardTitle>
+                <CardDescription>Distribuição por modalidade de serviço</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ReBarChart
+                    data={Object.entries(inspectionService.getStatsByType()).map(([name, value]) => ({ 
+                      name: name === 'keyDelivery' ? 'Entrega de Chaves' : name === 'technicalInspection' ? 'Vistoria Técnica' : 'Pós-Obra', 
+                      value 
+                    }))}
+                  >
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <ReTooltip />
+                    <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={40} />
+                  </ReBarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
