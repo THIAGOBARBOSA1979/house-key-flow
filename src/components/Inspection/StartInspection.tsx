@@ -7,19 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Check, X, Upload, Camera, MessageSquare, CheckCircle, AlertCircle } from "lucide-react";
 
-type InspectionItem = {
-  id: string;
-  name: string;
-  conformity: "pending" | "conform" | "nonconform";
-  notes?: string;
-  attachments?: string[];
-};
-
-type InspectionGroup = {
-  id: string;
-  name: string;
-  items: InspectionItem[];
-};
+import { checklistService, ChecklistTemplate, ChecklistGroup } from "@/services/ChecklistService";
+import { inspectionService } from "@/services/InspectionService";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 // Example data for an inspection checklist
 const mockInspectionData: InspectionGroup[] = [
@@ -60,17 +51,55 @@ export const StartInspection = ({
   onComplete?: (data: any) => void;
 }) => {
   const { toast } = useToast();
-  const [groups, setGroups] = useState<InspectionGroup[]>(() => {
-    const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Failed to parse saved progress", e);
+  const [signature, setSignature] = useState("");
+  const [groups, setGroups] = useState<ChecklistGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const loadInspectionAndChecklist = () => {
+      setLoading(true);
+      const inspections = inspectionService.getAll();
+      const inspection = inspections.find(i => i.id === inspectionId);
+      
+      const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
+      if (saved) {
+        try {
+          setGroups(JSON.parse(saved));
+          setLoading(false);
+          return;
+        } catch (e) {
+          console.error("Failed to parse saved progress", e);
+        }
       }
-    }
-    return mockInspectionData;
-  });
+
+      if (inspection?.checklistId) {
+        const template = checklistService.getTemplateById(inspection.checklistId);
+        if (template) {
+          // Adapt template to groups if necessary
+          if (template.groups) {
+            setGroups(template.groups);
+          } else if (template.items) {
+            setGroups([{
+              id: "default",
+              name: "Geral",
+              items: template.items.map(item => ({
+                ...item,
+                name: item.description,
+                conformity: "pending" as const
+              }))
+            }]);
+          }
+        } else {
+          setGroups(mockInspectionData as any);
+        }
+      } else {
+        setGroups(mockInspectionData as any);
+      }
+      setLoading(false);
+    };
+
+    loadInspectionAndChecklist();
+  }, [inspectionId]);
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -140,11 +169,20 @@ export const StartInspection = ({
   };
 
   const handleSubmit = () => {
+    if (!signature.trim()) {
+      toast({
+        title: "Assinatura necessária",
+        description: "Por favor, informe seu nome para assinar a vistoria.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     // Check if all items have been evaluated
     const allCompleted = groups.every(group => 
-      group.items.every(item => item.conformity !== "pending")
+      group.items.every(item => item.conformity && item.conformity !== "pending")
     );
     
     if (!allCompleted) {
@@ -165,7 +203,7 @@ export const StartInspection = ({
     setTimeout(() => {
       toast({
         title: "Vistoria finalizada com sucesso!",
-        description: `${nonConformCount} itens necessitam de atenção.`,
+        description: `${nonConformCount} itens necessitam de atenção. Assinado por: ${signature}`,
       });
       
       localStorage.removeItem(`inspection_progress_${inspectionId}`);
@@ -358,13 +396,26 @@ export const StartInspection = ({
             Próximo grupo
           </Button>
         ) : (
-          <Button 
-            type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Enviando..." : "Finalizar vistoria"}
-          </Button>
+          <div className="flex flex-col gap-4 w-full sm:w-auto">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="signature" className="text-xs font-bold uppercase">Assinatura do Técnico/Cliente</Label>
+              <Input 
+                id="signature"
+                placeholder="Nome completo para assinatura" 
+                value={signature}
+                onChange={(e) => setSignature(e.target.value)}
+                className="max-w-xs"
+              />
+            </div>
+            <Button 
+              type="button"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="bg-primary hover:bg-primary/90 font-bold"
+            >
+              {isSubmitting ? "Enviando..." : "Finalizar vistoria"}
+            </Button>
+          </div>
         )}
       </div>
     </div>

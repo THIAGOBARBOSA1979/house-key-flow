@@ -25,6 +25,7 @@ export interface Inspection {
   status: string;
   type: string;
   technician: string;
+  checklistId?: string; // Added checklistId support
   notes?: string;
   requestId?: string;
   priority?: "low" | "medium" | "high";
@@ -109,7 +110,7 @@ class InspectionService {
   }
 
   schedule(data: ScheduleInspectionData, propertyInfo?: any) {
-    const newInspection = {
+    const newInspection: Inspection = {
       id: Math.random().toString(36).substr(2, 9),
       property: propertyInfo?.property || "Empreendimento Exemplo",
       unit: propertyInfo?.unit || "101",
@@ -118,6 +119,7 @@ class InspectionService {
       time: data.time,
       type: data.inspectionType,
       technician: data.technician,
+      checklistId: data.checklist, // Store the selected checklist ID
       status: "pending",
       notes: data.notes,
       requestId: data.requestId,

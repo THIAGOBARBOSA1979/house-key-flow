@@ -1,6 +1,7 @@
 
 import { safeFormat } from "@/lib/utils";
-import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play } from "lucide-react";
+import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play, ClipboardList } from "lucide-react";
+import { checklistService } from "@/services/ChecklistService";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "../shared/StatusBadge";
 import {
@@ -26,6 +27,7 @@ interface InspectionItemProps {
     date: Date;
     time: string;
     status: string;
+    checklistId?: string;
   };
   onUpdate?: () => void;
 }
@@ -78,6 +80,8 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
     }
   };
 
+  const checklist = inspection.checklistId ? checklistService.getTemplateById(inspection.checklistId) : null;
+
   return (
     <div className="relative group">
       <div className="p-5-sem flex flex-col md:flex-row gap-5-sem md:items-center justify-between transition-all duration-300 group-hover:bg-muted/30">
@@ -98,7 +102,14 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
               <Calendar size={12} className="text-muted-foreground/60" />
               <span>{safeFormat(inspection.date, "dd/MM/yyyy")} às {inspection.time}</span>
             </div>
+            {checklist && (
+              <div className="flex items-center gap-1.5 text-xs text-primary/80 font-bold bg-primary/5 px-2 py-0.5 rounded-full">
+                <ClipboardList size={10} />
+                <span className="truncate max-w-[120px]">{checklist.title}</span>
+              </div>
+            )}
           </div>
+        </div>
         </div>
         
         <div className="flex gap-2 items-center shrink-0">

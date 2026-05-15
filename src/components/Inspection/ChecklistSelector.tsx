@@ -16,6 +16,7 @@ export const ChecklistSelector = ({
   const templates = useMemo(() => checklistService.getAllTemplates(), []);
   
   const handleSelect = (id: string) => {
+    const template = checklistService.getTemplateById(id);
     setSelectedId(id);
     onSelect(id);
   };
@@ -46,7 +47,9 @@ export const ChecklistSelector = ({
                   <div className="space-y-0.5">
                     <h4 className="font-semibold text-sm">{checklist.title}</h4>
                     <p className="text-xs text-muted-foreground line-clamp-1">{checklist.description}</p>
-                    <p className="text-[10px] font-medium text-primary uppercase tracking-wider">{checklist.items.length} itens de verificação</p>
+                    <p className="text-[10px] font-medium text-primary uppercase tracking-wider">
+                      {(checklist.items?.length || 0) + (checklist.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0)} itens de verificação
+                    </p>
                   </div>
                 </div>
                 {selectedId === checklist.id && (
