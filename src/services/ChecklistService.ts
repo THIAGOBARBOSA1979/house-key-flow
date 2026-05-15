@@ -187,6 +187,7 @@ class ChecklistService {
     };
 
     this.executions.unshift(newExecution);
+    this.persistExecutions();
 
     auditLogService.log({
       entityType: 'checklist',
