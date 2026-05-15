@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, FileText, Home, Calendar, ShieldCheck, Ruler, MapPin } from "lucide-react";
+import { Building, Building2, FileText, Home, Calendar, ShieldCheck, Ruler, MapPin, Info, ArrowUpRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useToast } from "@/hooks/use-toast";
@@ -80,14 +80,20 @@ const ClientProperties = () => {
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Building className="h-8 w-8" />
-          Meu Imóvel
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Informações e documentos relacionados ao seu imóvel
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <Building2 className="h-8 w-8 text-primary" />
+            Meu Imóvel
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Informações técnicas, documentos e períodos de garantia da sua unidade.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 bg-muted/50 p-1.5 rounded-lg border">
+          <Badge variant="outline" className="bg-background">ID: {profile?.propertyId?.substring(0, 8) || 'PROP-001'}</Badge>
+          <Badge variant="outline" className="bg-background">Fase: Finalizado</Badge>
+        </div>
       </div>
 
       {/* Property card */}
