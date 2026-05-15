@@ -150,11 +150,13 @@ const ClientArea = () => {
     setCredentialsDialogOpen(false);
   };
 
-  const filteredClients = clients.filter(client =>
+  const allProfiles = useMemo(() => clientStageService.getAllProfiles(), []);
+
+  const filteredClients = allProfiles.filter(client =>
     client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.phone.includes(searchQuery) ||
-    client.property.toLowerCase().includes(searchQuery.toLowerCase())
+    (client.phone && client.phone.includes(searchQuery)) ||
+    client.propertyName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleViewDocument = (docTitle: string) => {
