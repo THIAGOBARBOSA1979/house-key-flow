@@ -185,9 +185,9 @@ const ClientInspections = () => {
     <div className="space-y-6">
       <DocumentPreviewDialog 
         isOpen={isPreviewOpen} 
-        onOpenChange={setIsPreviewOpen}
-        content={previewContent}
-        title="Relatório de Vistoria"
+        onClose={() => setIsPreviewOpen(false)}
+        generatedContent={previewContent}
+        document={{ title: "Relatório de Vistoria", type: "auto" } as any}
       />
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
