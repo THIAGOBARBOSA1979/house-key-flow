@@ -34,7 +34,7 @@ export function FilterBar({
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={(e) => onSearchChange?.(e.target.value)}
-            className="pl-12 h-12 bg-card border-border/40 shadow-sem-sm hover:border-primary/30 focus-visible:ring-primary/20 transition-all rounded-xl font-medium"
+            className="pl-12 h-11 bg-card border-border/40 shadow-sem-sm hover:border-primary/30 focus-visible:ring-primary/20 transition-all rounded-md font-medium"
           />
         </div>
         
