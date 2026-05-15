@@ -267,6 +267,26 @@ class WarrantyValidationService {
       additionalInfo: data.additionalInfo,
     };
     
+    // Create the persistent request in WarrantyFlowService
+    const profile = clientStageService.getClientProfile(clientId);
+    const requestFlow = warrantyFlowService.createRequest({
+      clientId,
+      clientName: profile?.name || "Cliente",
+      propertyId: item.propertyId,
+      propertyName: item.propertyName,
+      unitNumber: item.unitNumber,
+      title: data.title,
+      description: data.problems.map(p => p.description).join("; "),
+      category: item.category,
+      problems: data.problems.map(p => ({
+        category: p.category,
+        location: p.location,
+        description: p.description,
+        severity: p.severity,
+        photos: p.photos
+      }))
+    });
+
     return { success: true, request };
   }
 
