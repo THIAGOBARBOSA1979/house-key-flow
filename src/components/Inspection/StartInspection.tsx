@@ -57,15 +57,11 @@ export const StartInspection = ({
                 conformity: item.conformity || "pending"
               }))
             })));
-          } else if (template.items) {
+          } else {
             setGroups([{
               id: "default",
               name: "Geral",
-              items: template.items.map(item => ({
-                ...item,
-                name: item.name || item.description,
-                conformity: "pending"
-              }))
+              items: []
             }]);
           }
         }

@@ -49,7 +49,7 @@ export const ChecklistSelector = ({
                     <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{checklist.description}</p>
                     <div className="flex items-center gap-2 pt-1">
                       <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
-                        {(checklist.items?.length || 0) + (checklist.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0)} Itens
+                        {(checklist.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0)} Itens
                       </span>
                     </div>
                   </div>
