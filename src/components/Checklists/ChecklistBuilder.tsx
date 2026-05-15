@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+
 // uuid will be generated with Date.now() for demo purposes
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
