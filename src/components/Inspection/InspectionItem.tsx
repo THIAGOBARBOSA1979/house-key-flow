@@ -27,6 +27,7 @@ interface InspectionItemProps {
     time: string;
     status: string;
   };
+  onUpdate?: () => void;
 }
 
 /**
