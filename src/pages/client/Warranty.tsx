@@ -472,11 +472,11 @@ const ClientWarranty = () => {
         {/* Right column - Claim Details */}
         <div className="lg:col-span-2">
           {claim ? (
-            <Tabs defaultValue="details">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="details">Detalhes</TabsTrigger>
-                <TabsTrigger value="timeline">Linha do Tempo</TabsTrigger>
-                <TabsTrigger value="updates">Atualizações</TabsTrigger>
+            <Tabs defaultValue="details" className="animate-in fade-in slide-in-from-right-4 duration-500">
+              <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1 rounded-2xl">
+                <TabsTrigger value="details" className="rounded-xl font-black uppercase text-[10px] tracking-widest">Detalhes</TabsTrigger>
+                <TabsTrigger value="timeline" className="rounded-xl font-black uppercase text-[10px] tracking-widest">Linha do Tempo</TabsTrigger>
+                <TabsTrigger value="updates" className="rounded-xl font-black uppercase text-[10px] tracking-widest">Atualizações</TabsTrigger>
               </TabsList>
               
               <TabsContent value="details" className="space-y-4 pt-4">
