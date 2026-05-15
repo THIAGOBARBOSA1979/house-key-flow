@@ -452,49 +452,6 @@ const AdminDocuments = () => {
                           </div>
                         </div>
                       </Card>
-                        (selectedIds.includes(doc.id) || selectedDoc?.id === doc.id) && "ring-2 ring-primary bg-primary/5"
-                      )} onClick={() => setSelectedDoc(doc)}>
-                         <div className="flex justify-between items-start">
-                            <div className="p-3 bg-card rounded-xl shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-all border border-border/10">
-                              <FileText size={22} />
-                            </div>
-                            <div className="flex flex-col items-end gap-1">
-                              {getStatusBadge(doc.status)}
-                            </div>
-                         </div>
-                         <div className="mt-4">
-                            <h4 className="text-label font-bold truncate pr-6 group-hover:text-primary transition-colors">{doc.title}</h4>
-                            <p className="text-sem-tiny text-muted-foreground font-bold uppercase tracking-tighter mt-1">
-                              {doc.category} • {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
-                            </p>
-                         </div>
-                         <div className="absolute top-4 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background shadow-md border border-border/10" onClick={(e) => e.stopPropagation()}>
-                                  <MoreHorizontal size={14} />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-40 animate-in zoom-in-95">
-                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedDoc(doc);
-                                  setIsPreviewOpen(true);
-                                }}><Eye size={14} className="mr-2" /> Ver</DropdownMenuItem>
-                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedDoc(doc);
-                                  setIsHistoryOpen(true);
-                                }}><HistoryIcon size={14} className="mr-2" /> Histórico</DropdownMenuItem>
-                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={(e) => e.stopPropagation()}><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
-                                <DropdownMenuItem className="text-xs font-bold py-2 text-destructive focus:text-destructive cursor-pointer" onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDelete(doc.id);
-                                }}><Trash2 size={14} className="mr-2" /> Excluir</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                         </div>
-                      </Card>
                     ))}
                   </div>
                 )}
