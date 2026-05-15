@@ -228,7 +228,11 @@ const Properties = () => {
                 {filteredProperties.map((property) => {
                   const percentage = Math.round((property.completedUnits / property.units) * 100);
                   return (
-                    <TableRow key={property.id} className="group hover:bg-muted/20 transition-all border-b border-border/50">
+                    <TableRow 
+                      key={property.id} 
+                      className="group hover:bg-muted/20 transition-all border-b border-border/50 cursor-pointer"
+                      onClick={() => setSelectedProperty(property)}
+                    >
                       <TableCell className="py-4 px-6">
                         <div className="flex flex-col">
                           <span className="text-label group-hover:text-primary transition-colors">{property.name}</span>
