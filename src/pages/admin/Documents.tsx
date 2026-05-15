@@ -75,16 +75,9 @@ const AdminDocuments = () => {
     setDocuments(docs);
   };
 
-  const filteredDocs = documents.filter(doc => 
-    (doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (activeTab === "all" || doc.status === activeTab) &&
-    (selectedCategory === "all" || doc.category === selectedCategory)
-  );
-
   const handleDelete = (id: string) => {
     documentService.deleteDocument(id);
-    setDocuments(documentService.getAllDocuments());
+    refreshDocuments();
     toast({
       title: "Documento removido",
       description: "O arquivo foi excluído permanentemente.",
