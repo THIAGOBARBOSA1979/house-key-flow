@@ -158,6 +158,7 @@ const App = () => {
                   <Route path="warranty" element={<ClientWarranty />} />
                   <Route path="properties" element={<ClientProperties />} />
                   <Route path="notifications" element={<ClientNotifications />} />
+                  <Route path="profile" element={<ClientProfile />} />
                 </Route>
 
                 {/* Legacy redirects for backward compatibility */}
