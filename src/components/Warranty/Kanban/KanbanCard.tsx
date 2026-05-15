@@ -50,12 +50,12 @@ export function KanbanCard({
     <Card
       onClick={onClick}
       className={cn(
-        "p-3 cursor-pointer transition-all border-l-4 relative",
+        "p-4 cursor-pointer transition-all border-l-4 relative rounded-xl bg-card",
         slaBorderColors[slaInfo.status],
-        isDragging && "shadow-lg scale-105 rotate-2 opacity-90",
-        !isDragging && "hover:shadow-md",
-        dragDisabled && "opacity-70 cursor-not-allowed",
-        selected && "ring-2 ring-primary bg-primary/5 border-l-primary"
+        isDragging && "shadow-2xl scale-[1.02] -rotate-1 opacity-100 z-50 ring-2 ring-primary/20",
+        !isDragging && "hover:shadow-md hover:-translate-y-0.5",
+        dragDisabled && "opacity-75 grayscale-[0.2] cursor-not-allowed bg-muted/50",
+        selected && "ring-2 ring-primary bg-primary/5 border-l-primary shadow-inner"
       )}
     >
       {showSelection && (
@@ -133,11 +133,14 @@ export function KanbanCard({
         )}
       </div>
       
-      {/* Inspection date if scheduled */}
-      {request.currentStage === "inspection_scheduled" && request.inspectionDate && (
-        <div className="mt-2 pt-2 border-t flex items-center gap-1.5 text-xs text-primary">
+      {/* Inspection info if applicable */}
+      {request.inspectionDate && (
+        <div className={cn(
+          "mt-2 pt-2 border-t flex items-center gap-1.5 text-xs",
+          request.currentStage === "inspection_scheduled" ? "text-primary font-bold" : "text-muted-foreground"
+        )}>
           <Calendar className="h-3 w-3" />
-          <span>Vistoria: {format(request.inspectionDate, "dd/MM 'às' HH:mm", { locale: ptBR })}</span>
+          <span>{request.currentStage === "inspection_scheduled" ? "Vistoria agendada:" : "Vistoria realizada:"} {format(request.inspectionDate, "dd/MM 'às' HH:mm", { locale: ptBR })}</span>
         </div>
       )}
       
