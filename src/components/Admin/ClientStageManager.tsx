@@ -119,15 +119,14 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <History className="h-5 w-5" />
-          Gerenciamento de Etapas
+    <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+      <CardHeader className="px-6 py-5 border-b bg-muted/5">
+        <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <History className="h-4 w-4 text-primary" />
+            Gerenciamento de Etapas
+          </div>
         </CardTitle>
-        <CardDescription>
-          Controle o acesso e as funcionalidades disponíveis para o cliente
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Current Stage */}
@@ -212,49 +211,52 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
 
       {/* Release Dialog */}
       <Dialog open={isReleaseDialogOpen} onOpenChange={setReleaseDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Unlock className="h-5 w-5" />
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+          <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
+            <DialogTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+              <Unlock className="h-5 w-5 text-primary" />
               Liberar {releaseType === 'inspection' ? 'Vistoria' : 'Garantia'}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm font-medium">
               {releaseType === 'inspection' 
                 ? 'O cliente poderá agendar e realizar vistorias após esta liberação.'
                 : 'O cliente poderá solicitar garantias após esta liberação.'}
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
+          <div className="p-8 space-y-6">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                 Motivo da liberação (opcional)
               </label>
               <Textarea
                 placeholder="Descreva o motivo da liberação manual..."
+                className="rounded-xl min-h-[100px] resize-none border-muted-foreground/20 focus:border-primary transition-all"
                 value={releaseReason}
                 onChange={(e) => setReleaseReason(e.target.value)}
-                rows={3}
               />
             </div>
             
-            <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
-              <p className="text-sm text-amber-800">
+            <div className="p-5 bg-amber-50 rounded-2xl border border-amber-200 flex items-start gap-3 animate-in fade-in zoom-in-95">
+              <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-800 font-medium leading-relaxed">
                 <strong>Atenção:</strong> Esta ação irá notificar o cliente sobre a liberação 
-                e registrar o evento no histórico.
+                e registrar o evento no histórico de auditoria.
               </p>
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="p-8 border-t border-border/10 bg-muted/5">
             <Button 
               variant="outline" 
+              className="h-12 px-6 rounded-xl font-bold transition-all"
               onClick={() => setReleaseDialogOpen(false)}
               disabled={isLoading}
             >
               Cancelar
             </Button>
             <Button 
+              className="h-12 px-10 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md active:scale-95 transition-all"
               onClick={handleConfirmRelease}
               disabled={isLoading}
             >
