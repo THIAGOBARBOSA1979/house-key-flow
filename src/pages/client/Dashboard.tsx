@@ -24,7 +24,8 @@ import { useNotifications } from "@/hooks/useNotifications";
 
 const Dashboard = () => {
   // Get client stage data
-  const clientId = "client-1"; // Mock - would come from auth context
+  const { user } = useAuth();
+  const clientId = user?.id || "client-1"; // Get from auth context
   const { 
     profile, 
     stage, 
