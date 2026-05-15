@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -200,7 +200,7 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center justify-between p-2 bg-white/10 rounded-lg">
               <span className="text-sm">Chamados abertos</span>
-              <span className="font-bold">{warrantyRequests.filter(r => r.status !== 'complete').length}</span>
+              <span className="font-bold">{warrantyRequests.filter(r => r.currentStage !== 'completed' && r.currentStage !== 'rejected').length}</span>
             </div>
           </CardContent>
           <CardFooter className="pt-0">
