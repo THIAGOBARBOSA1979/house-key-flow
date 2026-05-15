@@ -58,14 +58,25 @@ Este documento define os padrões visuais e componentes do sistema de gestão im
 
 ## 3. ESPAÇAMENTOS E GRID
 
-### Escala de Espaçamento
-| Token | Valor | Classes |
-|-------|-------|---------|
-| xs | 4px | `gap-1`, `p-1` |
-| sm | 8px | `gap-2`, `p-2` |
-| md | 16px | `gap-4`, `p-4` |
-| lg | 24px | `gap-6`, `p-6` |
-| xl | 32px | `gap-8`, `p-8` |
+### Escala de Espaçamento (Tokens Semânticos)
+| Token | Valor (rem) | Valor (px) | Uso |
+|-------|-------------|------------|-----|
+| `0.5-sem` | 0.125rem | 2px | Micro ajustes |
+| `1-sem` | 0.25rem | 4px | Gaps internos |
+| `2-sem` | 0.5rem | 8px | Padding botão |
+| `3-sem` | 0.75rem | 12px | Gaps médios |
+| `4-sem` | 1rem | 16px | Padding card sm |
+| `6-sem` | 1.5rem | 24px | Padding card default |
+| `8-sem` | 2rem | 32px | Gaps de seção |
+| `12-sem` | 3rem | 48px | Espaçamento vertical grande |
+
+### Arredondamento (Radius)
+| Token | Valor (rem) | Valor (px) | Uso |
+|-------|-------------|------------|-----|
+| `radius-sm` | 0.5rem | 8px | Checkbox, Inputs |
+| `radius-md` | 0.75rem | 12px | Buttons, Small Cards |
+| `radius-lg` | 1rem | 16px | Cards, Dialogs |
+| `radius-full` | 9999px | - | Badges, Avatars |
 
 ### Grids Padrão
 - **Dashboard Cards**: `grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
