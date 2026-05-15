@@ -73,8 +73,8 @@ export function NotificationItem({
   return (
     <div 
       className={cn(
-        "p-4 hover:bg-muted/50 cursor-pointer transition-colors relative group",
-        !notification.read && "bg-primary/5 border-l-2 border-primary"
+        "p-5 hover:bg-muted/50 cursor-pointer transition-all relative group border-l-4",
+        !notification.read ? "bg-primary/5 border-l-primary" : "border-l-transparent"
       )}
       onClick={() => !notification.read && onMarkAsRead(notification.id)}
     >
@@ -89,23 +89,23 @@ export function NotificationItem({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <h4 className={cn(
-              "font-medium text-sm",
-              !notification.read && "text-primary"
+              "font-black text-sm tracking-tight leading-tight",
+              !notification.read ? "text-primary" : "text-foreground/80"
             )}>
               {notification.title}
-              {notification.urgent && !notification.read && (
-                <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-amber-100 text-amber-700">
-                  Urgente
-                </span>
-              )}
             </h4>
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
+            <span className="text-[10px] font-black text-muted-foreground/60 whitespace-nowrap uppercase italic">
               {formatRelativeTime(notification.createdAt)}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
+          <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2 font-medium leading-relaxed">
             {notification.message}
           </p>
+          {notification.urgent && !notification.read && (
+            <div className="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500 text-white shadow-sm">
+              Urgente
+            </div>
+          )}
         </div>
         
         {/* Delete button - shows on hover */}
