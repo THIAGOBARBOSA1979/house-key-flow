@@ -17,7 +17,6 @@ import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/Wa
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, MessageSquare, UserPlus, ShieldCheck, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { 
@@ -27,6 +26,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
 
 const TECHNICIANS = [
@@ -103,7 +103,7 @@ const Warranty = () => {
               <ShieldCheck className="w-6 h-6 text-primary" />
               Solicitação #{selectedRequest?.id.split('-')[0].toUpperCase()}
               {selectedRequest?.isPaused && (
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Pausada</Badge>
+                <StatusBadge status="warning" label="Pausada" size="sm" />
               )}
             </DialogTitle>
           </DialogHeader>
@@ -189,13 +189,12 @@ const Warranty = () => {
                             <div>
                               <p className="text-base font-bold text-foreground">{prob.description}</p>
                               <div className="flex flex-wrap gap-2 mt-2">
-                                <Badge variant="secondary" className="text-[10px] uppercase">{prob.category}</Badge>
-                                <Badge variant="outline" className={cn(
-                                  "text-[10px] uppercase",
-                                  prob.severity === 'severe' ? 'text-red-600 border-red-200 bg-red-50' : ''
-                                )}>
-                                  Prioridade: {prob.severity === 'severe' ? 'Alta' : prob.severity === 'moderate' ? 'Média' : 'Baixa'}
-                                </Badge>
+                                <StatusBadge status="neutral" label={prob.category} size="sm" />
+                                <StatusBadge 
+                                  status={prob.severity === 'severe' ? 'critical' : prob.severity === 'moderate' ? 'warning' : 'success'} 
+                                  label={prob.severity === 'severe' ? 'Alta' : prob.severity === 'moderate' ? 'Média' : 'Baixa'}
+                                  size="sm"
+                                />
                               </div>
                             </div>
                             <Button

@@ -248,7 +248,7 @@ const Users = () => {
         <Button onClick={() => { setEditingUser(null); setIsUserFormOpen(true); }}><Plus className="mr-2 h-4 w-4" />Novo Usuário</Button>
       </PageHeader>
 
-      <ResponsiveGrid columns={5} gap="md">
+      <ResponsiveGrid columns="auto" gap="md">
         <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" />
         <StatsCard label="Usuários Ativos" value={stats.active} icon={UserCheck} variant="complete" />
         <StatsCard label="Usuários Inativos" value={stats.inactive} icon={UserMinus} variant="critical" />

@@ -16,6 +16,9 @@ import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { auditLogService } from "@/services/AuditLogService";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { DataTable } from "@/components/shared/DataTable";
 
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -86,11 +89,11 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ResponsiveGrid columns={2} gap="md">
               {properties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
-            </div>
+            </ResponsiveGrid>
           </section>
 
           {/* Inspections */}
@@ -161,7 +164,7 @@ const Dashboard = () => {
                 Garantias Urgentes
               </h2>
             </div>
-            <div className="grid grid-cols-1 gap-4">
+            <ResponsiveGrid columns={1} gap="sm">
               {warrantyClaims.length > 0 ? (
                 warrantyClaims.map((claim) => (
                   <div 
@@ -170,9 +173,11 @@ const Dashboard = () => {
                     onClick={() => navigate("/admin/warranty")}
                   >
                     <div className="flex justify-between items-start mb-3">
-                      <Badge variant={claim.priority === 'high' || claim.priority === 'critical' ? 'destructive' : 'outline'} className="rounded-lg text-sem-tiny font-bold uppercase">
-                        {claim.priority === 'high' ? 'Alta' : claim.priority === 'critical' ? 'Crítica' : 'Média'}
-                      </Badge>
+                      <StatusBadge 
+                        status={claim.priority === 'high' || claim.priority === 'critical' ? 'critical' : 'warning'} 
+                        label={claim.priority === 'high' ? 'Alta' : claim.priority === 'critical' ? 'Crítica' : 'Média'}
+                        size="sm"
+                      />
                       <span className="text-sem-tiny font-bold text-muted-foreground uppercase tracking-tighter">{claim.id}</span>
                     </div>
                     <h4 className="text-label group-hover:text-status-critical transition-colors">{claim.title}</h4>
