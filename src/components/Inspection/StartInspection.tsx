@@ -1,56 +1,15 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Check, X, Upload, Camera, MessageSquare, CheckCircle, AlertCircle } from "lucide-react";
-import { checklistService, ChecklistTemplate, ChecklistGroup } from "@/services/ChecklistService";
+import { Check, X, Upload, Camera, AlertCircle, ArrowLeft, ClipboardList, CheckCircle2 } from "lucide-react";
+import { checklistService, ChecklistTemplate, ChecklistGroup, ChecklistItem } from "@/services/ChecklistService";
 import { inspectionService } from "@/services/InspectionService";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-type InspectionItem = {
-  id: string;
-  name: string;
-  conformity: "pending" | "conform" | "nonconform";
-  notes?: string;
-  attachments?: string[];
-};
-
-type InspectionGroup = ChecklistGroup;
-
-// Example data for an inspection checklist
-const mockInspectionData: ChecklistGroup[] = [
-  {
-    id: "g1",
-    name: "Paredes e Tetos",
-    items: [
-      { id: "item1", name: "Acabamento das paredes (pintura, textura)", description: "Acabamento das paredes (pintura, textura)", required: true, conformity: "pending" },
-      { id: "item2", name: "Ausência de trincas ou rachaduras", description: "Ausência de trincas ou rachaduras", required: true, conformity: "pending" },
-      { id: "item3", name: "Alinhamento de paredes e teto", description: "Alinhamento de paredes e teto", required: true, conformity: "pending" }
-    ]
-  },
-  {
-    id: "g2",
-    name: "Instalações Hidráulicas",
-    items: [
-      { id: "item4", name: "Funcionamento de torneiras", description: "Funcionamento de torneiras", required: true, conformity: "pending" },
-      { id: "item5", name: "Vazamentos em conexões", description: "Vazamentos em conexões", required: true, conformity: "pending" },
-      { id: "item6", name: "Escoamento de águas", description: "Escoamento de águas", required: true, conformity: "pending" }
-    ]
-  },
-  {
-    id: "g3",
-    name: "Instalações Elétricas",
-    items: [
-      { id: "item7", name: "Funcionamento de interruptores", description: "Funcionamento de interruptores", required: true, conformity: "pending" },
-      { id: "item8", name: "Tomadas energizadas", description: "Tomadas energizadas", required: true, conformity: "pending" },
-      { id: "item9", name: "Iluminação em funcionamento", description: "Iluminação em funcionamento", required: true, conformity: "pending" }
-    ]
-  }
-];
+import { cn } from "@/lib/utils";
 
 export const StartInspection = ({ 
   inspectionId, 
@@ -63,7 +22,11 @@ export const StartInspection = ({
   const [signature, setSignature] = useState("");
   const [groups, setGroups] = useState<ChecklistGroup[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
 
+  // Load data
   React.useEffect(() => {
     const loadInspectionAndChecklist = () => {
       setLoading(true);
@@ -73,7 +36,8 @@ export const StartInspection = ({
       const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
       if (saved) {
         try {
-          setGroups(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          setGroups(parsed);
           setLoading(false);
           return;
         } catch (e) {
@@ -84,43 +48,45 @@ export const StartInspection = ({
       if (inspection?.checklistId) {
         const template = checklistService.getTemplateById(inspection.checklistId);
         if (template) {
-          // Adapt template to groups if necessary
           if (template.groups) {
-            setGroups(template.groups);
+            setGroups(template.groups.map(g => ({
+              ...g,
+              items: g.items.map(item => ({
+                ...item,
+                conformity: item.conformity || "pending"
+              }))
+            })));
           } else if (template.items) {
             setGroups([{
               id: "default",
               name: "Geral",
               items: template.items.map(item => ({
                 ...item,
-                name: item.description,
-                conformity: "pending" as const
+                name: item.name || item.description,
+                conformity: "pending"
               }))
             }]);
           }
-        } else {
-          setGroups(mockInspectionData as any);
         }
-      } else {
-        setGroups(mockInspectionData as any);
       }
       setLoading(false);
     };
 
     loadInspectionAndChecklist();
   }, [inspectionId]);
-  const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Save progress whenever groups change
+  // Persistent saving
   React.useEffect(() => {
-    localStorage.setItem(`inspection_progress_${inspectionId}`, JSON.stringify(groups));
+    if (groups.length > 0) {
+      localStorage.setItem(`inspection_progress_${inspectionId}`, JSON.stringify(groups));
+    }
   }, [groups, inspectionId]);
   
-  // Calculate progress
-  const totalItems = groups.reduce((acc, group) => acc + (group.items?.length || 0), 0);
-  const completedItems = groups.reduce((acc, group) => 
-    acc + (group.items?.filter(item => item.conformity && item.conformity !== "pending").length || 0), 0);
+  // Stats
+  const allItems = groups.flatMap(g => g.items || []);
+  const totalItems = allItems.length;
+  const completedItems = allItems.filter(item => item.conformity && item.conformity !== "pending").length;
+  const nonConformItems = allItems.filter(item => item.conformity === "nonconform");
   const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
   
   const handleConformityChange = (groupId: string, itemId: string, value: "conform" | "nonconform") => {
@@ -157,23 +123,15 @@ export const StartInspection = ({
     );
   };
   
-  const handleAddAttachment = (groupId: string, itemId: string) => {
-    // In a real app, you would upload files here
-    toast({
-      title: "Funcionalidade simulada",
-      description: "Em um app real, isso abriria o seletor de arquivos.",
-    });
-  };
-  
   const handleReset = () => {
-    if (window.confirm("Tem certeza que deseja limpar todo o progresso desta vistoria?")) {
-      setGroups(mockInspectionData);
+    if (window.confirm("Tem certeza que deseja limpar todo o progresso?")) {
+      setGroups(prev => prev.map(g => ({
+        ...g,
+        items: g.items.map(i => ({ ...i, conformity: "pending", notes: "" }))
+      })));
       localStorage.removeItem(`inspection_progress_${inspectionId}`);
       setCurrentGroupIndex(0);
-      toast({
-        title: "Progresso resetado",
-        description: "Todos os itens voltaram ao estado pendente.",
-      });
+      setShowSummary(false);
     }
   };
 
@@ -181,7 +139,7 @@ export const StartInspection = ({
     if (!signature.trim()) {
       toast({
         title: "Assinatura necessária",
-        description: "Por favor, informe seu nome para assinar a vistoria.",
+        description: "Por favor, informe seu nome para confirmar.",
         variant: "destructive"
       });
       return;
@@ -189,251 +147,205 @@ export const StartInspection = ({
 
     setIsSubmitting(true);
     
-    // Check if all items have been evaluated
-    const allCompleted = groups.every(group => 
-      group.items.every(item => item.conformity && item.conformity !== "pending")
-    );
-    
-    if (!allCompleted) {
-      toast({
-        title: "Verificação incompleta",
-        description: "Por favor, verifique todos os itens antes de finalizar.",
-        variant: "destructive"
-      });
-      setIsSubmitting(false);
-      return;
-    }
-    
-    // Count non-conforming items
-    const nonConformCount = groups.reduce((acc, group) => 
-      acc + group.items.filter(item => item.conformity === "nonconform").length, 0);
-    
-    // Simulate submission to backend
     setTimeout(() => {
       toast({
-        title: "Vistoria finalizada com sucesso!",
-        description: `${nonConformCount} itens necessitam de atenção. Assinado por: ${signature}`,
+        title: "Vistoria finalizada!",
+        description: `Enviado com sucesso. Assinado por: ${signature}`,
       });
       
+      inspectionService.updateStatus(inspectionId, "complete");
       localStorage.removeItem(`inspection_progress_${inspectionId}`);
-      
-      if (nonConformCount > 0) {
-        toast({
-          title: "Solicitações de serviço geradas",
-          description: `Foram geradas ${nonConformCount} solicitações de serviço automaticamente.`,
-        });
-      }
       
       if (onComplete) {
         onComplete({
           inspectionId,
-          completedAt: new Date(),
           groups,
-          nonConformCount
+          nonConformCount: nonConformItems.length,
+          signature
         });
       }
-      
       setIsSubmitting(false);
-    }, 1500);
-  };
-  
-  const currentGroup = groups[currentGroupIndex];
-  
-  // Navigation between groups
-  const goToNextGroup = () => {
-    if (currentGroupIndex < groups.length - 1) {
-      setCurrentGroupIndex(currentGroupIndex + 1);
-      window.scrollTo(0, 0);
-    }
-  };
-  
-  const goToPreviousGroup = () => {
-    if (currentGroupIndex > 0) {
-      setCurrentGroupIndex(currentGroupIndex - 1);
-      window.scrollTo(0, 0);
-    }
+    }, 1000);
   };
   
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 space-y-4">
         <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-muted-foreground font-medium">Carregando checklist...</p>
+        <p className="text-muted-foreground font-medium">Carregando...</p>
       </div>
     );
   }
 
+  if (showSummary) {
+    return (
+      <div className="space-y-6 animate-in fade-in duration-300">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => setShowSummary(false)}>
+            <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
+          </Button>
+          <h2 className="text-xl font-bold">Resumo da Vistoria</h2>
+        </div>
+
+        <Card className="border-primary/20 bg-primary/5">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-bold uppercase tracking-wider text-primary">Status Final</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-background p-3 rounded-lg border">
+                <p className="text-xs text-muted-foreground uppercase">Itens Conformes</p>
+                <p className="text-2xl font-bold text-green-600">{allItems.filter(i => i.conformity === "conform").length}</p>
+              </div>
+              <div className="bg-background p-3 rounded-lg border">
+                <p className="text-xs text-muted-foreground uppercase">Não Conformes</p>
+                <p className="text-2xl font-bold text-red-600">{nonConformItems.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {nonConformItems.length > 0 && (
+          <div className="space-y-3">
+            <h3 className="font-bold text-sm flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-4 w-4" /> Itens Não Conformes
+            </h3>
+            <div className="space-y-2">
+              {nonConformItems.map(item => (
+                <div key={item.id} className="p-3 border-l-4 border-l-red-500 bg-red-50 rounded-r-lg">
+                  <p className="font-bold text-sm text-red-900">{item.name || item.description}</p>
+                  {item.notes && <p className="text-xs text-red-700 mt-1 italic">"{item.notes}"</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Assinatura Digital</CardTitle>
+            <CardDescription>Confirme a realização da vistoria</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="signature">Nome Completo</Label>
+              <Input 
+                id="signature" 
+                placeholder="Digite seu nome para assinar" 
+                value={signature}
+                onChange={e => setSignature(e.target.value)}
+              />
+            </div>
+            <Button 
+              className="w-full h-12 text-lg font-bold" 
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Finalizando..." : "Confirmar e Enviar"}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const currentGroup = groups[currentGroupIndex];
+  const isLastGroup = currentGroupIndex === groups.length - 1;
+
   return (
     <div className="space-y-6">
-      {/* Progress bar */}
-      <div className="space-y-3 bg-muted/30 p-4 rounded-xl border border-border/10">
-        <div className="flex justify-between items-center text-sm">
-          <div className="flex flex-col">
-            <span className="font-bold text-primary uppercase text-[10px] tracking-widest mb-1">Status da Vistoria</span>
-            <span className="text-muted-foreground font-medium">{progress}% concluído ({completedItems}/{totalItems} itens)</span>
-          </div>
-          <Button variant="ghost" size="sm" onClick={handleReset} className="h-8 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 font-bold uppercase tracking-tighter">
+      <div className="bg-muted/30 p-4 rounded-xl border border-border/10">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-[10px] font-bold uppercase text-primary tracking-widest">Progresso: {progress}%</span>
+          <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs text-destructive hover:bg-destructive/10">
             Resetar
           </Button>
         </div>
-        <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden shadow-inner">
-          <div 
-            className="h-full bg-primary transition-all duration-500" 
-            style={{ width: `${progress}%` }}
-          />
+        <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>
       </div>
-      
-      {/* Group navigation */}
-      <div className="flex flex-nowrap overflow-x-auto pb-2 gap-2 sm:flex-wrap sm:overflow-visible no-scrollbar">
-        {groups.map((group, index) => {
-          const groupCompletedItems = group.items.filter(item => item.conformity !== "pending").length;
-          const isComplete = groupCompletedItems === group.items.length;
-          
+
+      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+        {groups.map((g, idx) => {
+          const groupDone = g.items.every(i => i.conformity !== "pending");
           return (
-            <Button 
-              key={group.id} 
-              variant={currentGroupIndex === index ? "default" : "outline"}
+            <Button
+              key={g.id}
+              variant={currentGroupIndex === idx ? "default" : "outline"}
               size="sm"
-              onClick={() => setCurrentGroupIndex(index)}
-              className={isComplete ? "border-green-500" : ""}
+              onClick={() => setCurrentGroupIndex(idx)}
+              className={cn("whitespace-nowrap rounded-full", groupDone && "border-green-500")}
             >
-              {isComplete && <Check className="h-3 w-3 mr-1" />}
-              {group.name}
+              {groupDone && <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" />}
+              {g.name}
             </Button>
           );
         })}
       </div>
-      
-      {/* Current group items */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{currentGroup.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {currentGroup.items?.map(item => (
-            <div key={item.id} className="border rounded-md p-4 space-y-4 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                <h4 className="font-bold text-sm text-foreground/90">{item.name || item.description}</h4>
-                
-                <div className="flex gap-2">
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold text-foreground">{currentGroup.name}</h2>
+        {currentGroup.items.map(item => (
+          <Card key={item.id} className="overflow-hidden border-none shadow-sm bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-4 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <span className="font-semibold text-sm leading-tight">{item.name || item.description}</span>
+                <div className="flex gap-2 shrink-0">
                   <Button
                     size="sm"
                     variant={item.conformity === "conform" ? "default" : "outline"}
-                    className={item.conformity === "conform" ? "bg-green-600" : ""}
+                    className={item.conformity === "conform" ? "bg-green-600 hover:bg-green-700" : "hover:border-green-500 hover:text-green-600"}
                     onClick={() => handleConformityChange(currentGroup.id, item.id, "conform")}
                   >
-                    <Check className="h-4 w-4 mr-1" />
-                    Conforme
+                    <Check className="h-3 w-3 mr-1" /> OK
                   </Button>
-                  
                   <Button
                     size="sm"
                     variant={item.conformity === "nonconform" ? "default" : "outline"}
-                    className={item.conformity === "nonconform" ? "bg-red-600" : ""}
+                    className={item.conformity === "nonconform" ? "bg-red-600 hover:bg-red-700" : "hover:border-red-500 hover:text-red-600"}
                     onClick={() => handleConformityChange(currentGroup.id, item.id, "nonconform")}
                   >
-                    <X className="h-4 w-4 mr-1" />
-                    Não Conforme
+                    <X className="h-3 w-3 mr-1" /> Falha
                   </Button>
                 </div>
               </div>
-              
+
               {item.conformity !== "pending" && (
-                <div className="space-y-3">
-                  <div>
-                    <label htmlFor={`notes-${item.id}`} className="text-sm font-medium block mb-1">
-                      Observações
-                    </label>
-                    <Textarea
-                      id={`notes-${item.id}`}
-                      placeholder="Adicione observações sobre este item..."
-                      value={item.notes || ""}
-                      onChange={(e) => handleNotesChange(currentGroup.id, item.id, e.target.value)}
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium block mb-2">
-                      Anexos
-                    </label>
-                    <div className="flex gap-2">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleAddAttachment(currentGroup.id, item.id)}
-                      >
-                        <Camera className="h-4 w-4 mr-1" />
-                        Adicionar foto
-                      </Button>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleAddAttachment(currentGroup.id, item.id)}
-                      >
-                        <Upload className="h-4 w-4 mr-1" />
-                        Enviar arquivo
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  {item.conformity === "nonconform" && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded-md flex gap-3 animate-in zoom-in-95">
-                      <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-                      <div className="text-sm">
-                        <p className="font-bold text-red-800 uppercase text-[10px] tracking-tight">Item não conforme</p>
-                        <p className="text-red-700 leading-tight">Uma solicitação de serviço será gerada automaticamente ao finalizar esta vistoria.</p>
-                      </div>
-                    </div>
-                  )}
+                <div className="animate-in slide-in-from-top-2 duration-200 space-y-2">
+                  <Textarea
+                    placeholder="Observações (opcional)"
+                    className="text-xs min-h-[60px]"
+                    value={item.notes || ""}
+                    onChange={e => handleNotesChange(currentGroup.id, item.id, e.target.value)}
+                  />
                 </div>
               )}
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-      
-      {/* Navigation buttons */}
-      <div className="flex justify-between pt-4">
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="flex justify-between pt-4 border-t sticky bottom-0 bg-background/80 backdrop-blur-sm py-4">
         <Button 
-          type="button" 
           variant="outline" 
-          onClick={goToPreviousGroup}
+          onClick={() => setCurrentGroupIndex(prev => prev - 1)}
           disabled={currentGroupIndex === 0}
         >
-          Grupo anterior
+          Anterior
         </Button>
-        
-        {currentGroupIndex < groups.length - 1 ? (
+        {isLastGroup ? (
           <Button 
-            type="button"
-            onClick={goToNextGroup}
+            className="bg-primary hover:bg-primary/90 font-bold"
+            disabled={completedItems < totalItems}
+            onClick={() => setShowSummary(true)}
           >
-            Próximo grupo
+            Revisar e Finalizar
           </Button>
         ) : (
-          <div className="flex flex-col gap-4 w-full sm:w-auto">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="signature" className="text-xs font-bold uppercase">Assinatura do Técnico/Cliente</Label>
-              <Input 
-                id="signature"
-                placeholder="Nome completo para assinatura" 
-                value={signature}
-                onChange={(e) => setSignature(e.target.value)}
-                className="max-w-xs"
-              />
-            </div>
-            <Button 
-              type="button"
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="bg-primary hover:bg-primary/90 font-bold"
-            >
-              {isSubmitting ? "Enviando..." : "Finalizar vistoria"}
-            </Button>
-          </div>
+          <Button onClick={() => setCurrentGroupIndex(prev => prev + 1)}>
+            Próximo
+          </Button>
         )}
       </div>
     </div>

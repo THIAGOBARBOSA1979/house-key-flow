@@ -175,15 +175,15 @@ export default function Inspections() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full max-w-lg grid-cols-3 bg-muted/50 p-1 rounded-xl">
-          <TabsTrigger value="list" className="gap-2 rounded-lg py-2">
+          <TabsTrigger value="list" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <ClipboardCheck className="h-4 w-4" />
             Vistorias
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-2 rounded-lg py-2">
+          <TabsTrigger value="analytics" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <BarChart className="h-4 w-4" />
             Estatísticas
           </TabsTrigger>
-          <TabsTrigger value="logs" className="gap-2 rounded-lg py-2">
+          <TabsTrigger value="logs" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <History className="h-4 w-4" />
             Logs
           </TabsTrigger>

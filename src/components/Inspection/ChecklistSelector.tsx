@@ -36,24 +36,26 @@ export const ChecklistSelector = ({
             onClick={() => handleSelect(checklist.id)}
           >
             <CardContent className="p-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
+              <div className="flex justify-between items-start">
+                <div className="flex items-start gap-3">
                   <div className={cn(
-                    "p-2 rounded-lg",
+                    "p-2 rounded-lg shrink-0",
                     selectedId === checklist.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                   )}>
                     <ClipboardList className="h-5 w-5" />
                   </div>
-                  <div className="space-y-0.5">
-                    <h4 className="font-semibold text-sm">{checklist.title}</h4>
-                    <p className="text-xs text-muted-foreground line-clamp-1">{checklist.description}</p>
-                    <p className="text-[10px] font-medium text-primary uppercase tracking-wider">
-                      {(checklist.items?.length || 0) + (checklist.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0)} itens de verificação
-                    </p>
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-sm leading-tight">{checklist.title}</h4>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{checklist.description}</p>
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                        {(checklist.items?.length || 0) + (checklist.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0)} Itens
+                      </span>
+                    </div>
                   </div>
                 </div>
                 {selectedId === checklist.id && (
-                  <div className="p-1 bg-primary rounded-full text-white">
+                  <div className="p-1 bg-primary rounded-full text-white shrink-0 mt-1">
                     <Check className="h-3 w-3" />
                   </div>
                 )}

@@ -84,16 +84,18 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
 
   return (
     <div className="relative group">
-      <div className="p-5-sem flex flex-col md:flex-row gap-5-sem md:items-center justify-between transition-all duration-300 group-hover:bg-muted/30">
+      <div className="p-4 sm:p-5 flex flex-col md:flex-row gap-4 md:items-center justify-between transition-all duration-300 group-hover:bg-muted/30">
         <div className="flex flex-col gap-1.5 min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
-              <MapPin size={14} className="shrink-0" />
+            <div className="p-1.5 bg-primary/10 rounded-lg text-primary shrink-0">
+              <MapPin size={14} />
             </div>
-            <span className="text-sm font-bold truncate">{inspection.property} • <span className="text-primary">Unidade {inspection.unit}</span></span>
+            <span className="text-sm font-bold truncate">
+              {inspection.property} • <span className="text-primary">Unidade {inspection.unit}</span>
+            </span>
           </div>
           
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <User size={12} className="text-muted-foreground/60" />
               <span>{inspection.client}</span>
@@ -103,9 +105,9 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
               <span>{safeFormat(inspection.date, "dd/MM/yyyy")} às {inspection.time}</span>
             </div>
             {checklist && (
-              <div className="flex items-center gap-1.5 text-xs text-primary/80 font-bold bg-primary/5 px-2 py-0.5 rounded-full">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary/80 bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">
                 <ClipboardList size={10} />
-                <span className="truncate max-w-[120px]">{checklist.title}</span>
+                <span className="truncate max-w-[150px] uppercase tracking-tighter">{checklist.title}</span>
               </div>
             )}
           </div>
