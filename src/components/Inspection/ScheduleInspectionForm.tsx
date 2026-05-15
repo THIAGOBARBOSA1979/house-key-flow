@@ -370,7 +370,3 @@ export const ScheduleInspectionForm = ({
     </Form>
   );
 };
-      </form>
-    </Form>
-  );
-};
