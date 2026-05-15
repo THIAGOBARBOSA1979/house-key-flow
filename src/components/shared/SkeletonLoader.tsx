@@ -15,7 +15,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
         {Array.from({ length: count }).map((_, i) => (
           <div key={i} className="card-standard p-6 space-y-4">
             <div className="flex items-center gap-3">
-              <Skeleton className="h-12 w-12 rounded-xl" />
+              <Skeleton className="h-12 w-12 rounded-lg" />
               <div className="space-y-2">
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-3 w-32" />
