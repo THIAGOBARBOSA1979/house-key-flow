@@ -1,6 +1,6 @@
 
 import { safeFormat } from "@/lib/utils";
-import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock } from "lucide-react";
+import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "../shared/StatusBadge";
 import {
@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { ScheduleInspectionDialog } from "./ScheduleInspectionDialog";
+import { StartInspectionDialog } from "./StartInspectionDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { inspectionService } from "@/services/InspectionService";
 import { cn } from "@/lib/utils";
 
 interface InspectionItemProps {
@@ -25,14 +27,16 @@ interface InspectionItemProps {
     time: string;
     status: string;
   };
+  onUpdate?: () => void;
 }
 
 /**
  * Reusable InspectionItem refactored with Design System tokens.
  */
-export const InspectionItem = ({ inspection }: InspectionItemProps) => {
+export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) => {
   const { toast } = useToast();
   const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
+  const [startInspectionDialogOpen, setStartInspectionDialogOpen] = useState(false);
   
   const handleViewDetails = () => {
     toast({
@@ -42,11 +46,13 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
   };
 
   const handleCancelInspection = () => {
+    inspectionService.updateStatus(inspection.id, "cancelled");
     toast({
       title: "Vistoria cancelada",
-      description: `A vistoria de ${inspection.client} foi removida.`,
+      description: `A vistoria de ${inspection.client} foi cancelada.`,
       variant: "destructive",
     });
+    if (onUpdate) onUpdate();
   };
 
   const handleSendReminder = () => {
@@ -54,6 +60,22 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
       title: "Lembrete enviado",
       description: `Notificação enviada para ${inspection.client}.`,
     });
+  };
+
+  const handleInspectionComplete = (data: any) => {
+    inspectionService.updateStatus(inspection.id, "complete");
+    toast({
+      title: "Vistoria concluída",
+      description: "O status da vistoria foi atualizado para concluído.",
+    });
+    if (onUpdate) onUpdate();
+  };
+
+  const startInspection = () => {
+    setStartInspectionDialogOpen(true);
+    if (inspection.status === "pending") {
+      inspectionService.updateStatus(inspection.id, "progress");
+    }
   };
 
   return (
@@ -83,6 +105,18 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
           <StatusBadge status={inspection.status as any} size="sm" showIcon />
           
           <div className="h-6 w-px bg-border/40 mx-1 hidden md:block" />
+
+          {(inspection.status === "pending" || inspection.status === "progress") && (
+            <Button 
+              variant="default" 
+              size="sm"
+              onClick={startInspection}
+              className="h-9 px-4 text-xs font-bold bg-primary hover:bg-primary/90 transition-all active:scale-95 shadow-sem-sm"
+            >
+              <Play className="h-3.5 w-3.5 mr-2" /> 
+              {inspection.status === "progress" ? "Continuar" : "Iniciar"}
+            </Button>
+          )}
 
           <Button 
             variant="ghost" 
@@ -121,11 +155,22 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
 
       <ScheduleInspectionDialog
         triggerButton={<span className="hidden" />}
+        open={rescheduleDialogOpen}
+        onOpenChange={setRescheduleDialogOpen}
+        onSuccess={onUpdate}
         propertyInfo={{
           property: inspection.property,
           unit: inspection.unit,
           client: inspection.client,
         }}
+      />
+
+      <StartInspectionDialog
+        open={startInspectionDialogOpen}
+        onOpenChange={setStartInspectionDialogOpen}
+        inspectionId={inspection.id}
+        inspectionTitle={`Vistoria: ${inspection.property} - Un. ${inspection.unit}`}
+        onComplete={handleInspectionComplete}
       />
     </div>
   );

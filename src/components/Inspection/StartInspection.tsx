@@ -60,9 +60,24 @@ export const StartInspection = ({
   onComplete?: (data: any) => void;
 }) => {
   const { toast } = useToast();
-  const [groups, setGroups] = useState<InspectionGroup[]>(mockInspectionData);
+  const [groups, setGroups] = useState<InspectionGroup[]>(() => {
+    const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse saved progress", e);
+      }
+    }
+    return mockInspectionData;
+  });
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Save progress whenever groups change
+  React.useEffect(() => {
+    localStorage.setItem(`inspection_progress_${inspectionId}`, JSON.stringify(groups));
+  }, [groups, inspectionId]);
   
   // Calculate progress
   const totalItems = groups.reduce((acc, group) => acc + group.items.length, 0);
@@ -112,6 +127,18 @@ export const StartInspection = ({
     });
   };
   
+  const handleReset = () => {
+    if (window.confirm("Tem certeza que deseja limpar todo o progresso desta vistoria?")) {
+      setGroups(mockInspectionData);
+      localStorage.removeItem(`inspection_progress_${inspectionId}`);
+      setCurrentGroupIndex(0);
+      toast({
+        title: "Progresso resetado",
+        description: "Todos os itens voltaram ao estado pendente.",
+      });
+    }
+  };
+
   const handleSubmit = () => {
     setIsSubmitting(true);
     
@@ -140,6 +167,8 @@ export const StartInspection = ({
         title: "Vistoria finalizada com sucesso!",
         description: `${nonConformCount} itens necessitam de atenção.`,
       });
+      
+      localStorage.removeItem(`inspection_progress_${inspectionId}`);
       
       if (nonConformCount > 0) {
         toast({
@@ -181,12 +210,17 @@ export const StartInspection = ({
   return (
     <div className="space-y-6">
       {/* Progress bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm">
-          <span>Progresso: {progress}%</span>
-          <span>{completedItems}/{totalItems} itens verificados</span>
+      <div className="space-y-3 bg-muted/30 p-4 rounded-xl border border-border/10">
+        <div className="flex justify-between items-center text-sm">
+          <div className="flex flex-col">
+            <span className="font-bold text-primary uppercase text-[10px] tracking-widest mb-1">Status da Vistoria</span>
+            <span className="text-muted-foreground font-medium">{progress}% concluído ({completedItems}/{totalItems} itens)</span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={handleReset} className="h-8 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 font-bold uppercase tracking-tighter">
+            Resetar
+          </Button>
         </div>
-        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+        <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden shadow-inner">
           <div 
             className="h-full bg-primary" 
             style={{ width: `${progress}%` }}
@@ -195,7 +229,7 @@ export const StartInspection = ({
       </div>
       
       {/* Group navigation */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-nowrap overflow-x-auto pb-2 gap-2 sm:flex-wrap sm:overflow-visible no-scrollbar">
         {groups.map((group, index) => {
           const groupCompletedItems = group.items.filter(item => item.conformity !== "pending").length;
           const isComplete = groupCompletedItems === group.items.length;

@@ -16,6 +16,8 @@ interface ScheduleInspectionDialogProps {
   triggerButton?: React.ReactNode;
   clientId?: string;
   onSuccess?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   propertyInfo?: {
     property: string;
     unit: string;
@@ -27,9 +29,14 @@ export function ScheduleInspectionDialog({
   triggerButton, 
   clientId,
   onSuccess,
+  open: externalOpen,
+  onOpenChange: externalOnOpenChange,
   propertyInfo 
 }: ScheduleInspectionDialogProps) {
-  const [open, setOpen] = React.useState(false);
+  const [internalOpen, setInternalOpen] = React.useState(false);
+  
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = externalOnOpenChange !== undefined ? externalOnOpenChange : setInternalOpen;
   
   const handleSuccess = () => {
     setOpen(false);
