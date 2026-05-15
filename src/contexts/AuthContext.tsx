@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         };
       } else if (role === 'client' && email === 'cliente@exemplo.com' && password === '123456') {
         mockUser = {
-          id: '2',
+          id: 'client-2',
           name: 'João Silva',
           email: 'cliente@exemplo.com',
           role: 'client'

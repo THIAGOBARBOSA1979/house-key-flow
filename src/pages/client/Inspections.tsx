@@ -10,6 +10,7 @@ import { ptBR } from "date-fns/locale";
 import { safeFormat } from "@/lib/utils";
 import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
+import { RescheduleInspectionDialog } from "@/components/Inspection/RescheduleInspectionDialog";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { documentService } from "@/services/DocumentService";
 import { useToast } from "@/hooks/use-toast";
@@ -83,6 +84,7 @@ const ClientInspections = () => {
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
+  const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
   const [activeInspection, setActiveInspection] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
@@ -121,10 +123,7 @@ const ClientInspections = () => {
   
   const handleRequestReschedule = () => {
     if (selectedInspection && user?.id) {
-      const success = inspectionService.requestReschedule(selectedInspection, user.id);
-      if (success) {
-        toast({ title: "Solicitação de remarcação enviada", description: "Em breve entraremos em contato para agendar uma nova data." });
-      }
+      setRescheduleDialogOpen(true);
     }
   };
   
@@ -189,6 +188,29 @@ const ClientInspections = () => {
         generatedContent={previewContent}
         document={{ title: "Relatório de Vistoria", type: "auto" } as any}
       />
+      
+      {selectedInspection && (
+        <RescheduleInspectionDialog
+          isOpen={rescheduleDialogOpen}
+          onClose={() => setRescheduleDialogOpen(false)}
+          inspectionId={selectedInspection}
+          clientId={user?.id || "client-1"}
+          onSuccess={() => {
+            // Trigger a refresh of the inspections list
+            const updatedInspections = inspectionService.getAll()
+              .filter(i => i.client === (user?.name || "João Silva"));
+            setInspections(updatedInspections.map(i => ({
+              ...i,
+              title: i.type === 'technicalInspection' ? 'Vistoria Técnica' : i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Reparo',
+              scheduledDate: i.date,
+              inspector: i.technician,
+              description: i.notes || "Vistoria para verificação das condições da unidade.",
+              checklist: [], // Default or fetched
+              canStart: i.status === 'pending'
+            })));
+          }}
+        />
+      )}
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>

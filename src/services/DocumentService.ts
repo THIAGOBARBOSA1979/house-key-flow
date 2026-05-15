@@ -40,6 +40,18 @@ export interface Document {
   attachments?: DocumentAttachment[];
   viewCount: number;
   viewers?: string[];
+  signatures?: DocumentSignature[];
+}
+
+export interface DocumentSignature {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: "pending" | "signed" | "rejected";
+  signedAt?: Date;
+  ipAddress?: string;
+  confirmationMethod: "email" | "sms";
 }
 
 export interface ApprovalHistoryEntry {
@@ -119,7 +131,27 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       description: "Contrato padrão para venda de imóveis",
       createdBy: "Admin",
       approvedBy: "Supervisor",
-      approvedAt: new Date(2025, 4, 10)
+      approvedAt: new Date(2025, 4, 10),
+      signatures: [
+        {
+          id: "sig-1",
+          name: "João Silva",
+          email: "joao.silva@exemplo.com",
+          role: "Comprador",
+          status: "pending",
+          confirmationMethod: "email"
+        },
+        {
+          id: "sig-2",
+          name: "Ricardo Mendes",
+          email: "ricardo@a2empreendimentos.com",
+          role: "Representante A2",
+          status: "signed",
+          signedAt: new Date(2025, 4, 11, 14, 30),
+          ipAddress: "177.45.12.98",
+          confirmationMethod: "email"
+        }
+      ]
     },
     {
       id: "2", 
@@ -615,6 +647,65 @@ OBSERVAÇÕES: {{observacoes}}`,
     }
 
     return filtered;
+  }
+
+  addSigner(documentId: string, signer: Omit<DocumentSignature, 'id' | 'status'>): DocumentSignature | null {
+    const doc = this.getDocumentById(documentId);
+    if (!doc) return null;
+
+    const newSignature: DocumentSignature = {
+      ...signer,
+      id: uuidv4(),
+      status: 'pending'
+    };
+
+    if (!doc.signatures) doc.signatures = [];
+    doc.signatures.push(newSignature);
+    
+    this.updateDocument(documentId, { signatures: doc.signatures });
+    
+    auditLogService.log({
+      entityType: 'document',
+      entityId: documentId,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Signatário ${signer.name} adicionado ao documento "${doc.title}".`
+    });
+
+    return newSignature;
+  }
+
+  signDocument(documentId: string, signerId: string, ipAddress: string): boolean {
+    const doc = this.getDocumentById(documentId);
+    if (!doc || !doc.signatures) return false;
+
+    const signature = doc.signatures.find(s => s.id === signerId);
+    if (!signature || signature.status !== 'pending') return false;
+
+    signature.status = 'signed';
+    signature.signedAt = new Date();
+    signature.ipAddress = ipAddress;
+
+    this.updateDocument(documentId, { signatures: doc.signatures });
+
+    auditLogService.log({
+      entityType: 'document',
+      entityId: documentId,
+      action: 'updated',
+      performedBy: signature.email,
+      performedByName: signature.name,
+      performedByRole: 'client',
+      details: `Documento "${doc.title}" assinado digitalmente por ${signature.name}.`
+    });
+
+    return true;
+  }
+
+  getSignatureHistory(documentId: string): DocumentSignature[] {
+    const doc = this.getDocumentById(documentId);
+    return doc?.signatures || [];
   }
 }
 

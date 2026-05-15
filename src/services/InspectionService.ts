@@ -309,10 +309,14 @@ class InspectionService {
     return this.inspections.filter(i => i.technician === technicianId);
   }
 
-  requestReschedule(id: string, clientId: string) {
+  requestReschedule(id: string, clientId: string, newDate?: Date, newTime?: string, reason?: string) {
     const inspection = this.inspections.find(i => i.id === id);
     if (inspection) {
       inspection.status = "reschedule_requested";
+      if (newDate) inspection.date = newDate;
+      if (newTime) inspection.time = newTime;
+      if (reason) inspection.notes = (inspection.notes ? inspection.notes + "\n" : "") + "Motivo do reagendamento: " + reason;
+      
       this.persist();
       
       auditLogService.log({
@@ -322,7 +326,7 @@ class InspectionService {
         performedBy: clientId,
         performedByName: inspection.client,
         performedByRole: 'client',
-        details: `Cliente solicitou reagendamento da vistoria.`
+        details: `Cliente solicitou reagendamento da vistoria para ${newDate?.toLocaleDateString()} às ${newTime}.${reason ? ` Motivo: ${reason}` : ""}`
       });
       return true;
     }
