@@ -75,9 +75,11 @@ const NotificationPanel = ({
       </div>
       
       <div className="p-3 border-t">
-        <Button variant="outline" size="sm" className="w-full">
-          Ver todas notificações
-        </Button>
+        <Link to="/client/notifications">
+          <Button variant="outline" size="sm" className="w-full">
+            Ver todas notificações
+          </Button>
+        </Link>
       </div>
     </div>;
 };
@@ -240,6 +242,7 @@ const ClientLayout = () => {
           <ClientNavLink to="/client/documents" icon={FileText} onClick={handleLinkClick}>Documentos</ClientNavLink>
           <ClientNavLink to="/client/inspections" icon={ClipboardCheck} onClick={handleLinkClick}>Vistorias</ClientNavLink>
           <ClientNavLink to="/client/warranty" icon={ShieldCheck} onClick={handleLinkClick}>Garantias</ClientNavLink>
+          <ClientNavLink to="/client/notifications" icon={Bell} onClick={handleLinkClick} badgeCount={unreadCount}>Notificações</ClientNavLink>
           
           <Separator className="my-4" />
           

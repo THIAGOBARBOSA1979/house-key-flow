@@ -10,6 +10,8 @@ import { ptBR } from "date-fns/locale";
 import { safeFormat } from "@/lib/utils";
 import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
+import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
+import { documentService } from "@/services/DocumentService";
 import { useToast } from "@/hooks/use-toast";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
@@ -82,6 +84,8 @@ const ClientInspections = () => {
   const [startInspectionOpen, setStartInspectionOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
   const [activeInspection, setActiveInspection] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewContent, setPreviewContent] = useState("");
   const { toast } = useToast();
   
   // const { user } = useAuth();
@@ -133,9 +137,28 @@ const ClientInspections = () => {
     if (selectedInspection) {
       const report = inspectionService.getReport(selectedInspection);
       if (report) {
-        toast({ title: "Abrindo documento", description: "O relatório em PDF será aberto em uma nova aba." });
-        // Simulating PDF opening
-        console.log("Opening report:", report);
+        const clientData = {
+          nome_cliente: user?.name || "Cliente",
+          endereco: `${report.inspection.property} - Unit ${report.inspection.unit}`,
+          data_vistoria: report.inspection.date.toLocaleDateString(),
+          responsavel_vistoria: report.inspection.technician,
+          estado_geral: report.inspection.status === 'complete' ? "Concluído" : "Em andamento",
+          instalacoes_eletricas: "Verificadas",
+          instalacoes_hidraulicas: "Verificadas",
+          observacoes: report.inspection.notes || "Nenhuma observação adicional."
+        };
+        
+        // Find a report template
+        const templates = documentService.getAllDocuments().filter(d => d.category === 'relatorio');
+        const templateId = templates.length > 0 ? templates[0].id : "3";
+        
+        try {
+          const preview = documentService.generateDocument(templateId, clientData);
+          setPreviewContent(preview);
+          setIsPreviewOpen(true);
+        } catch (error) {
+          toast({ title: "Erro ao gerar preview", description: "Não foi possível gerar o preview do relatório.", variant: "destructive" });
+        }
       }
     }
   };
@@ -160,6 +183,12 @@ const ClientInspections = () => {
 
   return (
     <div className="space-y-6">
+      <DocumentPreviewDialog 
+        isOpen={isPreviewOpen} 
+        onOpenChange={setIsPreviewOpen}
+        content={previewContent}
+        title="Relatório de Vistoria"
+      />
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
