@@ -168,6 +168,8 @@ export const StartInspection = ({
         description: `${nonConformCount} itens necessitam de atenção.`,
       });
       
+      localStorage.removeItem(`inspection_progress_${inspectionId}`);
+      
       if (nonConformCount > 0) {
         toast({
           title: "Solicitações de serviço geradas",
