@@ -2,6 +2,16 @@
 import { SyncService } from './SyncService';
 import { auditLogService } from './AuditLogService';
 
+export interface Evidence {
+  id: string;
+  file?: File;
+  url: string;
+  thumbnailUrl?: string;
+  notes?: string;
+  timestamp: Date;
+  location?: { lat: number; lng: number };
+}
+
 export interface ChecklistItem {
   id: string;
   name?: string;
@@ -11,16 +21,18 @@ export interface ChecklistItem {
     dependsOn: string;
     value: boolean;
   };
-  evidence?: any[];
+  evidence?: Evidence[];
   status?: 'ok' | 'issue' | 'na';
   conformity?: "pending" | "conform" | "nonconform";
   notes?: string;
-  severity?: "low" | "medium" | "high" | "critical";
+  severity: "low" | "medium" | "high" | "critical";
+  weight?: number; // Peso para o score (1-10)
 }
 
 export interface ChecklistGroup {
   id: string;
   name: string;
+  description?: string;
   items: ChecklistItem[];
 }
 
@@ -30,8 +42,7 @@ export interface ChecklistTemplate {
   description: string;
   category: "vistoria" | "manutencao" | "seguranca" | "hidraulica" | "eletrica" | "entrega" | "pos-venda";
   status: "active" | "draft" | "archived";
-  items?: ChecklistItem[]; 
-  groups?: ChecklistGroup[]; 
+  groups: ChecklistGroup[]; 
   createdAt: Date;
   lastUpdated: Date;
   version: number;
@@ -44,16 +55,21 @@ export interface ChecklistExecutionRecord {
   performedBy: string;
   performedByName: string;
   date: Date;
-  items: ChecklistItem[];
+  groups: ChecklistGroup[];
   notes: string;
   status: "completed" | "in_progress" | "canceled";
-  conformityRate: number;
+  score: number; // 0-100 calculado
+  conformityRate: number; // Porcentagem de itens OK
+  propertyId?: string;
+  unitId?: string;
   location?: {
-    property?: string;
-    unit?: string;
+    lat?: number;
+    lng?: number;
+    address?: string;
   };
   signature?: string;
   clientSignature?: string;
+  syncStatus: "synced" | "pending";
 }
 
 class ChecklistService {
@@ -69,30 +85,23 @@ class ChecklistService {
       createdAt: new Date(2025, 4, 1),
       lastUpdated: new Date(2025, 4, 1),
       version: 1,
-      items: [
-        { id: "1", description: "Acabamento: Pintura geral e acabamentos de parede", required: true },
-        { id: "2", description: "Acabamento: Pisos e rodapés (cerâmica/porcelanato)", required: true },
-        { id: "3", description: "Esquadrias: Janelas e vidros", required: true },
-        { id: "4", description: "Esquadrias: Portas, fechaduras e dobradiças", required: true },
-        { id: "5", description: "Hidráulica: Louças e metais sanitários", required: true },
-        { id: "6", description: "Elétrica: Instalações elétricas (tomadas e pontos)", required: true },
-        { id: "7", description: "Outros: Limpeza fina da unidade", required: true },
-      ]
-    },
-    {
-      id: "checklist2",
-      title: "Checklist Verificação Hidráulica",
-      description: "Foco em instalações hidráulicas, torneiras, válvulas e escoamento",
-      category: "hidraulica",
-      status: "active",
-      createdAt: new Date(2025, 4, 5),
-      lastUpdated: new Date(2025, 4, 5),
-      version: 1,
-      items: [
-        { id: "h1", description: "Hidráulica: Teste de estanqueidade de ramais", required: true },
-        { id: "h2", description: "Hidráulica: Vazão de água em torneiras e chuveiros", required: true },
-        { id: "h3", description: "Hidráulica: Escoamento de ralos e bacias", required: true },
-        { id: "h4", description: "Hidráulica: Acabamento de registros", required: true },
+      groups: [
+        {
+          id: "g1",
+          name: "Acabamentos Internos",
+          items: [
+            { id: "1", description: "Pintura geral e acabamentos de parede", required: true, severity: "medium" },
+            { id: "2", description: "Pisos e rodapés (cerâmica/porcelanato)", required: true, severity: "medium" },
+          ]
+        },
+        {
+          id: "g2",
+          name: "Sistemas e Esquadrias",
+          items: [
+            { id: "3", description: "Janelas e vidros (vedação e abertura)", required: true, severity: "high" },
+            { id: "4", description: "Portas, fechaduras e dobradiças", required: true, severity: "high" },
+          ]
+        }
       ]
     }
   ];
@@ -196,11 +205,49 @@ class ChecklistService {
     return [...this.executions];
   }
 
-  logExecution(templateId: string, items: ChecklistItem[], notes: string, location?: { property?: string, unit?: string }, status: "completed" | "in_progress" = "completed") {
+  calculateScore(groups: ChecklistGroup[]): { score: number, conformityRate: number } {
+    let totalWeight = 0;
+    let earnedWeight = 0;
+    let totalItems = 0;
+    let okItems = 0;
+
+    const severityWeights = {
+      low: 1,
+      medium: 3,
+      high: 6,
+      critical: 10
+    };
+
+    groups.forEach(group => {
+      group.items.forEach(item => {
+        if (item.status === 'na') return;
+        
+        totalItems++;
+        const weight = severityWeights[item.severity] || 1;
+        totalWeight += weight;
+
+        if (item.status === 'ok') {
+          earnedWeight += weight;
+          okItems++;
+        }
+      });
+    });
+
+    return {
+      score: totalWeight > 0 ? Math.round((earnedWeight / totalWeight) * 100) : 100,
+      conformityRate: totalItems > 0 ? Math.round((okItems / totalItems) * 100) : 100
+    };
+  }
+
+  logExecution(
+    templateId: string, 
+    groups: ChecklistGroup[], 
+    notes: string, 
+    locationInfo?: { propertyId?: string, unitId?: string, lat?: number, lng?: number }, 
+    status: "completed" | "in_progress" = "completed"
+  ) {
     const template = this.getTemplateById(templateId);
-    const okCount = items.filter(i => i.status === 'ok').length;
-    const totalCount = items.length;
-    const conformityRate = totalCount > 0 ? (okCount / totalCount) * 100 : 0;
+    const { score, conformityRate } = this.calculateScore(groups);
 
     const newExecution: ChecklistExecutionRecord = {
       id: `exec-${Date.now()}`,
@@ -209,11 +256,15 @@ class ChecklistService {
       performedBy: "admin-1",
       performedByName: "Administrador",
       date: new Date(),
-      items,
+      groups,
       notes,
       status,
+      score,
       conformityRate,
-      location
+      propertyId: locationInfo?.propertyId,
+      unitId: locationInfo?.unitId,
+      location: locationInfo?.lat ? { lat: locationInfo.lat, lng: locationInfo.lng } : undefined,
+      syncStatus: "synced"
     };
 
     this.executions.unshift(newExecution);
@@ -227,8 +278,8 @@ class ChecklistService {
         performedBy: 'admin-1',
         performedByName: 'Administrador',
         performedByRole: 'admin',
-        details: `Execução do checklist "${template?.title || templateId}" concluída. (${okCount}/${totalCount} OK).`,
-        metadata: { notes, okCount, totalCount, conformityRate }
+        details: `Execução do checklist "${template?.title || templateId}" concluída. Score: ${score}%.`,
+        metadata: { notes, score, conformityRate }
       });
     }
     
