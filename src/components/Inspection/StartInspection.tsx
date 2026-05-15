@@ -210,7 +210,7 @@ export const StartInspection = ({
       </div>
       
       {/* Group navigation */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-nowrap overflow-x-auto pb-2 gap-2 sm:flex-wrap sm:overflow-visible no-scrollbar">
         {groups.map((group, index) => {
           const groupCompletedItems = group.items.filter(item => item.conformity !== "pending").length;
           const isComplete = groupCompletedItems === group.items.length;
