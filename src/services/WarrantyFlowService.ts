@@ -1056,6 +1056,99 @@ class WarrantyFlowService {
       byPriority
     };
   }
+
+  /**
+   * Add a comment/update to a request
+   */
+  addUpdate(
+    requestId: string,
+    authorId: string,
+    authorName: string,
+    text: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const newUpdate = {
+      id: `upd-${Date.now()}`,
+      date: new Date(),
+      author: authorName,
+      text: text
+    };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      updates: [...(request as any).updates || [], newUpdate],
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'updated',
+      performedBy: authorId,
+      performedByName: authorName,
+      performedByRole: authorId === 'admin-1' ? 'admin' : 'client',
+      details: `Novo comentário adicionado à solicitação.`
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Cancel a request
+   */
+  cancelRequest(requestId: string, clientId: string): boolean {
+    const request = this.requests.get(requestId);
+    if (request && request.clientId === clientId) {
+      this.changeStatus(requestId, 'rejected' as any, clientId, false, "Solicitação cancelada pelo cliente");
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Schedule an inspection for a warranty request
+   */
+  scheduleInspection(
+    requestId: string,
+    date: Date,
+    technicianId: string,
+    technicianName: string,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      currentStage: "inspection_scheduled",
+      inspectionDate: date,
+      assignedTo: technicianId,
+      assignedToName: technicianName,
+      updatedAt: new Date(),
+      history: [
+        ...request.history,
+        {
+          id: `hist-${Date.now()}`,
+          requestId,
+          fromStatus: request.currentStage,
+          toStatus: "inspection_scheduled",
+          changedAt: new Date(),
+          changedBy,
+          isAutomatic: false,
+          notes: `Vistoria agendada para ${date.toLocaleDateString()}`
+        }
+      ]
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+    return { success: true, request: updatedRequest };
+  }
 }
 
 export const warrantyFlowService = new WarrantyFlowService();
