@@ -129,19 +129,34 @@ export const ScheduleInspectionForm = ({
   }, [watchDate, watchTechnician]);
 
 
-  const onSubmit = (data: FormValues) => {
-    inspectionService.schedule(data as any, propertyInfo);
-
+  const onSubmit = async (data: FormValues) => {
+    const newInspection = inspectionService.schedule(data as any, propertyInfo);
 
     toast({
       title: "Vistoria agendada com sucesso",
       description: `Agendada para ${safeFormat(data.date, "dd/MM/yyyy")} às ${data.time}`,
     });
     
-    if (data.notifyClient) {
+    if (data.notifyClient && propertyInfo) {
+      // Integration with notification service
+      const { notificationService } = await import("@/services/NotificationService");
+      notificationService.createNotification(
+        clientId || "client-1",
+        "inspection_scheduled",
+        {
+          relatedEntityId: newInspection.id,
+          relatedEntityType: 'inspection',
+          actionUrl: '/client/inspections'
+        },
+        {
+          title: "Vistoria Agendada",
+          message: `Sua vistoria para o imóvel ${propertyInfo.property} foi agendada para ${safeFormat(data.date, "dd/MM/yyyy")} às ${data.time}.`
+        }
+      );
+
       toast({
         title: "Notificação enviada",
-        description: "O cliente foi notificado por e-mail.",
+        description: "O cliente foi notificado via portal e e-mail.",
       });
     }
     

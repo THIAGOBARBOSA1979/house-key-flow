@@ -337,7 +337,12 @@ class WarrantyFlowService {
       performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Cliente',
       performedByRole: changedBy === 'admin-1' ? 'admin' : 'client',
       details: notes || `Solicitação movida para a etapa ${WARRANTY_STAGES[newStatus].label}`,
-      metadata: { fromStatus: request.currentStage, toStatus: newStatus }
+      metadata: { 
+        fromStatus: request.currentStage, 
+        toStatus: newStatus,
+        technician: updatedRequest.assignedToName,
+        problemCount: updatedRequest.problems?.length || 0
+      }
     });
     
     return { success: true, request: updatedRequest };

@@ -115,6 +115,22 @@ export function KanbanCard({
         )}
       </div>
       
+      {/* Progress of items if execution started */}
+      {request.problems && (request.currentStage === "in_execution" || request.currentStage === "approved") && (
+        <div className="mt-3 space-y-1">
+          <div className="flex justify-between text-[10px] font-bold text-muted-foreground uppercase">
+            <span>Progresso de Reparos</span>
+            <span>{request.problems.filter(p => p.status === 'resolved').length}/{request.problems.length}</span>
+          </div>
+          <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-emerald-500 transition-all duration-500" 
+              style={{ width: `${(request.problems.filter(p => p.status === 'resolved').length / (request.problems.length || 1)) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       {/* SLA and assignment */}
       <div className="flex items-center justify-between mt-2 pt-2 border-t">
         <SLABadge 

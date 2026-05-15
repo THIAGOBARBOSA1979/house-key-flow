@@ -20,6 +20,7 @@ export const StartInspection = ({
 }) => {
   const { toast } = useToast();
   const [signature, setSignature] = useState("");
+  const [extraNotes, setExtraNotes] = useState("");
   const [groups, setGroups] = useState<ChecklistGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
@@ -236,6 +237,20 @@ export const StartInspection = ({
             </div>
           </div>
         )}
+
+        <Card className="border-muted bg-muted/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Observações Finais da Vistoria</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Textarea 
+              placeholder="Adicione observações gerais sobre a unidade ou o processo..."
+              value={extraNotes}
+              onChange={(e) => setExtraNotes(e.target.value)}
+              className="min-h-[80px] bg-background"
+            />
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
