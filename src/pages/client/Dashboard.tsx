@@ -39,9 +39,9 @@ const Dashboard = () => {
   
   const { unreadCount, urgentNotifications } = useNotifications(clientId);
 
-  // Mock data for property info
+  // Get user info from profile
   const userInfo = {
-    name: profile?.name || "Maria Oliveira",
+    name: user?.name || profile?.name || "Maria Oliveira",
     property: profile?.propertyName || "Edifício Aurora",
     unit: profile?.unitNumber || "204",
     deliveryDate: new Date(2025, 5, 15),

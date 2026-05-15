@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, FileText, Home, Calendar, ShieldCheck, Ruler, MapPin } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useClientStage } from "@/hooks/useClientStage";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -28,6 +30,9 @@ const property = {
 };
 
 const ClientProperties = () => {
+  const { user } = useAuth();
+  const clientId = user?.id || "client-1";
+  const { profile } = useClientStage(clientId);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -65,8 +70,8 @@ const ClientProperties = () => {
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold">{property.name}</h2>
-              <p className="text-xl mt-1">Unidade {property.unit}</p>
+              <h2 className="text-2xl font-bold">{profile?.propertyName || property.name}</h2>
+              <p className="text-xl mt-1">Unidade {profile?.unitNumber || property.unit}</p>
               <div className="flex items-center gap-1 mt-2 text-muted-foreground">
                 <MapPin size={16} />
                 <span>{property.address}, {property.city}-{property.state}</span>

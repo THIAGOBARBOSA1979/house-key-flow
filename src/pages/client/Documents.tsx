@@ -20,6 +20,8 @@ import { useToast } from "@/hooks/use-toast";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { useClientStage } from "@/hooks/useClientStage";
 
 interface ClientDocument extends Omit<Document, 'status'> {
   size?: string;
@@ -63,6 +65,9 @@ const getStatusLabel = (status: string) => {
 };
 
 export default function ClientDocuments() {
+  const { user } = useAuth();
+  const clientId = user?.id || "client-1";
+  const { profile } = useClientStage(clientId);
   const [documents, setDocuments] = useState<ClientDocument[]>([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -78,7 +83,7 @@ export default function ClientDocuments() {
   }, []);
 
   const loadClientDocuments = () => {
-    const clientName = "João Silva";
+    const clientName = user?.name || "João Silva";
     const clientDocs = documentService.getDocumentsByClient(clientName);
     
     const formattedDocs: ClientDocument[] = clientDocs.map(doc => ({
