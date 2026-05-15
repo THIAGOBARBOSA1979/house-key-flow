@@ -36,7 +36,7 @@ export function PageHeader({
                 <Icon className="h-6 w-6 text-primary" />
               </div>
             )}
-            <h1 className="text-display tracking-tight font-black text-gradient leading-tight">
+            <h1 className="text-sem-h1 tracking-tight font-black text-gradient leading-tight">
               {title}
             </h1>
           </div>
