@@ -20,6 +20,7 @@ export const StartInspection = ({
 }) => {
   const { toast } = useToast();
   const [signature, setSignature] = useState("");
+  const [extraNotes, setExtraNotes] = useState("");
   const [groups, setGroups] = useState<ChecklistGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);

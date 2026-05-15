@@ -254,6 +254,22 @@ class InspectionService {
     return [headers, ...rows].map(e => e.join(",")).join("\n");
   }
 
+  getReport(id: string) {
+    const inspection = this.inspections.find(i => i.id === id);
+    if (!inspection) return null;
+    
+    // In a real app, this would fetch data from the executed checklist too
+    const progress = localStorage.getItem(`inspection_progress_${id}`);
+    const checklistData = progress ? JSON.parse(progress) : null;
+    
+    return {
+      inspection,
+      checklist: checklistData,
+      generatedAt: new Date(),
+      company: "A2 Empreendimentos"
+    };
+  }
+
   getSLAMetrics() {
     const completed = this.inspections.filter(i => i.status === 'completed' && i.createdAt);
     if (completed.length === 0) return "0d";
