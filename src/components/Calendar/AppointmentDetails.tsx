@@ -16,6 +16,7 @@ interface AppointmentDetailsProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onStatusChange: (id: string, newStatus: string) => void;
+  onUpdate?: (id: string, data: any) => void;
 }
 
 export function AppointmentDetails({ 
