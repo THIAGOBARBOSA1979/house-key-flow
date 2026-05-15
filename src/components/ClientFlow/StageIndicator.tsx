@@ -23,19 +23,19 @@ const stageIcons: Record<ClientStage, typeof UserCheck> = {
 
 const stageColors: Record<ClientStage, { bg: string; text: string; border: string }> = {
   registered: {
-    bg: 'bg-amber-100',
-    text: 'text-amber-800',
-    border: 'border-amber-300'
+    bg: 'bg-status-pending/10',
+    text: 'text-status-pending',
+    border: 'border-status-pending/20'
   },
   inspection_enabled: {
-    bg: 'bg-blue-100',
-    text: 'text-blue-800',
-    border: 'border-blue-300'
+    bg: 'bg-status-progress/10',
+    text: 'text-status-progress',
+    border: 'border-status-progress/20'
   },
   warranty_enabled: {
-    bg: 'bg-green-100',
-    text: 'text-green-800',
-    border: 'border-green-300'
+    bg: 'bg-status-complete/10',
+    text: 'text-status-complete',
+    border: 'border-status-complete/20'
   }
 };
 
@@ -102,9 +102,9 @@ export function StageIndicator({
             <div 
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                isCompleted && "bg-green-100 text-green-800",
+                isCompleted && "bg-status-complete/10 text-status-complete",
                 isCurrent && cn(stageColors[stage].bg, stageColors[stage].text),
-                !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
+                !isCompleted && !isCurrent && "bg-muted/50 text-muted-foreground"
               )}
             >
               <StageIcon className="h-3.5 w-3.5" />

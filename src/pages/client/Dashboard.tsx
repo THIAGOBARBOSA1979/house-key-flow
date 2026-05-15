@@ -18,12 +18,15 @@ import {
   MapPin,
   TrendingUp,
   Clock,
-  MessageSquare
+  MessageSquare,
+  DollarSign,
+  LifeBuoy
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
+import { NextSteps } from "@/components/ClientFlow/NextSteps";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -32,6 +35,7 @@ import { documentService } from "@/services/DocumentService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
+import { financialService } from "@/services/FinancialService";
 import { useMemo } from "react";
 
 const Dashboard = () => {
@@ -73,6 +77,7 @@ const Dashboard = () => {
     .slice(0, 2);
 
   const warrantyRequests = useMemo(() => warrantyFlowService.getClientRequests(clientId).slice(0, 2), [clientId]);
+  const financialSummary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -224,6 +229,13 @@ const Dashboard = () => {
               </div>
               <span className="font-black">{warrantyRequests.filter(r => r.currentStage !== 'completed' && r.currentStage !== 'rejected').length}</span>
             </div>
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-white/70" />
+                <span className="text-sm font-medium">Financeiro</span>
+              </div>
+              <span className="font-black">{Math.round(financialSummary.progress)}%</span>
+            </div>
           </CardContent>
           <CardFooter className="pt-0">
             <Link to="/client/notifications" className="w-full">
@@ -235,13 +247,42 @@ const Dashboard = () => {
           </CardFooter>
         </Card>
       </div>
-
-      {/* Timeline Section */}
-      <ClientTimeline 
-        timeline={timeline} 
-        title="Sua Jornada"
-        description="Acompanhe cada etapa do processo do seu imóvel"
-      />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
+        <div className="lg:col-span-2">
+          <ClientTimeline 
+            timeline={timeline} 
+            title="Sua Jornada"
+            description="Acompanhe cada etapa do processo do seu imóvel"
+          />
+        </div>
+        <div>
+          <NextSteps 
+            steps={[
+              { 
+                id: '1', 
+                title: 'Assinar Termo de Entrega', 
+                description: 'Necessário para liberação das chaves', 
+                status: 'current',
+                link: '/client/documents'
+              },
+              { 
+                id: '2', 
+                title: 'Realizar Vistoria Técnica', 
+                description: 'Agendamento disponível em breve', 
+                status: 'upcoming'
+              },
+              { 
+                id: '3', 
+                title: 'Pagamento Parcela de Maio', 
+                description: 'Vencimento em 10/05/2024', 
+                status: 'upcoming',
+                link: '/client/financial'
+              }
+            ]} 
+          />
+        </div>
+      </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-layout-gap">
@@ -485,7 +526,23 @@ const Dashboard = () => {
           <CardDescription>Acesso rápido aos principais recursos do seu portal</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <Link to="/client/support" className="group">
+              <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                  <LifeBuoy className="h-6 w-6 text-primary group-hover:text-white" />
+                </div>
+                <span className="font-bold text-sm">Suporte</span>
+              </div>
+            </Link>
+            <Link to="/client/financial" className="group">
+              <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                  <DollarSign className="h-6 w-6 text-primary group-hover:text-white" />
+                </div>
+                <span className="font-bold text-sm">Financeiro</span>
+              </div>
+            </Link>
             <Link to="/client/documents" className="group">
               <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
                 <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">

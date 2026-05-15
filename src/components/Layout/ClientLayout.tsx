@@ -1,7 +1,7 @@
 import { Outlet, Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays } from "lucide-react";
+import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -248,6 +248,7 @@ const ClientLayout = () => {
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           <ClientNavLink to="/client" icon={Home} onClick={handleLinkClick}>Início</ClientNavLink>
           <ClientNavLink to="/client/properties" icon={Building} onClick={handleLinkClick}>Meu Imóvel</ClientNavLink>
+          <ClientNavLink to="/client/financial" icon={DollarSign} onClick={handleLinkClick}>Financeiro</ClientNavLink>
           <ClientNavLink to="/client/documents" icon={FileText} onClick={handleLinkClick}>Documentos</ClientNavLink>
           <ClientNavLink to="/client/inspections" icon={ClipboardCheck} onClick={handleLinkClick}>Vistorias</ClientNavLink>
           <ClientNavLink to="/client/warranty" icon={ShieldCheck} onClick={handleLinkClick}>Garantias</ClientNavLink>
@@ -259,6 +260,7 @@ const ClientLayout = () => {
           <div className="px-3 py-2">
             <h4 className="text-sm font-medium text-muted-foreground mb-2">Suporte e ajuda</h4>
             <div className="space-y-1">
+              <ClientNavLink to="/client/support" icon={HelpCircle} onClick={handleLinkClick}>Central de Ajuda</ClientNavLink>
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" className="w-full justify-start" onClick={handleLinkClick}>
