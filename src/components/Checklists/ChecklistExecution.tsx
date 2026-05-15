@@ -74,7 +74,7 @@ export function ChecklistExecution({
     setCompletedItems(prev => 
       prev.map(item => 
         item.id === itemId 
-          ? { ...item, evidence: Array.from(files) }
+          ? { ...item, evidence: Array.from(files).map(f => ({ id: `ev-${Date.now()}`, file: f, url: URL.createObjectURL(f), timestamp: new Date() })) }
           : item
       )
     );
