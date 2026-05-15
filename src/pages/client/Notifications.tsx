@@ -154,7 +154,7 @@ const ClientNotifications = () => {
           </div>
 
 
-      <Card>
+          </div>
         <CardContent className="p-0">
           {filteredNotifications.length > 0 ? (
             <div className="divide-y">
