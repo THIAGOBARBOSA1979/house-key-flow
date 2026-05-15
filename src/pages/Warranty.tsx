@@ -351,6 +351,7 @@ const Warranty = () => {
               </TabsContent>
             </Tabs>
           )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
