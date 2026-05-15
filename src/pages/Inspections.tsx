@@ -50,26 +50,59 @@ import { useToast } from "@/components/ui/use-toast";
 export default function Inspections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [filterTechnician, setFilterTechnician] = useState("all");
+  const [filterProperty, setFilterProperty] = useState("all");
   const [activeTab, setActiveTab] = useState("list");
   const [inspections, setInspections] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  const { toast } = useToast();
+
+  const loadData = () => {
+    setInspections(inspectionService.getAll());
+  };
 
   useEffect(() => {
-    setInspections(inspectionService.getAll());
+    loadData();
   }, []);
 
   const filteredInspections = useMemo(() => {
     return inspections.filter(inspection => {
-      const matchesSearch = inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           inspection.client.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = 
+        inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inspection.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inspection.unit.toLowerCase().includes(searchTerm.toLowerCase());
+      
       const matchesStatus = filterStatus === "all" || inspection.status === filterStatus;
-      return matchesSearch && matchesStatus;
+      const matchesTech = filterTechnician === "all" || inspection.technician === filterTechnician;
+      const matchesProperty = filterProperty === "all" || inspection.property === filterProperty;
+      
+      return matchesSearch && matchesStatus && matchesTech && matchesProperty;
     });
-  }, [inspections, searchTerm, filterStatus]);
+  }, [inspections, searchTerm, filterStatus, filterTechnician, filterProperty]);
 
   const clearFilters = () => {
     setSearchTerm("");
     setFilterStatus("all");
+    setFilterTechnician("all");
+    setFilterProperty("all");
+  };
+
+  const handleExport = () => {
+    const data = inspectionService.exportData('csv');
+    const blob = new Blob([data], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `relatorio-vistorias-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    
+    toast({
+      title: "Relatório gerado",
+      description: "O arquivo CSV foi baixado com sucesso.",
+    });
   };
 
   const stats = useMemo(() => {
