@@ -13,6 +13,8 @@ export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string 
     { id: "f1", name: "Contratos" },
     { id: "f2", name: "Vistorias 2025" },
     { id: "f3", name: "Alvarás" },
+    { id: "f4", name: "Projetos Estruturais" },
+    { id: "f5", name: "Licenças Ambientais" },
   ];
 
   return (

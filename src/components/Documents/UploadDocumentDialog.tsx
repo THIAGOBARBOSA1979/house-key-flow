@@ -177,10 +177,14 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
             </div>
           </div>
 
-          <div className="mt-2 p-4 border-2 border-dashed rounded-lg flex flex-col items-center justify-center bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer">
-            <FileUp className="w-8 h-8 text-muted-foreground mb-2" />
-            <p className="text-xs font-medium">Clique ou arraste o arquivo aqui</p>
-            <p className="text-[10px] text-muted-foreground mt-1">PDF, DOCX, JPG ou PNG (Máx 10MB)</p>
+          <div 
+            className="mt-2 p-6 border-2 border-dashed rounded-xl flex flex-col items-center justify-center bg-muted/30 hover:bg-primary/5 hover:border-primary/50 transition-all cursor-pointer group"
+          >
+            <div className="p-3 rounded-full bg-primary/10 text-primary mb-3 group-hover:scale-110 transition-transform">
+              <FileUp className="w-6 h-6" />
+            </div>
+            <p className="text-sm font-bold text-foreground">Clique ou arraste o arquivo aqui</p>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase font-black tracking-widest">PDF, DOCX, JPG ou PNG (Máx 10MB)</p>
           </div>
         </div>
 
