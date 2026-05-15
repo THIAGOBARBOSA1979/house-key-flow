@@ -416,7 +416,7 @@ const ClientWarranty = () => {
         redirectLabel="Ver minhas vistorias"
         variant="overlay"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
           {/* Left column */}
           <div className="space-y-4">
             <Card className="shadow-sm border-primary/10">
