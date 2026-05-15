@@ -32,23 +32,31 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
 
   if (collapsed) {
     return (
-      <div className="space-y-2 py-2">
+      <div className="space-y-3 py-4 flex flex-col items-center">
         {items.map((item) => {
           const Icon = item.icon;
+          const isActive = item.end 
+            ? location.pathname === item.to 
+            : location.pathname.startsWith(item.to);
+            
           return (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.end}
-              className={({ isActive }) => cn(
-                "flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all duration-200 active:scale-95",
+              className={cn(
+                "flex items-center justify-center h-11 w-11 rounded-xl transition-all duration-300 active:scale-95 group relative",
                 isActive 
-                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
-                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground/70 hover:text-sidebar-foreground"
+                  ? "bg-primary text-primary-foreground shadow-sem-md shadow-primary/30" 
+                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground/60 hover:text-sidebar-foreground"
               )}
-              title={item.label}
             >
-              <Icon size={20} />
+              <Icon size={20} className={cn("transition-transform duration-300", isActive && "scale-110")} />
+              
+              {/* Tooltip fallback for collapsed sidebar */}
+              <div className="absolute left-full ml-3 px-3 py-2 bg-sidebar-foreground text-sidebar-background rounded-lg text-xs font-bold opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 whitespace-nowrap z-tooltip shadow-sem-xl">
+                {item.label}
+              </div>
             </NavLink>
           );
         })}
