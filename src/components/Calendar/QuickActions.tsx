@@ -107,22 +107,22 @@ export const QuickActions = ({
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <Button onClick={onNewAppointment} className="rounded-xl font-bold h-11 shadow-sem-sm active:scale-95 transition-all">
+            <Button onClick={onNewAppointment} className="font-black uppercase tracking-widest text-xs">
               <Plus className="mr-2 h-4 w-4" />
               Novo Agendamento
             </Button>
             
-            <Button variant="outline" onClick={() => setFilterSheetOpen(true)} className="rounded-xl font-bold h-11 bg-card/50 border-border/10 hover:bg-primary/5 active:scale-95 transition-all">
+            <Button variant="outline" onClick={() => setFilterSheetOpen(true)} className="font-black uppercase tracking-widest text-xs">
               <Filter className="mr-2 h-4 w-4" />
               Filtros Avançados
             </Button>
             
-            <Button variant="outline" onClick={() => handleExport("csv")} className="rounded-xl font-bold h-11 bg-card/50 border-border/10 hover:bg-primary/5 active:scale-95 transition-all">
+            <Button variant="outline" onClick={() => handleExport("csv")} className="font-black uppercase tracking-widest text-xs">
               <Download className="mr-2 h-4 w-4" />
-              Exportar Agenda (CSV)
+              Exportar Agenda
             </Button>
             
-            <Button variant="outline" onClick={() => handleQuickAction("Configurações")} className="rounded-xl font-bold h-11 bg-card/50 border-border/10 hover:bg-primary/5 active:scale-95 transition-all">
+            <Button variant="outline" onClick={() => handleQuickAction("Configurações")} className="font-black uppercase tracking-widest text-xs">
               <Settings className="mr-2 h-4 w-4" />
               Configurações
             </Button>
