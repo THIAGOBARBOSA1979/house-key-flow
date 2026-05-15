@@ -29,6 +29,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { documentService } from "@/services/DocumentService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
 import { useMemo } from "react";
 
 const Dashboard = () => {
