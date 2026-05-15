@@ -99,7 +99,7 @@ const ClientArea = () => {
         title="Área do Cliente"
         description="Gestão centralizada de clientes e acesso"
       >
-        <Button variant="outline" onClick={() => exportService.exportToCSV(clients, 'clientes_a2')}>
+        <Button variant="outline" onClick={() => exportService.exportToCSV(allProfiles, 'clientes_a2')}>
           <Download className="mr-2 h-4 w-4" />
           Exportar
         </Button>
