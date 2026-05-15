@@ -253,7 +253,7 @@ export default function Inspections() {
                   className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm"
                 >
                   <CardContent className="p-0">
-                    <InspectionItem inspection={inspection} />
+                    <InspectionItem inspection={inspection} onUpdate={loadData} />
                   </CardContent>
                 </Card>
               )}
