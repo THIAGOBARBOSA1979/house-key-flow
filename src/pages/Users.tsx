@@ -14,6 +14,8 @@ import { userService, type User as UserType } from "@/services/UserService";
 import { auditLogService } from "@/services/AuditLogService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
+import { DataTable } from "@/components/shared/DataTable";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { cn } from "@/lib/utils";
 import { exportService } from "@/services/ExportService";
 
@@ -246,13 +248,13 @@ const Users = () => {
         <Button onClick={() => { setEditingUser(null); setIsUserFormOpen(true); }}><Plus className="mr-2 h-4 w-4" />Novo Usuário</Button>
       </PageHeader>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <ResponsiveGrid columns={5} gap="md">
         <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" />
         <StatsCard label="Usuários Ativos" value={stats.active} icon={UserCheck} variant="complete" />
         <StatsCard label="Usuários Inativos" value={stats.inactive} icon={UserMinus} variant="critical" />
         <StatsCard label="Total Clientes" value={stats.clients} icon={User} variant="progress" />
         <StatsCard label="Total Equipe" value={stats.staff} icon={UserCog} variant="default" />
-      </div>
+      </ResponsiveGrid>
 
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
         <CardContent className="p-4">

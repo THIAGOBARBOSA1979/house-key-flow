@@ -12,6 +12,8 @@ import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, F
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from '@/components/shared/StatsCard';
+import { ResponsiveGrid } from '@/components/shared/ResponsiveGrid';
+import { StatusBadge } from '@/components/shared/StatusBadge';
 import { cn } from '@/lib/utils';
 
 import { ChecklistTemplate, ChecklistExecutionRecord } from '@/services/ChecklistService';
@@ -146,12 +148,12 @@ export default function Checklist() {
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <ResponsiveGrid columns={4} gap="md">
         <StatsCard label="Modelos" value={checklistService.getAllTemplates().length.toString()} icon={FileText} variant="brand" description="Templates ativos" />
         <StatsCard label="Vistorias" value={checklistService.getAllExecutions().length.toString()} icon={PlayCircle} variant="progress" description="Execuções totais" />
         <StatsCard label="Conformidade" value="88.5%" icon={CheckCircle2} variant="complete" description="Média técnica" />
         <StatsCard label="Pendências" value="14" icon={AlertCircle} variant="critical" description="Itens não conformes" />
-      </div>
+      </ResponsiveGrid>
 
       <Tabs defaultValue="templates" className="space-y-6">
         <TabsList className="bg-muted/50 p-1 rounded-xl w-full max-w-lg">
@@ -204,14 +206,11 @@ export default function Checklist() {
                             </p>
                           </div>
                         </div>
-                        <Badge variant="outline" className={cn(
-                          "rounded-lg text-sem-tiny font-black px-3 py-1",
-                          exec.conformityRate === 100 
-                            ? "bg-status-complete/10 text-status-complete border-status-complete/20"
-                            : "bg-status-pending/10 text-status-pending border-status-pending/20"
-                        )}>
-                          {exec.conformityRate}% OK
-                        </Badge>
+                        <StatusBadge 
+                          status={exec.conformityRate === 100 ? "complete" : "progress"} 
+                          label={`${exec.conformityRate}% OK`}
+                          size="sm"
+                        />
                       </div>
                     ))
                   ) : (
