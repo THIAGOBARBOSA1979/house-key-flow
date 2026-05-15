@@ -1,6 +1,19 @@
 import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ClipboardCheck, Calendar as CalendarIcon, History, Clock, CheckCircle2, AlertCircle, BarChart, LayoutGrid } from "lucide-react";
+import { 
+  ClipboardCheck, 
+  Calendar as CalendarIcon, 
+  History, 
+  Clock, 
+  CheckCircle2, 
+  AlertCircle, 
+  BarChart, 
+  LayoutGrid, 
+  Filter, 
+  Download,
+  Users,
+  Building
+} from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -20,6 +33,19 @@ import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
 import { cn } from "@/lib/utils";
+import { 
+  PieChart, 
+  Pie, 
+  Cell, 
+  ResponsiveContainer, 
+  BarChart as ReBarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  Tooltip as ReTooltip, 
+  Legend 
+} from 'recharts';
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Inspections() {
   const [searchTerm, setSearchTerm] = useState("");
