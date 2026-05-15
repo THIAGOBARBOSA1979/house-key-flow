@@ -6,6 +6,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Check, X, Upload, Camera, MessageSquare, CheckCircle, AlertCircle } from "lucide-react";
+import { checklistService, ChecklistTemplate, ChecklistGroup } from "@/services/ChecklistService";
+import { inspectionService } from "@/services/InspectionService";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type InspectionItem = {
   id: string;
@@ -15,39 +19,35 @@ type InspectionItem = {
   attachments?: string[];
 };
 
-type InspectionGroup = {
-  id: string;
-  name: string;
-  items: InspectionItem[];
-};
+type InspectionGroup = ChecklistGroup;
 
 // Example data for an inspection checklist
-const mockInspectionData: InspectionGroup[] = [
+const mockInspectionData: ChecklistGroup[] = [
   {
     id: "g1",
     name: "Paredes e Tetos",
     items: [
-      { id: "item1", name: "Acabamento das paredes (pintura, textura)", conformity: "pending" },
-      { id: "item2", name: "Ausência de trincas ou rachaduras", conformity: "pending" },
-      { id: "item3", name: "Alinhamento de paredes e teto", conformity: "pending" }
+      { id: "item1", name: "Acabamento das paredes (pintura, textura)", description: "Acabamento das paredes (pintura, textura)", required: true, conformity: "pending" },
+      { id: "item2", name: "Ausência de trincas ou rachaduras", description: "Ausência de trincas ou rachaduras", required: true, conformity: "pending" },
+      { id: "item3", name: "Alinhamento de paredes e teto", description: "Alinhamento de paredes e teto", required: true, conformity: "pending" }
     ]
   },
   {
     id: "g2",
     name: "Instalações Hidráulicas",
     items: [
-      { id: "item4", name: "Funcionamento de torneiras", conformity: "pending" },
-      { id: "item5", name: "Vazamentos em conexões", conformity: "pending" },
-      { id: "item6", name: "Escoamento de águas", conformity: "pending" }
+      { id: "item4", name: "Funcionamento de torneiras", description: "Funcionamento de torneiras", required: true, conformity: "pending" },
+      { id: "item5", name: "Vazamentos em conexões", description: "Vazamentos em conexões", required: true, conformity: "pending" },
+      { id: "item6", name: "Escoamento de águas", description: "Escoamento de águas", required: true, conformity: "pending" }
     ]
   },
   {
     id: "g3",
     name: "Instalações Elétricas",
     items: [
-      { id: "item7", name: "Funcionamento de interruptores", conformity: "pending" },
-      { id: "item8", name: "Tomadas energizadas", conformity: "pending" },
-      { id: "item9", name: "Iluminação em funcionamento", conformity: "pending" }
+      { id: "item7", name: "Funcionamento de interruptores", description: "Funcionamento de interruptores", required: true, conformity: "pending" },
+      { id: "item8", name: "Tomadas energizadas", description: "Tomadas energizadas", required: true, conformity: "pending" },
+      { id: "item9", name: "Iluminação em funcionamento", description: "Iluminação em funcionamento", required: true, conformity: "pending" }
     ]
   }
 ];
@@ -60,17 +60,55 @@ export const StartInspection = ({
   onComplete?: (data: any) => void;
 }) => {
   const { toast } = useToast();
-  const [groups, setGroups] = useState<InspectionGroup[]>(() => {
-    const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Failed to parse saved progress", e);
+  const [signature, setSignature] = useState("");
+  const [groups, setGroups] = useState<ChecklistGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    const loadInspectionAndChecklist = () => {
+      setLoading(true);
+      const inspections = inspectionService.getAll();
+      const inspection = inspections.find(i => i.id === inspectionId);
+      
+      const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
+      if (saved) {
+        try {
+          setGroups(JSON.parse(saved));
+          setLoading(false);
+          return;
+        } catch (e) {
+          console.error("Failed to parse saved progress", e);
+        }
       }
-    }
-    return mockInspectionData;
-  });
+
+      if (inspection?.checklistId) {
+        const template = checklistService.getTemplateById(inspection.checklistId);
+        if (template) {
+          // Adapt template to groups if necessary
+          if (template.groups) {
+            setGroups(template.groups);
+          } else if (template.items) {
+            setGroups([{
+              id: "default",
+              name: "Geral",
+              items: template.items.map(item => ({
+                ...item,
+                name: item.description,
+                conformity: "pending" as const
+              }))
+            }]);
+          }
+        } else {
+          setGroups(mockInspectionData as any);
+        }
+      } else {
+        setGroups(mockInspectionData as any);
+      }
+      setLoading(false);
+    };
+
+    loadInspectionAndChecklist();
+  }, [inspectionId]);
   const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -80,10 +118,10 @@ export const StartInspection = ({
   }, [groups, inspectionId]);
   
   // Calculate progress
-  const totalItems = groups.reduce((acc, group) => acc + group.items.length, 0);
+  const totalItems = groups.reduce((acc, group) => acc + (group.items?.length || 0), 0);
   const completedItems = groups.reduce((acc, group) => 
-    acc + group.items.filter(item => item.conformity !== "pending").length, 0);
-  const progress = Math.round((completedItems / totalItems) * 100);
+    acc + (group.items?.filter(item => item.conformity && item.conformity !== "pending").length || 0), 0);
+  const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
   
   const handleConformityChange = (groupId: string, itemId: string, value: "conform" | "nonconform") => {
     setGroups(prevGroups => 
@@ -140,11 +178,20 @@ export const StartInspection = ({
   };
 
   const handleSubmit = () => {
+    if (!signature.trim()) {
+      toast({
+        title: "Assinatura necessária",
+        description: "Por favor, informe seu nome para assinar a vistoria.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     // Check if all items have been evaluated
     const allCompleted = groups.every(group => 
-      group.items.every(item => item.conformity !== "pending")
+      group.items.every(item => item.conformity && item.conformity !== "pending")
     );
     
     if (!allCompleted) {
@@ -165,7 +212,7 @@ export const StartInspection = ({
     setTimeout(() => {
       toast({
         title: "Vistoria finalizada com sucesso!",
-        description: `${nonConformCount} itens necessitam de atenção.`,
+        description: `${nonConformCount} itens necessitam de atenção. Assinado por: ${signature}`,
       });
       
       localStorage.removeItem(`inspection_progress_${inspectionId}`);
@@ -207,6 +254,15 @@ export const StartInspection = ({
     }
   };
   
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 space-y-4">
+        <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-muted-foreground font-medium">Carregando checklist...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Progress bar */}
@@ -222,7 +278,7 @@ export const StartInspection = ({
         </div>
         <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden shadow-inner">
           <div 
-            className="h-full bg-primary" 
+            className="h-full bg-primary transition-all duration-500" 
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -255,10 +311,10 @@ export const StartInspection = ({
           <CardTitle>{currentGroup.name}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {currentGroup.items.map(item => (
-            <div key={item.id} className="border rounded-md p-4 space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <h4 className="font-medium">{item.name}</h4>
+          {currentGroup.items?.map(item => (
+            <div key={item.id} className="border rounded-md p-4 space-y-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <h4 className="font-bold text-sm text-foreground/90">{item.name || item.description}</h4>
                 
                 <div className="flex gap-2">
                   <Button
@@ -324,11 +380,11 @@ export const StartInspection = ({
                   </div>
                   
                   {item.conformity === "nonconform" && (
-                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-md flex gap-3">
-                      <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-md flex gap-3 animate-in zoom-in-95">
+                      <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
                       <div className="text-sm">
-                        <p className="font-medium text-amber-800">Item não conforme</p>
-                        <p className="text-amber-700">Uma solicitação de serviço será gerada automaticamente ao finalizar a vistoria.</p>
+                        <p className="font-bold text-red-800 uppercase text-[10px] tracking-tight">Item não conforme</p>
+                        <p className="text-red-700 leading-tight">Uma solicitação de serviço será gerada automaticamente ao finalizar esta vistoria.</p>
                       </div>
                     </div>
                   )}
@@ -358,13 +414,26 @@ export const StartInspection = ({
             Próximo grupo
           </Button>
         ) : (
-          <Button 
-            type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Enviando..." : "Finalizar vistoria"}
-          </Button>
+          <div className="flex flex-col gap-4 w-full sm:w-auto">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="signature" className="text-xs font-bold uppercase">Assinatura do Técnico/Cliente</Label>
+              <Input 
+                id="signature"
+                placeholder="Nome completo para assinatura" 
+                value={signature}
+                onChange={(e) => setSignature(e.target.value)}
+                className="max-w-xs"
+              />
+            </div>
+            <Button 
+              type="button"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="bg-primary hover:bg-primary/90 font-bold"
+            >
+              {isSubmitting ? "Enviando..." : "Finalizar vistoria"}
+            </Button>
+          </div>
         )}
       </div>
     </div>

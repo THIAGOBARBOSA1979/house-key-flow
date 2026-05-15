@@ -6,6 +6,7 @@ import { auditLogService } from './AuditLogService';
 export interface ChecklistItem {
   id: string;
   description: string;
+  name?: string; // Added for compatibility with StartInspection
   required: boolean;
   conditional?: {
     dependsOn: string;
@@ -13,13 +14,22 @@ export interface ChecklistItem {
   };
   evidence?: any[];
   status?: 'ok' | 'issue' | 'na';
+  conformity?: "pending" | "conform" | "nonconform"; // For StartInspection compatibility
+  notes?: string;
+}
+
+export interface ChecklistGroup {
+  id: string;
+  name: string;
+  items: ChecklistItem[];
 }
 
 export interface ChecklistTemplate {
   id: string;
   title: string;
   description: string;
-  items: ChecklistItem[];
+  items?: ChecklistItem[]; // Backward compatibility
+  groups?: ChecklistGroup[]; // Grouped structure
   createdAt: Date;
   lastUpdated: Date;
 }
