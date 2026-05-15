@@ -190,7 +190,6 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
               )}
             />
           </div>
-          </div>
 
           <FormField
             control={form.control}
