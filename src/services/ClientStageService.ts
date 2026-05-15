@@ -49,7 +49,7 @@ const initialMockProfiles: ClientProfile[] = [
     name: 'João Silva',
     email: 'cliente@exemplo.com',
     phone: '(11) 99999-8888',
-    currentStage: 'registered',
+    currentStage: 'inspection_enabled',
     propertyId: 'prop-1',
     propertyName: 'Edifício Aurora',
     unitNumber: '101',
@@ -61,6 +61,15 @@ const initialMockProfiles: ClientProfile[] = [
         toStage: 'registered',
         changedAt: new Date(2025, 1, 15),
         reason: 'Cadastro inicial do cliente',
+        changedBy: 'Sistema',
+        isAutomatic: true
+      },
+      {
+        id: 'sh-4',
+        fromStage: 'registered',
+        toStage: 'inspection_enabled',
+        changedAt: new Date(2025, 4, 1),
+        reason: 'Liberação automática para demonstração',
         changedBy: 'Sistema',
         isAutomatic: true
       }
