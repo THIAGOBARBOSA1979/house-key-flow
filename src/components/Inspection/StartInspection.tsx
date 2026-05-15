@@ -127,6 +127,18 @@ export const StartInspection = ({
     });
   };
   
+  const handleReset = () => {
+    if (window.confirm("Tem certeza que deseja limpar todo o progresso desta vistoria?")) {
+      setGroups(mockInspectionData);
+      localStorage.removeItem(`inspection_progress_${inspectionId}`);
+      setCurrentGroupIndex(0);
+      toast({
+        title: "Progresso resetado",
+        description: "Todos os itens voltaram ao estado pendente.",
+      });
+    }
+  };
+
   const handleSubmit = () => {
     setIsSubmitting(true);
     
