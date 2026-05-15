@@ -59,44 +59,36 @@ export const PropertyCard = ({ property, onEdit, onDelete, className }: Property
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pt-2">
+      <CardContent className="space-y-4 pt-2 flex-1">
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
-            <p className="text-tiny text-muted-foreground uppercase font-bold tracking-widest mb-1">Unidades</p>
+          <div className="bg-muted/20 p-2.5 rounded-xl border border-border/10 flex flex-col justify-center">
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
             <div className="flex items-center gap-2">
-              <div className="p-1 bg-primary/10 rounded">
-                <Home size={14} className="text-primary" />
-              </div>
-              <span className="text-sm font-bold">{property.units}</span>
+              <Home size={13} className="text-primary opacity-70" />
+              <span className="text-sm font-black">{property.units}</span>
             </div>
           </div>
-          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50">
-            <p className="text-tiny text-muted-foreground uppercase font-bold tracking-widest mb-1">Entregues</p>
+          <div className="bg-muted/20 p-2.5 rounded-xl border border-border/10 flex flex-col justify-center">
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Gerente</p>
             <div className="flex items-center gap-2">
-              <div className="p-1 bg-emerald-500/10 rounded">
-                <Users size={14} className="text-emerald-500" />
-              </div>
-              <span className="text-sm font-bold">{property.completedUnits}</span>
+              <Users size={13} className="text-emerald-500 opacity-70" />
+              <span className="text-sm font-black truncate">{property.manager || "N/A"}</span>
             </div>
           </div>
         </div>
         
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-tiny font-bold">
-            <span className="text-muted-foreground">PROGRESSO DA ENTREGA</span>
+        <div className="space-y-2 pt-1">
+          <div className="flex justify-between items-center text-[10px] font-black tracking-tighter">
+            <span className="text-muted-foreground uppercase opacity-70">CONSTRUÇÃO / ENTREGA</span>
             <span className="text-primary">{completionPercentage}%</span>
           </div>
-          <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden border border-border/20">
+          <div className="w-full h-2 bg-muted/40 rounded-full overflow-hidden border border-border/5">
             <div 
               className={cn(
                 "h-full transition-all duration-1000 ease-out rounded-full",
-                property.status === 'complete' ? "bg-emerald-500" : "bg-primary"
+                property.status === 'complete' ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]" : "bg-primary shadow-[0_0_8px_rgba(var(--primary),0.3)]"
               )} 
               style={{ width: `${completionPercentage}%` }}
-              role="progressbar"
-              aria-valuenow={completionPercentage}
-              aria-valuemin={0}
-              aria-valuemax={100}
             />
           </div>
         </div>
