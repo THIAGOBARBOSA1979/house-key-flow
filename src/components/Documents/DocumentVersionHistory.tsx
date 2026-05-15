@@ -10,6 +10,8 @@ import { History, Download, Eye, Clock, User } from "lucide-react";
 
 interface DocumentVersionHistoryProps {
   document: Document;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onRestoreVersion?: (versionId: string) => void;
 }
 
