@@ -17,6 +17,7 @@ interface PropertyCardProps {
   property: Property;
   onEdit?: () => void;
   onDelete?: () => void;
+  onClick?: () => void;
   className?: string;
 }
 
