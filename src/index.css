@@ -162,26 +162,26 @@
 
   .dark {
     /* --- Semantic Colors - Dark Theme --- */
-    --background: 222 47% 4%;
-    --foreground: 210 40% 98%;
+    --background: var(--gray-900);
+    --foreground: var(--gray-50);
 
-    --card: 222 47% 6%;
-    --card-foreground: 210 40% 98%;
+    --card: var(--gray-800);
+    --card-foreground: var(--gray-50);
 
-    --popover: 222 47% 6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: var(--gray-800);
+    --popover-foreground: var(--gray-50);
 
     --primary: 217 91% 60%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: var(--gray-700);
+    --secondary-foreground: var(--gray-50);
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: var(--gray-700);
+    --muted-foreground: var(--gray-400);
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: var(--gray-700);
+    --accent-foreground: var(--gray-50);
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
