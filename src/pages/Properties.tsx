@@ -33,6 +33,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PropertyForm } from "@/components/Properties/PropertyForm";
+import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
