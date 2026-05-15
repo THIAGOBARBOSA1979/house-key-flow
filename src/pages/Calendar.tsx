@@ -169,13 +169,17 @@ const Calendar = () => {
           isOpen={!!selectedAppointment}
           onOpenChange={(open) => !open && setSelectedAppointment(null)}
           onStatusChange={handleStatusChange}
+          onUpdate={handleUpdateAppointment}
         />
       )}
 
       {scheduleDialogOpen && (
         <ScheduleInspectionDialog 
           triggerButton={<div className="hidden" />} 
-          onSuccess={() => setScheduleDialogOpen(false)}
+          onSuccess={() => {
+            setScheduleDialogOpen(false);
+            loadAppointments();
+          }}
         />
       )}
     </div>
