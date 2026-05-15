@@ -42,7 +42,21 @@ export type Property = z.infer<typeof propertySchema>;
 
 class PropertyService {
   private properties: Property[] = [
-    { id: "1", name: "Edifício Aurora", location: "São Paulo, SP", units: 120, completedUnits: 85, status: "progress", manager: "Carlos Andrade", totalArea: 12500 },
+    { 
+      id: "1", 
+      name: "Edifício Aurora", 
+      location: "São Paulo, SP", 
+      units: 120, 
+      completedUnits: 85, 
+      status: "progress", 
+      manager: "Carlos Andrade", 
+      totalArea: 12500,
+      milestones: [
+        { id: "m1", title: "Fundação", targetDate: new Date(2023, 5, 10), completed: true, completedAt: new Date(2023, 5, 15) },
+        { id: "m2", title: "Estrutura", targetDate: new Date(2024, 2, 20), completed: true, completedAt: new Date(2024, 2, 25) },
+        { id: "m3", title: "Acabamento", targetDate: new Date(2025, 8, 30), completed: false }
+      ]
+    },
     { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400 },
     { id: "3", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200 },
     { id: "4", name: "Residencial Parque das Flores", location: "Curitiba, PR", units: 60, completedUnits: 60, status: "complete", manager: "Carlos Andrade", totalArea: 6800 },
