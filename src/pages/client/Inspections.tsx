@@ -82,19 +82,37 @@ const ClientInspections = () => {
   };
 
   const handleConfirmPresence = () => {
-    toast({ title: "Presença confirmada", description: "Obrigado por confirmar sua presença na vistoria." });
+    if (selectedInspection && user?.id) {
+      const success = inspectionService.confirmPresence(selectedInspection, user.id);
+      if (success) {
+        toast({ title: "Presença confirmada", description: "Obrigado por confirmar sua presença na vistoria." });
+      }
+    }
   };
-
+  
   const handleRequestReschedule = () => {
-    toast({ title: "Solicitação de remarcação enviada", description: "Em breve entraremos em contato para agendar uma nova data." });
+    if (selectedInspection && user?.id) {
+      const success = inspectionService.requestReschedule(selectedInspection, user.id);
+      if (success) {
+        toast({ title: "Solicitação de remarcação enviada", description: "Em breve entraremos em contato para agendar uma nova data." });
+      }
+    }
   };
-
+  
   const handleContactTeam = () => {
+    // In a real app, this could open a chat or send a notification
     toast({ title: "Mensagem enviada", description: "Nossa equipe receberá sua mensagem e entrará em contato em breve." });
   };
-
+  
   const handleViewPdf = () => {
-    toast({ title: "Abrindo documento", description: "O relatório em PDF será aberto em uma nova aba." });
+    if (selectedInspection) {
+      const report = inspectionService.getReport(selectedInspection);
+      if (report) {
+        toast({ title: "Abrindo documento", description: "O relatório em PDF será aberto em uma nova aba." });
+        // Simulating PDF opening
+        console.log("Opening report:", report);
+      }
+    }
   };
 
   const handleAcceptInspection = (inspectionId: string) => {
