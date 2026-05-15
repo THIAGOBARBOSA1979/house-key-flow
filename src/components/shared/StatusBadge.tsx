@@ -100,10 +100,11 @@ export const StatusBadge = ({
       role="status"
       aria-label={`${config.defaultLabel}: ${label || config.defaultLabel}`}
       className={cn(
-        "badge-status transition-all duration-200",
+        "badge-status transition-all duration-300",
         config.badgeClass,
-        size === "sm" && "px-2 py-0.5 text-tiny gap-1",
-        size === "lg" && "px-4 py-1.5 text-sem-body-sm gap-2 font-bold",
+        "shadow-sem-sm hover:shadow-sem-md hover:scale-[1.02] cursor-default",
+        size === "sm" && "px-2.5 py-1 text-[10px] gap-1 font-black uppercase tracking-widest",
+        size === "lg" && "px-4 py-2 text-sem-body-sm gap-2 font-bold rounded-xl",
         className
       )}
     >
@@ -117,7 +118,7 @@ export const StatusBadge = ({
           aria-hidden="true"
         />
       )}
-      <span className="truncate">{label || config.defaultLabel}</span>
+      <span className="truncate whitespace-nowrap">{label || config.defaultLabel}</span>
     </span>
   );
 };
