@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DocumentVersion, Document } from "@/services/DocumentService";
 import { History, Download, Eye, Clock, User } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DocumentVersionHistoryProps {
   document: Document;
