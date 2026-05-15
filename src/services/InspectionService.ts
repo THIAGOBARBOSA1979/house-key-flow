@@ -286,6 +286,10 @@ class InspectionService {
       return acc;
     }, {} as Record<string, number>);
   }
+
+  getByTechnician(technicianId: string) {
+    return this.inspections.filter(i => i.technician === technicianId);
+  }
 }
 
 export const inspectionService = new InspectionService();
