@@ -490,7 +490,7 @@ const Dashboard = () => {
             <Link to="/client/properties" className="group">
               <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
                 <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
-                  <Building className="h-6 w-6 text-primary group-hover:text-white" />
+                  <Building2 className="h-6 w-6 text-primary group-hover:text-white" />
                 </div>
                 <span className="font-bold text-sm">Dados do Imóvel</span>
               </div>
