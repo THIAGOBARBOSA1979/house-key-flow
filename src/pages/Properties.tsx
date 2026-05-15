@@ -85,6 +85,10 @@ const Properties = () => {
 
   const refreshList = () => {
     setProperties(propertyService.getAll());
+    if (selectedProperty) {
+      const updated = propertyService.getById(selectedProperty.id!);
+      if (updated) setSelectedProperty(updated);
+    }
   };
 
   const handleCreate = (data: Property) => {
