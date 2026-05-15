@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Search, User, Shield, ChevronLeft, ChevronRight, Download, Activity, Filter, RotateCcw, Maximize2 } from "lucide-react";
 import { isValid } from "date-fns";
-import { safeFormat } from "@/lib/utils";
+import { cn, safeFormat } from "@/lib/utils";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services/AuditLogService";
 import { exportService } from "@/services/ExportService";
 
@@ -150,44 +150,46 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
 
         {/* Log entries */}
         {paginatedLogs.length > 0 ? (
-          <div className="border border-border/10 rounded-xl overflow-hidden shadow-sem-sm">
+          <div className="border border-border/10 rounded-2xl overflow-hidden shadow-sem-sm bg-background/50">
             <table className="w-full text-sm">
-              <thead className="bg-muted/30">
+              <thead className="bg-muted/40 border-b border-border/10">
                 <tr>
-                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground">Data/Hora</th>
-                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground">Usuário</th>
-                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground">Ação</th>
-                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground hidden md:table-cell">Detalhes</th>
-                  <th className="py-4 px-4 text-right text-xs font-black uppercase tracking-widest text-muted-foreground">Info</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground">Data/Hora</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground">Usuário</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ação</th>
+                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground hidden md:table-cell">Detalhes</th>
+                  <th className="py-4 px-6 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {paginatedLogs.map(log => (
-                  <tr key={log.id} className="group hover:bg-muted/20 transition-all border-b border-border/5">
-                    <td className="py-2 px-3 text-muted-foreground whitespace-nowrap">
+                  <tr key={log.id} className="group hover:bg-muted/30 transition-all border-b border-border/5 last:border-0">
+                    <td className="py-4 px-6 text-muted-foreground whitespace-nowrap font-medium">
                       {safeFormat(log.timestamp, "dd/MM/yy HH:mm")}
                     </td>
-                    <td className="py-2 px-3">
-                      <div className="flex items-center gap-1.5">
-                        {log.performedByRole === "admin" ? (
-                          <Shield className="h-3.5 w-3.5 text-primary" />
-                        ) : (
-                          <User className="h-3.5 w-3.5 text-muted-foreground" />
-                        )}
-                        <span className="truncate max-w-[120px]">{log.performedByName}</span>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-lg bg-muted/50 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                          {log.performedByRole === "admin" ? (
+                            <Shield className="h-4 w-4" />
+                          ) : (
+                            <User className="h-4 w-4" />
+                          )}
+                        </div>
+                        <span className="truncate max-w-[150px] font-bold text-foreground/80">{log.performedByName}</span>
                       </div>
                     </td>
-                    <td className="py-2 px-3">
-                      <Badge variant="secondary" className={ACTION_COLORS[log.action]}>
+                    <td className="py-4 px-6">
+                      <Badge variant="secondary" className={cn("rounded-lg px-3 py-1", ACTION_COLORS[log.action])}>
                         {ACTION_LABELS[log.action]}
                       </Badge>
                     </td>
-                    <td className="py-2 px-3 hidden md:table-cell text-muted-foreground truncate max-w-[300px]">
+                    <td className="py-4 px-6 hidden md:table-cell text-muted-foreground truncate max-w-[350px]">
                       {log.details}
                     </td>
-                    <td className="py-4 px-4 text-right">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-all">
-                        <Maximize2 className="h-4 w-4" />
+                    <td className="py-4 px-6 text-right">
+                      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary hover:text-white shadow-none active:scale-95 transition-all">
+                        <Maximize2 className="h-4.5 w-4.5" />
                       </Button>
                     </td>
                   </tr>
