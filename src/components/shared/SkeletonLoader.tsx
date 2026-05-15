@@ -90,11 +90,11 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
         <Skeleton className="h-6 w-1/2" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-32 rounded-xl" />
+        <Skeleton className="h-32 rounded-lg" />
+        <Skeleton className="h-32 rounded-lg" />
+        <Skeleton className="h-32 rounded-lg" />
       </div>
-      <Skeleton className="h-96 rounded-xl w-full" />
+      <Skeleton className="h-96 rounded-lg w-full" />
     </div>
   );
 }
