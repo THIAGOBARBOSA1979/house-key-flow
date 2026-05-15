@@ -25,7 +25,7 @@ describe('Design System: StatusBadge Component', () => {
 
   it('should apply size classes correctly', () => {
     const { container: smContainer } = render(<StatusBadge status="success" size="sm" />);
-    expect(smContainer.querySelector('span[role="status"]')).toHaveClass('text-tiny');
+    expect(smContainer.querySelector('span[role="status"]')).toHaveClass('text-[9px]');
 
     const { container: lgContainer } = render(<StatusBadge status="success" size="lg" />);
     expect(lgContainer.querySelector('span[role="status"]')).toHaveClass('text-sem-body-sm');

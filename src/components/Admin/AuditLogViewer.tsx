@@ -11,6 +11,7 @@ import { isValid } from "date-fns";
 import { cn, safeFormat } from "@/lib/utils";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services/AuditLogService";
 import { exportService } from "@/services/ExportService";
+import { DataTable } from "@/components/shared/DataTable";
 
 interface AuditLogViewerProps {
   entityType?: AuditEntityType;
@@ -150,56 +151,65 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
 
         {/* Log entries */}
         {paginatedLogs.length > 0 ? (
-          <div className="border border-border/10 rounded-2xl overflow-hidden shadow-sem-sm bg-background/50">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/40 border-b border-border/10">
-                <tr>
-                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground">Data/Hora</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground">Usuário</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ação</th>
-                  <th className="py-4 px-6 text-left text-[10px] font-black uppercase tracking-widest text-muted-foreground hidden md:table-cell">Detalhes</th>
-                  <th className="py-4 px-6 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {paginatedLogs.map(log => (
-                  <tr key={log.id} className="group hover:bg-muted/30 transition-all border-b border-border/5 last:border-0">
-                    <td className="py-4 px-6 text-muted-foreground whitespace-nowrap font-medium">
-                      {safeFormat(log.timestamp, "dd/MM/yy HH:mm")}
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1.5 rounded-lg bg-muted/50 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                          {log.performedByRole === "admin" ? (
-                            <Shield className="h-4 w-4" />
-                          ) : (
-                            <User className="h-4 w-4" />
-                          )}
-                        </div>
-                        <span className="truncate max-w-[150px] font-bold text-foreground/80">{log.performedByName}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6">
-                      <Badge variant="secondary" className={cn("rounded-lg px-3 py-1", ACTION_COLORS[log.action])}>
-                        {ACTION_LABELS[log.action]}
-                      </Badge>
-                    </td>
-                    <td className="py-4 px-6 hidden md:table-cell text-muted-foreground truncate max-w-[350px]">
-                      {log.details}
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary hover:text-white shadow-none active:scale-95 transition-all">
-                        <Maximize2 className="h-4.5 w-4.5" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            columns={[
+              { 
+                header: "Data/Hora", 
+                accessorKey: "timestamp", 
+                cell: (log: AuditLogEntry) => (
+                  <span className="text-muted-foreground font-black tracking-tighter">
+                    {safeFormat(log.timestamp, "dd/MM/yy HH:mm")}
+                  </span>
+                ) 
+              },
+              { 
+                header: "Usuário", 
+                accessorKey: "performedByName",
+                cell: (log: AuditLogEntry) => (
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-muted/50 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300">
+                      {log.performedByRole === "admin" ? <Shield className="h-4 w-4" /> : <User className="h-4 w-4" />}
+                    </div>
+                    <span className="truncate max-w-[150px] font-bold text-foreground/80">{log.performedByName}</span>
+                  </div>
+                )
+              },
+              { 
+                header: "Ação", 
+                accessorKey: "action",
+                cell: (log: AuditLogEntry) => (
+                  <Badge variant="secondary" className={cn("rounded-lg px-3 py-1 font-black uppercase tracking-widest text-[10px] border shadow-none", ACTION_COLORS[log.action])}>
+                    {ACTION_LABELS[log.action]}
+                  </Badge>
+                )
+              },
+              { 
+                header: "Detalhes", 
+                accessorKey: "details",
+                className: "hidden md:table-cell max-w-[300px]",
+                cell: (log: AuditLogEntry) => (
+                  <span className="text-muted-foreground truncate block italic font-medium">
+                    {log.details}
+                  </span>
+                )
+              },
+              {
+                header: "Ver",
+                accessorKey: "id",
+                className: "text-right",
+                cell: () => (
+                  <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95">
+                    <Maximize2 className="h-4.5 w-4.5" />
+                  </Button>
+                )
+              }
+            ]}
+            data={paginatedLogs}
+          />
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            Nenhum log encontrado.
+          <div className="text-center py-12 bg-muted/5 rounded-2xl border border-dashed border-border/20">
+            <Activity className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />
+            <p className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Nenhum log encontrado</p>
           </div>
         )}
 

@@ -88,29 +88,31 @@ export function DataView<T>({
       {renderContent()}
       
       {isPaginationEnabled && (
-        <div className="flex flex-col sm:flex-row items-center justify-between py-6 border-t border-border/10 gap-4">
-          <p className="text-sem-body-sm text-muted-foreground font-medium">
+        <div className="flex flex-col sm:flex-row items-center justify-between py-8 border-t border-border/10 gap-6">
+          <p className="text-sem-body-sm text-muted-foreground/60 font-medium">
             Mostrando <span className="font-black text-foreground">{(effectivePage - 1) * itemsPerPage + 1}</span> a <span className="font-black text-foreground">{Math.min(effectivePage * itemsPerPage, totalItems)}</span> de <span className="font-black text-foreground">{totalItems}</span> registros
           </p>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-md border-2"
+              className="h-11 w-11 rounded-xl border-2 hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
               disabled={effectivePage === 1}
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} />
             </Button>
-            <div className="flex items-center gap-1.5 mx-2">
+            <div className="flex items-center gap-2 mx-2">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <Button
                   key={page}
                   variant={effectivePage === page ? "default" : "ghost"}
                   size="icon"
                   className={cn(
-                    "h-10 w-10 rounded-md text-xs font-black transition-all",
-                    effectivePage === page ? "shadow-sem-md scale-110" : "text-muted-foreground hover:bg-muted"
+                    "h-11 w-11 rounded-xl text-xs font-black transition-all duration-300",
+                    effectivePage === page 
+                      ? "shadow-sem-lg scale-110 bg-gradient-to-br from-primary to-primary/80" 
+                      : "text-muted-foreground/40 hover:bg-primary/5 hover:text-primary active:scale-95"
                   )}
                   onClick={() => setCurrentPage(page)}
                 >
@@ -121,11 +123,11 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-md border-2"
+              className="h-11 w-11 rounded-xl border-2 hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
               disabled={effectivePage === totalPages}
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={20} />
             </Button>
           </div>
         </div>

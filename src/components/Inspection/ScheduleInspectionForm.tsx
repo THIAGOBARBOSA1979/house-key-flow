@@ -170,14 +170,14 @@ export const ScheduleInspectionForm = ({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {propertyInfo && (
-          <div className="p-5 bg-primary/5 rounded-3xl border border-primary/10 mb-6 flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300 shadow-sem-sm">
-            <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-              <Building className="w-5 h-5" />
+          <div className="p-6 bg-primary/5 rounded-[2rem] border border-primary/20 mb-8 flex items-center gap-5 animate-in fade-in slide-in-from-top-2 duration-500 shadow-none hover:bg-primary/10 transition-all">
+            <div className="p-4 bg-primary/20 rounded-2xl text-primary shadow-sem-md">
+              <Building className="w-6 h-6" strokeWidth={2.5} />
             </div>
             <div>
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary mb-0.5">Imóvel Selecionado</h3>
-              <p className="text-sm font-bold text-foreground">{propertyInfo.property} • Unidade {propertyInfo.unit}</p>
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Cliente: {propertyInfo.client}</p>
+              <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary mb-1">Imóvel Selecionado</h3>
+              <p className="text-sem-h3 font-black text-foreground tracking-tighter leading-tight">{propertyInfo.property} • Un. {propertyInfo.unit}</p>
+              <p className="text-[11px] text-muted-foreground/60 font-black uppercase tracking-widest mt-0.5">Responsável: {propertyInfo.client}</p>
             </div>
           </div>
         )}
@@ -362,9 +362,9 @@ export const ScheduleInspectionForm = ({
           )}
         />
         
-        <div className="flex gap-4 justify-end pt-8 border-t border-border/10 -mx-8 px-8 bg-muted/5">
-          <Button type="button" variant="outline" className="px-8">Cancelar</Button>
-          <Button type="submit" className="font-black uppercase tracking-widest text-xs px-10">Agendar Vistoria</Button>
+        <div className="flex gap-4 justify-end pt-10 border-t border-border/10 -mx-10 px-10 mt-10">
+          <Button type="button" variant="outline" className="px-8 h-12 rounded-xl font-bold border-2 hover:bg-muted/50 transition-all">Descartar</Button>
+          <Button type="submit" className="font-black uppercase tracking-widest text-[11px] px-12 h-12 rounded-xl shadow-sem-lg active:scale-95 transition-all">Agendar Vistoria</Button>
         </div>
       </form>
     </Form>

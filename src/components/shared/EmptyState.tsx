@@ -24,26 +24,26 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center p-8 md:p-12 text-center animate-fade-in",
-      "bg-muted/10 rounded-xl border-2 border-dashed border-muted-foreground/10",
-      "shadow-sem-inner",
+      "flex flex-col items-center justify-center p-12 md:p-20 text-center animate-fade-in",
+      "bg-card/30 backdrop-blur-sm rounded-3xl border border-dashed border-primary/20",
+      "shadow-sem-inner group",
       className
     )}>
-      <div className="p-4 md:p-6 bg-muted/30 rounded-lg mb-6 shadow-sem-sm">
-        <Icon className="h-10 w-10 md:h-12 md:w-12 text-muted-foreground/40" />
+      <div className="p-6 md:p-8 bg-primary/5 rounded-2xl mb-8 shadow-sem-md group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-500">
+        <Icon className="h-12 w-12 md:h-16 md:w-16 text-primary/30 group-hover:text-primary/60 transition-colors" />
       </div>
-      <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 tracking-tight">
+      <h3 className="text-sem-h2 font-black text-foreground mb-3 tracking-tighter">
         {title}
       </h3>
       {description && (
-        <p className="text-sem-body-base text-muted-foreground mb-8 max-w-md leading-relaxed">
+        <p className="text-sem-body-base text-muted-foreground/60 mb-10 max-w-lg leading-relaxed font-medium">
           {description}
         </p>
       )}
       {action && (
         <Button 
           onClick={action.onClick} 
-          className="h-11 px-6 font-bold"
+          className="h-12 px-8 font-black uppercase tracking-widest text-[11px] shadow-sem-lg active:scale-95 transition-all"
         >
           {action.label}
         </Button>
