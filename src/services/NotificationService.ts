@@ -2,7 +2,8 @@
 import { 
   ClientNotification, 
   NotificationType, 
-  NOTIFICATION_TEMPLATES 
+  NOTIFICATION_TEMPLATES,
+  NotificationSettings
 } from '@/types/clientFlow';
 
 // Mock notifications
@@ -53,10 +54,16 @@ const mockNotifications: ClientNotification[] = [
 
 class NotificationService {
   private notifications: Map<string, ClientNotification[]> = new Map();
+  private settings: Map<string, NotificationSettings> = new Map();
 
   constructor() {
     // Initialize with mock data
-    this.notifications.set('client-1', mockNotifications);
+    const defaultSettings: NotificationSettings = {
+      email: { inspections: true, warranty: true, updates: true },
+      sms: { inspections: false, warranty: true, updates: false }
+    };
+    this.settings.set('client-1', defaultSettings);
+    this.settings.set('2', defaultSettings);
     this.notifications.set('2', [
       {
         id: 'notif-welcome-2',
@@ -187,6 +194,19 @@ class NotificationService {
     if (diffInDays < 7) return `Há ${diffInDays} dias`;
     
     return date.toLocaleDateString('pt-BR');
+  }
+
+  // Settings methods
+  getSettings(clientId: string): NotificationSettings {
+    return this.settings.get(clientId) || {
+      email: { inspections: true, warranty: true, updates: true },
+      sms: { inspections: false, warranty: false, updates: false }
+    };
+  }
+
+  updateSettings(clientId: string, newSettings: NotificationSettings): void {
+    this.settings.set(clientId, newSettings);
+    console.log('[NotificationService] Settings updated for', clientId, newSettings);
   }
 }
 
