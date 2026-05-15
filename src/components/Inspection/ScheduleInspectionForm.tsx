@@ -129,7 +129,7 @@ export const ScheduleInspectionForm = ({
   }, [watchDate, watchTechnician]);
 
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     const newInspection = inspectionService.schedule(data as any, propertyInfo);
 
     toast({
