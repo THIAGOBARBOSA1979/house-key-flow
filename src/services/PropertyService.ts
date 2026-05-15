@@ -108,6 +108,28 @@ class PropertyService {
     return newProperty;
   }
 
+  updateMilestone(propertyId: string, milestoneId: string, completed: boolean): Property | undefined {
+    const property = this.getById(propertyId);
+    if (!property || !property.milestones) return undefined;
+
+    const milestones = property.milestones.map(m => 
+      m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
+    );
+
+    return this.update(propertyId, { milestones });
+  }
+
+  updateUnitStatus(propertyId: string, unitId: string, status: PropertyUnit['status']): Property | undefined {
+    const property = this.getById(propertyId);
+    if (!property || !property.unitsList) return undefined;
+
+    const unitsList = property.unitsList.map(u => 
+      u.id === unitId ? { ...u, status } : u
+    );
+
+    return this.update(propertyId, { unitsList });
+  }
+
   update(id: string, property: Partial<Property>): Property | undefined {
     const index = this.properties.findIndex(p => p.id === id);
     if (index === -1) return undefined;
