@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -12,7 +12,11 @@ import {
   CheckCircle,
   Bell,
   ArrowRight,
-  Lock
+  Lock,
+  Building2,
+  MapPin,
+  TrendingUp,
+  Clock
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
@@ -111,50 +115,103 @@ const Dashboard = () => {
       {/* Header with Stage Indicator */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-h1">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Bem-vindo, {userInfo.name}! 👋
           </h1>
-          <p className="text-body-base">
-            Acompanhe o progresso do seu imóvel e acesse seus documentos
+          <p className="text-muted-foreground mt-1">
+            Acompanhe o progresso do seu imóvel e acesse seus serviços exclusivos.
           </p>
         </div>
-        {stage && (
-          <StageIndicator currentStage={stage} showDescription />
-        )}
+        <div className="flex items-center gap-3">
+          {stage && (
+            <StageIndicator currentStage={stage} showDescription />
+          )}
+          <div className="h-10 w-px bg-border mx-2 hidden md:block" />
+          <div className="flex flex-col items-end hidden md:flex">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Status da Obra</span>
+            <span className="text-sm font-bold text-primary">{Math.round(contractProgress)}% Concluído</span>
+          </div>
+        </div>
       </div>
 
       {/* Property Info Card */}
-      <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Home className="h-5 w-5" />
-                {userInfo.property}
-              </CardTitle>
-              <CardDescription className="text-base font-medium text-foreground/80">
-                {userInfo.unit}
-              </CardDescription>
-            </div>
-            <Badge variant="default" className="text-sm px-3 py-1">
-              {daysToDelivery > 0 ? `${daysToDelivery} dias para entrega` : "Entregue"}
-            </Badge>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="md:col-span-2 bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Home className="h-24 w-24" />
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex justify-between text-sm">
-              <span>Progresso da obra</span>
-              <span>{Math.round(contractProgress)}%</span>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-primary" />
+                  {userInfo.property}
+                </CardTitle>
+                <CardDescription className="text-lg font-semibold text-foreground mt-1">
+                  Unidade {userInfo.unit}
+                </CardDescription>
+              </div>
+              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-bold uppercase tracking-tight">
+                {daysToDelivery > 0 ? `${daysToDelivery} dias para entrega` : "Imóvel Entregue"}
+              </Badge>
             </div>
-            <Progress value={contractProgress} className="h-2" />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Contrato: {userInfo.contractDate.toLocaleDateString()}</span>
-              <span>Entrega: {userInfo.deliveryDate.toLocaleDateString()}</span>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex justify-between items-end">
+                <div className="space-y-1">
+                  <span className="text-xs font-medium text-muted-foreground uppercase">Progresso Geral</span>
+                  <p className="text-2xl font-black text-primary">{Math.round(contractProgress)}%</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-medium text-muted-foreground uppercase">Previsão de Entrega</span>
+                  <p className="font-bold">{userInfo.deliveryDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</p>
+                </div>
+              </div>
+              <Progress value={contractProgress} className="h-3 bg-primary/10" />
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 p-2 rounded-md">
+                  <Calendar className="h-4 w-4" />
+                  <span>Contrato: <span className="font-medium text-foreground">{userInfo.contractDate.toLocaleDateString()}</span></span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 p-2 rounded-md">
+                  <MapPin className="h-4 w-4" />
+                  <span>Localização: <span className="font-medium text-foreground">São Paulo, SP</span></span>
+                </div>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Quick Summary Card */}
+        <Card className="bg-primary text-primary-foreground shadow-lg flex flex-col justify-between">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold">Resumo Geral</CardTitle>
+            <CardDescription className="text-primary-foreground/70">Status dos seus serviços</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-2 bg-white/10 rounded-lg">
+              <span className="text-sm">Documentos prontos</span>
+              <span className="font-bold">{allDocs.length}</span>
+            </div>
+            <div className="flex items-center justify-between p-2 bg-white/10 rounded-lg">
+              <span className="text-sm">Vistorias realizadas</span>
+              <span className="font-bold">{allInspections.filter(i => i.status === 'complete').length}</span>
+            </div>
+            <div className="flex items-center justify-between p-2 bg-white/10 rounded-lg">
+              <span className="text-sm">Chamados abertos</span>
+              <span className="font-bold">{warrantyRequests.filter(r => r.currentStage !== 'completed' && r.currentStage !== 'rejected').length}</span>
+            </div>
+          </CardContent>
+          <CardFooter className="pt-0">
+            <Link to="/client/notifications" className="w-full">
+              <Button variant="secondary" className="w-full font-bold">
+                Ver Notificações ({unreadCount})
+              </Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
 
       {/* Timeline Section */}
       <ClientTimeline 
@@ -374,54 +431,69 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Ações Rápidas</CardTitle>
-          <CardDescription>Acesse rapidamente as funcionalidades mais utilizadas</CardDescription>
+      {/* Enhanced Quick Actions */}
+      <Card className="border-none bg-muted/30">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <CardTitle className="text-xl font-bold">Serviços e Atalhos</CardTitle>
+          </div>
+          <CardDescription>Acesso rápido aos principais recursos do seu portal</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-layout-gap">
-            <Link to="/client/documents">
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                <FileText className="h-6 w-6" />
-                Meus Documentos
-              </Button>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link to="/client/documents" className="group">
+              <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                  <FileText className="h-6 w-6 text-primary group-hover:text-white" />
+                </div>
+                <span className="font-bold text-sm">Meus Documentos</span>
+              </div>
             </Link>
             
             {canScheduleInspection ? (
-              <Link to="/client/inspections">
-                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                  <ClipboardCheck className="h-6 w-6" />
-                  Agendar Vistoria
-                </Button>
+              <Link to="/client/inspections" className="group">
+                <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                  <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                    <ClipboardCheck className="h-6 w-6 text-primary group-hover:text-white" />
+                  </div>
+                  <span className="font-bold text-sm">Vistorias Agendadas</span>
+                </div>
               </Link>
             ) : (
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2" disabled>
-                <Lock className="h-6 w-6" />
-                Agendar Vistoria
-              </Button>
+              <div className="h-full p-4 rounded-xl border bg-muted/50 cursor-not-allowed flex flex-col items-center justify-center gap-3 text-center opacity-60">
+                <div className="p-3 rounded-full bg-muted">
+                  <Lock className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <span className="font-bold text-sm text-muted-foreground">Vistorias (Bloqueado)</span>
+              </div>
             )}
             
             {canRequestWarranty ? (
-              <Link to="/client/warranty">
-                <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                  <ShieldCheck className="h-6 w-6" />
-                  Solicitar Garantia
-                </Button>
+              <Link to="/client/warranty" className="group">
+                <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                  <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                    <ShieldCheck className="h-6 w-6 text-primary group-hover:text-white" />
+                  </div>
+                  <span className="font-bold text-sm">Solicitar Garantia</span>
+                </div>
               </Link>
             ) : (
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2" disabled>
-                <Lock className="h-6 w-6" />
-                Solicitar Garantia
-              </Button>
+              <div className="h-full p-4 rounded-xl border bg-muted/50 cursor-not-allowed flex flex-col items-center justify-center gap-3 text-center opacity-60">
+                <div className="p-3 rounded-full bg-muted">
+                  <Lock className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <span className="font-bold text-sm text-muted-foreground">Garantias (Bloqueado)</span>
+              </div>
             )}
             
-            <Link to="/client/properties">
-              <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
-                <Home className="h-6 w-6" />
-                Meu Imóvel
-              </Button>
+            <Link to="/client/properties" className="group">
+              <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                  <Building2 className="h-6 w-6 text-primary group-hover:text-white" />
+                </div>
+                <span className="font-bold text-sm">Dados do Imóvel</span>
+              </div>
             </Link>
           </div>
         </CardContent>

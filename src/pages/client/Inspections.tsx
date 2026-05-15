@@ -199,41 +199,47 @@ const ClientInspections = () => {
             // Trigger a refresh of the inspections list
             const updatedInspections = inspectionService.getAll()
               .filter(i => i.client === (user?.name || "João Silva"));
-            setInspections(updatedInspections.map(i => ({
-              ...i,
-              title: i.type === 'technicalInspection' ? 'Vistoria Técnica' : i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Reparo',
-              scheduledDate: i.date,
-              inspector: i.technician,
-              description: i.notes || "Vistoria para verificação das condições da unidade.",
-              checklist: [], // Default or fetched
-              canStart: i.status === 'pending'
-            })));
+            setInspections(updatedInspections.map(i => {
+              // ... existing mapping logic or just re-fetch
+              return {
+                ...i,
+                title: i.type === 'technicalInspection' ? 'Vistoria Técnica' : i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Reparo',
+                scheduledDate: i.date,
+                inspector: i.technician,
+                description: i.notes || "Vistoria para verificação das condições da unidade.",
+                checklist: [], 
+                canStart: i.status === 'pending'
+              };
+            }));
           }}
         />
       )}
+
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <ClipboardCheck className="h-8 w-8" />
+            <ClipboardCheck className="h-8 w-8 text-primary" />
             Minhas Vistorias
           </h1>
           <p className="text-muted-foreground mt-1">
-            Acompanhe as vistorias agendadas para o seu imóvel
+            Acompanhe as vistorias agendadas para o seu imóvel e aprove os resultados.
           </p>
         </div>
         
-        {canScheduleInspection ? (
-          <Button onClick={() => setScheduleDialogOpen(true)}>
-            <Calendar className="mr-2 h-4 w-4" />
-            Agendar Vistoria
-          </Button>
-        ) : (
-          <GatedButton isAllowed={false} tooltipMessage="Agendar vistorias será liberado em breve">
-            <Calendar className="mr-2 h-4 w-4" />
-            Agendar Vistoria
-          </GatedButton>
-        )}
+        <div className="flex items-center gap-3">
+          {canScheduleInspection ? (
+            <Button onClick={() => setScheduleDialogOpen(true)} className="font-bold">
+              <Calendar className="mr-2 h-4 w-4" />
+              Agendar Nova Vistoria
+            </Button>
+          ) : (
+            <GatedButton isAllowed={false} tooltipMessage="Agendar vistorias será liberado em breve">
+              <Calendar className="mr-2 h-4 w-4" />
+              Agendar Vistoria
+            </GatedButton>
+          )}
+        </div>
       </div>
 
       <FeatureGate
@@ -277,9 +283,9 @@ const ClientInspections = () => {
                         <StatusBadge status={item.status} />
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                      <Calendar className="h-3 w-3" />
-                      <span>{safeFormat(item.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2 bg-muted/20 p-2 rounded">
+                      <Clock className="h-3 w-3" />
+                      <span className="font-medium text-foreground">{safeFormat(item.scheduledDate, "dd/MM/yyyy 'às' HH:mm")}</span>
                     </div>
                   </div>
                 ))}

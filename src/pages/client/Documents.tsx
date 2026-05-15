@@ -209,14 +209,24 @@ export default function ClientDocuments() {
           documentTitle={selectedDoc.title}
         />
       )}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <FileText className="h-6 w-6 text-primary" />
-          Meus Documentos
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Acesse e baixe seus documentos relacionados ao imóvel
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
+            <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
+              <FileText className="h-8 w-8" />
+            </div>
+            Meus Documentos
+          </h1>
+          <p className="text-muted-foreground mt-2 font-medium">
+            Acesse, visualize e assine digitalmente seus documentos em um ambiente seguro.
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="h-10 px-4 text-xs font-bold uppercase tracking-widest bg-muted/30">
+            Armazenamento: {Math.round(stats.total * 0.8)} MB
+          </Badge>
+        </div>
       </div>
 
       <Tabs defaultValue="all" className="space-y-6">
@@ -321,51 +331,58 @@ export default function ClientDocuments() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="card-standard group hover:shadow-lg transition-all border-none bg-background/50 backdrop-blur-sm overflow-hidden flex flex-col h-full">
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                      <FileText className="h-5 w-5" />
+              <Card key={doc.id} className="group border-primary/5 hover:border-primary/20 hover:shadow-xl transition-all duration-500 bg-gradient-to-br from-background to-muted/20 overflow-hidden flex flex-col h-full rounded-2xl">
+                <CardHeader className="pb-4 relative">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
+                      <FileText className="h-6 w-6" />
                     </div>
-                    <Badge variant={getStatusColor(doc.status) as any} className="text-[10px] uppercase font-bold">
+                    <Badge variant={getStatusColor(doc.status) as any} className="text-[10px] uppercase font-black px-3 py-1 rounded-full tracking-tighter">
                       {getStatusLabel(doc.status)}
                     </Badge>
                   </div>
-                  <CardTitle className="text-sm font-bold line-clamp-2 min-h-[40px]">{doc.title}</CardTitle>
-                  <CardDescription className="text-[10px] uppercase font-bold tracking-tight mt-1">
-                    {getTypeLabel(doc.type)} • {doc.size}
-                  </CardDescription>
+                  <CardTitle className="text-base font-black leading-snug line-clamp-2 min-h-[48px] text-foreground/90">{doc.title}</CardTitle>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-widest bg-muted/50 border-none">
+                      {getTypeLabel(doc.type)}
+                    </Badge>
+                    <span className="text-[10px] font-black text-muted-foreground/60 uppercase">{doc.size}</span>
+                  </div>
                 </CardHeader>
-                <CardContent className="flex-1">
+                <CardContent className="flex-1 pb-4">
                   {doc.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2 italic mb-4">{doc.description}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2 italic mb-4 leading-relaxed bg-muted/30 p-2 rounded-lg">{doc.description}</p>
                   )}
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold mt-auto border-t pt-3">
-                    <Calendar className="h-3 w-3" />
-                    {doc.createdAt.toLocaleDateString()}
-                    <Separator orientation="vertical" className="h-3" />
-                    <span>{doc.downloads} downloads</span>
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground font-black uppercase mt-auto pt-4 border-t border-dashed">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3.5 w-3.5 text-primary/60" />
+                      {doc.createdAt.toLocaleDateString()}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Download className="h-3.5 w-3.5 text-primary/60" />
+                      <span>{doc.downloads}</span>
+                    </div>
                   </div>
                 </CardContent>
-                <div className="p-4 pt-0 grid grid-cols-1 gap-2 mt-auto">
-                  <div className="grid grid-cols-2 gap-2 mb-2">
+                <div className="p-5 pt-0 grid grid-cols-1 gap-3 mt-auto">
+                  <div className="grid grid-cols-2 gap-3">
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="h-8 text-[10px] font-bold uppercase"
+                      className="h-10 text-[10px] font-black uppercase tracking-widest border-2 hover:bg-primary/5 rounded-xl"
                       onClick={() => handlePreview(doc)}
                       disabled={doc.status === "processando"}
                     >
-                      <Eye className="h-3.5 w-3.5 mr-1" />
+                      <Eye className="h-4 w-4 mr-1.5" />
                       Preview
                     </Button>
                     <Button 
                       size="sm" 
-                      className="h-8 text-[10px] font-bold uppercase"
+                      className="h-10 text-[10px] font-black uppercase tracking-widest shadow-md rounded-xl"
                       onClick={() => handleDownload(doc)}
                       disabled={doc.status === "processando"}
                     >
-                      <Download className="h-3.5 w-3.5 mr-1" />
+                      <Download className="h-4 w-4 mr-1.5" />
                       Baixar
                     </Button>
                   </div>
@@ -374,10 +391,10 @@ export default function ClientDocuments() {
                     <Button 
                       size="sm" 
                       variant="secondary"
-                      className="w-full h-8 text-[10px] font-bold uppercase bg-primary/10 text-primary hover:bg-primary/20 border-none"
+                      className="w-full h-11 text-[11px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary/20 border-none rounded-xl"
                       onClick={() => handleOpenSignature(doc)}
                     >
-                      <PenTool className="h-3.5 w-3.5 mr-1" />
+                      <PenTool className="h-4 w-4 mr-1.5" />
                       Assinar Digitalmente
                     </Button>
                   )}

@@ -414,38 +414,48 @@ const ClientWarranty = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left column */}
           <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Minhas Solicitações</CardTitle>
+            <Card className="shadow-sm border-primary/10">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl font-bold flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-primary" />
+                  Minhas Solicitações
+                </CardTitle>
                 <CardDescription>
-                  Selecione uma solicitação para ver detalhes
+                  Histórico de chamados de garantia
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-3">
                 {claims.length > 0 ? (
                   claims.map((item) => (
                     <div 
                       key={item.id} 
-                      className={`p-3 border rounded-md cursor-pointer transition-colors ${
+                      className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md ${
                         selectedClaim === item.id 
-                          ? "border-primary bg-primary/5" 
-                          : "hover:bg-accent"
+                          ? "border-primary bg-primary/5 ring-1 ring-primary/20" 
+                          : "hover:bg-accent/50 border-border/50"
                       }`}
                       onClick={() => setSelectedClaim(item.id)}
                     >
-                      <div className="flex justify-between items-start">
-                        <h3 className="font-medium">{item.title}</h3>
-                        <StatusBadge status={item.status} />
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="min-w-0">
+                          <h3 className="font-bold truncate text-foreground/90">{item.title}</h3>
+                          <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground mt-1">{item.category}</p>
+                        </div>
+                        <StatusBadge status={item.currentStage || item.status} />
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                        <Calendar className="h-3 w-3" />
-                        <span>{safeFormat(item.createdAt, "dd/MM/yyyy")}</span>
+                      <div className="flex items-center justify-between mt-4 text-[11px] font-medium text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-3.5 w-3.5" />
+                          <span>{safeFormat(item.createdAt, "dd/MM/yyyy")}</span>
+                        </div>
+                        <span className="bg-muted px-1.5 py-0.5 rounded italic">#{item.id.substring(0, 6)}</span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center p-4">
-                    <p className="text-muted-foreground">Você ainda não possui solicitações</p>
+                  <div className="text-center py-10 px-4 bg-muted/20 rounded-xl border border-dashed">
+                    <ShieldCheck className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />
+                    <p className="text-sm font-medium text-muted-foreground">Você ainda não possui solicitações registradas.</p>
                   </div>
                 )}
               </CardContent>
@@ -458,8 +468,9 @@ const ClientWarranty = () => {
         <div className="lg:col-span-2">
           {claim ? (
             <Tabs defaultValue="details">
-              <TabsList>
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="details">Detalhes</TabsTrigger>
+                <TabsTrigger value="timeline">Linha do Tempo</TabsTrigger>
                 <TabsTrigger value="updates">Atualizações</TabsTrigger>
               </TabsList>
               
@@ -532,6 +543,10 @@ const ClientWarranty = () => {
                     </Button>
                   </CardFooter>
                 </Card>
+              </TabsContent>
+              
+              <TabsContent value="timeline" className="pt-4">
+                <WarrantyRequestTimeline request={claim} />
               </TabsContent>
               
               <TabsContent value="updates" className="space-y-4 pt-4">

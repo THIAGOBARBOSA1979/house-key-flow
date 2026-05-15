@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, FileText, Home, Calendar, ShieldCheck, Ruler, MapPin } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Building, Building2, FileText, Home, Calendar, ShieldCheck, Ruler, MapPin, Info, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useToast } from "@/hooks/use-toast";
@@ -80,45 +81,79 @@ const ClientProperties = () => {
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Building className="h-8 w-8" />
-          Meu Imóvel
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Informações e documentos relacionados ao seu imóvel
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <Building2 className="h-8 w-8 text-primary" />
+            Meu Imóvel
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Informações técnicas, documentos e períodos de garantia da sua unidade.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 bg-muted/50 p-1.5 rounded-lg border">
+          <Badge variant="outline" className="bg-background">ID: {profile?.propertyId?.substring(0, 8) || 'PROP-001'}</Badge>
+          <Badge variant="outline" className="bg-background">Fase: Finalizado</Badge>
+        </div>
       </div>
 
       {/* Property card */}
-      <Card className="bg-primary/5 border-primary/20">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold">{propertyData?.name || "Seu Imóvel"}</h2>
-              <p className="text-xl mt-1">Unidade {profile?.unitNumber || "204"}</p>
-              <div className="flex items-center gap-1 mt-2 text-muted-foreground">
-                <MapPin size={16} />
-                <span>{propertyDetails.address}</span>
+      <Card className="bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-md overflow-hidden">
+        <CardContent className="p-0">
+          <div className="flex flex-col md:flex-row">
+            <div className="flex-1 p-6 border-b md:border-b-0 md:border-r border-primary/10">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-2xl font-black text-primary tracking-tight">{propertyData?.name || "Seu Imóvel"}</h2>
+                  <p className="text-xl font-bold mt-1">Unidade {profile?.unitNumber || "204"}</p>
+                </div>
+                <div className="p-3 rounded-xl bg-primary text-primary-foreground shadow-lg">
+                  <Home size={24} />
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 text-muted-foreground bg-muted/30 p-2 rounded-lg border">
+                <MapPin size={18} className="text-primary" />
+                <span className="text-sm font-medium">{propertyDetails.address}</span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 mt-6">
+                <div className="p-3 bg-background rounded-lg border shadow-sm">
+                  <div className="text-muted-foreground text-xs uppercase font-bold tracking-wider mb-1">Status Entrega</div>
+                  <div className="text-sm font-black text-status-complete flex items-center gap-1">
+                    <CheckCircle2 className="h-4 w-4" /> Finalizado
+                  </div>
+                </div>
+                <div className="p-3 bg-background rounded-lg border shadow-sm">
+                  <div className="text-muted-foreground text-xs uppercase font-bold tracking-wider mb-1">Tipo</div>
+                  <div className="text-sm font-black">Residencial</div>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col justify-center">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="bg-background rounded-lg p-3 shadow-sm">
-                  <div className="text-muted-foreground text-sm">Área</div>
-                  <div className="text-xl font-medium mt-1">{propertyDetails.size}</div>
+
+            <div className="w-full md:w-1/3 bg-muted/20 p-6 flex flex-col justify-center">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Especificações Rápidas</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Ruler size={16} className="text-primary" />
+                    <span className="text-sm">Área Útil</span>
+                  </div>
+                  <span className="font-bold">{propertyDetails.size}</span>
                 </div>
-                <div className="bg-background rounded-lg p-3 shadow-sm">
-                  <div className="text-muted-foreground text-sm">Quartos</div>
-                  <div className="text-xl font-medium mt-1">{propertyDetails.bedrooms}</div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Building2 size={16} className="text-primary" />
+                    <span className="text-sm">Andar</span>
+                  </div>
+                  <span className="font-bold">2º Andar</span>
                 </div>
-                <div className="bg-background rounded-lg p-3 shadow-sm">
-                  <div className="text-muted-foreground text-sm">Banheiros</div>
-                  <div className="text-xl font-medium mt-1">{propertyDetails.bathrooms}</div>
-                </div>
-                <div className="bg-background rounded-lg p-3 shadow-sm">
-                  <div className="text-muted-foreground text-sm">Entrega</div>
-                  <div className="text-xl font-medium mt-1">{propertyDetails.deliveryDate}</div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calendar size={16} className="text-primary" />
+                    <span className="text-sm">Entregue em</span>
+                  </div>
+                  <span className="font-bold">{propertyDetails.deliveryDate}</span>
                 </div>
               </div>
             </div>

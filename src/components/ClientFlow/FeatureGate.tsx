@@ -78,30 +78,33 @@ export function FeatureGate({
 
   // Block variant (default)
   return (
-    <Card className="border-dashed border-muted-foreground/30">
-      <CardHeader className="text-center">
-        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-          <Lock className="h-8 w-8 text-muted-foreground" />
+    <Card className="border-dashed border-primary/30 bg-primary/5">
+      <CardHeader className="text-center pt-8">
+        <div className="w-16 h-16 rounded-full bg-background flex items-center justify-center mx-auto mb-4 shadow-sm border">
+          <Lock className="h-8 w-8 text-primary" />
         </div>
-        <CardTitle className="text-xl">Funcionalidade Bloqueada</CardTitle>
-        <CardDescription className="text-base">
+        <CardTitle className="text-xl font-bold">Funcionalidade Bloqueada</CardTitle>
+        <CardDescription className="text-base font-medium max-w-sm mx-auto">
           {displayMessage}
         </CardDescription>
       </CardHeader>
       {(redirectTo || requiredStage) && (
-        <CardContent className="text-center pb-6">
+        <CardContent className="text-center pb-8">
           {requiredStage && (
-            <p className="text-sm text-muted-foreground mb-4">
-              Etapa necessária: <span className="font-medium">{STAGE_CONFIG[requiredStage].label}</span>
-            </p>
+            <div className="inline-flex items-center gap-2 bg-background px-4 py-2 rounded-full border mb-6 text-sm">
+              <span className="text-muted-foreground">Etapa necessária:</span>
+              <span className="font-bold text-primary">{STAGE_CONFIG[requiredStage].label}</span>
+            </div>
           )}
           {redirectTo && (
-            <Link to={redirectTo}>
-              <Button>
-                {redirectLabel}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+            <div>
+              <Link to={redirectTo}>
+                <Button className="font-bold">
+                  {redirectLabel}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
           )}
         </CardContent>
       )}
