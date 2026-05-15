@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar as CalendarIcon, List } from "lucide-react";
 
 const Calendar = () => {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [view, setView] = useState<"month" | "week" | "day">("month");
   const [selectedAppointment, setSelectedAppointment] = useState<string | null>(null);
@@ -24,6 +25,21 @@ const Calendar = () => {
   });
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadAppointments = useCallback(() => {
+    setIsLoading(true);
+    // Simulate loading for better UX
+    setTimeout(() => {
+      const data = getUnifiedAppointments();
+      setAppointments(data);
+      setIsLoading(false);
+    }, 300);
+  }, []);
+
+  useEffect(() => {
+    loadAppointments();
+  }, [loadAppointments]);
 
   const filteredAppointments = appointments.filter(apt => {
     const matchesType = filters.type === "all" || apt.type === filters.type;
