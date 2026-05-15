@@ -91,7 +91,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
             />
           )}
         </CardHeader>
-        <CardContent className="p-0 max-h-[600px] overflow-y-auto divide-y divide-border/10">
+        <CardContent className="p-0 flex-1 overflow-y-auto divide-y divide-border/10 custom-scrollbar">
           {filteredAppointments.length === 0 ? (
             <div className="text-center py-20 px-6 animate-fade-in">
               <div className="p-4 bg-muted/20 rounded-full w-fit mx-auto mb-4">
