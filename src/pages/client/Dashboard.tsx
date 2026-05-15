@@ -505,13 +505,17 @@ const Dashboard = () => {
         <div className="md:col-span-2">
           <ClientFAQ />
         </div>
-        <Card className="bg-primary/5 border-primary/10 flex flex-col justify-center items-center p-6 text-center">
-          <div className="p-4 rounded-full bg-primary/10 mb-4">
+        <Card className="bg-primary/5 border-primary/10 flex flex-col justify-center items-center p-6 text-center shadow-sm rounded-2xl">
+          <div className="p-4 rounded-2xl bg-primary/10 mb-4 shadow-inner">
             <MessageSquare className="h-8 w-8 text-primary" />
           </div>
-          <h3 className="font-bold text-lg mb-2">Suporte 24/7</h3>
-          <p className="text-sm text-muted-foreground mb-6 font-medium">Ainda tem dúvidas? Nossa equipe está disponível via chat para te ajudar.</p>
-          <Button className="w-full font-bold uppercase tracking-widest text-xs py-6">Falar com Consultor</Button>
+          <h3 className="font-bold text-lg mb-2 text-foreground/90 tracking-tight">Suporte Especializado</h3>
+          <p className="text-sm text-muted-foreground mb-6 font-medium leading-relaxed">
+            Ainda tem dúvidas? Nossa equipe técnica está pronta para te atender via chat.
+          </p>
+          <Button className="w-full font-bold uppercase tracking-widest text-xs py-6 shadow-md rounded-xl">
+            Falar com Consultor
+          </Button>
         </Card>
       </div>
     </div>
