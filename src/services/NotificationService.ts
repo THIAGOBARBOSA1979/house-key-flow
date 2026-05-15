@@ -57,6 +57,19 @@ class NotificationService {
   constructor() {
     // Initialize with mock data
     this.notifications.set('client-1', mockNotifications);
+    this.notifications.set('2', [
+      {
+        id: 'notif-welcome-2',
+        clientId: '2',
+        type: 'stage_changed',
+        title: 'Bem-vindo ao Portal',
+        message: 'Seu acesso foi liberado com sucesso!',
+        createdAt: new Date(),
+        read: false,
+        urgent: false,
+        metadata: { relatedEntityType: 'stage' }
+      }
+    ]);
   }
 
   // Create notification

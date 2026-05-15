@@ -16,6 +16,7 @@ import { useClientStage } from "@/hooks/useClientStage";
 import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptance";
 import { InspectionAcceptanceStatus } from "@/types/clientFlow";
 import { eventAutomationService } from "@/services/EventAutomationService";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Mock data
 const initialInspections = [
@@ -106,7 +107,8 @@ const ClientInspections = () => {
   const [activeInspection, setActiveInspection] = useState<string | null>(null);
   const { toast } = useToast();
   
-  const clientId = "client-1";
+  const { user } = useAuth();
+  const clientId = user?.id || "client-1";
   const { canScheduleInspection, permissions } = useClientStage(clientId);
   
   const inspection = selectedInspection 

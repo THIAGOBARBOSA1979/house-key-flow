@@ -26,6 +26,7 @@ import { useClientStage } from "@/hooks/useClientStage";
 import { eventAutomationService } from "@/services/EventAutomationService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { WarrantyRequestTimeline, WarrantyRequestList } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Mock data
 const warrantyClaims = [
@@ -183,7 +184,8 @@ const ClientWarranty = () => {
   const { toast } = useToast();
   
   // Mock client ID - in real app, get from auth context
-  const clientId = "client-1";
+  const { user } = useAuth();
+  const clientId = user?.id || "client-1";
   
   // Get client stage permissions
   const { canRequestWarranty, permissions, stage, isLoading } = useClientStage(clientId);

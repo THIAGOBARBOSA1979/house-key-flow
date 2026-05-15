@@ -12,37 +12,61 @@ import {
 } from '@/types/clientFlow';
 
 // Mock data for demo client
-const mockClientProfile: ClientProfile = {
-  id: 'client-1',
-  name: 'Maria Oliveira',
-  email: 'maria.oliveira@email.com',
-  phone: '(11) 97777-6666',
-  currentStage: 'inspection_enabled',
-  propertyId: 'prop-1',
-  propertyName: 'Edifício Aurora',
-  unitNumber: '204',
-  createdAt: new Date(2024, 10, 20),
-  stageHistory: [
-    {
-      id: 'sh-1',
-      fromStage: null,
-      toStage: 'registered',
-      changedAt: new Date(2024, 10, 20),
-      reason: 'Cadastro inicial do cliente',
-      changedBy: 'Sistema',
-      isAutomatic: true
-    },
-    {
-      id: 'sh-2',
-      fromStage: 'registered',
-      toStage: 'inspection_enabled',
-      changedAt: new Date(2025, 2, 15),
-      reason: 'Liberação de vistoria pelo administrador',
-      changedBy: 'Admin',
-      isAutomatic: false
-    }
-  ]
-};
+const initialMockProfiles: ClientProfile[] = [
+  {
+    id: 'client-1',
+    name: 'Maria Oliveira',
+    email: 'maria.oliveira@email.com',
+    phone: '(11) 97777-6666',
+    currentStage: 'inspection_enabled',
+    propertyId: 'prop-1',
+    propertyName: 'Edifício Aurora',
+    unitNumber: '204',
+    createdAt: new Date(2024, 10, 20),
+    stageHistory: [
+      {
+        id: 'sh-1',
+        fromStage: null,
+        toStage: 'registered',
+        changedAt: new Date(2024, 10, 20),
+        reason: 'Cadastro inicial do cliente',
+        changedBy: 'Sistema',
+        isAutomatic: true
+      },
+      {
+        id: 'sh-2',
+        fromStage: 'registered',
+        toStage: 'inspection_enabled',
+        changedAt: new Date(2025, 2, 15),
+        reason: 'Liberação de vistoria pelo administrador',
+        changedBy: 'Admin',
+        isAutomatic: false
+      }
+    ]
+  },
+  {
+    id: 'client-2',
+    name: 'João Silva',
+    email: 'cliente@exemplo.com',
+    phone: '(11) 99999-8888',
+    currentStage: 'registered',
+    propertyId: 'prop-1',
+    propertyName: 'Edifício Aurora',
+    unitNumber: '101',
+    createdAt: new Date(2025, 1, 15),
+    stageHistory: [
+      {
+        id: 'sh-3',
+        fromStage: null,
+        toStage: 'registered',
+        changedAt: new Date(2025, 1, 15),
+        reason: 'Cadastro inicial do cliente',
+        changedBy: 'Sistema',
+        isAutomatic: true
+      }
+    ]
+  }
+];
 
 // Mock events
 const mockEvents: ClientEvent[] = [
@@ -111,7 +135,9 @@ class ClientStageService {
   }
 
   private initializeMocks() {
-    this.clientProfiles.set('client-1', mockClientProfile);
+    initialMockProfiles.forEach(profile => {
+      this.clientProfiles.set(profile.id, profile);
+    });
     this.clientEvents.set('client-1', mockEvents);
     this.persist();
   }
