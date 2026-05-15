@@ -119,17 +119,57 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
           <div className="grid gap-4 md:grid-cols-2">
             <FormField
               control={form.control}
+              name="deliveryDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Previsão de Entrega</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal h-10",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            safeFormat(field.value, "PPP")
+                          ) : (
+                            <span>Selecione uma data</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
               name="manager"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Responsável / Gerente</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome do gerente" {...field} />
+                    <Input placeholder="Nome do gerente" {...field} className="h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </div>
             
             <FormField
               control={form.control}
