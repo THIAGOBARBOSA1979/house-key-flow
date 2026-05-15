@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 interface ResponsiveGridProps {
   children: React.ReactNode;
   columns?: 1 | 2 | 3 | 4 | 'auto';
-  gap?: 'sm' | 'md' | 'lg' | 'layout' | 'sm-sem' | 'md-sem' | 'lg-sem' | '4-sem';
+  gap?: 'xs' | 'sm' | 'md' | 'lg' | 'layout' | 'xs-sem' | 'sm-sem' | 'md-sem' | 'lg-sem' | '4-sem';
   className?: string;
 }
 
@@ -16,10 +16,12 @@ export function ResponsiveGrid({
   className
 }: ResponsiveGridProps) {
   const gapClasses = {
+    xs: "gap-1-sem",
     sm: "gap-2-sem",
     md: "gap-6-sem",
     lg: "gap-12-sem",
     layout: "gap-layout-gap",
+    'xs-sem': "gap-1-sem",
     'sm-sem': "gap-2-sem",
     'md-sem': "gap-6-sem",
     'lg-sem': "gap-12-sem",

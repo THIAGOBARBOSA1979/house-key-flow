@@ -84,15 +84,15 @@ export function DataView<T>({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6-sem">
       {renderContent()}
       
       {isPaginationEnabled && (
-        <div className="flex flex-col sm:flex-row items-center justify-between py-8 border-t border-border/10 gap-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between py-8-sem border-t border-border/10 gap-6-sem">
           <p className="text-sem-body-sm text-muted-foreground/60 font-medium">
             Mostrando <span className="font-black text-foreground">{(effectivePage - 1) * itemsPerPage + 1}</span> a <span className="font-black text-foreground">{Math.min(effectivePage * itemsPerPage, totalItems)}</span> de <span className="font-black text-foreground">{totalItems}</span> registros
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2-sem">
             <Button
               variant="outline"
               size="icon"
@@ -102,7 +102,7 @@ export function DataView<T>({
             >
               <ChevronLeft size={20} />
             </Button>
-            <div className="flex items-center gap-2 mx-2">
+            <div className="flex items-center gap-2-sem mx-2-sem">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <Button
                   key={page}
