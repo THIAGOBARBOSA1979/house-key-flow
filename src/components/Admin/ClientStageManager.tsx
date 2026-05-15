@@ -23,7 +23,8 @@ import {
   ShieldCheck, 
   Unlock,
   History,
-  ChevronRight
+  ChevronRight,
+  AlertTriangle
 } from "lucide-react";
 import { ClientStage, ClientProfile, STAGE_CONFIG } from "@/types/clientFlow";
 import { clientStageService } from "@/services/ClientStageService";
