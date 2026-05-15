@@ -14,16 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from '@/components/shared/StatsCard';
 import { cn } from '@/lib/utils';
 
-interface ChecklistTemplate {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  itemCount: number;
-  isDefault: boolean;
-  createdAt: Date;
-  items: ChecklistItem[];
-}
+import { ChecklistTemplate } from '@/services/ChecklistService';
 
 export default function Checklist() {
   const { toast } = useToast();
@@ -33,7 +24,7 @@ export default function Checklist() {
 
   const handleSelectTemplate = (template: ChecklistTemplate) => {
     setSelectedTemplate(template);
-    setExecutionItems(template.items);
+    setExecutionItems(template.items || []);
     setCurrentView('execution');
   };
 
@@ -43,7 +34,12 @@ export default function Checklist() {
 
   const handleSaveChecklist = async (title: string, description: string, items: ChecklistItem[]) => {
     try {
-      await checklistService.createTemplate({ title, description, items });
+      await checklistService.createTemplate({ 
+        title, 
+        description, 
+        items,
+        category: "vistoria" 
+      });
       toast({ title: "Template salvo", description: "O novo template de checklist foi criado com sucesso." });
       setCurrentView('templates');
     } catch (error) {
@@ -90,18 +86,18 @@ export default function Checklist() {
     return (
       <div className="space-y-6 animate-fade-in">
         <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={handleBack} className="rounded-xl h-10 font-bold active:scale-95 transition-all">
+          <Button variant="outline" onClick={handleBack} className="rounded-xl h-10 font-bold active:scale-95 transition-all border-primary/20 hover:border-primary/50">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar
           </Button>
           <div className="h-10 w-px bg-border/50 mx-2" />
           <div>
-            <h2 className="text-h3 font-bold truncate">{selectedTemplate.name}</h2>
+            <h2 className="text-h3 font-bold truncate">{selectedTemplate.title}</h2>
             <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">Executando Checklist</p>
           </div>
         </div>
         <ChecklistExecution
-          title={selectedTemplate.name}
+          title={selectedTemplate.title}
           items={executionItems}
           onSave={handleSaveExecution}
           onSubmit={handleSubmitExecution}
@@ -167,35 +163,41 @@ export default function Checklist() {
               </CardHeader>
               <CardContent className="p-0">
                 <div className="divide-y divide-border/10">
-                  <div className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all cursor-pointer group">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-status-complete/10 text-status-complete rounded-xl border border-status-complete/20 group-hover:scale-110 transition-transform">
-                        <CheckCircle2 size={20} />
+                  {checklistService.getAllExecutions().length > 0 ? (
+                    checklistService.getAllExecutions().map((exec) => (
+                      <div key={exec.id} className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all cursor-pointer group">
+                        <div className="flex items-center gap-4">
+                          <div className={cn(
+                            "p-3 rounded-xl border group-hover:scale-110 transition-transform",
+                            exec.conformityRate === 100 
+                              ? "bg-status-complete/10 text-status-complete border-status-complete/20"
+                              : "bg-status-pending/10 text-status-pending border-status-pending/20"
+                          )}>
+                            {exec.conformityRate === 100 ? <CheckCircle2 size={20} /> : <PlayCircle size={20} />}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-base truncate group-hover:text-primary transition-colors">{exec.templateTitle}</p>
+                            <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter flex items-center gap-1.5 mt-1">
+                              <Clock size={12} /> {exec.performedByName} • {new Date(exec.date).toLocaleString('pt-BR')}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className={cn(
+                          "rounded-lg text-sem-tiny font-black px-3 py-1",
+                          exec.conformityRate === 100 
+                            ? "bg-status-complete/10 text-status-complete border-status-complete/20"
+                            : "bg-status-pending/10 text-status-pending border-status-pending/20"
+                        )}>
+                          {exec.conformityRate}% OK
+                        </Badge>
                       </div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-base truncate group-hover:text-primary transition-colors">Vistoria Pré-Entrega - Unidade 204</p>
-                        <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter flex items-center gap-1.5 mt-1">
-                          <Clock size={12} /> Roberto Santos • Hoje às 10:30
-                        </p>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="p-10 text-center text-muted-foreground">
+                      <History size={48} className="mx-auto opacity-20 mb-3" />
+                      <p className="italic">Nenhuma execução registrada.</p>
                     </div>
-                    <Badge variant="outline" className="bg-status-complete/10 text-status-complete border-status-complete/20 rounded-lg text-sem-tiny font-black px-3 py-1">100% OK</Badge>
-                  </div>
-                  
-                  <div className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all cursor-pointer group border-b border-border/10">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-status-pending/10 text-status-pending rounded-xl border border-status-pending/20 group-hover:scale-110 transition-transform">
-                        <PlayCircle size={20} />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-base truncate group-hover:text-primary transition-colors">Manutenção Preventiva - Área Comum</p>
-                        <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter flex items-center gap-1.5 mt-1">
-                          <Clock size={12} /> Carlos Andrade • Ontem às 15:45
-                        </p>
-                      </div>
-                    </div>
-                    <Badge variant="outline" className="bg-status-pending/10 text-status-pending border-status-pending/20 rounded-lg text-sem-tiny font-black px-3 py-1">EM ANDAMENTO</Badge>
-                  </div>
+                  )}
                 </div>
                 <div className="p-4 bg-muted/20 text-center">
                    <Button variant="ghost" size="sm" className="text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
