@@ -109,7 +109,7 @@ export function DataView<T>({
                   variant={effectivePage === page ? "default" : "ghost"}
                   size="icon"
                   className={cn(
-                    "h-10 w-10 rounded-xl text-xs font-black transition-all",
+                    "h-10 w-10 rounded-md text-xs font-black transition-all",
                     effectivePage === page ? "shadow-sem-md scale-110" : "text-muted-foreground hover:bg-muted"
                   )}
                   onClick={() => setCurrentPage(page)}
