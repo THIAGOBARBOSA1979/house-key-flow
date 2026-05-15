@@ -101,9 +101,9 @@ export const QuickActions = ({
         />
       </div>
 
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-h4">Ações Rápidas</CardTitle>
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm shadow-sem-sm">
+        <CardHeader className="pb-3 pt-4 px-5 sm:px-6">
+          <CardTitle className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground">Ações Rápidas</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
