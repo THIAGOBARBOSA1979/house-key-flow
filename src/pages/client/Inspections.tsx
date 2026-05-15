@@ -17,6 +17,8 @@ import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptan
 import { InspectionAcceptanceStatus } from "@/types/clientFlow";
 import { eventAutomationService } from "@/services/EventAutomationService";
 import { useAuth } from "@/contexts/AuthContext";
+import { inspectionService, Inspection } from "@/services/InspectionService";
+import { useMemo } from "react";
 
 // Mock data
 const initialInspections = [
