@@ -154,6 +154,7 @@ const ClientWarranty = () => {
   const [addInfoDialogOpen, setAddInfoDialogOpen] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [commentText, setCommentText] = useState("");
+  const [surveyDone, setSurveyDone] = useState<Record<string, boolean>>({});
   const { user } = useAuth();
   const allClaims = useMemo(() => warrantyFlowService.getClientRequests(user?.id || "client-1"), [user?.id]);
   const [claims, setClaims] = useState<any[]>(allClaims);
