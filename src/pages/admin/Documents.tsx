@@ -231,6 +231,11 @@ const AdminDocuments = () => {
                           documents.map((doc) => (
                             <TableRow 
                               key={doc.id} 
+                              draggable
+                              onDragStart={(e) => {
+                                e.dataTransfer.setData('documentId', doc.id);
+                                e.dataTransfer.effectAllowed = 'move';
+                              }}
                               className={cn(
                                 "group hover:bg-muted/20 transition-colors border-b-border/5 cursor-pointer",
                                 selectedDoc?.id === doc.id && "bg-primary/5"
@@ -381,7 +386,14 @@ const AdminDocuments = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 p-4">
                     {documents.map(doc => (
-                      <Card key={doc.id} className={cn(
+                      <Card 
+                        key={doc.id} 
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('documentId', doc.id);
+                          e.dataTransfer.effectAllowed = 'move';
+                        }}
+                        className={cn(
                         "card-standard group relative overflow-hidden h-56 flex flex-col justify-between p-4 border-none bg-muted/20 hover:bg-muted/40 cursor-pointer active:scale-[0.98] transition-all",
                         selectedDoc?.id === doc.id && "ring-2 ring-primary bg-primary/5"
                       )}
