@@ -106,6 +106,19 @@ export interface ClientNotification {
   };
 }
 
+export interface NotificationSettings {
+  email: {
+    inspections: boolean;
+    warranty: boolean;
+    updates: boolean;
+  };
+  sms: {
+    inspections: boolean;
+    warranty: boolean;
+    updates: boolean;
+  };
+}
+
 export interface TimelineItem {
   id: string;
   title: string;
