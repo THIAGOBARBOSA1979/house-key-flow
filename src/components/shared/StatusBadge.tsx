@@ -104,7 +104,7 @@ export const StatusBadge = ({
         config.badgeClass,
         "shadow-sem-sm hover:shadow-sem-md hover:scale-[1.02] cursor-default",
         size === "sm" && "px-2.5 py-1 text-[10px] gap-1 font-black uppercase tracking-widest",
-        size === "lg" && "px-4 py-2 text-sem-body-sm gap-2 font-bold rounded-xl",
+        size === "lg" && "px-4 py-2 text-sem-body-sm gap-2 font-bold rounded-lg",
         className
       )}
     >

@@ -57,7 +57,7 @@ export const StatsCard = ({
               {label}
             </p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-2xl font-black text-foreground leading-tight tracking-tight">
+              <h3 className="text-sem-h2 font-black text-foreground leading-tight tracking-tight">
                 {value}
               </h3>
               {trend && (
@@ -77,7 +77,7 @@ export const StatsCard = ({
           </div>
           {Icon && (
             <div className={cn(
-              "p-3 rounded-2xl transition-all duration-300 group-hover:scale-110 shadow-sem-sm border border-border/10",
+              "p-3 rounded-lg transition-all duration-300 group-hover:scale-110 shadow-sem-sm border border-border/10",
               iconStyles[variant]
             )}>
               <Icon size={20} strokeWidth={2.5} />

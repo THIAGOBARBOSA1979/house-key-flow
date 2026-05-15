@@ -15,7 +15,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
         {Array.from({ length: count }).map((_, i) => (
           <div key={i} className="card-standard p-6 space-y-4">
             <div className="flex items-center gap-3">
-              <Skeleton className="h-12 w-12 rounded-xl" />
+              <Skeleton className="h-12 w-12 rounded-lg" />
               <div className="space-y-2">
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-3 w-32" />
@@ -26,7 +26,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
               <Skeleton className="h-4 w-5/6" />
             </div>
             <div className="flex justify-between items-center pt-4">
-              <Skeleton className="h-8 w-20 rounded-lg" />
+              <Skeleton className="h-8 w-20 rounded-md" />
               <Skeleton className="h-6 w-16 rounded-full" />
             </div>
           </div>
@@ -42,7 +42,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
           <Skeleton className="h-10 w-64" />
           <Skeleton className="h-10 w-32" />
         </div>
-        <div className="border rounded-xl overflow-hidden shadow-sem-sm">
+        <div className="border rounded-lg overflow-hidden shadow-sem-sm">
           <div className="bg-muted/50 p-4 border-b">
             <div className="grid grid-cols-4 gap-4">
               <Skeleton className="h-4 w-24" />
@@ -57,7 +57,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
                 <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-4 w-24" />
                 <Skeleton className="h-4 w-16 rounded-full" />
-                <Skeleton className="h-8 w-24 rounded-lg ml-auto" />
+                <Skeleton className="h-8 w-24 rounded-md ml-auto" />
               </div>
             </div>
           ))}
@@ -76,7 +76,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
               <Skeleton className="h-4 w-1/4" />
               <Skeleton className="h-3 w-1/2" />
             </div>
-            <Skeleton className="h-8 w-20 rounded-lg" />
+            <Skeleton className="h-8 w-20 rounded-md" />
           </div>
         ))}
       </div>
@@ -90,11 +90,11 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
         <Skeleton className="h-6 w-1/2" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-32 rounded-xl" />
-        <Skeleton className="h-32 rounded-xl" />
+        <Skeleton className="h-32 rounded-lg" />
+        <Skeleton className="h-32 rounded-lg" />
+        <Skeleton className="h-32 rounded-lg" />
       </div>
-      <Skeleton className="h-96 rounded-xl w-full" />
+      <Skeleton className="h-96 rounded-lg w-full" />
     </div>
   );
 }

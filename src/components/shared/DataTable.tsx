@@ -59,9 +59,9 @@ export function DataTable<T>({
   return (
     <div className={cn("w-full overflow-hidden", className)}>
       {/* Desktop Table View */}
-      <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm overflow-hidden bg-card">
+      <div className="hidden md:block rounded-lg border border-border/50 shadow-sem-sm overflow-hidden bg-card">
         <Table>
-          <TableHeader className="bg-muted/30">
+          <TableHeader className="bg-muted/10">
             <TableRow className="hover:bg-transparent">
               {columns.map((column, idx) => (
                 <TableHead 
@@ -107,7 +107,7 @@ export function DataTable<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-5 space-y-4 interactive-active border-border/60"
+            className="card-standard p-5 space-y-4 interactive-active border-border/40 hover:border-primary/20"
             onClick={() => onRowClick?.(item)}
           >
             {columns.map((column, colIdx) => (

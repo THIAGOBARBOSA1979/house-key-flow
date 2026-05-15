@@ -47,19 +47,19 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             </div>
 
             <div className="flex items-center gap-3-sem">
-              <Button variant="ghost" size="icon" className="relative h-9-sem w-9-sem rounded-xl hover:bg-primary/5 active:scale-95 transition-all">
+              <Button variant="ghost" size="icon" className="relative h-9-sem w-9-sem rounded-lg hover:bg-primary/5 active:scale-95 transition-all">
                 <Bell size={18} className="text-muted-foreground" />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-status-critical rounded-full border-2 border-background" />
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10-sem rounded-xl gap-2 pl-2 pr-3 hover:bg-primary/5 group active:scale-95 transition-all">
+                  <Button variant="ghost" className="h-10-sem rounded-lg gap-2 pl-2 pr-3 hover:bg-primary/5 group active:scale-95 transition-all">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase group-hover:bg-primary group-hover:text-white transition-all">
                       {user?.name?.charAt(0) || "U"}
                     </div>
                     <div className="hidden sm:flex flex-col items-start leading-none gap-0.5">
-                      <span className="text-label truncate max-w-[120px]">{user?.name}</span>
+                      <span className="text-sem-body-sm font-bold truncate max-w-[120px]">{user?.name}</span>
                       <span className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">Administrador</span>
                     </div>
                   </Button>
@@ -67,7 +67,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <DropdownMenuContent align="end" className="w-56 mt-2 animate-in zoom-in-95 duration-normal shadow-sem-lg">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1-sem py-1-sem">
-                      <p className="text-body-sm font-bold leading-none">{user?.name}</p>
+                      <p className="text-sem-body-sm font-bold leading-none">{user?.name}</p>
                       <p className="text-sem-tiny text-muted-foreground truncate">{user?.email}</p>
                     </div>
                   </DropdownMenuLabel>

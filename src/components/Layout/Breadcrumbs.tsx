@@ -40,7 +40,7 @@ export function Breadcrumbs({ className }: BreadcrumbsProps) {
   return (
     <nav 
       aria-label="Breadcrumb" 
-      className={cn("flex items-center text-sm text-muted-foreground", className)}
+      className={cn("flex items-center text-sem-body-xs font-bold uppercase tracking-widest text-muted-foreground/80", className)}
     >
       <Link 
         to="/" 
@@ -53,7 +53,7 @@ export function Breadcrumbs({ className }: BreadcrumbsProps) {
         <div key={crumb.path} className="flex items-center">
           <ChevronRight className="h-4 w-4 mx-2" />
           {crumb.isLast ? (
-            <span className="font-medium text-foreground">{crumb.label}</span>
+            <span className="font-black text-primary">{crumb.label}</span>
           ) : (
             <Link 
               to={crumb.path}

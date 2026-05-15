@@ -25,11 +25,11 @@ export function EmptyState({
   return (
     <div className={cn(
       "flex flex-col items-center justify-center p-8 md:p-12 text-center animate-fade-in",
-      "bg-muted/10 rounded-3xl border-2 border-dashed border-muted-foreground/10",
+      "bg-muted/10 rounded-xl border-2 border-dashed border-muted-foreground/10",
       "shadow-sem-inner",
       className
     )}>
-      <div className="p-4 md:p-6 bg-muted/30 rounded-2xl mb-6 shadow-sem-sm">
+      <div className="p-4 md:p-6 bg-muted/30 rounded-lg mb-6 shadow-sem-sm">
         <Icon className="h-10 w-10 md:h-12 md:w-12 text-muted-foreground/40" />
       </div>
       <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 tracking-tight">

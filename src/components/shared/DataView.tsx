@@ -96,7 +96,7 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-xl border-2"
+              className="h-10 w-10 rounded-md border-2"
               disabled={effectivePage === 1}
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             >
@@ -109,7 +109,7 @@ export function DataView<T>({
                   variant={effectivePage === page ? "default" : "ghost"}
                   size="icon"
                   className={cn(
-                    "h-10 w-10 rounded-xl text-xs font-black transition-all",
+                    "h-10 w-10 rounded-md text-xs font-black transition-all",
                     effectivePage === page ? "shadow-sem-md scale-110" : "text-muted-foreground hover:bg-muted"
                   )}
                   onClick={() => setCurrentPage(page)}
@@ -121,7 +121,7 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-xl border-2"
+              className="h-10 w-10 rounded-md border-2"
               disabled={effectivePage === totalPages}
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             >
