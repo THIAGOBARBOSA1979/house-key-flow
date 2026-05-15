@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Design System: Card Component > should match the design snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="card-standard"
+  >
+    <h3
+      class="text-h3 leading-none"
+    >
+      Snapshot Card
+    </h3>
+  </div>
+</DocumentFragment>
+`;
