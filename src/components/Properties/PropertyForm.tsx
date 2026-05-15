@@ -17,13 +17,17 @@ interface PropertyFormProps {
 export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormProps) {
   const form = useForm<Property>({
     resolver: zodResolver(propertySchema),
-    defaultValues: initialData || {
+    defaultValues: initialData ? {
+      ...initialData,
+      deliveryDate: initialData.deliveryDate ? new Date(initialData.deliveryDate) : undefined,
+    } : {
       name: "",
       location: "",
       units: 1,
       completedUnits: 0,
       status: "pending",
       description: "",
+      manager: "",
     },
   });
   
@@ -107,6 +111,41 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
             />
           </div>
 
+          <div className="grid gap-4 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="manager"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Responsável / Gerente</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nome do gerente" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="totalArea"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Área Total (m²)</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      placeholder="Área construída"
+                      {...field} 
+                      onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="description"
@@ -117,6 +156,7 @@ export function PropertyForm({ initialData, onSubmit, onCancel }: PropertyFormPr
                   <Textarea 
                     placeholder="Breve descrição do empreendimento..." 
                     {...field} 
+                    className="min-h-[100px] resize-none"
                   />
                 </FormControl>
                 <FormMessage />

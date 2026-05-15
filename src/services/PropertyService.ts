@@ -11,6 +11,9 @@ export const propertySchema = z.object({
   status: z.enum(["pending", "progress", "complete"]).default("pending"),
   imageUrl: z.string().optional(),
   description: z.string().optional(),
+  totalArea: z.number().optional(),
+  deliveryDate: z.date().optional(),
+  manager: z.string().optional(),
 });
 
 export type Property = z.infer<typeof propertySchema>;
@@ -73,8 +76,23 @@ class PropertyService {
     const index = this.properties.findIndex(p => p.id === id);
     if (index === -1) return undefined;
 
+    const oldStatus = this.properties[index].status;
     this.properties[index] = { ...this.properties[index], ...property };
     this.persist();
+
+    if (property.status && property.status !== oldStatus) {
+      auditLogService.log({
+        entityType: 'property',
+        entityId: id,
+        action: 'stage_changed',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Status do empreendimento ${this.properties[index].name} alterado para ${property.status}.`,
+        metadata: { oldStatus, newStatus: property.status }
+      });
+    }
+
     return this.properties[index];
   }
 
@@ -86,6 +104,24 @@ class PropertyService {
       return true;
     }
     return false;
+  }
+  getMetrics() {
+    const total = this.properties.length;
+    const byStatus = this.properties.reduce((acc, p) => {
+      acc[p.status] = (acc[p.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const totalUnits = this.properties.reduce((acc, p) => acc + p.units, 0);
+    const totalCompleted = this.properties.reduce((acc, p) => acc + p.completedUnits, 0);
+    
+    return {
+      total,
+      byStatus,
+      totalUnits,
+      totalCompleted,
+      averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
+    };
   }
 }
 

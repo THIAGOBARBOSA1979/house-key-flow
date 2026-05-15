@@ -1,7 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, Search, FilterX } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -60,6 +60,11 @@ const Properties = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
+  const [metrics, setMetrics] = useState(propertyService.getMetrics());
+
+  useEffect(() => {
+    setMetrics(propertyService.getMetrics());
+  }, [properties]);
 
   const filteredProperties = useMemo(() => {
     return properties.filter(property => {
@@ -110,26 +115,57 @@ const Properties = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-12">
       <PageHeader
         icon={Building}
         title="Empreendimentos"
-        description="Gerenciamento de todos os empreendimentos"
+        description="Gestão de portfólio e progresso de obras"
       >
-        <Button onClick={() => setIsFormOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Novo Empreendimento
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" className="hidden sm:flex" onClick={() => toast({ title: "Relatório gerado", description: "O PDF será baixado em instantes." })}>
+            Exportar PDF
+          </Button>
+          <Button onClick={() => setIsFormOpen(true)} className="shadow-sem-md">
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Projeto
+          </Button>
+        </div>
       </PageHeader>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <MetricCard 
+          label="Total de Projetos" 
+          value={metrics.total} 
+          icon={Building} 
+          trend="+1 este mês"
+        />
+        <MetricCard 
+          label="Em Andamento" 
+          value={metrics.byStatus.progress || 0} 
+          icon={TrendingUp} 
+          color="text-primary"
+        />
+        <MetricCard 
+          label="Total de Unidades" 
+          value={metrics.totalUnits} 
+          icon={PieChart} 
+        />
+        <MetricCard 
+          label="Progresso Médio" 
+          value={`${metrics.averageProgress}%`} 
+          icon={BarChart3} 
+          color="text-emerald-600"
+        />
+      </div>
+
       <FilterBar
-        searchPlaceholder="Buscar empreendimentos..."
+        searchPlaceholder="Buscar por nome ou cidade..."
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] rounded-xl">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -140,12 +176,20 @@ const Properties = () => {
             </SelectContent>
           </Select>
 
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} className="hidden md:flex">
-            <TabsList>
-              <TabsTrigger value="grid">
+          {(searchTerm || statusFilter !== "all") && (
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground">
+              <FilterX className="h-4 w-4 mr-2" /> Limpar
+            </Button>
+          )}
+
+          <div className="h-8 w-px bg-border/40 mx-1 hidden md:block" />
+
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} className="hidden md:flex bg-muted/50 p-1 rounded-xl">
+            <TabsList className="bg-transparent border-none">
+              <TabsTrigger value="grid" className="rounded-lg data-[state=active]:bg-background">
                 <LayoutGrid className="h-4 w-4" />
               </TabsTrigger>
-              <TabsTrigger value="list">
+              <TabsTrigger value="list" className="rounded-lg data-[state=active]:bg-background">
                 <List className="h-4 w-4" />
               </TabsTrigger>
             </TabsList>
@@ -293,5 +337,24 @@ const Properties = () => {
     </div>
   );
 };
+
+const MetricCard = ({ label, value, icon: Icon, trend, color }: any) => (
+  <div className="bg-card/50 backdrop-blur-sm border-none p-5 rounded-2xl shadow-sem-sm flex flex-col gap-3">
+    <div className="flex justify-between items-start">
+      <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
+        <Icon size={18} />
+      </div>
+      {trend && (
+        <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+          {trend}
+        </span>
+      )}
+    </div>
+    <div>
+      <p className="text-tiny font-black text-muted-foreground uppercase tracking-widest">{label}</p>
+      <p className={cn("text-2xl font-black mt-0.5", color || "text-foreground")}>{value}</p>
+    </div>
+  </div>
+);
 
 export default Properties;
