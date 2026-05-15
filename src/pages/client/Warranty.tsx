@@ -170,30 +170,45 @@ const ClientWarranty = () => {
     : null;
 
   const handleCancelClaim = () => {
-    if (!selectedClaim) return;
-    setClaims(prev => prev.filter(c => c.id !== selectedClaim));
-    setSelectedClaim(null);
-    setCancelDialogOpen(false);
-    toast({ title: "Solicitação cancelada", description: "Sua solicitação de garantia foi cancelada com sucesso." });
+    if (!selectedClaim || !user?.id) return;
+    const success = warrantyFlowService.cancelRequest(selectedClaim, user.id);
+    if (success) {
+      setClaims(prev => prev.filter(c => c.id !== selectedClaim));
+      setSelectedClaim(null);
+      setCancelDialogOpen(false);
+      toast({ title: "Solicitação cancelada", description: "Sua solicitação de garantia foi cancelada com sucesso." });
+    }
   };
 
   const handleAddInfo = () => {
-    if (!additionalInfo.trim()) return;
-    setClaims(prev => prev.map(c => c.id === selectedClaim ? {
-      ...c, updates: [...c.updates, { id: String(c.updates.length + 1), date: new Date(), author: "Você", text: additionalInfo }]
-    } : c));
-    setAdditionalInfo("");
-    setAddInfoDialogOpen(false);
-    toast({ title: "Informações adicionadas", description: "As informações foram anexadas à sua solicitação." });
+    if (!additionalInfo.trim() || !selectedClaim || !user?.id) return;
+    const result = warrantyFlowService.addUpdate(
+      selectedClaim, 
+      user.id, 
+      user.name || "Cliente", 
+      additionalInfo
+    );
+    if (result.success) {
+      setClaims(prev => prev.map(c => c.id === selectedClaim ? result.request : c));
+      setAdditionalInfo("");
+      setAddInfoDialogOpen(false);
+      toast({ title: "Informações adicionadas", description: "As informações foram anexadas à sua solicitação." });
+    }
   };
 
   const handleSendComment = () => {
-    if (!commentText.trim() || !selectedClaim) return;
-    setClaims(prev => prev.map(c => c.id === selectedClaim ? {
-      ...c, updates: [...c.updates, { id: String(c.updates.length + 1), date: new Date(), author: "Você", text: commentText }]
-    } : c));
-    setCommentText("");
-    toast({ title: "Comentário enviado", description: "Seu comentário foi adicionado ao histórico." });
+    if (!commentText.trim() || !selectedClaim || !user?.id) return;
+    const result = warrantyFlowService.addUpdate(
+      selectedClaim, 
+      user.id, 
+      user.name || "Cliente", 
+      commentText
+    );
+    if (result.success) {
+      setClaims(prev => prev.map(c => c.id === selectedClaim ? result.request : c));
+      setCommentText("");
+      toast({ title: "Comentário enviado", description: "Seu comentário foi adicionado ao histórico." });
+    }
   };
 
   // Handle form submission with validation
