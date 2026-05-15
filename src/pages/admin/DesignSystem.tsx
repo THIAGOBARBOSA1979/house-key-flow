@@ -377,52 +377,49 @@ const DesignSystem = () => {
 
 // --- HELPER COMPONENTS ---
 
-const BreakpointItem = ({ icon: Icon, label, value }: { icon: any; label: string; value: string }) => (
-  <div className="flex items-center justify-between p-3 bg-background rounded-lg border border-border/50">
+const BreakpointItem = ({ icon: Icon, label, value }: { icon: any, label: string, value: string }) => (
+  <div className="flex items-center justify-between p-3 rounded-lg bg-background border border-border/10">
     <div className="flex items-center gap-3">
-      <div className="p-2 bg-primary/10 rounded-md text-primary">
-        <Icon size={16} />
+      <div className="p-2 bg-primary/10 rounded-lg text-primary">
+        <Icon className="w-4 h-4" />
       </div>
-      <span className="text-body-sm font-semibold">{label}</span>
+      <span className="text-sem-label">{label}</span>
     </div>
-    <code className="text-[10px] font-mono bg-muted px-2 py-0.5 rounded">{value}</code>
+    <span className="text-sem-tiny font-black text-muted-foreground uppercase">{value}</span>
   </div>
 );
 
-const ShadowItem = ({ name, token }: { name: string; token: string }) => (
+const ShadowItem = ({ name, token }: { name: string, token: string }) => (
   <div className="space-y-3">
-    <div className={cn("h-24 bg-card border rounded-xl flex items-center justify-center transition-all hover:-translate-y-1", token)}>
-      <span className="text-tiny font-bold text-muted-foreground uppercase">{name}</span>
+    <div className={cn("h-24 bg-card border rounded-xl flex items-center justify-center transition-all", token)}>
+      <div className="w-12 h-12 bg-primary/20 rounded-lg border border-primary/20" />
     </div>
-    <code className="text-[10px] bg-muted p-1 block text-center">.{token}</code>
+    <div className="flex flex-col">
+      <span className="text-sem-label">{name}</span>
+      <code className="text-sem-tiny text-muted-foreground">shadow-{token}</code>
+    </div>
   </div>
 );
 
-const TypographyItem = ({ label, className, size }: { label: string; className: string; size: string }) => (
-  <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-muted/30 transition-colors">
+const TypographyItem = ({ label, className, size }: { label: string, className: string, size: string }) => (
+  <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div className="space-y-1">
-      <p className="text-tiny font-bold text-muted-foreground uppercase tracking-wider">{label}</p>
-      <p className={cn(className, "truncate")}>O rato roeu a roupa do rei.</p>
+      <p className="text-sem-caption text-muted-foreground uppercase">{label}</p>
+      <p className={cn("font-bold", className)}>The quick brown fox jumps over the lazy dog</p>
     </div>
-    <div className="flex items-center gap-3">
-      <code className="text-[10px] bg-muted px-2 py-1 rounded">.{className}</code>
-      <span className="text-[10px] text-muted-foreground font-mono">{size}</span>
-    </div>
+    <code className="text-sem-tiny bg-muted/50 px-3 py-1.5 rounded-lg border border-border/20 self-start md:self-auto font-black">{size}</code>
   </div>
 );
 
-const A11yCard = ({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) => (
-  <Card className="card-standard border-t-4 border-t-primary/40">
-    <CardHeader className="pb-2">
-      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
-        <Icon size={16} />
-      </div>
-      <CardTitle className="text-label">{title}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <p className="text-caption text-muted-foreground leading-relaxed">{desc}</p>
-    </CardContent>
+const A11yCard = ({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) => (
+  <Card className="card-standard p-6 border-none bg-card/40 backdrop-blur-sm">
+    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
+      <Icon className="w-5 h-5" />
+    </div>
+    <h4 className="text-label mb-2">{title}</h4>
+    <p className="text-sem-body-sm text-muted-foreground leading-relaxed">{desc}</p>
   </Card>
 );
 
 export default DesignSystem;
+

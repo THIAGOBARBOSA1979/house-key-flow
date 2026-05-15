@@ -32,7 +32,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
   return (
     <Card 
       onClick={onClick}
-      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/40 backdrop-blur-md flex flex-col h-full cursor-pointer group", className)}
+      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/40 backdrop-blur-md flex flex-col h-full cursor-pointer group rounded-lg shadow-sem-sm hover:shadow-sem-md", className)}
     >
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
         {property.imageUrl ? (
@@ -67,14 +67,14 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
 
       <CardContent className="space-y-4 pt-2 flex-1">
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-muted/20 p-2.5 rounded-xl border border-border/10 flex flex-col justify-center">
+          <div className="bg-muted/20 p-2.5-sem rounded-lg border border-border/10 flex flex-col justify-center">
             <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
             <div className="flex items-center gap-2">
               <Home size={13} className="text-primary opacity-70" />
               <span className="text-sm font-black">{property.units}</span>
             </div>
           </div>
-          <div className="bg-muted/20 p-2.5 rounded-xl border border-border/10 flex flex-col justify-center">
+          <div className="bg-muted/20 p-2.5-sem rounded-lg border border-border/10 flex flex-col justify-center">
             <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Gerente</p>
             <div className="flex items-center gap-2">
               <Users size={13} className="text-emerald-500 opacity-70" />
