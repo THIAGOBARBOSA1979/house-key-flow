@@ -8,7 +8,7 @@ import { ChecklistDetail } from '@/components/Checklists/ChecklistDetail';
 import { ChecklistTemplates } from '@/components/Checklists/ChecklistTemplates';
 import { ChecklistExecution } from '@/components/Checklists/ChecklistExecution';
 import { ChecklistItem, checklistService } from '@/services/ChecklistService';
-import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, Filter, History } from 'lucide-react';
+import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, Filter, History, AlertCircle } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from '@/components/shared/StatsCard';
@@ -49,21 +49,24 @@ export default function Checklist() {
   };
 
   const handleSaveExecution = (completedItems: ChecklistItem[], notes: string) => {
-    toast({ title: "Rascunho salvo", description: "O progresso da execução foi salvo localmente." });
-    console.log('Salvando execução:', { completedItems, notes });
+    if (selectedTemplate) {
+      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "in_progress");
+      toast({ title: "Rascunho salvo", description: "O progresso da vistoria foi persistido." });
+    }
   };
 
+
   const handleSubmitExecution = (completedItems: ChecklistItem[], notes: string) => {
-    toast({ title: "Checklist finalizado", description: "A execução foi registrada e sincronizada com o sistema." });
-    console.log('Finalizando execução:', { completedItems, notes });
+    toast({ title: "Vistoria finalizada", description: "A inspeção foi registrada com sucesso e o laudo técnico gerado." });
     
     // Log the activity
     if (selectedTemplate) {
-      checklistService.logExecution(selectedTemplate.id, completedItems, notes);
+      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "completed");
     }
     
     setCurrentView('templates');
   };
+
 
   const handleBack = () => {
     setCurrentView('templates');
