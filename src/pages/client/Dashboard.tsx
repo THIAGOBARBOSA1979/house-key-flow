@@ -22,6 +22,10 @@ import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
+import { documentService } from "@/services/DocumentService";
+import { inspectionService } from "@/services/InspectionService";
+import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { useMemo } from "react";
 
 const Dashboard = () => {
   // Get client stage data
