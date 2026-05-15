@@ -24,9 +24,16 @@ export function AppointmentDetails({
   appointments, 
   isOpen, 
   onOpenChange,
-  onStatusChange
+  onStatusChange,
+  onUpdate
 }: AppointmentDetailsProps) {
   const { toast } = useToast();
+  const [notes, setNotes] = React.useState("");
+  
+  React.useEffect(() => {
+    const apt = appointments.find(a => a.id === selectedAppointment);
+    if (apt) setNotes(apt.notes || "");
+  }, [selectedAppointment, appointments]);
   
   // Get appointment details
   const getAppointmentDetails = (id: string) => {
