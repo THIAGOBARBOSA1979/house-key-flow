@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
+import { userService } from "@/services/UserService";
 
 // Form schema with validation
 const formSchema = z.object({
@@ -64,15 +65,29 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
   
   // Handle form submission
   const handleSubmit = (values: FormValues) => {
+    // Create the client in the user service
+    const propertyName = mockProperties.find(p => p.id === values.property)?.name || values.property;
+    
+    const newUser = userService.create({
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      role: "client",
+      status: "active",
+      propertyId: values.property,
+      propertyName: propertyName,
+      unit: values.unit,
+      notes: `Cadastro manual via formulário. Documento: ${values.document}`
+    });
+
     if (onSubmit) {
       onSubmit(values);
     } else {
-      // Default behavior if no onSubmit is provided
       toast({
         title: "Cliente cadastrado",
-        description: "O cliente foi cadastrado com sucesso.",
+        description: `O cliente ${values.name} foi cadastrado com sucesso.`,
       });
-      console.log("Form submitted:", values);
+      console.log("Form submitted and user created:", newUser);
       form.reset();
     }
   };
