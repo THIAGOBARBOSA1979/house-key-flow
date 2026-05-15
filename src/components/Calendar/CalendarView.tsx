@@ -20,11 +20,12 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
   
   // Filter appointments for the selected date
   const filteredAppointments = date 
-    ? appointments.filter(appointment => 
-        appointment.date.getDate() === date.getDate() &&
-        appointment.date.getMonth() === date.getMonth() &&
-        appointment.date.getFullYear() === date.getFullYear()
-      )
+    ? appointments.filter(appointment => {
+        const aptDate = new Date(appointment.date);
+        return aptDate.getDate() === date.getDate() &&
+               aptDate.getMonth() === date.getMonth() &&
+               aptDate.getFullYear() === date.getFullYear();
+      })
     : [];
     
   // Function to get appointments for a specific date (for highlighting days with appointments)
