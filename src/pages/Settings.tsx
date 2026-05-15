@@ -70,53 +70,58 @@ const Settings = () => {
               <CardDescription>Dados básicos que aparecem em documentos e relatórios gerados pelo sistema.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="company-name">Nome da Empresa</Label>
+                  <Label htmlFor="company-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome da Empresa</Label>
                   <Input 
                     id="company-name" 
                     value={settings.company.name} 
+                    className="h-11 rounded-xl"
                     onChange={e => updateSection('company', { name: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company-cnpj">CNPJ</Label>
+                  <Label htmlFor="company-cnpj" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">CNPJ</Label>
                   <Input 
                     id="company-cnpj" 
                     value={settings.company.cnpj} 
+                    className="h-11 rounded-xl"
                     onChange={e => updateSection('company', { cnpj: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company-email">E-mail de Contato</Label>
+                  <Label htmlFor="company-email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">E-mail de Contato</Label>
                   <Input 
                     id="company-email" 
                     type="email" 
                     value={settings.company.email} 
+                    className="h-11 rounded-xl"
                     onChange={e => updateSection('company', { email: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company-phone">Telefone</Label>
+                  <Label htmlFor="company-phone" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Telefone</Label>
                   <Input 
                     id="company-phone" 
                     value={settings.company.phone} 
+                    className="h-11 rounded-xl"
                     onChange={e => updateSection('company', { phone: e.target.value })}
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="company-address">Endereço</Label>
+              <div className="space-y-2 pt-2">
+                <Label htmlFor="company-address" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Endereço Administrativo</Label>
                 <Input 
                   id="company-address" 
                   value={settings.company.address} 
+                  className="h-11 rounded-xl"
                   onChange={e => updateSection('company', { address: e.target.value })}
                 />
               </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-3 pt-6 border-t border-border/10">
-              <Button variant="outline" className="rounded-lg font-bold">Descartar</Button>
-              <Button onClick={handleSaveSettings} className="rounded-lg font-bold bg-primary hover:bg-primary/90">Salvar Alterações</Button>
+            <CardFooter className="flex justify-end gap-3 pt-6 border-t border-border/10 bg-muted/5">
+              <Button variant="outline" className="h-11 px-6 rounded-xl font-bold">Descartar</Button>
+              <Button onClick={handleSaveSettings} className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md">Salvar Alterações</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -154,15 +159,15 @@ const Settings = () => {
 
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label htmlFor="primary-color">Cor da Marca (Semântica Primary)</Label>
+                    <Label htmlFor="primary-color" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cor da Marca (Interface)</Label>
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-xl shadow-sem-md border p-1 bg-white shrink-0">
-                        <div className="h-full w-full rounded-lg" style={{ backgroundColor: settings.branding.primaryColor }} />
+                      <div className="h-14 w-14 rounded-2xl shadow-sem-lg border p-1 bg-white shrink-0">
+                        <div className="h-full w-full rounded-xl" style={{ backgroundColor: settings.branding.primaryColor }} />
                       </div>
                       <Input 
                         id="primary-hex" 
                         value={settings.branding.primaryColor} 
-                        className="font-mono text-sm uppercase font-bold"
+                        className="font-mono text-sm uppercase font-black h-11 rounded-xl"
                         onChange={e => updateSection('branding', { primaryColor: e.target.value })}
                       />
                     </div>
@@ -193,9 +198,9 @@ const Settings = () => {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-3 pt-6 border-t border-border/10">
-              <Button variant="outline" className="rounded-lg font-bold">Restaurar Padrões</Button>
-              <Button onClick={handleSaveSettings} className="rounded-lg font-bold bg-primary hover:bg-primary/90">Salvar Identidade</Button>
+            <CardFooter className="flex justify-end gap-3 pt-6 border-t border-border/10 bg-muted/5">
+              <Button variant="outline" className="h-11 px-6 rounded-xl font-bold">Restaurar Padrões</Button>
+              <Button onClick={handleSaveSettings} className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md">Salvar Identidade</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -266,8 +271,8 @@ const Settings = () => {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-3 pt-6 border-t border-border/10">
-              <Button onClick={handleSaveSettings} className="rounded-lg font-bold bg-primary hover:bg-primary/90">Salvar Alterações</Button>
+            <CardFooter className="flex justify-end pt-6 border-t border-border/10 bg-muted/5">
+              <Button onClick={handleSaveSettings} className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md">Salvar Alterações</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -283,37 +288,41 @@ const Settings = () => {
                 <h3 className="text-label font-black text-primary uppercase tracking-widest">Prazos de Garantia (Anos)</h3>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="structural-w" className="font-bold">Estrutural</Label>
+                    <Label htmlFor="structural-w" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Estrutural</Label>
                     <Input 
                       id="structural-w" 
                       type="number" 
+                      className="h-11 rounded-xl"
                       value={settings.warranty.Structural} 
                       onChange={e => updateSection('warranty', { Structural: parseInt(e.target.value) })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="waterproofing-w" className="font-bold">Impermeabilização</Label>
+                    <Label htmlFor="waterproofing-w" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Impermeabilização</Label>
                     <Input 
                       id="waterproofing-w" 
                       type="number" 
+                      className="h-11 rounded-xl"
                       value={settings.warranty.Waterproofing} 
                       onChange={e => updateSection('warranty', { Waterproofing: parseInt(e.target.value) })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="installations-w" className="font-bold">Instalações</Label>
+                    <Label htmlFor="installations-w" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Instalações</Label>
                     <Input 
                       id="installations-w" 
                       type="number" 
+                      className="h-11 rounded-xl"
                       value={settings.warranty.Installations} 
                       onChange={e => updateSection('warranty', { Installations: parseInt(e.target.value) })}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="finishings-w" className="font-bold">Acabamentos</Label>
+                    <Label htmlFor="finishings-w" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Acabamentos</Label>
                     <Input 
                       id="finishings-w" 
                       type="number" 
+                      className="h-11 rounded-xl"
                       value={settings.warranty.Finishings} 
                       onChange={e => updateSection('warranty', { Finishings: parseInt(e.target.value) })}
                     />
