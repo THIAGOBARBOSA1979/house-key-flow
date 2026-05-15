@@ -1,7 +1,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock } from "lucide-react";
+import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
