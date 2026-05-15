@@ -180,7 +180,9 @@ const ClientWarranty = () => {
   const [addInfoDialogOpen, setAddInfoDialogOpen] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [commentText, setCommentText] = useState("");
-  const [claims, setClaims] = useState(warrantyClaims);
+  const { user } = useAuth();
+  const allClaims = useMemo(() => warrantyFlowService.getClientRequests(user?.id || "client-1"), [user?.id]);
+  const [claims, setClaims] = useState<any[]>(allClaims);
   const { toast } = useToast();
   
   // Mock client ID - in real app, get from auth context
