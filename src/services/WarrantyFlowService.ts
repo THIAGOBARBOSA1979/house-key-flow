@@ -177,6 +177,64 @@ class WarrantyFlowService {
 
 
   /**
+   * Create a new warranty request
+   */
+  createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
+    const id = data.id || `wr-${Date.now()}`;
+    const newRequest: WarrantyRequestFlow = {
+      id,
+      clientId: data.clientId || "",
+      clientName: data.clientName || "",
+      propertyId: data.propertyId || "",
+      propertyName: data.propertyName || "",
+      unitNumber: data.unitNumber || "",
+      title: data.title || "",
+      description: data.description || "",
+      category: data.category || "Outros",
+      priority: data.priority || "medium",
+      currentStage: "opened",
+      stageStartedAt: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      slaStatus: "on_track",
+      history: [
+        {
+          id: `hist-${Date.now()}`,
+          requestId: id,
+          fromStatus: null,
+          toStatus: "opened",
+          changedAt: new Date(),
+          changedBy: data.clientId || "client",
+          isAutomatic: false,
+          notes: "Solicitação aberta pelo cliente"
+        }
+      ],
+      problems: data.problems || [],
+      ...data
+    };
+
+    // Calculate initial SLA
+    const slaInfo = warrantySLAService.calculateSLADeadlineInfo(newRequest);
+    newRequest.slaDeadline = slaInfo.deadline;
+    newRequest.slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === newRequest.category) || DEFAULT_SLA_CONFIGS[0];
+
+    this.requests.set(id, newRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: id,
+      action: 'created',
+      performedBy: data.clientId || 'client',
+      performedByName: data.clientName || 'Cliente',
+      performedByRole: 'client',
+      details: `Solicitação de garantia criada: ${newRequest.title}`
+    });
+
+    return newRequest;
+  }
+
+  /**
    * Get all warranty requests
    */
   getAllRequests(): WarrantyRequestFlow[] {
