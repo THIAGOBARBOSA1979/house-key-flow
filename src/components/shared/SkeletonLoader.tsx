@@ -26,7 +26,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
               <Skeleton className="h-4 w-5/6" />
             </div>
             <div className="flex justify-between items-center pt-4">
-              <Skeleton className="h-8 w-20 rounded-lg" />
+              <Skeleton className="h-8 w-20 rounded-md" />
               <Skeleton className="h-6 w-16 rounded-full" />
             </div>
           </div>
