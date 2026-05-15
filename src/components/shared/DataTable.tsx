@@ -107,7 +107,7 @@ export function DataTable<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-5 space-y-4 interactive-active border-border/60"
+            className="card-standard p-5 space-y-4 interactive-active border-border/40 hover:border-primary/20"
             onClick={() => onRowClick?.(item)}
           >
             {columns.map((column, colIdx) => (
