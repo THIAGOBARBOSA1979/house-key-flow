@@ -236,7 +236,7 @@ const ClientArea = () => {
                         </div>
                       </TableCell>
                       <TableCell className="hidden lg:table-cell py-4 px-6 text-sem-body-sm text-muted-foreground font-medium">
-                        {client.property} • {client.unit}
+                        {client.propertyName} • {client.unitNumber}
                       </TableCell>
                       <TableCell className="py-4 px-6">
                         <div className="flex flex-col gap-1.5">
