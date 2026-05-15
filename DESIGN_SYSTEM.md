@@ -8,14 +8,18 @@ Este documento define os padrões visuais e componentes do sistema de gestão im
 
 ### Hierarquia de Títulos
 
-| Elemento | Classes | Uso |
-|----------|---------|-----|
-| H1 (Página) | `text-3xl font-bold tracking-tight` | Título principal de cada página |
-| H2 (Seção) | `text-xl font-semibold` | Cabeçalho de seções |
-| H3 (Card) | `text-lg font-medium` | Título de cards |
-| H4 (Subseção) | `text-base font-medium` | Subtítulos |
-| Body | `text-sm` | Texto padrão (14px) |
-| Caption | `text-xs text-muted-foreground` | Textos auxiliares |
+| Elemento | Token | Classes | Uso |
+|----------|-------|---------|-----|
+| Display | `text-sem-display` | `text-6xl font-extrabold tracking-tight` | Títulos heróis e destaque |
+| H1 | `text-sem-h1` | `text-[2.25rem] font-bold tracking-tight` | Título principal da página |
+| H2 | `text-sem-h2` | `text-[1.875rem] font-bold` | Títulos de seções |
+| H3 | `text-sem-h3` | `text-[1.5rem] font-semibold` | Títulos de cards |
+| H4 | `text-sem-h4` | `text-[1.25rem] font-semibold` | Subtítulos |
+| Body LG | `text-sem-body-lg` | `text-[1.125rem]` | Texto de destaque |
+| Body Base | `text-sem-body-base` | `text-[1rem]` | Texto padrão (16px) |
+| Body SM | `text-sem-body-sm` | `text-[0.875rem]` | Texto secundário (14px) |
+| Body XS | `text-sem-body-xs` | `text-[0.75rem]` | Textos auxiliares (12px) |
+| Caption | `text-sem-caption` | `text-[0.75rem] font-medium uppercase` | Rótulos e metadados |
 
 ### Espaçamentos de Texto
 - Entre título e descrição: `mt-1`
