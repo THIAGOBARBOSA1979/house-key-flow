@@ -118,10 +118,10 @@ export const StartInspection = ({
   }, [groups, inspectionId]);
   
   // Calculate progress
-  const totalItems = groups.reduce((acc, group) => acc + group.items.length, 0);
+  const totalItems = groups.reduce((acc, group) => acc + (group.items?.length || 0), 0);
   const completedItems = groups.reduce((acc, group) => 
-    acc + group.items.filter(item => item.conformity !== "pending").length, 0);
-  const progress = Math.round((completedItems / totalItems) * 100);
+    acc + (group.items?.filter(item => item.conformity && item.conformity !== "pending").length || 0), 0);
+  const progress = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
   
   const handleConformityChange = (groupId: string, itemId: string, value: "conform" | "nonconform") => {
     setGroups(prevGroups => 
