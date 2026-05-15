@@ -495,7 +495,15 @@ const Dashboard = () => {
           <CardDescription>Acesso rápido aos principais recursos do seu portal</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <Link to="/client/support" className="group">
+              <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
+                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
+                  <LifeBuoy className="h-6 w-6 text-primary group-hover:text-white" />
+                </div>
+                <span className="font-bold text-sm">Suporte</span>
+              </div>
+            </Link>
             <Link to="/client/financial" className="group">
               <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
                 <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
