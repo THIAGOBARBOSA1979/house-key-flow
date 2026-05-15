@@ -79,16 +79,16 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
   
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
         <div className="space-y-4">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome completo <span className="text-destructive">*</span></FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome completo <span className="text-destructive">*</span></FormLabel>
                 <FormControl>
-                  <Input placeholder="Ex: Maria Oliveira" {...field} />
+                  <Input placeholder="Ex: Maria Oliveira" className="h-11 rounded-xl" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -101,9 +101,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Email <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="cliente@email.com" type="email" {...field} />
+                    <Input placeholder="cliente@email.com" type="email" className="h-11 rounded-xl" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,9 +115,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Telefone <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Telefone <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="(11) 99999-9999" {...field} />
+                    <Input placeholder="(11) 99999-9999" className="h-11 rounded-xl" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,9 +130,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
             name="document"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>CPF/CNPJ <span className="text-destructive">*</span></FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">CPF/CNPJ <span className="text-destructive">*</span></FormLabel>
                 <FormControl>
-                  <Input placeholder="000.000.000-00" {...field} />
+                  <Input placeholder="000.000.000-00" className="h-11 rounded-xl" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -145,11 +145,11 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
               name="property"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Empreendimento <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Empreendimento <span className="text-destructive">*</span></FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione um empreendimento" />
+                      <SelectTrigger className="h-11 rounded-xl">
+                        <SelectValue placeholder="Selecione..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -170,9 +170,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
               name="unit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Unidade <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Unidade <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Apto 101 Bloco A" {...field} />
+                    <Input placeholder="Ex: Apto 101 Bloco A" className="h-11 rounded-xl" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -185,9 +185,9 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Endereço complementar</FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Endereço complementar</FormLabel>
                 <FormControl>
-                  <Input placeholder="Endereço completo (opcional)" {...field} />
+                  <Input placeholder="Endereço completo (opcional)" className="h-11 rounded-xl" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -195,13 +195,13 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
           />
         </div>
         
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-end gap-3 pt-6 border-t border-border/10">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel} className="h-11 px-6 rounded-xl font-bold transition-all">
               Cancelar
             </Button>
           )}
-          <Button type="submit">
+          <Button type="submit" className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-[10px] bg-primary hover:bg-primary/90 shadow-sem-md active:scale-95 transition-all">
             Cadastrar Cliente
           </Button>
         </div>

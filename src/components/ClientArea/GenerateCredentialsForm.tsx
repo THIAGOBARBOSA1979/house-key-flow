@@ -91,7 +91,7 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
             name="clientId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Cliente <span className="text-destructive">*</span></FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cliente <span className="text-destructive">*</span></FormLabel>
                 <Select 
                   onValueChange={(value) => {
                     field.onChange(value);
@@ -100,7 +100,7 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 rounded-xl">
                       <SelectValue placeholder="Selecione um cliente" />
                     </SelectTrigger>
                   </FormControl>
@@ -124,9 +124,9 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Email <span className="text-destructive">*</span></FormLabel>
                     <FormControl>
-                      <Input placeholder="cliente@email.com" type="email" {...field} />
+                      <Input placeholder="cliente@email.com" type="email" className="h-11 rounded-xl" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,9 +137,9 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
                 control={form.control}
                 name="sendEmail"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <FormItem className="flex flex-row items-center justify-between rounded-2xl border-none bg-muted/30 p-5 group hover:bg-muted/50 transition-all cursor-pointer">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-base">
+                      <FormLabel className="text-sm font-bold cursor-pointer">
                         Enviar credenciais por email
                       </FormLabel>
                       <div className="text-sm text-muted-foreground">
@@ -160,9 +160,9 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
                 control={form.control}
                 name="generatePassword"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <FormItem className="flex flex-row items-center justify-between rounded-2xl border-none bg-muted/30 p-5 group hover:bg-muted/50 transition-all cursor-pointer">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-base">
+                      <FormLabel className="text-sm font-bold cursor-pointer">
                         Gerar senha automática
                       </FormLabel>
                       <div className="text-sm text-muted-foreground">
@@ -185,9 +185,9 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Senha manual <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Senha manual <span className="text-destructive">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Digite uma senha" type="password" {...field} />
+                        <Input placeholder="Digite uma senha" type="password" className="h-11 rounded-xl" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -198,13 +198,13 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
           )}
         </div>
         
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-end gap-3 pt-6 border-t border-border/10">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel} className="h-11 px-6 rounded-xl font-bold transition-all">
               Cancelar
             </Button>
           )}
-          <Button type="submit" disabled={!selectedClient}>
+          <Button type="submit" disabled={!selectedClient} className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-[10px] bg-primary hover:bg-primary/90 shadow-sem-md active:scale-95 transition-all">
             Gerar Credenciais
           </Button>
         </div>
