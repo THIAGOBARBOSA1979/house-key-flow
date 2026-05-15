@@ -138,12 +138,12 @@ export function AppointmentItem({ appointment, onViewDetails, compact = false }:
         </div>
       </div>
       
-      <div className="flex gap-2 shrink-0 md:pl-4 md:border-l md:border-border/10">
+      <div className="flex flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto md:pl-4 md:border-l md:border-border/10">
         <Button 
           variant="outline" 
           size="sm"
           onClick={() => onViewDetails(appointment.id)}
-          className="rounded-lg h-10 font-bold active:scale-95 transition-all"
+          className="flex-1 md:flex-none rounded-xl h-10 font-bold active:scale-95 transition-all bg-card/50 hover:bg-primary/5 border-border/10"
         >
           Ver detalhes
         </Button>
