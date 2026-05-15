@@ -171,7 +171,7 @@ class InspectionService {
       auditLogService.log({
         entityType: 'inspection',
         entityId: id,
-        action: 'status_changed',
+        action: 'stage_changed',
         performedBy: 'admin-1',
         performedByName: 'Administrador',
         performedByRole: 'admin',
