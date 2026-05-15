@@ -20,11 +20,11 @@ export default function Checklist() {
   const { toast } = useToast();
   const [currentView, setCurrentView] = useState<'templates' | 'builder' | 'execution' | 'detail'>('templates');
   const [selectedTemplate, setSelectedTemplate] = useState<ChecklistTemplate | null>(null);
-  const [executionItems, setExecutionItems] = useState<ChecklistItem[]>([]);
+  const [executionGroups, setExecutionGroups] = useState<ChecklistGroup[]>([]);
 
   const handleSelectTemplate = (template: ChecklistTemplate) => {
     setSelectedTemplate(template);
-    setExecutionItems(template.items || []);
+    setExecutionGroups(template.groups || []);
     setCurrentView('execution');
   };
 
@@ -32,12 +32,12 @@ export default function Checklist() {
     setCurrentView('builder');
   };
 
-  const handleSaveChecklist = async (title: string, description: string, items: ChecklistItem[]) => {
+  const handleSaveChecklist = async (title: string, description: string, groups: ChecklistGroup[]) => {
     try {
       await checklistService.createTemplate({ 
         title, 
         description, 
-        items,
+        groups,
         category: "vistoria" 
       });
       toast({ title: "Template salvo", description: "O novo template de checklist foi criado com sucesso." });
@@ -48,20 +48,20 @@ export default function Checklist() {
     }
   };
 
-  const handleSaveExecution = (completedItems: ChecklistItem[], notes: string) => {
+  const handleSaveExecution = (completedGroups: ChecklistGroup[], notes: string) => {
     if (selectedTemplate) {
-      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "in_progress");
+      checklistService.logExecution(selectedTemplate.id, completedGroups, notes, undefined, "in_progress");
       toast({ title: "Rascunho salvo", description: "O progresso da vistoria foi persistido." });
     }
   };
 
 
-  const handleSubmitExecution = (completedItems: ChecklistItem[], notes: string) => {
+  const handleSubmitExecution = (completedGroups: ChecklistGroup[], notes: string) => {
     toast({ title: "Vistoria finalizada", description: "A inspeção foi registrada com sucesso e o laudo técnico gerado." });
     
     // Log the activity
     if (selectedTemplate) {
-      checklistService.logExecution(selectedTemplate.id, completedItems, notes, undefined, "completed");
+      checklistService.logExecution(selectedTemplate.id, completedGroups, notes, undefined, "completed");
     }
     
     setCurrentView('templates');
@@ -71,7 +71,7 @@ export default function Checklist() {
   const handleBack = () => {
     setCurrentView('templates');
     setSelectedTemplate(null);
-    setExecutionItems([]);
+    setExecutionGroups([]);
   };
 
   if (currentView === 'builder') {
@@ -101,7 +101,7 @@ export default function Checklist() {
         </div>
         <ChecklistExecution
           title={selectedTemplate.title}
-          items={executionItems}
+          items={executionGroups as any}
           onSave={handleSaveExecution}
           onSubmit={handleSubmitExecution}
         />
