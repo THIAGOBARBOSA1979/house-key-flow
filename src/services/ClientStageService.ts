@@ -118,7 +118,7 @@ class ClientStageService {
     const storedProfiles = localStorage.getItem(this.storageKeyProfiles);
     const storedEvents = localStorage.getItem(this.storageKeyEvents);
 
-    if (storedProfiles && storedEvents) {
+    if (storedProfiles && storedEvents && false) { // Forced false for demo reset
       try {
         const parsedProfiles = JSON.parse(storedProfiles);
         const parsedEvents = JSON.parse(storedEvents);
