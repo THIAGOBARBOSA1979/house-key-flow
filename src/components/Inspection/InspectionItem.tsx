@@ -1,6 +1,6 @@
 
 import { safeFormat } from "@/lib/utils";
-import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock } from "lucide-react";
+import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "../shared/StatusBadge";
 import {
@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { ScheduleInspectionDialog } from "./ScheduleInspectionDialog";
+import { StartInspectionDialog } from "./StartInspectionDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { inspectionService } from "@/services/InspectionService";
 import { cn } from "@/lib/utils";
 
 interface InspectionItemProps {
