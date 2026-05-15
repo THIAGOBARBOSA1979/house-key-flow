@@ -349,36 +349,40 @@ export default function ClientDocuments() {
                     <span className="text-[10px] font-black text-muted-foreground/60 uppercase">{doc.size}</span>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-1">
+                <CardContent className="flex-1 pb-4">
                   {doc.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2 italic mb-4">{doc.description}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2 italic mb-4 leading-relaxed bg-muted/30 p-2 rounded-lg">{doc.description}</p>
                   )}
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold mt-auto border-t pt-3">
-                    <Calendar className="h-3 w-3" />
-                    {doc.createdAt.toLocaleDateString()}
-                    <Separator orientation="vertical" className="h-3" />
-                    <span>{doc.downloads} downloads</span>
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground font-black uppercase mt-auto pt-4 border-t border-dashed">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3.5 w-3.5 text-primary/60" />
+                      {doc.createdAt.toLocaleDateString()}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Download className="h-3.5 w-3.5 text-primary/60" />
+                      <span>{doc.downloads}</span>
+                    </div>
                   </div>
                 </CardContent>
-                <div className="p-4 pt-0 grid grid-cols-1 gap-2 mt-auto">
-                  <div className="grid grid-cols-2 gap-2 mb-2">
+                <div className="p-5 pt-0 grid grid-cols-1 gap-3 mt-auto">
+                  <div className="grid grid-cols-2 gap-3">
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="h-8 text-[10px] font-bold uppercase"
+                      className="h-10 text-[10px] font-black uppercase tracking-widest border-2 hover:bg-primary/5 rounded-xl"
                       onClick={() => handlePreview(doc)}
                       disabled={doc.status === "processando"}
                     >
-                      <Eye className="h-3.5 w-3.5 mr-1" />
+                      <Eye className="h-4 w-4 mr-1.5" />
                       Preview
                     </Button>
                     <Button 
                       size="sm" 
-                      className="h-8 text-[10px] font-bold uppercase"
+                      className="h-10 text-[10px] font-black uppercase tracking-widest shadow-md rounded-xl"
                       onClick={() => handleDownload(doc)}
                       disabled={doc.status === "processando"}
                     >
-                      <Download className="h-3.5 w-3.5 mr-1" />
+                      <Download className="h-4 w-4 mr-1.5" />
                       Baixar
                     </Button>
                   </div>
@@ -387,10 +391,10 @@ export default function ClientDocuments() {
                     <Button 
                       size="sm" 
                       variant="secondary"
-                      className="w-full h-8 text-[10px] font-bold uppercase bg-primary/10 text-primary hover:bg-primary/20 border-none"
+                      className="w-full h-11 text-[11px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary/20 border-none rounded-xl"
                       onClick={() => handleOpenSignature(doc)}
                     >
-                      <PenTool className="h-3.5 w-3.5 mr-1" />
+                      <PenTool className="h-4 w-4 mr-1.5" />
                       Assinar Digitalmente
                     </Button>
                   )}
