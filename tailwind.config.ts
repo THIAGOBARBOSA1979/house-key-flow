@@ -155,6 +155,7 @@ export default {
 				'sem-label': ['var(--font-label)', { lineHeight: '1.5', fontWeight: '600' }],
 				'sem-caption': ['var(--font-caption)', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.01em' }],
 				'sem-tiny': ['var(--font-tiny)', { lineHeight: '1.2', fontWeight: '600', letterSpacing: '0.02em' }],
+				'sem-body-xs': ['var(--font-body-xs)', { lineHeight: '1.6', fontWeight: '400' }],
 			},
 			transitionDuration: {
 				fast: 'var(--duration-fast)',
