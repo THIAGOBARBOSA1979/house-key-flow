@@ -3,7 +3,8 @@ import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock, Users } from "lucide-react";
+import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock, Users, AlertCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { Appointment } from "./AppointmentData";
 
