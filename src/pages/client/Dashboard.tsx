@@ -329,8 +329,8 @@ const Dashboard = () => {
                       <p className="text-caption">Prioridade: {request.priority}</p>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(request.status) as any} className="text-xs">
-                    {getStatusLabel(request.status)}
+                  <Badge variant={getStatusColor(request.currentStage) as any} className="text-xs">
+                    {getStatusLabel(request.currentStage)}
                   </Badge>
                 </div>
               ))
