@@ -97,6 +97,7 @@ export const ScheduleInspectionForm = ({
   requestId?: string
 }) => {
   const { toast } = useToast();
+  const [conflictWarning, setConflictWarning] = React.useState<string | null>(null);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -111,6 +112,20 @@ export const ScheduleInspectionForm = ({
       requestId: requestId || ""
     },
   });
+
+  const watchDate = form.watch("date");
+  const watchTechnician = form.watch("technician");
+
+  React.useEffect(() => {
+    if (watchDate && watchTechnician) {
+      const conflicts = inspectionService.getConflicts(watchDate, watchTechnician);
+      if (conflicts.length > 0) {
+        setConflictWarning(`Atenção: O técnico já possui ${conflicts.length} agendamento(s) nesta data.`);
+      } else {
+        setConflictWarning(null);
+      }
+    }
+  }, [watchDate, watchTechnician]);
 
 
   const onSubmit = (data: FormValues) => {
