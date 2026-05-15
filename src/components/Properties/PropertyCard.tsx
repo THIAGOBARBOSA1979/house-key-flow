@@ -24,11 +24,16 @@ interface PropertyCardProps {
 /**
  * Enhanced PropertyCard following the new Design System tokens.
  */
-export const PropertyCard = ({ property, onEdit, onDelete, className }: PropertyCardProps) => {
+export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }: PropertyCardProps) => {
   const completionPercentage = Math.round((property.completedUnits / property.units) * 100);
+  const completedMilestones = property.milestones?.filter(m => m.completed).length || 0;
+  const totalMilestones = property.milestones?.length || 0;
   
   return (
-    <Card className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/40 backdrop-blur-md flex flex-col h-full", className)}>
+    <Card 
+      onClick={onClick}
+      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/40 backdrop-blur-md flex flex-col h-full cursor-pointer group", className)}
+    >
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
         {property.imageUrl ? (
           <img 
