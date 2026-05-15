@@ -154,11 +154,21 @@ export const InspectionItem = ({ inspection }: InspectionItemProps) => {
 
       <ScheduleInspectionDialog
         triggerButton={<span className="hidden" />}
+        open={rescheduleDialogOpen}
+        onOpenChange={setRescheduleDialogOpen}
         propertyInfo={{
           property: inspection.property,
           unit: inspection.unit,
           client: inspection.client,
         }}
+      />
+
+      <StartInspectionDialog
+        open={startInspectionDialogOpen}
+        onOpenChange={setStartInspectionDialogOpen}
+        inspectionId={inspection.id}
+        inspectionTitle={`Vistoria: ${inspection.property} - Un. ${inspection.unit}`}
+        onComplete={handleInspectionComplete}
       />
     </div>
   );
