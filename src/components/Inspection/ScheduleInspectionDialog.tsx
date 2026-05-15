@@ -53,15 +53,18 @@ export function ScheduleInspectionDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Agendar Nova Vistoria</DialogTitle>
-          <DialogDescription>
-            Preencha os dados abaixo para agendar uma vistoria.
+      <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+        <DialogHeader className="px-8 pt-8 pb-6 bg-muted/5 border-b">
+          <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-2">
+            <Plus className="w-6 h-6 text-primary" />
+            Agendar Nova Vistoria
+          </DialogTitle>
+          <DialogDescription className="text-sm font-medium">
+            Preencha os dados abaixo para organizar o cronograma de entrega ou verificação técnica.
           </DialogDescription>
         </DialogHeader>
         
-        <div className="py-4">
+        <div className="p-8 max-h-[70vh] overflow-y-auto">
           <ScheduleInspectionForm 
             onSuccess={handleSuccess} 
             clientId={clientId}

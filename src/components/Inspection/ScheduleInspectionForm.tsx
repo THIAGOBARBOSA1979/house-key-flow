@@ -170,10 +170,15 @@ export const ScheduleInspectionForm = ({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {propertyInfo && (
-          <div className="p-4 bg-muted rounded-md mb-4">
-            <h3 className="text-sm font-medium mb-2">Informações do imóvel</h3>
-            <p className="text-sm">{propertyInfo.property} - Unidade {propertyInfo.unit}</p>
-            <p className="text-sm text-muted-foreground">Cliente: {propertyInfo.client}</p>
+          <div className="p-5 bg-primary/5 rounded-2xl border border-primary/10 mb-6 flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="p-3 bg-primary/10 rounded-xl text-primary">
+              <Building className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary mb-0.5">Imóvel Selecionado</h3>
+              <p className="text-sm font-bold text-foreground">{propertyInfo.property} • Unidade {propertyInfo.unit}</p>
+              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tighter">Cliente: {propertyInfo.client}</p>
+            </div>
           </div>
         )}
         
@@ -183,14 +188,14 @@ export const ScheduleInspectionForm = ({
             name="inspectionType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo de Vistoria</FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Tipo de Vistoria</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o tipo de vistoria" />
+                    <SelectTrigger className="h-11 rounded-xl">
+                      <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl shadow-sem-lg">
                     {inspectionTypes.map(type => (
                       <SelectItem key={type.id} value={type.id}>{type.name}</SelectItem>
                     ))}
@@ -206,14 +211,14 @@ export const ScheduleInspectionForm = ({
             name="technician"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Responsável Técnico</FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Responsável Técnico</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 rounded-xl">
                       <SelectValue placeholder="Selecione o responsável" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl shadow-sem-lg">
                     {technicians.map(tech => (
                       <SelectItem key={tech.id} value={tech.id}>{tech.name}</SelectItem>
                     ))}
@@ -237,14 +242,14 @@ export const ScheduleInspectionForm = ({
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Data da Vistoria</FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Data da Vistoria</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-bold h-11 rounded-xl",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -257,7 +262,7 @@ export const ScheduleInspectionForm = ({
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0 rounded-xl overflow-hidden shadow-sem-lg border-none" align="start">
                     <Calendar
                       mode="single"
                       selected={field.value}
@@ -282,14 +287,14 @@ export const ScheduleInspectionForm = ({
             name="time"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Horário</FormLabel>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Horário</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 rounded-xl">
                       <SelectValue placeholder="Selecione um horário" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl shadow-sem-lg">
                     {timeSlots.map(time => (
                       <SelectItem key={time} value={time}>{time}</SelectItem>
                     ))}
@@ -306,7 +311,7 @@ export const ScheduleInspectionForm = ({
           name="checklist"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Checklist de Verificação</FormLabel>
+              <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Checklist de Verificação</FormLabel>
               <ChecklistSelector onSelect={field.onChange} />
               <FormMessage />
             </FormItem>
@@ -318,16 +323,16 @@ export const ScheduleInspectionForm = ({
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Observações Gerais</FormLabel>
+              <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Observações Gerais</FormLabel>
               <FormControl>
                 <Textarea 
-                  placeholder="Informações adicionais sobre a vistoria"
-                  className="min-h-[100px]" 
+                  placeholder="Instruções especiais, pontos de atenção ou informações relevantes para o técnico..."
+                  className="min-h-[100px] rounded-xl resize-none" 
                   {...field} 
                 />
               </FormControl>
-              <FormDescription>
-                Instruções especiais, pontos de atenção ou informações relevantes
+              <FormDescription className="text-[10px] uppercase font-bold tracking-tight text-muted-foreground">
+                Dados visíveis apenas para a equipe interna
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -338,28 +343,28 @@ export const ScheduleInspectionForm = ({
           control={form.control}
           name="notifyClient"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
+            <FormItem className="flex flex-row items-center space-x-4 space-y-0 rounded-2xl border-none bg-muted/30 p-5 group hover:bg-muted/50 transition-all cursor-pointer">
               <FormControl>
                 <input
                   type="checkbox"
                   checked={field.value}
                   onChange={field.onChange}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  className="h-5 w-5 rounded-lg border-primary/20 text-primary focus:ring-primary/20 transition-all"
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Notificar cliente</FormLabel>
-                <FormDescription>
-                  Enviar e-mail de notificação para o cliente
+                <FormLabel className="text-sm font-bold cursor-pointer">Notificar cliente automaticamente</FormLabel>
+                <FormDescription className="text-xs">
+                  Enviar e-mail e notificação push para o portal do cliente
                 </FormDescription>
               </div>
             </FormItem>
           )}
         />
         
-        <div className="flex gap-3 justify-end pt-6 border-t border-border/10">
-          <Button type="button" variant="outline" className="rounded-xl font-bold h-11 px-6 active:scale-95 transition-all">Cancelar</Button>
-          <Button type="submit" className="rounded-xl font-bold bg-primary hover:bg-primary/90 h-11 px-8 active:scale-95 transition-all shadow-md">Agendar Vistoria</Button>
+        <div className="flex gap-4 justify-end pt-8 border-t border-border/10 -mx-8 px-8 bg-muted/5">
+          <Button type="button" variant="outline" className="rounded-xl font-bold h-12 px-8 active:scale-95 transition-all">Cancelar</Button>
+          <Button type="submit" className="rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 h-12 px-10 active:scale-95 transition-all shadow-sem-md">Agendar Vistoria</Button>
         </div>
       </form>
     </Form>
