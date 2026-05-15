@@ -1,13 +1,19 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, CheckCircle, Clock, Trash2, Filter, AlertTriangle, MessageSquare, ShieldCheck, ClipboardCheck, FileText } from "lucide-react";
+import { Bell, CheckCircle, Clock, Trash2, Filter, AlertTriangle, MessageSquare, ShieldCheck, ClipboardCheck, FileText, Settings, Mail, Smartphone } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { notificationService } from "@/services/NotificationService";
+import { useToast } from "@/hooks/use-toast";
+import { NotificationSettings } from "@/types/clientFlow";
 
 const getIcon = (type: string) => {
   switch (type) {
@@ -44,6 +50,37 @@ const ClientNotifications = () => {
   } = useNotifications(clientId);
   
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [activeTab, setActiveTab] = useState('list');
+  const { toast } = useToast();
+  
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
+    email: { inspections: true, warranty: true, updates: true },
+    sms: { inspections: false, warranty: false, updates: false }
+  });
+
+  useEffect(() => {
+    if (clientId) {
+      setNotificationSettings(notificationService.getSettings(clientId));
+    }
+  }, [clientId]);
+
+  const handleSaveSettings = () => {
+    notificationService.updateSettings(clientId, notificationSettings);
+    toast({
+      title: "Configurações salvas",
+      description: "Suas preferências de notificação foram atualizadas com sucesso.",
+    });
+  };
+
+  const toggleSetting = (channel: 'email' | 'sms', category: keyof NotificationSettings['email']) => {
+    setNotificationSettings(prev => ({
+      ...prev,
+      [channel]: {
+        ...prev[channel],
+        [category]: !prev[channel][category]
+      }
+    }));
+  };
 
   const filteredNotifications = filter === 'unread' 
     ? unreadNotifications 
@@ -71,7 +108,7 @@ const ClientNotifications = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          {unreadNotifications.length > 0 && (
+          {activeTab === 'list' && unreadNotifications.length > 0 && (
             <Button variant="outline" size="sm" onClick={markAllAsRead}>
               <CheckCircle className="mr-2 h-4 w-4" />
               Marcar todas como lidas
@@ -80,28 +117,42 @@ const ClientNotifications = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-4 mb-6">
-        <Button 
-          variant={filter === 'all' ? 'default' : 'outline'} 
-          size="sm"
-          onClick={() => setFilter('all')}
-        >
-          Todas
-        </Button>
-        <Button 
-          variant={filter === 'unread' ? 'default' : 'outline'} 
-          size="sm"
-          onClick={() => setFilter('unread')}
-          className="relative"
-        >
-          Não lidas
-          {unreadNotifications.length > 0 && (
-            <Badge variant="secondary" className="ml-2 bg-primary text-primary-foreground border-none">
-              {unreadNotifications.length}
-            </Badge>
-          )}
-        </Button>
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="list" className="flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            Minhas Notificações
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Configurações
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="list" className="space-y-6">
+          <div className="flex items-center gap-4 mb-2">
+            <Button 
+              variant={filter === 'all' ? 'default' : 'outline'} 
+              size="sm"
+              onClick={() => setFilter('all')}
+            >
+              Todas
+            </Button>
+            <Button 
+              variant={filter === 'unread' ? 'default' : 'outline'} 
+              size="sm"
+              onClick={() => setFilter('unread')}
+              className="relative"
+            >
+              Não lidas
+              {unreadNotifications.length > 0 && (
+                <Badge variant="secondary" className="ml-2 bg-primary text-primary-foreground border-none">
+                  {unreadNotifications.length}
+                </Badge>
+              )}
+            </Button>
+          </div>
+
 
       <Card>
         <CardContent className="p-0">
@@ -190,25 +241,110 @@ const ClientNotifications = () => {
         </CardContent>
       </Card>
 
-      {/* Notification Settings Hint */}
-      <Card className="bg-muted/50 border-none">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-2 bg-background rounded-lg">
-              <Filter className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h4 className="font-semibold">Gerencie suas notificações</h4>
-              <p className="text-sm text-muted-foreground mt-1">
-                Você pode configurar quais tipos de alertas deseja receber por e-mail nas configurações do seu perfil.
-              </p>
-              <Button variant="link" className="p-0 h-auto text-xs mt-2" disabled>
-                Ir para configurações de perfil (Em breve)
-              </Button>
-            </div>
+        </TabsContent>
+
+        <TabsContent value="settings">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-primary" />
+                  Notificações por E-mail
+                </CardTitle>
+                <CardDescription>
+                  Escolha quais alertas você deseja receber no seu e-mail cadastrado.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Vistorias</Label>
+                    <p className="text-sm text-muted-foreground">Agendamentos, lembretes e relatórios.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.email.inspections} 
+                    onCheckedChange={() => toggleSetting('email', 'inspections')} 
+                  />
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Garantias</Label>
+                    <p className="text-sm text-muted-foreground">Abertura de chamados e atualizações de status.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.email.warranty} 
+                    onCheckedChange={() => toggleSetting('email', 'warranty')} 
+                  />
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Atualizações do Imóvel</Label>
+                    <p className="text-sm text-muted-foreground">Novidades sobre as fases do seu imóvel.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.email.updates} 
+                    onCheckedChange={() => toggleSetting('email', 'updates')} 
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Smartphone className="h-5 w-5 text-primary" />
+                  Notificações por SMS
+                </CardTitle>
+                <CardDescription>
+                  Receba alertas urgentes diretamente no seu celular.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Vistorias</Label>
+                    <p className="text-sm text-muted-foreground">Lembretes 24h antes da sua visita.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.sms.inspections} 
+                    onCheckedChange={() => toggleSetting('sms', 'inspections')} 
+                  />
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Garantias</Label>
+                    <p className="text-sm text-muted-foreground">Avisos de conclusão de reparos.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.sms.warranty} 
+                    onCheckedChange={() => toggleSetting('sms', 'warranty')} 
+                  />
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Atualizações Urgentes</Label>
+                    <p className="text-sm text-muted-foreground">Alertas críticos sobre seu imóvel.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.sms.updates} 
+                    onCheckedChange={() => toggleSetting('sms', 'updates')} 
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
+
+          <div className="mt-6 flex justify-end">
+            <Button onClick={handleSaveSettings} size="lg">
+              Salvar Preferências
+            </Button>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
