@@ -110,7 +110,6 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
             )}
           </div>
         </div>
-        </div>
         
         <div className="flex gap-2 items-center shrink-0">
           <StatusBadge status={inspection.status as any} size="sm" showIcon />
