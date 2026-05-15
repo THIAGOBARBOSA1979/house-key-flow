@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { 
   Home, 
   FileText, 
@@ -320,9 +321,11 @@ const Dashboard = () => {
                       <p className="text-[10px] font-medium text-muted-foreground uppercase">{new Intl.DateTimeFormat('pt-BR').format(doc.date)}</p>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(doc.status) as any} className="text-[9px] font-black uppercase tracking-tighter">
-                    {getStatusLabel(doc.status)}
-                  </Badge>
+                  <StatusBadge 
+                    status={doc.status === "disponivel" || doc.status === "published" ? "complete" : (doc.status === "processando" ? "progress" : "pending")} 
+                    label={getStatusLabel(doc.status)}
+                    size="sm"
+                  />
                 </div>
               ))
             ) : (
@@ -364,9 +367,11 @@ const Dashboard = () => {
                       <p className="text-[10px] font-medium text-muted-foreground uppercase">{new Intl.DateTimeFormat('pt-BR').format(inspection.date)}</p>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(inspection.status) as any} className="text-[9px] font-black uppercase tracking-tighter">
-                    {getStatusLabel(inspection.status)}
-                  </Badge>
+                  <StatusBadge 
+                    status={inspection.status === "complete" ? "complete" : "pending"} 
+                    label={getStatusLabel(inspection.status)}
+                    size="sm"
+                  />
                 </div>
               ))
             ) : (
@@ -411,9 +416,11 @@ const Dashboard = () => {
                       <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{request.priority}</p>
                     </div>
                   </div>
-                  <Badge variant={getStatusColor(request.currentStage) as any} className="text-[9px] font-black uppercase tracking-tighter">
-                    {getStatusLabel(request.currentStage)}
-                  </Badge>
+                  <StatusBadge 
+                    status={request.currentStage === "completed" ? "complete" : (request.currentStage === "rejected" ? "critical" : "progress")} 
+                    label={getStatusLabel(request.currentStage)}
+                    size="sm"
+                  />
                 </div>
               ))
             ) : (
