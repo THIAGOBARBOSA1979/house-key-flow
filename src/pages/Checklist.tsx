@@ -92,6 +92,8 @@ export default function Checklist() {
       />
     );
   }
+
+  if (currentView === 'builder') {
     return (
       <div className="space-y-6 animate-fade-in">
         <ChecklistBuilder
