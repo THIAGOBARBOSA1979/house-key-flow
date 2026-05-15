@@ -16,7 +16,11 @@ export type AuditAction =
   | 'exported'
   | 'logged_in'
   | 'logged_out'
-  | 'settings_updated';
+  | 'settings_updated'
+  | 'downloaded'
+  | 'archived'
+  | 'published'
+  | 'favorited';
 
 export type AuditRole = 'admin' | 'client';
 
