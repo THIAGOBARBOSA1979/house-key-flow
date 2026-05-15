@@ -312,7 +312,50 @@ OBSERVAÇÕES: {{observacoes}}`,
     if (!document) return false;
 
     this.updateDocument(id, { isFavorite: !document.isFavorite });
+    
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento "${document.title}" ${!document.isFavorite ? 'marcado como favorito' : 'removido dos favoritos'}.`
+    });
+    
     return true;
+  }
+
+  shareDocument(id: string, email?: string): string {
+    const document = this.getDocumentById(id);
+    if (!document) throw new Error('Documento não encontrado');
+    
+    const shareLink = `https://a2-eng.lovable.app/share/doc/${id}-${uuidv4().substring(0, 8)}`;
+    
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Link de compartilhamento gerado para o documento "${document.title}"${email ? ` e enviado para ${email}` : ''}.`
+    });
+    
+    return shareLink;
+  }
+
+  getFolderStructure() {
+    // Simulação de estrutura de pastas para organização profunda
+    return [
+      { id: "root", name: "Raiz", icon: "Folder" },
+      { id: "f1", name: "Contratos", parentId: "root", icon: "FileText" },
+      { id: "f2", name: "Vistorias", parentId: "root", icon: "ClipboardCheck" },
+      { id: "f3", name: "Projetos", parentId: "root", icon: "Layout" },
+      { id: "f3-1", name: "Estrutural", parentId: "f3", icon: "Grid" },
+      { id: "f3-2", name: "Elétrico", parentId: "f3", icon: "Zap" },
+      { id: "f4", name: "Legal", parentId: "root", icon: "Shield" },
+    ];
   }
 
   duplicateDocument(id: string): Document | null {
