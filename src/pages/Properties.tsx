@@ -262,7 +262,7 @@ const Properties = () => {
                       </TableCell>
                       <TableCell className="text-right py-4 px-6">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5 active:scale-95 transition-all">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
