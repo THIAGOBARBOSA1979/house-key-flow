@@ -32,6 +32,7 @@ import { documentService } from "@/services/DocumentService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
+import { financialService } from "@/services/FinancialService";
 import { useMemo } from "react";
 
 const Dashboard = () => {
@@ -73,6 +74,7 @@ const Dashboard = () => {
     .slice(0, 2);
 
   const warrantyRequests = useMemo(() => warrantyFlowService.getClientRequests(clientId).slice(0, 2), [clientId]);
+  const financialSummary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -223,6 +225,13 @@ const Dashboard = () => {
                 <span className="text-sm font-medium">Garantias</span>
               </div>
               <span className="font-black">{warrantyRequests.filter(r => r.currentStage !== 'completed' && r.currentStage !== 'rejected').length}</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-white/10 rounded-xl hover:bg-white/15 transition-colors">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-white/70" />
+                <span className="text-sm font-medium">Financeiro</span>
+              </div>
+              <span className="font-black">{Math.round(financialSummary.progress)}%</span>
             </div>
           </CardContent>
           <CardFooter className="pt-0">
