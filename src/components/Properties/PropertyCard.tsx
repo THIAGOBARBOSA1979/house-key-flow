@@ -85,10 +85,10 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
         
         <div className="space-y-2 pt-1">
           <div className="flex justify-between items-center text-[10px] font-black tracking-tighter">
-            <span className="text-muted-foreground uppercase opacity-70">CONSTRUÇÃO / ENTREGA</span>
+            <span className="text-muted-foreground uppercase opacity-70">ENTREGA DE UNIDADES</span>
             <span className="text-primary">{completionPercentage}%</span>
           </div>
-          <div className="w-full h-2 bg-muted/40 rounded-full overflow-hidden border border-border/5">
+          <div className="w-full h-1.5 bg-muted/40 rounded-full overflow-hidden border border-border/5">
             <div 
               className={cn(
                 "h-full transition-all duration-1000 ease-out rounded-full",
@@ -98,6 +98,26 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
             />
           </div>
         </div>
+
+        {totalMilestones > 0 && (
+          <div className="space-y-2 pt-2">
+            <div className="flex justify-between items-center text-[10px] font-black tracking-tighter">
+              <span className="text-muted-foreground uppercase opacity-70">CRONOGRAMA DE OBRA</span>
+              <span className="text-emerald-500">{completedMilestones}/{totalMilestones} ETAPAS</span>
+            </div>
+            <div className="flex gap-1">
+              {property.milestones?.map((m) => (
+                <div 
+                  key={m.id} 
+                  className={cn(
+                    "h-1 flex-1 rounded-full",
+                    m.completed ? "bg-emerald-500" : "bg-muted"
+                  )} 
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
 
       <CardFooter className="gap-2 pt-4 border-t border-border/5 bg-muted/5">
