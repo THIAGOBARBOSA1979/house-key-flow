@@ -262,6 +262,7 @@ const ClientLayout = () => {
                   <ChatSupportPanel />
                 </SheetContent>
               </Sheet>
+              <ScheduleMeetingDialog />
             </div>
           </div>
         </nav>
