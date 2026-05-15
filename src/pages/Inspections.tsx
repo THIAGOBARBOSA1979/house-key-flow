@@ -33,6 +33,9 @@ import { inspectionService } from "@/services/InspectionService";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
+import { DataTable } from "@/components/shared/DataTable";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
 import { 
   PieChart, 
@@ -149,7 +152,7 @@ export default function Inspections() {
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <ResponsiveGrid columns={3} gap="md">
         <StatsCard 
           label="Pendentes" 
           value={stats.pending} 
@@ -171,7 +174,7 @@ export default function Inspections() {
           variant="critical"
           description="Vistorias fora do prazo previsto"
         />
-      </div>
+      </ResponsiveGrid>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full max-w-lg grid-cols-3 bg-muted/50 p-1 rounded-xl">
