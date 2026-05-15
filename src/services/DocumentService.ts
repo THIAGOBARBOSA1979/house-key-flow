@@ -131,7 +131,27 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
       description: "Contrato padrão para venda de imóveis",
       createdBy: "Admin",
       approvedBy: "Supervisor",
-      approvedAt: new Date(2025, 4, 10)
+      approvedAt: new Date(2025, 4, 10),
+      signatures: [
+        {
+          id: "sig-1",
+          name: "João Silva",
+          email: "joao.silva@exemplo.com",
+          role: "Comprador",
+          status: "pending",
+          confirmationMethod: "email"
+        },
+        {
+          id: "sig-2",
+          name: "Ricardo Mendes",
+          email: "ricardo@a2empreendimentos.com",
+          role: "Representante A2",
+          status: "signed",
+          signedAt: new Date(2025, 4, 11, 14, 30),
+          ipAddress: "177.45.12.98",
+          confirmationMethod: "email"
+        }
+      ]
     },
     {
       id: "2", 
