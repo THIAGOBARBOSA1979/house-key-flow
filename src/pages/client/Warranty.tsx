@@ -28,34 +28,7 @@ import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { WarrantyRequestTimeline, WarrantyRequestList } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { useAuth } from "@/contexts/AuthContext";
 
-// Mock data
-const warrantyClaims = [
-  {
-    id: "1",
-    title: "Infiltração no banheiro",
-    description: "Identificada infiltração na parede do box do banheiro social. Já está causando mofo e descascamento da pintura.",
-    property: "Edifício Aurora",
-    unit: "204",
-    createdAt: new Date(2025, 4, 5),
-    status: "pending" as const,
-    category: "Hidráulica",
-    priority: "medium",
-    updates: [
-      {
-        id: "1",
-        date: new Date(2025, 4, 5),
-        author: "Sistema",
-        text: "Solicitação registrada com sucesso.",
-      },
-      {
-        id: "2",
-        date: new Date(2025, 4, 6),
-        author: "Técnico",
-        text: "Solicitação em análise pela equipe técnica.",
-      }
-    ]
-  }
-];
+// Warranty requests are fetched from warrantyFlowService
 
 // Warranty categories
 const categories = [
