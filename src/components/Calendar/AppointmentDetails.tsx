@@ -163,9 +163,12 @@ export function AppointmentDetails({
           )}
           <Button 
             onClick={() => {
+              if (onUpdate) {
+                onUpdate(appointment.id, { notes });
+              }
               toast({
                 title: "Alterações salvas",
-                description: "As alterações no agendamento foram salvas com sucesso.",
+                description: "As observações do agendamento foram salvas.",
               });
               onOpenChange(false);
             }}
