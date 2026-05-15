@@ -47,7 +47,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             </div>
 
             <div className="flex items-center gap-3-sem">
-              <Button variant="ghost" size="icon" className="relative h-9-sem w-9-sem rounded-xl hover:bg-primary/5 active:scale-95 transition-all">
+              <Button variant="ghost" size="icon" className="relative h-9-sem w-9-sem rounded-lg hover:bg-primary/5 active:scale-95 transition-all">
                 <Bell size={18} className="text-muted-foreground" />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-status-critical rounded-full border-2 border-background" />
               </Button>
