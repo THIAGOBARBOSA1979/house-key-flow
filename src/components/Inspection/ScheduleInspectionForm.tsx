@@ -204,6 +204,12 @@ export const ScheduleInspectionForm = ({
                   </SelectContent>
                 </Select>
                 <FormMessage />
+                {conflictWarning && (
+                  <div className="flex items-center gap-2 mt-2 p-2 bg-amber-50 rounded-lg text-amber-700 text-[10px] font-bold border border-amber-200 animate-in fade-in slide-in-from-top-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {conflictWarning}
+                  </div>
+                )}
               </FormItem>
             )}
           />
