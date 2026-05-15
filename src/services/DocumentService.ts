@@ -164,6 +164,8 @@ OBSERVAÇÕES: {{observacoes}}`,
     { id: "certificado", name: "Certificados", description: "Certidões, alvarás e documentos oficiais", icon: "Award", color: "orange" },
     { id: "projeto", name: "Projetos", description: "Plantas e projetos arquitetônicos", icon: "Layout", color: "cyan" },
     { id: "financeiro", name: "Financeiro", description: "Comprovantes e notas fiscais", icon: "DollarSign", color: "emerald" },
+    { id: "legal", name: "Documentos Legais", description: "Escrituras, alvarás e licenças municipais", icon: "Shield", color: "red" },
+    { id: "seguranca", name: "Segurança", description: "Certificados de segurança e brigada de incêndio", icon: "HardHat", color: "amber" },
     { id: "outros", name: "Outros", description: "Outros documentos diversos", icon: "File", color: "gray" }
   ];
 

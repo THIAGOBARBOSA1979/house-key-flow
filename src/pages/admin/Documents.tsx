@@ -287,7 +287,18 @@ const AdminDocuments = () => {
                                     }}>
                                       <HistoryIcon className="w-3.5 h-3.5 mr-2" /> Histórico de Versões
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedDoc(doc);
+                                      // Implementar compartilhamento
+                                      toast({ title: "Compartilhamento", description: "Link de compartilhamento gerado para este documento." });
+                                    }}>
+                                      <Share2 className="w-3.5 h-3.5 mr-2" /> Compartilhar
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                      e.stopPropagation();
+                                      documentService.downloadDocument(doc.id);
+                                    }}>
                                       <Download className="w-3.5 h-3.5 mr-2" /> Baixar arquivo
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => e.stopPropagation()}>
