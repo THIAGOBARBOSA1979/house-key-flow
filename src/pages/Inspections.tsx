@@ -187,21 +187,57 @@ export default function Inspections() {
 
         <TabsContent value="list" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <FilterBar
-            searchPlaceholder="Buscar agendamentos..."
+            searchPlaceholder="Buscar por cliente, imóvel ou unidade..."
             searchValue={searchTerm}
             onSearchChange={setSearchTerm}
           >
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px] rounded-lg">
-                <SelectValue placeholder="Filtrar por status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os status</SelectItem>
-                <SelectItem value="pending">Pendentes</SelectItem>
-                <SelectItem value="progress">Em andamento</SelectItem>
-                <SelectItem value="complete">Concluídos</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex flex-wrap gap-2 w-full lg:w-auto">
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-full sm:w-[160px] rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-3 w-3 text-muted-foreground" />
+                    <SelectValue placeholder="Status" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os status</SelectItem>
+                  <SelectItem value="pending">Pendentes</SelectItem>
+                  <SelectItem value="progress">Em andamento</SelectItem>
+                  <SelectItem value="complete">Concluídos</SelectItem>
+                  <SelectItem value="cancelled">Cancelados</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filterProperty} onValueChange={setFilterProperty}>
+                <SelectTrigger className="w-full sm:w-[180px] rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <Building className="h-3 w-3 text-muted-foreground" />
+                    <SelectValue placeholder="Empreendimento" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os imóveis</SelectItem>
+                  <SelectItem value="Edifício Aurora">Edifício Aurora</SelectItem>
+                  <SelectItem value="Residencial Bosque Verde">Residencial Bosque Verde</SelectItem>
+                  <SelectItem value="Condomínio Monte Azul">Condomínio Monte Azul</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filterTechnician} onValueChange={setFilterTechnician}>
+                <SelectTrigger className="w-full sm:w-[180px] rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-3 w-3 text-muted-foreground" />
+                    <SelectValue placeholder="Técnico" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os técnicos</SelectItem>
+                  <SelectItem value="Carlos Andrade">Carlos Andrade</SelectItem>
+                  <SelectItem value="Luiza Mendes">Luiza Mendes</SelectItem>
+                  <SelectItem value="Roberto Santos">Roberto Santos</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </FilterBar>
 
           {viewMode === "calendar" ? (
