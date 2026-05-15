@@ -108,12 +108,12 @@ const ClientProfile = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Nome Completo</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/60" />
+                  <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Nome Completo</Label>
+                  <div className="relative group">
+                    <User className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
                     <Input 
                       id="name" 
-                      className="pl-10" 
+                      className="pl-10 h-11 rounded-xl border-2 focus-visible:ring-primary/20 transition-all"
                       value={profileData.name} 
                       readOnly={!isEditing}
                       onChange={(e) => setProfileData({...profileData, name: e.target.value})}
