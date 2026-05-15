@@ -53,7 +53,7 @@ export function Breadcrumbs({ className }: BreadcrumbsProps) {
         <div key={crumb.path} className="flex items-center">
           <ChevronRight className="h-4 w-4 mx-2" />
           {crumb.isLast ? (
-            <span className="font-medium text-foreground">{crumb.label}</span>
+            <span className="font-black text-primary">{crumb.label}</span>
           ) : (
             <Link 
               to={crumb.path}
