@@ -1,12 +1,15 @@
 import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, Search, FilterX } from "lucide-react";
+import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { cn } from "@/lib/utils";
 import { DataView } from "@/components/shared/DataView";
+import { DataTable } from "@/components/shared/DataTable";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 
 import { 
   Select, 
