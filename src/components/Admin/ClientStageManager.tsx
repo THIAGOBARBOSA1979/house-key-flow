@@ -24,7 +24,8 @@ import {
   Unlock,
   History,
   ChevronRight,
-  AlertTriangle
+  AlertTriangle,
+  User
 } from "lucide-react";
 import { ClientStage, ClientProfile, STAGE_CONFIG } from "@/types/clientFlow";
 import { clientStageService } from "@/services/ClientStageService";
@@ -195,7 +196,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <Badge variant={change.isAutomatic ? "info" : "outline"} size="sm">
+                      <Badge variant={change.isAutomatic ? "info" : "outline"}>
                         {change.isAutomatic ? 'Automático' : 'Manual'}
                       </Badge>
                       <span className="text-sm font-black text-foreground uppercase tracking-tight">
