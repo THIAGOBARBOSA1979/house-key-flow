@@ -1,26 +1,10 @@
 
 import { useState, useEffect } from "react";
 import { 
-  FileText, 
-  Search, 
-  Upload, 
-  Filter, 
-  Download, 
-  Trash2, 
-  MoreHorizontal, 
-  FileUp, 
-  FolderPlus,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Plus,
-  LayoutGrid,
-  List,
-  Edit,
-  Eye,
-  Star,
-  Archive,
-  Copy
+  FileText, Search, Upload, Filter, Download, Trash2, 
+  MoreHorizontal, FileUp, FolderPlus, Clock, CheckCircle2, 
+  AlertCircle, Plus, LayoutGrid, List, Edit, Eye, Star, 
+  Archive, Copy, BarChart, LayoutDashboard, Folder
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -57,6 +41,12 @@ import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { exportService } from "@/services/ExportService";
 import { BulkActions } from "@/components/Documents/BulkActions";
+import { DocumentFilters } from "@/components/Documents/DocumentFilters";
+import { DocumentAnalytics } from "@/components/Documents/DocumentAnalytics";
+import { DocumentsDashboard } from "@/components/Documents/DocumentsDashboard";
+import { FolderManager } from "@/components/Documents/FolderManager";
+import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
+import { DocumentWorkflow } from "@/components/Documents/DocumentWorkflow";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -64,13 +54,26 @@ const AdminDocuments = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [activeTab, setActiveTab] = useState("all");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [activeFilters, setActiveFilters] = useState<any>({
+    category: "",
+    status: "",
+    priority: "",
+    folderId: null
+  });
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
+  
   const categories = documentService.getCategories();
 
   useEffect(() => {
-    setDocuments(documentService.getAllDocuments());
-  }, []);
+    refreshDocuments();
+  }, [searchTerm, activeFilters]);
+
+  const refreshDocuments = () => {
+    const docs = documentService.searchDocuments(searchTerm, activeFilters);
+    setDocuments(docs);
+  };
 
   const filteredDocs = documents.filter(doc => 
     (doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -162,44 +165,55 @@ const AdminDocuments = () => {
         onActionComplete={() => setDocuments(documentService.getAllDocuments())}
       />
 
-      <Card className="card-standard border-none bg-background/50 backdrop-blur-sm overflow-hidden">
-        <CardContent className="p-0">
-          <div className="p-4 border-b bg-muted/20 flex flex-col md:flex-row gap-4 items-center justify-between">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full md:w-auto">
-              <TabsList className="bg-background/50 border">
-                <TabsTrigger value="all" className="text-xs font-bold">Todos</TabsTrigger>
-                <TabsTrigger value="published" className="text-xs font-bold">Publicados</TabsTrigger>
-                <TabsTrigger value="draft" className="text-xs font-bold">Rascunhos</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            
-            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full md:w-40 h-10 bg-background border-none shadow-sm font-bold text-xs">
-                  <SelectValue placeholder="Categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas Categorias</SelectItem>
-                  {categories.map(cat => (
-                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="bg-muted/50 p-1">
+          <TabsTrigger value="all" className="font-bold gap-2">
+            <List size={14} /> Lista de Arquivos
+          </TabsTrigger>
+          <TabsTrigger value="dashboard" className="font-bold gap-2">
+            <LayoutDashboard size={14} /> Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="font-bold gap-2">
+            <BarChart size={14} /> Analytics
+          </TabsTrigger>
+        </TabsList>
 
-              <div className="relative flex-1 md:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input 
-                  placeholder="Buscar arquivos..." 
-                  className="pl-9 h-10 bg-background border-none shadow-inner"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+        <TabsContent value="all" className="space-y-4 pt-4">
+          <DocumentFilters 
+            onSearch={(query, filters) => {
+              setSearchTerm(query);
+              setActiveFilters(filters);
+            }}
+            activeFilters={activeFilters}
+            onClearFilters={() => setActiveFilters({
+              category: "",
+              status: "",
+              priority: "",
+              folderId: null
+            })}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="lg:col-span-1 space-y-4">
+              <FolderManager onFolderSelect={(id) => setActiveFilters({...activeFilters, folderId: id})} />
+              {selectedDoc && (
+                <DocumentWorkflow 
+                  document={selectedDoc} 
+                  onUpdate={refreshDocuments} 
                 />
-              </div>
-              <Button variant="outline" size="icon" onClick={() => setViewMode(v => v === "list" ? "grid" : "list")} className="h-10 w-10">
-                {viewMode === "list" ? <LayoutGrid size={18} /> : <List size={18} />}
-              </Button>
+              )}
             </div>
-          </div>
+
+            <Card className="lg:col-span-3 card-standard border-none bg-background/50 backdrop-blur-sm overflow-hidden">
+              <CardContent className="p-0">
+                <div className="p-4 border-b bg-muted/20 flex items-center justify-between">
+                  <div className="text-xs font-bold text-muted-foreground uppercase">
+                    {documents.length} Arquivos encontrados
+                  </div>
+                  <Button variant="outline" size="icon" onClick={() => setViewMode(v => v === "list" ? "grid" : "list")} className="h-8 w-8">
+                    {viewMode === "list" ? <LayoutGrid size={16} /> : <List size={16} />}
+                  </Button>
+                </div>
 
           {viewMode === "list" ? (
             <div className="overflow-x-auto">
@@ -326,8 +340,24 @@ const AdminDocuments = () => {
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="dashboard" className="pt-4">
+          <DocumentsDashboard />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="pt-4">
+          <DocumentAnalytics />
+        </TabsContent>
+      </Tabs>
+
+      <DocumentPreviewDialog 
+        document={selectedDoc}
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+      />
     </div>
   );
 };
