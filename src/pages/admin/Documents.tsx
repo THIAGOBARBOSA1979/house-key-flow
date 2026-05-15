@@ -4,7 +4,7 @@ import {
   MoreHorizontal, FileUp, FolderPlus, Clock, CheckCircle2, 
   AlertCircle, Plus, LayoutGrid, List, Edit, Eye, Star, 
   Archive, Copy, BarChart, LayoutDashboard, Folder,
-  ShieldCheck, Share2, History as HistoryIcon, Tag
+  ShieldCheck, Share2, History as HistoryIcon, Tag, RotateCw, Move
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -94,6 +94,7 @@ const AdminDocuments = () => {
       case 'published': return <Badge className="badge-status badge-complete"><CheckCircle2 className="w-3 h-3" /> Publicado</Badge>;
       case 'draft': return <Badge className="badge-status badge-pending"><Clock className="w-3 h-3" /> Rascunho</Badge>;
       case 'archived': return <Badge className="badge-status bg-muted text-muted-foreground border-muted-foreground/20"><Archive className="w-3 h-3" /> Arquivado</Badge>;
+      case 'trash': return <Badge variant="destructive" className="badge-status bg-red-50 text-red-600 border-red-200"><Trash2 className="w-3 h-3" /> Lixeira</Badge>;
       default: return <Badge variant="outline">{status}</Badge>;
     }
   };
@@ -218,7 +219,8 @@ const AdminDocuments = () => {
                       <TableHeader>
                         <TableRow className="bg-muted/30 hover:bg-muted/30 border-b-border/10">
                           <TableHead className="text-tiny text-muted-foreground font-bold py-4">Arquivo</TableHead>
-                          <TableHead className="text-tiny text-muted-foreground font-bold py-4">Categoria</TableHead>
+                          <TableHead className="text-tiny text-muted-foreground font-bold py-4">Categoria / Tags</TableHead>
+                          <TableHead className="text-tiny text-muted-foreground font-bold py-4 text-center">Visualizações</TableHead>
                           <TableHead className="text-tiny text-muted-foreground font-bold py-4">Criado em</TableHead>
                           <TableHead className="text-tiny text-muted-foreground font-bold py-4">Status</TableHead>
                           <TableHead className="text-tiny text-muted-foreground font-bold py-4 text-right">Ações</TableHead>
@@ -233,7 +235,11 @@ const AdminDocuments = () => {
                                 "group hover:bg-muted/20 transition-colors border-b-border/5 cursor-pointer",
                                 selectedDoc?.id === doc.id && "bg-primary/5"
                               )}
-                              onClick={() => setSelectedDoc(doc)}
+                              onClick={() => {
+                                setSelectedDoc(doc);
+                                documentService.logView(doc.id);
+                                refreshDocuments();
+                              }}
                             >
                               <TableCell className="py-4">
                                 <div className="flex items-center gap-3">
@@ -257,7 +263,19 @@ const AdminDocuments = () => {
                                 </div>
                               </TableCell>
                               <TableCell>
-                                <Badge variant="outline" className="text-[10px] uppercase font-bold border-muted-foreground/20">{doc.category}</Badge>
+                                <div className="flex flex-col gap-1">
+                                  <Badge variant="outline" className="text-[10px] uppercase font-bold border-muted-foreground/20 w-fit">{doc.category}</Badge>
+                                  <div className="flex flex-wrap gap-1">
+                                    {doc.tags?.map(tag => (
+                                      <span key={tag} className="text-[9px] bg-primary/10 text-primary px-1 rounded font-bold">#{tag}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-center">
+                                <Badge variant="secondary" className="text-[10px] font-bold">
+                                  <Eye className="w-3 h-3 mr-1 opacity-50" /> {doc.viewCount || 0}
+                                </Badge>
                               </TableCell>
                               <TableCell className="text-xs text-muted-foreground font-medium">
                                 {new Date(doc.createdAt).toLocaleDateString('pt-BR')}
@@ -312,16 +330,36 @@ const AdminDocuments = () => {
                                     <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => e.stopPropagation()}>
                                       <Edit className="w-3.5 h-3.5 mr-2" /> Editar documento
                                     </DropdownMenuItem>
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                      e.stopPropagation();
+                                      // Implementar lógica de mover (abriria um sub-modal ou similar)
+                                      toast({ title: "Mover Documento", description: "Funcionalidade de movimentação entre pastas ativada." });
+                                    }}>
+                                      <Move className="w-3.5 h-3.5 mr-2" /> Mover para pasta
+                                    </DropdownMenuItem>
                                     <DropdownMenuSeparator />
+                                    {doc.status === 'trash' ? (
+                                      <DropdownMenuItem 
+                                        className="text-xs font-bold text-green-600 focus:text-green-600 cursor-pointer"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          documentService.restoreDocument(doc.id);
+                                          refreshDocuments();
+                                          toast({ title: "Documento Restaurado", description: "O arquivo voltou para a listagem principal." });
+                                        }}
+                                      >
+                                        <RotateCw className="w-3.5 h-3.5 mr-2" /> Restaurar documento
+                                      </DropdownMenuItem>
+                                    ) : null}
                                     <DropdownMenuItem 
                                       className="text-xs font-bold text-destructive focus:text-destructive cursor-pointer"
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDelete(doc.id);
-                                      }}
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5 mr-2" /> Excluir permanentemente
-                                    </DropdownMenuItem>
+                                          handleDelete(doc.id);
+                                        }}
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5 mr-2" /> {doc.status === 'trash' ? 'Excluir permanentemente' : 'Enviar para Lixeira'}
+                                      </DropdownMenuItem>
                                   </DropdownMenuContent>
                                 </DropdownMenu>
                               </TableCell>

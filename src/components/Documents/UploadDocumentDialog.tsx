@@ -35,7 +35,8 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
     description: "",
     priority: "medium" as any,
     client: "",
-    property: ""
+    property: "",
+    expiresAt: ""
   });
 
   const categories = documentService.getCategories();
@@ -58,6 +59,7 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
         category: formData.category,
         description: formData.description,
         priority: formData.priority,
+        expiresAt: formData.expiresAt ? new Date(formData.expiresAt) : undefined,
         associatedTo: {
           client: formData.client,
           property: formData.property
@@ -142,11 +144,21 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
                 <SelectContent>
                   <SelectItem value="low">Baixa</SelectItem>
                   <SelectItem value="medium">Média</SelectItem>
-                  <SelectItem value="high">Alta</SelectItem>
-                </SelectContent>
-              </Select>
+                    <SelectItem value="high">Alta</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="expiresAt">Data de Validade (Opcional)</Label>
+              <Input 
+                id="expiresAt"
+                type="date"
+                value={formData.expiresAt}
+                onChange={(e) => setFormattedData({...formData, expiresAt: e.target.value})}
+              />
+            </div>
 
           <div className="grid gap-2">
             <Label htmlFor="description">Descrição</Label>

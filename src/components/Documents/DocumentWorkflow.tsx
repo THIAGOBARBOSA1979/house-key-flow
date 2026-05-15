@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, XCircle, Clock, User, MessageSquare } from "lucide-react";
-import { Document, documentService } from "@/services/DocumentService";
+import { Document, documentService, ApprovalHistoryEntry } from "@/services/DocumentService";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface DocumentWorkflowProps {
   document: Document;
@@ -17,11 +18,22 @@ export function DocumentWorkflow({ document, onUpdate }: DocumentWorkflowProps) 
   const { toast } = useToast();
 
   const handleApproval = (status: "approved" | "rejected") => {
+    const historyEntry: ApprovalHistoryEntry = {
+      id: crypto.randomUUID(),
+      status,
+      comment,
+      performedBy: "Admin Atual",
+      performedAt: new Date()
+    };
+
+    const approvalHistory = [...(document.approvalHistory || []), historyEntry];
+
     documentService.updateDocument(document.id, {
       approvalStatus: status,
       approvalComment: comment,
       approvedBy: "Admin Atual",
-      approvedAt: new Date()
+      approvedAt: new Date(),
+      approvalHistory
     });
     
     toast({
@@ -70,6 +82,26 @@ export function DocumentWorkflow({ document, onUpdate }: DocumentWorkflowProps) 
             )}
           </div>
         )}
+
+        {document.approvalHistory && document.approvalHistory.length > 0 && (
+          <div className="space-y-3 mt-4 border-t pt-4">
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Histórico de Revisões</h4>
+            {document.approvalHistory.map((entry) => (
+              <div key={entry.id} className="text-[10px] border-l-2 border-primary/20 pl-2 py-1 space-y-1">
+                <div className="flex justify-between items-center">
+                  <Badge variant="outline" className={cn(
+                    "text-[8px] h-4 px-1 uppercase",
+                    entry.status === "approved" ? "border-green-200 text-green-700 bg-green-50" : "border-red-200 text-red-700 bg-red-50"
+                  )}>
+                    {entry.status === "approved" ? "Aprovado" : "Rejeitado"}
+                  </Badge>
+                  <span className="text-muted-foreground">{new Date(entry.performedAt).toLocaleDateString()}</span>
+                </div>
+                <p className="font-bold text-foreground/80">{entry.performedBy}</p>
+                {entry.comment && <p className="italic text-muted-foreground">"{entry.comment}"</p>}
+              </div>
+            ))}
+          </div>
 
         {document.approvalStatus === "pending" && (
           <div className="space-y-3">
