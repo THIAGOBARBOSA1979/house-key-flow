@@ -333,7 +333,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     auditLogService.log({
       entityType: 'document',
       entityId: id,
-      action: 'deleted',
+      action: 'archived',
       performedBy: 'admin-1',
       performedByName: 'Administrador',
       performedByRole: 'admin',
@@ -402,10 +402,10 @@ OBSERVAÇÕES: {{observacoes}}`,
     auditLogService.log({
       entityType: 'document',
       entityId: id,
-      action: 'viewed',
+      action: 'updated',
       performedBy: userId,
       performedByName: 'Usuário',
-      performedByRole: 'user',
+      performedByRole: 'admin',
       details: `Documento "${doc.title}" visualizado.`
     });
   }

@@ -20,9 +20,11 @@ export type AuditAction =
   | 'downloaded'
   | 'archived'
   | 'published'
-  | 'favorited';
+  | 'favorited'
+  | 'deleted'
+  | 'viewed';
 
-export type AuditRole = 'admin' | 'client';
+export type AuditRole = 'admin' | 'client' | 'user';
 
 export interface AuditLogEntry {
   id: string;

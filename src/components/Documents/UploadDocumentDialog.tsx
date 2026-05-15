@@ -81,7 +81,8 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
         description: "",
         priority: "medium",
         client: "",
-        property: ""
+        property: "",
+        expiresAt: ""
       });
     } catch (error) {
       toast({
