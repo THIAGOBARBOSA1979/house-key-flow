@@ -18,7 +18,8 @@ import {
   MapPin,
   TrendingUp,
   Clock,
-  MessageSquare
+  MessageSquare,
+  DollarSign
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
