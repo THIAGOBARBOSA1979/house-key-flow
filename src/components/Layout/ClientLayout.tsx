@@ -318,15 +318,15 @@ const ClientLayout = () => {
             </Sheet>
             
             {/* User menu */}
-            <div className="flex items-center gap-2">
+            <Link to="/client/profile" className="flex items-center gap-2 hover:bg-muted p-1 rounded-lg transition-colors">
               <Avatar>
                 <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
               </Avatar>
               <div className="hidden md:block">
                 <p className="text-sm font-medium">{user?.name || "Cliente"}</p>
-                <p className="text-xs text-muted-foreground">Cliente</p>
+                <p className="text-xs text-muted-foreground">Ver perfil</p>
               </div>
-            </div>
+            </Link>
           </div>
         </header>
         
