@@ -22,32 +22,32 @@ type InspectionItem = {
 type InspectionGroup = ChecklistGroup;
 
 // Example data for an inspection checklist
-const mockInspectionData: InspectionGroup[] = [
+const mockInspectionData: ChecklistGroup[] = [
   {
     id: "g1",
     name: "Paredes e Tetos",
     items: [
-      { id: "item1", name: "Acabamento das paredes (pintura, textura)", conformity: "pending" },
-      { id: "item2", name: "Ausência de trincas ou rachaduras", conformity: "pending" },
-      { id: "item3", name: "Alinhamento de paredes e teto", conformity: "pending" }
+      { id: "item1", name: "Acabamento das paredes (pintura, textura)", description: "Acabamento das paredes (pintura, textura)", required: true, conformity: "pending" },
+      { id: "item2", name: "Ausência de trincas ou rachaduras", description: "Ausência de trincas ou rachaduras", required: true, conformity: "pending" },
+      { id: "item3", name: "Alinhamento de paredes e teto", description: "Alinhamento de paredes e teto", required: true, conformity: "pending" }
     ]
   },
   {
     id: "g2",
     name: "Instalações Hidráulicas",
     items: [
-      { id: "item4", name: "Funcionamento de torneiras", conformity: "pending" },
-      { id: "item5", name: "Vazamentos em conexões", conformity: "pending" },
-      { id: "item6", name: "Escoamento de águas", conformity: "pending" }
+      { id: "item4", name: "Funcionamento de torneiras", description: "Funcionamento de torneiras", required: true, conformity: "pending" },
+      { id: "item5", name: "Vazamentos em conexões", description: "Vazamentos em conexões", required: true, conformity: "pending" },
+      { id: "item6", name: "Escoamento de águas", description: "Escoamento de águas", required: true, conformity: "pending" }
     ]
   },
   {
     id: "g3",
     name: "Instalações Elétricas",
     items: [
-      { id: "item7", name: "Funcionamento de interruptores", conformity: "pending" },
-      { id: "item8", name: "Tomadas energizadas", conformity: "pending" },
-      { id: "item9", name: "Iluminação em funcionamento", conformity: "pending" }
+      { id: "item7", name: "Funcionamento de interruptores", description: "Funcionamento de interruptores", required: true, conformity: "pending" },
+      { id: "item8", name: "Tomadas energizadas", description: "Tomadas energizadas", required: true, conformity: "pending" },
+      { id: "item9", name: "Iluminação em funcionamento", description: "Iluminação em funcionamento", required: true, conformity: "pending" }
     ]
   }
 ];
