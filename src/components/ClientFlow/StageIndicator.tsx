@@ -102,9 +102,9 @@ export function StageIndicator({
             <div 
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                isCompleted && "bg-green-100 text-green-800",
+                isCompleted && "bg-status-complete/10 text-status-complete",
                 isCurrent && cn(stageColors[stage].bg, stageColors[stage].text),
-                !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
+                !isCompleted && !isCurrent && "bg-muted/50 text-muted-foreground"
               )}
             >
               <StageIcon className="h-3.5 w-3.5" />
