@@ -5,10 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ChecklistItem, checklistService } from "@/services/ChecklistService";
-import { Plus, FileText, Copy, Edit, Trash, Search, Star } from "lucide-react";
-
-import { ChecklistTemplate, checklistService } from "@/services/ChecklistService";
+import { ChecklistItem, ChecklistTemplate, checklistService } from "@/services/ChecklistService";
 
 interface ChecklistTemplatesProps {
   onSelectTemplate: (template: ChecklistTemplate) => void;
