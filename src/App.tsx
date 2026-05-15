@@ -40,6 +40,7 @@ import ClientProperties from "./pages/client/Properties";
 import ClientNotifications from "./pages/client/Notifications";
 import ClientProfile from "./pages/client/Profile";
 import ClientFinancial from "./pages/client/Financial";
+import ClientSupport from "./pages/client/Support";
 
 const App = () => {
   console.log('App: Inicializando componente App...');
@@ -161,6 +162,7 @@ const App = () => {
                   <Route path="notifications" element={<ClientNotifications />} />
                   <Route path="profile" element={<ClientProfile />} />
                   <Route path="financial" element={<ClientFinancial />} />
+                  <Route path="support" element={<ClientSupport />} />
                 </Route>
 
                 {/* Legacy redirects for backward compatibility */}
