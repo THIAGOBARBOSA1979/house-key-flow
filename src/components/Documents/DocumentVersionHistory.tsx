@@ -10,23 +10,30 @@ import { History, Download, Eye, Clock, User } from "lucide-react";
 
 interface DocumentVersionHistoryProps {
   document: Document;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   onRestoreVersion?: (versionId: string) => void;
 }
 
-export function DocumentVersionHistory({ document, onRestoreVersion }: DocumentVersionHistoryProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function DocumentVersionHistory({ document, onRestoreVersion, isOpen: externalOpen, onOpenChange }: DocumentVersionHistoryProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [previewVersion, setPreviewVersion] = useState<DocumentVersion | null>(null);
+
+  const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setIsOpen = onOpenChange !== undefined ? onOpenChange : setInternalOpen;
 
   const versions = document.versionHistory || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <History className="h-4 w-4 mr-2" />
-          Histórico ({versions.length + 1})
-        </Button>
-      </DialogTrigger>
+      {externalOpen === undefined && (
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm">
+            <History className="h-4 w-4 mr-2" />
+            Histórico ({versions.length + 1})
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-w-4xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Histórico de Versões - {document.title}</DialogTitle>

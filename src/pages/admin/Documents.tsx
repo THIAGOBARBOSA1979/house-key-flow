@@ -3,7 +3,8 @@ import {
   FileText, Search, Upload, Filter, Download, Trash2, 
   MoreHorizontal, FileUp, FolderPlus, Clock, CheckCircle2, 
   AlertCircle, Plus, LayoutGrid, List, Edit, Eye, Star, 
-  Archive, Copy, BarChart, LayoutDashboard, Folder
+  Archive, Copy, BarChart, LayoutDashboard, Folder,
+  ShieldCheck, Share2, History as HistoryIcon, Tag
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,8 @@ import { DocumentsDashboard } from "@/components/Documents/DocumentsDashboard";
 import { FolderManager } from "@/components/Documents/FolderManager";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { DocumentWorkflow } from "@/components/Documents/DocumentWorkflow";
+import { UploadDocumentDialog } from "@/components/Documents/UploadDocumentDialog";
+import { DocumentVersionHistory } from "@/components/Documents/DocumentVersionHistory";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -61,6 +64,8 @@ const AdminDocuments = () => {
     folderId: null
   });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   
   const categories = documentService.getCategories();
@@ -104,10 +109,10 @@ const AdminDocuments = () => {
           <Button variant="outline" size="sm" className="interactive-active h-9 font-bold" onClick={() => exportService.exportToCSV(documents, 'documentos_admin')}>
             <Download className="w-4 h-4 mr-2" /> Exportar CSV
           </Button>
-          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold">
-            <FolderPlus className="w-4 h-4 mr-2" /> Nova Pasta
+          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold" onClick={() => setIsUploadOpen(true)}>
+            <FolderPlus className="w-4 h-4 mr-2" /> Novo Documento
           </Button>
-          <Button size="sm" className="interactive-active h-9 font-bold bg-primary hover:bg-primary/90">
+          <Button size="sm" className="interactive-active h-9 font-bold bg-primary hover:bg-primary/90" onClick={() => setIsUploadOpen(true)}>
             <FileUp className="w-4 h-4 mr-2" /> Upload de Arquivos
           </Button>
         </div>
@@ -238,6 +243,7 @@ const AdminDocuments = () => {
                                       if (checked) setSelectedIds([...selectedIds, doc.id]);
                                       else setSelectedIds(selectedIds.filter(id => id !== doc.id));
                                     }}
+                                    onClick={(e) => e.stopPropagation()}
                                   />
                                   <div className="p-2 rounded bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
                                     <FileText className="w-5 h-5" />
@@ -267,19 +273,33 @@ const AdminDocuments = () => {
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end" className="w-48 animate-in zoom-in-95">
-                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={() => setIsPreviewOpen(true)}>
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedDoc(doc);
+                                      setIsPreviewOpen(true);
+                                    }}>
                                       <Eye className="w-3.5 h-3.5 mr-2" /> Visualizar
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer">
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedDoc(doc);
+                                      setIsHistoryOpen(true);
+                                    }}>
+                                      <HistoryIcon className="w-3.5 h-3.5 mr-2" /> Histórico de Versões
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => e.stopPropagation()}>
                                       <Download className="w-3.5 h-3.5 mr-2" /> Baixar arquivo
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer">
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => e.stopPropagation()}>
                                       <Edit className="w-3.5 h-3.5 mr-2" /> Editar documento
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem 
                                       className="text-xs font-bold text-destructive focus:text-destructive cursor-pointer"
-                                      onClick={() => handleDelete(doc.id)}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(doc.id);
+                                      }}
                                     >
                                       <Trash2 className="w-3.5 h-3.5 mr-2" /> Excluir permanentemente
                                     </DropdownMenuItem>
@@ -325,14 +345,26 @@ const AdminDocuments = () => {
                          <div className="absolute top-4 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background shadow-md border border-border/10">
+                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-background shadow-md border border-border/10" onClick={(e) => e.stopPropagation()}>
                                   <MoreHorizontal size={14} />
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-40 animate-in zoom-in-95">
-                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={() => setIsPreviewOpen(true)}><Eye size={14} className="mr-2" /> Ver</DropdownMenuItem>
-                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer"><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
-                                <DropdownMenuItem className="text-xs font-bold py-2 text-destructive focus:text-destructive cursor-pointer" onClick={() => handleDelete(doc.id)}><Trash2 size={14} className="mr-2" /> Excluir</DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedDoc(doc);
+                                  setIsPreviewOpen(true);
+                                }}><Eye size={14} className="mr-2" /> Ver</DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedDoc(doc);
+                                  setIsHistoryOpen(true);
+                                }}><HistoryIcon size={14} className="mr-2" /> Histórico</DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs font-bold py-2 cursor-pointer" onClick={(e) => e.stopPropagation()}><Download size={14} className="mr-2" /> Baixar</DropdownMenuItem>
+                                <DropdownMenuItem className="text-xs font-bold py-2 text-destructive focus:text-destructive cursor-pointer" onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(doc.id);
+                                }}><Trash2 size={14} className="mr-2" /> Excluir</DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                          </div>
@@ -359,6 +391,20 @@ const AdminDocuments = () => {
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
       />
+
+      <UploadDocumentDialog 
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onSuccess={refreshDocuments}
+      />
+
+      {selectedDoc && (
+        <DocumentVersionHistory 
+          document={selectedDoc} 
+          isOpen={isHistoryOpen} 
+          onOpenChange={setIsHistoryOpen}
+        />
+      )}
     </div>
   );
 };

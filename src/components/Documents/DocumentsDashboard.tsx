@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { FileText, Star, Clock, Archive, AlertTriangle, TrendingUp } from "lucide-react";
 import { documentService } from "@/services/DocumentService";
+import { StatsCard } from "@/components/shared/StatsCard";
 
 export function DocumentsDashboard() {
   const stats = documentService.getDocumentStats();
@@ -12,54 +13,35 @@ export function DocumentsDashboard() {
   return (
     <div className="space-y-6">
       {/* Estatísticas principais */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-              <FileText className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Publicados</p>
-                <p className="text-2xl font-bold text-green-600">{stats.published}</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Favoritos</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.favorites}</p>
-              </div>
-              <Star className="h-8 w-8 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Vencendo</p>
-                <p className="text-2xl font-bold text-red-600">{stats.expiring}</p>
-              </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard 
+          label="Total Arquivos" 
+          value={stats.total} 
+          icon={FileText} 
+          variant="brand" 
+          description="Contratos e licenças"
+        />
+        <StatsCard 
+          label="Publicados" 
+          value={stats.published} 
+          icon={TrendingUp} 
+          variant="complete" 
+          description="Visíveis para clientes"
+        />
+        <StatsCard 
+          label="Favoritos" 
+          value={stats.favorites} 
+          icon={Star} 
+          variant="pending" 
+          description="Acesso rápido"
+        />
+        <StatsCard 
+          label="Vencendo" 
+          value={stats.expiring} 
+          icon={AlertTriangle} 
+          variant="critical" 
+          description="Próximos 30 dias"
+        />
       </div>
 
       {/* Documentos por categoria */}

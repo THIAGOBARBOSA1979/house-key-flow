@@ -35,6 +35,10 @@ const ACTION_LABELS: Record<AuditAction, string> = {
   logged_in: "Login",
   logged_out: "Logout",
   settings_updated: "Configuração",
+  downloaded: "Download",
+  archived: "Arquivamento",
+  published: "Publicação",
+  favorited: "Favoritado",
 };
 
 const ACTION_COLORS: Record<AuditAction, string> = {
@@ -53,6 +57,10 @@ const ACTION_COLORS: Record<AuditAction, string> = {
   logged_in: "bg-status-complete/10 text-status-complete border-status-complete/20",
   logged_out: "bg-muted text-muted-foreground border-border",
   settings_updated: "bg-brand/10 text-brand border-brand/20",
+  downloaded: "bg-status-progress/10 text-status-progress border-status-progress/20",
+  archived: "bg-muted text-muted-foreground border-border",
+  published: "bg-status-complete/10 text-status-complete border-status-complete/20",
+  favorited: "bg-status-pending/10 text-status-pending border-status-pending/20",
 };
 
 const ITEMS_PER_PAGE = 10;
