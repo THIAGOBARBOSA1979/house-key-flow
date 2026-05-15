@@ -29,12 +29,12 @@ interface DocumentFiltersProps {
 export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: DocumentFiltersProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>(activeFilters.dateRange || {});
   
   const categories = documentService.getCategories();
 
-  const handleSearch = () => {
-    const filters = {
+  const handleSearch = (updatedFilters?: any) => {
+    const filters = updatedFilters || {
       category: activeFilters.category,
       status: activeFilters.status,
       priority: activeFilters.priority,
@@ -43,9 +43,9 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
     onSearch(searchQuery, filters);
   };
 
-  const handleFilterChange = (key: string, value: string) => {
+  const handleFilterChange = (key: string, value: any) => {
     const newFilters = { ...activeFilters, [key]: value };
-    onSearch(searchQuery, newFilters);
+    handleSearch(newFilters);
   };
 
   const getActiveFilterCount = () => {
@@ -175,7 +175,7 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
                       onSelect={(range) => {
                         setDateRange(range || {});
                         if (range?.from && range?.to) {
-                          handleSearch();
+                          handleFilterChange("dateRange", range);
                         }
                       }}
                       numberOfMonths={2}
@@ -204,7 +204,7 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
                     Período selecionado
                     <X 
                       className="h-3 w-3 cursor-pointer" 
-                      onClick={() => setDateRange({})}
+                      onClick={() => handleFilterChange("dateRange", undefined)}
                     />
                   </Badge>
                 )}
