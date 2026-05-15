@@ -96,7 +96,7 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-xl border-2"
+              className="h-10 w-10 rounded-md border-2"
               disabled={effectivePage === 1}
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             >
