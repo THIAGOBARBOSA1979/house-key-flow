@@ -5,19 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ChecklistItem, checklistService } from "@/services/ChecklistService";
+import { ChecklistItem, ChecklistTemplate, checklistService } from "@/services/ChecklistService";
 import { Plus, FileText, Copy, Edit, Trash, Search, Star } from "lucide-react";
-
-interface ChecklistTemplate {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  itemCount: number;
-  isDefault: boolean;
-  createdAt: Date;
-  items: ChecklistItem[];
-}
 
 interface ChecklistTemplatesProps {
   onSelectTemplate: (template: ChecklistTemplate) => void;
@@ -28,21 +17,11 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const templates = checklistService.getAllTemplates().map(t => ({
-    id: t.id,
-    name: t.title,
-    description: t.description,
-    category: t.title.includes("Hidráulica") ? "Hidráulica" : "Vistoria",
-    itemCount: t.items.length,
-    isDefault: t.id.startsWith("checklist"),
-    createdAt: t.createdAt,
-    items: t.items
-  }));
-
-  const categories = ["all", "Vistoria", "Garantia", "Manutenção", "Hidráulica"];
+  const templates = checklistService.getAllTemplates();
+  const categories = ["all", "vistoria", "garantia", "manutencao", "hidraulica", "eletrica", "entrega"];
 
   const filteredTemplates = templates.filter(template => {
-    const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const matchesSearch = template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          template.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
     
@@ -50,14 +29,13 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   });
 
   const handleDuplicateTemplate = (template: ChecklistTemplate) => {
-    const newTemplate = {
-      ...template,
-      id: Date.now().toString(),
-      name: `${template.name} (Cópia)`,
-      isDefault: false,
-      createdAt: new Date()
-    };
-    console.log("Template duplicado:", newTemplate);
+    const { id, createdAt, lastUpdated, ...rest } = template;
+    checklistService.createTemplate({
+      ...rest,
+      title: `${template.title} (Cópia)`,
+    }).then(() => {
+      // Forçar atualização se necessário ou mostrar toast
+    });
   };
 
   return (
@@ -102,8 +80,8 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                 <div className="space-y-1">
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="h-5 w-5" />
-                    {template.name}
-                    {template.isDefault && (
+                    {template.title}
+                    {template.id.startsWith("checklist") && (
                       <Star className="h-4 w-4 text-yellow-500 fill-current" />
                     )}
                   </CardTitle>
@@ -118,7 +96,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Itens:</span>
-                  <Badge variant="secondary">{template.itemCount}</Badge>
+                  <Badge variant="secondary">{template.items?.length || 0}</Badge>
                 </div>
                 
                 <div className="flex items-center justify-between text-sm">
@@ -148,7 +126,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                     <Copy className="h-4 w-4" />
                   </Button>
                   
-                  {!template.isDefault && (
+                  {!template.id.startsWith("checklist") && (
                     <Button size="sm" variant="outline">
                       <Edit className="h-4 w-4" />
                     </Button>
