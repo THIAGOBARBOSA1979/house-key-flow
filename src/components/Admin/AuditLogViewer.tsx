@@ -99,7 +99,10 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
     <Card className="border-none bg-card/50 backdrop-blur-sm shadow-sem-sm">
       <CardHeader className={compact ? "pb-3" : "pb-4 border-b border-border/10"}>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{title || "Logs de Auditoria"}</CardTitle>
+          <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+            <Activity className="h-4 w-4 text-primary" />
+            {title || "Logs de Auditoria"}
+          </CardTitle>
           {!compact && (
             <Button variant="outline" size="sm" className="h-8 font-bold text-xs" onClick={() => {
               exportService.exportToCSV(allLogs, "logs_auditoria");
@@ -112,18 +115,16 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
       <CardContent className="space-y-4">
         {/* Filters */}
         {!compact && (
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 p-4 bg-muted/5 rounded-xl border border-border/10 mb-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar nos logs..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="pl-10 h-11 bg-background"
               />
             </div>
             <Select value={filterAction} onValueChange={setFilterAction}>
-              <SelectTrigger className="w-[160px]">
+              <SelectTrigger className="w-full sm:w-[160px] h-11 bg-background font-bold shadow-sem-sm">
                 <SelectValue placeholder="Ação" />
               </SelectTrigger>
               <SelectContent>
@@ -134,7 +135,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
               </SelectContent>
             </Select>
             <Select value={filterRole} onValueChange={setFilterRole}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-full sm:w-[140px] h-11 bg-background font-bold shadow-sem-sm">
                 <SelectValue placeholder="Perfil" />
               </SelectTrigger>
               <SelectContent>
@@ -149,19 +150,20 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
 
         {/* Log entries */}
         {paginatedLogs.length > 0 ? (
-          <div className="border rounded-md overflow-hidden">
+          <div className="border border-border/10 rounded-xl overflow-hidden shadow-sem-sm">
             <table className="w-full text-sm">
-              <thead className="bg-muted">
+              <thead className="bg-muted/30">
                 <tr>
-                  <th className="py-2 px-3 text-left">Data/Hora</th>
-                  <th className="py-2 px-3 text-left">Usuário</th>
-                  <th className="py-2 px-3 text-left">Ação</th>
-                  <th className="py-2 px-3 text-left hidden md:table-cell">Detalhes</th>
+                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground">Data/Hora</th>
+                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground">Usuário</th>
+                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground">Ação</th>
+                  <th className="py-4 px-4 text-left text-xs font-black uppercase tracking-widest text-muted-foreground hidden md:table-cell">Detalhes</th>
+                  <th className="py-4 px-4 text-right text-xs font-black uppercase tracking-widest text-muted-foreground">Info</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {paginatedLogs.map(log => (
-                  <tr key={log.id} className="hover:bg-accent/5">
+                  <tr key={log.id} className="group hover:bg-muted/20 transition-all border-b border-border/5">
                     <td className="py-2 px-3 text-muted-foreground whitespace-nowrap">
                       {safeFormat(log.timestamp, "dd/MM/yy HH:mm")}
                     </td>
@@ -182,6 +184,11 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
                     </td>
                     <td className="py-2 px-3 hidden md:table-cell text-muted-foreground truncate max-w-[300px]">
                       {log.details}
+                    </td>
+                    <td className="py-4 px-4 text-right">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full group-hover:bg-primary/10 group-hover:text-primary transition-all">
+                        <Maximize2 className="h-4 w-4" />
+                      </Button>
                     </td>
                   </tr>
                 ))}
