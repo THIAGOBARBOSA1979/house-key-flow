@@ -178,79 +178,81 @@ const Dashboard = () => {
                 Garantias Urgentes
               </h2>
             </div>
-            <ResponsiveGrid columns={1} gap="sm-sem" className="animate-in fade-in slide-in-from-right-4 duration-slow">
+            <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-slow">
               {warrantyClaims.length > 0 ? (
                 warrantyClaims.map((claim) => (
                   <div 
                     key={claim.id} 
-                    className="card-standard p-5 interactive-active border-none bg-card/50 backdrop-blur-sm group hover:ring-2 hover:ring-status-critical/30" 
+                    className="card-standard p-5 interactive-active border-none bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-status-critical/30 rounded-2xl shadow-sem-sm transition-all" 
                     onClick={() => navigate("/admin/warranty")}
                   >
                     <div className="flex justify-between items-start mb-3">
                       <StatusBadge 
                         status={claim.priority === 'high' || claim.priority === 'critical' ? 'critical' : 'warning'} 
-                        label={claim.priority === 'high' ? 'Alta' : claim.priority === 'critical' ? 'Crítica' : 'Média'}
+                        label={claim.priority === 'high' ? 'Alta Prioridade' : claim.priority === 'critical' ? 'CRÍTICA' : 'Média'}
                         size="sm"
                       />
-                      <span className="text-sem-tiny font-bold text-muted-foreground uppercase tracking-tighter">{claim.id}</span>
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/30 px-2 py-0.5 rounded-lg">{claim.id}</span>
                     </div>
-                    <h4 className="text-label group-hover:text-status-critical transition-colors">{claim.title}</h4>
-                    <p className="text-sem-body-sm text-muted-foreground mt-1 font-medium">{claim.propertyName} • Un. {claim.unitNumber}</p>
+                    <h4 className="text-label group-hover:text-status-critical transition-colors font-black leading-tight">{claim.title}</h4>
+                    <p className="text-[11px] text-muted-foreground mt-2 font-bold uppercase tracking-tighter">{claim.propertyName} • UN. {claim.unitNumber}</p>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-6 bg-muted/20 rounded-lg border border-dashed border-border">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Sem garantias urgentes</p>
+                <div className="text-center py-8 bg-muted/10 rounded-2xl border border-dashed">
+                  <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Sem garantias críticas</p>
                 </div>
               )}
-            </ResponsiveGrid>
-            <Button variant="outline" className="w-full text-xs font-bold rounded-lg h-10 border-dashed mt-4" onClick={() => navigate("/admin/warranty")}>
-              Gerenciar todas as garantias
+            </div>
+            <Button variant="outline" className="w-full text-[10px] font-black uppercase tracking-widest rounded-xl h-12 border-dashed border-primary/20 hover:border-primary/50 hover:bg-primary/5 mt-4 transition-all" onClick={() => navigate("/admin/warranty")}>
+              Gerenciar Fluxo de Assistência
             </Button>
           </section>
+
 
           {/* Recent Activities */}
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h2 flex items-center gap-2">
                 <HistoryIcon size={24} className="text-primary" />
-                Logs de Auditoria
+                Atividades Recentes
               </h2>
             </div>
-            <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+            <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-lg">
               <CardContent className="p-0">
-                <div className="divide-y divide-border/10">
+                <div className="divide-y divide-border/5">
                   {recentActivities.map((activity) => (
-                    <div key={activity.id} className="p-4 hover:bg-primary/5 transition-colors">
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-primary/40 flex-shrink-0" />
-                        <div className="flex-1">
-                          <p className="text-sem-body-sm leading-tight">
-                            <span className="font-bold text-primary">{activity.performedByName}</span>{" "}
+                    <div key={activity.id} className="p-5 hover:bg-primary/5 transition-all group">
+                      <div className="flex items-start gap-4">
+                        <div className="mt-1 w-2.5 h-2.5 rounded-full bg-primary/20 group-hover:bg-primary transition-colors flex-shrink-0 shadow-[0_0_8px_rgba(var(--primary),0.2)]" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sem-body-sm leading-relaxed">
+                            <span className="font-black text-foreground">{activity.performedByName}</span>{" "}
                             <span className="text-muted-foreground font-medium">{activity.details}</span>
                           </p>
-                          <p className="text-sem-tiny text-muted-foreground mt-2 flex items-center gap-1.5 font-bold uppercase tracking-tighter">
-                            <Clock size={10} />
-                            {new Date(activity.timestamp).toLocaleDateString('pt-BR')} {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                          <p className="text-[10px] text-muted-foreground/60 mt-2 flex items-center gap-1.5 font-black uppercase tracking-widest">
+                            <Clock size={12} className="opacity-50" />
+                            {new Date(activity.timestamp).toLocaleDateString('pt-BR')} • {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="p-4 border-t border-border/10 text-center">
+                <div className="p-5 border-t border-border/5 text-center bg-muted/5">
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="w-full text-tiny font-bold uppercase tracking-widest text-muted-foreground hover:text-primary"
+                    className="w-full h-11 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:bg-transparent transition-all"
                     onClick={() => navigate("/admin/audit-logs")}
                   >
-                    Ver logs completos
+                    Ver Logs Completos <ChevronRight size={14} className="ml-1" />
                   </Button>
                 </div>
               </CardContent>
             </Card>
           </section>
+
         </div>
       </div>
     </div>
