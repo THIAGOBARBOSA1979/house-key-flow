@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export const ReferralCard = ({ className }: { className?: string }) => {
   const { toast } = useToast();
