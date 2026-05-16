@@ -354,21 +354,21 @@ const Dashboard = () => {
           label="Documentos" 
           value={allDocs.length} 
           icon={FileText} 
-          description={`${recentDocuments.length} arquivos recentes`}
+          description={`${allDocs.filter(d => d.status === 'published').length} disponíveis`}
           variant="brand"
         />
         <StatsCard 
           label="Vistorias" 
           value={allInspections.length} 
           icon={ClipboardCheck} 
-          description={upcomingInspections.length > 0 ? `${upcomingInspections.length} agendada(s)` : 'Nenhuma pendente'}
-          variant={allInspections.length > 0 ? 'complete' : 'pending'}
+          description={upcomingInspections.length > 0 ? `${upcomingInspections.length} pendente(s)` : 'Nenhuma pendente'}
+          variant={allInspections.filter(i => i.status === 'complete').length > 0 ? 'complete' : 'pending'}
         />
         <StatsCard 
           label="Garantias" 
-          value={canRequestWarranty ? warrantyRequests.length : '-'} 
+          value={canRequestWarranty ? warrantyRequests.length : 0} 
           icon={ShieldCheck} 
-          description={canRequestWarranty ? 'Veja suas solicitações' : 'Aguardando liberação'}
+          description={canRequestWarranty ? `${warrantyRequests.filter(r => r.currentStage !== 'completed').length} em aberto` : 'Aguardando liberação'}
           variant={canRequestWarranty ? 'progress' : 'default'}
         />
         <StatsCard 
