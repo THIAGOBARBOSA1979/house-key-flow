@@ -339,8 +339,8 @@ export default function ClientDocuments() {
                         <FileText className="h-6 w-6" />
                       </div>
                       <StatusBadge 
-                        status={doc.status === "disponivel" ? "complete" : (doc.status === "processando" ? "progress" : "critical")} 
-                        label={getStatusLabel(doc.status)}
+                        status={doc.isSigned ? "complete" : (doc.status === "disponivel" ? "default" : (doc.status === "processando" ? "progress" : "critical"))} 
+                        label={doc.isSigned ? "Assinado" : getStatusLabel(doc.status)}
                         size="sm"
                       />
                     </div>
@@ -396,11 +396,16 @@ export default function ClientDocuments() {
                       <Button 
                         size="sm" 
                         variant="secondary"
-                        className="w-full h-11 text-[11px] font-black uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary/20 border-none rounded-xl shadow-inner transition-all hover:scale-[1.01]"
+                        className={cn(
+                          "w-full h-11 text-[11px] font-black uppercase tracking-widest border-none rounded-xl shadow-inner transition-all hover:scale-[1.01]",
+                          doc.isSigned 
+                            ? "bg-green-500/10 text-green-600 hover:bg-green-500/20" 
+                            : "bg-primary/10 text-primary hover:bg-primary/20"
+                        )}
                         onClick={() => handleOpenSignature(doc)}
                       >
-                        <PenTool className="h-4 w-4 mr-1.5" />
-                        Assinar Digitalmente
+                        {doc.isSigned ? <ShieldCheck className="h-4 w-4 mr-1.5" /> : <PenTool className="h-4 w-4 mr-1.5" />}
+                        {doc.isSigned ? "Ver Certificado" : "Assinar Digitalmente"}
                       </Button>
                     )}
                   </div>
