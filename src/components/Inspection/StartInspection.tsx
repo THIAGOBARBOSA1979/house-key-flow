@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Check, X, Upload, Camera, AlertCircle, ArrowLeft, ClipboardList, CheckCircle2 } from "lucide-react";
 import { checklistService, ChecklistTemplate, ChecklistGroup, ChecklistItem } from "@/services/ChecklistService";
 import { inspectionService } from "@/services/InspectionService";
+import { documentService } from "@/services/DocumentService";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -151,7 +152,62 @@ export const StartInspection = ({
     // Simulate submission to backend
     setTimeout(() => {
       const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}.`;
+      const inspection = inspectionService.getById(inspectionId);
       inspectionService.updateStatus(inspectionId, "complete", completionDetails);
+
+      // Gerar documento de vistoria e solicitar assinaturas digitais
+      const doc = documentService.createDocument({
+        title: `Relatório de Vistoria - ${inspection?.propertyName || 'Unidade'}`,
+        type: "auto",
+        category: "relatorio",
+        description: `Relatório gerado automaticamente após vistoria finalizada em ${new Date().toLocaleDateString()}.`,
+        priority: "medium",
+        associatedTo: {
+          property: inspection?.propertyName,
+          client: inspection?.clientName
+        },
+        visible: true,
+        status: "published",
+        createdBy: signature,
+        template: `RELATÓRIO DE VISTORIA TÉCNICA
+        
+EMPREENDIMENTO: ${inspection?.propertyName || 'N/A'}
+CLIENTE: ${inspection?.clientName || 'N/A'}
+DATA: ${new Date().toLocaleDateString()}
+RESPONSÁVEL: ${signature}
+
+RESUMO:
+- Total de itens verificados: ${totalItems}
+- Itens em conformidade: ${totalItems - nonConformCount}
+- Não conformidades: ${nonConformCount}
+
+NOTAS GERAIS:
+${extraNotes || 'Nenhuma observação extra.'}
+
+ITENS COM FALHA:
+${nonConformItems.map(i => `- ${i.name || i.description}: ${i.notes || 'Sem observações'}`).join('\n')}
+
+Este documento serve como registro oficial da vistoria realizada.`
+      });
+
+      // Adicionar signatários automáticos (Engenheiro e Cliente)
+      documentService.addSigner(doc.id, {
+        name: signature,
+        email: "engenheiro@a2.com",
+        role: "Engenheiro Responsável",
+        confirmationMethod: "email",
+        order: 1
+      });
+
+      if (inspection?.clientName) {
+        documentService.addSigner(doc.id, {
+          name: inspection.clientName,
+          email: "cliente@exemplo.com",
+          role: "Cliente / Comprador",
+          confirmationMethod: "email",
+          order: 2
+        });
+      }
 
       toast({
         title: "Vistoria finalizada com sucesso!",
