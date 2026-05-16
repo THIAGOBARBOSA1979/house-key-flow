@@ -32,6 +32,7 @@ import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { useAuth } from "@/contexts/AuthContext";
 import { documentService } from "@/services/DocumentService";
