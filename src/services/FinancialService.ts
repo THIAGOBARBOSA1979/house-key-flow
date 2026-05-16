@@ -18,54 +18,7 @@ export interface FinancialSummary {
 
 class FinancialService {
   private installments: Installment[] = [
-    {
-      id: 'inst-1',
-      number: 1,
-      dueDate: new Date(2024, 0, 10),
-      value: 2500,
-      status: 'paid',
-      type: 'monthly'
-    },
-    {
-      id: 'inst-2',
-      number: 2,
-      dueDate: new Date(2024, 1, 10),
-      value: 2500,
-      status: 'paid',
-      type: 'monthly'
-    },
-    {
-      id: 'inst-3',
-      number: 3,
-      dueDate: new Date(2024, 2, 10),
-      value: 2500,
-      status: 'paid',
-      type: 'monthly'
-    },
-    {
-      id: 'inst-4',
-      number: 4,
-      dueDate: new Date(2024, 3, 10),
-      value: 2500,
-      status: 'paid',
-      type: 'monthly'
-    },
-    {
-      id: 'inst-5',
-      number: 5,
-      dueDate: new Date(2024, 4, 10),
-      value: 2500,
-      status: 'pending',
-      type: 'monthly'
-    },
-    {
-      id: 'inst-6',
-      number: 6,
-      dueDate: new Date(2024, 5, 10),
-      value: 2500,
-      status: 'pending',
-      type: 'monthly'
-    },
+    // ... keep existing code
     {
       id: 'inst-7',
       number: 1,
@@ -85,7 +38,6 @@ class FinancialService {
   ];
 
   getInstallmentsByClient(clientId: string): Installment[] {
-    // In a real app, we'd filter by clientId
     return this.installments;
   }
 
@@ -108,6 +60,33 @@ class FinancialService {
       nextPayment,
       progress: (paidValue / totalValue) * 100
     };
+  }
+
+  getGlobalMetrics() {
+    return {
+      totalReceivable: 12500000,
+      totalPaid: 8450000,
+      totalOverdue: 125000,
+      collectionEfficiency: 98.5,
+      revenueByMonth: [
+        { month: 'Jan', value: 450000 },
+        { month: 'Fev', value: 520000 },
+        { month: 'Mar', value: 480000 },
+        { month: 'Abr', value: 610000 },
+        { month: 'Mai', value: 590000 },
+        { month: 'Jun', value: 650000 }
+      ]
+    };
+  }
+
+  getRecentTransactions() {
+    return [
+      { id: 'tx-1', client: 'João Silva', property: 'Residencial Aurora', value: 2500, date: new Date(), type: 'Mensalidade', status: 'paid' },
+      { id: 'tx-2', client: 'Maria Oliveira', property: 'Solar das Palmeiras', value: 15000, date: new Date(Date.now() - 86400000), type: 'Intermediária', status: 'paid' },
+      { id: 'tx-3', client: 'Pedro Santos', property: 'Residencial Aurora', value: 2500, date: new Date(Date.now() - 172800000), type: 'Mensalidade', status: 'overdue' },
+      { id: 'tx-4', client: 'Ana Costa', property: 'Residencial Aurora', value: 2500, date: new Date(Date.now() - 259200000), type: 'Mensalidade', status: 'paid' },
+      { id: 'tx-5', client: 'Carlos Souza', property: 'Solar das Palmeiras', value: 50000, date: new Date(Date.now() - 345600000), type: 'Entrega das Chaves', status: 'paid' },
+    ];
   }
 }
 
