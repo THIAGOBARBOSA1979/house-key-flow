@@ -197,43 +197,108 @@ export function DigitalSignatureDialog({
             </div>
 
             {canSign && (
-              <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20 shadow-sm animate-in zoom-in-95 duration-300">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 bg-primary/10 rounded-xl text-primary">
-                    <ShieldCheck className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h4 className="font-black text-lg flex items-center gap-2">
-                      Sua assinatura é necessária
-                    </h4>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Ao clicar em assinar, você confirma que leu e concorda com os termos deste documento, registrando sua digital com validade jurídica.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="bg-background/50 p-3 rounded-xl border border-border/50 mb-6 text-xs space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Autenticação:</span>
-                    <span className="font-bold flex items-center gap-1">
-                      {currentUserSignature.confirmationMethod === 'email' ? <Mail size={12}/> : <Smartphone size={12}/>}
-                      {currentUserSignature.confirmationMethod === 'email' ? 'E-mail Verificado' : 'SMS Token'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Posição no Fluxo:</span>
-                    <span className="font-bold">#{currentUserSignature.order || 1}</span>
-                  </div>
-                </div>
+              <div className="bg-primary/5 p-6 rounded-3xl border border-primary/20 shadow-sm animate-in zoom-in-95 duration-300">
+                {!facialStep && !smsStep ? (
+                  <>
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="p-3 bg-primary/10 rounded-xl text-primary">
+                        <ShieldCheck className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-lg flex items-center gap-2">
+                          Sua assinatura é necessária
+                        </h4>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Ao assinar, você concorda com os termos e registra sua digital com validade jurídica conforme MP 2.200-2/2001.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-background/50 p-4 rounded-2xl border border-border/50 mb-6 text-xs space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground font-medium">Método de Autenticação:</span>
+                        <Badge variant="secondary" className="font-black uppercase text-[9px] gap-1 px-2">
+                          {currentUserSignature.confirmationMethod === 'email' && <Mail size={10}/>}
+                          {currentUserSignature.confirmationMethod === 'sms' && <Smartphone size={10}/>}
+                          {currentUserSignature.confirmationMethod === 'facial' && <Scan size={10}/>}
+                          {currentUserSignature.confirmationMethod === 'govbr' && <Fingerprint size={10}/>}
+                          {currentUserSignature.confirmationMethod}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground font-medium">Localização:</span>
+                        <span className="font-bold flex items-center gap-1">
+                          <MapPin size={10} className="text-primary" /> São Paulo, SP
+                        </span>
+                      </div>
+                    </div>
 
-                <div className="flex gap-3">
-                  <Button className="flex-1 h-12 font-black uppercase tracking-widest text-xs shadow-lg hover:translate-y-[-2px] transition-all" onClick={handleSign}>
-                    Confirmar Assinatura
-                  </Button>
-                  <Button variant="outline" className="flex-1 h-12 font-black uppercase tracking-widest text-xs border-2 text-destructive hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30" onClick={handleReject}>
-                    Recusar
-                  </Button>
-                </div>
+                    <div className="flex gap-3">
+                      <Button 
+                        className="flex-1 h-12 font-black uppercase tracking-widest text-xs shadow-lg hover:translate-y-[-2px] transition-all rounded-xl" 
+                        onClick={handleSign}
+                        disabled={isSigning}
+                      >
+                        {isSigning ? <RotateCw className="w-4 h-4 animate-spin mr-2" /> : <PenTool className="w-4 h-4 mr-2" />}
+                        {isSigning ? "Processando..." : "Assinar Documento"}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="flex-1 h-12 font-black uppercase tracking-widest text-xs border-2 text-destructive hover:bg-destructive/5 rounded-xl" 
+                        onClick={handleReject}
+                        disabled={isSigning}
+                      >
+                        Recusar
+                      </Button>
+                    </div>
+                  </>
+                ) : facialStep ? (
+                  <div className="space-y-4 text-center">
+                    <div className="mx-auto w-32 h-32 bg-muted rounded-full border-4 border-primary/20 flex items-center justify-center overflow-hidden relative">
+                      <Scan className="h-12 w-12 text-primary/40" />
+                      <div className="absolute inset-0 border-t-2 border-primary animate-pulse top-1/2 shadow-[0_0_15px_rgba(var(--primary),0.5)]" />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-lg">Reconhecimento Facial</h4>
+                      <p className="text-sm text-muted-foreground">Posicione seu rosto no centro do círculo para autenticar.</p>
+                    </div>
+                    <Button className="w-full rounded-xl font-black uppercase text-xs" onClick={handleSign}>
+                      Capturar e Assinar
+                    </Button>
+                    <Button variant="ghost" className="text-xs font-bold" onClick={() => setFacialStep(false)}>
+                      Voltar
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4 text-center">
+                    <div className="p-4 bg-muted/50 rounded-2xl border border-border/50">
+                      <Smartphone className="h-8 w-8 text-primary mx-auto mb-2" />
+                      <p className="text-xs text-muted-foreground">Enviamos um código para seu telefone finalizado em 44</p>
+                    </div>
+                    <div className="flex justify-center gap-2">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <input
+                          key={i}
+                          type="text"
+                          maxLength={1}
+                          className="w-10 h-12 border-2 rounded-xl text-center font-black text-lg focus:border-primary outline-none transition-all"
+                          onChange={(e) => {
+                            if (e.target.value && i < 6) {
+                              const next = e.target.nextElementSibling as HTMLInputElement;
+                              if (next) next.focus();
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <Button className="w-full rounded-xl font-black uppercase text-xs" onClick={handleSign}>
+                      Verificar e Assinar
+                    </Button>
+                    <Button variant="ghost" className="text-xs font-bold" onClick={() => setSmsStep(false)}>
+                      Reenviar Código
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
