@@ -167,51 +167,64 @@ const Dashboard = () => {
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700 group-hover:scale-110">
             <Home className="h-32 w-32" />
           </div>
-          <CardHeader className="relative z-10">
-            <div className="flex items-center justify-between">
+          <CardHeader className="relative z-10 pb-2">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
                 <CardTitle className="text-2xl font-black flex items-center gap-3 tracking-tight">
-                  <div className="p-2 bg-primary/10 rounded-xl">
+                  <div className="p-2.5 bg-primary/10 rounded-2xl">
                     <Building2 className="h-6 w-6 text-primary" />
                   </div>
                   {userInfo.property}
                 </CardTitle>
-                <CardDescription className="text-xl font-bold text-foreground/80 mt-2 flex items-center gap-2">
-                  <span className="bg-muted px-2 py-0.5 rounded-lg text-sm font-black text-muted-foreground uppercase tracking-widest">Unidade</span>
-                  {userInfo.unit}
-                </CardDescription>
+                <div className="flex items-center gap-3 mt-3">
+                  <div className="bg-muted px-2.5 py-1 rounded-xl text-[10px] font-black text-muted-foreground uppercase tracking-widest border border-border/50">
+                    Unidade {userInfo.unit}
+                  </div>
+                  <div className="bg-primary/5 px-2.5 py-1 rounded-xl text-[10px] font-black text-primary uppercase tracking-widest border border-primary/10">
+                    Bloco A
+                  </div>
+                </div>
               </div>
-              <Badge variant="outline" className="bg-primary text-primary-foreground border-none font-black uppercase tracking-tighter text-[10px] px-3 py-1.5 shadow-lg animate-pulse">
+              <Badge variant="outline" className="bg-primary text-primary-foreground border-none font-black uppercase tracking-tighter text-[11px] px-4 py-2 shadow-lg shadow-primary/20 animate-pulse rounded-full">
                 {daysToDelivery > 0 ? `${daysToDelivery} dias para entrega` : "Imóvel Entregue"}
               </Badge>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+          <CardContent className="pt-2">
+            <div className="space-y-6">
               <div className="flex justify-between items-end">
                 <div className="space-y-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase">Progresso Geral</span>
-                  <p className="text-2xl font-black text-primary">{Math.round(contractProgress)}%</p>
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Evolução da Obra</span>
+                  </div>
+                  <p className="text-3xl font-black text-primary tracking-tighter">{Math.round(contractProgress)}%</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-medium text-muted-foreground uppercase">Previsão de Entrega</span>
-                  <p className="font-bold">{userInfo.deliveryDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</p>
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Previsão</span>
+                  <p className="font-bold text-foreground">{userInfo.deliveryDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</p>
                 </div>
               </div>
-              <Progress value={contractProgress} className="h-4 bg-primary/10 rounded-full overflow-hidden" />
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground bg-white/50 backdrop-blur-sm p-3 rounded-2xl border border-primary/5 shadow-sm group-hover:bg-white transition-colors">
-                  <Calendar className="h-5 w-5 text-primary" />
+              <div className="relative pt-1">
+                <Progress value={contractProgress} className="h-3 bg-primary/10 rounded-full" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground bg-white/40 backdrop-blur-md p-4 rounded-2xl border border-primary/5 shadow-sm group-hover:bg-white/80 transition-all duration-500">
+                  <div className="p-2 bg-primary/10 rounded-xl text-primary">
+                    <Calendar className="h-5 w-5" />
+                  </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 leading-none mb-1">Assinatura</p>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 leading-none mb-1.5 tracking-wider">Assinatura</p>
                     <span className="font-bold text-foreground">{userInfo.contractDate.toLocaleDateString()}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground bg-white/50 backdrop-blur-sm p-3 rounded-2xl border border-primary/5 shadow-sm group-hover:bg-white transition-colors">
-                  <MapPin className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-4 text-sm text-muted-foreground bg-white/40 backdrop-blur-md p-4 rounded-2xl border border-primary/5 shadow-sm group-hover:bg-white/80 transition-all duration-500">
+                  <div className="p-2 bg-primary/10 rounded-xl text-primary">
+                    <MapPin className="h-5 w-5" />
+                  </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 leading-none mb-1">Localização</p>
-                    <span className="font-bold text-foreground">São Paulo, SP</span>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 leading-none mb-1.5 tracking-wider">Endereço</p>
+                    <span className="font-bold text-foreground">Av. Principal, 1000 - SP</span>
                   </div>
                 </div>
               </div>
