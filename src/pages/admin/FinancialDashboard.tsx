@@ -236,7 +236,19 @@ const FinancialDashboard = () => {
             { 
               header: "Status", 
               accessorKey: "status",
-              cell: (item) => <StatusBadge status={item.status} size="sm" />
+              cell: (item) => {
+                const statusMap: Record<string, any> = {
+                  paid: 'complete',
+                  overdue: 'critical',
+                  pending: 'pending'
+                };
+                const labelMap: Record<string, string> = {
+                  paid: 'Pago',
+                  overdue: 'Atrasado',
+                  pending: 'Pendente'
+                };
+                return <StatusBadge status={statusMap[item.status] || 'neutral'} label={labelMap[item.status]} size="sm" />;
+              }
             }
           ]}
           data={transactions}
