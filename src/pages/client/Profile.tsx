@@ -9,6 +9,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { User, Mail, Phone, MapPin, Shield, Lock, BellRing } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { CheckCircle, Clock } from "lucide-react";
 
 const ClientProfile = () => {
   const { user } = useAuth();
@@ -75,22 +78,20 @@ const ClientProfile = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-primary/10 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Estatísticas da Conta</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Desde</span>
-                <span className="text-sm font-bold">Jan 2024</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Status</span>
-                <span className="text-xs font-black bg-green-100 text-green-700 px-2 py-1 rounded uppercase tracking-tighter">Ativo</span>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            <StatsCard 
+              label="Desde" 
+              value="Jan 2024" 
+              icon={Clock} 
+              variant="brand" 
+            />
+            <StatsCard 
+              label="Status da Conta" 
+              value="Ativo" 
+              icon={CheckCircle} 
+              variant="complete" 
+            />
+          </div>
         </div>
 
         {/* Right Column: Form and Settings */}
