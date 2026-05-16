@@ -90,11 +90,17 @@ const Financial = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="gap-2 rounded-xl">
+          <Button variant="outline" className="gap-2 rounded-xl" onClick={() => {
+            toast({ title: "Gerando documento...", description: "Estamos preparando sua declaração de IR." });
+            setTimeout(() => toast({ title: "Sucesso!", description: "Declaração de IR baixada com sucesso." }), 2000);
+          }}>
             <FileText className="h-4 w-4" />
             Declaração IR
           </Button>
-          <Button className="gap-2 rounded-xl">
+          <Button className="gap-2 rounded-xl" onClick={() => {
+            toast({ title: "Gerando extrato...", description: "Estamos preparando seu extrato financeiro." });
+            setTimeout(() => toast({ title: "Sucesso!", description: "Extrato financeiro baixado com sucesso." }), 2000);
+          }}>
             <Download className="h-4 w-4" />
             Baixar Extrato
           </Button>
@@ -125,7 +131,16 @@ const Financial = () => {
                   <Calendar className="h-4 w-4 text-primary" />
                   <span className="font-medium">{summary.nextPayment.dueDate.toLocaleDateString('pt-BR')}</span>
                 </div>
-                <Button className="w-full rounded-xl gap-2 font-bold" variant="secondary">
+                <Button 
+                  className="w-full rounded-xl gap-2 font-bold" 
+                  variant="secondary"
+                  onClick={() => {
+                    toast({
+                      title: "Pagamento em processamento...",
+                      description: "Estamos processando seu pagamento. Você receberá uma confirmação em breve.",
+                    });
+                  }}
+                >
                   <CreditCard className="h-4 w-4" />
                   Pagar Agora
                 </Button>
