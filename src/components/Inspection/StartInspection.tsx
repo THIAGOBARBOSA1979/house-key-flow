@@ -199,9 +199,9 @@ Este documento serve como registro oficial da vistoria realizada.`
         order: 1
       });
 
-      if (inspection?.clientName) {
+      if (inspection?.client) {
         documentService.addSigner(doc.id, {
-          name: inspection.clientName,
+          name: inspection.client,
           email: "cliente@exemplo.com",
           role: "Cliente / Comprador",
           confirmationMethod: "email",
