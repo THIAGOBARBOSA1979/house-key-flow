@@ -155,12 +155,12 @@ const Dashboard = () => {
             Acompanhe o progresso do seu imóvel e acesse seus serviços exclusivos.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row items-end md:items-center gap-3">
           {stage && (
             <StageIndicator currentStage={stage} showDescription />
           )}
           <div className="h-10 w-px bg-border mx-2 hidden md:block" />
-          <div className="flex flex-col items-end hidden lg:flex bg-primary/5 px-4 py-2 rounded-xl border border-primary/10 shadow-sm">
+          <div className="flex flex-col items-end bg-primary/5 px-4 py-2 rounded-xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-colors">
             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Status da Obra</span>
             <span className="text-lg font-black text-primary leading-none">{Math.round(contractProgress)}% Concluído</span>
           </div>
