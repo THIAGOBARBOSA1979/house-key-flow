@@ -149,6 +149,17 @@ const App = () => {
                     <AppLayout><AuditLogs /></AppLayout>
                   </ProtectedRoute>
                 } />
+                <Route path="/admin/financial" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><FinancialDashboard /></AppLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/announcements" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><Announcements /></AppLayout>
+                  </ProtectedRoute>
+                } />
+
 
 
                 {/* Protected Client Routes */}
