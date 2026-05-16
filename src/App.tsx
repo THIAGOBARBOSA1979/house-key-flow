@@ -28,6 +28,9 @@ import ClientArea from "./pages/ClientArea";
 import Checklist from "./pages/Checklist";
 import Settings from "./pages/Settings";
 import AuditLogs from "./pages/admin/AuditLogs";
+import FinancialDashboard from "./pages/admin/FinancialDashboard";
+import Announcements from "./pages/admin/Announcements";
+
 
 
 // Client pages and layout
