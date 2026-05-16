@@ -152,27 +152,27 @@ export const StartInspection = ({
     // Simulate submission to backend
     setTimeout(() => {
       const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}.`;
-      const inspection = inspectionService.getById(inspectionId);
+      const inspection = inspectionService.getAll().find(i => i.id === inspectionId);
       inspectionService.updateStatus(inspectionId, "complete", completionDetails);
 
       // Gerar documento de vistoria e solicitar assinaturas digitais
       const doc = documentService.createDocument({
-        title: `Relatório de Vistoria - ${inspection?.propertyName || 'Unidade'}`,
+        title: `Relatório de Vistoria - ${inspection?.property || 'Unidade'}`,
         type: "auto",
         category: "relatorio",
         description: `Relatório gerado automaticamente após vistoria finalizada em ${new Date().toLocaleDateString()}.`,
         priority: "medium",
         associatedTo: {
-          property: inspection?.propertyName,
-          client: inspection?.clientName
+          property: inspection?.property,
+          client: inspection?.client
         },
         visible: true,
         status: "published",
         createdBy: signature,
         template: `RELATÓRIO DE VISTORIA TÉCNICA
         
-EMPREENDIMENTO: ${inspection?.propertyName || 'N/A'}
-CLIENTE: ${inspection?.clientName || 'N/A'}
+EMPREENDIMENTO: ${inspection?.property || 'N/A'}
+CLIENTE: ${inspection?.client || 'N/A'}
 DATA: ${new Date().toLocaleDateString()}
 RESPONSÁVEL: ${signature}
 
