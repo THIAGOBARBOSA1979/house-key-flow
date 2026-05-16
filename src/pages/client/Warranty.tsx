@@ -481,9 +481,10 @@ const ClientWarranty = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-10 px-4 bg-muted/20 rounded-xl border border-dashed">
-                    <ShieldCheck className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />
-                    <p className="text-sm font-medium text-muted-foreground">Você ainda não possui solicitações registradas.</p>
+                  <div className="text-center py-16 px-4 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center">
+                    <ShieldCheck className="h-10 w-10 text-muted-foreground/30 mb-3" />
+                    <p className="text-sm font-bold text-muted-foreground">Nenhuma solicitação aberta</p>
+                    <p className="text-xs text-muted-foreground/60 mt-1 text-center">Quando você abrir um chamado de garantia, ele aparecerá aqui para acompanhamento.</p>
                   </div>
                 )}
               </CardContent>

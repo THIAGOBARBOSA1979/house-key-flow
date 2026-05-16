@@ -318,10 +318,17 @@ const ClientInspections = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12 px-4 bg-muted/20 rounded-2xl border border-dashed">
-                    <ClipboardCheck className="h-10 w-10 mx-auto text-muted-foreground/20 mb-3" />
-                    <p className="text-sm font-bold text-muted-foreground">Nenhuma vistoria agendada</p>
-                    <p className="text-xs text-muted-foreground/60 mt-1">Sua agenda aparecerá aqui quando disponível.</p>
+                  <div className="text-center py-16 px-4 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center animate-in fade-in duration-700">
+                    <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mb-4">
+                      <ClipboardCheck className="h-10 w-10 text-primary/30" />
+                    </div>
+                    <p className="text-base font-bold text-foreground/80">Nenhuma vistoria agendada</p>
+                    <p className="text-sm text-muted-foreground mt-2 max-w-[250px] mx-auto">
+                      Sua agenda de vistorias aparecerá aqui assim que seu imóvel estiver pronto para a primeira visita.
+                    </p>
+                    <Button variant="outline" className="mt-6 font-bold" disabled>
+                      Agendar em breve
+                    </Button>
                   </div>
                 )}
               </CardContent>

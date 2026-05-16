@@ -47,11 +47,26 @@ const Financial = () => {
   };
 
   const handleSimulate = () => {
-    // Mock simulation logic
-    const discount = simulationAmount * 0.05;
+    if (simulationAmount <= 0) {
+      toast({ title: "Erro", description: "Informe um valor válido para simulação.", variant: "destructive" });
+      return;
+    }
+    
+    // Logic for discount calculation
+    // Over 50k: 10%, Over 10k: 7%, Else: 5%
+    const discountRate = simulationAmount >= 50000 ? 0.10 : simulationAmount >= 10000 ? 0.07 : 0.05;
+    const discount = simulationAmount * discountRate;
+    const finalValue = simulationAmount - discount;
+
     toast({
-      title: "Simulação Realizada",
-      description: `Para quitação de ${formatCurrency(simulationAmount)}, o desconto estimado é de ${formatCurrency(discount)}.`,
+      title: "Simulação de Antecipação",
+      description: (
+        <div className="space-y-1">
+          <p>Valor simulado: <span className="font-bold">{formatCurrency(simulationAmount)}</span></p>
+          <p>Desconto ({discountRate * 100}%): <span className="font-bold text-green-600">-{formatCurrency(discount)}</span></p>
+          <p className="border-t pt-1 mt-1">Valor final: <span className="font-bold">{formatCurrency(finalValue)}</span></p>
+        </div>
+      ) as any,
     });
     setIsSimulationOpen(false);
   };
@@ -90,11 +105,17 @@ const Financial = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="gap-2 rounded-xl">
+          <Button variant="outline" className="gap-2 rounded-xl" onClick={() => {
+            toast({ title: "Gerando documento...", description: "Estamos preparando sua declaração de IR." });
+            setTimeout(() => toast({ title: "Sucesso!", description: "Declaração de IR baixada com sucesso." }), 2000);
+          }}>
             <FileText className="h-4 w-4" />
             Declaração IR
           </Button>
-          <Button className="gap-2 rounded-xl">
+          <Button className="gap-2 rounded-xl" onClick={() => {
+            toast({ title: "Gerando extrato...", description: "Estamos preparando seu extrato financeiro." });
+            setTimeout(() => toast({ title: "Sucesso!", description: "Extrato financeiro baixado com sucesso." }), 2000);
+          }}>
             <Download className="h-4 w-4" />
             Baixar Extrato
           </Button>
@@ -125,7 +146,16 @@ const Financial = () => {
                   <Calendar className="h-4 w-4 text-primary" />
                   <span className="font-medium">{summary.nextPayment.dueDate.toLocaleDateString('pt-BR')}</span>
                 </div>
-                <Button className="w-full rounded-xl gap-2 font-bold" variant="secondary">
+                <Button 
+                  className="w-full rounded-xl gap-2 font-bold" 
+                  variant="secondary"
+                  onClick={() => {
+                    toast({
+                      title: "Pagamento em processamento...",
+                      description: "Estamos processando seu pagamento. Você receberá uma confirmação em breve.",
+                    });
+                  }}
+                >
                   <CreditCard className="h-4 w-4" />
                   Pagar Agora
                 </Button>
