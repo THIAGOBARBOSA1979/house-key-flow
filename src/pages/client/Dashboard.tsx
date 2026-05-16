@@ -149,6 +149,8 @@ const Dashboard = () => {
   }
 
   return (
+    <>
+
     <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header with Stage Indicator */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -697,6 +699,7 @@ const Dashboard = () => {
       </Card>
 
     </div>
+    </>
   );
 };
 
