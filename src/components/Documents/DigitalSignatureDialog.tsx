@@ -58,25 +58,47 @@ export function DigitalSignatureDialog({
   const currentUserSignature = signatures.find(s => s.email === user?.email);
   const canSign = currentUserSignature && currentUserSignature.status === 'pending';
 
-  const handleSign = () => {
+  const handleSign = async () => {
     if (!currentUserSignature) return;
+
+    if (currentUserSignature.confirmationMethod === 'facial' && !facialStep) {
+      setFacialStep(true);
+      return;
+    }
+
+    if (currentUserSignature.confirmationMethod === 'sms' && !smsStep) {
+      setSmsStep(true);
+      return;
+    }
+
+    setIsSigning(true);
+    
+    // Simulação de delay de processamento criptográfico
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
     // Simulate getting IP and browser info
     const ipAddress = "189.12.34." + Math.floor(Math.random() * 255);
     const evidence = {
       browser: "Chrome 124.0.0.0",
       os: "Windows 11",
-      location: "São Paulo, SP, BR"
+      location: "São Paulo, SP, BR",
+      lat: -23.5505,
+      lng: -46.6333,
+      facialMatchScore: facialStep ? 0.98 : undefined
     };
     
     const success = documentService.signDocument(documentId, currentUserSignature.id, ipAddress, evidence);
+    setIsSigning(false);
+    
     if (success) {
       toast({
         title: "Documento assinado",
-        description: "Sua assinatura digital foi registrada com sucesso.",
+        description: "Sua assinatura digital foi registrada com segurança e validade jurídica.",
       });
       setSignatures(documentService.getSignatureHistory(documentId));
       setActiveTab("history");
+      setFacialStep(false);
+      setSmsStep(false);
     }
   };
 
@@ -153,7 +175,10 @@ export function DigitalSignatureDialog({
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1.5 text-[10px] font-black uppercase">
-                            {s.confirmationMethod === 'email' ? <Mail className="w-3.5 h-3.5 text-primary/60" /> : <Smartphone className="w-3.5 h-3.5 text-primary/60" />}
+                            {s.confirmationMethod === 'email' && <Mail className="w-3.5 h-3.5 text-primary/60" />}
+                            {s.confirmationMethod === 'sms' && <Smartphone className="w-3.5 h-3.5 text-primary/60" />}
+                            {s.confirmationMethod === 'facial' && <Scan className="w-3.5 h-3.5 text-primary/60" />}
+                            {s.confirmationMethod === 'govbr' && <ShieldCheck className="w-3.5 h-3.5 text-primary/60" />}
                             {s.confirmationMethod}
                           </div>
                         </TableCell>
