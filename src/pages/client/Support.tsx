@@ -14,7 +14,8 @@ import {
   Send,
   ExternalLink,
   Search,
-  CheckCircle
+  CheckCircle,
+  Download
 } from "lucide-react";
 import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
 import { Input } from "@/components/ui/input";
