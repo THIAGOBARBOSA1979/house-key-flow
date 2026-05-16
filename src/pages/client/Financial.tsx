@@ -200,17 +200,17 @@ const Financial = () => {
           <CardTitle>Histórico de Parcelas</CardTitle>
           <CardDescription>Lista detalhada de todas as parcelas do seu contrato</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto scrollbar-hide">
             <table className="w-full">
               <thead>
-                <tr className="border-b text-[10px] font-black uppercase text-muted-foreground tracking-widest text-left">
-                  <th className="pb-4 px-2">Parcela</th>
-                  <th className="pb-4 px-2">Tipo</th>
-                  <th className="pb-4 px-2">Vencimento</th>
-                  <th className="pb-4 px-2">Valor</th>
-                  <th className="pb-4 px-2">Status</th>
-                  <th className="pb-4 px-2 text-right">Ação</th>
+                <tr className="border-b bg-muted/30 text-[10px] font-black uppercase text-muted-foreground tracking-widest text-left">
+                  <th className="py-4 px-6 first:rounded-tl-xl">Parcela</th>
+                  <th className="py-4 px-6">Tipo</th>
+                  <th className="py-4 px-6">Vencimento</th>
+                  <th className="py-4 px-6">Valor</th>
+                  <th className="py-4 px-6">Status</th>
+                  <th className="py-4 px-6 text-right last:rounded-tr-xl">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -218,28 +218,27 @@ const Financial = () => {
                   const statusInfo = getStatusInfo(item.status);
                   return (
                     <tr key={item.id} className="group hover:bg-muted/30 transition-colors">
-                      <td className="py-4 px-2">
+                      <td className="py-4 px-6">
                         <span className="text-sm font-bold">#{String(item.number).padStart(3, '0')}</span>
                       </td>
-                      <td className="py-4 px-2">
+                      <td className="py-4 px-6">
                         <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-tighter">
                           {getTypeLabel(item.type)}
                         </Badge>
                       </td>
-                      <td className="py-4 px-2 text-sm">
+                      <td className="py-4 px-6 text-sm">
                         {item.dueDate.toLocaleDateString('pt-BR')}
                       </td>
-                      <td className="py-4 px-2 font-bold text-sm">
+                      <td className="py-4 px-6 font-bold text-sm">
                         {formatCurrency(item.value)}
                       </td>
-                      <td className="py-4 px-2">
+                      <td className="py-4 px-6">
                         <StatusBadge 
                           status={statusInfo.status} 
-                          label={statusInfo.label} 
-                          size="sm" 
+...
                         />
                       </td>
-                      <td className="py-4 px-2 text-right">
+                      <td className="py-4 px-6 text-right">
                         {item.status !== 'paid' ? (
                           <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs font-bold text-primary hover:text-primary hover:bg-primary/5">
                             Boleto <Download className="h-3 w-3" />
