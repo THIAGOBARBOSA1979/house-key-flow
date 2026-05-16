@@ -32,6 +32,18 @@ import { Label } from "@/components/ui/label";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  Cell,
+  PieChart,
+  Pie
+} from 'recharts';
 
 const Financial = () => {
   const { user } = useAuth();
@@ -42,6 +54,23 @@ const Financial = () => {
 
   const summary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
   const installments = useMemo(() => financialService.getInstallmentsByClient(clientId), [clientId]);
+
+  const chartData = useMemo(() => {
+    return [
+      { name: 'Pago', value: summary.paidValue, color: '#0ea5e9' },
+      { name: 'Pendente', value: summary.balanceDue, color: '#e2e8f0' },
+    ];
+  }, [summary]);
+
+  const historyData = useMemo(() => {
+    return installments
+      .filter(i => i.status === 'paid')
+      .slice(-6)
+      .map(i => ({
+        month: i.dueDate.toLocaleDateString('pt-BR', { month: 'short' }),
+        value: i.value
+      }));
+  }, [installments]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
