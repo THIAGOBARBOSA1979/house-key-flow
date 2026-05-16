@@ -43,3 +43,13 @@ export const truncateText = (text: string, length: number) => {
   if (text.length <= length) return text;
   return text.substring(0, length) + '...';
 };
+
+/**
+ * Currency formatter
+ */
+export const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
+};

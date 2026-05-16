@@ -21,20 +21,7 @@ class ConstructionService {
       type: 'news',
       isGlobal: true
     },
-    {
-      id: '1',
-      date: new Date(2024, 2, 10),
-      title: 'Início do Acabamento',
-      description: 'As equipes iniciaram a colocação dos pisos e revestimentos nas unidades do Bloco A.',
-      type: 'milestone',
-      imageUrl: 'https://images.unsplash.com/photo-1503387762-592dea58ef23?auto=format&fit=crop&w=800&q=80',
-      progressItems: [
-        { label: 'Estrutura', percentage: 100 },
-        { label: 'Alvenaria', percentage: 100 },
-        { label: 'Instalações', percentage: 85 },
-        { label: 'Acabamento', percentage: 15 }
-      ]
-    },
+    // ... keep existing code
     {
       id: '2',
       date: new Date(2024, 1, 15),
@@ -60,11 +47,36 @@ class ConstructionService {
   ];
 
   getUpdates(): ConstructionUpdate[] {
-    return this.updates;
+    return [...this.updates].sort((a, b) => b.date.getTime() - a.date.getTime());
+  }
+
+  createUpdate(data: Omit<ConstructionUpdate, 'id'>) {
+    const newUpdate = {
+      ...data,
+      id: `upd-${Math.random().toString(36).substr(2, 9)}`,
+      date: data.date || new Date()
+    };
+    this.updates.push(newUpdate);
+    return newUpdate;
+  }
+
+  updateUpdate(id: string, data: Partial<ConstructionUpdate>) {
+    const index = this.updates.findIndex(u => u.id === id);
+    if (index !== -1) {
+      this.updates[index] = { ...this.updates[index], ...data };
+      return this.updates[index];
+    }
+    return null;
+  }
+
+  deleteUpdate(id: string) {
+    this.updates = this.updates.filter(u => u.id !== id);
   }
 
   getLatestProgress() {
-    const updateWithProgress = this.updates.find(u => u.progressItems);
+    const updateWithProgress = [...this.updates]
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .find(u => u.progressItems);
     return updateWithProgress?.progressItems || [];
   }
 }

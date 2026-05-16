@@ -28,6 +28,9 @@ import ClientArea from "./pages/ClientArea";
 import Checklist from "./pages/Checklist";
 import Settings from "./pages/Settings";
 import AuditLogs from "./pages/admin/AuditLogs";
+import FinancialDashboard from "./pages/admin/FinancialDashboard";
+import Announcements from "./pages/admin/Announcements";
+
 
 
 // Client pages and layout
@@ -146,6 +149,17 @@ const App = () => {
                     <AppLayout><AuditLogs /></AppLayout>
                   </ProtectedRoute>
                 } />
+                <Route path="/admin/financial" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><FinancialDashboard /></AppLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/announcements" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><Announcements /></AppLayout>
+                  </ProtectedRoute>
+                } />
+
 
 
                 {/* Protected Client Routes */}

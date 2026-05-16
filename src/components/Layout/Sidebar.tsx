@@ -15,8 +15,11 @@ import {
   ChevronRight,
   Layout,
   LogOut,
-  Activity
+  Activity,
+  DollarSign,
+  Megaphone
 } from "lucide-react";
+
 
 import { SidebarGroup } from "./SidebarGroup";
 import { Button } from "@/components/ui/button";
@@ -33,14 +36,17 @@ const operationalItems = [
   { to: "/admin/calendar", icon: Calendar, label: "Agendamentos" },
   { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias" },
   { to: "/admin/warranty", icon: ShieldCheck, label: "Garantias" },
+  { to: "/admin/financial", icon: DollarSign, label: "Financeiro" },
 ];
 
 const managementItems = [
   { to: "/admin/properties", icon: Building, label: "Empreendimentos" },
+  { to: "/admin/announcements", icon: Megaphone, label: "Comunicados" },
   { to: "/admin/client-area", icon: User, label: "Área do Cliente" },
   { to: "/admin/documents", icon: FileText, label: "Documentos" },
   { to: "/admin/users", icon: Users, label: "Usuários" },
 ];
+
 
 const systemItems = [
   { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists" },
