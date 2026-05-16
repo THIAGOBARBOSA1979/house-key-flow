@@ -37,10 +37,11 @@ const AuditLogs = () => {
 
       <div className="grid grid-cols-1 gap-8">
         <AuditLogViewer 
-          title="Rastreabilidade Global do Sistema" 
-          className="rounded-[2.5rem] shadow-sem-xl border-none bg-card/40 backdrop-blur-md overflow-hidden" 
+          title="Rastreabilidade Global" 
+          className="rounded-[2rem] shadow-sem-lg border-none bg-card/40 backdrop-blur-md overflow-hidden" 
         />
       </div>
+
 
 
 
