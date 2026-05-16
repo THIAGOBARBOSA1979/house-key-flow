@@ -97,16 +97,21 @@ const Warranty = () => {
 
       {/* Request Detail Dialog */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
-          <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
-            <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
-              <ShieldCheck className="w-6 h-6 text-primary" />
-              Solicitação #{selectedRequest?.id.split('-')[0].toUpperCase()}
+        <DialogContent className="max-w-6xl h-[92vh] flex flex-col p-0 overflow-hidden border-none shadow-sem-xl rounded-[2.5rem] bg-background/95 backdrop-blur-2xl">
+          <DialogHeader className="px-10 pt-10 pb-8 bg-primary/5 border-b border-border/10">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-3xl font-black tracking-tighter flex items-center gap-4">
+                <div className="p-3 bg-white rounded-2xl shadow-sem-sm">
+                  <ShieldCheck className="w-8 h-8 text-primary" strokeWidth={3} />
+                </div>
+                Solicitação #{selectedRequest?.id.split('-')[0].toUpperCase()}
+              </DialogTitle>
               {selectedRequest?.isPaused && (
-                <StatusBadge status="warning" label="Pausada" size="sm" />
+                <StatusBadge status="warning" label="Pausada pelo Admin" size="sm" className="rounded-full px-4" />
               )}
-            </DialogTitle>
+            </div>
           </DialogHeader>
+
           <div className="flex-1 overflow-y-auto p-8">
           {selectedRequest && (
             <Tabs defaultValue="timeline" className="space-y-4">
