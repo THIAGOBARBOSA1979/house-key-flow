@@ -26,25 +26,36 @@ const ClientNavLink = ({
   badgeCount?: number;
   [key: string]: any;
 }) => {
-  return <NavLink to={to} className={({
-    isActive
-  }) => cn("flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-300 group", isActive ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20 scale-[1.02]" : "hover:bg-primary/10 text-foreground/70 hover:text-primary hover:translate-x-1")} {...props}>
-      <div className="flex items-center gap-3">
-        <Icon size={18} className={cn("transition-transform group-hover:scale-110")} />
-        <span className="text-sm">{children}</span>
-      </div>
-      <div className="flex items-center gap-2">
-        {isActive ? (
-          <ChevronRight size={14} className="opacity-50" />
-        ) : (
-          typeof badgeCount === 'number' && badgeCount > 0 && (
-            <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px] font-black h-5 min-w-[20px] flex justify-center items-center">
-              {badgeCount}
-            </Badge>
-          )
-        )}
-      </div>
-    </NavLink>;
+  return (
+    <NavLink 
+      to={to} 
+      className={({ isActive }) => 
+        cn("flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-300 group", 
+        isActive ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20 scale-[1.02]" : "hover:bg-primary/10 text-foreground/70 hover:text-primary hover:translate-x-1")
+      } 
+      {...props}
+    >
+      {({ isActive }) => (
+        <>
+          <div className="flex items-center gap-3">
+            <Icon size={18} className={cn("transition-transform group-hover:scale-110")} />
+            <span className="text-sm">{children}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {isActive ? (
+              <ChevronRight size={14} className="opacity-50" />
+            ) : (
+              typeof badgeCount === 'number' && badgeCount > 0 && (
+                <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px] font-black h-5 min-w-[20px] flex justify-center items-center">
+                  {badgeCount}
+                </Badge>
+              )
+            )}
+          </div>
+        </>
+      )}
+    </NavLink>
+  );
 };
 
 const NotificationPanel = ({ 
