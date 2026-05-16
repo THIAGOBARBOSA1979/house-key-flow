@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Clock, History, PenTool, Mail, Smartphone, ShieldCheck } from "lucide-react";
+import { CheckCircle, Clock, History, PenTool, Mail, Smartphone, ShieldCheck, MapPin, Fingerprint, Scan, AlertCircle } from "lucide-react";
 import { documentService, DocumentSignature } from "@/services/DocumentService";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -44,6 +44,10 @@ export function DigitalSignatureDialog({
   const { toast } = useToast();
   const [signatures, setSignatures] = useState<DocumentSignature[]>([]);
   const [activeTab, setActiveTab] = useState("signers");
+  const [isSigning, setIsSigning] = useState(false);
+  const [facialStep, setFacialStep] = useState(false);
+  const [smsStep, setSmsStep] = useState(false);
+  const [smsCode, setSmsCode] = useState("");
 
   useEffect(() => {
     if (isOpen && documentId) {

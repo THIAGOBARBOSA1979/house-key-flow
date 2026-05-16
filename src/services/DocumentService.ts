@@ -41,6 +41,9 @@ export interface Document {
   viewCount: number;
   viewers?: string[];
   signatures?: DocumentSignature[];
+  isSigned?: boolean;
+  signedUrl?: string;
+  validUntil?: Date;
 }
 
 export interface DocumentSignature {
@@ -51,14 +54,19 @@ export interface DocumentSignature {
   status: "pending" | "signed" | "rejected";
   signedAt?: Date;
   ipAddress?: string;
-  confirmationMethod: "email" | "sms";
-  order?: number; // Para assinaturas sequenciais
-  documentHash?: string; // Para integridade do documento
+  confirmationMethod: "email" | "sms" | "govbr" | "facial";
+  order?: number; 
+  documentHash?: string;
   evidence?: {
     browser?: string;
     os?: string;
     location?: string;
+    lat?: number;
+    lng?: number;
+    facialMatchScore?: number;
+    tokenSms?: string;
   };
+  rejectionReason?: string;
 }
 
 export interface ApprovalHistoryEntry {
