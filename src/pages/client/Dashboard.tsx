@@ -31,6 +31,7 @@ import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
 import { StatsCard } from "@/components/shared/StatsCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { useAuth } from "@/contexts/AuthContext";
 import { documentService } from "@/services/DocumentService";
@@ -114,8 +115,24 @@ const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="space-y-6 animate-pulse">
+        <div className="flex justify-between items-center">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Skeleton className="h-64 md:col-span-2 rounded-3xl" />
+          <Skeleton className="h-64 rounded-3xl" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+        </div>
       </div>
     );
   }
