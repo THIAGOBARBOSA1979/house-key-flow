@@ -82,8 +82,6 @@ const Financial = () => {
       return;
     }
     
-    // Logic for discount calculation
-    // Over 50k: 10%, Over 10k: 7%, Else: 5%
     const discountRate = simulationAmount >= 50000 ? 0.10 : simulationAmount >= 10000 ? 0.07 : 0.05;
     const discount = simulationAmount * discountRate;
     const finalValue = simulationAmount - discount;
@@ -152,82 +150,155 @@ const Financial = () => {
         </div>
       </div>
 
-      {/* Summary Cards with StatsCard Component */}
-      <ResponsiveGrid columns={3} gap="layout">
-        <StatsCard 
-          label="Saldo Devedor" 
-          value={formatCurrency(summary.balanceDue)} 
-          icon={DollarSign} 
-          description={`${Math.round(summary.progress)}% quitado`}
-          variant="brand"
-        />
-        
-        <Card className="shadow-md relative overflow-hidden border-none bg-muted/30">
-          <div className="absolute top-0 right-0 p-4 opacity-5">
-            <TrendingUp className="h-16 w-16" />
-          </div>
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-black uppercase tracking-widest">Resumo de Quitação</CardDescription>
-            <CardTitle className="text-2xl font-black text-primary">
-              {Math.round(summary.progress)}%
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="h-2 bg-white rounded-full overflow-hidden border">
-              <div 
-                className="h-full bg-primary transition-all duration-1000" 
-                style={{ width: `${summary.progress}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-[10px] font-black uppercase text-muted-foreground tracking-tighter">
-              <span>Pago: {formatCurrency(summary.paidValue)}</span>
-              <span>Total: {formatCurrency(summary.totalValue)}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-md border-none bg-primary text-primary-foreground">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/70">Próximo Vencimento</CardDescription>
-            <CardTitle className="text-2xl font-bold">
-              {summary.nextPayment ? formatCurrency(summary.nextPayment.value) : 'Nenhum'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {summary.nextPayment ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4" />
-                  <span className="font-medium">{summary.nextPayment.dueDate.toLocaleDateString('pt-BR')}</span>
+      {/* Summary Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
+          <StatsCard 
+            label="Saldo Devedor" 
+            value={formatCurrency(summary.balanceDue)} 
+            icon={DollarSign} 
+            description={`${Math.round(summary.progress)}% quitado`}
+            variant="brand"
+          />
+          
+          <Card className="shadow-md relative overflow-hidden border-none bg-white">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Distribuição do Contrato</CardDescription>
+              <CardTitle className="text-xl font-bold">Resumo Visual</CardTitle>
+            </CardHeader>
+            <CardContent className="h-40">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={40}
+                    outerRadius={60}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="flex justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-2">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-sky-500" />
+                  <span>Pago</span>
                 </div>
-                <Button 
-                  className="w-full rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] bg-white text-primary hover:bg-white/90" 
-                  onClick={() => {
-                    toast({
-                      title: "Gerando boleto...",
-                      description: "O boleto será baixado automaticamente.",
-                    });
-                  }}
-                >
-                  <CreditCard className="h-4 w-4" />
-                  Baixar Boleto
-                </Button>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-slate-200" />
+                  <span>Pendente</span>
+                </div>
               </div>
-            ) : (
-              <div className="flex items-center gap-2 text-white">
-                <CheckCircle2 className="h-4 w-4" />
-                <span className="text-sm font-medium">Contrato Quitado</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </ResponsiveGrid>
+            </CardContent>
+          </Card>
+
+          <Card className="md:col-span-2 shadow-md border-none bg-white overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Histórico de Pagamentos</CardDescription>
+              <CardTitle className="text-xl font-bold">Últimos 6 meses</CardTitle>
+            </CardHeader>
+            <CardContent className="h-48 pt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={historyData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis 
+                    dataKey="month" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
+                  />
+                  <YAxis hide />
+                  <Tooltip 
+                    cursor={{ fill: '#f8fafc' }}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-layout-gap">
+          <Card className="shadow-md border-none bg-primary text-primary-foreground relative overflow-hidden group">
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/70">Próximo Vencimento</CardDescription>
+              <CardTitle className="text-2xl font-bold">
+                {summary.nextPayment ? formatCurrency(summary.nextPayment.value) : 'Nenhum'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {summary.nextPayment ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm bg-white/10 p-3 rounded-xl border border-white/20">
+                    <Calendar className="h-4 w-4" />
+                    <span className="font-bold">{summary.nextPayment.dueDate.toLocaleDateString('pt-BR')}</span>
+                  </div>
+                  <Button 
+                    className="w-full rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] h-12 bg-white text-primary hover:bg-white/90 shadow-lg shadow-primary/20" 
+                    onClick={() => {
+                      toast({
+                        title: "Gerando boleto...",
+                        description: "O boleto será baixado automaticamente.",
+                      });
+                    }}
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    Pagar Agora (Boleto/PIX)
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-6 text-center space-y-2">
+                  <div className="p-3 bg-white/20 rounded-full">
+                    <CheckCircle2 className="h-6 w-6" />
+                  </div>
+                  <span className="text-sm font-bold">Contrato em dia!</span>
+                  <p className="text-[10px] text-white/70 uppercase tracking-widest font-black">Nenhuma pendência encontrada</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border-dashed shadow-none bg-muted/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-bold flex items-center gap-2">
+                <FileText className="h-4 w-4 text-primary" />
+                Documentos Rápidos
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-2">
+              <Button variant="outline" size="sm" className="justify-between text-xs font-bold rounded-xl h-10 border-muted-foreground/20">
+                Extrato Consolidado <Download className="h-3 w-3" />
+              </Button>
+              <Button variant="outline" size="sm" className="justify-between text-xs font-bold rounded-xl h-10 border-muted-foreground/20">
+                Informe de Rendimentos <ExternalLink className="h-3 w-3" />
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       {/* Installments Table */}
       <Card>
-        <CardHeader>
-          <CardTitle>Histórico de Parcelas</CardTitle>
-          <CardDescription>Lista detalhada de todas as parcelas do seu contrato</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Histórico de Parcelas</CardTitle>
+            <CardDescription>Lista detalhada de todas as parcelas do seu contrato</CardDescription>
+          </div>
+          <div className="flex items-center gap-2">
+             <Badge variant="secondary" className="font-bold">{installments.length} parcelas</Badge>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto scrollbar-hide">
