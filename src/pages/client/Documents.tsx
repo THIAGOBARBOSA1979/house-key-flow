@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   FileText, Download, Search, Calendar, Eye, Filter, Clock, CheckCircle, 
-  Star, AlertTriangle, Archive, BarChart, PenTool
+  Star, AlertTriangle, Archive, BarChart, PenTool, ShieldCheck
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -339,7 +340,7 @@ export default function ClientDocuments() {
                         <FileText className="h-6 w-6" />
                       </div>
                       <StatusBadge 
-                        status={doc.isSigned ? "complete" : (doc.status === "disponivel" ? "default" : (doc.status === "processando" ? "progress" : "critical"))} 
+                        status={doc.isSigned ? "complete" : (doc.status === "disponivel" ? "complete" : (doc.status === "processando" ? "progress" : "critical"))} 
                         label={doc.isSigned ? "Assinado" : getStatusLabel(doc.status)}
                         size="sm"
                       />
