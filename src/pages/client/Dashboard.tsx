@@ -438,34 +438,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-            ))}
-          </CardContent>
-        </Card>
 
-        <Card className="bg-gradient-to-br from-primary to-primary-dark text-white border-none shadow-xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-            <Gift className="h-24 w-24" />
-          </div>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Indique e Ganhe
-            </CardTitle>
-            <CardDescription className="text-white/70">Recomende a A2 para um amigo e receba benefícios exclusivos.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm leading-relaxed">Seu amigo compra um imóvel e você ganha 1 ano de condomínio grátis ou um voucher de móveis planejados.</p>
-            <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11" onClick={() => {
-              toast({
-                title: "Link copiado!",
-                description: "Compartilhe seu link exclusivo com seus amigos.",
-              });
-            }}>
-              Gerar Link de Indicação
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
         {/* Recent Documents */}
