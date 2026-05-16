@@ -122,9 +122,12 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar nos logs..."
-                className="pl-10 h-11 bg-background"
+                placeholder="Buscar por descrição ou nome do responsável..."
+                className="pl-10 h-11 bg-background rounded-xl"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
               />
+
             </div>
             <Select value={filterAction} onValueChange={setFilterAction}>
               <SelectTrigger className="w-full sm:w-[160px] h-11 bg-background font-bold shadow-sem-sm">
