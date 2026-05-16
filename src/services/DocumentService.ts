@@ -122,6 +122,7 @@ class DocumentService {
       category: "contrato",
       folderId: "f1",
       viewCount: 45,
+      isSigned: false,
       template: `CONTRATO DE COMPRA E VENDA - RESIDENCIAL AURORA
 
 VENDEDOR: A2 Incorporadora e Engenharia LTDA
@@ -301,7 +302,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     );
   }
 
-  createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus' | 'viewCount'>): Document {
+  createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus' | 'viewCount' | 'isSigned'>): Document {
     const newDocument: Document = {
       ...data,
       id: uuidv4(),
@@ -310,7 +311,8 @@ OBSERVAÇÕES: {{observacoes}}`,
       downloads: 0,
       version: 1,
       approvalStatus: 'pending',
-      viewCount: 0
+      viewCount: 0,
+      isSigned: false
     };
     
     this.documents.push(newDocument);
@@ -741,7 +743,12 @@ OBSERVAÇÕES: {{observacoes}}`,
     // Se todas as assinaturas foram concluídas, marcar documento como aprovado
     const allSigned = doc.signatures.every(s => s.status === 'signed');
     if (allSigned) {
-      this.updateDocument(documentId, { approvalStatus: 'approved', status: 'published' });
+      this.updateDocument(documentId, { 
+        approvalStatus: 'approved', 
+        status: 'published',
+        isSigned: true,
+        signedUrl: `/signed/${doc.id}.pdf`
+      });
     }
 
     auditLogService.log({
