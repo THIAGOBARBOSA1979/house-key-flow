@@ -54,24 +54,25 @@ export const QuickActions = () => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-h2">Ações Rápidas</h2>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {actions.map((action, index) => (
           <Button
             key={index}
             variant="outline"
-            className="h-auto py-5 flex flex-col gap-3 border-none bg-card/50 backdrop-blur-sm shadow-sem-sm hover:shadow-sem-md hover:bg-primary/5 transition-all group active:scale-95"
+            className="h-auto py-6 flex flex-col gap-4 border-none bg-card/40 backdrop-blur-md shadow-sem-md hover:shadow-sem-xl hover:bg-primary/5 transition-all group active:scale-[0.97] rounded-3xl"
             onClick={action.onClick}
           >
-            <div className={`p-3 rounded-xl ${action.bgColor} ${action.color} group-hover:scale-110 transition-transform`}>
-              <action.icon size={24} />
+            <div className={`p-4 rounded-2xl ${action.bgColor} ${action.color} group-hover:scale-110 transition-all duration-300 shadow-sem-sm group-hover:shadow-sem-md`}>
+              <action.icon size={28} strokeWidth={2.5} />
             </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">{action.label}</span>
-              <span className="text-[10px] text-muted-foreground font-medium">{action.description}</span>
+            <div className="flex flex-col gap-1 text-center">
+              <span className="text-[11px] font-black text-foreground uppercase tracking-widest leading-none">{action.label}</span>
+              <span className="text-[10px] text-muted-foreground font-bold leading-tight px-2 opacity-60">{action.description}</span>
             </div>
           </Button>
         ))}
       </div>
+
     </section>
   );
 };

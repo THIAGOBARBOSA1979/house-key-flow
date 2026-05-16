@@ -108,15 +108,20 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Button>
             </div>
-            <div className="space-y-4-sem animate-in fade-in slide-in-from-left-4 duration-slow">
-              {inspections.map((inspection) => (
-                <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/50 backdrop-blur-sm card-hover-effect">
+            <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-slow">
+              {inspections.length > 0 ? inspections.map((inspection) => (
+                <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md card-hover-effect rounded-2xl shadow-sem-sm hover:shadow-sem-md transition-all">
                   <CardContent className="p-0">
                     <InspectionItem inspection={inspection as any} />
                   </CardContent>
                 </Card>
-              ))}
+              )) : (
+                <div className="py-12 text-center bg-muted/10 rounded-2xl border border-dashed">
+                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Nenhuma vistoria para hoje</p>
+                </div>
+              )}
             </div>
+
           </section>
         </div>
 
@@ -124,37 +129,46 @@ const Dashboard = () => {
           {/* Summary Chart */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-h2 flex items-center gap-2">
+              <h2 className="text-h2 flex items-center gap-2 text-foreground/90">
                 <Activity size={24} className="text-primary" />
                 Resumo Geral
               </h2>
             </div>
-            <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden p-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sem-body-sm font-medium text-muted-foreground">Obras no prazo</span>
-                  <span className="text-sem-body-sm font-bold">100%</span>
+            <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden p-6 rounded-3xl shadow-sem-md">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Obras no prazo</span>
+                    <span className="text-sem-body-sm font-black text-emerald-600">100%</span>
+                  </div>
+                  <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5 shadow-inner">
+                    <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 w-full rounded-full transition-all duration-1000" />
+                  </div>
                 </div>
-                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-status-complete w-full" />
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Vistorias aprovadas</span>
+                    <span className="text-sem-body-sm font-black text-primary">92%</span>
+                  </div>
+                  <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5 shadow-inner">
+                    <div className="h-full bg-gradient-to-r from-blue-400 to-primary w-[92%] rounded-full transition-all duration-1000" />
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sem-body-sm font-medium text-muted-foreground">Vistorias aprovadas</span>
-                  <span className="text-sem-body-sm font-bold">92%</span>
-                </div>
-                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-status-progress w-[92%]" />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sem-body-sm font-medium text-muted-foreground">SLA de Garantias</span>
-                  <span className="text-sem-body-sm font-bold">88%</span>
-                </div>
-                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-status-pending w-[88%]" />
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">SLA de Garantias</span>
+                    <span className="text-sem-body-sm font-black text-amber-600">88%</span>
+                  </div>
+                  <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5 shadow-inner">
+                    <div className="h-full bg-gradient-to-r from-amber-400 to-amber-600 w-[88%] rounded-full transition-all duration-1000" />
+                  </div>
                 </div>
               </div>
             </Card>
           </section>
+
 
           {/* Warranty Claims */}
           <section>
