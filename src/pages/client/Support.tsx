@@ -128,12 +128,13 @@ const Support = () => {
         </CardContent>
       </Card>
 
+
       {/* Contact Methods Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
+      <ResponsiveGrid columns={3} gap="layout">
         {contactMethods.map((method, idx) => {
           const Icon = method.icon;
           return (
-            <Card key={idx} className="hover:shadow-lg transition-all duration-300 group border-none bg-white">
+            <Card key={idx} className="hover:shadow-xl transition-all duration-300 group border-none bg-white rounded-3xl">
               <CardContent className="p-8 text-center space-y-4">
                 <div className={`mx-auto w-16 h-16 ${method.bg} ${method.color} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm`}>
                   <Icon size={28} />
@@ -143,7 +144,7 @@ const Support = () => {
                   <p className="text-sm font-black text-primary mt-1">{method.detail}</p>
                   <p className="text-xs text-muted-foreground mt-2 font-medium">{method.description}</p>
                 </div>
-                <Button variant="outline" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest h-11">
+                <Button variant="outline" className="w-full rounded-2xl text-[10px] font-black uppercase tracking-widest h-12 border-muted-foreground/20 group-hover:border-primary group-hover:text-primary transition-all">
                   {method.action}
                   <ChevronRight size={14} className="ml-1" />
                 </Button>
@@ -151,7 +152,7 @@ const Support = () => {
             </Card>
           );
         })}
-      </div>
+      </ResponsiveGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
         {/* Support Ticket Form */}

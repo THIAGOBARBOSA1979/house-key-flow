@@ -172,8 +172,9 @@ const Dashboard = () => {
         </div>
       </div>
 
+
       {/* Property Info Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
+      <ResponsiveGrid columns={3} gap="layout">
         <Card className="md:col-span-2 bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-xl overflow-hidden relative rounded-3xl group">
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700 group-hover:scale-110">
             <Home className="h-32 w-32" />
@@ -244,7 +245,7 @@ const Dashboard = () => {
         </Card>
 
         {/* Quick Summary Card */}
-        <Card className="bg-primary text-primary-foreground shadow-lg flex flex-col justify-between border-none overflow-hidden relative group">
+        <Card className="bg-primary text-primary-foreground shadow-lg flex flex-col justify-between border-none overflow-hidden relative group rounded-3xl">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <CardHeader>
             <CardTitle className="text-lg font-bold">Resumo Geral</CardTitle>
@@ -280,16 +281,16 @@ const Dashboard = () => {
               <span className="font-black">{Math.round(financialSummary.progress)}%</span>
             </div>
           </CardContent>
-          <CardFooter className="pt-0">
+          <CardFooter className="pt-0 pb-6">
             <Link to="/client/notifications" className="w-full">
-              <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11 shadow-md">
+              <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11 shadow-md rounded-xl">
                 <Bell className="mr-2 h-4 w-4" />
                 Notificações ({unreadCount})
               </Button>
             </Link>
           </CardFooter>
         </Card>
-      </div>
+      </ResponsiveGrid>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
         <div className="lg:col-span-2 space-y-8">

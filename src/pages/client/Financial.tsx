@@ -150,58 +150,66 @@ const Financial = () => {
         </div>
       </div>
 
+
       {/* Summary Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
-          <StatsCard 
-            label="Saldo Devedor" 
-            value={formatCurrency(summary.balanceDue)} 
-            icon={DollarSign} 
-            description={`${Math.round(summary.progress)}% quitado`}
-            variant="brand"
-          />
-          
-          <Card className="shadow-md relative overflow-hidden border-none bg-white">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Distribuição do Contrato</CardDescription>
-              <CardTitle className="text-xl font-bold">Resumo Visual</CardTitle>
-            </CardHeader>
-            <CardContent className="h-40">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={60}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    formatter={(value: number) => formatCurrency(value)}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-2">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-sky-500" />
-                  <span>Pago</span>
+        <div className="lg:col-span-2 space-y-layout-gap">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
+            <StatsCard 
+              label="Saldo Devedor" 
+              value={formatCurrency(summary.balanceDue)} 
+              icon={DollarSign} 
+              description={`${Math.round(summary.progress)}% quitado`}
+              variant="brand"
+              className="rounded-3xl shadow-lg border-none"
+            />
+            
+            <Card className="shadow-lg relative overflow-hidden border-none bg-white rounded-3xl">
+              <CardHeader className="pb-2">
+                <CardDescription className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Distribuição do Contrato</CardDescription>
+                <CardTitle className="text-xl font-bold">Resumo Visual</CardTitle>
+              </CardHeader>
+              <CardContent className="h-40 relative">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={60}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number) => formatCurrency(value)}
+                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-6">
+                  <span className="text-[10px] font-black text-muted-foreground uppercase">Pago</span>
+                  <span className="text-sm font-black text-primary">{Math.round(summary.progress)}%</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full bg-slate-200" />
-                  <span>Pendente</span>
+                <div className="flex justify-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-sky-500" />
+                    <span>Pago</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-slate-200" />
+                    <span>Pendente</span>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
-          <Card className="md:col-span-2 shadow-md border-none bg-white overflow-hidden">
+          <Card className="shadow-lg border-none bg-white overflow-hidden rounded-3xl">
             <CardHeader className="pb-2">
               <CardDescription className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Histórico de Pagamentos</CardDescription>
               <CardTitle className="text-xl font-bold">Últimos 6 meses</CardTitle>
@@ -219,10 +227,10 @@ const Financial = () => {
                   <YAxis hide />
                   <Tooltip 
                     cursor={{ fill: '#f8fafc' }}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                     formatter={(value: number) => formatCurrency(value)}
                   />
-                  <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="value" fill="#0ea5e9" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -230,7 +238,7 @@ const Financial = () => {
         </div>
 
         <div className="space-y-layout-gap">
-          <Card className="shadow-md border-none bg-primary text-primary-foreground relative overflow-hidden group">
+          <Card className="shadow-xl border-none bg-primary text-primary-foreground relative overflow-hidden group rounded-3xl">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
             <CardHeader className="pb-2">
               <CardDescription className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/70">Próximo Vencimento</CardDescription>
@@ -246,7 +254,7 @@ const Financial = () => {
                     <span className="font-bold">{summary.nextPayment.dueDate.toLocaleDateString('pt-BR')}</span>
                   </div>
                   <Button 
-                    className="w-full rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] h-12 bg-white text-primary hover:bg-white/90 shadow-lg shadow-primary/20" 
+                    className="w-full rounded-2xl gap-2 font-black uppercase tracking-widest text-[10px] h-14 bg-white text-primary hover:bg-white/90 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]" 
                     onClick={() => {
                       toast({
                         title: "Gerando boleto...",
@@ -270,7 +278,7 @@ const Financial = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-dashed shadow-none bg-muted/20">
+          <Card className="border-dashed shadow-none bg-muted/20 rounded-3xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <FileText className="h-4 w-4 text-primary" />
@@ -278,10 +286,10 @@ const Financial = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-2">
-              <Button variant="outline" size="sm" className="justify-between text-xs font-bold rounded-xl h-10 border-muted-foreground/20">
+              <Button variant="outline" size="sm" className="justify-between text-xs font-bold rounded-2xl h-12 border-muted-foreground/20 hover:border-primary hover:text-primary transition-all">
                 Extrato Consolidado <Download className="h-3 w-3" />
               </Button>
-              <Button variant="outline" size="sm" className="justify-between text-xs font-bold rounded-xl h-10 border-muted-foreground/20">
+              <Button variant="outline" size="sm" className="justify-between text-xs font-bold rounded-2xl h-12 border-muted-foreground/20 hover:border-primary hover:text-primary transition-all">
                 Informe de Rendimentos <ExternalLink className="h-3 w-3" />
               </Button>
             </CardContent>
@@ -290,14 +298,14 @@ const Financial = () => {
       </div>
 
       {/* Installments Table */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="shadow-lg border-none rounded-3xl overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
           <div>
             <CardTitle>Histórico de Parcelas</CardTitle>
             <CardDescription>Lista detalhada de todas as parcelas do seu contrato</CardDescription>
           </div>
           <div className="flex items-center gap-2">
-             <Badge variant="secondary" className="font-bold">{installments.length} parcelas</Badge>
+             <Badge variant="secondary" className="font-bold px-3 py-1 rounded-full">{installments.length} parcelas</Badge>
           </div>
         </CardHeader>
         <CardContent className="p-0">
@@ -305,16 +313,16 @@ const Financial = () => {
             <table className="w-full">
               <thead>
                 <tr className="border-b bg-muted/30 text-[10px] font-black uppercase text-muted-foreground tracking-widest text-left">
-                  <th className="py-4 px-6 first:rounded-tl-xl">Parcela</th>
+                  <th className="py-4 px-6">Parcela</th>
                   <th className="py-4 px-6">Tipo</th>
                   <th className="py-4 px-6">Vencimento</th>
                   <th className="py-4 px-6">Valor</th>
                   <th className="py-4 px-6">Status</th>
-                  <th className="py-4 px-6 text-right last:rounded-tr-xl">Ação</th>
+                  <th className="py-4 px-6 text-right">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {installments.map((item) => {
+                {installments.length > 0 ? installments.map((item) => {
                   const statusInfo = getStatusInfo(item.status);
                   return (
                     <tr key={item.id} className="group hover:bg-muted/30 transition-colors">
@@ -322,7 +330,7 @@ const Financial = () => {
                         <span className="text-sm font-bold">#{String(item.number).padStart(3, '0')}</span>
                       </td>
                       <td className="py-4 px-6">
-                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-tighter">
+                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-tighter rounded-lg">
                           {getTypeLabel(item.type)}
                         </Badge>
                       </td>
@@ -341,18 +349,24 @@ const Financial = () => {
                       </td>
                       <td className="py-4 px-6 text-right">
                         {item.status !== 'paid' ? (
-                          <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs font-bold text-primary hover:text-primary hover:bg-primary/5">
+                          <Button variant="ghost" size="sm" className="h-9 gap-1 text-[10px] font-black uppercase text-primary hover:text-primary hover:bg-primary/5 rounded-xl">
                             Boleto <Download className="h-3 w-3" />
                           </Button>
                         ) : (
-                          <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs font-medium text-muted-foreground">
+                          <Button variant="ghost" size="sm" className="h-9 gap-1 text-[10px] font-black uppercase text-muted-foreground rounded-xl">
                             Recibo <ExternalLink className="h-3 w-3" />
                           </Button>
                         )}
                       </td>
                     </tr>
                   );
-                })}
+                }) : (
+                  <tr>
+                    <td colSpan={6} className="py-12 text-center text-muted-foreground">
+                      Nenhuma parcela encontrada.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
