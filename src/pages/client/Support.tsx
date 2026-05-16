@@ -215,8 +215,12 @@ const Support = () => {
                   <p className="text-[10px] text-muted-foreground font-medium uppercase">{ticket.createdAt.toLocaleDateString('pt-BR')}</p>
                 </div>
               )) : (
-                <div className="p-8 text-center text-muted-foreground italic text-sm">
-                  Nenhum chamado aberto recentemente.
+                <div className="p-12 text-center bg-muted/20 rounded-xl m-4 border-2 border-dashed border-muted-foreground/10 animate-in fade-in duration-700">
+                  <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MessageSquare className="h-8 w-8 text-primary/20" />
+                  </div>
+                  <h3 className="font-bold text-foreground/80">Nenhum chamado aberto</h3>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-[200px] mx-auto font-medium">Você ainda não abriu nenhuma solicitação de suporte.</p>
                 </div>
               )}
             </div>

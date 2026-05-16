@@ -14,7 +14,8 @@ import {
   AlertCircle,
   Download,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  CheckCircle2
 } from "lucide-react";
 import { financialService, Installment } from "@/services/FinancialService";
 import { useAuth } from "@/contexts/AuthContext";
@@ -132,9 +133,33 @@ const Financial = () => {
           variant="brand"
         />
         
-        <Card className="shadow-md">
+        <Card className="shadow-md relative overflow-hidden border-none bg-muted/30">
+          <div className="absolute top-0 right-0 p-4 opacity-5">
+            <TrendingUp className="h-16 w-16" />
+          </div>
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-black uppercase tracking-widest">Próximo Vencimento</CardDescription>
+            <CardDescription className="text-[10px] font-black uppercase tracking-widest">Resumo de Quitação</CardDescription>
+            <CardTitle className="text-2xl font-black text-primary">
+              {Math.round(summary.progress)}%
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="h-2 bg-white rounded-full overflow-hidden border">
+              <div 
+                className="h-full bg-primary transition-all duration-1000" 
+                style={{ width: `${summary.progress}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] font-black uppercase text-muted-foreground tracking-tighter">
+              <span>Pago: {formatCurrency(summary.paidValue)}</span>
+              <span>Total: {formatCurrency(summary.totalValue)}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-md border-none bg-primary text-primary-foreground">
+          <CardHeader className="pb-2">
+            <CardDescription className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/70">Próximo Vencimento</CardDescription>
             <CardTitle className="text-2xl font-bold">
               {summary.nextPayment ? formatCurrency(summary.nextPayment.value) : 'Nenhum'}
             </CardTitle>
@@ -143,39 +168,30 @@ const Financial = () => {
             {summary.nextPayment ? (
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4 text-primary" />
+                  <Calendar className="h-4 w-4" />
                   <span className="font-medium">{summary.nextPayment.dueDate.toLocaleDateString('pt-BR')}</span>
                 </div>
                 <Button 
-                  className="w-full rounded-xl gap-2 font-bold" 
-                  variant="secondary"
+                  className="w-full rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] bg-white text-primary hover:bg-white/90" 
                   onClick={() => {
                     toast({
-                      title: "Pagamento em processamento...",
-                      description: "Estamos processando seu pagamento. Você receberá uma confirmação em breve.",
+                      title: "Gerando boleto...",
+                      description: "O boleto será baixado automaticamente.",
                     });
                   }}
                 >
                   <CreditCard className="h-4 w-4" />
-                  Pagar Agora
+                  Baixar Boleto
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 text-status-complete">
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">Todas as parcelas em dia</span>
+              <div className="flex items-center gap-2 text-white">
+                <CheckCircle2 className="h-4 w-4" />
+                <span className="text-sm font-medium">Contrato Quitado</span>
               </div>
             )}
           </CardContent>
         </Card>
-
-        <StatsCard 
-          label="Total Pago" 
-          value={formatCurrency(summary.paidValue)} 
-          icon={TrendingUp} 
-          description={`${installments.filter(i => i.status === 'paid').length} de ${installments.length} parcelas`}
-          variant="complete"
-        />
       </ResponsiveGrid>
 
       {/* Installments Table */}
@@ -184,17 +200,17 @@ const Financial = () => {
           <CardTitle>Histórico de Parcelas</CardTitle>
           <CardDescription>Lista detalhada de todas as parcelas do seu contrato</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto scrollbar-hide">
             <table className="w-full">
               <thead>
-                <tr className="border-b text-[10px] font-black uppercase text-muted-foreground tracking-widest text-left">
-                  <th className="pb-4 px-2">Parcela</th>
-                  <th className="pb-4 px-2">Tipo</th>
-                  <th className="pb-4 px-2">Vencimento</th>
-                  <th className="pb-4 px-2">Valor</th>
-                  <th className="pb-4 px-2">Status</th>
-                  <th className="pb-4 px-2 text-right">Ação</th>
+                <tr className="border-b bg-muted/30 text-[10px] font-black uppercase text-muted-foreground tracking-widest text-left">
+                  <th className="py-4 px-6 first:rounded-tl-xl">Parcela</th>
+                  <th className="py-4 px-6">Tipo</th>
+                  <th className="py-4 px-6">Vencimento</th>
+                  <th className="py-4 px-6">Valor</th>
+                  <th className="py-4 px-6">Status</th>
+                  <th className="py-4 px-6 text-right last:rounded-tr-xl">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -202,28 +218,28 @@ const Financial = () => {
                   const statusInfo = getStatusInfo(item.status);
                   return (
                     <tr key={item.id} className="group hover:bg-muted/30 transition-colors">
-                      <td className="py-4 px-2">
+                      <td className="py-4 px-6">
                         <span className="text-sm font-bold">#{String(item.number).padStart(3, '0')}</span>
                       </td>
-                      <td className="py-4 px-2">
+                      <td className="py-4 px-6">
                         <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-tighter">
                           {getTypeLabel(item.type)}
                         </Badge>
                       </td>
-                      <td className="py-4 px-2 text-sm">
+                      <td className="py-4 px-6 text-sm">
                         {item.dueDate.toLocaleDateString('pt-BR')}
                       </td>
-                      <td className="py-4 px-2 font-bold text-sm">
+                      <td className="py-4 px-6 font-bold text-sm">
                         {formatCurrency(item.value)}
                       </td>
-                      <td className="py-4 px-2">
+                      <td className="py-4 px-6">
                         <StatusBadge 
                           status={statusInfo.status} 
                           label={statusInfo.label} 
                           size="sm" 
                         />
                       </td>
-                      <td className="py-4 px-2 text-right">
+                      <td className="py-4 px-6 text-right">
                         {item.status !== 'paid' ? (
                           <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs font-bold text-primary hover:text-primary hover:bg-primary/5">
                             Boleto <Download className="h-3 w-3" />

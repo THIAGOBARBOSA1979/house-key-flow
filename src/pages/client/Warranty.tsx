@@ -311,7 +311,7 @@ const ClientWarranty = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-700">
+    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-700">
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -441,7 +441,7 @@ const ClientWarranty = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
           {/* Left column */}
-          <div className="space-y-4">
+          <div className="space-y-layout-gap">
             <Card className="shadow-sm border-primary/10">
               <CardHeader className="pb-3">
                 <CardTitle className="text-xl font-bold flex items-center gap-2">

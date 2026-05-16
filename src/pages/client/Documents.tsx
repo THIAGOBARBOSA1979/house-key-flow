@@ -202,7 +202,7 @@ export default function ClientDocuments() {
   };
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-700">
       {selectedDoc && (
         <DigitalSignatureDialog
           isOpen={isSignatureOpen}
@@ -231,7 +231,7 @@ export default function ClientDocuments() {
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="space-y-6">
+      <Tabs defaultValue="all" className="space-y-layout-gap">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="all">
             <FileText className="h-4 w-4 mr-2" />
@@ -255,7 +255,7 @@ export default function ClientDocuments() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="space-y-6">
+        <TabsContent value="all" className="space-y-layout-gap pt-2">
           <ResponsiveGrid columns={4} gap="layout">
             <StatsCard 
               label="Total de Arquivos" 
