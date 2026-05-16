@@ -439,8 +439,6 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
         {/* Recent Documents */}
         <Card>
           <CardHeader>
