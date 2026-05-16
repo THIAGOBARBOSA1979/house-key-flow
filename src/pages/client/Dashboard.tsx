@@ -33,6 +33,7 @@ import { NextSteps } from "@/components/ClientFlow/NextSteps";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useToast } from "@/hooks/use-toast";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,7 @@ import { useMemo } from "react";
 const Dashboard = () => {
   // Get client stage data
   const { user } = useAuth();
+  const { toast } = useToast();
   const clientId = user?.id || "client-1"; // Get from auth context
   const { 
     profile, 
