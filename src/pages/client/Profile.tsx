@@ -33,7 +33,7 @@ const ClientProfile = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-700">
+    <div className="max-w-4xl mx-auto space-y-layout-gap animate-in fade-in duration-700 pb-20 md:pb-6">
       <div>
         <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
           <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
@@ -48,7 +48,7 @@ const ClientProfile = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column: Avatar and Summary */}
-        <div className="md:col-span-1 space-y-6">
+        <div className="md:col-span-1 space-y-layout-gap">
           <Card className="text-center overflow-hidden border-primary/10 shadow-xl rounded-3xl group">
             <div className="h-32 bg-gradient-to-br from-primary/30 via-primary/10 to-transparent w-full group-hover:scale-110 transition-transform duration-700" />
             <CardContent className="pt-0 -mt-16 relative z-10">
@@ -78,7 +78,7 @@ const ClientProfile = () => {
             </CardContent>
           </Card>
 
-          <div className="space-y-4">
+          <div className="space-y-layout-gap">
             <StatsCard 
               label="Desde" 
               value="Jan 2024" 
@@ -95,7 +95,7 @@ const ClientProfile = () => {
         </div>
 
         {/* Right Column: Form and Settings */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-layout-gap">
           <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden">
             <CardHeader className="bg-muted/30 pb-6">
               <CardTitle className="flex items-center gap-3 text-xl font-black tracking-tight">
