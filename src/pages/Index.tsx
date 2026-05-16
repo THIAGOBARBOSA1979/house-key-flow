@@ -188,6 +188,51 @@ const Dashboard = () => {
           </section>
 
 
+          {/* Financial Overview */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-h2 flex items-center gap-2">
+                <DollarSign size={24} className="text-emerald-500" />
+                Saúde Financeira
+              </h2>
+              <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/financial")}>
+                Detalhes
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+            <Card className="card-standard border-none bg-emerald-500/5 backdrop-blur-md overflow-hidden p-6 rounded-3xl border border-emerald-500/10">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700/60">Faturamento Mensal</span>
+                <Badge className="bg-emerald-500 text-white border-none font-bold">+12%</Badge>
+              </div>
+              <div className="text-3xl font-black tracking-tighter text-emerald-700 mb-1">
+                {formatCurrency(650000)}
+              </div>
+              <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-widest">Meta: {formatCurrency(600000)}</p>
+              
+              <div className="mt-6 pt-6 border-t border-emerald-500/10 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                    <Star className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase text-emerald-700/50 leading-none">Satisfação</p>
+                    <p className="text-sm font-black text-emerald-700">4.8 / 5.0</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Users className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase text-primary/50 leading-none">Novos Leads</p>
+                    <p className="text-sm font-black text-primary">+24</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </section>
+
           {/* Warranty Claims */}
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -204,28 +249,12 @@ const Dashboard = () => {
                     className="card-standard p-5 interactive-active border-none bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-status-critical/30 rounded-2xl shadow-sem-sm transition-all" 
                     onClick={() => navigate("/admin/warranty")}
                   >
-                    <div className="flex justify-between items-start mb-3">
-                      <StatusBadge 
-                        status={claim.priority === 'high' || claim.priority === 'critical' ? 'critical' : 'warning'} 
-                        label={claim.priority === 'high' ? 'Alta Prioridade' : claim.priority === 'critical' ? 'CRÍTICA' : 'Média'}
-                        size="sm"
-                      />
-                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/30 px-2 py-0.5 rounded-lg">{claim.id}</span>
-                    </div>
-                    <h4 className="text-label group-hover:text-status-critical transition-colors font-black leading-tight">{claim.title}</h4>
-                    <p className="text-[11px] text-muted-foreground mt-2 font-bold uppercase tracking-tighter">{claim.propertyName} • UN. {claim.unitNumber}</p>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 bg-muted/10 rounded-2xl border border-dashed">
-                  <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Sem garantias críticas</p>
-                </div>
-              )}
-            </div>
+...
             <Button variant="outline" className="w-full text-[10px] font-black uppercase tracking-widest rounded-xl h-12 border-dashed border-primary/20 hover:border-primary/50 hover:bg-primary/5 mt-4 transition-all" onClick={() => navigate("/admin/warranty")}>
               Gerenciar Fluxo de Assistência
             </Button>
           </section>
+
 
 
           {/* Recent Activities */}
