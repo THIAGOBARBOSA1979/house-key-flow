@@ -44,6 +44,9 @@ import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
 import { financialService } from "@/services/FinancialService";
+import { constructionService } from "@/services/ConstructionService";
+import { ConstructionFeed } from "@/components/ClientArea/ConstructionFeed";
+import { ReferralCard } from "@/components/ClientArea/ReferralCard";
 import { useMemo } from "react";
 
 const Dashboard = () => {
@@ -87,6 +90,8 @@ const Dashboard = () => {
 
   const warrantyRequests = useMemo(() => warrantyFlowService.getClientRequests(clientId).slice(0, 2), [clientId]);
   const financialSummary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
+  const constructionUpdates = useMemo(() => constructionService.getUpdates(), []);
+  const latestProgress = useMemo(() => constructionService.getLatestProgress(), []);
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -287,14 +292,18 @@ const Dashboard = () => {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-8">
           <ClientTimeline 
             timeline={timeline} 
             title="Sua Jornada"
             description="Acompanhe cada etapa do processo do seu imóvel"
           />
+          
+          <ConstructionFeed updates={constructionUpdates} />
         </div>
-        <div>
+        <div className="space-y-8">
+          <ReferralCard />
+
           <NextSteps 
             steps={useMemo(() => {
               const baseSteps = [];
@@ -351,6 +360,27 @@ const Dashboard = () => {
               return baseSteps;
             }, [stage, upcomingInspections, financialSummary])} 
           />
+
+          <Card className="border-none shadow-md overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Ficha Técnica do Imóvel</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y">
+                {[
+                  { label: "Área Privativa", value: "72,50 m²" },
+                  { label: "Vagas de Garagem", value: "2 Vagas" },
+                  { label: "Pavimento", value: "12º Andar" },
+                  { label: "Posição Solar", value: "Norte/Leste" }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center px-6 py-4">
+                    <span className="text-sm text-muted-foreground font-medium">{item.label}</span>
+                    <span className="text-sm font-black">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
