@@ -153,16 +153,14 @@ export default function ClientDocuments() {
     if (doc.type === "auto" && doc.template) {
       const clientData = {
         nome_cliente: user?.name || "Cliente",
-        endereco: profile?.propertyName ? `${profile.propertyName} - Apt ${profile.unitNumber || ''}` : "Endereço não disponível",
-        valor: "R$ 0,00", // Would come from property service
+        documento_cliente: "123.456.789-00",
+        endereco: profile?.propertyName ? `${profile.propertyName} - Apt ${profile.unitNumber || ''}` : "Edifício Aurora, 123",
+        unidade: profile?.unitNumber || "204",
+        valor: "R$ 450.000,00",
+        forma_pagamento: "Entrada de R$ 50.000 + 120 parcelas de R$ 3.333,33",
+        data_entrega: "15/12/2026",
         data: new Date().toLocaleDateString(),
-        empreendimento: profile?.propertyName || "Empreendimento",
-        data_vistoria: new Date().toLocaleDateString(),
-        responsavel_vistoria: "Equipe Técnica",
-        estado_geral: "Pendente de Vistoria",
-        instalacoes_eletricas: "A verificar",
-        instalacoes_hidraulicas: "A verificar",
-        observacoes: "Documento gerado automaticamente pelo sistema."
+        empreendimento: profile?.propertyName || "Residencial Aurora"
       };
 
       try {

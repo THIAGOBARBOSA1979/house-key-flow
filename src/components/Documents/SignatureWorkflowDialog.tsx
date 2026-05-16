@@ -106,111 +106,125 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
         </DialogHeader>
 
         <div className="p-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-muted/20 p-4 rounded-2xl border border-border/50">
-            <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase tracking-widest">Nome</Label>
-              <Input 
-                placeholder="Nome completo" 
-                value={newSigner.name}
-                onChange={(e) => setNewSigner({...newSigner, name: e.target.value})}
-                className="h-9 text-xs"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase tracking-widest">E-mail</Label>
-              <Input 
-                placeholder="E-mail" 
-                type="email"
-                value={newSigner.email}
-                onChange={(e) => setNewSigner({...newSigner, email: e.target.value})}
-                className="h-9 text-xs"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase tracking-widest">Papel</Label>
-              <Select 
-                value={newSigner.role} 
-                onValueChange={(val) => setNewSigner({...newSigner, role: val})}
-              >
-                <SelectTrigger className="h-9 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Comprador">Comprador</SelectItem>
-                  <SelectItem value="Vendedor">Vendedor</SelectItem>
-                  <SelectItem value="Testemunha">Testemunha</SelectItem>
-                  <SelectItem value="Advogado">Advogado</SelectItem>
-                  <SelectItem value="Engenheiro">Engenheiro</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-end">
-              <Button onClick={handleAddSigner} className="w-full h-9 gap-2 font-bold text-xs uppercase tracking-widest">
-                <UserPlus className="w-4 h-4" /> Add
-              </Button>
+          <div className="space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Novo Signatário</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-muted/20 p-6 rounded-3xl border border-border/50 shadow-inner">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest ml-1">Nome Completo</Label>
+                <Input 
+                  placeholder="Ex: João da Silva" 
+                  value={newSigner.name}
+                  onChange={(e) => setNewSigner({...newSigner, name: e.target.value})}
+                  className="h-10 text-xs rounded-xl"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest ml-1">E-mail</Label>
+                <Input 
+                  placeholder="email@exemplo.com" 
+                  type="email"
+                  value={newSigner.email}
+                  onChange={(e) => setNewSigner({...newSigner, email: e.target.value})}
+                  className="h-10 text-xs rounded-xl"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest ml-1">Papel / Função</Label>
+                <Select 
+                  value={newSigner.role} 
+                  onValueChange={(val) => setNewSigner({...newSigner, role: val})}
+                >
+                  <SelectTrigger className="h-10 text-xs rounded-xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-sem-xl">
+                    <SelectItem value="Comprador">Comprador</SelectItem>
+                    <SelectItem value="Vendedor">Vendedor</SelectItem>
+                    <SelectItem value="Testemunha">Testemunha</SelectItem>
+                    <SelectItem value="Fiador">Fiador</SelectItem>
+                    <SelectItem value="Advogado">Advogado</SelectItem>
+                    <SelectItem value="Engenheiro">Engenheiro</SelectItem>
+                    <SelectItem value="Diretor">Diretor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-end">
+                <Button onClick={handleAddSigner} className="w-full h-10 gap-2 font-black text-xs uppercase tracking-widest rounded-xl shadow-lg hover:translate-y-[-2px] transition-all">
+                  <UserPlus className="w-4 h-4" /> Adicionar
+                </Button>
+              </div>
             </div>
           </div>
 
-          <div className="border rounded-2xl overflow-hidden shadow-sem-sm">
-            <Table>
-              <TableHeader className="bg-muted/30">
-                <TableRow>
-                  <TableHead className="w-[60px] text-center"><ListOrdered className="w-4 h-4 mx-auto" /></TableHead>
-                  <TableHead>Signatário</TableHead>
-                  <TableHead>Método</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {signatures.length > 0 ? (
-                  signatures.map((s, index) => (
-                    <TableRow key={s.id} className="group hover:bg-muted/10">
-                      <TableCell className="text-center">
-                        <Badge variant="outline" className="h-6 w-6 p-0 flex items-center justify-center rounded-full font-black text-[10px]">
-                          {index + 1}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-bold text-sm">{s.name}</div>
-                        <div className="text-[10px] text-muted-foreground uppercase">{s.role} • {s.email}</div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary" className="gap-1 font-bold text-[9px] uppercase">
-                          {s.confirmationMethod === 'email' ? <Mail className="w-3 h-3" /> : <Smartphone className="w-3 h-3" />}
-                          {s.confirmationMethod}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={cn(
-                          "text-[9px] font-black uppercase tracking-tighter",
-                          s.status === 'signed' ? "bg-green-500" : "bg-yellow-500"
-                        )}>
-                          {s.status === 'signed' ? 'Assinado' : 'Pendente'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleRemoveSigner(s.id)}
-                          disabled={s.status === 'signed'}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Fluxo de Assinaturas Ativo</h3>
+              <Badge variant="outline" className="text-[9px] font-black uppercase bg-primary/5 text-primary">Sequencial Ativado</Badge>
+            </div>
+            <div className="border rounded-3xl overflow-hidden shadow-sem-sm border-border/60">
+              <Table>
+                <TableHeader className="bg-muted/40">
+                  <TableRow className="hover:bg-transparent border-b-border/60">
+                    <TableHead className="w-[80px] text-center font-black text-[10px] uppercase tracking-widest">Ordem</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Signatário</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-center">Notificação</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Status</TableHead>
+                    <TableHead className="text-right font-black text-[10px] uppercase tracking-widest pr-6">Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {signatures.length > 0 ? (
+                    signatures.map((s, index) => (
+                      <TableRow key={s.id} className="group hover:bg-muted/10 transition-colors border-b-border/40">
+                        <TableCell className="text-center">
+                          <div className="relative inline-flex items-center justify-center">
+                            <div className="absolute -inset-1 bg-primary/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Badge variant="outline" className="h-8 w-8 p-0 flex items-center justify-center rounded-full font-black text-xs bg-background relative border-2 border-primary/20 group-hover:border-primary transition-all">
+                              {s.order || index + 1}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-black text-sm text-foreground/90">{s.name}</div>
+                          <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">{s.role} • {s.email}</div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Badge variant="secondary" className="gap-1.5 font-black text-[9px] uppercase tracking-widest py-1 px-2.5 rounded-lg bg-muted/60">
+                            {s.confirmationMethod === 'email' ? <Mail className="w-3 h-3 text-primary/70" /> : <Smartphone className="w-3 h-3 text-primary/70" />}
+                            {s.confirmationMethod}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={cn(
+                            "text-[9px] font-black uppercase tracking-widest py-1 px-3 rounded-full shadow-sm",
+                            s.status === 'signed' ? "bg-green-500 hover:bg-green-600" : "bg-amber-500 hover:bg-amber-600"
+                          )}>
+                            {s.status === 'signed' ? 'Assinado' : 'Pendente'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleRemoveSigner(s.id)}
+                            disabled={s.status === 'signed'}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-12 text-muted-foreground italic text-sm">
+                        Nenhum signatário adicionado a este fluxo.
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-12 text-muted-foreground italic text-sm">
-                      Nenhum signatário adicionado a este fluxo.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
 

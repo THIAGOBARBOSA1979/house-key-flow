@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw, ShieldCheck, History } from "lucide-react";
+import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw, ShieldCheck, History, Clock } from "lucide-react";
 import { Document, documentService } from "@/services/DocumentService";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -89,33 +89,52 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
                   </div>
 
                   {document.signatures && document.signatures.some(s => s.status === 'signed') && (
-                    <div className="mt-20 pt-8 border-t-2 border-dashed border-gray-200 w-full max-w-3xl">
-                      <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
-                        <ShieldCheck className="w-4 h-4" /> Assinaturas Digitais Identificadas
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="mt-20 pt-10 border-t-2 border-dashed border-gray-200 w-full max-w-3xl">
+                      <div className="flex items-center justify-between mb-8">
+                        <h4 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+                          <ShieldCheck className="w-5 h-5 text-primary" /> Trilhas de Assinatura Digital
+                        </h4>
+                        <Badge variant="outline" className="text-[10px] font-black bg-primary/5 text-primary border-primary/20">VALIDADO</Badge>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {document.signatures.filter(s => s.status === 'signed').map(sig => (
-                          <div key={sig.id} className="space-y-2 p-4 bg-muted/5 rounded-xl border border-muted-foreground/10 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-2 opacity-5">
-                              <ShieldCheck size={48} />
+                          <div key={sig.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-200 relative overflow-hidden group hover:border-primary/30 transition-all">
+                            <div className="absolute top-[-10px] right-[-10px] p-2 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                              <ShieldCheck size={80} />
                             </div>
-                            <div className="font-serif italic text-lg text-gray-700">{sig.name}</div>
-                            <div className="text-[10px] uppercase font-bold text-muted-foreground border-t pt-2">
-                              {sig.role} • Assinado em {sig.signedAt ? format(sig.signedAt, "dd/MM/yyyy HH:mm", { locale: ptBR }) : ''}
+                            <div className="font-serif italic text-xl text-slate-800 mb-1">{sig.name}</div>
+                            <div className="text-[10px] uppercase font-black tracking-widest text-slate-500 border-b border-slate-200 pb-2 mb-3">
+                              {sig.role}
                             </div>
-                            <div className="text-[8px] font-mono text-muted-foreground/60 break-all leading-tight">
-                              ID: {sig.id.substring(0,8)} | Hash: {sig.documentHash?.substring(0, 16)}...
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-2 text-[10px] text-slate-600 font-bold">
+                                <Clock size={12} className="text-slate-400" />
+                                ASSINADO EM {sig.signedAt ? format(sig.signedAt, "dd/MM/yyyy HH:mm", { locale: ptBR }) : ''}
+                              </div>
+                              <div className="flex items-center gap-2 text-[10px] text-slate-600 font-bold">
+                                <ShieldCheck size={12} className="text-slate-400" />
+                                IP: {sig.ipAddress}
+                              </div>
+                              <div className="mt-3 font-mono text-[9px] text-slate-400 bg-white p-2 rounded border border-slate-100 break-all leading-tight">
+                                HASH: {sig.documentHash}
+                              </div>
                             </div>
                           </div>
                         ))}
                       </div>
                       
-                      <div className="mt-12 p-4 bg-primary/5 rounded-lg border border-primary/20 text-[9px] text-muted-foreground flex items-start gap-3">
-                        <History className="w-4 h-4 text-primary flex-shrink-0" />
+                      <div className="mt-12 p-6 bg-slate-900 rounded-2xl text-[10px] text-slate-400 flex items-start gap-4 shadow-xl">
+                        <div className="p-2 bg-primary/20 rounded-lg">
+                          <History className="w-5 h-5 text-primary" />
+                        </div>
                         <div>
-                          <p className="font-bold text-primary uppercase tracking-widest mb-1">Certificado de Autenticidade</p>
-                          <p>Este documento foi assinado digitalmente através da plataforma A2 Engenharia. As assinaturas possuem validade jurídica conforme Medida Provisória nº 2.200-2/2001. A integridade do documento é garantida por hashes criptográficos individuais.</p>
-                          <p className="mt-1">Código de Verificação: {document.id.toUpperCase()}-SIGN-2025</p>
+                          <p className="font-black text-white uppercase tracking-[0.2em] mb-2 text-xs">Certificado de Autenticidade Digital</p>
+                          <p className="leading-relaxed opacity-80">Este documento eletrônico é assinado digitalmente nos termos da MP nº 2.200-2/2001, que instituiu a ICP-Brasil. A integridade e a autoria deste documento são garantidas por criptografia de chave pública e hashes individuais por signatário.</p>
+                          <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap gap-4">
+                            <span className="font-bold">Protocolo: <span className="text-primary font-mono">{document.id.toUpperCase().substring(0,12)}</span></span>
+                            <span className="font-bold">Emissão: <span className="text-white">{format(document.createdAt, "dd/MM/yyyy HH:mm")}</span></span>
+                          </div>
                         </div>
                       </div>
                     </div>
