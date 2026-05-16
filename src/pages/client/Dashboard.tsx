@@ -303,7 +303,7 @@ const Dashboard = () => {
           <ConstructionFeed updates={constructionUpdates} />
         </div>
         <div className="space-y-8">
-          <ReferralCard />
+          <ReferralCard className="rounded-3xl" />
 
           <NextSteps 
             steps={useMemo(() => {

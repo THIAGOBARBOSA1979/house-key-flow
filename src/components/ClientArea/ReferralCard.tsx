@@ -5,7 +5,7 @@ import { Gift, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-export const ReferralCard = () => {
+export const ReferralCard = ({ className }: { className?: string }) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   const referralCode = "OBRA2024-MARIA";
@@ -21,7 +21,7 @@ export const ReferralCard = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-indigo-600 to-violet-700 text-white border-none shadow-xl overflow-hidden relative group">
+    <Card className={cn("bg-gradient-to-br from-indigo-600 to-violet-700 text-white border-none shadow-xl overflow-hidden relative group rounded-3xl", className)}>
       <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-125 transition-transform duration-700">
         <Gift className="h-40 w-40" />
       </div>
