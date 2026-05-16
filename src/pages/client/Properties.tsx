@@ -12,6 +12,9 @@ import { useNavigate } from "react-router-dom";
 
 import { propertyService, Property } from "@/services/PropertyService";
 
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+
 const ClientProperties = () => {
   const { user } = useAuth();
   const clientId = user?.id || "client-1";
@@ -117,18 +120,20 @@ const ClientProperties = () => {
                 <span className="text-sm font-medium">{propertyDetails.address}</span>
               </div>
               
-              <div className="grid grid-cols-2 gap-4-sem mt-6-sem">
-                <div className="p-3 bg-background rounded-lg border shadow-sm">
-                  <div className="text-muted-foreground text-xs uppercase font-bold tracking-wider mb-1">Status Entrega</div>
-                  <div className="text-sm font-black text-status-complete flex items-center gap-1">
-                    <CheckCircle2 className="h-4 w-4" /> Finalizado
-                  </div>
-                </div>
-                <div className="p-3 bg-background rounded-lg border shadow-sm">
-                  <div className="text-muted-foreground text-xs uppercase font-bold tracking-wider mb-1">Tipo</div>
-                  <div className="text-sm font-black">Residencial</div>
-                </div>
-              </div>
+              <ResponsiveGrid columns={2} gap="sm" className="mt-6">
+                <StatsCard 
+                  label="Status Entrega" 
+                  value="Finalizado" 
+                  icon={CheckCircle2} 
+                  variant="complete"
+                />
+                <StatsCard 
+                  label="Tipo de Unidade" 
+                  value="Residencial" 
+                  icon={Home} 
+                  variant="brand"
+                />
+              </ResponsiveGrid>
             </div>
 
             <div className="w-full md:w-1/3 bg-muted/20 p-6 flex flex-col justify-center">
