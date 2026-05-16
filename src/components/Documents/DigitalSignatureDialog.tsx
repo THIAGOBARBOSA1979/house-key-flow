@@ -45,12 +45,11 @@ export function DigitalSignatureDialog({
   const [signatures, setSignatures] = useState<DocumentSignature[]>([]);
   const [activeTab, setActiveTab] = useState("signers");
 
-  // Load signatures when dialog opens
-  useState(() => {
-    if (documentId) {
+  useEffect(() => {
+    if (isOpen && documentId) {
       setSignatures(documentService.getSignatureHistory(documentId));
     }
-  });
+  }, [isOpen, documentId]);
 
   const currentUserSignature = signatures.find(s => s.email === user?.email);
   const canSign = currentUserSignature && currentUserSignature.status === 'pending';
@@ -97,11 +96,11 @@ export function DigitalSignatureDialog({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'signed':
-        return <Badge className="bg-green-500"><CheckCircle className="w-3 h-3 mr-1" /> Assinado</Badge>;
+        return <Badge className="bg-green-500 font-black text-[9px] uppercase tracking-widest"><CheckCircle className="w-3 h-3 mr-1" /> Assinado</Badge>;
       case 'rejected':
-        return <Badge variant="destructive">Recusado</Badge>;
+        return <Badge variant="destructive" className="font-black text-[9px] uppercase tracking-widest">Recusado</Badge>;
       default:
-        return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" /> Pendente</Badge>;
+        return <Badge variant="secondary" className="font-black text-[9px] uppercase tracking-widest"><Clock className="w-3 h-3 mr-1" /> Pendente</Badge>;
     }
   };
 
@@ -125,27 +124,33 @@ export function DigitalSignatureDialog({
           </TabsList>
 
           <TabsContent value="signers" className="py-4 space-y-4">
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded-2xl overflow-hidden shadow-sm">
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-muted/50">
                   <TableRow>
-                    <TableHead>Nome / Cargo</TableHead>
+                    <TableHead className="w-[50px] text-center">#</TableHead>
+                    <TableHead>Signatário / Cargo</TableHead>
                     <TableHead>Método</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {signatures.length > 0 ? (
-                    signatures.map((s) => (
-                      <TableRow key={s.id}>
-                        <TableCell>
-                          <div className="font-medium">{s.name}</div>
-                          <div className="text-xs text-muted-foreground">{s.role}</div>
+                    signatures.map((s, idx) => (
+                      <TableRow key={s.id} className="group hover:bg-muted/30 transition-colors">
+                        <TableCell className="text-center">
+                          <Badge variant="outline" className="h-6 w-6 p-0 flex items-center justify-center rounded-full font-black text-[10px]">
+                            {s.order || idx + 1}
+                          </Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-1 text-xs">
-                            {s.confirmationMethod === 'email' ? <Mail className="w-3 h-3" /> : <Smartphone className="w-3 h-3" />}
-                            {s.confirmationMethod === 'email' ? 'E-mail' : 'SMS'}
+                          <div className="font-bold text-sm">{s.name}</div>
+                          <div className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{s.role}</div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5 text-[10px] font-black uppercase">
+                            {s.confirmationMethod === 'email' ? <Mail className="w-3.5 h-3.5 text-primary/60" /> : <Smartphone className="w-3.5 h-3.5 text-primary/60" />}
+                            {s.confirmationMethod}
                           </div>
                         </TableCell>
                         <TableCell>{getStatusBadge(s.status)}</TableCell>
@@ -153,8 +158,8 @@ export function DigitalSignatureDialog({
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center py-4 text-muted-foreground">
-                        Nenhum signatário configurado para este documento.
+                      <TableCell colSpan={4} className="text-center py-10 text-muted-foreground italic text-sm">
+                        Nenhum signatário configurado.
                       </TableCell>
                     </TableRow>
                   )}
@@ -163,22 +168,62 @@ export function DigitalSignatureDialog({
             </div>
 
             {canSign && (
-              <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
-                <h4 className="font-semibold flex items-center gap-2 mb-2">
-                  <ShieldCheck className="h-4 w-4 text-primary" />
-                  Sua assinatura é necessária
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Ao clicar em assinar, você confirma que leu e concorda com os termos deste documento. Uma confirmação foi enviada para o seu {currentUserSignature.confirmationMethod === 'email' ? 'e-mail' : 'celular'}.
-                </p>
+              <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20 shadow-sm animate-in zoom-in-95 duration-300">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="p-3 bg-primary/10 rounded-xl text-primary">
+                    <ShieldCheck className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-lg flex items-center gap-2">
+                      Sua assinatura é necessária
+                    </h4>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Ao clicar em assinar, você confirma que leu e concorda com os termos deste documento, registrando sua digital com validade jurídica.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-background/50 p-3 rounded-xl border border-border/50 mb-6 text-xs space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Autenticação:</span>
+                    <span className="font-bold flex items-center gap-1">
+                      {currentUserSignature.confirmationMethod === 'email' ? <Mail size={12}/> : <Smartphone size={12}/>}
+                      {currentUserSignature.confirmationMethod === 'email' ? 'E-mail Verificado' : 'SMS Token'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Posição no Fluxo:</span>
+                    <span className="font-bold">#{currentUserSignature.order || 1}</span>
+                  </div>
+                </div>
+
                 <div className="flex gap-3">
-                  <Button className="flex-1 font-bold" onClick={handleSign}>
-                    Assinar Agora
+                  <Button className="flex-1 h-12 font-black uppercase tracking-widest text-xs shadow-lg hover:translate-y-[-2px] transition-all" onClick={handleSign}>
+                    Confirmar Assinatura
                   </Button>
-                  <Button variant="outline" className="flex-1 font-bold text-destructive hover:text-destructive" onClick={handleReject}>
+                  <Button variant="outline" className="flex-1 h-12 font-black uppercase tracking-widest text-xs border-2 text-destructive hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30" onClick={handleReject}>
                     Recusar
                   </Button>
                 </div>
+              </div>
+            )}
+
+            {!canSign && currentUserSignature && currentUserSignature.status === 'signed' && (
+              <div className="bg-green-500/5 p-6 rounded-2xl border border-green-500/20 text-center space-y-3">
+                <div className="inline-flex p-3 bg-green-500/10 rounded-full text-green-600 mb-2">
+                  <CheckCircle className="h-8 w-8" />
+                </div>
+                <h4 className="font-black text-green-700">Você já assinou este documento</h4>
+                <p className="text-xs text-green-600/80 max-w-xs mx-auto">
+                  Sua assinatura foi registrada em {currentUserSignature.signedAt ? format(currentUserSignature.signedAt, "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : ''}.
+                </p>
+              </div>
+            )}
+
+            {!currentUserSignature && (
+              <div className="p-8 text-center bg-muted/20 rounded-2xl border-2 border-dashed border-muted-foreground/10">
+                <Clock className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground font-medium">Você não está listado como signatário deste documento.</p>
               </div>
             )}
           </TabsContent>
