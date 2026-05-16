@@ -525,6 +525,15 @@ const AdminDocuments = () => {
           onSuccess={refreshDocuments}
         />
       )}
+
+      {selectedDoc && (
+        <DigitalSignatureDialog
+          isOpen={false} // Somente para garantir que o componente está disponível no escopo se necessário
+          onClose={() => {}}
+          documentId={selectedDoc.id}
+          documentTitle={selectedDoc.title}
+        />
+      )}
     </div>
   );
 };
