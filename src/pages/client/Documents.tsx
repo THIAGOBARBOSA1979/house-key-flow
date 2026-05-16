@@ -21,6 +21,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
@@ -255,7 +256,7 @@ export default function ClientDocuments() {
         </TabsList>
 
         <TabsContent value="all" className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <ResponsiveGrid columns={4} gap="layout">
             <StatsCard 
               label="Total de Arquivos" 
               value={stats.total} 
@@ -280,7 +281,7 @@ export default function ClientDocuments() {
               icon={Calendar} 
               variant="brand" 
             />
-          </div>
+          </ResponsiveGrid>
 
           <Card>
             <CardContent className="p-4">

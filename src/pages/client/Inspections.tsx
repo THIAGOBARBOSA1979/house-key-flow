@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock, Info } from "lucide-react";
+import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock, Info, TrendingUp, AlertTriangle } from "lucide-react";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -249,6 +251,27 @@ const ClientInspections = () => {
         redirectLabel="Voltar ao painel"
         variant="overlay"
       >
+        <ResponsiveGrid columns={3} gap="layout" className="mb-6">
+          <StatsCard 
+            label="Total de Vistorias" 
+            value={inspections.length} 
+            icon={ClipboardCheck} 
+            variant="brand"
+          />
+          <StatsCard 
+            label="Concluídas" 
+            value={inspections.filter(i => i.status === 'complete').length} 
+            icon={CheckCircle} 
+            variant="complete"
+          />
+          <StatsCard 
+            label="Pendentes" 
+            value={inspections.filter(i => i.status === 'pending').length} 
+            icon={Clock} 
+            variant="pending"
+          />
+        </ResponsiveGrid>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
           {/* Inspections list */}
           <div className="lg:col-span-1 space-y-4">

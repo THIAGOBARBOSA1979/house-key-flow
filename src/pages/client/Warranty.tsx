@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History, Star } from "lucide-react";
+import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History, Star, CheckCircle, TrendingUp } from "lucide-react";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
@@ -416,6 +418,27 @@ const ClientWarranty = () => {
         redirectLabel="Ver minhas vistorias"
         variant="overlay"
       >
+        <ResponsiveGrid columns={3} gap="layout" className="mb-6">
+          <StatsCard 
+            label="Total de Solicitações" 
+            value={claims.length} 
+            icon={ShieldCheck} 
+            variant="brand"
+          />
+          <StatsCard 
+            label="Em Atendimento" 
+            value={claims.filter(c => c.currentStage === 'in_progress').length} 
+            icon={TrendingUp} 
+            variant="progress"
+          />
+          <StatsCard 
+            label="Concluídas" 
+            value={claims.filter(c => c.currentStage === 'completed').length} 
+            icon={CheckCircle} 
+            variant="complete"
+          />
+        </ResponsiveGrid>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
           {/* Left column */}
           <div className="space-y-4">

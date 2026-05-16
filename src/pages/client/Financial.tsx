@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -17,17 +18,42 @@ import {
 } from "lucide-react";
 import { financialService, Installment } from "@/services/FinancialService";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle,
+  DialogTrigger 
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { useToast } from "@/hooks/use-toast";
 
 const Financial = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const clientId = user?.id || "client-1";
+  const [isSimulationOpen, setIsSimulationOpen] = useState(false);
+  const [simulationAmount, setSimulationAmount] = useState<number>(0);
 
   const summary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
   const installments = useMemo(() => financialService.getInstallmentsByClient(clientId), [clientId]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  };
+
+  const handleSimulate = () => {
+    // Mock simulation logic
+    const discount = simulationAmount * 0.05;
+    toast({
+      title: "Simulação Realizada",
+      description: `Para quitação de ${formatCurrency(simulationAmount)}, o desconto estimado é de ${formatCurrency(discount)}.`,
+    });
+    setIsSimulationOpen(false);
   };
 
   const getStatusInfo = (status: Installment['status']) => {
@@ -75,27 +101,16 @@ const Financial = () => {
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
-        <Card className="bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-lg">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-black uppercase tracking-widest">Saldo Devedor</CardDescription>
-            <CardTitle className="text-3xl font-black text-primary">{formatCurrency(summary.balanceDue)}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Progresso da Quitação</span>
-                <span className="font-bold">{Math.round(summary.progress)}%</span>
-              </div>
-              <Progress value={summary.progress} className="h-2" />
-              <div className="text-[10px] text-muted-foreground">
-                Valor Total: {formatCurrency(summary.totalValue)}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
+      {/* Summary Cards with StatsCard Component */}
+      <ResponsiveGrid columns={3} gap="layout">
+        <StatsCard 
+          label="Saldo Devedor" 
+          value={formatCurrency(summary.balanceDue)} 
+          icon={DollarSign} 
+          description={`${Math.round(summary.progress)}% quitado`}
+          variant="brand"
+        />
+        
         <Card className="shadow-md">
           <CardHeader className="pb-2">
             <CardDescription className="text-[10px] font-black uppercase tracking-widest">Próximo Vencimento</CardDescription>
@@ -124,25 +139,14 @@ const Financial = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-primary text-primary-foreground shadow-lg overflow-hidden relative">
-          <div className="absolute right-[-10%] top-[-10%] opacity-10">
-            <TrendingUp size={120} />
-          </div>
-          <CardHeader className="relative z-10">
-            <CardTitle className="text-lg font-bold">Resumo de Pagamentos</CardTitle>
-          </CardHeader>
-          <CardContent className="relative z-10 space-y-4">
-            <div className="flex justify-between items-center bg-white/10 p-3 rounded-xl">
-              <span className="text-xs">Total Pago</span>
-              <span className="font-black">{formatCurrency(summary.paidValue)}</span>
-            </div>
-            <div className="flex justify-between items-center bg-white/10 p-3 rounded-xl">
-              <span className="text-xs">Parcelas Pagas</span>
-              <span className="font-black">{installments.filter(i => i.status === 'paid').length} / {installments.length}</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        <StatsCard 
+          label="Total Pago" 
+          value={formatCurrency(summary.paidValue)} 
+          icon={TrendingUp} 
+          description={`${installments.filter(i => i.status === 'paid').length} de ${installments.length} parcelas`}
+          variant="complete"
+        />
+      </ResponsiveGrid>
 
       {/* Installments Table */}
       <Card>
@@ -240,9 +244,34 @@ const Financial = () => {
             Você sabia que pode obter descontos financeiros ao antecipar o pagamento de parcelas futuras? Entre em contato com nossa equipe financeira para realizar uma simulação e aproveitar os benefícios.
           </CardContent>
           <div className="px-6 pb-4">
-            <Button variant="link" className="p-0 h-auto text-xs font-bold text-primary flex items-center gap-1">
-              Simular Antecipação <ChevronRight className="h-3 w-3" />
-            </Button>
+            <Dialog open={isSimulationOpen} onOpenChange={setIsSimulationOpen}>
+              <DialogTrigger asChild>
+                <Button variant="link" className="p-0 h-auto text-xs font-bold text-primary flex items-center gap-1">
+                  Simular Antecipação <ChevronRight className="h-3 w-3" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Simular Antecipação</DialogTitle>
+                  <DialogDescription>
+                    Informe o valor que deseja antecipar para calcular o desconto aproximado.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="amount">Valor da Antecipação</Label>
+                    <Input 
+                      id="amount" 
+                      type="number" 
+                      placeholder="Ex: 5000" 
+                      value={simulationAmount || ''} 
+                      onChange={(e) => setSimulationAmount(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+                <Button onClick={handleSimulate} className="w-full font-bold">Simular Desconto</Button>
+              </DialogContent>
+            </Dialog>
           </div>
         </Card>
       </div>

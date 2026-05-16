@@ -25,16 +25,29 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { supportService, SupportTicket } from "@/services/SupportService";
+import { useMemo, useEffect } from "react";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Support = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const clientId = user?.id || "client-1";
   const [formState, setFormState] = useState({
     subject: "",
     message: ""
   });
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+
+  useEffect(() => {
+    setTickets(supportService.getTicketsByClient(clientId));
+  }, [clientId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    supportService.createTicket(clientId, formState.subject, formState.message);
+    setTickets(supportService.getTicketsByClient(clientId));
     toast({
       title: "Solicitação enviada",
       description: "Sua mensagem foi enviada para nossa equipe de suporte. Responderemos em breve.",
@@ -173,6 +186,40 @@ const Support = () => {
                 Enviar Solicitação
               </Button>
             </form>
+          </CardContent>
+        </Card>
+
+        {/* Support Tickets List */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileQuestion className="h-5 w-5 text-primary" />
+              Meus Chamados
+            </CardTitle>
+            <CardDescription>Acompanhe o status das suas solicitações abertas.</CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y">
+              {tickets.length > 0 ? tickets.map((ticket) => (
+                <div key={ticket.id} className="p-4 hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">#{ticket.id.split('-')[1]}</span>
+                    <StatusBadge 
+                      status={ticket.status === 'closed' ? 'complete' : (ticket.status === 'in_progress' ? 'progress' : 'pending')} 
+                      label={ticket.status === 'closed' ? 'Fechado' : (ticket.status === 'in_progress' ? 'Em Atendimento' : 'Pendente')}
+                      size="sm"
+                    />
+                  </div>
+                  <h4 className="font-bold text-sm mb-1">{ticket.subject}</h4>
+                  <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{ticket.message}</p>
+                  <p className="text-[10px] text-muted-foreground font-medium uppercase">{ticket.createdAt.toLocaleDateString('pt-BR')}</p>
+                </div>
+              )) : (
+                <div className="p-8 text-center text-muted-foreground italic text-sm">
+                  Nenhum chamado aberto recentemente.
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
 
