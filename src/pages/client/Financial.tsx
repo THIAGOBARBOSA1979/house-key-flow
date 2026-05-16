@@ -235,7 +235,8 @@ const Financial = () => {
                       <td className="py-4 px-6">
                         <StatusBadge 
                           status={statusInfo.status} 
-...
+                          label={statusInfo.label} 
+                          size="sm" 
                         />
                       </td>
                       <td className="py-4 px-6 text-right">
