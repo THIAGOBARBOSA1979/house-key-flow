@@ -39,6 +39,7 @@ const AuditLogs = () => {
         <AuditLogViewer title="Histórico Global" className="rounded-3xl shadow-sem-xl border-none bg-card/40 backdrop-blur-md overflow-hidden" />
       </div>
 
+
     </div>
   );
 };
