@@ -1,7 +1,7 @@
 import { Outlet, Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign, HelpCircle } from "lucide-react";
+import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign, HelpCircle, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -28,12 +28,22 @@ const ClientNavLink = ({
 }) => {
   return <NavLink to={to} className={({
     isActive
-  }) => cn("flex items-center justify-between gap-3 px-3 py-3 rounded-md transition-colors", isActive ? "bg-primary/90 text-primary-foreground font-medium" : "hover:bg-primary/10 text-foreground/80 hover:text-foreground")} {...props}>
+  }) => cn("flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-300 group", isActive ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20 scale-[1.02]" : "hover:bg-primary/10 text-foreground/70 hover:text-primary hover:translate-x-1")} {...props}>
       <div className="flex items-center gap-3">
-        <Icon size={18} />
-        <span>{children}</span>
+        <Icon size={18} className={cn("transition-transform group-hover:scale-110")} />
+        <span className="text-sm">{children}</span>
       </div>
-      {typeof badgeCount === 'number' && badgeCount > 0 && <Badge variant="secondary" className="ml-auto">{badgeCount}</Badge>}
+      <div className="flex items-center gap-2">
+        {isActive ? (
+          <ChevronRight size={14} className="opacity-50" />
+        ) : (
+          typeof badgeCount === 'number' && badgeCount > 0 && (
+            <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px] font-black h-5 min-w-[20px] flex justify-center items-center">
+              {badgeCount}
+            </Badge>
+          )
+        )}
+      </div>
     </NavLink>;
 };
 
@@ -230,19 +240,23 @@ const ClientLayout = () => {
         </div>
         
         {/* User profile */}
-        <div className="p-4 border-b">
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-medium">{user?.name || "Cliente"}</p>
-              <p className="text-xs text-muted-foreground">
-                {profile?.propertyName ? `${profile.propertyName} - Unidade ${profile.unitNumber}` : "Carregando..."}
+        <div className="p-6">
+          <Link to="/client/profile" onClick={handleLinkClick} className="flex items-center gap-4 p-2 rounded-2xl hover:bg-primary/5 transition-all group">
+            <div className="relative">
+              <Avatar className="h-12 w-12 border-2 border-primary/10 group-hover:border-primary transition-colors">
+                <AvatarFallback className="bg-primary/10 text-primary font-black uppercase">{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 border-2 border-background rounded-full" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-black text-sm text-foreground truncate">{user?.name || "Cliente"}</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate">
+                {profile?.unitNumber ? `Unidade ${profile.unitNumber}` : "Meu Perfil"}
               </p>
             </div>
-          </div>
+          </Link>
         </div>
+        <Separator className="opacity-50" />
         
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
