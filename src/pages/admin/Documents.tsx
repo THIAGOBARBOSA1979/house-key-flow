@@ -39,6 +39,8 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+
 import { exportService } from "@/services/ExportService";
 import { BulkActions } from "@/components/Documents/BulkActions";
 import { DocumentFilters } from "@/components/Documents/DocumentFilters";
