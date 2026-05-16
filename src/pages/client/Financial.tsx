@@ -14,7 +14,8 @@ import {
   AlertCircle,
   Download,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  CheckCircle2
 } from "lucide-react";
 import { financialService, Installment } from "@/services/FinancialService";
 import { useAuth } from "@/contexts/AuthContext";
@@ -132,9 +133,33 @@ const Financial = () => {
           variant="brand"
         />
         
-        <Card className="shadow-md">
+        <Card className="shadow-md relative overflow-hidden border-none bg-muted/30">
+          <div className="absolute top-0 right-0 p-4 opacity-5">
+            <TrendingUp className="h-16 w-16" />
+          </div>
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-black uppercase tracking-widest">Próximo Vencimento</CardDescription>
+            <CardDescription className="text-[10px] font-black uppercase tracking-widest">Resumo de Quitação</CardDescription>
+            <CardTitle className="text-2xl font-black text-primary">
+              {Math.round(summary.progress)}%
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="h-2 bg-white rounded-full overflow-hidden border">
+              <div 
+                className="h-full bg-primary transition-all duration-1000" 
+                style={{ width: `${summary.progress}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] font-black uppercase text-muted-foreground tracking-tighter">
+              <span>Pago: {formatCurrency(summary.paidValue)}</span>
+              <span>Total: {formatCurrency(summary.totalValue)}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-md border-none bg-primary text-primary-foreground">
+          <CardHeader className="pb-2">
+            <CardDescription className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/70">Próximo Vencimento</CardDescription>
             <CardTitle className="text-2xl font-bold">
               {summary.nextPayment ? formatCurrency(summary.nextPayment.value) : 'Nenhum'}
             </CardTitle>
@@ -143,39 +168,30 @@ const Financial = () => {
             {summary.nextPayment ? (
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4 text-primary" />
+                  <Calendar className="h-4 w-4" />
                   <span className="font-medium">{summary.nextPayment.dueDate.toLocaleDateString('pt-BR')}</span>
                 </div>
                 <Button 
-                  className="w-full rounded-xl gap-2 font-bold" 
-                  variant="secondary"
+                  className="w-full rounded-xl gap-2 font-black uppercase tracking-widest text-[10px] bg-white text-primary hover:bg-white/90" 
                   onClick={() => {
                     toast({
-                      title: "Pagamento em processamento...",
-                      description: "Estamos processando seu pagamento. Você receberá uma confirmação em breve.",
+                      title: "Gerando boleto...",
+                      description: "O boleto será baixado automaticamente.",
                     });
                   }}
                 >
                   <CreditCard className="h-4 w-4" />
-                  Pagar Agora
+                  Baixar Boleto
                 </Button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 text-status-complete">
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">Todas as parcelas em dia</span>
+              <div className="flex items-center gap-2 text-white">
+                <CheckCircle2 className="h-4 w-4" />
+                <span className="text-sm font-medium">Contrato Quitado</span>
               </div>
             )}
           </CardContent>
         </Card>
-
-        <StatsCard 
-          label="Total Pago" 
-          value={formatCurrency(summary.paidValue)} 
-          icon={TrendingUp} 
-          description={`${installments.filter(i => i.status === 'paid').length} de ${installments.length} parcelas`}
-          variant="complete"
-        />
       </ResponsiveGrid>
 
       {/* Installments Table */}

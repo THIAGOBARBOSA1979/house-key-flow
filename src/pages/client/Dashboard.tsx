@@ -20,7 +20,10 @@ import {
   Clock,
   MessageSquare,
   DollarSign,
-  LifeBuoy
+  LifeBuoy,
+  Newspaper,
+  Users,
+  Gift
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
@@ -380,6 +383,73 @@ const Dashboard = () => {
           variant={unreadCount > 0 ? 'critical' : 'default'}
         />
       </ResponsiveGrid>
+
+      {/* Construction Feed and Referral */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Newspaper className="h-5 w-5 text-primary" />
+              Atualizações da Obra
+            </CardTitle>
+            <CardDescription>Acompanhe as últimas novidades diretamente do canteiro.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {[
+              {
+                title: "Conclusão da Fachada",
+                date: "Hoje",
+                content: "Iniciamos a aplicação da última camada de revestimento na torre A.",
+                category: "Obra"
+              },
+              {
+                title: "Início do Paisagismo",
+                date: "Há 2 dias",
+                content: "As primeiras mudas de árvores nativas foram entregues para o jardim central.",
+                category: "Lazer"
+              }
+            ].map((news, i) => (
+              <div key={i} className="flex gap-4 p-4 rounded-2xl bg-muted/30 border border-transparent hover:border-border transition-all">
+                <div className="h-12 w-12 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
+                  <Building2 className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-primary/10 text-primary rounded-md">{news.category}</span>
+                    <span className="text-[10px] font-medium text-muted-foreground uppercase">{news.date}</span>
+                  </div>
+                  <h4 className="font-bold text-sm mb-1">{news.title}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{news.content}</p>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-primary to-primary-dark text-white border-none shadow-xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+            <Gift className="h-24 w-24" />
+          </div>
+          <CardHeader>
+            <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Indique e Ganhe
+            </CardTitle>
+            <CardDescription className="text-white/70">Recomende a A2 para um amigo e receba benefícios exclusivos.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm leading-relaxed">Seu amigo compra um imóvel e você ganha 1 ano de condomínio grátis ou um voucher de móveis planejados.</p>
+            <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11" onClick={() => {
+              toast({
+                title: "Link copiado!",
+                description: "Compartilhe seu link exclusivo com seus amigos.",
+              });
+            }}>
+              Gerar Link de Indicação
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
         {/* Recent Documents */}
