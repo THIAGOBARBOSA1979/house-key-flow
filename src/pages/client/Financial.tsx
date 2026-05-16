@@ -47,11 +47,26 @@ const Financial = () => {
   };
 
   const handleSimulate = () => {
-    // Mock simulation logic
-    const discount = simulationAmount * 0.05;
+    if (simulationAmount <= 0) {
+      toast({ title: "Erro", description: "Informe um valor válido para simulação.", variant: "destructive" });
+      return;
+    }
+    
+    // Logic for discount calculation
+    // Over 50k: 10%, Over 10k: 7%, Else: 5%
+    const discountRate = simulationAmount >= 50000 ? 0.10 : simulationAmount >= 10000 ? 0.07 : 0.05;
+    const discount = simulationAmount * discountRate;
+    const finalValue = simulationAmount - discount;
+
     toast({
-      title: "Simulação Realizada",
-      description: `Para quitação de ${formatCurrency(simulationAmount)}, o desconto estimado é de ${formatCurrency(discount)}.`,
+      title: "Simulação de Antecipação",
+      description: (
+        <div className="space-y-1">
+          <p>Valor simulado: <span className="font-bold">{formatCurrency(simulationAmount)}</span></p>
+          <p>Desconto ({discountRate * 100}%): <span className="font-bold text-green-600">-{formatCurrency(discount)}</span></p>
+          <p className="border-t pt-1 mt-1">Valor final: <span className="font-bold">{formatCurrency(finalValue)}</span></p>
+        </div>
+      ) as any,
     });
     setIsSimulationOpen(false);
   };

@@ -260,28 +260,60 @@ const Dashboard = () => {
         </div>
         <div>
           <NextSteps 
-            steps={[
-              { 
-                id: '1', 
-                title: 'Assinar Termo de Entrega', 
-                description: 'Necessário para liberação das chaves', 
-                status: 'current',
-                link: '/client/documents'
-              },
-              { 
-                id: '2', 
-                title: 'Realizar Vistoria Técnica', 
-                description: 'Agendamento disponível em breve', 
-                status: 'upcoming'
-              },
-              { 
-                id: '3', 
-                title: 'Pagamento Parcela de Maio', 
-                description: 'Vencimento em 10/05/2024', 
-                status: 'upcoming',
-                link: '/client/financial'
+            steps={useMemo(() => {
+              const baseSteps = [];
+              
+              if (stage === 'registered') {
+                baseSteps.push({
+                  id: '1',
+                  title: 'Aguardar liberação de vistoria',
+                  description: 'Estamos finalizando os últimos detalhes da sua unidade.',
+                  status: 'current' as const
+                });
+              } else if (stage === 'inspection_enabled') {
+                const pendingInsp = upcomingInspections.length > 0;
+                baseSteps.push({
+                  id: '1',
+                  title: pendingInsp ? 'Confirmar presença na vistoria' : 'Agendar primeira vistoria',
+                  description: pendingInsp ? 'Sua vistoria está agendada.' : 'Agende o melhor horário para visitar seu imóvel.',
+                  status: 'current' as const,
+                  link: '/client/inspections'
+                });
+                baseSteps.push({
+                  id: '2',
+                  title: 'Realizar vistoria técnica',
+                  description: 'Acompanhe nosso técnico na unidade.',
+                  status: 'upcoming' as const
+                });
+              } else if (stage === 'warranty_enabled') {
+                baseSteps.push({
+                  id: '1',
+                  title: 'Vistoria concluída e aprovada',
+                  description: 'Parabéns! Seu imóvel foi entregue.',
+                  status: 'completed' as const
+                });
+                baseSteps.push({
+                  id: '2',
+                  title: 'Acessar manual do proprietário',
+                  description: 'Documento disponível na central de ajuda.',
+                  status: 'current' as const,
+                  link: '/client/support'
+                });
               }
-            ]} 
+
+              // Always show financial step if pending
+              if (financialSummary.nextPayment) {
+                baseSteps.push({
+                  id: 'fin-1',
+                  title: 'Pagamento da próxima parcela',
+                  description: `Vencimento em ${financialSummary.nextPayment.dueDate.toLocaleDateString()}`,
+                  status: 'upcoming' as const,
+                  link: '/client/financial'
+                });
+              }
+
+              return baseSteps;
+            }, [stage, upcomingInspections, financialSummary])} 
           />
         </div>
       </div>
