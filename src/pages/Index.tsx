@@ -7,7 +7,22 @@ import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { QuickActions } from "@/components/Dashboard/QuickActions";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { WarrantyClaim } from "@/components/Warranty/WarrantyClaim";
-import { Calendar, ClipboardCheck, ShieldCheck, ChevronRight, Home, Plus, Activity, RefreshCw, Layers, Clock, History as HistoryIcon } from "lucide-react";
+import { 
+  Calendar, 
+  ClipboardCheck, 
+  ShieldCheck, 
+  ChevronRight, 
+  Home, 
+  Plus, 
+  Activity, 
+  RefreshCw, 
+  Layers, 
+  Clock, 
+  History as HistoryIcon,
+  DollarSign,
+  Users,
+  Star
+} from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,9 +31,12 @@ import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { auditLogService } from "@/services/AuditLogService";
+import { financialService } from "@/services/FinancialService";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/shared/DataTable";
+import { formatCurrency } from "@/lib/utils";
+
 
 import { useAuth } from "@/contexts/AuthContext";
 
