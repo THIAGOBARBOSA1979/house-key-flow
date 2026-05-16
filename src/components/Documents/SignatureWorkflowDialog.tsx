@@ -138,6 +138,7 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-none shadow-sem-xl">
+                   <SelectContent className="rounded-xl border-none shadow-sem-xl">
                     <SelectItem value="Comprador">Comprador</SelectItem>
                     <SelectItem value="Vendedor">Vendedor</SelectItem>
                     <SelectItem value="Testemunha">Testemunha</SelectItem>
@@ -145,10 +146,29 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
                     <SelectItem value="Advogado">Advogado</SelectItem>
                     <SelectItem value="Engenheiro">Engenheiro</SelectItem>
                     <SelectItem value="Diretor">Diretor</SelectItem>
+                    <SelectItem value="Analista">Analista Financeiro</SelectItem>
+                  </SelectContent>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex items-end">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest ml-1">Autenticação</Label>
+                <Select 
+                  value={newSigner.confirmationMethod} 
+                  onValueChange={(val: any) => setNewSigner({...newSigner, confirmationMethod: val})}
+                >
+                  <SelectTrigger className="h-10 text-xs rounded-xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-sem-xl">
+                    <SelectItem value="email">E-mail</SelectItem>
+                    <SelectItem value="sms">SMS / WhatsApp</SelectItem>
+                    <SelectItem value="facial">Biometria Facial</SelectItem>
+                    <SelectItem value="govbr">Gov.br (Nível Ouro/Prata)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-end col-span-full md:col-span-1">
                 <Button onClick={handleAddSigner} className="w-full h-10 gap-2 font-black text-xs uppercase tracking-widest rounded-xl shadow-lg hover:translate-y-[-2px] transition-all">
                   <UserPlus className="w-4 h-4" /> Adicionar
                 </Button>
