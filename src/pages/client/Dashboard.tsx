@@ -30,6 +30,8 @@ import { NextSteps } from "@/components/ClientFlow/NextSteps";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { useAuth } from "@/contexts/AuthContext";
 import { documentService } from "@/services/DocumentService";
 import { inspectionService } from "@/services/InspectionService";
@@ -285,62 +287,36 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-layout-gap">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-label">Documentos</p>
-                <p className="text-h1">{allDocs.length}</p>
-                <p className="text-caption">{recentDocuments.length} recentes</p>
-              </div>
-              <FileText className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-label">Vistorias</p>
-                <p className="text-h1">{allInspections.length}</p>
-                <p className="text-caption">
-                  {upcomingInspections.length > 0 ? `${upcomingInspections.length} agendada(s)` : 'Nenhuma pendente'}
-                </p>
-              </div>
-              <ClipboardCheck className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-label">Garantias</p>
-                <p className="text-h1">{canRequestWarranty ? warrantyRequests.length : '-'}</p>
-                <p className="text-caption">
-                  {canRequestWarranty ? 'Veja suas solicitações' : 'Aguardando liberação'}
-                </p>
-              </div>
-              <ShieldCheck className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-label">Notificações</p>
-                <p className="text-h1">{unreadCount}</p>
-                <p className="text-caption">
-                  {urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'Nenhuma urgente'}
-                </p>
-              </div>
-              <Bell className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <ResponsiveGrid columns={4} gap="layout">
+        <StatsCard 
+          label="Documentos" 
+          value={allDocs.length} 
+          icon={FileText} 
+          description={`${recentDocuments.length} arquivos recentes`}
+          variant="brand"
+        />
+        <StatsCard 
+          label="Vistorias" 
+          value={allInspections.length} 
+          icon={ClipboardCheck} 
+          description={upcomingInspections.length > 0 ? `${upcomingInspections.length} agendada(s)` : 'Nenhuma pendente'}
+          variant={allInspections.length > 0 ? 'complete' : 'pending'}
+        />
+        <StatsCard 
+          label="Garantias" 
+          value={canRequestWarranty ? warrantyRequests.length : '-'} 
+          icon={ShieldCheck} 
+          description={canRequestWarranty ? 'Veja suas solicitações' : 'Aguardando liberação'}
+          variant={canRequestWarranty ? 'progress' : 'default'}
+        />
+        <StatsCard 
+          label="Notificações" 
+          value={unreadCount} 
+          icon={Bell} 
+          description={urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'Nenhuma urgente'}
+          variant={unreadCount > 0 ? 'critical' : 'default'}
+        />
+      </ResponsiveGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
         {/* Recent Documents */}
