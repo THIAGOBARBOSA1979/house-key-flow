@@ -109,35 +109,43 @@ class DocumentService {
   private documents: Document[] = [
     {
       id: "1",
-      title: "Contrato de Compra e Venda",
+      title: "Contrato de Compra e Venda - Unidade 204",
       type: "auto",
       category: "contrato",
       folderId: "f1",
       viewCount: 45,
-      template: `CONTRATO DE COMPRA E VENDA
+      template: `CONTRATO DE COMPRA E VENDA - RESIDENCIAL AURORA
 
-VENDEDOR: A2 Incorporadora LTDA
+VENDEDOR: A2 Incorporadora e Engenharia LTDA
 COMPRADOR: {{nome_cliente}}
+CPF/CNPJ: {{documento_cliente}}
 IMÓVEL: {{endereco}}
-EMPREENDIMENTO: {{empreendimento}}
-VALOR: R$ {{valor}}
-DATA: {{data}}
+UNIDADE: {{unidade}}
+VALOR TOTAL: {{valor}}
+FORMA DE PAGAMENTO: {{forma_pagamento}}
 
-Este contrato estabelece as condições de venda do imóvel acima descrito.`,
-      associatedTo: { client: "João Silva", property: "Edifício Aurora", unit: "101" },
+1. OBJETO DO CONTRATO
+O presente contrato tem por objeto a promessa de compra e venda da unidade imobiliária acima descrita.
+
+2. PRAZO DE ENTREGA
+A VENDEDORA se compromete a entregar o imóvel pronto para morar até a data de {{data_entrega}}.
+
+3. DAS ASSINATURAS
+Este documento utiliza tecnologia de assinatura eletrônica com plena validade jurídica.`,
+      associatedTo: { client: "João Silva", property: "Edifício Aurora", unit: "204" },
       visible: true,
       createdAt: new Date(2025, 4, 10),
       updatedAt: new Date(2025, 4, 10),
       downloads: 5,
       status: "published",
       approvalStatus: "approved",
-      tags: ["contrato", "venda"],
-      isFavorite: false,
+      tags: ["contrato", "venda", "unidade-204"],
+      isFavorite: true,
       version: 1,
       priority: "high",
-      description: "Contrato padrão para venda de imóveis",
+      description: "Contrato principal de aquisição da unidade 204",
       createdBy: "Admin",
-      approvedBy: "Supervisor",
+      approvedBy: "Diretoria",
       approvedAt: new Date(2025, 4, 10),
       signatures: [
         {
@@ -146,7 +154,8 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
           email: "joao.silva@exemplo.com",
           role: "Comprador",
           status: "pending",
-          confirmationMethod: "email"
+          confirmationMethod: "email",
+          order: 1
         },
         {
           id: "sig-2",
@@ -156,7 +165,14 @@ Este contrato estabelece as condições de venda do imóvel acima descrito.`,
           status: "signed",
           signedAt: new Date(2025, 4, 11, 14, 30),
           ipAddress: "177.45.12.98",
-          confirmationMethod: "email"
+          confirmationMethod: "email",
+          order: 2,
+          documentHash: "SHA256-A8B9C10D11E12F13G14H15",
+          evidence: {
+            browser: "Chrome 124.0.0.0",
+            os: "macOS",
+            location: "São Paulo, SP"
+          }
         }
       ]
     },
@@ -235,16 +251,14 @@ OBSERVAÇÕES: {{observacoes}}`,
 
   private templateVariables: TemplateVariable[] = [
     { key: "nome_cliente", label: "Nome do Cliente", description: "Nome completo do cliente", type: "text", required: true },
+    { key: "documento_cliente", label: "CPF/CNPJ", description: "Documento de identificação", type: "text", required: true },
     { key: "endereco", label: "Endereço", description: "Endereço completo do imóvel", type: "text", required: true },
+    { key: "unidade", label: "Unidade", description: "Número da unidade/apartamento", type: "text", required: true },
     { key: "valor", label: "Valor", description: "Valor do imóvel", type: "text", required: true },
-    { key: "data", label: "Data", description: "Data atual", type: "date", required: true },
-    { key: "empreendimento", label: "Empreendimento", description: "Nome do empreendimento", type: "text", required: false },
-    { key: "data_vistoria", label: "Data da Vistoria", description: "Data de realização da vistoria", type: "date", required: true },
-    { key: "responsavel_vistoria", label: "Responsável Vistoria", description: "Nome do responsável pela vistoria", type: "text", required: true },
-    { key: "estado_geral", label: "Estado Geral", description: "Estado geral do imóvel", type: "text", required: false },
-    { key: "instalacoes_eletricas", label: "Instalações Elétricas", description: "Estado das instalações elétricas", type: "text", required: false },
-    { key: "instalacoes_hidraulicas", label: "Instalações Hidráulicas", description: "Estado das instalações hidráulicas", type: "text", required: false },
-    { key: "observacoes", label: "Observações", description: "Observações gerais", type: "text", required: false }
+    { key: "forma_pagamento", label: "Forma de Pagamento", description: "Descrição das parcelas e entrada", type: "text", required: true },
+    { key: "data_entrega", label: "Data de Entrega", description: "Data prevista para entrega das chaves", type: "date", required: true },
+    { key: "data", label: "Data Atual", description: "Data de geração do documento", type: "date", required: true },
+    { key: "empreendimento", label: "Empreendimento", description: "Nome do empreendimento", type: "text", required: false }
   ];
 
   getAllDocuments(): Document[] {
@@ -688,18 +702,39 @@ OBSERVAÇÕES: {{observacoes}}`,
     const doc = this.getDocumentById(documentId);
     if (!doc || !doc.signatures) return false;
 
-    const signature = doc.signatures.find(s => s.id === signerId);
-    if (!signature || signature.status !== 'pending') return false;
+    // Verificar se é a vez deste signatário no fluxo sequencial
+    const signatureIndex = doc.signatures.findIndex(s => s.id === signerId);
+    if (signatureIndex === -1) return false;
+    
+    const signature = doc.signatures[signatureIndex];
+    if (signature.status !== 'pending') return false;
+
+    // Lógica para fluxo sequencial
+    if (signature.order && signature.order > 1) {
+      const previousSignatures = doc.signatures.filter(s => s.order && s.order < signature.order!);
+      const allPreviousSigned = previousSignatures.every(s => s.status === 'signed');
+      
+      if (!allPreviousSigned) {
+        console.warn('DocumentService: Signatário tentou assinar fora de ordem.');
+        return false;
+      }
+    }
 
     signature.status = 'signed';
     signature.signedAt = new Date();
     signature.ipAddress = ipAddress;
     signature.evidence = evidence;
     
-    // Simular hash do documento no momento da assinatura
-    signature.documentHash = `SHA256-${Math.random().toString(36).substring(2, 15).toUpperCase()}`;
+    // Hash criptográfico simulado
+    signature.documentHash = `SHA256-${Math.random().toString(36).substring(2, 15).toUpperCase()}${Date.now().toString(36).toUpperCase()}`;
 
-    this.updateDocument(documentId, { signatures: doc.signatures });
+    this.updateDocument(documentId, { signatures: [...doc.signatures] });
+
+    // Se todas as assinaturas foram concluídas, marcar documento como aprovado
+    const allSigned = doc.signatures.every(s => s.status === 'signed');
+    if (allSigned) {
+      this.updateDocument(documentId, { approvalStatus: 'approved', status: 'published' });
+    }
 
     auditLogService.log({
       entityType: 'document',
