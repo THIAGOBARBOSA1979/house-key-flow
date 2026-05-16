@@ -172,58 +172,59 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
                     <TableHead className="text-right font-black text-[10px] uppercase tracking-widest pr-6">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
-              <TableBody>
-                {signatures.length > 0 ? (
-                  signatures.map((s, index) => (
-                    <TableRow key={s.id} className="group hover:bg-muted/10 transition-colors border-b-border/40">
-                      <TableCell className="text-center">
-                        <div className="relative inline-flex items-center justify-center">
-                          <div className="absolute -inset-1 bg-primary/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
-                          <Badge variant="outline" className="h-8 w-8 p-0 flex items-center justify-center rounded-full font-black text-xs bg-background relative border-2 border-primary/20 group-hover:border-primary transition-all">
-                            {s.order || index + 1}
+                <TableBody>
+                  {signatures.length > 0 ? (
+                    signatures.map((s, index) => (
+                      <TableRow key={s.id} className="group hover:bg-muted/10 transition-colors border-b-border/40">
+                        <TableCell className="text-center">
+                          <div className="relative inline-flex items-center justify-center">
+                            <div className="absolute -inset-1 bg-primary/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Badge variant="outline" className="h-8 w-8 p-0 flex items-center justify-center rounded-full font-black text-xs bg-background relative border-2 border-primary/20 group-hover:border-primary transition-all">
+                              {s.order || index + 1}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="font-black text-sm text-foreground/90">{s.name}</div>
+                          <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">{s.role} • {s.email}</div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Badge variant="secondary" className="gap-1.5 font-black text-[9px] uppercase tracking-widest py-1 px-2.5 rounded-lg bg-muted/60">
+                            {s.confirmationMethod === 'email' ? <Mail className="w-3 h-3 text-primary/70" /> : <Smartphone className="w-3 h-3 text-primary/70" />}
+                            {s.confirmationMethod}
                           </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-black text-sm text-foreground/90">{s.name}</div>
-                        <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">{s.role} • {s.email}</div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant="secondary" className="gap-1.5 font-black text-[9px] uppercase tracking-widest py-1 px-2.5 rounded-lg bg-muted/60">
-                          {s.confirmationMethod === 'email' ? <Mail className="w-3 h-3 text-primary/70" /> : <Smartphone className="w-3 h-3 text-primary/70" />}
-                          {s.confirmationMethod}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={cn(
-                          "text-[9px] font-black uppercase tracking-widest py-1 px-3 rounded-full shadow-sm",
-                          s.status === 'signed' ? "bg-green-500 hover:bg-green-600" : "bg-amber-500 hover:bg-amber-600"
-                        )}>
-                          {s.status === 'signed' ? 'Assinado' : 'Pendente'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleRemoveSigner(s.id)}
-                          disabled={s.status === 'signed'}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={cn(
+                            "text-[9px] font-black uppercase tracking-widest py-1 px-3 rounded-full shadow-sm",
+                            s.status === 'signed' ? "bg-green-500 hover:bg-green-600" : "bg-amber-500 hover:bg-amber-600"
+                          )}>
+                            {s.status === 'signed' ? 'Assinado' : 'Pendente'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleRemoveSigner(s.id)}
+                            disabled={s.status === 'signed'}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center py-12 text-muted-foreground italic text-sm">
+                        Nenhum signatário adicionado a este fluxo.
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center py-12 text-muted-foreground italic text-sm">
-                      Nenhum signatário adicionado a este fluxo.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
 
