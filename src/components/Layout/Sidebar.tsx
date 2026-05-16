@@ -15,8 +15,11 @@ import {
   ChevronRight,
   Layout,
   LogOut,
-  Activity
+  Activity,
+  DollarSign,
+  Megaphone
 } from "lucide-react";
+
 
 import { SidebarGroup } from "./SidebarGroup";
 import { Button } from "@/components/ui/button";
