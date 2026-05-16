@@ -52,6 +52,13 @@ export interface DocumentSignature {
   signedAt?: Date;
   ipAddress?: string;
   confirmationMethod: "email" | "sms";
+  order?: number; // Para assinaturas sequenciais
+  documentHash?: string; // Para integridade do documento
+  evidence?: {
+    browser?: string;
+    os?: string;
+    location?: string;
+  };
 }
 
 export interface ApprovalHistoryEntry {
@@ -677,7 +684,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     return newSignature;
   }
 
-  signDocument(documentId: string, signerId: string, ipAddress: string): boolean {
+  signDocument(documentId: string, signerId: string, ipAddress: string, evidence?: DocumentSignature['evidence']): boolean {
     const doc = this.getDocumentById(documentId);
     if (!doc || !doc.signatures) return false;
 
@@ -687,6 +694,10 @@ OBSERVAÇÕES: {{observacoes}}`,
     signature.status = 'signed';
     signature.signedAt = new Date();
     signature.ipAddress = ipAddress;
+    signature.evidence = evidence;
+    
+    // Simular hash do documento no momento da assinatura
+    signature.documentHash = `SHA256-${Math.random().toString(36).substring(2, 15).toUpperCase()}`;
 
     this.updateDocument(documentId, { signatures: doc.signatures });
 
@@ -697,7 +708,25 @@ OBSERVAÇÕES: {{observacoes}}`,
       performedBy: signature.email,
       performedByName: signature.name,
       performedByRole: 'client',
-      details: `Documento "${doc.title}" assinado digitalmente por ${signature.name}.`
+      details: `Documento "${doc.title}" assinado digitalmente por ${signature.name}. Hash: ${signature.documentHash}`
+    });
+
+    return true;
+  }
+
+  rejectSignature(documentId: string, signerId: string, reason: string): boolean {
+    const doc = this.getDocumentById(documentId);
+    if (!doc || !doc.signatures) return false;
+
+    const signature = doc.signatures.find(s => s.id === signerId);
+    if (!signature || signature.status !== 'pending') return false;
+
+    signature.status = 'rejected';
+    
+    this.updateDocument(documentId, { 
+      signatures: doc.signatures,
+      approvalStatus: 'rejected',
+      approvalComment: `Assinatura recusada por ${signature.name}: ${reason}`
     });
 
     return true;

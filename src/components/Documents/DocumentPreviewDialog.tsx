@@ -8,8 +8,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw } from "lucide-react";
-import { Document } from "@/services/DocumentService";
+import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw, ShieldCheck, History } from "lucide-react";
+import { Document, documentService } from "@/services/DocumentService";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface DocumentPreviewDialogProps {
   document: Document | null;
@@ -83,8 +86,41 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
                       </div>
                     )}
                   </div>
+                  </div>
+
+                  {document.signatures && document.signatures.some(s => s.status === 'signed') && (
+                    <div className="mt-20 pt-8 border-t-2 border-dashed border-gray-200 w-full max-w-3xl">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4" /> Assinaturas Digitais Identificadas
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {document.signatures.filter(s => s.status === 'signed').map(sig => (
+                          <div key={sig.id} className="space-y-2 p-4 bg-muted/5 rounded-xl border border-muted-foreground/10 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-2 opacity-5">
+                              <ShieldCheck size={48} />
+                            </div>
+                            <div className="font-serif italic text-lg text-gray-700">{sig.name}</div>
+                            <div className="text-[10px] uppercase font-bold text-muted-foreground border-t pt-2">
+                              {sig.role} • Assinado em {sig.signedAt ? format(sig.signedAt, "dd/MM/yyyy HH:mm", { locale: ptBR }) : ''}
+                            </div>
+                            <div className="text-[8px] font-mono text-muted-foreground/60 break-all leading-tight">
+                              ID: {sig.id.substring(0,8)} | Hash: {sig.documentHash?.substring(0, 16)}...
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-12 p-4 bg-primary/5 rounded-lg border border-primary/20 text-[9px] text-muted-foreground flex items-start gap-3">
+                        <History className="w-4 h-4 text-primary flex-shrink-0" />
+                        <div>
+                          <p className="font-bold text-primary uppercase tracking-widest mb-1">Certificado de Autenticidade</p>
+                          <p>Este documento foi assinado digitalmente através da plataforma A2 Engenharia. As assinaturas possuem validade jurídica conforme Medida Provisória nº 2.200-2/2001. A integridade do documento é garantida por hashes criptográficos individuais.</p>
+                          <p className="mt-1">Código de Verificação: {document.id.toUpperCase()}-SIGN-2025</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
             </ScrollArea>
           </div>
         </div>

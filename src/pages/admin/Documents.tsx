@@ -51,6 +51,8 @@ import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDia
 import { DocumentWorkflow } from "@/components/Documents/DocumentWorkflow";
 import { UploadDocumentDialog } from "@/components/Documents/UploadDocumentDialog";
 import { DocumentVersionHistory } from "@/components/Documents/DocumentVersionHistory";
+import { SignatureWorkflowDialog } from "@/components/Documents/SignatureWorkflowDialog";
+import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
 
 const AdminDocuments = () => {
   const { toast } = useToast();
@@ -69,6 +71,7 @@ const AdminDocuments = () => {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
+  const [isSignatureWorkflowOpen, setIsSignatureWorkflowOpen] = useState(false);
   
   const categories = documentService.getCategories();
 
@@ -343,6 +346,13 @@ const AdminDocuments = () => {
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
                                       e.stopPropagation();
+                                      setSelectedDoc(doc);
+                                      setIsSignatureWorkflowOpen(true);
+                                    }}>
+                                      <ShieldCheck className="w-3.5 h-3.5 mr-2" /> Configurar Assinaturas
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="text-xs font-bold cursor-pointer" onClick={(e) => {
+                                      e.stopPropagation();
                                       // Implementar lógica de mover (abriria um sub-modal ou similar)
                                       toast({ title: "Mover Documento", description: "Funcionalidade de movimentação entre pastas ativada." });
                                     }}>
@@ -504,6 +514,24 @@ const AdminDocuments = () => {
           document={selectedDoc} 
           isOpen={isHistoryOpen} 
           onOpenChange={setIsHistoryOpen}
+        />
+      )}
+
+      {selectedDoc && (
+        <SignatureWorkflowDialog
+          documentId={selectedDoc.id}
+          isOpen={isSignatureWorkflowOpen}
+          onClose={() => setIsSignatureWorkflowOpen(false)}
+          onSuccess={refreshDocuments}
+        />
+      )}
+
+      {selectedDoc && (
+        <DigitalSignatureDialog
+          isOpen={false} // Somente para garantir que o componente está disponível no escopo se necessário
+          onClose={() => {}}
+          documentId={selectedDoc.id}
+          documentTitle={selectedDoc.title}
         />
       )}
     </div>

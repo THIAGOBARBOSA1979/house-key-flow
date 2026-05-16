@@ -58,10 +58,15 @@ export function DigitalSignatureDialog({
   const handleSign = () => {
     if (!currentUserSignature) return;
 
-    // Simulate getting IP address
+    // Simulate getting IP and browser info
     const ipAddress = "189.12.34." + Math.floor(Math.random() * 255);
+    const evidence = {
+      browser: "Chrome 124.0.0.0",
+      os: "Windows 11",
+      location: "São Paulo, SP, BR"
+    };
     
-    const success = documentService.signDocument(documentId, currentUserSignature.id, ipAddress);
+    const success = documentService.signDocument(documentId, currentUserSignature.id, ipAddress, evidence);
     if (success) {
       toast({
         title: "Documento assinado",
@@ -69,6 +74,23 @@ export function DigitalSignatureDialog({
       });
       setSignatures(documentService.getSignatureHistory(documentId));
       setActiveTab("history");
+    }
+  };
+
+  const handleReject = () => {
+    if (!currentUserSignature) return;
+    
+    const reason = prompt("Por favor, informe o motivo da recusa:");
+    if (reason) {
+      const success = documentService.rejectSignature(documentId, currentUserSignature.id, reason);
+      if (success) {
+        toast({
+          title: "Assinatura Recusada",
+          description: "O documento foi marcado como recusado.",
+          variant: "destructive"
+        });
+        onClose();
+      }
     }
   };
 
@@ -149,9 +171,14 @@ export function DigitalSignatureDialog({
                 <p className="text-sm text-muted-foreground mb-4">
                   Ao clicar em assinar, você confirma que leu e concorda com os termos deste documento. Uma confirmação foi enviada para o seu {currentUserSignature.confirmationMethod === 'email' ? 'e-mail' : 'celular'}.
                 </p>
-                <Button className="w-full" onClick={handleSign}>
-                  Assinar Agora
-                </Button>
+                <div className="flex gap-3">
+                  <Button className="flex-1 font-bold" onClick={handleSign}>
+                    Assinar Agora
+                  </Button>
+                  <Button variant="outline" className="flex-1 font-bold text-destructive hover:text-destructive" onClick={handleReject}>
+                    Recusar
+                  </Button>
+                </div>
               </div>
             )}
           </TabsContent>
@@ -174,6 +201,9 @@ export function DigitalSignatureDialog({
                       <p>Data: {s.signedAt ? format(s.signedAt, "dd/MM/yyyy HH:mm:ss", { locale: ptBR }) : '-'}</p>
                       <p>IP: {s.ipAddress}</p>
                       <p>Autenticação: {s.confirmationMethod === 'email' ? 'E-mail' : 'SMS'} verificado</p>
+                      <p>Hardware: {s.evidence?.browser} ({s.evidence?.os})</p>
+                      <p>Localização: {s.evidence?.location}</p>
+                      <p className="font-mono mt-1 text-[9px] bg-muted p-1 rounded truncate">Hash: {s.documentHash}</p>
                     </div>
                   </div>
                 ))}
