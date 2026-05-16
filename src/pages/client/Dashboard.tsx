@@ -417,44 +417,27 @@ const Dashboard = () => {
         />
       </ResponsiveGrid>
 
-      {/* Construction Feed and Referral */}
+      {/* FAQ and Support Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Newspaper className="h-5 w-5 text-primary" />
-              Atualizações da Obra
-            </CardTitle>
-            <CardDescription>Acompanhe as últimas novidades diretamente do canteiro.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {[
-              {
-                title: "Conclusão da Fachada",
-                date: "Hoje",
-                content: "Iniciamos a aplicação da última camada de revestimento na torre A.",
-                category: "Obra"
-              },
-              {
-                title: "Início do Paisagismo",
-                date: "Há 2 dias",
-                content: "As primeiras mudas de árvores nativas foram entregues para o jardim central.",
-                category: "Lazer"
-              }
-            ].map((news, i) => (
-              <div key={i} className="flex gap-4 p-4 rounded-2xl bg-muted/30 border border-transparent hover:border-border transition-all">
-                <div className="h-12 w-12 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
-                  <Building2 className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-primary/10 text-primary rounded-md">{news.category}</span>
-                    <span className="text-[10px] font-medium text-muted-foreground uppercase">{news.date}</span>
-                  </div>
-                  <h4 className="font-bold text-sm mb-1">{news.title}</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{news.content}</p>
-                </div>
-              </div>
+        <div className="lg:col-span-2">
+          <ClientFAQ />
+        </div>
+        <div>
+          <Card className="bg-muted/30 border-none shadow-sm rounded-3xl h-full flex flex-col justify-center p-8 text-center">
+            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <LifeBuoy className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Precisa de Ajuda?</h3>
+            <p className="text-sm text-muted-foreground mb-6">Nossa equipe de suporte está pronta para atender você e tirar todas as suas dúvidas.</p>
+            <Link to="/client/support">
+              <Button className="w-full rounded-xl font-black uppercase tracking-widest text-[10px] h-12">
+                Acessar Central de Ajuda
+              </Button>
+            </Link>
+          </Card>
+        </div>
+      </div>
+
             ))}
           </CardContent>
         </Card>
