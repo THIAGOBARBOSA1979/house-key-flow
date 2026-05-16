@@ -1,17 +1,35 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Building, Building2, FileText, Home, Calendar, ShieldCheck, Ruler, MapPin, Info, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { 
+  Building, 
+  Building2, 
+  FileText, 
+  Home, 
+  Calendar, 
+  ShieldCheck, 
+  Ruler, 
+  MapPin, 
+  Info, 
+  ArrowUpRight, 
+  CheckCircle2,
+  ChevronRight,
+  Maximize2,
+  Wind,
+  Sun,
+  Layers,
+  Zap,
+  Droplets,
+  Download
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-
 import { propertyService, Property } from "@/services/PropertyService";
-
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 
@@ -22,7 +40,6 @@ const ClientProperties = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  // Use property service to get real property data
   const [propertyData, setPropertyData] = useState<Property | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,7 +50,6 @@ const ClientProperties = () => {
         setPropertyData(p);
       }
     } else {
-      // Fallback to first property for demo if none associated
       const all = propertyService.getAll();
       if (all.length > 0) setPropertyData(all[0]);
     }
@@ -44,33 +60,30 @@ const ClientProperties = () => {
     address: propertyData?.location || "Rua das Flores, 1500, Centro",
     city: "São Paulo",
     state: "SP",
-    size: propertyData?.totalArea ? `${Math.round(propertyData.totalArea / 120)}m²` : "72m²",
+    size: propertyData?.totalArea ? `${Math.round(propertyData.totalArea / 120)}m²` : "72,50m²",
     bedrooms: 2,
     bathrooms: 2,
     deliveryDate: propertyData?.deliveryDate ? propertyData.deliveryDate.toLocaleDateString() : "15/04/2025",
     warrantyExpiration: "15/04/2030",
     documents: [
-      { id: "1", title: "Manual do Proprietário", type: "manual" },
-      { id: "2", title: "Termo de Garantia", type: "warranty" },
-      { id: "3", title: "Planta Baixa", type: "blueprint" },
-      { id: "4", title: "Contrato de Compra", type: "contract" }
+      { id: "1", title: "Manual do Proprietário", type: "manual", size: "4.5 MB" },
+      { id: "2", title: "Termo de Garantia", type: "warranty", size: "1.2 MB" },
+      { id: "3", title: "Planta Humanizada", type: "blueprint", size: "8.7 MB" },
+      { id: "4", title: "Memorial Descritivo", type: "contract", size: "2.1 MB" }
     ]
   };
 
+  const specifications = [
+    { icon: Maximize2, label: "Área Privativa", value: "72,50 m²" },
+    { icon: Layers, label: "Pavimento", value: "12º Andar" },
+    { icon: Sun, label: "Posição Solar", value: "Norte" },
+    { icon: Wind, label: "Ventilação", value: "Natural" },
+    { icon: Zap, label: "Rede Elétrica", value: "220v" },
+    { icon: Droplets, label: "Rede Hidráulica", value: "Individual" }
+  ];
+
   const handleViewDocument = (title: string) => {
-    toast({ title: "Abrindo documento", description: `Abrindo "${title}" para visualização.` });
-  };
-
-  const handleViewMemorial = () => {
-    toast({ title: "Memorial descritivo", description: "O memorial descritivo completo será aberto em uma nova aba." });
-  };
-
-  const handleViewWarrantyTerm = () => {
-    toast({ title: "Termo de garantia", description: "O termo completo de garantia será aberto em uma nova aba." });
-  };
-
-  const handleRequestWarranty = () => {
-    navigate("/client/warranty");
+    toast({ title: "Abrindo documento", description: `Iniciando visualização de "${title}".` });
   };
 
   if (isLoading) {
@@ -83,423 +96,247 @@ const ClientProperties = () => {
 
   return (
     <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
-      {/* Page header */}
+      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Building2 className="h-8 w-8 text-primary" />
-            Meu Imóvel
+          <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-2xl">
+              <Building2 className="h-8 w-8 text-primary" />
+            </div>
+            Minha Unidade
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Informações técnicas, documentos e períodos de garantia da sua unidade.
+          <p className="text-muted-foreground mt-1 font-medium">
+            Ficha técnica detalhada e documentação exclusiva do seu imóvel.
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-muted/50 p-1.5 rounded-lg border">
-          <Badge variant="outline" className="bg-background">ID: {profile?.propertyId?.substring(0, 8) || 'PROP-001'}</Badge>
-          <Badge variant="outline" className="bg-background">Fase: Finalizado</Badge>
+        <div className="flex items-center gap-3">
+          <Badge className="bg-primary/5 text-primary border-primary/10 font-black uppercase tracking-widest px-4 py-2 rounded-xl">
+            {profile?.unitNumber ? `Unidade ${profile.unitNumber}` : "Unidade 204"}
+          </Badge>
+          <Badge className="bg-green-500/5 text-green-600 border-green-200 font-black uppercase tracking-widest px-4 py-2 rounded-xl">
+            Vistoriado
+          </Badge>
         </div>
       </div>
 
-      {/* Property card */}
-      <Card className="bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-md overflow-hidden">
-        <CardContent className="p-0">
-          <div className="flex flex-col md:flex-row">
-            <div className="flex-1 p-6 border-b md:border-b-0 md:border-r border-primary/10">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h2 className="text-2xl font-black text-primary tracking-tight">{propertyData?.name || "Seu Imóvel"}</h2>
-                  <p className="text-xl font-bold mt-1">Unidade {profile?.unitNumber || "204"}</p>
+      {/* Hero Property Card */}
+      <Card className="bg-white border-none shadow-xl overflow-hidden rounded-3xl group">
+        <div className="flex flex-col lg:flex-row">
+          <div className="lg:w-1/2 relative h-[300px] lg:h-auto overflow-hidden">
+             <img 
+               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80" 
+               alt="Property facade"
+               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+             />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+             <div className="absolute bottom-6 left-6 text-white">
+                <h2 className="text-2xl font-black tracking-tight">{propertyData?.name || "Edifício Aurora"}</h2>
+                <div className="flex items-center gap-2 mt-2 text-white/80">
+                  <MapPin size={16} />
+                  <span className="text-sm font-bold uppercase tracking-wider">{propertyDetails.address}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-primary text-primary-foreground shadow-lg">
-                  <Home size={24} />
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-2 text-muted-foreground bg-muted/30 p-2 rounded-lg border">
-                <MapPin size={18} className="text-primary" />
-                <span className="text-sm font-medium">{propertyDetails.address}</span>
-              </div>
-              
-              <ResponsiveGrid columns={2} gap="sm" className="mt-6">
-                <StatsCard 
-                  label="Status Entrega" 
-                  value="Finalizado" 
-                  icon={CheckCircle2} 
-                  variant="complete"
-                />
-                <StatsCard 
-                  label="Tipo de Unidade" 
-                  value="Residencial" 
-                  icon={Home} 
-                  variant="brand"
-                />
-              </ResponsiveGrid>
+             </div>
+          </div>
+          <div className="lg:w-1/2 p-8 lg:p-12 space-y-8">
+            <div className="grid grid-cols-2 gap-8">
+               {specifications.map((spec, i) => {
+                 const Icon = spec.icon;
+                 return (
+                   <div key={i} className="space-y-2">
+                     <div className="flex items-center gap-2 text-muted-foreground">
+                        <Icon size={16} className="text-primary" />
+                        <span className="text-[10px] font-black uppercase tracking-widest">{spec.label}</span>
+                     </div>
+                     <p className="text-lg font-black tracking-tight">{spec.value}</p>
+                   </div>
+                 );
+               })}
             </div>
-
-            <div className="w-full md:w-1/3 bg-muted/20 p-6 flex flex-col justify-center">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Especificações Rápidas</h3>
-              <div className="space-y-4-sem">
-                <div className="flex items-center justify-between">
+            <Separator className="opacity-50" />
+            <div className="flex items-center justify-between">
+               <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Status de Entrega</p>
                   <div className="flex items-center gap-2">
-                    <Ruler size={16} className="text-primary" />
-                    <span className="text-sm">Área Útil</span>
+                    <CheckCircle2 className="h-5 w-5 text-green-500" />
+                    <span className="font-black text-foreground">Imóvel Entregue</span>
                   </div>
-                  <span className="font-bold">{propertyDetails.size}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Building2 size={16} className="text-primary" />
-                    <span className="text-sm">Andar</span>
-                  </div>
-                  <span className="font-bold">2º Andar</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Calendar size={16} className="text-primary" />
-                    <span className="text-sm">Entregue em</span>
-                  </div>
-                  <span className="font-bold">{propertyDetails.deliveryDate}</span>
-                </div>
-              </div>
+               </div>
+               <Button className="font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl shadow-lg shadow-primary/20">
+                 Baixar Ficha Técnica
+               </Button>
             </div>
           </div>
-        </CardContent>
+        </div>
       </Card>
 
-      {/* Tabs for property information */}
-      <Tabs defaultValue="documents" className="mt-6-sem">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1 bg-muted/50 rounded-2xl">
-          <TabsTrigger value="documents" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Documentos</TabsTrigger>
-          <TabsTrigger value="features" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Características</TabsTrigger>
-          <TabsTrigger value="photos" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Galeria</TabsTrigger>
-          <TabsTrigger value="warranty" className="rounded-xl py-3 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Garantias</TabsTrigger>
+      {/* Tabs Section */}
+      <Tabs defaultValue="specs" className="mt-8">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1.5 bg-muted/50 rounded-2xl mb-8">
+          <TabsTrigger value="specs" className="rounded-xl py-4 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Especificações</TabsTrigger>
+          <TabsTrigger value="documents" className="rounded-xl py-4 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Documentos</TabsTrigger>
+          <TabsTrigger value="warranty" className="rounded-xl py-4 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Garantias</TabsTrigger>
+          <TabsTrigger value="history" className="rounded-xl py-4 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Histórico</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="documents" className="space-y-4-sem pt-4-sem">
-          <Card>
-            <CardHeader>
-              <CardTitle>Documentos do Imóvel</CardTitle>
-              <CardDescription>
-                Acesse todos os documentos relacionados ao seu imóvel
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {propertyDetails.documents.map((doc) => (
-                <Card key={doc.id} className="border">
-                  <CardContent className="p-4 flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-full">
-                        <FileText className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium">{doc.title}</h3>
-                        <p className="text-xs text-muted-foreground">
-                          {doc.type === "manual" && "Manual e instruções"}
-                          {doc.type === "warranty" && "Termos de garantia"}
-                          {doc.type === "blueprint" && "Planta do imóvel"}
-                          {doc.type === "contract" && "Documentação legal"}
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => handleViewDocument(doc.title)}>
-                      Visualizar
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="features" className="space-y-4 pt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Características do Imóvel</CardTitle>
-              <CardDescription>
-                Detalhes técnicos e especificações da sua unidade
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-medium flex items-center gap-2">
-                      <Ruler className="h-4 w-4 text-muted-foreground" />
-                      Dimensões
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                      <div>
-                        <span className="text-sm text-muted-foreground">Área privativa:</span>
-                        <p className="font-medium">{propertyDetails.size}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Pé direito:</span>
-                        <p className="font-medium">2,80m</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Quartos:</span>
-                        <p className="font-medium">{propertyDetails.bedrooms}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Banheiros:</span>
-                        <p className="font-medium">{propertyDetails.bathrooms}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Vagas:</span>
-                        <p className="font-medium">1 vaga</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Andar:</span>
-                        <p className="font-medium">2º andar</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-medium flex items-center gap-2">
-                      <Home className="h-4 w-4 text-muted-foreground" />
-                      Acabamentos
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                      <div>
-                        <span className="text-sm text-muted-foreground">Piso:</span>
-                        <p className="font-medium">Porcelanato</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Paredes:</span>
-                        <p className="font-medium">Pintura acrílica</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Bancada cozinha:</span>
-                        <p className="font-medium">Granito</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Janelas:</span>
-                        <p className="font-medium">Alumínio</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Portas:</span>
-                        <p className="font-medium">Madeira</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Teto:</span>
-                        <p className="font-medium">Gesso</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-medium flex items-center gap-2">
-                      <Building className="h-4 w-4 text-muted-foreground" />
-                      Informações do Empreendimento
-                    </h3>
-                    <div className="mt-2 space-y-2">
-                      <div>
-                        <span className="text-sm text-muted-foreground">Nome:</span>
-                        <p className="font-medium">{propertyData?.name}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Endereço:</span>
-                        <p className="font-medium">{propertyDetails.address}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Número de torres:</span>
-                        <p className="font-medium">2 torres</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Unidades por andar:</span>
-                        <p className="font-medium">4 unidades</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Lazer:</span>
-                        <p className="font-medium">Piscina, academia, salão de festas</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-medium flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      Datas Importantes
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                      <div>
-                        <span className="text-sm text-muted-foreground">Lançamento:</span>
-                        <p className="font-medium">10/01/2023</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Entrega:</span>
-                        <p className="font-medium">{propertyDetails.deliveryDate}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Vistoria:</span>
-                        <p className="font-medium">10/04/2025</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-muted-foreground">Assembleia:</span>
-                        <p className="font-medium">20/04/2025</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex justify-end mt-4">
-                <Button variant="outline" onClick={handleViewMemorial}>
-                  Ver memorial descritivo completo
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="photos" className="space-y-4 pt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
-                Progresso da Unidade
-              </CardTitle>
-              <CardDescription>Acompanhe a evolução da construção do seu imóvel.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="group relative aspect-square rounded-2xl overflow-hidden border-2 border-muted bg-muted cursor-pointer hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
-                    <img 
-                      src={`https://images.unsplash.com/photo-${1580000000000 + i * 1000}?auto=format&fit=crop&q=80&w=400`} 
-                      alt={`Progresso ${i}`}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <Button variant="secondary" size="sm" className="font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg">Ver Detalhes</Button>
-                    </div>
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <Badge className="bg-primary/90 text-[9px] font-black uppercase tracking-tighter border-none px-2 py-1 shadow-md">Mês {i}</Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+
+        <TabsContent value="specs" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-layout-gap">
+            <Card className="border-none shadow-md bg-white p-8 space-y-6">
+               <div className="p-3 bg-primary/5 rounded-2xl w-fit">
+                 <Maximize2 className="h-6 w-6 text-primary" />
+               </div>
+               <h3 className="text-lg font-black tracking-tight">Acabamentos Internos</h3>
+               <ul className="space-y-4">
+                 {[
+                   { label: "Pisos", value: "Porcelanato 90x90" },
+                   { label: "Paredes", value: "Massa Corrida / Pintura" },
+                   { label: "Teto", value: "Gesso Rebaixado" },
+                   { label: "Metais", value: "Docol Linha Luxo" }
+                 ].map((item, i) => (
+                   <li key={i} className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">{item.label}</span>
+                      <span className="font-black">{item.value}</span>
+                   </li>
+                 ))}
+               </ul>
+            </Card>
+
+            <Card className="border-none shadow-md bg-white p-8 space-y-6">
+               <div className="p-3 bg-primary/5 rounded-2xl w-fit">
+                 <Zap className="h-6 w-6 text-primary" />
+               </div>
+               <h3 className="text-lg font-black tracking-tight">Instalações e Redes</h3>
+               <ul className="space-y-4">
+                 {[
+                   { label: "Iluminação", value: "Pontos de LED" },
+                   { label: "Climatização", value: "Split em todos os quartos" },
+                   { label: "Gás", value: "GN (Gás Natural)" },
+                   { label: "Água Quente", value: "Aquecedor de Passagem" }
+                 ].map((item, i) => (
+                   <li key={i} className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">{item.label}</span>
+                      <span className="font-black">{item.value}</span>
+                   </li>
+                 ))}
+               </ul>
+            </Card>
+
+            <Card className="border-none shadow-md bg-white p-8 space-y-6">
+               <div className="p-3 bg-primary/5 rounded-2xl w-fit">
+                 <Info className="h-6 w-6 text-primary" />
+               </div>
+               <h3 className="text-lg font-black tracking-tight">Outros Detalhes</h3>
+               <ul className="space-y-4">
+                 {[
+                   { label: "Vagas de Garagem", value: "2 Vagas (S2)" },
+                   { label: "Depósito Privativo", value: "Sim (1.5 m²)" },
+                   { label: "Hobby Box", value: "Não possui" },
+                   { label: "Automação", value: "Infraestrutura pronta" }
+                 ].map((item, i) => (
+                   <li key={i} className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">{item.label}</span>
+                      <span className="font-black">{item.value}</span>
+                   </li>
+                 ))}
+               </ul>
+            </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="warranty" className="space-y-4 pt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" />
-                Garantias do Imóvel
-              </CardTitle>
-              <CardDescription>
-                Informações sobre as garantias aplicáveis ao seu imóvel
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <h3 className="font-medium">Períodos de Garantia</h3>
-                <div className="mt-4 border rounded-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-muted">
-                      <tr>
-                        <th className="py-3 px-4 text-left">Item</th>
-                        <th className="py-3 px-4 text-left">Período</th>
-                        <th className="py-3 px-4 text-left">Validade até</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      <tr>
-                        <td className="py-3 px-4">Fundação e estrutura</td>
-                        <td className="py-3 px-4">5 anos</td>
-                        <td className="py-3 px-4">{propertyDetails.warrantyExpiration}</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4">Impermeabilização</td>
-                        <td className="py-3 px-4">3 anos</td>
-                        <td className="py-3 px-4">15/04/2028</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4">Instalações hidráulicas</td>
-                        <td className="py-3 px-4">2 anos</td>
-                        <td className="py-3 px-4">15/04/2027</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4">Instalações elétricas</td>
-                        <td className="py-3 px-4">2 anos</td>
-                        <td className="py-3 px-4">15/04/2027</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4">Revestimentos cerâmicos</td>
-                        <td className="py-3 px-4">1 ano</td>
-                        <td className="py-3 px-4">15/04/2026</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4">Fissuras</td>
-                        <td className="py-3 px-4">1 ano</td>
-                        <td className="py-3 px-4">15/04/2026</td>
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4">Esquadrias</td>
-                        <td className="py-3 px-4">1 ano</td>
-                        <td className="py-3 px-4">15/04/2026</td>
-                      </tr>
-                    </tbody>
-                  </table>
+        <TabsContent value="documents" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+           <Card className="border-none shadow-md overflow-hidden bg-white">
+             <CardHeader className="bg-muted/30 pb-6 border-b">
+               <CardTitle className="text-xl font-black tracking-tight">Arquivos da Unidade</CardTitle>
+               <CardDescription className="font-medium">Documentos oficiais e técnicos para download.</CardDescription>
+             </CardHeader>
+             <CardContent className="p-0">
+                <div className="divide-y">
+                  {propertyDetails.documents.map((doc) => (
+                    <div key={doc.id} className="flex items-center justify-between p-6 hover:bg-muted/30 transition-all group">
+                       <div className="flex items-center gap-4">
+                          <div className="p-3 bg-primary/5 text-primary rounded-xl">
+                             <FileText className="h-6 w-6" />
+                          </div>
+                          <div>
+                             <h4 className="font-black text-sm group-hover:text-primary transition-colors">{doc.title}</h4>
+                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{doc.size}</p>
+                          </div>
+                       </div>
+                       <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm" className="font-black uppercase tracking-widest text-[10px] h-10 px-4 rounded-xl hover:bg-primary/10 text-primary" onClick={() => handleViewDocument(doc.title)}>
+                            Visualizar
+                          </Button>
+                          <Button variant="outline" size="sm" className="font-black uppercase tracking-widest text-[10px] h-10 w-10 p-0 rounded-xl hover:bg-primary hover:text-white transition-all">
+                            <Download className="h-4 w-4" />
+                          </Button>
+                       </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="font-medium">Como Solicitar Garantia</h3>
-                  <ul className="mt-3 space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="bg-primary/20 text-primary rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
-                      <span>Acesse a aba "Garantias" no menu principal</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="bg-primary/20 text-primary rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
-                      <span>Clique em "Nova Solicitação" e preencha o formulário</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="bg-primary/20 text-primary rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
-                      <span>Descreva o problema com detalhes e adicione fotos</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="bg-primary/20 text-primary rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
-                      <span>Nossa equipe analisará e entrará em contato</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="bg-primary/20 text-primary rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold mt-0.5">5</span>
-                      <span>Acompanhe o status da solicitação pelo portal</span>
-                    </li>
-                  </ul>
+             </CardContent>
+           </Card>
+        </TabsContent>
+
+        <TabsContent value="warranty" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
+              <Card className="border-none shadow-md bg-white p-8">
+                <h3 className="text-xl font-black tracking-tight mb-6 flex items-center gap-3">
+                  <ShieldCheck className="h-6 w-6 text-primary" />
+                  Prazos de Garantia
+                </h3>
+                <div className="space-y-6">
+                   {[
+                     { label: "Estrutural", value: "5 anos", exp: "Abr/2030" },
+                     { label: "Impermeabilização", value: "3 anos", exp: "Abr/2028" },
+                     { label: "Hidráulica/Elétrica", value: "2 anos", exp: "Abr/2027" },
+                     { label: "Acabamentos", value: "1 ano", exp: "Abr/2026" }
+                   ].map((item, i) => (
+                     <div key={i} className="flex items-center justify-between">
+                        <div className="space-y-1">
+                           <p className="text-sm font-black">{item.label}</p>
+                           <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Expira em: {item.exp}</p>
+                        </div>
+                        <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] px-3 py-1 uppercase">{item.value}</Badge>
+                     </div>
+                   ))}
                 </div>
-                
-                <div>
-                  <h3 className="font-medium">O que não é coberto</h3>
-                  <ul className="mt-3 list-disc list-inside space-y-1 text-muted-foreground">
-                    <li>Desgaste natural dos materiais</li>
-                    <li>Uso inadequado ou falta de manutenção</li>
-                    <li>Modificações realizadas pelo proprietário</li>
-                    <li>Danos causados por terceiros</li>
-                    <li>Itens com garantia direta do fabricante</li>
-                    <li>Danos causados por eventos da natureza</li>
-                    <li>Uso comercial em unidades residenciais</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="flex justify-between pt-4 border-t">
-                <Button variant="outline" onClick={handleViewWarrantyTerm}>
-                  Ver termo completo de garantia
+                <Button className="w-full mt-8 font-black uppercase tracking-widest text-[10px] h-12 rounded-2xl" onClick={() => navigate("/client/warranty")}>
+                   Abrir Solicitação de Garantia
                 </Button>
-                <Button onClick={handleRequestWarranty}>
-                  Solicitar garantia
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </Card>
+
+              <Card className="border-dashed border-2 shadow-none bg-muted/20 flex flex-col items-center justify-center p-8 text-center space-y-4">
+                 <div className="p-4 bg-white rounded-full shadow-sm">
+                   <Info className="h-8 w-8 text-primary" />
+                 </div>
+                 <h3 className="font-black tracking-tight">Precisa de Ajuda Técnica?</h3>
+                 <p className="text-sm text-muted-foreground font-medium max-w-[280px]">Consulte o manual do proprietário antes de realizar qualquer alteração na sua unidade.</p>
+                 <Button variant="outline" className="font-black uppercase tracking-widest text-[10px] h-11 px-8 rounded-xl">Ver FAQ do Imóvel</Button>
+              </Card>
+           </div>
+        </TabsContent>
+
+        <TabsContent value="history" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+           <Card className="border-none shadow-md bg-white p-8">
+             <div className="relative border-l-2 border-muted pl-8 space-y-12 py-4 ml-4">
+                {[
+                  { title: "Entrega de Chaves", date: "15/04/2025", desc: "Entrega oficial da unidade para o cliente.", icon: CheckCircle2, color: "bg-green-500" },
+                  { title: "Vistoria de Pré-Entrega", date: "05/04/2025", desc: "Aprovada sem ressalvas.", icon: Building, color: "bg-primary" },
+                  { title: "Conclusão da Obra", date: "20/03/2025", desc: "Habite-se emitido pela prefeitura.", icon: Building2, color: "bg-primary" },
+                  { title: "Assinatura de Contrato", date: "10/11/2024", desc: "Financiamento bancário aprovado.", icon: FileText, color: "bg-primary" }
+                ].map((item, i) => (
+                  <div key={i} className="relative">
+                     <div className={cn("absolute -left-[41px] top-0 p-2 rounded-full text-white shadow-lg", item.color)}>
+                        <item.icon size={16} />
+                     </div>
+                     <div className="space-y-1">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.date}</span>
+                        <h4 className="font-black text-lg tracking-tight">{item.title}</h4>
+                        <p className="text-sm text-muted-foreground font-medium">{item.desc}</p>
+                     </div>
+                  </div>
+                ))}
+             </div>
+           </Card>
         </TabsContent>
       </Tabs>
     </div>
