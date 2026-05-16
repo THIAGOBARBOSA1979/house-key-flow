@@ -20,23 +20,33 @@ const AuditLogs = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in pb-10">
+    <div className="space-y-8 animate-fade-in pb-10">
       <PageHeader
         icon={Shield}
         title="Logs de Auditoria"
-        description="Rastreabilidade completa de todas as ações realizadas no sistema."
+        description="Rastreabilidade completa e imutável de todas as ações administrativas e de clientes."
       >
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-9 font-bold" onClick={handleExport}>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={handleExport}>
             <Download className="w-4 h-4 mr-2" />
-            Exportar CSV
+            Exportar Auditoria (CSV)
           </Button>
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 gap-6">
-        <AuditLogViewer title="Histórico Global do Sistema" />
+
+      <div className="grid grid-cols-1 gap-8">
+        <AuditLogViewer 
+          title="Rastreabilidade Global" 
+          className="rounded-[2rem] shadow-sem-lg border-none bg-card/40 backdrop-blur-md overflow-hidden" 
+        />
       </div>
+
+
+
+
+
+
     </div>
   );
 };

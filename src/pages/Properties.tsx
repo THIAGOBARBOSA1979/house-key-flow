@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX } from "lucide-react";
+import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download } from "lucide-react";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -128,84 +128,94 @@ const Properties = () => {
       <PageHeader
         icon={Building}
         title="Empreendimentos"
-        description="Gestão de portfólio e progresso de obras"
+        description="Gestão de portfólio e acompanhamento do progresso físico das obras"
       >
-        <div className="flex gap-2">
-          <Button variant="outline" className="hidden sm:flex" onClick={() => toast({ title: "Relatório gerado", description: "O PDF será baixado em instantes." })}>
-            Exportar PDF
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => toast({ title: "Relatório gerado", description: "O PDF consolidado do portfólio será baixado em instantes." })}>
+            <Download className="mr-2 h-4 w-4" /> Exportar PDF
           </Button>
-          <Button onClick={() => setIsFormOpen(true)} className="shadow-sem-md">
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Projeto
+          <Button onClick={() => setIsFormOpen(true)} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
+            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+            Novo Empreendimento
           </Button>
         </div>
       </PageHeader>
 
-      <ResponsiveGrid columns={4} gap="md">
+      <ResponsiveGrid columns={4} gap="layout">
         <StatsCard 
           label="Total de Projetos" 
           value={metrics.total} 
           icon={Building} 
-          trend={{ value: "1 este mês", isPositive: true }}
+          description="Ativos no portfólio"
+          trend={{ value: "12%", isPositive: true }}
+          className="rounded-3xl"
         />
         <StatsCard 
           label="Em Andamento" 
           value={metrics.byStatus.progress || 0} 
           icon={TrendingUp} 
           variant="progress"
+          description="Obras em execução"
+          className="rounded-3xl"
         />
         <StatsCard 
           label="Total de Unidades" 
           value={metrics.totalUnits} 
           icon={PieChart} 
           variant="brand"
+          description="Apartamentos cadastrados"
+          className="rounded-3xl"
         />
         <StatsCard 
-          label="Progresso Médio" 
+          label="Eficiência Média" 
           value={`${metrics.averageProgress}%`} 
           icon={BarChart3} 
           variant="complete"
+          description="Progresso consolidado"
+          className="rounded-3xl"
         />
       </ResponsiveGrid>
 
+
       <FilterBar
-        searchPlaceholder="Buscar por nome ou cidade..."
+        searchPlaceholder="Buscar por nome, cidade ou código do projeto..."
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px] rounded-xl">
-              <SelectValue placeholder="Status" />
+            <SelectTrigger className="w-full sm:w-[190px] rounded-xl h-11 bg-background shadow-sem-sm">
+              <SelectValue placeholder="Filtrar por Status" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os status</SelectItem>
-              <SelectItem value="pending">Pendente</SelectItem>
-              <SelectItem value="progress">Em andamento</SelectItem>
-              <SelectItem value="complete">Concluído</SelectItem>
+            <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
+              <SelectItem value="all" className="rounded-lg font-medium">Todos os status</SelectItem>
+              <SelectItem value="pending" className="rounded-lg font-medium">⏳ Pendentes</SelectItem>
+              <SelectItem value="progress" className="rounded-lg font-medium">🏗️ Em andamento</SelectItem>
+              <SelectItem value="complete" className="rounded-lg font-medium">✅ Concluídos</SelectItem>
             </SelectContent>
           </Select>
 
           {(searchTerm || statusFilter !== "all") && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground">
-              <FilterX className="h-4 w-4 mr-2" /> Limpar
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground h-11 rounded-xl px-4 font-bold uppercase text-[10px] tracking-widest">
+              <FilterX className="h-4 w-4 mr-2" /> Limpar Filtros
             </Button>
           )}
 
-          <div className="h-8 w-px bg-border/40 mx-1 hidden md:block" />
+          <div className="h-8 w-px bg-border/40 mx-2 hidden md:block" />
 
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} className="hidden md:flex bg-muted/50 p-1 rounded-xl">
-            <TabsList className="bg-transparent border-none">
-              <TabsTrigger value="grid" className="rounded-lg data-[state=active]:bg-background">
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} className="hidden md:flex bg-muted/40 p-1.5 rounded-2xl shadow-inner shrink-0">
+            <TabsList className="bg-transparent border-none h-9 gap-1">
+              <TabsTrigger value="grid" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
                 <LayoutGrid className="h-4 w-4" />
               </TabsTrigger>
-              <TabsTrigger value="list" className="rounded-lg data-[state=active]:bg-background">
+              <TabsTrigger value="list" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
                 <List className="h-4 w-4" />
               </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
       </FilterBar>
+
 
       <DataView
         items={filteredProperties}
@@ -300,20 +310,22 @@ const Properties = () => {
         }}
       />
 
-      {/* Create Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b bg-muted/5">
-            <DialogTitle className="flex items-center gap-2">
-              <Building className="w-5 h-5 text-primary" />
+        <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden border-none shadow-sem-xl rounded-3xl bg-background/95 backdrop-blur-2xl">
+          <DialogHeader className="px-10 pt-10 pb-8 bg-primary/5 border-b border-border/10">
+            <DialogTitle className="text-3xl font-black tracking-tighter flex items-center gap-4">
+              <div className="p-3 bg-white rounded-2xl shadow-sem-sm">
+                <Building className="w-8 h-8 text-primary" strokeWidth={3} />
+              </div>
               Novo Empreendimento
             </DialogTitle>
           </DialogHeader>
-          <div className="p-6">
+          <div className="p-10 max-h-[70vh] overflow-y-auto custom-scrollbar">
             <PropertyForm onSubmit={handleCreate} onCancel={() => setIsFormOpen(false)} />
           </div>
         </DialogContent>
       </Dialog>
+
 
       {/* Edit Dialog */}
       <Dialog open={!!editingProperty} onOpenChange={(open) => !open && setEditingProperty(null)}>

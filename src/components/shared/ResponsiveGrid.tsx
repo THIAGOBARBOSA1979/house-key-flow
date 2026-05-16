@@ -16,16 +16,16 @@ export function ResponsiveGrid({
   className
 }: ResponsiveGridProps) {
   const gapClasses = {
-    xs: "gap-1-sem",
-    sm: "gap-2-sem",
-    md: "gap-6-sem",
-    lg: "gap-12-sem",
+    xs: "gap-1",
+    sm: "gap-2",
+    md: "gap-6",
+    lg: "gap-12",
     layout: "gap-layout-gap",
-    'xs-sem': "gap-1-sem",
-    'sm-sem': "gap-2-sem",
-    'md-sem': "gap-6-sem",
-    'lg-sem': "gap-12-sem",
-    '4-sem': "gap-4-sem"
+    'xs-sem': "gap-1",
+    'sm-sem': "gap-2",
+    'md-sem': "gap-6",
+    'lg-sem': "gap-12",
+    '4-sem': "gap-4"
   };
 
   const columnClasses = {

@@ -39,6 +39,8 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+
 import { exportService } from "@/services/ExportService";
 import { BulkActions } from "@/components/Documents/BulkActions";
 import { DocumentFilters } from "@/components/Documents/DocumentFilters";
@@ -100,61 +102,65 @@ const AdminDocuments = () => {
   };
 
   return (
-    <div className="container-responsive py-8 space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in pb-10">
       <PageHeader
         icon={FileText}
         title="Gestão de Documentos"
-        description="Centralize todos os arquivos técnicos, contratos e alvarás"
+        description="Repositório centralizado de arquivos técnicos, contratos e licenças."
       >
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold border-primary/20 hover:border-primary/50" onClick={() => exportService.exportToCSV(documents, 'documentos_admin')}>
-            <Download className="w-4 h-4 mr-2" /> Exportar CSV
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(documents, 'documentos_admin')}>
+            <Download className="mr-2 h-4 w-4" /> Exportar CSV
           </Button>
-          <Button variant="outline" size="sm" className="interactive-active h-9 font-bold border-primary/20 hover:border-primary/50" onClick={() => setIsUploadOpen(true)}>
-            <FolderPlus className="w-4 h-4 mr-2" /> Nova Pasta
+          <Button variant="outline" className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => setIsUploadOpen(true)}>
+            <FolderPlus className="mr-2 h-4 w-4" /> Nova Pasta
           </Button>
-          <Button size="sm" className="interactive-active h-9 font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20" onClick={() => setIsUploadOpen(true)}>
-            <FileUp className="w-4 h-4 mr-2" /> Upload de Arquivos
+          <Button onClick={() => setIsUploadOpen(true)} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
+            <FileUp className="mr-2 h-4 w-4" strokeWidth={3} /> Upload de Arquivos
           </Button>
         </div>
       </PageHeader>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <ResponsiveGrid columns={4} gap="layout">
         <StatsCard 
           label="Total Arquivos" 
           value={documents.length} 
           icon={FileText} 
           variant="brand" 
           description="Contratos e licenças"
+          className="rounded-3xl"
         />
         <StatsCard 
-          label="Rascunhos" 
+          label="Pendentes" 
           value={documents.filter(d => d.status === 'draft').length} 
           icon={Clock} 
           variant="pending" 
           description="Aguardando publicação"
+          className="rounded-3xl"
         />
         <StatsCard 
           label="Sincronizados" 
           value={documents.filter(d => d.status === 'published').length} 
           icon={CheckCircle2} 
           variant="complete" 
-          description="Em nuvem (G-Drive)"
+          description="Nuvem (G-Drive)"
+          className="rounded-3xl"
         />
-        <Card className="card-standard border-none bg-background/50 backdrop-blur-sm overflow-hidden flex flex-col justify-center px-5 py-4">
+        <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden flex flex-col justify-center px-6 py-4 rounded-3xl shadow-sem-sm">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sem-tiny uppercase font-bold tracking-widest text-muted-foreground/80">Armazenamento</p>
-            <span className="text-sem-tiny font-black text-primary">18%</span>
+            <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/80">Armazenamento</p>
+            <span className="text-[10px] font-black text-primary">18%</span>
           </div>
           <div className="flex items-baseline gap-2 mb-3">
-            <h3 className="text-sem-h3 font-bold text-foreground leading-tight">1.8 GB</h3>
-            <span className="text-sem-caption text-muted-foreground">de 10 GB</span>
+            <h3 className="text-xl font-black text-foreground leading-tight">1.8 GB</h3>
+            <span className="text-[10px] text-muted-foreground font-bold uppercase">de 10 GB</span>
           </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
-            <div className="h-full bg-primary transition-all duration-1000 ease-out rounded-full" style={{ width: '18%' }} />
+          <div className="h-1.5 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5">
+            <div className="h-full bg-primary transition-all duration-1000 ease-out rounded-full shadow-[0_0_8px_rgba(var(--primary),0.4)]" style={{ width: '18%' }} />
           </div>
         </Card>
-      </div>
+      </ResponsiveGrid>
+
 
       <BulkActions 
         documents={documents}

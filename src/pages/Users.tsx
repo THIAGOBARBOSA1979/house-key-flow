@@ -243,46 +243,79 @@ const Users = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <PageHeader icon={UsersIcon} title="Usuários" description="Gerenciamento completo de usuários do sistema">
-        <Button onClick={() => { setEditingUser(null); setIsUserFormOpen(true); }}><Plus className="mr-2 h-4 w-4" />Novo Usuário</Button>
+    <div className="space-y-8 pb-10">
+      <PageHeader 
+        icon={UsersIcon} 
+        title="Gestão de Usuários" 
+        description="Controle de acessos, perfis e vinculação de clientes a unidades."
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95">
+            <Upload className="mr-2 h-4 w-4" /> Importar
+          </Button>
+          <Button onClick={() => { setEditingUser(null); setIsUserFormOpen(true); }} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
+            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+            Novo Usuário
+          </Button>
+        </div>
       </PageHeader>
 
-      <ResponsiveGrid columns="auto" gap="md">
-        <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" />
-        <StatsCard label="Usuários Ativos" value={stats.active} icon={UserCheck} variant="complete" />
-        <StatsCard label="Usuários Inativos" value={stats.inactive} icon={UserMinus} variant="critical" />
-        <StatsCard label="Total Clientes" value={stats.clients} icon={User} variant="progress" />
-        <StatsCard label="Total Equipe" value={stats.staff} icon={UserCog} variant="default" />
+      <ResponsiveGrid columns="auto" gap="layout">
+        <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" className="rounded-3xl" />
+        <StatsCard label="Ativos hoje" value={stats.active} icon={UserCheck} variant="complete" className="rounded-3xl" />
+        <StatsCard label="Pendências" value={stats.inactive} icon={UserMinus} variant="critical" className="rounded-3xl" />
+        <StatsCard label="Total Clientes" value={stats.clients} icon={User} variant="progress" className="rounded-3xl" />
+        <StatsCard label="Equipe Interna" value={stats.staff} icon={UserCog} variant="default" className="rounded-3xl" />
       </ResponsiveGrid>
 
+
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
-        <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold"><Upload className="mr-2 h-4 w-4" /> Importar</Button>
-              <Button variant="outline" className="rounded-lg h-9 text-xs font-bold" onClick={() => exportService.exportToCSV(userList, 'usuarios_a2')}><Download className="mr-2 h-4 w-4" /> Exportar</Button>
+        <CardContent className="p-5">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex items-center gap-4">
+               <div className="flex -space-x-3">
+                 {[1,2,3].map(i => (
+                   <div key={i} className="w-9 h-9 rounded-full border-2 border-background bg-muted flex items-center justify-center text-[10px] font-black">U{i}</div>
+                 ))}
+                 <div className="w-9 h-9 rounded-full border-2 border-background bg-primary text-white flex items-center justify-center text-[10px] font-black">+{stats.total - 3}</div>
+               </div>
+               <p className="text-sem-body-sm font-bold text-muted-foreground tracking-tight">Gestão centralizada de permissões</p>
             </div>
-            {selectedUsers.length > 0 && (
-              <div className="flex items-center gap-3 animate-fade-in">
-                <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">{selectedUsers.length} selecionado(s)</span>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="default" size="sm" className="rounded-lg h-9 text-xs font-bold">
-                      <Settings className="mr-2 h-4 w-4" />Ações em lote
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 shadow-sem-lg">
-                    <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleBulkAction("activate")}><UserCheck className="mr-2 h-4 w-4 text-muted-foreground" />Ativar usuários</DropdownMenuItem>
-                    <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleBulkAction("deactivate")}><UserMinus className="mr-2 h-4 w-4 text-muted-foreground" />Desativar usuários</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleBulkAction("delete")} className="py-2.5 font-bold text-destructive focus:text-destructive cursor-pointer"><Trash2 className="mr-2 h-4 w-4" />Remover usuários</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            )}
+            
+            <div className="flex items-center gap-3">
+              {selectedUsers.length > 0 && (
+                <div className="flex items-center gap-3 animate-in zoom-in-95 duration-200">
+                  <Badge className="h-9 px-4 rounded-xl bg-primary/10 text-primary border-none font-bold">
+                    {selectedUsers.length} selecionado(s)
+                  </Badge>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="default" size="sm" className="rounded-xl h-11 px-6 font-black uppercase text-[10px] tracking-widest shadow-sem-md">
+                        <Settings className="mr-2 h-4 w-4" /> Ações em lote
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl shadow-sem-xl border-none animate-in zoom-in-95">
+                      <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => handleBulkAction("activate")}>
+                        <UserCheck className="mr-3 h-4 w-4 opacity-50" /> Ativar usuários
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => handleBulkAction("deactivate")}>
+                        <UserMinus className="mr-3 h-4 w-4 opacity-50" /> Desativar usuários
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="my-2" />
+                      <DropdownMenuItem onClick={() => handleBulkAction("delete")} className="py-3 px-4 font-black text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer rounded-xl">
+                        <Trash2 className="mr-3 h-4 w-4 opacity-50" /> Remover permanentemente
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              )}
+              <Button variant="outline" className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(userList, 'usuarios_a2')}>
+                <Download className="mr-2 h-4 w-4" /> Exportar Planilha
+              </Button>
+            </div>
           </div>
         </CardContent>
+
       </Card>
 
       <UserFilters onFilterChange={setFilters} totalUsers={filteredUsers.length} activeFilters={filters} />

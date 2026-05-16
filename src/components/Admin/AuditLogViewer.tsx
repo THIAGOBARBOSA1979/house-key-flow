@@ -18,7 +18,9 @@ interface AuditLogViewerProps {
   entityId?: string;
   title?: string;
   compact?: boolean;
+  className?: string;
 }
+
 
 const ACTION_LABELS: Record<AuditAction, string> = {
   created: "Criação",
@@ -70,7 +72,7 @@ const ACTION_COLORS: Record<AuditAction, string> = {
 
 const ITEMS_PER_PAGE = 10;
 
-export const AuditLogViewer = ({ entityType, entityId, title, compact = false }: AuditLogViewerProps) => {
+export const AuditLogViewer = ({ entityType, entityId, title, compact = false, className }: AuditLogViewerProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAction, setFilterAction] = useState<string>("all");
   const [filterRole, setFilterRole] = useState<string>("all");
@@ -97,7 +99,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
   const paginatedLogs = filteredLogs.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   return (
-    <Card className="border-none bg-card/50 backdrop-blur-sm shadow-sem-sm">
+    <Card className={cn("border-none bg-card/50 backdrop-blur-sm shadow-sem-sm", className)}>
       <CardHeader className={compact ? "pb-3" : "pb-4 border-b border-border/10"}>
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
@@ -120,9 +122,12 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false }:
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Buscar nos logs..."
-                className="pl-10 h-11 bg-background"
+                placeholder="Buscar por descrição ou nome do responsável..."
+                className="pl-10 h-11 bg-background rounded-xl"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
               />
+
             </div>
             <Select value={filterAction} onValueChange={setFilterAction}>
               <SelectTrigger className="w-full sm:w-[160px] h-11 bg-background font-bold shadow-sem-sm">

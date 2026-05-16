@@ -125,56 +125,59 @@ export default function Inspections() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-10 animate-fade-in">
       <PageHeader
         icon={ClipboardCheck}
-        title="Vistorias"
-        description="Gerenciamento de vistorias e entregas de unidades"
+        title="Vistorias e Entregas"
+        description="Gestão do ciclo de vida de vistorias, desde a técnica até a entrega das chaves."
       >
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <Button 
             variant="outline"
             onClick={handleExport}
-            className="interactive-active"
+            className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
           >
-            <Download className="mr-2 h-4 w-4" />
-            Relatório
+            <Download className="mr-2 h-4 w-4" /> Exportar Dados
           </Button>
           <Button 
             variant={viewMode === "calendar" ? "default" : "outline"}
             onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
-            className="interactive-active"
+            className="rounded-xl h-11 px-5 font-bold border-primary/20 transition-all active:scale-95"
           >
             {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
-            {viewMode === "calendar" ? "Lista" : "Calendário"}
+            {viewMode === "calendar" ? "Visualizar Lista" : "Visualizar Calendário"}
           </Button>
           <ScheduleInspectionDialog onSuccess={loadData} />
         </div>
       </PageHeader>
 
-      <ResponsiveGrid columns={3} gap="md">
+      <ResponsiveGrid columns={3} gap="layout">
         <StatsCard 
-          label="Pendentes" 
+          label="Vistorias Pendentes" 
           value={stats.pending} 
           icon={Clock} 
           variant="pending"
-          description="Vistorias aguardando realização"
+          description="Aguardando atendimento"
+          className="rounded-3xl"
         />
         <StatsCard 
-          label="Concluídas" 
+          label="Vistorias Concluídas" 
           value={stats.completed} 
           icon={CheckCircle2} 
           variant="complete"
-          description="Total de vistorias finalizadas"
+          description="Total de unidades entregues"
+          className="rounded-3xl"
         />
         <StatsCard 
-          label="Atrasadas" 
+          label="Atrasadas / Urgentes" 
           value={stats.delayed} 
           icon={AlertCircle} 
           variant="critical"
-          description="Vistorias fora do prazo previsto"
+          description="Fora do prazo acordado"
+          className="rounded-3xl"
         />
       </ResponsiveGrid>
+
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full max-w-lg grid-cols-3 bg-muted/50 p-1 rounded-xl">
