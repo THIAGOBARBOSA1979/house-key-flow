@@ -21,7 +21,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { documentService, DocumentSignature } from "@/services/DocumentService";
 import { useToast } from "@/hooks/use-toast";
-import { UserPlus, Trash2, Mail, Smartphone, ShieldCheck, ListOrdered } from "lucide-react";
+import { UserPlus, Trash2, Mail, Smartphone, ShieldCheck, ListOrdered, Scan, Fingerprint } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface SignatureWorkflowDialogProps {
@@ -108,7 +108,7 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
         <div className="p-8 space-y-6">
           <div className="space-y-4">
             <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Novo Signatário</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-muted/20 p-6 rounded-3xl border border-border/50 shadow-inner">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 bg-muted/20 p-6 rounded-3xl border border-border/50 shadow-inner">
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest ml-1">Nome Completo</Label>
                 <Input 
@@ -210,7 +210,10 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
                         </TableCell>
                         <TableCell className="text-center">
                           <Badge variant="secondary" className="gap-1.5 font-black text-[9px] uppercase tracking-widest py-1 px-2.5 rounded-lg bg-muted/60">
-                            {s.confirmationMethod === 'email' ? <Mail className="w-3 h-3 text-primary/70" /> : <Smartphone className="w-3 h-3 text-primary/70" />}
+                            {s.confirmationMethod === 'email' && <Mail className="w-3 h-3 text-primary/70" />}
+                            {s.confirmationMethod === 'sms' && <Smartphone className="w-3 h-3 text-primary/70" />}
+                            {s.confirmationMethod === 'facial' && <Scan className="w-3 h-3 text-primary/70" />}
+                            {s.confirmationMethod === 'govbr' && <Fingerprint className="w-3 h-3 text-primary/70" />}
                             {s.confirmationMethod}
                           </Badge>
                         </TableCell>
