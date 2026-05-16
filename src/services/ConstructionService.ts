@@ -1,16 +1,26 @@
 
+
 export interface ConstructionUpdate {
   id: string;
   date: Date;
   title: string;
   description: string;
-  type: 'milestone' | 'photo' | 'document' | 'video';
+  type: 'milestone' | 'photo' | 'document' | 'video' | 'news';
   imageUrl?: string;
   progressItems?: { label: string; percentage: number }[];
+  isGlobal?: boolean;
 }
 
 class ConstructionService {
   private updates: ConstructionUpdate[] = [
+    {
+      id: 'news-1',
+      date: new Date(),
+      title: 'Novo Plantão de Vendas Disponível',
+      description: 'Convidamos todos os futuros moradores para conhecerem nosso novo espaço decorado e tirar dúvidas sobre personalização.',
+      type: 'news',
+      isGlobal: true
+    },
     {
       id: '1',
       date: new Date(2024, 2, 10),
@@ -54,7 +64,8 @@ class ConstructionService {
   }
 
   getLatestProgress() {
-    return this.updates[0].progressItems || [];
+    const updateWithProgress = this.updates.find(u => u.progressItems);
+    return updateWithProgress?.progressItems || [];
   }
 }
 

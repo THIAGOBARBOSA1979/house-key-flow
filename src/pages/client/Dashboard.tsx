@@ -172,8 +172,9 @@ const Dashboard = () => {
         </div>
       </div>
 
+
       {/* Property Info Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
+      <ResponsiveGrid columns={3} gap="layout">
         <Card className="md:col-span-2 bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-xl overflow-hidden relative rounded-3xl group">
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700 group-hover:scale-110">
             <Home className="h-32 w-32" />
@@ -244,7 +245,7 @@ const Dashboard = () => {
         </Card>
 
         {/* Quick Summary Card */}
-        <Card className="bg-primary text-primary-foreground shadow-lg flex flex-col justify-between border-none overflow-hidden relative group">
+        <Card className="bg-primary text-primary-foreground shadow-lg flex flex-col justify-between border-none overflow-hidden relative group rounded-3xl">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
           <CardHeader>
             <CardTitle className="text-lg font-bold">Resumo Geral</CardTitle>
@@ -280,16 +281,16 @@ const Dashboard = () => {
               <span className="font-black">{Math.round(financialSummary.progress)}%</span>
             </div>
           </CardContent>
-          <CardFooter className="pt-0">
+          <CardFooter className="pt-0 pb-6">
             <Link to="/client/notifications" className="w-full">
-              <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11 shadow-md">
+              <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11 shadow-md rounded-xl">
                 <Bell className="mr-2 h-4 w-4" />
                 Notificações ({unreadCount})
               </Button>
             </Link>
           </CardFooter>
         </Card>
-      </div>
+      </ResponsiveGrid>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
         <div className="lg:col-span-2 space-y-8">
@@ -302,7 +303,7 @@ const Dashboard = () => {
           <ConstructionFeed updates={constructionUpdates} />
         </div>
         <div className="space-y-8">
-          <ReferralCard />
+          <ReferralCard className="rounded-3xl" />
 
           <NextSteps 
             steps={useMemo(() => {
@@ -416,71 +417,25 @@ const Dashboard = () => {
         />
       </ResponsiveGrid>
 
-      {/* Construction Feed and Referral */}
+      {/* FAQ and Support Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Newspaper className="h-5 w-5 text-primary" />
-              Atualizações da Obra
-            </CardTitle>
-            <CardDescription>Acompanhe as últimas novidades diretamente do canteiro.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {[
-              {
-                title: "Conclusão da Fachada",
-                date: "Hoje",
-                content: "Iniciamos a aplicação da última camada de revestimento na torre A.",
-                category: "Obra"
-              },
-              {
-                title: "Início do Paisagismo",
-                date: "Há 2 dias",
-                content: "As primeiras mudas de árvores nativas foram entregues para o jardim central.",
-                category: "Lazer"
-              }
-            ].map((news, i) => (
-              <div key={i} className="flex gap-4 p-4 rounded-2xl bg-muted/30 border border-transparent hover:border-border transition-all">
-                <div className="h-12 w-12 rounded-xl bg-white shadow-sm flex items-center justify-center shrink-0">
-                  <Building2 className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-primary/10 text-primary rounded-md">{news.category}</span>
-                    <span className="text-[10px] font-medium text-muted-foreground uppercase">{news.date}</span>
-                  </div>
-                  <h4 className="font-bold text-sm mb-1">{news.title}</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{news.content}</p>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-primary to-primary-dark text-white border-none shadow-xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-            <Gift className="h-24 w-24" />
-          </div>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Indique e Ganhe
-            </CardTitle>
-            <CardDescription className="text-white/70">Recomende a A2 para um amigo e receba benefícios exclusivos.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm leading-relaxed">Seu amigo compra um imóvel e você ganha 1 ano de condomínio grátis ou um voucher de móveis planejados.</p>
-            <Button variant="secondary" className="w-full font-black uppercase tracking-widest text-[10px] h-11" onClick={() => {
-              toast({
-                title: "Link copiado!",
-                description: "Compartilhe seu link exclusivo com seus amigos.",
-              });
-            }}>
-              Gerar Link de Indicação
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="lg:col-span-2">
+          <ClientFAQ />
+        </div>
+        <div>
+          <Card className="bg-muted/30 border-none shadow-sm rounded-3xl h-full flex flex-col justify-center p-8 text-center">
+            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <LifeBuoy className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Precisa de Ajuda?</h3>
+            <p className="text-sm text-muted-foreground mb-6">Nossa equipe de suporte está pronta para atender você e tirar todas as suas dúvidas.</p>
+            <Link to="/client/support">
+              <Button className="w-full rounded-xl font-black uppercase tracking-widest text-[10px] h-12">
+                Acessar Central de Ajuda
+              </Button>
+            </Link>
+          </Card>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
@@ -741,23 +696,6 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
-          <ClientFAQ />
-        </div>
-        <Card className="bg-primary/5 border-primary/10 flex flex-col justify-center items-center p-6 text-center shadow-sm rounded-2xl">
-          <div className="p-4 rounded-2xl bg-primary/10 mb-4 shadow-inner">
-            <MessageSquare className="h-8 w-8 text-primary" />
-          </div>
-          <h3 className="font-bold text-lg mb-2 text-foreground/90 tracking-tight">Suporte Especializado</h3>
-          <p className="text-sm text-muted-foreground mb-6 font-medium leading-relaxed">
-            Ainda tem dúvidas? Nossa equipe técnica está pronta para te atender via chat.
-          </p>
-          <Button className="w-full font-bold uppercase tracking-widest text-xs py-6 shadow-md rounded-xl">
-            Falar com Consultor
-          </Button>
-        </Card>
-      </div>
     </div>
   );
 };
