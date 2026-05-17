@@ -3,7 +3,6 @@ import { useState, useMemo } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User, Building, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -37,6 +36,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface NewClientFormProps {
+  onSubmit?: (data: FormValues) => void;
+  onCancel?: () => void;
+}
+
 export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
   const propertiesList = useMemo(() => propertyService.getAll(), []);
   
@@ -57,7 +61,7 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
   // Handle form submission
   const handleSubmit = (values: FormValues) => {
     // Create the client in the user service
-    const propertyName = mockProperties.find(p => p.id === values.property)?.name || values.property;
+    const propertyName = propertiesList.find(p => p.id === values.property)?.name || values.property;
     
     const newUser = userService.create({
       name: values.name,
@@ -159,8 +163,8 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="shadow-sem-xl border-none">
-                      {mockProperties.map(property => (
-                        <SelectItem key={property.id} value={property.id}>
+                      {propertiesList.map(property => (
+                        <SelectItem key={property.id} value={property.id!}>
                           {property.name}
                         </SelectItem>
                       ))}
