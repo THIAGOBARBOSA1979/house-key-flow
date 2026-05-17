@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Bell, Search } from "lucide-react";
+import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { propertyService } from "@/services/PropertyService";
+import { userService } from "@/services/UserService";
+import { documentService } from "@/services/DocumentService";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AppLayoutProps {
   children: React.ReactNode;
