@@ -194,102 +194,66 @@ const FinancialDashboard = () => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-h2 flex items-center gap-2">
-              <AlertCircle size={24} className="text-red-500" />
-              Gestão de Inadimplência
-            </h3>
-            <Button variant="outline" size="sm" className="h-8 rounded-xl text-[10px] font-black uppercase tracking-widest border-red-200 text-red-600 hover:bg-red-50">Notificar Todos</Button>
-          </div>
-          <Card className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
-            <DataTable
-              columns={[
-                { 
-                  header: "Cliente", 
-                  accessorKey: "client",
-                  cell: (item) => (
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-[10px] font-black text-red-600">
-                        {item.client.charAt(0)}
-                      </div>
-                      <span className="font-bold">{item.client}</span>
-                    </div>
-                  )
-                },
-                { 
-                  header: "Vencimento", 
-                  accessorKey: "date",
-                  cell: (item) => <span className="text-red-600 font-bold">{new Date(item.date).toLocaleDateString('pt-BR')}</span>
-                },
-                { 
-                  header: "Valor", 
-                  accessorKey: "value",
-                  cell: (item) => <span className="font-black">{formatCurrency(item.value)}</span>
-                },
-                {
-                  header: "Ação",
-                  accessorKey: "id",
-                  className: "text-right",
-                  cell: (item) => (
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/5 rounded-lg" onClick={() => toast({ title: "Cobrança enviada", description: `Notificação enviada para ${item.client}` })}>
-                      <DollarSign className="w-4 h-4" />
-                    </Button>
-                  )
-                }
-              ]}
-              data={transactions.filter(t => t.status === 'overdue')}
-            />
-          </Card>
-        </section>
-
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-h2 flex items-center gap-2">
-              <CalendarIcon size={24} className="text-primary" />
-              Histórico de Transações
-            </h3>
-            <Button variant="ghost" className="text-primary font-black uppercase text-[10px] tracking-[0.2em]">Ver Tudo</Button>
-          </div>
-          
-          <Card className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
-            <DataTable
-              columns={[
-                { 
-                  header: "Cliente", 
-                  accessorKey: "client",
-                  cell: (item) => <span className="font-bold">{item.client}</span>
-                },
-                { header: "Tipo", accessorKey: "type", className: "text-muted-foreground font-medium" },
-                { 
-                  header: "Valor", 
-                  accessorKey: "value",
-                  cell: (item) => <span className="font-black text-foreground">{formatCurrency(item.value)}</span>
-                },
-                { 
-                  header: "Status", 
-                  accessorKey: "status",
-                  cell: (item) => {
-                    const statusMap: Record<string, any> = {
-                      paid: 'complete',
-                      overdue: 'critical',
-                      pending: 'pending'
-                    };
-                    const labelMap: Record<string, string> = {
-                      paid: 'Pago',
-                      overdue: 'Atrasado',
-                      pending: 'Pendente'
-                    };
-                    return <StatusBadge status={statusMap[item.status] || 'neutral'} label={labelMap[item.status]} size="sm" />;
-                  }
-                }
-              ]}
-              data={transactions.filter(t => t.status !== 'overdue').slice(0, 5)}
-            />
-          </Card>
-        </section>
-      </div>
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-h2 flex items-center gap-2">
+            <CalendarIcon size={24} className="text-primary" />
+            Transações Recentes
+          </h3>
+          <Button variant="ghost" className="text-primary font-black uppercase text-[10px] tracking-[0.2em]">Ver Histórico Completo</Button>
+        </div>
+        
+        <DataTable
+          columns={[
+            { 
+              header: "Cliente", 
+              accessorKey: "client",
+              cell: (item) => (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary">
+                    {item.client.charAt(0)}
+                  </div>
+                  <span className="font-bold">{item.client}</span>
+                </div>
+              )
+            },
+            { header: "Empreendimento", accessorKey: "property", className: "text-muted-foreground font-medium" },
+            { 
+              header: "Valor", 
+              accessorKey: "value",
+              cell: (item) => <span className="font-black text-foreground">{formatCurrency(item.value)}</span>
+            },
+            { 
+              header: "Data", 
+              accessorKey: "date",
+              cell: (item) => <span className="text-muted-foreground font-bold">{new Date(item.date).toLocaleDateString('pt-BR')}</span>
+            },
+            { 
+              header: "Tipo", 
+              accessorKey: "type",
+              cell: (item) => <span className="text-[10px] font-black uppercase tracking-widest bg-muted/50 px-2 py-1 rounded-lg">{item.type}</span>
+            },
+            { 
+              header: "Status", 
+              accessorKey: "status",
+              cell: (item) => {
+                const statusMap: Record<string, any> = {
+                  paid: 'complete',
+                  overdue: 'critical',
+                  pending: 'pending'
+                };
+                const labelMap: Record<string, string> = {
+                  paid: 'Pago',
+                  overdue: 'Atrasado',
+                  pending: 'Pendente'
+                };
+                return <StatusBadge status={statusMap[item.status] || 'neutral'} label={labelMap[item.status]} size="sm" />;
+              }
+            }
+          ]}
+          data={transactions}
+        />
+      </section>
     </div>
   );
 };
