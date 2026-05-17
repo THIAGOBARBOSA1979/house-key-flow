@@ -618,24 +618,6 @@ class WarrantyFlowService {
 
     return { success: true, request: updatedRequest };
   }
-    const request = this.requests.get(requestId);
-    if (!request) return { success: false, error: "Solicitação não encontrada" };
-
-    const materials = request.materials || [];
-    const newMaterial = { ...material, id: `mat-${Date.now()}` };
-    
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      materials: [...materials, newMaterial],
-      actualCost: (request.actualCost || 0) + (material.cost || 0),
-      updatedAt: new Date()
-    };
-
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
-
-    return { success: true, request: updatedRequest };
-  }
 
   /**
    * Assign or change technician
