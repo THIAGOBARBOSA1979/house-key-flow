@@ -27,7 +27,7 @@ export function FilterBar({
       "flex flex-col lg:flex-row gap-4 md:gap-layout-gap p-1 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-slow",
       className
     )}>
-      <div className="flex-1 flex flex-col sm:flex-row gap-4">
+      <div className="flex-1 flex flex-col sm:flex-row gap-4 min-w-0">
         <div className="relative flex-1 group w-full">
           <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary group-focus-within:scale-110 transition-all duration-300" />
           <Input
