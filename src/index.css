@@ -163,36 +163,36 @@
 
   .dark {
     /* --- Semantic Colors - Dark Theme --- */
-    --background: var(--gray-900);
-    --foreground: var(--gray-50);
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
 
-    --card: var(--gray-800);
-    --card-foreground: var(--gray-50);
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: var(--gray-800);
-    --popover-foreground: var(--gray-50);
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
 
     --primary: 217 91% 60%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-foreground: 222 47% 6%;
 
-    --secondary: var(--gray-700);
-    --secondary-foreground: var(--gray-50);
+    --secondary: 217.2 32.6% 15%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: var(--gray-700);
-    --muted-foreground: var(--gray-400);
+    --muted: 217.2 32.6% 15%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: var(--gray-700);
-    --accent-foreground: var(--gray-50);
+    --accent: 217.2 32.6% 15%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 25%;
-    --input: 217.2 32.6% 25%;
+    --border: 217.2 32.6% 18%;
+    --input: 217.2 32.6% 18%;
     --ring: 224.3 76.3% 48%;
 
     --brand: 217 91% 60%;
-    --brand-foreground: 222.2 47.4% 11.2%;
+    --brand-foreground: 222 47% 6%;
 
     --sidebar-background: 222 47% 4%;
     --sidebar-foreground: 210 40% 98%;
@@ -206,6 +206,12 @@
     /* --- Layout Dark Tokens --- */
     --layout-gap: var(--space-6);
     --section-gap: var(--space-14);
+
+    /* --- Refined Dark Shadows --- */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
   }
 
   :root {
@@ -329,16 +335,17 @@
   }
 
   /* Typography Semantic Utilities */
-  .text-display { @apply text-sem-display text-foreground; }
-  .text-h1 { @apply text-sem-h1 text-foreground; }
-  .text-h2 { @apply text-sem-h2 text-foreground; }
-  .text-h3 { @apply text-sem-h3 text-foreground; }
-  .text-h4 { @apply text-sem-h4 text-foreground; }
-  .text-body-lg { @apply text-sem-body-lg text-foreground/90; }
-  .text-body-base { @apply text-sem-body-base text-foreground/80; }
-  .text-body-sm { @apply text-sem-body-sm text-muted-foreground; }
-  .text-label { @apply text-sem-label font-semibold text-foreground; }
-  .text-caption { @apply text-sem-caption text-muted-foreground uppercase tracking-wider; }
+  .text-display { @apply text-sem-display text-foreground font-black tracking-tighter; }
+  .text-h1 { @apply text-sem-h1 text-foreground font-black tracking-tight; }
+  .text-h2 { @apply text-sem-h2 text-foreground font-bold tracking-tight; }
+  .text-h3 { @apply text-sem-h3 text-foreground font-bold; }
+  .text-h4 { @apply text-sem-h4 text-foreground font-semibold; }
+  .text-body-lg { @apply text-sem-body-lg text-foreground/90 leading-relaxed; }
+  .text-body-base { @apply text-sem-body-base text-foreground/80 leading-normal; }
+  .text-body-sm { @apply text-sem-body-sm text-muted-foreground leading-snug; }
+  .text-label { @apply text-sem-label font-bold text-foreground uppercase tracking-wider; }
+  .text-caption { @apply text-sem-caption text-muted-foreground font-black uppercase tracking-widest text-[10px]; }
+  .text-tiny { @apply text-sem-tiny text-muted-foreground/60 font-black uppercase tracking-widest text-[8px]; }
 
   /* Animations */
   .animate-fade-in {

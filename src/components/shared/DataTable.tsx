@@ -85,7 +85,7 @@ export function DataTable<T>({
                 <TableHead 
                   key={idx} 
                   className={cn(
-                    "font-black text-sem-tiny uppercase tracking-widest text-muted-foreground py-5-sem px-6-sem h-auto whitespace-nowrap",
+                    "text-sem-tiny uppercase tracking-widest text-muted-foreground py-5-sem px-6-sem h-auto whitespace-nowrap font-black",
                     column.className
                   )}
                 >

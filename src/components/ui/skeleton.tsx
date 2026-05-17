@@ -1,15 +1,28 @@
-import { cn } from "@/lib/utils"
+import React from 'react';
+import { cn } from "@/lib/utils";
 
-function Skeleton({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("animate-pulse rounded-md bg-muted/40", className)}
-      {...props}
-    />
-  )
+interface SkeletonProps {
+  className?: string;
+  variant?: 'text' | 'circular' | 'rectangular';
+  animation?: 'pulse' | 'wave' | 'none';
 }
 
-export { Skeleton }
+export function Skeleton({
+  className,
+  variant = 'rectangular',
+  animation = 'pulse'
+}: SkeletonProps) {
+  return (
+    <div
+      className={cn(
+        "bg-muted/40",
+        variant === 'circular' && "rounded-full",
+        variant === 'text' && "h-4 w-full rounded-md",
+        variant === 'rectangular' && "rounded-xl",
+        animation === 'pulse' && "animate-pulse",
+        animation === 'wave' && "relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[wave_2s_linear_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent",
+        className
+      )}
+    />
+  );
+}
