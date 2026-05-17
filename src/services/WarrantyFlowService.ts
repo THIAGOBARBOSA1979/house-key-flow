@@ -365,7 +365,7 @@ class WarrantyFlowService {
     
     // Create history entry
     const historyEntry: WarrantyStatusHistory = {
-      id: `hist-${Date.now()}`,
+      id: `hist-${crypto.randomUUID()}`,
       requestId,
       fromStatus: request.currentStage,
       toStatus: newStatus,
@@ -438,7 +438,7 @@ class WarrantyFlowService {
       history: [
         ...request.history,
         {
-          id: `hist-${Date.now()}`,
+          id: `hist-${crypto.randomUUID()}`,
           requestId,
           fromStatus: request.currentStage,
           toStatus: request.currentStage,
