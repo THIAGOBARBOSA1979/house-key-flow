@@ -194,6 +194,28 @@ const Properties = () => {
         />
       </ResponsiveGrid>
 
+      {selectedIds.length > 0 && (
+        <Card className="p-4 bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-primary text-white p-2 rounded-xl">
+              <Settings className="w-5 h-5 animate-spin-slow" />
+            </div>
+            <div>
+              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote</p>
+              <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} selecionados</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={() => setSelectedIds([])}>
+               Cancelar
+             </Button>
+             <Button variant="destructive" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={handleBulkDelete}>
+               <Trash2 className="w-4 h-4" /> Excluir permanentemente
+             </Button>
+          </div>
+        </Card>
+      )}
+
 
       <FilterBar
         searchPlaceholder="Buscar por nome, cidade ou código do projeto..."
