@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, MessageSquare, UserPlus, ShieldCheck, Image as ImageIcon } from "lucide-react";
+import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, MessageSquare, UserPlus, ShieldCheck, Image as ImageIcon, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
