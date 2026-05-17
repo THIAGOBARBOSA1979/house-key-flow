@@ -115,6 +115,17 @@ export const QuickLauncher = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
 
+  const filteredActions = QUICK_ACTIONS.filter(action => 
+    action.title.toLowerCase().includes(search.toLowerCase()) ||
+    action.category.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleAction = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
+    setSearch("");
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'q') {
@@ -144,16 +155,8 @@ export const QuickLauncher = () => {
     setSelectedIndex(0);
   }, [search]);
 
-  const filteredActions = QUICK_ACTIONS.filter(action => 
-    action.title.toLowerCase().includes(search.toLowerCase()) ||
-    action.category.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const handleAction = (path: string) => {
-    navigate(path);
-    setIsOpen(false);
-    setSearch("");
-  };
+  // Remove original declarations since they are now above useEffect
+  // ... keep existing code
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
