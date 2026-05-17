@@ -338,6 +338,133 @@ class DocumentService {
     return `${window.location.origin}/share/doc/${id}`;
   }
 
+  deleteMultipleDocuments(ids: string[]): number {
+    let deletedCount = 0;
+    ids.forEach(id => {
+      if (this.deleteDocument(id)) {
+        deletedCount++;
+      }
+    });
+    return deletedCount;
+  }
+
+  toggleFavorite(id: string): boolean {
+    const document = this.getDocumentById(id);
+    if (!document) return false;
+
+    this.updateDocument(id, { isFavorite: !document.isFavorite });
+    
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento "${document.title}" ${!document.isFavorite ? 'marcado como favorito' : 'removido dos favoritos'}.`
+    });
+    return true;
+  }
+
+  duplicateDocument(id: string): Document | null {
+    const doc = this.getDocumentById(id);
+    if (!doc) return null;
+    
+    const { id: _, ...data } = doc;
+    return this.createDocument({
+      ...data,
+      title: `${doc.title} (Cópia)`,
+      status: 'draft',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    } as any);
+  }
+
+  restoreDocument(id: string): boolean {
+    const doc = this.getDocumentById(id);
+    if (!doc || doc.status !== 'trash') return false;
+
+    this.updateDocument(id, { 
+      status: 'published',
+      deletedAt: undefined 
+    });
+    return true;
+  }
+
+  moveDocument(id: string, folderId: string | undefined): boolean {
+    const doc = this.getDocumentById(id);
+    if (!doc) return false;
+
+    this.updateDocument(id, { folderId });
+    return true;
+  }
+
+  getDocumentStats() {
+    return {
+      total: this.documents.length,
+      byCategory: this.documents.reduce((acc, doc) => {
+        acc[doc.category] = (acc[doc.category] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      byStatus: this.documents.reduce((acc, doc) => {
+        acc[doc.status] = (acc[doc.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      totalDownloads: this.documents.reduce((acc, doc) => acc + (doc.downloads || 0), 0),
+      totalViews: this.documents.reduce((acc, doc) => acc + (doc.viewCount || 0), 0),
+    };
+  }
+
+  getFolderStructure() {
+    return [
+      { id: "f1", name: "Contratos", icon: "Folder" },
+      { id: "f2", name: "Laudos Técnicos", icon: "Folder" },
+      { id: "f3", name: "Projetos", icon: "Folder" }
+    ];
+  }
+
+  getSignatureHistory(id: string) {
+    const doc = this.getDocumentById(id);
+    return doc?.signatures || [];
+  }
+
+  addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">) {
+    const doc = this.getDocumentById(id);
+    if (!doc) return null;
+    
+    const newSigner: DocumentSignature = {
+      ...signer,
+      id: crypto.randomUUID(),
+      status: "pending"
+    };
+    
+    const signatures = [...(doc.signatures || []), newSigner];
+    return this.updateDocument(id, { signatures });
+  }
+
+  signDocument(id: string, signerId: string) {
+    const doc = this.getDocumentById(id);
+    if (!doc || !doc.signatures) return false;
+    
+    const signatures = doc.signatures.map(s => 
+      s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s
+    );
+    
+    const allSigned = signatures.every(s => s.status === "signed");
+    return this.updateDocument(id, { signatures, isSigned: allSigned });
+  }
+
+  rejectSignature(id: string, signerId: string, reason: string) {
+    const doc = this.getDocumentById(id);
+    if (!doc || !doc.signatures) return false;
+    
+    const signatures = doc.signatures.map(s => 
+      s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: reason } : s
+    );
+    
+    return this.updateDocument(id, { signatures });
+  }
+
   generateDocument(templateId: string, data: any): string {
     const doc = this.getDocumentById(templateId);
     if (!doc || !doc.template) return "";
