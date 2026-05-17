@@ -47,7 +47,7 @@ const FinancialDashboard = () => {
   // Projection data (mock for demonstration)
   const projectionData = useMemo(() => {
     return [
-      ...metrics.revenueByMonth,
+      ...metrics.revenueByMonth.map(m => ({ ...m, isProjection: false })),
       { month: 'Jul', value: 720000, isProjection: true },
       { month: 'Ago', value: 780000, isProjection: true },
       { month: 'Set', value: 850000, isProjection: true },
