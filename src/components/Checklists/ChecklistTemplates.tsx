@@ -151,11 +151,17 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                       <Copy className="h-4 w-4" />
                     </Button>
                     
-                    {!template.id.startsWith("checklist") && (
-                      <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => handleArchiveTemplate(template.id)}>
-                        <Archive className="h-4 w-4" />
-                      </Button>
-                    )}
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleArchiveTemplate(template.id);
+                      }}
+                    >
+                      <Archive className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </CardContent>
