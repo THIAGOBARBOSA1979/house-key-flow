@@ -141,7 +141,7 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
 }
 
 export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
