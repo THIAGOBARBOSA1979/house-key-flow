@@ -159,16 +159,53 @@ class InspectionService {
     const inspection = this.inspections.find(i => i.id === id);
     if (!inspection) return null;
     
-    // In a real app, this would fetch data from the executed checklist too
     const progress = localStorage.getItem(`inspection_progress_${id}`);
     const checklistData = progress ? JSON.parse(progress) : null;
+    
+    // Check for digital signature history
+    const signaturesKey = `inspection_signatures_${id}`;
+    const signaturesStored = localStorage.getItem(signaturesKey);
+    const signatures = signaturesStored ? JSON.parse(signaturesStored) : [];
     
     return {
       inspection,
       checklist: checklistData,
+      signatures,
       generatedAt: new Date(),
       company: "A2 Empreendimentos"
     };
+  }
+
+  signAcceptance(id: string, clientId: string, signatureData: { method: string, evidence: any }) {
+    const inspection = this.inspections.find(i => i.id === id);
+    if (!inspection) return false;
+
+    const signaturesKey = `inspection_signatures_${id}`;
+    const signatures = JSON.parse(localStorage.getItem(signaturesKey) || "[]");
+    
+    const newSignature = {
+      id: crypto.randomUUID(),
+      signerId: clientId,
+      signerName: inspection.client,
+      method: signatureData.method,
+      evidence: signatureData.evidence,
+      signedAt: new Date()
+    };
+    
+    signatures.push(newSignature);
+    localStorage.setItem(signaturesKey, JSON.stringify(signatures));
+    
+    auditLogService.log({
+      entityType: 'inspection',
+      entityId: id,
+      action: 'updated',
+      performedBy: clientId,
+      performedByName: inspection.client,
+      performedByRole: 'client',
+      details: `Cliente assinou o termo de aceite digital via ${signatureData.method}.`
+    });
+
+    return true;
   }
 
   requestReschedule(id: string, clientId: string, newDate?: Date, newTime?: string, reason?: string) {

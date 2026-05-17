@@ -59,8 +59,8 @@ class NotificationService {
   constructor() {
     // Initialize with mock data
     const defaultSettings: NotificationSettings = {
-      email: { inspections: true, warranty: true, updates: true },
-      sms: { inspections: false, warranty: true, updates: false }
+      email: { inspections: true, warranty: true, updates: true, reminders: true },
+      sms: { inspections: true, warranty: true, updates: true, reminders: true }
     };
     this.settings.set('client-1', defaultSettings);
     this.settings.set('2', defaultSettings);

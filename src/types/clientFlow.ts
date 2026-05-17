@@ -111,11 +111,13 @@ export interface NotificationSettings {
     inspections: boolean;
     warranty: boolean;
     updates: boolean;
+    reminders: boolean;
   };
   sms: {
     inspections: boolean;
     warranty: boolean;
     updates: boolean;
+    reminders: boolean;
   };
 }
 

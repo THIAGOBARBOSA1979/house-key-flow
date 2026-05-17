@@ -312,9 +312,18 @@ const ClientInspections = () => {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Caso tenha dúvidas sobre o agendamento ou o processo de vistoria, entre em contato com nossa equipe de suporte.
                 </p>
-                <Button variant="outline" className="w-full rounded-xl font-bold gap-2 h-11 border-primary/20 hover:bg-primary/5">
-                  <MessageSquare size={16} className="text-primary" /> Abrir Chamado
-                </Button>
+                <div className="grid grid-cols-1 gap-3">
+                  <Button variant="outline" className="w-full rounded-xl font-bold gap-2 h-11 border-primary/20 hover:bg-primary/5" asChild>
+                    <a href="/client/support">
+                      <MessageSquare size={16} className="text-primary" /> Abrir Chamado de Suporte
+                    </a>
+                  </Button>
+                  <Button variant="default" className="w-full rounded-xl font-bold gap-2 h-11 shadow-md" asChild>
+                    <a href="/client/warranty">
+                      <ShieldCheck size={16} /> Abrir Chamado de Garantia
+                    </a>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -138,7 +138,39 @@ class DocumentService {
       description: "Contrato principal de aquisição da unidade 204",
       createdBy: "Admin",
       approvedBy: "Diretoria",
-      approvedAt: new Date(2025, 4, 10)
+      approvedAt: new Date(2025, 4, 10),
+      signatures: [
+        { id: "s1", name: "João Silva", email: "cliente@exemplo.com", role: "Comprador", status: "pending", confirmationMethod: "email", order: 1 },
+        { id: "s2", name: "Maria Oliveira", email: "maria.oliveira@email.com", role: "Cônjuge", status: "pending", confirmationMethod: "sms", order: 2 },
+        { id: "s3", name: "Ricardo Santos", email: "diretor@a2.com.br", role: "Representante Legal", status: "pending", confirmationMethod: "govbr", order: 3 }
+      ]
+    },
+    {
+      id: "dossier-full",
+      title: "Dossier Completo de Entrega - Unidade 204",
+      type: "auto",
+      category: "legal",
+      folderId: "f1",
+      viewCount: 12,
+      isSigned: false,
+      template: `DOSSIER COMPLETO DE ENTREGA - UNIDADE {{unidade}}\n\nEste documento formaliza a entrega das chaves e o aceite de todas as condições...`,
+      associatedTo: { client: "João Silva", property: "Edifício Aurora", unit: "204" },
+      visible: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      downloads: 1,
+      status: "published",
+      approvalStatus: "approved",
+      tags: ["dossier", "entrega", "chaves"],
+      version: 1,
+      priority: "high",
+      description: "Dossier unificado contendo termo de entrega, ficha técnica e laudos.",
+      createdBy: "Sistema",
+      signatures: [
+        { id: "ds1", name: "João Silva", email: "cliente@exemplo.com", role: "Proprietário", status: "pending", confirmationMethod: "email", order: 1 },
+        { id: "ds2", name: "Maria Oliveira", email: "maria.oliveira@email.com", role: "Proprietário", status: "pending", confirmationMethod: "sms", order: 2 },
+        { id: "ds3", name: "Técnico Responsável", email: "carlos.tecnico@a2.com.br", role: "Vistoriador", status: "pending", confirmationMethod: "facial", order: 3 }
+      ]
     }
   ];
 
