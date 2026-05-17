@@ -58,8 +58,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         e.preventDefault();
         setIsSearchOpen(true);
       }
+      if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+        e.preventDefault();
+        setIsShortcutsOpen(true);
+      }
       if (e.key === 'Escape') {
         setIsSearchOpen(false);
+        setIsShortcutsOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
