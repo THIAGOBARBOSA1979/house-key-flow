@@ -95,18 +95,21 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
           items={operationalItems} 
           defaultOpen={true}
           collapsed={collapsed}
+          onItemClick={onItemClick}
         />
         <SidebarGroup 
           title="Gestão" 
           items={managementItems}
           defaultOpen={true}
           collapsed={collapsed}
+          onItemClick={onItemClick}
         />
         <SidebarGroup 
           title="Sistema" 
           items={systemItems}
           defaultOpen={false}
           collapsed={collapsed}
+          onItemClick={onItemClick}
         />
       </nav>
       
@@ -169,7 +172,7 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="p-0 w-sidebar-width bg-sidebar border-r-sidebar-border shadow-sem-xl">
-          <SidebarContent collapsed={false} />
+          <SidebarContent collapsed={false} onItemClick={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>
     );
