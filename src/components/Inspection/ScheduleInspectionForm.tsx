@@ -68,11 +68,7 @@ const inspectionTypes = [
   { id: "postWork", name: "Pós-obra" }
 ];
 
-const technicians = [
-  { id: "1", name: "Carlos Andrade" },
-  { id: "2", name: "Luiza Mendes" },
-  { id: "3", name: "Roberto Santos" }
-];
+const technicians = inspectionService.getTechnicians();
 
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",

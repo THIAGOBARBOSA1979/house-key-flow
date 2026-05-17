@@ -1,4 +1,5 @@
 
+import { userService } from "./UserService";
 import { useToast } from "@/components/ui/use-toast";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { format } from "date-fns";
