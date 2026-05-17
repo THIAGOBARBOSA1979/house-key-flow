@@ -8,8 +8,8 @@ import { SkeletonLoader } from "./SkeletonLoader";
 interface DataViewProps<T> {
   items: T[];
   renderGrid?: (item: T) => React.ReactNode;
-  renderList?: () => React.ReactNode;
-  renderTimeline?: () => React.ReactNode;
+  renderList?: (items: T[]) => React.ReactNode;
+  renderTimeline?: (items: T[]) => React.ReactNode;
   viewMode?: 'grid' | 'list' | 'timeline';
   isLoading?: boolean;
   skeletonType?: 'card' | 'table' | 'page' | 'list';
@@ -39,6 +39,16 @@ export function DataView<T>({
   itemsPerPage = 0
 }: DataViewProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    if (containerRef.current) {
+      const yOffset = -100; // Offset to account for sticky header
+      const y = containerRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   if (isLoading) {
     return <SkeletonLoader type={skeletonType} count={itemsPerPage || 6} />;
@@ -69,7 +79,7 @@ export function DataView<T>({
     if (viewMode === 'list' && renderList) {
       return (
         <div className="animate-fade-in">
-          {renderList()}
+          {renderList(displayedItems)}
         </div>
       );
     }
@@ -77,7 +87,7 @@ export function DataView<T>({
     if (viewMode === 'timeline' && renderTimeline) {
       return (
         <div className="animate-fade-in">
-          {renderTimeline()}
+          {renderTimeline(displayedItems)}
         </div>
       );
     }
@@ -94,7 +104,7 @@ export function DataView<T>({
   };
 
   return (
-    <div className="space-y-6-sem">
+    <div ref={containerRef} className="space-y-6-sem">
       {renderContent()}
       
       {isPaginationEnabled && (
@@ -108,12 +118,7 @@ export function DataView<T>({
               size="icon"
               className="h-10 w-10 rounded-xl border-border/10 hover:bg-primary/5 hover:text-primary transition-all active:scale-90 disabled:opacity-30"
               disabled={effectivePage === 1}
-              onClick={() => {
-                setCurrentPage(prev => Math.max(1, prev - 1));
-                const header = document.querySelector('header');
-                const scrollTarget = header ? header.offsetHeight + 100 : 0;
-                window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
-              }}
+              onClick={() => handlePageChange(Math.max(1, effectivePage - 1))}
             >
               <ChevronLeft size={18} />
             </Button>
@@ -129,10 +134,7 @@ export function DataView<T>({
                       ? "shadow-sem-lg scale-110 bg-gradient-to-br from-primary to-primary/80 ring-2 ring-primary/20" 
                       : "text-muted-foreground/40 hover:bg-primary/5 hover:text-primary active:scale-95"
                   )}
-                  onClick={() => {
-                    setCurrentPage(page);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onClick={() => handlePageChange(page)}
                 >
                   {page}
                 </Button>
@@ -143,10 +145,7 @@ export function DataView<T>({
               size="icon"
               className="h-10 w-10 rounded-xl border-border/10 hover:bg-primary/5 hover:text-primary transition-all active:scale-90 disabled:opacity-30"
               disabled={effectivePage === totalPages}
-              onClick={() => {
-                setCurrentPage(prev => Math.min(totalPages, prev + 1));
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onClick={() => handlePageChange(Math.min(totalPages, effectivePage + 1))}
             >
               <ChevronRight size={18} />
             </Button>

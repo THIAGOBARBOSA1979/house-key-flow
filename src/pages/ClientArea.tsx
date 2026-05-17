@@ -130,7 +130,7 @@ const ClientArea = () => {
       <DataView
         items={filteredClients}
         viewMode="list"
-        renderList={() => (
+        renderList={(items) => (
           <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
             <ScrollArea className="w-full">
               <Table>
@@ -144,7 +144,7 @@ const ClientArea = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredClients.map(client => (
+                  {items.map(client => (
                     <TableRow key={client.id} className="group hover:bg-primary/5 transition-all border-b border-border/50">
                       <TableCell className="py-4 px-6">
                         <div className="flex flex-col">

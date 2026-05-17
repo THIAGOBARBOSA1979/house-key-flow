@@ -40,7 +40,8 @@ class UserService {
           this.users = parsed;
         }
       } catch (e) {
-        console.error("Failed to load users from storage", e);
+        // Silently fail or log in development, but ensure stability
+        localStorage.removeItem(this.storageKey);
       }
     }
   }

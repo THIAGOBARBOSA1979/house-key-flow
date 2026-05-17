@@ -71,13 +71,22 @@ class PropertyService {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        this.properties = parsed.map((p: any) => ({
-          ...p,
-          milestones: p.milestones?.map((m: any) => ({ ...m, targetDate: new Date(m.targetDate), completedAt: m.completedAt ? new Date(m.completedAt) : undefined })),
-          deliveryDate: p.deliveryDate ? new Date(p.deliveryDate) : undefined
-        }));
+        if (Array.isArray(parsed)) {
+          this.properties = parsed.map((p: any) => ({
+            ...p,
+            milestones: Array.isArray(p.milestones) 
+              ? p.milestones.map((m: any) => ({ 
+                  ...m, 
+                  targetDate: m.targetDate ? new Date(m.targetDate) : new Date(), 
+                  completedAt: m.completedAt ? new Date(m.completedAt) : undefined 
+                }))
+              : [],
+            deliveryDate: p.deliveryDate ? new Date(p.deliveryDate) : undefined,
+            unitsList: Array.isArray(p.unitsList) ? p.unitsList : []
+          }));
+        }
       } catch (e) {
-        console.error("Failed to load properties from storage", e);
+        console.error("Erro ao carregar empreendimentos do armazenamento:", e);
       }
     }
   }

@@ -288,7 +288,7 @@ const Properties = () => {
             onDelete={() => setPropertyToDelete(property)}
           />
         )}
-        renderList={() => (
+        renderList={(items) => (
           <DataTable
             columns={[
               {
@@ -368,13 +368,13 @@ const Properties = () => {
                 )
               }
             ]}
-            data={filteredProperties}
+            data={items}
             onRowClick={(p) => setSelectedProperty(p)}
           />
         )}
-        renderTimeline={() => (
+        renderTimeline={(items) => (
           <div className="space-y-6">
-            {filteredProperties.map(property => (
+            {items.map(property => (
               <Card key={property.id} className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden p-6 rounded-3xl shadow-sem-sm">
                 <div className="flex flex-col md:flex-row md:items-center gap-6">
                   <div className="w-full md:w-1/4">

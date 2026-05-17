@@ -3,8 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { StrictMode, useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState } from "react";
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -33,8 +33,6 @@ import Announcements from "./pages/admin/Announcements";
 import Technicians from "./pages/Technicians";
 import AdminSupport from "./pages/admin/Support";
 
-
-
 // Client pages and layout
 import ClientLayout from "./components/Layout/ClientLayout";
 import ClientDashboard from "./pages/client/Dashboard";
@@ -48,199 +46,82 @@ import ClientFinancial from "./pages/client/Financial";
 import ClientSupport from "./pages/client/Support";
 
 const App = () => {
-  console.log('App: Inicializando componente App...');
-
-  // Move the QueryClient initialization inside the component
-  const [queryClient] = useState(() => {
-    console.log('App: Criando QueryClient...');
-    return new QueryClient({
-      defaultOptions: {
-        queries: {
-          refetchOnWindowFocus: false,
-          retry: 1,
-        },
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        retry: 1,
+        staleTime: 5 * 60 * 1000,
       },
-    });
-  });
-
-  useEffect(() => {
-    console.log('App: Componente App montado');
-    console.log('App: Ambiente:', import.meta.env.MODE);
-    console.log('App: VITE_API_URL:', import.meta.env.VITE_API_URL || 'não configurado');
-  }, []);
-
-  console.log('App: Renderizando componente App...');
+    },
+  }));
 
   return (
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AuthProvider>
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                
-                {/* Unified Login Route */}
-                <Route path="/login" element={<Login />} />
-                
-                {/* Legacy login routes that redirect to unified login */}
-                <Route path="/admin/login" element={<Login />} />
-                <Route path="/client/login" element={<Login />} />
-                
-                {/* Protected Admin Routes */}
-                <Route path="/admin" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Index /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/properties" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Properties /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/inspections" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Inspections /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/warranty" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Warranty /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/documents" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><AdminDocuments /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/calendar" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Calendar /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/users" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Users /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/client-area" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><ClientArea /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/checklist" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Checklist /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/settings" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Settings /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/design-system" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><DesignSystem /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/audit-logs" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><AuditLogs /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/financial" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><FinancialDashboard /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/announcements" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Announcements /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/technicians" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><Technicians /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin/support" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AppLayout><AdminSupport /></AppLayout>
-                  </ProtectedRoute>
-                } />
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              
+              {/* Redirect legacy login paths */}
+              <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+              <Route path="/client/login" element={<Navigate to="/login" replace />} />
+              
+              {/* Protected Admin Routes */}
+              <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AppLayout /></ProtectedRoute>}>
+                <Route index element={<Index />} />
+                <Route path="properties" element={<Properties />} />
+                <Route path="inspections" element={<Inspections />} />
+                <Route path="warranty" element={<Warranty />} />
+                <Route path="documents" element={<AdminDocuments />} />
+                <Route path="calendar" element={<Calendar />} />
+                <Route path="users" element={<Users />} />
+                <Route path="client-area" element={<ClientArea />} />
+                <Route path="checklist" element={<Checklist />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="design-system" element={<DesignSystem />} />
+                <Route path="audit-logs" element={<AuditLogs />} />
+                <Route path="financial" element={<FinancialDashboard />} />
+                <Route path="announcements" element={<Announcements />} />
+                <Route path="technicians" element={<Technicians />} />
+                <Route path="support" element={<AdminSupport />} />
+              </Route>
 
+              {/* Protected Client Routes */}
+              <Route path="/client" element={<ProtectedRoute requiredRole="client"><ClientLayout /></ProtectedRoute>}>
+                <Route index element={<ClientDashboard />} />
+                <Route path="documents" element={<ClientDocuments />} />
+                <Route path="inspections" element={<ClientInspections />} />
+                <Route path="warranty" element={<ClientWarranty />} />
+                <Route path="properties" element={<ClientProperties />} />
+                <Route path="notifications" element={<ClientNotifications />} />
+                <Route path="profile" element={<ClientProfile />} />
+                <Route path="financial" element={<ClientFinancial />} />
+                <Route path="support" element={<ClientSupport />} />
+              </Route>
 
+              {/* Legacy redirects for top-level paths */}
+              <Route path="/properties" element={<Navigate to="/admin/properties" replace />} />
+              <Route path="/inspections" element={<Navigate to="/admin/inspections" replace />} />
+              <Route path="/warranty" element={<Navigate to="/admin/warranty" replace />} />
+              <Route path="/calendar" element={<Navigate to="/admin/calendar" replace />} />
+              <Route path="/users" element={<Navigate to="/admin/users" replace />} />
+              <Route path="/client-area" element={<Navigate to="/admin/client-area" replace />} />
+              <Route path="/checklist" element={<Navigate to="/admin/checklist" replace />} />
+              <Route path="/settings" element={<Navigate to="/admin/settings" replace />} />
 
-                {/* Protected Client Routes */}
-                <Route path="/client" element={
-                  <ProtectedRoute requiredRole="client">
-                    <ClientLayout />
-                  </ProtectedRoute>
-                }>
-                  <Route index element={<ClientDashboard />} />
-                  <Route path="documents" element={<ClientDocuments />} />
-                  <Route path="inspections" element={<ClientInspections />} />
-                  <Route path="warranty" element={<ClientWarranty />} />
-                  <Route path="properties" element={<ClientProperties />} />
-                  <Route path="notifications" element={<ClientNotifications />} />
-                  <Route path="profile" element={<ClientProfile />} />
-                  <Route path="financial" element={<ClientFinancial />} />
-                  <Route path="support" element={<ClientSupport />} />
-                </Route>
-
-                {/* Legacy redirects for backward compatibility */}
-                <Route path="/properties" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><Properties /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/inspections" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><Inspections /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/warranty" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><Warranty /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/calendar" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><Calendar /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/users" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><Users /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/client-area" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><ClientArea /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/checklist" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><Checklist /></AppLayout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/settings" element={
-                  <ProtectedRoute requiredRole="admin" redirectTo="/login">
-                    <AppLayout><Settings /></AppLayout>
-                  </ProtectedRoute>
-                } />
-
-                {/* Catch-all route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AuthProvider>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </StrictMode>
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 
