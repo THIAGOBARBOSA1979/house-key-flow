@@ -313,6 +313,30 @@ const Announcements = () => {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Status da Publicação</label>
+                <Select value={formData.status} onValueChange={(v: any) => setFormData({...formData, status: v})}>
+                  <SelectTrigger className="rounded-xl border-muted bg-muted/20 h-12">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-sem-lg">
+                    <SelectItem value="published">Publicar Imediatamente</SelectItem>
+                    <SelectItem value="scheduled">Agendar Publicação</SelectItem>
+                    <SelectItem value="draft">Salvar como Rascunho</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                {formData.status === 'scheduled' && (
+                   <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                     <label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Data de Agendamento</label>
+                     <Input type="datetime-local" className="rounded-xl border-muted bg-muted/20 h-12" />
+                   </div>
+                )}
+              </div>
+            </div>
+
             {!formData.isGlobal && (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
                 <label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Selecionar Empreendimento</label>
