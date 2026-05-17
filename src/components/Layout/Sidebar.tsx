@@ -18,7 +18,8 @@ import {
   Activity,
   DollarSign,
   Megaphone,
-  Wrench
+  Wrench,
+  MessageSquare
 } from "lucide-react";
 
 
@@ -37,6 +38,7 @@ const operationalItems = [
   { to: "/admin/calendar", icon: Calendar, label: "Agendamentos" },
   { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias" },
   { to: "/admin/warranty", icon: ShieldCheck, label: "Garantias" },
+  { to: "/admin/support", icon: MessageSquare, label: "Suporte" },
   { to: "/admin/financial", icon: DollarSign, label: "Financeiro" },
 ];
 
