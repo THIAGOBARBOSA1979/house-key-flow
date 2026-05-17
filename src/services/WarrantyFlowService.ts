@@ -508,6 +508,267 @@ class WarrantyFlowService {
   }
 
   /**
+   * Assign a technician to a request
+   */
+  assignTechnician(
+    requestId: string,
+    technicianId: string,
+    technicianName: string,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      assignedTo: technicianId,
+      assignedToName: technicianName,
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'assigned',
+      performedBy: changedBy,
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Técnico ${technicianName} designado para o atendimento.`,
+      metadata: { technicianId, technicianName }
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Schedule inspection
+   */
+  scheduleInspection(
+    requestId: string,
+    date: Date,
+    technicianId: string,
+    technicianName: string,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const result = this.changeStatus(requestId, 'inspection_scheduled', changedBy, false, `Vistoria agendada para ${date.toLocaleDateString()}`);
+    
+    if (result.success && result.request) {
+      const updatedRequest: WarrantyRequestFlow = {
+        ...result.request,
+        inspectionDate: date,
+        inspectionTechnicianId: technicianId,
+        inspectionTechnicianName: technicianName,
+        assignedTo: technicianId,
+        assignedToName: technicianName
+      };
+      this.requests.set(requestId, updatedRequest);
+      this.persist();
+      return { success: true, request: updatedRequest };
+    }
+
+    return result;
+  }
+
+  /**
+   * Complete inspection
+   */
+  completeInspection(
+    requestId: string,
+    notes: string,
+    completedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    return this.changeStatus(requestId, 'inspection_completed', completedBy, false, notes);
+  }
+
+  /**
+   * Approve warranty
+   */
+  approveWarranty(
+    requestId: string,
+    notes: string,
+    approvedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const result = this.changeStatus(requestId, 'approved', approvedBy, false, notes);
+    if (result.success && result.request) {
+      const updatedRequest: WarrantyRequestFlow = {
+        ...result.request,
+        approvalDate: new Date(),
+        approvalNotes: notes
+      };
+      this.requests.set(requestId, updatedRequest);
+      this.persist();
+      return { success: true, request: updatedRequest };
+    }
+    return result;
+  }
+
+  /**
+   * Reject warranty
+   */
+  rejectWarranty(
+    requestId: string,
+    reason: string,
+    rejectedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const result = this.changeStatus(requestId, 'rejected', rejectedBy, false, reason);
+    if (result.success && result.request) {
+      const updatedRequest: WarrantyRequestFlow = {
+        ...result.request,
+        rejectionReason: reason
+      };
+      this.requests.set(requestId, updatedRequest);
+      this.persist();
+      return { success: true, request: updatedRequest };
+    }
+    return result;
+  }
+
+  /**
+   * Start execution
+   */
+  startExecution(
+    requestId: string,
+    notes: string,
+    startedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const result = this.changeStatus(requestId, 'in_execution', startedBy, false, notes);
+    if (result.success && result.request) {
+      const updatedRequest: WarrantyRequestFlow = {
+        ...result.request,
+        executionStartDate: new Date(),
+        executionNotes: notes
+      };
+      this.requests.set(requestId, updatedRequest);
+      this.persist();
+      return { success: true, request: updatedRequest };
+    }
+    return result;
+  }
+
+  /**
+   * Complete warranty
+   */
+  completeWarranty(
+    requestId: string,
+    notes: string,
+    completedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const result = this.changeStatus(requestId, 'completed', completedBy, false, notes);
+    if (result.success && result.request) {
+      const updatedRequest: WarrantyRequestFlow = {
+        ...result.request,
+        completionDate: new Date(),
+        completionNotes: notes
+      };
+      this.requests.set(requestId, updatedRequest);
+      this.persist();
+      return { success: true, request: updatedRequest };
+    }
+    return result;
+  }
+
+  /**
+   * Add a problem to a request breakdown
+   */
+  addProblemToRequest(
+    requestId: string,
+    problem: Partial<WarrantyProblemDetail>,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const newProblem: WarrantyProblemDetail = {
+      id: crypto.randomUUID(),
+      category: problem.category || "Geral",
+      location: problem.location || "A definir",
+      description: problem.description || "",
+      severity: problem.severity || "moderate",
+      photos: [],
+      status: "pending",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems: [...(request.problems || []), newProblem],
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'info_added',
+      performedBy: changedBy,
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Novo item adicionado ao breakdown: ${newProblem.description}`
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Toggle problem status (pending <-> resolved)
+   */
+  toggleProblemStatus(
+    requestId: string,
+    problemId: string,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const problems = (request.problems || []).map(p => {
+      if (p.id === problemId) {
+        const newStatus = p.status === 'resolved' ? 'pending' : 'resolved';
+        return {
+          ...p,
+          status: newStatus as any,
+          resolvedAt: newStatus === 'resolved' ? new Date() : undefined,
+          updatedAt: new Date()
+        };
+      }
+      return p;
+    });
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems,
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    const problem = problems.find(p => p.id === problemId);
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'updated',
+      performedBy: changedBy,
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Status do item "${problem?.description}" alterado para ${problem?.status === 'resolved' ? 'Resolvido' : 'Pendente'}`
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
    * Toggle problem resolution status
    */
   toggleProblemStatus(
