@@ -28,7 +28,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { supportService, SupportTicket } from "@/services/SupportService";
+import { supportService, SupportTicket, TicketPriority, TicketCategory } from "@/services/SupportService";
 import { useMemo, useEffect } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,9 +38,16 @@ const Support = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const clientId = user?.id || "client-1";
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<{
+    subject: string;
+    message: string;
+    priority: TicketPriority;
+    category: TicketCategory;
+  }>({
     subject: "",
-    message: ""
+    message: "",
+    priority: "medium",
+    category: "technical"
   });
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
 
@@ -50,13 +57,13 @@ const Support = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    supportService.createTicket(clientId, formState.subject, formState.message);
+    supportService.createTicket(clientId, formState);
     setTickets(supportService.getTicketsByClient(clientId));
     toast({
       title: "Solicitação enviada",
       description: "Sua mensagem foi enviada para nossa equipe de suporte. Responderemos em breve.",
     });
-    setFormState({ subject: "", message: "" });
+    setFormState({ subject: "", message: "", priority: "medium", category: "technical" });
   };
 
   const contactMethods = [
@@ -171,6 +178,38 @@ const Support = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Categoria</label>
+                  <Select value={formState.category} onValueChange={(v: TicketCategory) => setFormState(prev => ({...prev, category: v}))}>
+                    <SelectTrigger className="h-12 rounded-xl">
+                      <SelectValue placeholder="Selecione uma categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="financial">Financeiro</SelectItem>
+                      <SelectItem value="technical">Assistência Técnica</SelectItem>
+                      <SelectItem value="administrative">Administrativo</SelectItem>
+                      <SelectItem value="warranty">Garantia</SelectItem>
+                      <SelectItem value="other">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Prioridade</label>
+                  <Select value={formState.priority} onValueChange={(v: TicketPriority) => setFormState(prev => ({...prev, priority: v}))}>
+                    <SelectTrigger className="h-12 rounded-xl">
+                      <SelectValue placeholder="Prioridade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Baixa</SelectItem>
+                      <SelectItem value="medium">Média</SelectItem>
+                      <SelectItem value="high">Alta</SelectItem>
+                      <SelectItem value="urgent">Urgente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Assunto da Mensagem</label>
                 <Input 
@@ -190,6 +229,11 @@ const Support = () => {
                   className="min-h-[150px] rounded-xl focus:ring-primary/20 resize-none"
                   required
                 />
+              </div>
+              
+              <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-xl border border-dashed">
+                <ExternalLink className="h-4 w-4 text-primary" />
+                <span className="text-xs font-bold text-muted-foreground">Adicionar anexos (em breve)</span>
               </div>
               <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
                 Enviar Mensagem para Suporte

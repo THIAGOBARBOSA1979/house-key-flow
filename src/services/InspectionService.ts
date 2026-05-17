@@ -5,6 +5,7 @@ import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { auditLogService } from "./AuditLogService";
+import { eventAutomationService } from "./EventAutomationService";
 
 interface ScheduleInspectionData {
   inspectionType: string;
