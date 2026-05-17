@@ -136,18 +136,38 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
     <div className="space-y-4">
       <Card className={cn("border-none bg-card/50 backdrop-blur-sm shadow-sem-sm", className)}>
         <CardHeader className={compact ? "pb-3" : "pb-4 border-b border-border/10"}>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
               <Activity className="h-4 w-4 text-primary" />
               {title || "Logs de Auditoria"}
             </CardTitle>
-            {!compact && (
-              <Button variant="outline" size="sm" className="h-8 font-bold text-xs" onClick={() => {
-                exportService.exportToCSV(allLogs, "logs_auditoria");
-              }}>
-                <Download className="w-3 h-3 mr-2" /> Exportar
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center bg-muted/20 p-1 rounded-xl border border-border/10">
+                <Button 
+                  variant={viewMode === 'table' ? 'secondary' : 'ghost'} 
+                  size="sm" 
+                  className="h-7 px-3 rounded-lg text-[10px] font-black uppercase tracking-tight"
+                  onClick={() => setViewMode('table')}
+                >
+                  Tabela
+                </Button>
+                <Button 
+                  variant={viewMode === 'timeline' ? 'secondary' : 'ghost'} 
+                  size="sm" 
+                  className="h-7 px-3 rounded-lg text-[10px] font-black uppercase tracking-tight"
+                  onClick={() => setViewMode('timeline')}
+                >
+                  Linha do Tempo
+                </Button>
+              </div>
+              {!compact && (
+                <Button variant="outline" size="sm" className="h-8 font-bold text-xs" onClick={() => {
+                  exportService.exportToCSV(allLogs, "logs_auditoria");
+                }}>
+                  <Download className="w-3 h-3 mr-2" /> Exportar
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4 pt-6">
