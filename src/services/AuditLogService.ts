@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+// Audit Log Service using crypto.randomUUID() for ID generation
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial';
 export type AuditAction = 
@@ -72,43 +72,43 @@ class AuditLogService {
 
     this.logs = [
       {
-        id: uuidv4(), entityType: 'inspection', entityId: '1',
+        id: crypto.randomUUID(), entityType: 'inspection', entityId: '1',
         action: 'created', performedBy: 'admin-1', performedByName: 'Ana Costa',
         performedByRole: 'admin', timestamp: day(30),
         details: 'Vistoria de pré-entrega criada para Edifício Aurora, Unidade 204.'
       },
       {
-        id: uuidv4(), entityType: 'inspection', entityId: '1',
+        id: crypto.randomUUID(), entityType: 'inspection', entityId: '1',
         action: 'scheduled', performedBy: 'admin-1', performedByName: 'Ana Costa',
         performedByRole: 'admin', timestamp: day(28),
         details: 'Vistoria agendada para 15/05/2025 às 10:00.'
       },
       {
-        id: uuidv4(), entityType: 'inspection', entityId: '3',
+        id: crypto.randomUUID(), entityType: 'inspection', entityId: '3',
         action: 'created', performedBy: 'admin-1', performedByName: 'Ana Costa',
         performedByRole: 'admin', timestamp: day(40),
         details: 'Vistoria de reparo criada para Edifício Aurora, Unidade 204.'
       },
       {
-        id: uuidv4(), entityType: 'inspection', entityId: '3',
+        id: crypto.randomUUID(), entityType: 'inspection', entityId: '3',
         action: 'completed', performedBy: 'admin-2', performedByName: 'Roberto Santos',
         performedByRole: 'admin', timestamp: day(20),
         details: 'Vistoria de reparo concluída. 2 itens verificados, todos conformes.'
       },
       {
-        id: uuidv4(), entityType: 'warranty', entityId: 'w-1',
+        id: crypto.randomUUID(), entityType: 'warranty', entityId: 'w-1',
         action: 'created', performedBy: 'client-1', performedByName: 'João Silva',
         performedByRole: 'client', timestamp: day(10),
         details: 'Solicitação de garantia criada: Infiltração no banheiro.'
       },
       {
-        id: uuidv4(), entityType: 'warranty', entityId: 'w-1',
+        id: crypto.randomUUID(), entityType: 'warranty', entityId: 'w-1',
         action: 'updated', performedBy: 'admin-1', performedByName: 'Ana Costa',
         performedByRole: 'admin', timestamp: day(9),
         details: 'Solicitação movida para análise técnica.'
       },
       {
-        id: uuidv4(), entityType: 'warranty', entityId: 'w-1',
+        id: crypto.randomUUID(), entityType: 'warranty', entityId: 'w-1',
         action: 'assigned', performedBy: 'admin-1', performedByName: 'Ana Costa',
         performedByRole: 'admin', timestamp: day(8),
         details: 'Técnico Carlos Andrade designado para análise.',
