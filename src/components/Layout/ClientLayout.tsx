@@ -169,17 +169,20 @@ const MobileHeader = ({
 }: {
   onToggleSidebar: () => void;
 }) => {
-  return <div className="flex items-center justify-between h-16 px-4 border-b md:hidden">
-      <Button variant="ghost" size="icon" onClick={onToggleSidebar}>
-        <Menu size={20} />
+  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 md:hidden">
+      <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="rounded-xl hover:bg-primary/10">
+        <Menu size={24} className="text-primary" />
       </Button>
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/20">
           A2
         </div>
-        <span className="text-lg font-semibold">Portal do Cliente</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-black tracking-tight leading-none">Portal do Cliente</span>
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">A2 Gestão</span>
+        </div>
       </div>
-      <div className="w-8"></div> {/* Spacer for centering */}
+      <div className="w-10"></div>
     </div>;
 };
 
