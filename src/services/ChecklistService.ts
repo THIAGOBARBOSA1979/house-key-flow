@@ -159,7 +159,7 @@ class ChecklistService {
   async createTemplate(template: Omit<ChecklistTemplate, "id" | "createdAt" | "lastUpdated" | "version" | "status">): Promise<ChecklistTemplate> {
     const newTemplate: ChecklistTemplate = {
       ...template,
-      id: Math.random().toString(36).substr(2, 9),
+      id: crypto.randomUUID(),
       status: "active",
       version: 1,
       createdAt: new Date(),
@@ -250,7 +250,7 @@ class ChecklistService {
     const { score, conformityRate } = this.calculateScore(groups);
 
     const newExecution: ChecklistExecutionRecord = {
-      id: `exec-${Date.now()}`,
+      id: `exec-${crypto.randomUUID()}`,
       templateId,
       templateTitle: template?.title || "Checklist Avulso",
       performedBy: "admin-1",

@@ -15,6 +15,8 @@ import { StatsCard } from '@/components/shared/StatsCard';
 import { ResponsiveGrid } from '@/components/shared/ResponsiveGrid';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { cn } from '@/lib/utils';
+import { exportService } from '@/services/ExportService';
+
 
 import { ChecklistTemplate, ChecklistExecutionRecord } from '@/services/ChecklistService';
 
@@ -138,8 +140,8 @@ export default function Checklist() {
         description="Templates padronizados e vistorias técnicas com conformidade em tempo real."
       >
         <div className="flex gap-2">
-           <Button variant="outline" onClick={() => toast({ title: "Exportar", description: "Relatório gerencial em PDF sendo gerado..." })} className="rounded-xl h-10 px-4 font-bold border-primary/20 hover:border-primary/50">
-            Relatório Geral
+           <Button variant="outline" onClick={() => exportService.exportToCSV(checklistService.getAllExecutions(), 'execucoes_checklist_a2')} className="rounded-xl h-10 px-4 font-bold border-primary/20 hover:border-primary/50">
+            Exportar Execuções (CSV)
           </Button>
           <Button onClick={handleCreateNew} className="rounded-xl h-10 px-4 bg-primary font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all">
             <Plus className="mr-2 h-4 w-4" />

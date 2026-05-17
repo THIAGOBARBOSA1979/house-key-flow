@@ -329,7 +329,7 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Button>
             </div>
-            <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-lg">
+            <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-lg animate-in fade-in slide-in-from-right-4 duration-slow">
               <CardContent className="p-0">
                 <div className="divide-y divide-border/5">
                   {recentActivities.map((activity) => (

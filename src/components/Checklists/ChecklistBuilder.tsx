@@ -239,7 +239,7 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
 
   const handleAddGroup = () => {
     const newGroup: ChecklistGroup = {
-      id: `group-${Date.now()}`,
+      id: `group-${crypto.randomUUID()}`,
       name: `Nova Seção ${groups.length + 1}`,
       items: []
     };
@@ -263,7 +263,7 @@ export const ChecklistBuilder = ({ onSave, onCancel }: ChecklistBuilderProps) =>
     if (!newItemDescription.trim() || !activeGroupId) return;
 
     const newItem: ChecklistItem = {
-      id: `item-${Date.now()}`,
+      id: `item-${crypto.randomUUID()}`,
       description: newItemDescription,
       required: newItemRequired,
       severity: newItemSeverity,

@@ -80,7 +80,7 @@ export function ChecklistExecution({
                       evidence: [
                         ...(item.evidence || []),
                         ...Array.from(files).map(f => ({ 
-                          id: `ev-${Date.now()}-${Math.random()}`, 
+                          id: `ev-${crypto.randomUUID()}`, 
                           file: f, 
                           url: URL.createObjectURL(f), 
                           timestamp: new Date() 
@@ -117,7 +117,7 @@ export function ChecklistExecution({
   const currentSectionItems = currentSectionGroup.items;
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-right-2 duration-slow">
       {/* Header com progresso sticky para mobile */}
       <Card className="sticky top-0 z-20 shadow-sem-lg border-primary/10 backdrop-blur-md bg-card/90 sm:rounded-3xl">
         <CardHeader className="py-6">

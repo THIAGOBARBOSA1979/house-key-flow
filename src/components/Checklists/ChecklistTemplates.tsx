@@ -43,7 +43,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-slow">
       {/* Header com busca e filtros */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
@@ -151,11 +151,17 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                       <Copy className="h-4 w-4" />
                     </Button>
                     
-                    {!template.id.startsWith("checklist") && (
-                      <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => handleArchiveTemplate(template.id)}>
-                        <Archive className="h-4 w-4" />
-                      </Button>
-                    )}
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/20" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleArchiveTemplate(template.id);
+                      }}
+                    >
+                      <Archive className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </CardContent>

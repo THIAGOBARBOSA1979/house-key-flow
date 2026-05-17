@@ -7,6 +7,8 @@ import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfiguratio
 import { WarrantyHeader } from "@/components/Warranty/WarrantyHeader";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { exportService } from "@/services/ExportService";
+
 import { 
   Dialog, 
   DialogContent, 
@@ -43,9 +45,11 @@ const Warranty = () => {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const handleExportData = () => {
+    const requests = warrantyFlowService.getAllRequests();
+    exportService.exportToCSV(requests, 'garantias_a2');
     toast({
-      title: "Exportação iniciada",
-      description: "Os dados serão enviados para seu e-mail quando estiverem prontos.",
+      title: "Exportação concluída",
+      description: "O arquivo CSV com as solicitações de garantia foi baixado.",
     });
   };
 
