@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
   Table, 
   TableBody, 
@@ -11,7 +10,8 @@ import {
 import { cn } from "@/lib/utils";
 import { SkeletonLoader } from "./SkeletonLoader";
 import { EmptyState } from "./EmptyState";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, ArrowUpDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Column<T> {
   header: string;
@@ -19,6 +19,7 @@ interface Column<T> {
   cell?: (item: T) => React.ReactNode;
   className?: string;
   hideOnMobile?: boolean;
+  sortable?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -42,9 +43,27 @@ export function DataTable<T>({
   emptyState,
   className
 }: DataTableProps<T>) {
-  if (isLoading) {
-    return <SkeletonLoader type="table" />;
-  }
+  const [sortConfig, setSortConfig] = useState<{ key: string | null, direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+
+  const sortedData = useMemo(() => {
+    if (!sortConfig.key) return data;
+    return [...data].sort((a: any, b: any) => {
+      const aVal = a[sortConfig.key!];
+      const bVal = b[sortConfig.key!];
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
+
+  const handleSort = (key: string) => {
+    setSortConfig(current => ({
+      key,
+      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  if (isLoading) return <SkeletonLoader type="table" />;
 
   if (data.length === 0) {
     return (
@@ -58,7 +77,6 @@ export function DataTable<T>({
 
   return (
     <div className={cn("w-full animate-fade-in overflow-hidden", className)}>
-      {/* Desktop Table View */}
       <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm overflow-hidden bg-card/40 backdrop-blur-sm">
         <Table>
           <TableHeader className="bg-muted/10">
@@ -67,17 +85,26 @@ export function DataTable<T>({
                 <TableHead 
                   key={idx} 
                   className={cn(
-                    "font-black text-sem-tiny uppercase tracking-widest text-muted-foreground py-5-sem px-6-sem h-auto",
+                    "font-black text-sem-tiny uppercase tracking-widest text-muted-foreground py-5-sem px-6-sem h-auto whitespace-nowrap",
                     column.className
                   )}
                 >
-                  {column.header}
+                  {column.sortable ? (
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => handleSort(column.accessorKey as string)}
+                      className="h-auto p-0 hover:bg-transparent font-black text-sem-tiny uppercase tracking-widest text-muted-foreground flex items-center gap-1"
+                    >
+                      {column.header}
+                      <ArrowUpDown className="h-3 w-3" />
+                    </Button>
+                  ) : column.header}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item, rowIdx) => (
+            {sortedData.map((item, rowIdx) => (
               <TableRow 
                 key={rowIdx}
                 className={cn(
@@ -105,7 +132,6 @@ export function DataTable<T>({
         </Table>
       </div>
 
-      {/* Mobile Card View */}
       <div className="grid grid-cols-1 gap-layout-gap md:hidden">
         {data.map((item, idx) => (
           <div 
