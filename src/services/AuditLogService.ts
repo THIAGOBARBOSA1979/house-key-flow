@@ -149,7 +149,7 @@ class AuditLogService {
   }
 
   getRecentLogs(limit: number = 20): AuditLogEntry[] {
-    return this.logs.slice(0, limit);
+    return this.logs.slice(0, limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
   getAllLogs(): AuditLogEntry[] {
