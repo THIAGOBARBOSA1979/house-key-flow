@@ -36,7 +36,7 @@ export const QuickActions = ({
 }: QuickActionsProps) => {
   const { toast } = useToast();
   const [conflicts, setConflicts] = useState<any[]>([]);
-  const [sla, setSla] = useState("...");
+  const [sla, setSla] = useState<{ avgDeliveryTime: string; avgFirstContact: string }>({ avgDeliveryTime: "...", avgFirstContact: "..." });
 
   useEffect(() => {
     setConflicts(inspectionService.getAllConflicts());
