@@ -110,6 +110,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                       if (e.target.value.length >= 2) setIsSearchOpen(true);
                     }}
                     onFocus={() => setIsSearchOpen(true)}
+                    autoComplete="off"
                   />
                   
                   {isSearchOpen && (

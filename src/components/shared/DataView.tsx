@@ -106,9 +106,12 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-xl border hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
+              className="h-10 w-10 rounded-xl border-border/10 hover:bg-primary/5 hover:text-primary transition-all active:scale-90 disabled:opacity-30"
               disabled={effectivePage === 1}
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              onClick={() => {
+                setCurrentPage(prev => Math.max(1, prev - 1));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               <ChevronLeft size={18} />
             </Button>
@@ -124,7 +127,10 @@ export function DataView<T>({
                       ? "shadow-sem-lg scale-105 bg-gradient-to-br from-primary to-primary/80" 
                       : "text-muted-foreground/40 hover:bg-primary/5 hover:text-primary active:scale-95"
                   )}
-                  onClick={() => setCurrentPage(page)}
+                  onClick={() => {
+                    setCurrentPage(page);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 >
                   {page}
                 </Button>
@@ -133,9 +139,12 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-xl border hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
+              className="h-10 w-10 rounded-xl border-border/10 hover:bg-primary/5 hover:text-primary transition-all active:scale-90 disabled:opacity-30"
               disabled={effectivePage === totalPages}
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              onClick={() => {
+                setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               <ChevronRight size={18} />
             </Button>
