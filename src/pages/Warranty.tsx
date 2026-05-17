@@ -43,9 +43,11 @@ const Warranty = () => {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const handleExportData = () => {
+    const requests = warrantyFlowService.getAllRequests();
+    exportService.exportToCSV(requests, 'garantias_a2');
     toast({
-      title: "Exportação iniciada",
-      description: "Os dados serão enviados para seu e-mail quando estiverem prontos.",
+      title: "Exportação concluída",
+      description: "O arquivo CSV com as solicitações de garantia foi baixado.",
     });
   };
 
