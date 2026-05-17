@@ -1,4 +1,6 @@
 
+import { auditLogService } from "./AuditLogService";
+
 export interface Installment {
   id: string;
   number: number;
