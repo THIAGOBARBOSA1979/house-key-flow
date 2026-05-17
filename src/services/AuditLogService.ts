@@ -126,6 +126,10 @@ class AuditLogService {
     };
     this.logs.unshift(newEntry);
     this.persist();
+    
+    // Dispatch system-wide event for real-time UI updates
+    window.dispatchEvent(new CustomEvent('a2_audit_log_created', { detail: newEntry }));
+    
     console.log('[AuditLog]', newEntry.action, newEntry.entityType, newEntry.entityId, newEntry.details);
     return newEntry;
   }
