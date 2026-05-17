@@ -325,23 +325,29 @@ const ClientLayout = () => {
       {/* Main content */}
       <div className="md:ml-sidebar-width min-h-screen flex flex-col">
         {/* Desktop header - simplified without images */}
-        <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-16 px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <h1 className="text-xl font-semibold">Portal do Cliente</h1>
+        <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-20 px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
+          <div className="flex flex-col">
+            <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <span className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Portal do Cliente A2</span>
+            </div>
+          </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {/* Notifications */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="relative">
-                  <Bell size={18} />
+                <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-2xl bg-muted/40 hover:bg-primary/5 hover:text-primary transition-all group">
+                  <Bell size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-[10px] text-primary-foreground flex items-center justify-center">
+                    <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-status-critical text-[9px] font-black text-white flex items-center justify-center shadow-lg border-2 border-background animate-in zoom-in duration-300">
                       {unreadCount}
                     </span>
                   )}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="p-0">
+              <SheetContent side="right" className="p-0 border-l border-border/40 shadow-sem-xl rounded-l-[2.5rem]">
                 <NotificationPanel 
                   notifications={notifications} 
                   unreadCount={unreadCount} 
@@ -353,16 +359,17 @@ const ClientLayout = () => {
             {/* Chat support */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <MessageSquare size={18} />
+                <Button variant="ghost" size="icon" className="h-11 w-11 rounded-2xl bg-muted/40 hover:bg-primary/5 hover:text-primary transition-all group">
+                  <MessageSquare size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="p-0">
+              <SheetContent side="right" className="p-0 border-l border-border/40 shadow-sem-xl rounded-l-[2.5rem]">
                 <ChatSupportPanel />
               </SheetContent>
             </Sheet>
             
-            {/* User menu */}
+            <div className="h-8 w-px bg-border/40 mx-2" />
+
             <Link to="/client/profile" className="flex items-center gap-2 hover:bg-muted p-1 rounded-lg transition-colors">
               <Avatar>
                 <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
