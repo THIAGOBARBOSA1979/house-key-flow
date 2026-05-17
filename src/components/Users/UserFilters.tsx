@@ -98,6 +98,15 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
             </SelectContent>
           </Select>
           
+          <div className="w-[100px]">
+            <Input
+              placeholder="Unidade"
+              value={unitFilter}
+              onChange={(e) => setUnitFilter(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleFilterChange()}
+            />
+          </div>
+          
           <Button onClick={handleFilterChange}>
             <Filter className="mr-2 h-4 w-4" />
             Filtrar
