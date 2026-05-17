@@ -192,7 +192,75 @@ const FinancialDashboard = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Recebimento de Chaves</span>
                 <span className="text-sm font-black text-emerald-600">92%</span>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+        <Card className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
+          <CardHeader className="p-8 pb-0">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+                  <LineChartIcon className="text-primary" />
+                  Projeção de Receita
+                </CardTitle>
+                <p className="text-sm text-muted-foreground font-medium">Previsão baseada em parcelas a vencer e tendências históricas</p>
               </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8 pt-6">
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={projectionData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#88888820" />
+                  <XAxis 
+                    dataKey="month" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 12, fontWeight: 700, fill: '#888888' }}
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 12, fontWeight: 700, fill: '#888888' }}
+                    tickFormatter={(value) => `R$${value/1000}k`}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      borderRadius: '16px', 
+                      border: 'none', 
+                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                      padding: '12px'
+                    }}
+                    formatter={(value: number) => [formatCurrency(value), "Receita"]}
+                  />
+                  <Legend verticalAlign="top" height={36}/>
+                  <Line 
+                    name="Realizado"
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#3b82f6" 
+                    strokeWidth={4}
+                    dot={{ r: 6, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }}
+                    activeDot={{ r: 8 }}
+                    connectNulls
+                  />
+                  <Line 
+                    name="Projeção"
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#10b981" 
+                    strokeWidth={4}
+                    strokeDasharray="8 8"
+                    dot={{ r: 6, fill: "#10b981", strokeWidth: 2, stroke: "#fff" }}
+                    data={projectionData.filter(d => d.isProjection || d.month === 'Jun')}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
               <div className="h-3 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5">
                 <div className="h-full bg-emerald-500 w-[92%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
               </div>
