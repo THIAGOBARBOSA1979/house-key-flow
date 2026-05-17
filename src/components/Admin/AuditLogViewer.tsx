@@ -100,6 +100,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
   const [filterAction, setFilterAction] = useState<string>("all");
   const [filterRole, setFilterRole] = useState<string>("all");
   const [page, setPage] = useState(1);
+  const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const allLogs = useMemo(() => {
     if (entityType && entityId) return auditLogService.getLogsByEntity(entityType, entityId);
