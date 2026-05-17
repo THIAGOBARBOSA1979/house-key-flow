@@ -58,7 +58,7 @@ const ClientInspections = () => {
 
   const canScheduleInspection = stage === 'inspection_enabled' || stage === 'warranty_enabled';
   const permissions = {
-    canStartInspection: stage === 'admin' || stage === 'technician' // Client can't start normally
+    canStartInspection: user?.role === 'admin' || user?.role === 'technician'
   };
 
   const loadInspections = () => {
