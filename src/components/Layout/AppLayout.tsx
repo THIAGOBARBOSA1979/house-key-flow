@@ -82,7 +82,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower">
-      <Sidebar onCollapseChange={setSidebarCollapsed} />
+      <Sidebar 
+        onCollapseChange={(collapsed) => {
+          setSidebarCollapsed(collapsed);
+          localStorage.setItem('sidebar_collapsed', String(collapsed));
+        }} 
+      />
       <div className={cn(
         "min-h-screen flex flex-col transition-all duration-slow ease-out-sem",
         !isMobile && sidebarWidthClass
