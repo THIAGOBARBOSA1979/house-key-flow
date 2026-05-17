@@ -108,12 +108,12 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
       {!collapsed && (
         <div className="p-4-sem border-t border-sidebar-border animate-fade-in bg-sidebar-accent/5 mt-auto">
           <div className="flex items-center justify-between gap-3-sem">
-            <div className="flex items-center gap-3-sem min-w-0">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary/20 to-sidebar-accent flex items-center justify-center text-sidebar-primary font-black shadow-sem-sm border border-sidebar-border shrink-0">
+            <div className="flex items-center gap-3-sem min-w-0 group cursor-pointer p-1 rounded-xl hover:bg-white/5 transition-all" onClick={() => window.location.href = '/admin/profile'}>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary/20 to-sidebar-accent flex items-center justify-center text-sidebar-primary font-black shadow-sem-sm border border-sidebar-border shrink-0 group-hover:scale-110 transition-transform">
                 A
               </div>
               <div className="min-w-0">
-                <p className="text-sem-label font-bold text-sidebar-foreground truncate">Administrador</p>
+                <p className="text-sem-label font-bold text-sidebar-foreground truncate group-hover:text-primary transition-colors">Administrador</p>
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-status-complete animate-pulse" />
                   <p className="text-sem-tiny text-sidebar-foreground/50 truncate font-black uppercase tracking-tighter">Sessão ativa</p>

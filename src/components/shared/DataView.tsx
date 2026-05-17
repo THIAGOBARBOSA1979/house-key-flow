@@ -117,23 +117,21 @@ export function DataView<T>({
             >
               <ChevronLeft size={18} />
             </Button>
-            <div className="flex items-center gap-1.5-sem mx-2-sem">
+            <div className="flex items-center gap-1.5-sem mx-2-sem overflow-x-auto no-scrollbar max-w-[150px] sm:max-w-none px-2 py-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <Button
                   key={page}
                   variant={effectivePage === page ? "default" : "ghost"}
                   size="icon"
                   className={cn(
-                    "h-10 w-10 rounded-xl text-xs font-black transition-all duration-300",
+                    "h-10 w-10 rounded-xl text-xs font-black transition-all duration-300 shrink-0",
                     effectivePage === page 
-                      ? "shadow-sem-lg scale-105 bg-gradient-to-br from-primary to-primary/80" 
+                      ? "shadow-sem-lg scale-110 bg-gradient-to-br from-primary to-primary/80 ring-2 ring-primary/20" 
                       : "text-muted-foreground/40 hover:bg-primary/5 hover:text-primary active:scale-95"
                   )}
                   onClick={() => {
                     setCurrentPage(page);
-                    const header = document.querySelector('header');
-                    const scrollTarget = header ? header.offsetHeight + 100 : 0;
-                    window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 >
                   {page}
@@ -147,9 +145,7 @@ export function DataView<T>({
               disabled={effectivePage === totalPages}
               onClick={() => {
                 setCurrentPage(prev => Math.min(totalPages, prev + 1));
-                const header = document.querySelector('header');
-                const scrollTarget = header ? header.offsetHeight + 100 : 0;
-                window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               <ChevronRight size={18} />
