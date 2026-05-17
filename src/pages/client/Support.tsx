@@ -28,6 +28,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { supportService, SupportTicket, TicketPriority, TicketCategory } from "@/services/SupportService";
 import { useMemo, useEffect } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
