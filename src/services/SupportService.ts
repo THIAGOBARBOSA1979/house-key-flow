@@ -32,7 +32,18 @@ class SupportService {
 
   getTicketsByClient(clientId: string): SupportTicket[] {
     return this.tickets.filter(t => t.clientId === clientId);
+  getTicketById(id: string): SupportTicket | undefined {
+    return this.tickets.find(t => t.id === id);
   }
+
+  addMessageToTicket(ticketId: string, message: string): void {
+    const ticket = this.getTicketById(ticketId);
+    if (ticket) {
+      ticket.message += `\n\n[Nova Mensagem - ${new Date().toLocaleString('pt-BR')}]\n${message}`;
+      ticket.updatedAt = new Date();
+    }
+  }
+}
 
   createTicket(clientId: string, data: { subject: string, message: string, priority?: TicketPriority, category?: TicketCategory, attachments?: string[] }): SupportTicket {
     const newTicket: SupportTicket = {
