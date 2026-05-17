@@ -272,12 +272,12 @@ const ClientInspections = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 p-6 pt-2">
-                {inspections.length > 0 ? (
-                  inspections.map((item) => (
+                {inspections.filter(i => i.status !== 'complete').length > 0 ? (
+                  inspections.filter(i => i.status !== 'complete').map((item) => (
                     <div 
                       key={item.id} 
                       className={cn(
-                        "p-4 border rounded-2xl cursor-pointer transition-all duration-300 group hover:shadow-md",
+                        "p-4 border rounded-2xl cursor-pointer transition-all duration-300 group hover:shadow-md relative",
                         selectedInspection === item.id 
                           ? "border-primary bg-primary/5 ring-1 ring-primary/20" 
                           : "hover:bg-accent/50 border-border/50"
@@ -296,12 +296,19 @@ const ClientInspections = () => {
                         </div>
                         <StatusBadge status={item.status} size="sm" />
                       </div>
+                      {item.status === 'pending' && (
+                        <div className="mt-2 flex items-center gap-1.5">
+                          <Badge variant="outline" className="text-[8px] h-4 bg-blue-50 text-blue-600 border-blue-200">
+                             Presença Confirmada
+                          </Badge>
+                        </div>
+                      )}
                     </div>
                   ))
                 ) : (
                   <div className="text-center py-12 px-4 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center">
                     <ClipboardCheck className="h-10 w-10 text-muted-foreground/30 mb-3" />
-                    <p className="text-sm font-bold text-muted-foreground">Nenhuma vistoria no histórico</p>
+                    <p className="text-sm font-bold text-muted-foreground">Nenhum agendamento pendente</p>
                   </div>
                 )}
               </CardContent>
