@@ -73,7 +73,8 @@ const Announcements = () => {
       description: "",
       type: "news",
       isGlobal: true,
-      propertyId: "all"
+      propertyId: "all",
+      status: "published"
     });
     setIsDialogOpen(true);
   };
@@ -85,7 +86,8 @@ const Announcements = () => {
       description: update.description,
       type: update.type,
       isGlobal: update.isGlobal || false,
-      propertyId: "all" // In a real app we'd have the property ID
+      propertyId: "all", // In a real app we'd have the property ID
+      status: update.status || 'published'
     });
     setIsDialogOpen(true);
   };
