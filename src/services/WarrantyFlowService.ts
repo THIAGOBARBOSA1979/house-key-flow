@@ -854,11 +854,6 @@ class WarrantyFlowService {
 
     return { success: true, request: updatedRequest };
   }
-    
-    this.requests.set(requestId, updatedRequest);
-    
-    return { success: true, request: updatedRequest };
-  }
 
   /**
    * Complete warranty
