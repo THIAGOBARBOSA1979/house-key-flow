@@ -104,7 +104,7 @@ export function DataView<T>({
   };
 
   return (
-    <div className="space-y-6-sem">
+    <div ref={containerRef} className="space-y-6-sem">
       {renderContent()}
       
       {isPaginationEnabled && (
