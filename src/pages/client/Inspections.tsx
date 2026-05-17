@@ -171,6 +171,8 @@ const ClientInspections = () => {
         : i
     ));
     eventAutomationService.onInspectionAccepted(inspectionId, clientId);
+    
+    toast({ title: "Vistoria aceita", description: "O termo de aceite foi assinado e registrado com sucesso." });
   };
 
   const handleRejectInspection = (inspectionId: string, reason: string) => {
@@ -180,6 +182,8 @@ const ClientInspections = () => {
         : i
     ));
     eventAutomationService.onInspectionRejected(inspectionId, clientId, reason);
+    
+    toast({ title: "Vistoria não aceita", description: "Sua contestação foi registrada e será analisada pela equipe técnica.", variant: "destructive" });
   };
 
   const inspectionSteps: TimelineStep[] = useMemo(() => [
