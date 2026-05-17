@@ -55,9 +55,21 @@ export function ResponsiveGrid({
     2: 'grid-cols-2'
   };
 
+  if (columns === 'auto') {
+    return (
+      <div className={cn(
+        "grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
+        gapClasses[gap as keyof typeof gapClasses],
+        className
+      )}>
+        {children}
+      </div>
+    );
+  }
+
   // Determine defaults based on props or existing patterns
   const finalMobile = mobileCols || 1;
-  const finalTablet = tabletCols || (columns === 1 ? 1 : (columns === 2 ? 2 : 2));
+  const finalTablet = tabletCols || (columns === 1 ? 1 : 2);
   const finalDesktop = columnClasses[columns as keyof typeof columnClasses] || "lg:grid-cols-3";
 
   return (

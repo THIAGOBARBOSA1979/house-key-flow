@@ -66,7 +66,7 @@ const Warranty = () => {
       <WarrantyHeader onExportData={handleExportData} />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full max-w-lg grid-cols-4 bg-muted/50 p-1 rounded-xl">
+        <TabsList className="flex w-full max-w-lg overflow-x-auto no-scrollbar bg-muted/50 p-1 rounded-xl h-auto min-h-10">
           <TabsTrigger value="kanban" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
             <Kanban className="h-4 w-4" />
             <span className="hidden sm:inline">Kanban</span>
@@ -159,7 +159,7 @@ const Warranty = () => {
           <div className="flex-1 overflow-y-auto p-8">
           {selectedRequest && (
             <Tabs defaultValue="timeline" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-6 p-1 bg-muted/50 rounded-xl">
+              <TabsList className="flex w-full overflow-x-auto no-scrollbar p-1 bg-muted/50 rounded-xl h-auto min-h-10">
                 <TabsTrigger value="timeline" className="rounded-lg data-[state=active]:shadow-sm">Timeline</TabsTrigger>
                 <TabsTrigger value="problems" className="rounded-lg data-[state=active]:shadow-sm">Itens Breakdown</TabsTrigger>
                 <TabsTrigger value="costs" className="rounded-lg data-[state=active]:shadow-sm">Custos</TabsTrigger>
