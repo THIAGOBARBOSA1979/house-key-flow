@@ -360,6 +360,11 @@ class WarrantyFlowService {
       }
     }
     
+    // Business Rule: Moving to 'in_execution' requires internal notes for tracking
+    if (newStatus === 'in_execution' && !notes && !request.internalNotes) {
+      return { success: false, error: "Por favor, adicione uma observação técnica antes de iniciar a execução." };
+    }
+    
     // Business Rule: moving to approved requires at least one problem to be confirmed/analyzed (simplified for now)
     
     if (!isValidTransition(request.currentStage, newStatus)) {
