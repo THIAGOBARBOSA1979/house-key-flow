@@ -67,6 +67,8 @@ const ACTION_LABELS: Record<AuditAction, string> = {
   favorited: "Favoritado",
   deleted: "Exclusão",
   viewed: "Visualização",
+  payment_received: "Pagamento Recebido",
+  invoice_issued: "Fatura Emitida",
 };
 
 const ACTION_COLORS: Record<AuditAction, string> = {
@@ -91,6 +93,8 @@ const ACTION_COLORS: Record<AuditAction, string> = {
   favorited: "bg-status-pending/10 text-status-pending border-status-pending/20",
   deleted: "bg-status-critical/10 text-status-critical border-status-critical/20",
   viewed: "bg-muted text-muted-foreground border-border",
+  payment_received: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  invoice_issued: "bg-blue-500/10 text-blue-600 border-blue-500/20",
 };
 
 const ITEMS_PER_PAGE = 10;
