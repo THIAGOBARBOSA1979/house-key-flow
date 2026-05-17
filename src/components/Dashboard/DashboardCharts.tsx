@@ -16,6 +16,7 @@ import {
   Area
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { inspectionService } from '@/services/InspectionService';
 import { warrantyFlowService } from '@/services/WarrantyFlowService';
