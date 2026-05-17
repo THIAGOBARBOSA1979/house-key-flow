@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Users as UsersIcon, Plus, User, Mail, Phone, UserCheck, UserCog, UserMinus, MoreVertical, Edit, Trash2, Eye, Download, Upload, Settings } from "lucide-react";
+import { Users as UsersIcon, Plus, User, Mail, Phone, UserCheck, UserCog, UserMinus, MoreVertical, Edit, Trash2, Eye, Download, Upload, Settings, Share2 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,7 +31,7 @@ const Users = () => {
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [filters, setFilters] = useState({ search: "", role: "all", status: "all", property: "all" });
+  const [filters, setFilters] = useState({ search: "", role: "all", status: "all", property: "all", unit: "" });
   const [userList, setUserList] = useState<UserType[]>(userService.getAll());
 
   const refreshList = () => {
@@ -40,15 +40,17 @@ const Users = () => {
 
   const filteredUsers = useMemo(() => {
     return userList.filter(user => {
+      const searchLower = filters.search.toLowerCase();
       const matchesSearch = !filters.search || 
-        user.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        user.email.toLowerCase().includes(filters.search.toLowerCase()) ||
+        user.name.toLowerCase().includes(searchLower) ||
+        user.email.toLowerCase().includes(searchLower) ||
         user.phone.includes(filters.search);
       const matchesRole = filters.role === "all" || user.role === filters.role;
       const matchesStatus = filters.status === "all" || user.status === filters.status;
       const matchesProperty = filters.property === "all" || 
         (user.propertyName && user.propertyName.toLowerCase().includes(filters.property.toLowerCase()));
-      return matchesSearch && matchesRole && matchesStatus && matchesProperty;
+      const matchesUnit = !filters.unit || (user.unit && user.unit.includes(filters.unit));
+      return matchesSearch && matchesRole && matchesStatus && matchesProperty && matchesUnit;
     });
   }, [userList, filters]);
 
@@ -198,6 +200,20 @@ const Users = () => {
                   <Eye className="mr-2 h-4 w-4 text-muted-foreground" />Ver perfil
                 </DropdownMenuItem>
                 <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleEditUser(user)}><Edit className="mr-2 h-4 w-4 text-muted-foreground" />Editar</DropdownMenuItem>
+                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => {
+                  showToast({ title: "Convite enviado", description: `Um convite foi enviado via WhatsApp para ${user.name}.` });
+                  auditLogService.log({
+                    entityType: 'user',
+                    entityId: user.id!,
+                    action: 'info_added',
+                    performedBy: 'admin-1',
+                    performedByName: 'Administrador',
+                    performedByRole: 'admin',
+                    details: `Convite de acesso enviado via WhatsApp para ${user.name}.`
+                  });
+                }}>
+                  <Share2 className="mr-2 h-4 w-4 text-muted-foreground" /> Reenviar Convite
+                </DropdownMenuItem>
                 <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleToggleUserStatus(user.id!)}>
                   {user.status === "active" ? <UserMinus className="mr-2 h-4 w-4 text-muted-foreground" /> : <UserCheck className="mr-2 h-4 w-4 text-muted-foreground" />}
                   {user.status === "active" ? "Desativar" : "Ativar"}

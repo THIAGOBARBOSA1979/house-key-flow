@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download } from "lucide-react";
+import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download, Clock, CheckCircle2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
@@ -58,7 +59,8 @@ const Properties = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [managerFilter, setManagerFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "timeline">("grid");
   const [properties, setProperties] = useState<Property[]>(propertyService.getAll());
   
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -76,14 +78,16 @@ const Properties = () => {
       const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            property.location.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === "all" || property.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      const matchesManager = managerFilter === "all" || property.manager === managerFilter;
+      return matchesSearch && matchesStatus && matchesManager;
     });
-  }, [properties, searchTerm, statusFilter]);
+  }, [properties, searchTerm, statusFilter, managerFilter]);
 
 
   const clearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
+    setManagerFilter("all");
   };
 
   const refreshList = () => {
@@ -184,8 +188,8 @@ const Properties = () => {
       >
         <div className="flex flex-wrap items-center gap-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-[190px] rounded-xl h-11 bg-background shadow-sem-sm">
-              <SelectValue placeholder="Filtrar por Status" />
+            <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
               <SelectItem value="all" className="rounded-lg font-medium">Todos os status</SelectItem>
@@ -195,21 +199,37 @@ const Properties = () => {
             </SelectContent>
           </Select>
 
-          {(searchTerm || statusFilter !== "all") && (
+          <Select value={managerFilter} onValueChange={setManagerFilter}>
+            <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
+              <SelectValue placeholder="Gerente" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
+              <SelectItem value="all" className="rounded-lg font-medium">Todos Gerentes</SelectItem>
+              {Array.from(new Set(properties.map(p => p.manager).filter(Boolean))).map(manager => (
+                <SelectItem key={manager} value={manager!} className="rounded-lg font-medium">{manager}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {(searchTerm || statusFilter !== "all" || managerFilter !== "all") && (
             <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground h-11 rounded-xl px-4 font-bold uppercase text-[10px] tracking-widest">
               <FilterX className="h-4 w-4 mr-2" /> Limpar Filtros
             </Button>
           )}
 
-          <div className="h-8 w-px bg-border/40 mx-2 hidden md:block" />
+          <div className="h-8 w-px bg-border/40 mx-2 hidden lg:block" />
 
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} className="hidden md:flex bg-muted/40 p-1.5 rounded-2xl shadow-inner shrink-0">
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="hidden md:flex bg-muted/40 p-1.5 rounded-2xl shadow-inner shrink-0">
             <TabsList className="bg-transparent border-none h-9 gap-1">
               <TabsTrigger value="grid" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
                 <LayoutGrid className="h-4 w-4" />
               </TabsTrigger>
               <TabsTrigger value="list" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
                 <List className="h-4 w-4" />
+              </TabsTrigger>
+              <TabsTrigger value="timeline" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all px-3 gap-2">
+                <BarChart3 className="h-4 w-4" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Timeline</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -299,6 +319,54 @@ const Properties = () => {
             data={filteredProperties}
             onRowClick={(p) => setSelectedProperty(p)}
           />
+        )}
+        renderTimeline={() => (
+          <div className="space-y-6">
+            {filteredProperties.map(property => (
+              <Card key={property.id} className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden p-6 rounded-3xl shadow-sem-sm">
+                <div className="flex flex-col md:flex-row md:items-center gap-6">
+                  <div className="w-full md:w-1/4">
+                    <h4 className="text-lg font-black tracking-tight">{property.name}</h4>
+                    <p className="text-xs text-muted-foreground font-medium">{property.location}</p>
+                    <div className="mt-4">
+                      <StatusBadge status={property.status} size="sm" />
+                    </div>
+                  </div>
+                  <div className="flex-1 space-y-4">
+                    <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                      <span>Cronograma de Obra</span>
+                      <span>{Math.round((property.completedUnits / property.units) * 100)}% Concluído</span>
+                    </div>
+                    <div className="relative h-12 w-full bg-muted/30 rounded-2xl border border-border/5 overflow-hidden p-1 flex gap-1">
+                      {property.milestones?.map((m, idx) => (
+                        <div 
+                          key={m.id} 
+                          className={cn(
+                            "h-full rounded-xl flex-1 flex items-center justify-center transition-all group relative",
+                            m.completed ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" : "bg-muted/50"
+                          )}
+                        >
+                          <div className="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-[10px] font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap z-10 border border-border">
+                            {m.title}
+                          </div>
+                          {m.completed ? (
+                            <CheckCircle2 className="w-4 h-4 text-white" />
+                          ) : (
+                            <Clock className="w-4 h-4 text-muted-foreground/50" />
+                          )}
+                        </div>
+                      ))}
+                      {!property.milestones && (
+                        <div className="w-full h-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                          Sem marcos cadastrados
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
         )}
         emptyState={{
           title: "Nenhum empreendimento encontrado",

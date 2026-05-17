@@ -18,6 +18,7 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
   const [roleFilter, setRoleFilter] = useState(activeFilters.role || "all");
   const [statusFilter, setStatusFilter] = useState(activeFilters.status || "all");
   const [propertyFilter, setPropertyFilter] = useState(activeFilters.property || "all");
+  const [unitFilter, setUnitFilter] = useState(activeFilters.unit || "");
 
   const handleFilterChange = () => {
     onFilterChange({
@@ -25,6 +26,7 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
       role: roleFilter,
       status: statusFilter,
       property: propertyFilter,
+      unit: unitFilter,
     });
   };
 
@@ -33,15 +35,17 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
     setRoleFilter("all");
     setStatusFilter("all");
     setPropertyFilter("all");
+    setUnitFilter("");
     onFilterChange({
       search: "",
       role: "all",
       status: "all",
       property: "all",
+      unit: "",
     });
   };
 
-  const hasActiveFilters = searchTerm || roleFilter !== "all" || statusFilter !== "all" || propertyFilter !== "all";
+  const hasActiveFilters = searchTerm || roleFilter !== "all" || statusFilter !== "all" || propertyFilter !== "all" || unitFilter !== "";
 
   return (
     <Card>
@@ -93,6 +97,15 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
               <SelectItem value="monte">Condomínio Monte Alto</SelectItem>
             </SelectContent>
           </Select>
+          
+          <div className="w-[100px]">
+            <Input
+              placeholder="Unidade"
+              value={unitFilter}
+              onChange={(e) => setUnitFilter(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleFilterChange()}
+            />
+          </div>
           
           <Button onClick={handleFilterChange}>
             <Filter className="mr-2 h-4 w-4" />

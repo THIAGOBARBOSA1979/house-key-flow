@@ -9,7 +9,8 @@ interface DataViewProps<T> {
   items: T[];
   renderGrid?: (item: T) => React.ReactNode;
   renderList?: () => React.ReactNode;
-  viewMode?: 'grid' | 'list';
+  renderTimeline?: () => React.ReactNode;
+  viewMode?: 'grid' | 'list' | 'timeline';
   isLoading?: boolean;
   skeletonType?: 'card' | 'table' | 'page' | 'list';
   emptyState?: {
@@ -30,6 +31,7 @@ export function DataView<T>({
   renderGrid,
   renderList,
   viewMode = 'grid',
+  renderTimeline,
   isLoading = false,
   skeletonType = 'card',
   emptyState,
@@ -68,6 +70,14 @@ export function DataView<T>({
       return (
         <div className="animate-fade-in">
           {renderList()}
+        </div>
+      );
+    }
+
+    if (viewMode === 'timeline' && renderTimeline) {
+      return (
+        <div className="animate-fade-in">
+          {renderTimeline()}
         </div>
       );
     }
