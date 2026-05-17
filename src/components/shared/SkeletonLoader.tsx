@@ -84,7 +84,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
   }
 
   return (
-    <div className={cn("space-y-10-sem animate-pulse", className)}>
+    <div className={cn("space-y-10-sem animate-in fade-in duration-500", className)}>
       <div className="space-y-4-sem">
         <Skeleton className="h-14 w-1/4 rounded-2xl" />
         <Skeleton className="h-7 w-1/2 rounded-xl" />

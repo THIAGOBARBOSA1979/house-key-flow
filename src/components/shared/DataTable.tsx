@@ -108,7 +108,7 @@ export function DataTable<T>({
               <TableRow 
                 key={rowIdx}
                 className={cn(
-                  "group transition-all duration-300 border-b-border/20",
+                  "group transition-all duration-300 border-b-border/20 outline-none focus-within:bg-primary/5",
                   onRowClick ? "cursor-pointer hover:bg-primary/5 active:bg-primary/10" : "cursor-default hover:bg-muted/10"
                 )}
                 onClick={() => onRowClick?.(item)}
@@ -136,8 +136,15 @@ export function DataTable<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-6-sem space-y-5-sem interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20"
+            className="card-standard p-6-sem space-y-5-sem interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20 focus-within:ring-2 focus-within:ring-primary/40 outline-none"
             onClick={() => onRowClick?.(item)}
+            tabIndex={onRowClick ? 0 : -1}
+            onKeyDown={(e) => {
+              if (onRowClick && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                onRowClick(item);
+              }
+            }}
           >
             {columns.map((column, colIdx) => (
               <div key={colIdx} className={cn(
