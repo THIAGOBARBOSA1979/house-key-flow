@@ -326,6 +326,17 @@ const ClientInspections = () => {
                       <ShieldCheck size={16} /> Abrir Chamado de Garantia
                     </a>
                   </Button>
+                  {selectedInspection && inspection?.status === 'complete' && (
+                    <Button 
+                      variant="secondary" 
+                      className="w-full rounded-xl font-bold gap-2 h-11 bg-amber-100 text-amber-700 hover:bg-amber-200"
+                      onClick={() => {
+                        window.location.href = `/client/warranty?inspectionId=${selectedInspection}`;
+                      }}
+                    >
+                      <AlertTriangle size={16} /> Reportar Defeito na Vistoria
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
