@@ -77,14 +77,16 @@ const Properties = () => {
       const matchesSearch = property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            property.location.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === "all" || property.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      const matchesManager = managerFilter === "all" || property.manager === managerFilter;
+      return matchesSearch && matchesStatus && matchesManager;
     });
-  }, [properties, searchTerm, statusFilter]);
+  }, [properties, searchTerm, statusFilter, managerFilter]);
 
 
   const clearFilters = () => {
     setSearchTerm("");
     setStatusFilter("all");
+    setManagerFilter("all");
   };
 
   const refreshList = () => {
