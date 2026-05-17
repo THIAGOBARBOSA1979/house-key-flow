@@ -111,8 +111,8 @@ const Dashboard = () => {
       
       <QuickActions />
       
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-layout-gap">
-        <div className="xl:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-layout-gap">
+        <div className="lg:col-span-1 xl:col-span-2 space-y-8">
           {/* Recent Properties */}
           <section>
             <div className="flex items-center justify-between mb-4">
