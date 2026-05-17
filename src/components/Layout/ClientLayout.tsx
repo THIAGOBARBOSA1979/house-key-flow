@@ -361,6 +361,14 @@ const ClientLayout = () => {
           </div>
           
           <div className="flex items-center gap-6">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-11 w-11 rounded-2xl bg-muted/40 hover:bg-primary/5 hover:text-primary transition-all group">
+              {theme === 'light' ? (
+                <Moon size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
+              ) : (
+                <Sun size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
+              )}
+            </Button>
+
             {/* Notifications */}
             <Sheet>
               <SheetTrigger asChild>
