@@ -24,35 +24,8 @@ interface AppLayoutProps {
  */
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-  const handleKeyPress = useCallback((event: KeyboardEvent) => {
-    // Search focus: / or Ctrl+K
-    if ((event.key === '/' || (event.ctrlKey && event.key === 'k')) && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')) {
-      event.preventDefault();
-      const searchInput = document.querySelector<HTMLInputElement>('input[type="search"]') || 
-                         document.querySelector<HTMLInputElement>('input[placeholder*="Buscar"]');
-      if (searchInput) searchInput.focus();
-    }
-    
-    // Quick navigation: Alt + [D, P, I, W, L]
-    if (event.altKey) {
-      switch(event.key.toLowerCase()) {
-        case 'd': navigate('/admin'); break;
-        case 'p': navigate('/admin/properties'); break;
-        case 'i': navigate('/admin/inspections'); break;
-        case 'u': navigate('/admin/users'); break;
-        case 'f': navigate('/admin/financial'); break;
-      }
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [handleKeyPress]);
 
   const sidebarWidthClass = sidebarCollapsed ? "pl-sidebar-collapsed-width" : "pl-sidebar-width";
 
