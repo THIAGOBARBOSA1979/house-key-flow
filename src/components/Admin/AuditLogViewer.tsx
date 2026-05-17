@@ -103,31 +103,25 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAction, setFilterAction] = useState<string>("all");
   const [filterRole, setFilterRole] = useState<string>("all");
-  const [filterEntityType, setFilterEntityType] = useState<string>("all");
+  const [filterEntityType, setFilterEntityType] = useState<string>(entityType || "all");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
   const [page, setPage] = useState(1);
   const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'table' | 'timeline'>('table');
-
-  const allLogs = useMemo(() => {
-    let logs = [];
-    if (entityType && entityId) logs = auditLogService.getLogsByEntity(entityType, entityId);
-    else if (entityType) logs = auditLogService.getLogsByEntity(entityType);
-    else logs = auditLogService.getAllLogs();
-    return logs;
-  }, [entityType, entityId]);
+  const [viewMode, setViewMode] = useState<'table' | 'timeline'>(compact ? 'timeline' : 'table');
 
   const filteredLogs = useMemo(() => {
-    return allLogs.filter(log => {
-      const matchesSearch = !searchTerm || 
-        log.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.performedByName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesAction = filterAction === "all" || log.action === filterAction;
-      const matchesRole = filterRole === "all" || log.performedByRole === filterRole;
-      const matchesEntityType = filterEntityType === "all" || log.entityType === filterEntityType;
-      return matchesSearch && matchesAction && matchesRole && matchesEntityType;
+    return auditLogService.getFilteredLogs({
+      searchTerm,
+      action: filterAction,
+      role: filterRole,
+      entityType: filterEntityType,
+      entityId,
+      dateFrom: dateFrom ? new Date(dateFrom) : undefined,
+      dateTo: dateTo ? new Date(dateTo) : undefined
     });
-  }, [allLogs, searchTerm, filterAction, filterRole]);
+  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo]);
 
   const totalPages = Math.max(1, Math.ceil(filteredLogs.length / ITEMS_PER_PAGE));
   const paginatedLogs = filteredLogs.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
@@ -162,9 +156,9 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
               </div>
               {!compact && (
                 <Button variant="outline" size="sm" className="h-8 font-bold text-xs" onClick={() => {
-                  exportService.exportToCSV(allLogs, "logs_auditoria");
+                  exportService.exportToCSV(filteredLogs, "logs_auditoria_filtrados");
                 }}>
-                  <Download className="w-3 h-3 mr-2" /> Exportar
+                  <Download className="w-3 h-3 mr-2" /> Exportar Filtrados
                 </Button>
               )}
             </div>
@@ -173,53 +167,88 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
         <CardContent className="space-y-4 pt-6">
           {/* Filters */}
           {!compact && (
-            <div className="flex flex-col sm:flex-row gap-3 p-4 bg-muted/5 rounded-xl border border-border/10 mb-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar por descrição ou nome do responsável..."
-                  className="pl-10 h-11 bg-background rounded-xl"
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                />
+            <div className="flex flex-col gap-4 p-4 bg-muted/5 rounded-xl border border-border/10 mb-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Buscar por descrição, nome, ID da entidade ou transação..."
+                    className="pl-10 h-11 bg-background rounded-xl"
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <Select value={filterEntityType} onValueChange={setFilterEntityType}>
+                  <SelectTrigger className="w-full sm:w-[150px] h-11 bg-background font-bold shadow-sem-sm">
+                    <SelectValue placeholder="Entidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas entidades</SelectItem>
+                    <SelectItem value="inspection">Vistorias</SelectItem>
+                    <SelectItem value="warranty">Garantias</SelectItem>
+                    <SelectItem value="property">Imóveis</SelectItem>
+                    <SelectItem value="document">Documentos</SelectItem>
+                    <SelectItem value="user">Usuários</SelectItem>
+                    <SelectItem value="financial">Financeiro</SelectItem>
+                    <SelectItem value="system">Sistema</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={filterAction} onValueChange={setFilterAction}>
+                  <SelectTrigger className="w-full sm:w-[140px] h-11 bg-background font-bold shadow-sem-sm">
+                    <SelectValue placeholder="Ação" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas ações</SelectItem>
+                    {Object.entries(ACTION_LABELS).map(([key, label]) => (
+                      <SelectItem key={key} value={key}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={filterRole} onValueChange={setFilterRole}>
+                  <SelectTrigger className="w-full sm:w-[130px] h-11 bg-background font-bold shadow-sem-sm">
+                    <SelectValue placeholder="Perfil" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos perfis</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="client">Cliente</SelectItem>
+                    <SelectItem value="user">Usuário</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <Select value={filterEntityType} onValueChange={setFilterEntityType}>
-                <SelectTrigger className="w-full sm:w-[150px] h-11 bg-background font-bold shadow-sem-sm">
-                  <SelectValue placeholder="Entidade" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas entidades</SelectItem>
-                  <SelectItem value="inspection">Vistorias</SelectItem>
-                  <SelectItem value="warranty">Garantias</SelectItem>
-                  <SelectItem value="property">Imóveis</SelectItem>
-                  <SelectItem value="document">Documentos</SelectItem>
-                  <SelectItem value="user">Usuários</SelectItem>
-                  <SelectItem value="financial">Financeiro</SelectItem>
-                  <SelectItem value="system">Sistema</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={filterAction} onValueChange={setFilterAction}>
-                <SelectTrigger className="w-full sm:w-[140px] h-11 bg-background font-bold shadow-sem-sm">
-                  <SelectValue placeholder="Ação" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas ações</SelectItem>
-                  {Object.entries(ACTION_LABELS).map(([key, label]) => (
-                    <SelectItem key={key} value={key}>{label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={filterRole} onValueChange={setFilterRole}>
-                <SelectTrigger className="w-full sm:w-[130px] h-11 bg-background font-bold shadow-sem-sm">
-                  <SelectValue placeholder="Perfil" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos perfis</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="client">Cliente</SelectItem>
-                  <SelectItem value="user">Usuário</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <div className="flex items-center gap-2 flex-1 w-full">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    type="date" 
+                    className="h-10 text-xs font-bold" 
+                    value={dateFrom} 
+                    onChange={e => setDateFrom(e.target.value)} 
+                  />
+                  <span className="text-muted-foreground font-black text-[10px] uppercase">até</span>
+                  <Input 
+                    type="date" 
+                    className="h-10 text-xs font-bold" 
+                    value={dateTo} 
+                    onChange={e => setDateTo(e.target.value)} 
+                  />
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-10 font-bold text-xs text-muted-foreground hover:text-primary"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setFilterAction("all");
+                    setFilterRole("all");
+                    setFilterEntityType(entityType || "all");
+                    setDateFrom("");
+                    setDateTo("");
+                  }}
+                >
+                  <RotateCcw className="w-3 h-3 mr-2" /> Limpar Filtros
+                </Button>
+              </div>
             </div>
           )}
 

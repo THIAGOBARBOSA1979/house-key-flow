@@ -171,8 +171,39 @@ class AuditLogService {
         acc[log.performedByRole] = (acc[log.performedByRole] || 0) + 1;
         return acc;
       }, {} as Record<string, number>),
+      logsByEntityType: this.logs.reduce((acc, log) => {
+        acc[log.entityType] = (acc[log.entityType] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
       recentActivityTrend: this.getRecentActivityTrend()
     };
+  }
+
+  getFilteredLogs(filters: {
+    searchTerm?: string;
+    action?: string;
+    role?: string;
+    entityType?: string;
+    entityId?: string;
+    dateFrom?: Date;
+    dateTo?: Date;
+  }): AuditLogEntry[] {
+    return this.logs.filter(log => {
+      const matchesSearch = !filters.searchTerm || 
+        log.details.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        log.performedByName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        log.entityId.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        log.id.toLowerCase().includes(filters.searchTerm.toLowerCase());
+      
+      const matchesAction = !filters.action || filters.action === "all" || log.action === filters.action;
+      const matchesRole = !filters.role || filters.role === "all" || log.performedByRole === filters.role;
+      const matchesEntityType = !filters.entityType || filters.entityType === "all" || log.entityType === filters.entityType;
+      const matchesEntityId = !filters.entityId || log.entityId === filters.entityId;
+      const matchesDateFrom = !filters.dateFrom || log.timestamp >= filters.dateFrom;
+      const matchesDateTo = !filters.dateTo || log.timestamp <= filters.dateTo;
+
+      return matchesSearch && matchesAction && matchesRole && matchesEntityType && matchesEntityId && matchesDateFrom && matchesDateTo;
+    }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
   private getRecentActivityTrend() {
