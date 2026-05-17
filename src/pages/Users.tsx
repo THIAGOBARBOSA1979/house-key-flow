@@ -196,7 +196,7 @@ const Users = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200 p-2 rounded-2xl border-none">
-                <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => setSelectedUserForDetail(user)}>
+                <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => showToast({ title: "Perfil do usuário", description: `Visualizando perfil de ${user.name}.` })}>
                   <Eye className="mr-3 h-4 w-4 text-muted-foreground" />Ver Perfil Completo
                 </DropdownMenuItem>
                 <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => handleEditUser(user)}>
