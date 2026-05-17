@@ -299,23 +299,6 @@ const Dashboard = () => {
                 <HistoryIcon size={24} className="text-primary" />
                 Atividades Recentes
               </h2>
-              <div className="flex gap-1 bg-muted/30 p-1 rounded-xl">
-                {['all', 'inspection', 'warranty', 'document'].map((filter) => (
-                  <Button 
-                    key={filter}
-                    variant="ghost" 
-                    size="sm" 
-                    className={cn(
-                      "h-7 rounded-lg text-[9px] font-black uppercase tracking-widest px-2",
-                      "hover:bg-background/50"
-                    )}
-                  >
-                    {filter === 'all' ? 'Tudo' : 
-                     filter === 'inspection' ? 'Vistorias' : 
-                     filter === 'warranty' ? 'Garantias' : 'Docs'}
-                  </Button>
-                ))}
-              </div>
             </div>
             <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-lg">
               <CardContent className="p-0">
@@ -332,7 +315,6 @@ const Dashboard = () => {
                           <p className="text-[10px] text-muted-foreground/60 mt-2 flex items-center gap-1.5 font-black uppercase tracking-widest">
                             <Clock size={12} className="opacity-50" />
                             {new Date(activity.timestamp).toLocaleDateString('pt-BR')} • {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                            <span className="ml-auto bg-muted/50 px-2 py-0.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">{activity.entityType}</span>
                           </p>
                         </div>
                       </div>
