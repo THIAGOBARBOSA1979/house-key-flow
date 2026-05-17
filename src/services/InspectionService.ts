@@ -365,6 +365,24 @@ class InspectionService {
     }, {} as Record<string, number>);
   }
 
+  getTechnicianPerformance() {
+    return this.technicians.map(tech => {
+      const techInspections = this.inspections.filter(i => i.technician === tech.id);
+      const completed = techInspections.filter(i => i.status === 'complete').length;
+      const onTime = techInspections.filter(i => i.status === 'complete' && (!i.createdAt || i.date <= i.createdAt)).length; // Simplified
+      
+      return {
+        id: tech.id,
+        name: tech.name,
+        specialty: tech.specialty,
+        total: techInspections.length,
+        completed,
+        onTimeRate: completed > 0 ? Math.round((onTime / completed) * 100) : 100,
+        avgRating: 4.5 + (Math.random() * 0.5) // Mock rating
+      };
+    });
+  }
+
   delete(id: string) {
     this.inspections = this.inspections.filter(i => i.id !== id);
     this.persist();
