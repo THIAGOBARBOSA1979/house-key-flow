@@ -126,6 +126,17 @@ const Properties = () => {
     }
   };
 
+  const handleBulkDelete = () => {
+    selectedIds.forEach(id => propertyService.delete(id));
+    refreshList();
+    setSelectedIds([]);
+    toast({ 
+      title: "Ação concluída", 
+      description: `${selectedIds.length} empreendimentos foram removidos.`,
+      variant: "destructive"
+    });
+  };
+
   const openEdit = (property: Property) => {
     setEditingProperty(property);
   };
