@@ -37,7 +37,7 @@ class SystemHealthService {
     // Simulate some logic for health status
     let status: 'healthy' | 'warning' | 'critical' = 'healthy';
     
-    const overdueWarranties = allRequests.filter(r => r.slaStatus === 'overdue').length;
+    const overdueWarranties = allRequests.filter(r => r.slaStatus === 'expired').length;
     if (overdueWarranties > 5) status = 'warning';
     if (overdueWarranties > 15) status = 'critical';
 
