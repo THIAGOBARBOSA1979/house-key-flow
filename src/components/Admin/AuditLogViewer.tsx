@@ -228,18 +228,20 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                   accessorKey: "id",
                   className: "text-right",
                   cell: (log: AuditLogEntry) => (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedLog(log);
-                        setIsDetailOpen(true);
-                      }}
-                    >
-                      <Maximize2 className="h-4.5 w-4.5" />
-                    </Button>
+                    <div className="flex justify-end">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedLog(log);
+                          setIsDetailOpen(true);
+                        }}
+                      >
+                        <Maximize2 className="h-4.5 w-4.5" />
+                      </Button>
+                    </div>
                   )
                 }
               ]}
@@ -260,7 +262,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
               </span>
               <div className="flex gap-2">
                 <Button
-                  variant="outline" size="sm"
+                  variant="outline" 
+                  size="sm"
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
                 >
@@ -270,7 +273,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                   {page}/{totalPages}
                 </span>
                 <Button
-                  variant="outline" size="sm"
+                  variant="outline" 
+                  size="sm"
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
                 >
