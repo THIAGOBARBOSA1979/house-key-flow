@@ -198,21 +198,21 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               )}
             </div>
 
-            <div className="flex items-center gap-6">
-              <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group">
-                <Bell size={20} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-status-critical rounded-full border-2 border-background animate-pulse" />
+            <div className="flex items-center gap-2 md:gap-6 shrink-0">
+              <Button variant="ghost" size="icon" className="relative h-10 w-10 md:h-11 md:w-11 rounded-xl md:rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group">
+                <Bell size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-status-critical rounded-full border-2 border-background animate-pulse" />
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-12 rounded-2xl gap-3 pl-2 pr-4 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center font-black text-xs uppercase group-hover:scale-105 transition-all">
+                  <Button variant="ghost" className="h-10 md:h-12 rounded-xl md:rounded-2xl gap-2 md:gap-3 pl-1.5 md:pl-2 pr-2 md:pr-4 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10">
+                    <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center font-black text-[10px] md:text-xs uppercase group-hover:scale-105 transition-all shrink-0">
                       {user?.name?.charAt(0) || "U"}
                     </div>
                     <div className="hidden sm:flex flex-col items-start leading-tight gap-0">
-                      <span className="text-sem-label font-black truncate max-w-[140px] tracking-tight">{user?.name}</span>
-                      <span className="text-[9px] text-muted-foreground/40 uppercase font-black tracking-widest">Master Admin</span>
+                      <span className="text-sem-label font-black truncate max-w-[100px] lg:max-w-[140px] tracking-tight">{user?.name}</span>
+                      <span className="text-[8px] md:text-[9px] text-muted-foreground/40 uppercase font-black tracking-widest">Master Admin</span>
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
