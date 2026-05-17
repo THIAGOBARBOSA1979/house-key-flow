@@ -343,20 +343,12 @@ const Dashboard = () => {
                       <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl bg-white/50 border border-border/50 shadow-sem-sm group-hover:shadow-sem-md transition-all">
                         <div className="flex items-center justify-between space-x-2 mb-1">
                           <div className="font-black text-foreground text-xs uppercase tracking-widest">{activity.performedByName}</div>
-                          <time className="text-[10px] font-bold text-muted-foreground/60 uppercase">{new Date(activity.timestamp).toLocaleDateString()}</time>
+                          <time className="text-[10px] font-bold text-muted-foreground/60 uppercase">
+                             {new Date(activity.timestamp).toLocaleDateString('pt-BR')}
+                          </time>
                         </div>
                         <div className="text-sem-body-sm text-muted-foreground font-medium leading-relaxed">
                           {activity.details}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-                            {new Date(activity.timestamp).toLocaleDateString('pt-BR')} • {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                          </p>
                         </div>
                       </div>
                     </div>
