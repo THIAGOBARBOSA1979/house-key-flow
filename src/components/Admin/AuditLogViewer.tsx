@@ -107,11 +107,14 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
   const [page, setPage] = useState(1);
   const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'table' | 'timeline'>('table');
 
   const allLogs = useMemo(() => {
-    if (entityType && entityId) return auditLogService.getLogsByEntity(entityType, entityId);
-    if (entityType) return auditLogService.getLogsByEntity(entityType);
-    return auditLogService.getAllLogs();
+    let logs = [];
+    if (entityType && entityId) logs = auditLogService.getLogsByEntity(entityType, entityId);
+    else if (entityType) logs = auditLogService.getLogsByEntity(entityType);
+    else logs = auditLogService.getAllLogs();
+    return logs;
   }, [entityType, entityId]);
 
   const filteredLogs = useMemo(() => {
