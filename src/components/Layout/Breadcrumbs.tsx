@@ -46,7 +46,7 @@ export function Breadcrumbs({ className }: BreadcrumbsProps) {
   return (
     <nav 
       aria-label="Breadcrumb" 
-      className={cn("flex items-center text-sem-body-xs font-bold uppercase tracking-widest text-muted-foreground/80", className)}
+      className={cn("flex items-center text-sem-body-xs font-bold uppercase tracking-widest text-muted-foreground/80 overflow-x-auto no-scrollbar whitespace-nowrap pb-1", className)}
     >
       <Link 
         to="/" 
