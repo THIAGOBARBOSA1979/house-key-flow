@@ -18,6 +18,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const templates = checklistService.getAllTemplates();
   const categories = ["all", "vistoria", "garantia", "manutencao", "hidraulica", "eletrica", "entrega"];
