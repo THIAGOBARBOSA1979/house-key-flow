@@ -5,7 +5,7 @@ import { WarrantyKanban } from "@/components/Warranty/Kanban/WarrantyKanban";
 import { WarrantyMetricsDashboard } from "@/components/Warranty/Dashboard/WarrantyMetricsDashboard";
 import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfigurationPanel";
 import { WarrantyHeader } from "@/components/Warranty/WarrantyHeader";
-import { WarrantyRequestFlow } from "@/types/warrantyFlow";
+import { WarrantyRequestFlow, WARRANTY_STAGES, STAGE_ORDER } from "@/types/warrantyFlow";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { exportService } from "@/services/ExportService";
 
@@ -19,7 +19,7 @@ import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/Wa
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { Kanban, BarChart3, Settings, History, Plus, AlertCircle, CheckCircle, MessageSquare, UserPlus, ShieldCheck, Image as ImageIcon, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   Select, 

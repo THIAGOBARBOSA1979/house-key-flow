@@ -344,6 +344,11 @@ class WarrantyFlowService {
       return { success: false, error: "Não é possível alterar uma solicitação finalizada" };
     }
 
+    // Validation: Require assignee for 'inspection_scheduled' or 'in_execution'
+    if ((newStatus === 'inspection_scheduled' || newStatus === 'in_execution') && !request.assignedTo) {
+      return { success: false, error: "É necessário atribuir um responsável antes de prosseguir para esta etapa." };
+    }
+
     // Business Rule: Check for unresolved problems when moving to 'completed'
     if (newStatus === 'completed' && request.problems) {
       const hasUnresolved = request.problems.some(p => p.status !== 'resolved' && p.status !== 'canceled');
