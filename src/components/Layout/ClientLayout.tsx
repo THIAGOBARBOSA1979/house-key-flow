@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useNotifications } from "@/hooks/useNotifications";
 import { ScheduleMeetingDialog } from "@/components/ClientFlow/ScheduleMeetingDialog";
+import { QuickLauncher } from "@/components/shared/QuickLauncher";
 
 const ClientNavLink = ({
   to,
@@ -433,6 +434,7 @@ const ClientLayout = () => {
           &copy; 2025 A2 Incorporadora. Todos os direitos reservados.
         </footer>
       </div>
+      <QuickLauncher />
     </div>;
 };
 

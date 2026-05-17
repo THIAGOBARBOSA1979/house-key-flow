@@ -26,6 +26,7 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { QuickLauncher } from "@/components/shared/QuickLauncher";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -287,6 +288,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </div>
         </DialogContent>
       </Dialog>
+      <QuickLauncher />
     </div>
   );
 };
