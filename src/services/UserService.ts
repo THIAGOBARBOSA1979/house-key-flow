@@ -60,7 +60,7 @@ class UserService {
   create(user: Omit<User, "id">): User {
     const newUser = {
       ...user,
-      id: Math.random().toString(36).substr(2, 9),
+      id: crypto.randomUUID(),
       avatar: user.name.split(" ").map(n => n[0]).join("").toUpperCase().substr(0, 2),
       lastLogin: "-",
     };
