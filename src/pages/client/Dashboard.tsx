@@ -55,7 +55,7 @@ const Dashboard = () => {
   const allDocs = useMemo(() => documentService.getDocumentsByClient(user?.name || "João Silva"), [user?.name]);
   const allInspections = useMemo(() => inspectionService.getAll().filter(i => i.client === (user?.name || "João Silva")), [user?.name]);
   const upcomingInspections = useMemo(() => allInspections.filter(i => i.status !== 'complete'), [allInspections]);
-  const warrantyRequests = useMemo(() => warrantyFlowService.getAll().filter(r => r.clientId === clientId), [clientId]);
+  const warrantyRequests = useMemo(() => warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId), [clientId]);
   
   const userInfo = {
     name: user?.name?.split(' ')[0] || "Cliente",
