@@ -324,14 +324,15 @@ class WarrantyFlowService {
   }
 
   /**
-   * Change request status (with validation)
+   * Change request status (with validation and audit)
    */
   changeStatus(
     requestId: string,
     newStatus: WarrantyStage,
     changedBy: string,
     isAutomatic: boolean = false,
-    notes?: string
+    notes?: string,
+    performedByRole: 'admin' | 'client' = 'admin'
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     const request = this.requests.get(requestId);
     
@@ -403,8 +404,8 @@ class WarrantyFlowService {
       entityId: requestId,
       action: newStatus === 'opened' ? 'created' : (newStatus === 'approved' ? 'accepted' : (newStatus === 'rejected' ? 'rejected' : 'stage_changed')),
       performedBy: changedBy,
-      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Cliente',
-      performedByRole: changedBy === 'admin-1' ? 'admin' : 'client',
+      performedByName: performedByRole === 'admin' ? 'Administrador' : (request.clientName || 'Cliente'),
+      performedByRole: performedByRole,
       details: notes || `Solicitação movida para a etapa ${WARRANTY_STAGES[newStatus].label}`,
       metadata: { 
         fromStatus: request.currentStage, 
@@ -424,7 +425,8 @@ class WarrantyFlowService {
     requestId: string,
     isPaused: boolean,
     reason: string,
-    changedBy: string
+    changedBy: string,
+    performedByRole: 'admin' | 'client' = 'admin'
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     const request = this.requests.get(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
@@ -452,6 +454,18 @@ class WarrantyFlowService {
 
     this.requests.set(requestId, updatedRequest);
     this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'updated',
+      performedBy: changedBy,
+      performedByName: performedByRole === 'admin' ? 'Administrador' : (request.clientName || 'Cliente'),
+      performedByRole: performedByRole,
+      details: isPaused ? `Solicitação pausada: ${reason}` : "Solicitação retomada",
+      metadata: { isPaused, reason }
+    });
+
     return { success: true, request: updatedRequest };
   }
 
@@ -527,8 +541,8 @@ class WarrantyFlowService {
       entityId: requestId,
       action: 'updated',
       performedBy: changedBy,
-      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
-      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : (request.clientName || 'Usuário'),
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'client',
       details: `Item do breakdown "${problem.description}" marcado como ${newStatus === 'resolved' ? 'resolvido' : 'pendente'}.`,
       metadata: { problemId, newStatus }
     });
@@ -574,8 +588,8 @@ class WarrantyFlowService {
       entityId: requestId,
       action: 'info_added',
       performedBy: changedBy,
-      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
-      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : (request.clientName || 'Usuário'),
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'client',
       details: `Novo item adicionado ao breakdown: ${newProblem.description}`
     });
 
