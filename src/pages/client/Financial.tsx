@@ -122,30 +122,28 @@ const Financial = () => {
   return (
     <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <DollarSign className="h-8 w-8 text-primary" />
-            Financeiro
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-3">
+            <div className="p-2.5 bg-primary/10 rounded-2xl">
+              <DollarSign className="h-6 w-6 text-primary" strokeWidth={3} />
+            </div>
+            Gestão Financeira
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Acompanhe seus pagamentos, parcelas e extratos financeiros.
+          <p className="text-muted-foreground font-medium">
+            Centralize seus pagamentos, simule antecipações e baixe documentos fiscais.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="gap-2 rounded-xl" onClick={() => {
-            toast({ title: "Gerando documento...", description: "Estamos preparando sua declaração de IR." });
-            setTimeout(() => toast({ title: "Sucesso!", description: "Declaração de IR baixada com sucesso." }), 2000);
+        <div className="flex items-center gap-3 flex-wrap">
+          <Button variant="outline" className="h-11 px-5 rounded-xl font-bold border-primary/20 hover:bg-primary/5 transition-all" onClick={() => {
+            toast({ title: "Preparando documento...", description: "Sua declaração de IR estará pronta em instantes." });
           }}>
-            <FileText className="h-4 w-4" />
+            <FileText className="h-4 w-4 mr-2 text-primary" />
             Declaração IR
           </Button>
-          <Button className="gap-2 rounded-xl" onClick={() => {
-            toast({ title: "Gerando extrato...", description: "Estamos preparando seu extrato financeiro." });
-            setTimeout(() => toast({ title: "Sucesso!", description: "Extrato financeiro baixado com sucesso." }), 2000);
-          }}>
-            <Download className="h-4 w-4" />
-            Baixar Extrato
+          <Button className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20">
+            <Download className="h-4 w-4 mr-2" />
+            Baixar Extrato Completo
           </Button>
         </div>
       </div>
@@ -297,64 +295,63 @@ const Financial = () => {
         </div>
       </div>
 
-      {/* Installments Table */}
-      <Card className="shadow-lg border-none rounded-3xl overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4">
+      <Card className="shadow-sem-lg border-none rounded-[2rem] overflow-hidden bg-card/40 backdrop-blur-md">
+        <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-4 p-8 border-b border-border/10">
           <div>
-            <CardTitle>Histórico de Parcelas</CardTitle>
-            <CardDescription>Lista detalhada de todas as parcelas do seu contrato</CardDescription>
+            <CardTitle className="text-xl font-black tracking-tight text-foreground/90">Cronograma de Parcelas</CardTitle>
+            <CardDescription className="font-medium">Histórico completo e previsões futuras do seu contrato</CardDescription>
           </div>
-          <div className="flex items-center gap-2">
-             <Badge variant="secondary" className="font-bold px-3 py-1 rounded-full">{installments.length} parcelas</Badge>
-          </div>
+          <Badge className="font-black px-4 py-1.5 rounded-xl bg-primary/10 text-primary border-none uppercase text-[10px] tracking-widest">
+            {installments.length} Registros
+          </Badge>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto scrollbar-hide">
+          <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b bg-muted/30 text-[10px] font-black uppercase text-muted-foreground tracking-widest text-left">
-                  <th className="py-4 px-6">Parcela</th>
-                  <th className="py-4 px-6">Tipo</th>
-                  <th className="py-4 px-6">Vencimento</th>
-                  <th className="py-4 px-6">Valor</th>
-                  <th className="py-4 px-6">Status</th>
-                  <th className="py-4 px-6 text-right">Ação</th>
+                <tr className="bg-muted/30 text-[10px] font-black uppercase text-muted-foreground/60 tracking-[0.2em]">
+                  <th className="py-5 px-8 text-left">Ref</th>
+                  <th className="py-5 px-8 text-left">Categoria</th>
+                  <th className="py-5 px-8 text-left">Vencimento</th>
+                  <th className="py-5 px-8 text-left">Valor Atualizado</th>
+                  <th className="py-5 px-8 text-center">Status</th>
+                  <th className="py-5 px-8 text-right">Ação</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-border/10">
                 {installments.length > 0 ? installments.map((item) => {
                   const statusInfo = getStatusInfo(item.status);
                   return (
-                    <tr key={item.id} className="group hover:bg-muted/30 transition-colors">
-                      <td className="py-4 px-6">
-                        <span className="text-sm font-bold">#{String(item.number).padStart(3, '0')}</span>
+                    <tr key={item.id} className="group hover:bg-primary/[0.02] transition-colors">
+                      <td className="py-5 px-8">
+                        <span className="text-sm font-black text-foreground/80">#{String(item.number).padStart(3, '0')}</span>
                       </td>
-                      <td className="py-4 px-6">
-                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-tighter rounded-lg">
+                      <td className="py-5 px-8">
+                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest rounded-lg border-border/40 text-muted-foreground/80 bg-background/50">
                           {getTypeLabel(item.type)}
                         </Badge>
                       </td>
-                      <td className="py-4 px-6 text-sm">
+                      <td className="py-5 px-8 text-sm font-bold text-muted-foreground">
                         {item.dueDate.toLocaleDateString('pt-BR')}
                       </td>
-                      <td className="py-4 px-6 font-bold text-sm">
+                      <td className="py-5 px-8 font-black text-sm text-foreground/90">
                         {formatCurrency(item.value)}
                       </td>
-                      <td className="py-4 px-6">
+                      <td className="py-5 px-8 text-center">
                         <StatusBadge 
                           status={statusInfo.status} 
                           label={statusInfo.label} 
                           size="sm" 
                         />
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-5 px-8 text-right">
                         {item.status !== 'paid' ? (
-                          <Button variant="ghost" size="sm" className="h-9 gap-1 text-[10px] font-black uppercase text-primary hover:text-primary hover:bg-primary/5 rounded-xl">
-                            Boleto <Download className="h-3 w-3" />
+                          <Button variant="ghost" size="sm" className="h-10 px-4 gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 rounded-xl transition-all active:scale-95">
+                            <Download className="h-4 w-4" /> Boleto
                           </Button>
                         ) : (
-                          <Button variant="ghost" size="sm" className="h-9 gap-1 text-[10px] font-black uppercase text-muted-foreground rounded-xl">
-                            Recibo <ExternalLink className="h-3 w-3" />
+                          <Button variant="ghost" size="sm" className="h-10 px-4 gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all active:scale-95">
+                            <CheckCircle2 className="h-4 w-4" /> Recibo
                           </Button>
                         )}
                       </td>
@@ -362,8 +359,13 @@ const Financial = () => {
                   );
                 }) : (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-muted-foreground">
-                      Nenhuma parcela encontrada.
+                    <td colSpan={6} className="py-20 text-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center">
+                           <FileText className="h-8 w-8 text-muted-foreground/30" />
+                        </div>
+                        <p className="text-muted-foreground font-bold italic">Nenhum registro financeiro disponível.</p>
+                      </div>
                     </td>
                   </tr>
                 )}

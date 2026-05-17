@@ -1,7 +1,7 @@
 import { Outlet, Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign, HelpCircle, ChevronRight } from "lucide-react";
+import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign, HelpCircle, ChevronRight, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -30,23 +30,23 @@ const ClientNavLink = ({
     <NavLink 
       to={to} 
       className={({ isActive }) => 
-        cn("flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-300 group", 
-        isActive ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20 scale-[1.02]" : "hover:bg-primary/10 text-foreground/70 hover:text-primary hover:translate-x-1")
+        cn("flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-slow group", 
+        isActive ? "bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30 active:scale-[0.98]" : "hover:bg-primary/5 text-muted-foreground hover:text-primary")
       } 
       {...props}
     >
       {({ isActive }) => (
         <>
           <div className="flex items-center gap-3">
-            <Icon size={18} className={cn("transition-transform group-hover:scale-110")} />
-            <span className="text-sm">{children}</span>
+            <Icon size={20} className={cn("transition-all duration-normal group-hover:scale-110", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} strokeWidth={isActive ? 2.5 : 2} />
+            <span className={cn("text-sm tracking-tight", isActive ? "font-black" : "font-semibold")}>{children}</span>
           </div>
           <div className="flex items-center gap-2">
             {isActive ? (
-              <ChevronRight size={14} className="opacity-50" />
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
             ) : (
               typeof badgeCount === 'number' && badgeCount > 0 && (
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px] font-black h-5 min-w-[20px] flex justify-center items-center">
+                <Badge variant="secondary" className="bg-status-critical text-white border-none text-[10px] font-black h-5 min-w-[20px] flex justify-center items-center shadow-sm">
                   {badgeCount}
                 </Badge>
               )
@@ -169,17 +169,20 @@ const MobileHeader = ({
 }: {
   onToggleSidebar: () => void;
 }) => {
-  return <div className="flex items-center justify-between h-16 px-4 border-b md:hidden">
-      <Button variant="ghost" size="icon" onClick={onToggleSidebar}>
-        <Menu size={20} />
+  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 md:hidden">
+      <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="rounded-xl hover:bg-primary/10">
+        <Menu size={24} className="text-primary" />
       </Button>
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/20">
           A2
         </div>
-        <span className="text-lg font-semibold">Portal do Cliente</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-black tracking-tight leading-none">Portal do Cliente</span>
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">A2 Gestão</span>
+        </div>
       </div>
-      <div className="w-8"></div> {/* Spacer for centering */}
+      <div className="w-10"></div>
     </div>;
 };
 
@@ -200,6 +203,32 @@ const ClientLayout = () => {
   const { unreadCount, notifications, markAllAsRead } = useNotifications(clientId);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    }
+    return 'light';
+  });
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      setTheme('dark');
+    }
+  }, []);
 
   // Close sidebar on location change for mobile
   useEffect(() => {
@@ -236,38 +265,43 @@ const ClientLayout = () => {
       <MobileHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       
       {/* Sidebar for desktop and mobile */}
-      <div className={cn("fixed inset-y-0 left-0 z-fixed w-sidebar-width bg-background border-r transform transition-transform duration-normal ease-in-out md:translate-x-0", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
+      <div className={cn("fixed inset-y-0 left-0 z-fixed w-sidebar-width bg-background border-r border-border/50 transform transition-all duration-slow ease-out-sem md:translate-x-0 shadow-sem-lg", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
         {/* Sidebar header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b">
-          <Link to="/client" className="flex items-center gap-2" onClick={handleLinkClick}>
-            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
+        <div className="h-20 flex items-center justify-between px-6 border-b border-border/40">
+          <Link to="/client" className="flex items-center gap-3" onClick={handleLinkClick}>
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/20">
               A2
             </div>
-            <span className="text-xl font-semibold">Portal do Cliente</span>
+            <div className="flex flex-col">
+              <span className="text-base font-black tracking-tight leading-none">Portal A2</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Exclusividade</span>
+            </div>
           </Link>
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(false)}>
-            <X size={18} />
+          <Button variant="ghost" size="icon" className="md:hidden rounded-lg" onClick={() => setSidebarOpen(false)}>
+            <X size={20} />
           </Button>
         </div>
         
         {/* User profile */}
-        <div className="p-6">
-          <Link to="/client/profile" onClick={handleLinkClick} className="flex items-center gap-4 p-2 rounded-2xl hover:bg-primary/5 transition-all group">
+        <div className="p-4">
+          <Link to="/client/profile" onClick={handleLinkClick} className="flex items-center gap-4 p-3 rounded-2xl bg-muted/30 border border-border/10 hover:bg-primary/5 hover:border-primary/10 transition-all duration-300 group">
             <div className="relative">
-              <Avatar className="h-12 w-12 border-2 border-primary/10 group-hover:border-primary transition-colors">
-                <AvatarFallback className="bg-primary/10 text-primary font-black uppercase">{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
+              <Avatar className="h-12 w-12 border-2 border-primary/20 group-hover:border-primary transition-all duration-500 group-hover:scale-105">
+                <AvatarFallback className="bg-primary/10 text-primary font-black uppercase text-xs">{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 border-2 border-background rounded-full" />
+              <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 bg-emerald-500 border-2 border-background rounded-full animate-pulse" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-black text-sm text-foreground truncate">{user?.name || "Cliente"}</p>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate">
-                {profile?.unitNumber ? `Unidade ${profile.unitNumber}` : "Meu Perfil"}
+              <p className="font-black text-sm text-foreground truncate group-hover:text-primary transition-colors">{user?.name || "Cliente"}</p>
+              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest truncate mt-0.5">
+                {profile?.unitNumber ? `Unidade ${profile.unitNumber}` : "Configurações"}
               </p>
             </div>
           </Link>
         </div>
-        <Separator className="opacity-50" />
+        <div className="px-6 py-2">
+           <div className="h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+        </div>
         
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
@@ -312,28 +346,47 @@ const ClientLayout = () => {
       </div>
       
       {/* Backdrop overlay for mobile */}
-      {sidebarOpen && <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden animate-in fade-in duration-300" 
+          onClick={() => setSidebarOpen(false)} 
+        />
+      )}
       
       {/* Main content */}
       <div className="md:ml-sidebar-width min-h-screen flex flex-col">
         {/* Desktop header - simplified without images */}
-        <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-16 px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <h1 className="text-xl font-semibold">Portal do Cliente</h1>
+        <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-20 px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
+          <div className="flex flex-col">
+            <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <span className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Portal do Cliente A2</span>
+            </div>
+          </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-11 w-11 rounded-2xl bg-muted/40 hover:bg-primary/5 hover:text-primary transition-all group">
+              {theme === 'light' ? (
+                <Moon size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
+              ) : (
+                <Sun size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
+              )}
+            </Button>
+
             {/* Notifications */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="relative">
-                  <Bell size={18} />
+                <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-2xl bg-muted/40 hover:bg-primary/5 hover:text-primary transition-all group">
+                  <Bell size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-[10px] text-primary-foreground flex items-center justify-center">
+                    <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-status-critical text-[9px] font-black text-white flex items-center justify-center shadow-lg border-2 border-background animate-in zoom-in duration-300">
                       {unreadCount}
                     </span>
                   )}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="p-0">
+              <SheetContent side="right" className="p-0 border-l border-border/40 shadow-sem-xl rounded-l-[2.5rem]">
                 <NotificationPanel 
                   notifications={notifications} 
                   unreadCount={unreadCount} 
@@ -345,31 +398,34 @@ const ClientLayout = () => {
             {/* Chat support */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <MessageSquare size={18} />
+                <Button variant="ghost" size="icon" className="h-11 w-11 rounded-2xl bg-muted/40 hover:bg-primary/5 hover:text-primary transition-all group">
+                  <MessageSquare size={20} className="text-muted-foreground group-hover:scale-110 transition-transform" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="p-0">
+              <SheetContent side="right" className="p-0 border-l border-border/40 shadow-sem-xl rounded-l-[2.5rem]">
                 <ChatSupportPanel />
               </SheetContent>
             </Sheet>
             
-            {/* User menu */}
-            <Link to="/client/profile" className="flex items-center gap-2 hover:bg-muted p-1 rounded-lg transition-colors">
-              <Avatar>
-                <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
+            <div className="h-8 w-px bg-border/40 mx-2" />
+
+            <Link to="/client/profile" className="flex items-center gap-3 hover:bg-primary/5 p-1.5 rounded-2xl transition-all duration-300 group border border-transparent hover:border-primary/10">
+              <Avatar className="h-10 w-10 border border-border/40 group-hover:border-primary/30 transition-all">
+                <AvatarFallback className="bg-primary/10 text-primary font-black text-xs">{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
               </Avatar>
-              <div className="hidden md:block">
-                <p className="text-sm font-medium">{user?.name || "Cliente"}</p>
-                <p className="text-xs text-muted-foreground">Ver perfil</p>
+              <div className="hidden lg:flex flex-col text-left leading-tight">
+                <p className="text-sm font-black text-foreground/80 group-hover:text-primary transition-colors">{user?.name || "Cliente"}</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Sessão Ativa</p>
               </div>
             </Link>
           </div>
         </header>
         
         {/* Main content */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
-          <Outlet />
+        <main className="flex-1 p-5 md:p-10 transition-all duration-slow">
+          <div className="container-responsive animate-in fade-in slide-in-from-bottom-4 duration-slower">
+            <Outlet />
+          </div>
         </main>
         
         {/* Footer */}

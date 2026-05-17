@@ -48,6 +48,7 @@ import { constructionService } from "@/services/ConstructionService";
 import { ConstructionFeed } from "@/components/ClientArea/ConstructionFeed";
 import { ReferralCard } from "@/components/ClientArea/ReferralCard";
 import { useMemo } from "react";
+import { ClientBenefitCards } from "@/components/ClientArea/ClientBenefitCards";
 
 const Dashboard = () => {
   // Get client stage data
@@ -151,24 +152,30 @@ const Dashboard = () => {
   return (
     <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header with Stage Indicator */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          <h1 className="text-4xl font-black tracking-tighter text-foreground leading-tight">
             Bem-vindo, {userInfo.name}! 👋
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Acompanhe o progresso do seu imóvel e acesse seus serviços exclusivos.
-          </p>
-        </div>
-        <div className="flex flex-col md:flex-row items-end md:items-center gap-3">
-          {stage && (
-            <StageIndicator currentStage={stage} showDescription />
-          )}
-          <div className="h-10 w-px bg-border mx-2 hidden md:block" />
-          <div className="flex flex-col items-end bg-primary/5 px-4 py-2 rounded-xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-colors">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Status da Obra</span>
-            <span className="text-lg font-black text-primary leading-none">{Math.round(contractProgress)}% Concluído</span>
+          <div className="flex items-center gap-2 mt-1.5">
+             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+             <p className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest">
+               Sua jornada com a A2 Incorporadora
+             </p>
           </div>
+        </div>
+        <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
+          {stage && (
+            <StageIndicator currentStage={stage} showDescription variant="badge" />
+          )}
+          <div className="hidden md:block h-12 w-px bg-border/40 mx-2" />
+          <Card className="bg-primary/5 px-6 py-3 rounded-2xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-colors group cursor-pointer">
+            <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] mb-1.5 block">Status Geral</span>
+            <div className="flex items-center gap-3">
+               <span className="text-2xl font-black text-primary leading-none tracking-tighter">{Math.round(contractProgress)}%</span>
+               <TrendingUp size={18} className="text-primary group-hover:translate-y-[-2px] transition-transform" />
+            </div>
+          </Card>
         </div>
       </div>
 
@@ -385,6 +392,14 @@ const Dashboard = () => {
         </div>
       </div>
 
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <Gift className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-black tracking-tight">Benefícios & Oportunidades</h2>
+        </div>
+        <ClientBenefitCards />
+      </div>
+
       {/* Stats Grid */}
       <ResponsiveGrid columns={4} gap="layout">
         <StatsCard 
@@ -393,6 +408,7 @@ const Dashboard = () => {
           icon={FileText} 
           description={`${allDocs.filter(d => d.status === 'published').length} disponíveis`}
           variant="brand"
+          className="rounded-3xl shadow-sem-md border-none"
         />
         <StatsCard 
           label="Vistorias" 
@@ -400,6 +416,7 @@ const Dashboard = () => {
           icon={ClipboardCheck} 
           description={upcomingInspections.length > 0 ? `${upcomingInspections.length} pendente(s)` : 'Nenhuma pendente'}
           variant={allInspections.filter(i => i.status === 'complete').length > 0 ? 'complete' : 'pending'}
+          className="rounded-3xl shadow-sem-md border-none"
         />
         <StatsCard 
           label="Garantias" 
@@ -407,6 +424,7 @@ const Dashboard = () => {
           icon={ShieldCheck} 
           description={canRequestWarranty ? `${warrantyRequests.filter(r => r.currentStage !== 'completed').length} em aberto` : 'Aguardando liberação'}
           variant={canRequestWarranty ? 'progress' : 'default'}
+          className="rounded-3xl shadow-sem-md border-none"
         />
         <StatsCard 
           label="Notificações" 
@@ -414,6 +432,7 @@ const Dashboard = () => {
           icon={Bell} 
           description={urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'Nenhuma urgente'}
           variant={unreadCount > 0 ? 'critical' : 'default'}
+          className="rounded-3xl shadow-sem-md border-none"
         />
       </ResponsiveGrid>
 
@@ -422,16 +441,42 @@ const Dashboard = () => {
         <div className="lg:col-span-2">
           <ClientFAQ />
         </div>
-        <div>
-          <Card className="bg-muted/30 border-none shadow-sm rounded-3xl h-full flex flex-col justify-center p-8 text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="space-y-6">
+          <Card className="bg-white border-none shadow-xl rounded-[2rem] overflow-hidden group">
+            <CardHeader className="bg-primary/5 pb-6 border-b border-border/10">
+              <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground/60">Seu Gestor Dedicado</CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="relative inline-block">
+                <div className="w-24 h-24 rounded-full border-4 border-primary/10 overflow-hidden mx-auto transition-transform duration-500 group-hover:scale-105">
+                   <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80" alt="Consultor" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute bottom-0 right-0 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black tracking-tight">Roberto Andrade</h3>
+                <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">Consultor de Relacionamento</p>
+              </div>
+              <div className="pt-4 border-t border-border/10 space-y-3">
+                 <Button variant="outline" className="w-full rounded-xl font-bold gap-2 h-11">
+                    <MessageSquare size={16} className="text-primary" /> Falar com Roberto
+                 </Button>
+                 <Button variant="ghost" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary">
+                    Ver agenda de reuniões
+                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-primary/5 border-none shadow-sm rounded-3xl p-8 text-center border border-primary/10">
+            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
               <LifeBuoy className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Precisa de Ajuda?</h3>
-            <p className="text-sm text-muted-foreground mb-6">Nossa equipe de suporte está pronta para atender você e tirar todas as suas dúvidas.</p>
+            <h3 className="text-lg font-black tracking-tight mb-2">Central de Ajuda</h3>
+            <p className="text-xs text-muted-foreground mb-6 font-medium leading-relaxed">Acesse manuais, tutoriais e tire suas dúvidas técnicas em nossa base de conhecimento.</p>
             <Link to="/client/support">
-              <Button className="w-full rounded-xl font-black uppercase tracking-widest text-[10px] h-12">
-                Acessar Central de Ajuda
+              <Button className="w-full rounded-xl font-black uppercase tracking-widest text-[9px] h-10 shadow-lg shadow-primary/20">
+                Acessar Help Center
               </Button>
             </Link>
           </Card>

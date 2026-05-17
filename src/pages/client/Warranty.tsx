@@ -311,21 +311,23 @@ const ClientWarranty = () => {
   }
 
   return (
-    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-700">
+    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Page header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8" />
-            Garantias
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-3">
+            <div className="p-2.5 bg-primary/10 rounded-2xl">
+              <ShieldCheck className="h-6 w-6 text-primary" strokeWidth={3} />
+            </div>
+            Assistência Técnica
             {!canRequestWarranty && (
-              <Lock className="h-5 w-5 text-muted-foreground" />
+              <Lock className="h-5 w-5 text-muted-foreground ml-2" />
             )}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground font-medium">
             {canRequestWarranty 
-              ? "Gerencie solicitações de garantia do seu imóvel"
-              : "As garantias serão liberadas após a aprovação da sua vistoria"
+              ? "Gerencie suas garantias, acompanhe visitas técnicas e visualize laudos."
+              : "As garantias serão liberadas automaticamente após a aprovação da vistoria final."
             }
           </p>
         </div>
