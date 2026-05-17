@@ -21,7 +21,10 @@ import {
   History as HistoryIcon,
   DollarSign,
   Users,
-  Star
+  Star,
+  TrendingUp,
+  AlertCircle,
+  FileText
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
