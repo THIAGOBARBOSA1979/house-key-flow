@@ -159,7 +159,7 @@ const Warranty = () => {
           <div className="flex-1 overflow-y-auto p-8">
           {selectedRequest && (
             <Tabs defaultValue="timeline" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-6 p-1 bg-muted/50 rounded-xl">
+              <TabsList className="flex w-full overflow-x-auto no-scrollbar p-1 bg-muted/50 rounded-xl h-auto min-h-10">
                 <TabsTrigger value="timeline" className="rounded-lg data-[state=active]:shadow-sm">Timeline</TabsTrigger>
                 <TabsTrigger value="problems" className="rounded-lg data-[state=active]:shadow-sm">Itens Breakdown</TabsTrigger>
                 <TabsTrigger value="costs" className="rounded-lg data-[state=active]:shadow-sm">Custos</TabsTrigger>
