@@ -1,4 +1,6 @@
 
+import { auditLogService } from "./AuditLogService";
+
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
 
@@ -123,6 +125,17 @@ class SupportService {
     };
     this.tickets.unshift(newTicket);
     this.saveToStorage();
+    
+    auditLogService.log({
+      entityType: 'system',
+      entityId: ticketId,
+      action: 'created',
+      performedBy: clientId,
+      performedByName: clientName,
+      performedByRole: 'client',
+      details: `Novo ticket de suporte aberto: ${data.subject}`
+    });
+
     return newTicket;
   }
 
@@ -132,6 +145,16 @@ class SupportService {
       ticket.status = status;
       ticket.updatedAt = new Date();
       this.saveToStorage();
+
+      auditLogService.log({
+        entityType: 'system',
+        entityId: ticketId,
+        action: 'stage_changed',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Status do ticket ${ticketId} alterado para ${status}`
+      });
     }
   }
 

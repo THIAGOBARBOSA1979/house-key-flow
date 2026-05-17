@@ -41,6 +41,7 @@ import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/shared/DataTable";
 import { formatCurrency, cn } from "@/lib/utils";
+import { systemHealthService, SystemHealthMetrics } from "@/services/SystemHealthService";
 
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -56,6 +57,14 @@ const Dashboard = () => {
   const recentActivities = useMemo(() => auditLogService.getRecentLogs(5), []);
   const recentTickets = useMemo(() => supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3), []);
   const financialMetrics = useMemo(() => financialService.getGlobalMetrics(), []);
+  const [healthMetrics, setHealthMetrics] = useState<SystemHealthMetrics>(systemHealthService.getHealthMetrics());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHealthMetrics(systemHealthService.getHealthMetrics());
+    }, 30000); // Update every 30s
+    return () => clearInterval(interval);
+  }, []);
 
   const handleRefresh = () => {
     setLoading(true);
@@ -150,6 +159,52 @@ const Dashboard = () => {
         </div>
 
         <div className="space-y-8">
+          {/* System Health Section */}
+          <section className="animate-in fade-in slide-in-from-right-4 duration-slow delay-75">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-h2 flex items-center gap-2">
+                <Activity size={24} className="text-primary" />
+                Saúde do Sistema
+              </h2>
+              <StatusBadge 
+                status={healthMetrics.status === 'healthy' ? 'success' : healthMetrics.status} 
+                label={healthMetrics.status === 'healthy' ? 'Estável' : (healthMetrics.status === 'warning' ? 'Alerta' : 'Crítico')}
+                size="sm"
+              />
+            </div>
+            <Card className="card-standard border-none bg-card/40 backdrop-blur-md p-6 rounded-3xl shadow-sem-md">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Logs de Auditoria</p>
+                  <p className="text-xl font-black">{healthMetrics.database.auditLogCount}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Armazenamento</p>
+                  <p className="text-xl font-black">{healthMetrics.storageUsage}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Tempo Online</p>
+                  <p className="text-sm font-bold text-emerald-600">{healthMetrics.uptime}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Cache Hit</p>
+                  <p className="text-sm font-bold">{healthMetrics.database.cacheHitRate}</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-6 border-t border-border/10 space-y-3">
+                {healthMetrics.services.map((service, idx) => (
+                  <div key={service.name} className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-muted-foreground">{service.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono text-muted-foreground/50">{service.latency}</span>
+                      <div className={`w-2 h-2 rounded-full ${service.status === 'online' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500'}`} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </section>
           {/* Summary Chart */}
           <section>
             <div className="flex items-center justify-between mb-4">
