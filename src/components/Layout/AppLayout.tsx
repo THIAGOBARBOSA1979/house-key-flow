@@ -40,7 +40,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user, logout } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
   const [searchQuery, setSearchTerm] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
