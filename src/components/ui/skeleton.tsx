@@ -1,8 +1,7 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
 
-interface SkeletonProps {
-  className?: string;
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'text' | 'circular' | 'rectangular';
   animation?: 'pulse' | 'wave' | 'none';
 }
@@ -10,7 +9,8 @@ interface SkeletonProps {
 export function Skeleton({
   className,
   variant = 'rectangular',
-  animation = 'pulse'
+  animation = 'pulse',
+  ...props
 }: SkeletonProps) {
   return (
     <div
@@ -23,6 +23,7 @@ export function Skeleton({
         animation === 'wave' && "relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[wave_2s_linear_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent",
         className
       )}
+      {...props}
     />
   );
 }
