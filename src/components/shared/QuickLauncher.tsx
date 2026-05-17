@@ -155,8 +155,10 @@ export const QuickLauncher = () => {
     setSelectedIndex(0);
   }, [search]);
 
-  // Remove original declarations since they are now above useEffect
-  // ... keep existing code
+  const handleAction = useCallback((path: string) => {
+    setIsOpen(false);
+    navigate(path);
+  }, [navigate]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
