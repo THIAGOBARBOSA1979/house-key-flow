@@ -435,16 +435,42 @@ const Dashboard = () => {
         <div className="lg:col-span-2">
           <ClientFAQ />
         </div>
-        <div>
-          <Card className="bg-muted/30 border-none shadow-sm rounded-3xl h-full flex flex-col justify-center p-8 text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="space-y-6">
+          <Card className="bg-white border-none shadow-xl rounded-[2rem] overflow-hidden group">
+            <CardHeader className="bg-primary/5 pb-6 border-b border-border/10">
+              <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground/60">Seu Gestor Dedicado</CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="relative inline-block">
+                <div className="w-24 h-24 rounded-full border-4 border-primary/10 overflow-hidden mx-auto transition-transform duration-500 group-hover:scale-105">
+                   <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80" alt="Consultor" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute bottom-0 right-0 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black tracking-tight">Roberto Andrade</h3>
+                <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">Consultor de Relacionamento</p>
+              </div>
+              <div className="pt-4 border-t border-border/10 space-y-3">
+                 <Button variant="outline" className="w-full rounded-xl font-bold gap-2 h-11">
+                    <MessageSquare size={16} className="text-primary" /> Falar com Roberto
+                 </Button>
+                 <Button variant="ghost" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary">
+                    Ver agenda de reuniões
+                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-primary/5 border-none shadow-sm rounded-3xl p-8 text-center border border-primary/10">
+            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
               <LifeBuoy className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Precisa de Ajuda?</h3>
-            <p className="text-sm text-muted-foreground mb-6">Nossa equipe de suporte está pronta para atender você e tirar todas as suas dúvidas.</p>
+            <h3 className="text-lg font-black tracking-tight mb-2">Central de Ajuda</h3>
+            <p className="text-xs text-muted-foreground mb-6 font-medium leading-relaxed">Acesse manuais, tutoriais e tire suas dúvidas técnicas em nossa base de conhecimento.</p>
             <Link to="/client/support">
-              <Button className="w-full rounded-xl font-black uppercase tracking-widest text-[10px] h-12">
-                Acessar Central de Ajuda
+              <Button className="w-full rounded-xl font-black uppercase tracking-widest text-[9px] h-10 shadow-lg shadow-primary/20">
+                Acessar Help Center
               </Button>
             </Link>
           </Card>
