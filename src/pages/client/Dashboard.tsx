@@ -1,112 +1,110 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
-  Home, 
   FileText, 
   ClipboardCheck, 
   ShieldCheck, 
-  Calendar,
-  AlertCircle,
-  CheckCircle,
-  Bell,
-  ArrowRight,
-  Lock,
-  Building2,
-  MapPin,
-  TrendingUp,
-  Clock,
+  Bell, 
+  ArrowRight, 
+  Calendar, 
   MessageSquare,
+  TrendingUp,
   DollarSign,
   LifeBuoy,
-  Newspaper,
-  Users,
-  Gift
+  CheckCircle,
+  AlertCircle,
+  Clock,
+  Lock,
+  ChevronRight,
+  HardHat,
+  Home,
+  Building2,
+  MapPin,
+  Gift,
+  Activity
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
-import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
-import { NextSteps } from "@/components/ClientFlow/NextSteps";
-import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
+import { Link } from "react-router-dom";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useClientStage } from "@/hooks/useClientStage";
-import { useNotifications } from "@/hooks/useNotifications";
-import { useToast } from "@/hooks/use-toast";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-import { useAuth } from "@/contexts/AuthContext";
 import { documentService } from "@/services/DocumentService";
+import { financialService } from "@/services/FinancialService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
-import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
-import { financialService } from "@/services/FinancialService";
-import { constructionService } from "@/services/ConstructionService";
-import { ConstructionFeed } from "@/components/ClientArea/ConstructionFeed";
-import { ReferralCard } from "@/components/ClientArea/ReferralCard";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
+import { ConstructionFeed, ConstructionUpdate } from "@/components/client/ConstructionFeed";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/shared/StatsCard";
 import { ClientBenefitCards } from "@/components/ClientArea/ClientBenefitCards";
+import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
+import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
+import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
-  // Get client stage data
   const { user } = useAuth();
-  const { toast } = useToast();
-  const clientId = user?.id || "client-1"; // Get from auth context
-  const { 
-    profile, 
-    stage, 
-    permissions, 
-    timeline, 
-    isLoading,
-    canScheduleInspection,
-    canRequestWarranty 
-  } = useClientStage(clientId);
-  
-  const { unreadCount, urgentNotifications } = useNotifications(clientId);
+  const clientId = user?.id || "client-1";
+  const { stage, isLoading: stageLoading } = useClientStage(clientId);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Get user info from profile
-  const userInfo = {
-    name: user?.name || profile?.name || "Maria Oliveira",
-    property: profile?.propertyName || "Edifício Aurora",
-    unit: profile?.unitNumber || "204",
-    deliveryDate: new Date(2025, 5, 15),
-    contractDate: new Date(2024, 10, 20)
-  };
-
-  const allDocs = useMemo(() => documentService.getDocumentsByClient(user?.name || "João Silva"), [user?.name]);
-  const recentDocuments = allDocs.slice(0, 3).map(doc => ({
-    ...doc,
-    date: doc.createdAt,
-    status: doc.status === "published" ? "disponivel" : "pendente"
-  }));
-
-  const allInspections = useMemo(() => inspectionService.getAll().filter(i => i.client === (user?.name || "João Silva")), [user?.name]);
-  const upcomingInspections = allInspections
-    .filter(i => i.status === "pending")
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
-    .slice(0, 2);
-
-  const warrantyRequests = useMemo(() => warrantyFlowService.getClientRequests(clientId).slice(0, 2), [clientId]);
+  // Data fetching (simulated)
   const financialSummary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
-  const constructionUpdates = useMemo(() => constructionService.getUpdates(), []);
-  const latestProgress = useMemo(() => constructionService.getLatestProgress(), []);
-
-  const getStatusColor = (status: string) => {
-    const colors = {
-      disponivel: "default",
-      published: "default",
-      agendada: "default",
-      pending: "secondary",
-      progress: "secondary",
-      em_andamento: "secondary",
-      concluido: "outline",
-      complete: "outline"
-    };
-    return colors[status as keyof typeof colors] || "outline";
+  const allDocs = useMemo(() => documentService.getDocumentsByClient(user?.name || "João Silva"), [user?.name]);
+  const allInspections = useMemo(() => inspectionService.getAll().filter(i => i.client === (user?.name || "João Silva")), [user?.name]);
+  const upcomingInspections = useMemo(() => allInspections.filter(i => i.status !== 'complete'), [allInspections]);
+  const warrantyRequests = useMemo(() => warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId), [clientId]);
+  
+  const userInfo = {
+    name: user?.name?.split(' ')[0] || "Cliente",
+    property: "Residencial Aurora",
+    unit: "204",
+    deliveryDate: new Date(2025, 11, 15),
+    contractDate: new Date(2023, 5, 10),
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const unreadCount = 3;
+  const urgentNotifications = [
+    { id: '1', title: 'Vistoria Agendada', message: 'Sua vistoria técnica está confirmada para o dia 20/05 às 14:00.' },
+    { id: '2', title: 'Documento Pendente', message: 'Você tem um contrato aguardando sua assinatura digital.' }
+  ];
+
+  const canScheduleInspection = stage === 'inspection_enabled' || stage === 'warranty_enabled';
+  const canRequestWarranty = stage === 'warranty_enabled';
+
+  const timeline: TimelineStep[] = [
+    { id: '1', title: 'Compra do Imóvel', description: 'Contrato assinado e primeira parcela paga.', date: '10/06/2023', status: 'completed' },
+    { id: '2', title: 'Obras em Andamento', description: 'Acompanhe a evolução estrutural do seu empreendimento.', date: 'Em curso', status: 'completed' },
+    { id: '3', title: 'Vistoria Técnica', description: 'Verificação detalhada da sua unidade finalizada.', status: stage === 'inspection_enabled' ? 'current' : (stage === 'warranty_enabled' ? 'completed' : 'pending') },
+    { id: '4', title: 'Entrega das Chaves', description: 'O momento mais esperado! Recebimento das chaves.', status: stage === 'warranty_enabled' ? 'completed' : 'pending' },
+    { id: '5', title: 'Pós-Venda e Garantia', description: 'Suporte especializado para qualquer ajuste necessário.', status: stage === 'warranty_enabled' ? 'current' : 'pending' },
+  ];
+
+  const constructionUpdates: ConstructionUpdate[] = [
+    {
+      id: '1',
+      date: '15/04/2025',
+      title: 'Finalização do Revestimento Externo',
+      description: 'Concluímos a pintura da fachada e instalação de vidros nas varandas do bloco A.',
+      percentage: 85,
+      imageUrl: 'https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&w=800&q=80'
+    },
+    {
+      id: '2',
+      date: '02/04/2025',
+      title: 'Instalações Elétricas e Hidráulicas',
+      description: 'Avançamos para 95% das instalações internas em todas as unidades do 1º ao 15º andar.',
+      percentage: 78,
+      imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80'
+    }
+  ];
 
   const getStatusLabel = (status: string) => {
     const labels = {
@@ -117,7 +115,9 @@ const Dashboard = () => {
       progress: "Em Progresso",
       em_andamento: "Em Andamento",
       concluido: "Concluído",
-      complete: "Concluído"
+      complete: "Concluído",
+      completed: "Concluído",
+      rejected: "Recusado"
     };
     return labels[status as keyof typeof labels] || status;
   };
@@ -125,7 +125,7 @@ const Dashboard = () => {
   const daysToDelivery = userInfo.deliveryDate ? Math.ceil((userInfo.deliveryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0;
   const contractProgress = userInfo.deliveryDate && userInfo.contractDate ? Math.min(((new Date().getTime() - userInfo.contractDate.getTime()) / (userInfo.deliveryDate.getTime() - userInfo.contractDate.getTime())) * 100, 100) : 0;
 
-  if (isLoading) {
+  if (isLoading || stageLoading) {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="flex justify-between items-center">
@@ -178,7 +178,6 @@ const Dashboard = () => {
           </Card>
         </div>
       </div>
-
 
       {/* Property Info Card */}
       <ResponsiveGrid columns={3} gap="layout">
@@ -301,91 +300,86 @@ const Dashboard = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
         <div className="lg:col-span-2 space-y-8">
-          <ClientTimeline 
-            timeline={timeline} 
-            title="Sua Jornada"
-            description="Acompanhe cada etapa do processo do seu imóvel"
-          />
+          <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white">
+            <CardHeader className="p-8 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/10 rounded-xl">
+                  <Activity className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-black tracking-tight">Sua Jornada</CardTitle>
+                  <CardDescription className="font-medium">Acompanhe cada etapa do processo do seu imóvel</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-8 pt-4">
+              <ClientTimeline steps={timeline} />
+            </CardContent>
+          </Card>
           
           <ConstructionFeed updates={constructionUpdates} />
         </div>
+        
         <div className="space-y-8">
-          <ReferralCard className="rounded-3xl" />
+          <Card className="bg-emerald-600 text-white shadow-xl rounded-[2rem] overflow-hidden relative group border-none">
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+            <CardHeader className="pb-4">
+               <div className="p-3 bg-white/20 rounded-2xl w-fit mb-4">
+                 <Gift className="h-6 w-6 text-white" />
+               </div>
+               <CardTitle className="text-2xl font-black leading-tight">Indique um Amigo</CardTitle>
+               <CardDescription className="text-emerald-100 font-medium">Ganhe descontos exclusivos na sua parcela por cada indicação.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full bg-white text-emerald-600 hover:bg-white/90 rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 shadow-lg">
+                Conhecer Programa
+              </Button>
+            </CardContent>
+          </Card>
 
-          <NextSteps 
-            steps={useMemo(() => {
-              const baseSteps = [];
-              
-              if (stage === 'registered') {
-                baseSteps.push({
-                  id: '1',
-                  title: 'Aguardar liberação de vistoria',
-                  description: 'Estamos finalizando os últimos detalhes da sua unidade.',
-                  status: 'current' as const
-                });
-              } else if (stage === 'inspection_enabled') {
-                const pendingInsp = upcomingInspections.length > 0;
-                baseSteps.push({
-                  id: '1',
-                  title: pendingInsp ? 'Confirmar presença na vistoria' : 'Agendar primeira vistoria',
-                  description: pendingInsp ? 'Sua vistoria está agendada.' : 'Agende o melhor horário para visitar seu imóvel.',
-                  status: 'current' as const,
-                  link: '/client/inspections'
-                });
-                baseSteps.push({
-                  id: '2',
-                  title: 'Realizar vistoria técnica',
-                  description: 'Acompanhe nosso técnico na unidade.',
-                  status: 'upcoming' as const
-                });
-              } else if (stage === 'warranty_enabled') {
-                baseSteps.push({
-                  id: '1',
-                  title: 'Vistoria concluída e aprovada',
-                  description: 'Parabéns! Seu imóvel foi entregue.',
-                  status: 'completed' as const
-                });
-                baseSteps.push({
-                  id: '2',
-                  title: 'Acessar manual do proprietário',
-                  description: 'Documento disponível na central de ajuda.',
-                  status: 'current' as const,
-                  link: '/client/support'
-                });
-              }
-
-              // Always show financial step if pending
-              if (financialSummary.nextPayment) {
-                baseSteps.push({
-                  id: 'fin-1',
-                  title: 'Pagamento da próxima parcela',
-                  description: `Vencimento em ${financialSummary.nextPayment.dueDate.toLocaleDateString()}`,
-                  status: 'upcoming' as const,
-                  link: '/client/financial'
-                });
-              }
-
-              return baseSteps;
-            }, [stage, upcomingInspections, financialSummary])} 
-          />
-
-          <Card className="border-none shadow-md overflow-hidden">
-            <CardHeader className="bg-muted/30 pb-4">
-              <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Ficha Técnica do Imóvel</CardTitle>
+          <Card className="border-none shadow-md overflow-hidden rounded-[2rem]">
+            <CardHeader className="bg-muted/30 pb-4 p-6">
+              <CardTitle className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Ficha Técnica do Imóvel</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y">
+              <div className="divide-y divide-border/50">
                 {[
                   { label: "Área Privativa", value: "72,50 m²" },
                   { label: "Vagas de Garagem", value: "2 Vagas" },
                   { label: "Pavimento", value: "12º Andar" },
                   { label: "Posição Solar", value: "Norte/Leste" }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center px-6 py-4">
+                  <div key={idx} className="flex justify-between items-center px-6 py-4 hover:bg-muted/10 transition-colors">
                     <span className="text-sm text-muted-foreground font-medium">{item.label}</span>
                     <span className="text-sm font-black">{item.value}</span>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-none shadow-xl rounded-[2rem] overflow-hidden group">
+            <CardHeader className="bg-primary/5 pb-6 border-b border-border/10 p-6">
+              <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground/60">Seu Gestor Dedicado</CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="relative inline-block">
+                <div className="w-24 h-24 rounded-full border-4 border-primary/10 overflow-hidden mx-auto transition-transform duration-500 group-hover:scale-105">
+                   <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80" alt="Consultor" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute bottom-0 right-0 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black tracking-tight">Roberto Andrade</h3>
+                <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">Consultor de Relacionamento</p>
+              </div>
+              <div className="pt-4 border-t border-border/10 space-y-3">
+                 <Button variant="outline" className="w-full rounded-xl font-bold gap-2 h-11 border-primary/20 hover:bg-primary/5">
+                    <MessageSquare size={16} className="text-primary" /> Falar com Roberto
+                 </Button>
+                 <Button variant="ghost" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary">
+                    Ver agenda de reuniões
+                 </Button>
               </div>
             </CardContent>
           </Card>
@@ -442,32 +436,6 @@ const Dashboard = () => {
           <ClientFAQ />
         </div>
         <div className="space-y-6">
-          <Card className="bg-white border-none shadow-xl rounded-[2rem] overflow-hidden group">
-            <CardHeader className="bg-primary/5 pb-6 border-b border-border/10">
-              <CardTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground/60">Seu Gestor Dedicado</CardTitle>
-            </CardHeader>
-            <CardContent className="p-8 text-center space-y-6">
-              <div className="relative inline-block">
-                <div className="w-24 h-24 rounded-full border-4 border-primary/10 overflow-hidden mx-auto transition-transform duration-500 group-hover:scale-105">
-                   <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80" alt="Consultor" className="w-full h-full object-cover" />
-                </div>
-                <div className="absolute bottom-0 right-0 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full" />
-              </div>
-              <div>
-                <h3 className="text-xl font-black tracking-tight">Roberto Andrade</h3>
-                <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">Consultor de Relacionamento</p>
-              </div>
-              <div className="pt-4 border-t border-border/10 space-y-3">
-                 <Button variant="outline" className="w-full rounded-xl font-bold gap-2 h-11">
-                    <MessageSquare size={16} className="text-primary" /> Falar com Roberto
-                 </Button>
-                 <Button variant="ghost" className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary">
-                    Ver agenda de reuniões
-                 </Button>
-              </div>
-            </CardContent>
-          </Card>
-
           <Card className="bg-primary/5 border-none shadow-sm rounded-3xl p-8 text-center border border-primary/10">
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
               <LifeBuoy className="h-8 w-8 text-primary" />
@@ -483,190 +451,16 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
-        {/* Recent Documents */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Documentos Recentes
-              </CardTitle>
-              <Link to="/client/documents">
-                <Button variant="ghost" size="sm">
-                  Ver todos <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {recentDocuments.length > 0 ? (
-              recentDocuments.map((doc) => (
-                <div key={doc.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border transition-all group">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                      <FileText className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold truncate max-w-[150px] md:max-w-[200px]">{doc.title}</p>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase">{new Intl.DateTimeFormat('pt-BR').format(doc.date)}</p>
-                    </div>
-                  </div>
-                  <StatusBadge 
-                    status={doc.status === "disponivel" || doc.status === "published" ? "complete" : (doc.status === "processando" ? "progress" : "pending")} 
-                    label={getStatusLabel(doc.status)}
-                    size="sm"
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="py-8 text-center bg-muted/20 rounded-xl border border-dashed">
-                <p className="text-sm text-muted-foreground">Nenhum documento disponível</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Upcoming Inspections with Gate */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5" />
-                Próximas Vistorias
-                {!canScheduleInspection && (
-                  <Lock className="h-4 w-4 text-muted-foreground" />
-                )}
-              </CardTitle>
-              <Link to="/client/inspections">
-                <Button variant="ghost" size="sm">
-                  Ver todas <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {canScheduleInspection ? (
-              upcomingInspections.map((inspection) => (
-                <div key={inspection.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border transition-all group">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                      <Calendar className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold">{inspection.type === 'technicalInspection' ? 'Vistoria Técnica' : 'Vistoria de Chaves'}</p>
-                      <p className="text-[10px] font-medium text-muted-foreground uppercase">{new Intl.DateTimeFormat('pt-BR').format(inspection.date)}</p>
-                    </div>
-                  </div>
-                  <StatusBadge 
-                    status={inspection.status === "complete" ? "complete" : "pending"} 
-                    label={getStatusLabel(inspection.status)}
-                    size="sm"
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="p-4 bg-muted/50 rounded-lg text-center">
-                <Lock className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">
-                  As vistorias serão liberadas em breve pelo administrador.
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Warranty Requests with Gate */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" />
-                Solicitações de Garantia
-                {!canRequestWarranty && (
-                  <Lock className="h-4 w-4 text-muted-foreground" />
-                )}
-              </CardTitle>
-              <Link to="/client/warranty">
-                <Button variant="ghost" size="sm">
-                  Ver todas <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {canRequestWarranty ? (
-              warrantyRequests.map((request) => (
-                <div key={request.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border transition-all group">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                      <ShieldCheck className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold truncate max-w-[150px]">{request.title}</p>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{request.priority}</p>
-                    </div>
-                  </div>
-                  <StatusBadge 
-                    status={request.currentStage === "completed" ? "complete" : (request.currentStage === "rejected" ? "critical" : "progress")} 
-                    label={getStatusLabel(request.currentStage)}
-                    size="sm"
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="p-4 bg-muted/50 rounded-lg text-center">
-                <Lock className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">
-                  As garantias serão liberadas após a aprovação da vistoria.
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Notifications */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
-              Notificações Importantes
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {urgentNotifications.length > 0 ? (
-              urgentNotifications.slice(0, 3).map((notification) => (
-                <div key={notification.id} className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 hover:bg-primary/10 border border-primary/10 transition-all group">
-                  <div className="p-2 bg-white rounded-lg shadow-sm border border-primary/10 text-primary">
-                    <AlertCircle className="h-4 w-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold truncate">{notification.title}</p>
-                    <p className="text-[11px] text-muted-foreground line-clamp-1">{notification.message}</p>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-primary/40 group-hover:translate-x-1 transition-transform" />
-                </div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center py-6 bg-muted/20 rounded-xl border border-dashed">
-                <CheckCircle className="h-8 w-8 text-green-600/30 mb-2" />
-                <p className="text-xs font-bold text-muted-foreground uppercase">Tudo em dia!</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Enhanced Quick Actions */}
-      <Card className="border-none bg-muted/30">
-        <CardHeader className="pb-4">
+      <Card className="border-none bg-muted/30 rounded-[2rem]">
+        <CardHeader className="pb-4 p-8">
           <div className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
             <CardTitle className="text-xl font-bold">Serviços e Atalhos</CardTitle>
           </div>
           <CardDescription>Acesso rápido aos principais recursos do seu portal</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-8 pt-0">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <Link to="/client/support" className="group">
               <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
@@ -693,41 +487,35 @@ const Dashboard = () => {
               </div>
             </Link>
             
-            {canScheduleInspection ? (
-              <Link to="/client/inspections" className="group">
-                <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
-                  <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
-                    <ClipboardCheck className="h-6 w-6 text-primary group-hover:text-white" />
-                  </div>
-                  <span className="font-bold text-sm">Vistorias Agendadas</span>
+            <Link to="/client/inspections" className="group">
+              <div className={cn(
+                "h-full p-4 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm",
+                canScheduleInspection ? "bg-card hover:bg-primary hover:text-primary-foreground" : "bg-muted/50 cursor-not-allowed opacity-60"
+              )}>
+                <div className={cn(
+                  "p-3 rounded-full",
+                  canScheduleInspection ? "bg-primary/10 group-hover:bg-white/20" : "bg-muted"
+                )}>
+                  {canScheduleInspection ? <ClipboardCheck className={cn("h-6 w-6 text-primary", canScheduleInspection && "group-hover:text-white")} /> : <Lock className="h-6 w-6 text-muted-foreground" />}
                 </div>
-              </Link>
-            ) : (
-              <div className="h-full p-4 rounded-xl border bg-muted/50 cursor-not-allowed flex flex-col items-center justify-center gap-3 text-center opacity-60">
-                <div className="p-3 rounded-full bg-muted">
-                  <Lock className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <span className="font-bold text-sm text-muted-foreground">Vistorias (Bloqueado)</span>
+                <span className="font-bold text-sm">{canScheduleInspection ? "Vistorias" : "Vistorias (Bloqueado)"}</span>
               </div>
-            )}
+            </Link>
             
-            {canRequestWarranty ? (
-              <Link to="/client/warranty" className="group">
-                <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
-                  <div className="p-3 rounded-full bg-primary/10 group-hover:bg-white/20">
-                    <ShieldCheck className="h-6 w-6 text-primary group-hover:text-white" />
-                  </div>
-                  <span className="font-bold text-sm">Solicitar Garantia</span>
+            <Link to="/client/warranty" className="group">
+              <div className={cn(
+                "h-full p-4 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm",
+                canRequestWarranty ? "bg-card hover:bg-primary hover:text-primary-foreground" : "bg-muted/50 cursor-not-allowed opacity-60"
+              )}>
+                <div className={cn(
+                  "p-3 rounded-full",
+                  canRequestWarranty ? "bg-primary/10 group-hover:bg-white/20" : "bg-muted"
+                )}>
+                  {canRequestWarranty ? <ShieldCheck className={cn("h-6 w-6 text-primary", canRequestWarranty && "group-hover:text-white")} /> : <Lock className="h-6 w-6 text-muted-foreground" />}
                 </div>
-              </Link>
-            ) : (
-              <div className="h-full p-4 rounded-xl border bg-muted/50 cursor-not-allowed flex flex-col items-center justify-center gap-3 text-center opacity-60">
-                <div className="p-3 rounded-full bg-muted">
-                  <Lock className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <span className="font-bold text-sm text-muted-foreground">Garantias (Bloqueado)</span>
+                <span className="font-bold text-sm">{canRequestWarranty ? "Garantias" : "Garantias (Bloqueado)"}</span>
               </div>
-            )}
+            </Link>
             
             <Link to="/client/properties" className="group">
               <div className="h-full p-4 rounded-xl border bg-card hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center shadow-sm">
@@ -740,7 +528,6 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
-
     </div>
   );
 };
