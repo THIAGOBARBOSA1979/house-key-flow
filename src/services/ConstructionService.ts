@@ -9,6 +9,9 @@ export interface ConstructionUpdate {
   imageUrl?: string;
   progressItems?: { label: string; percentage: number }[];
   isGlobal?: boolean;
+  propertyId?: string;
+  status: 'published' | 'draft' | 'scheduled';
+  readBy?: string[]; // user IDs
 }
 
 class ConstructionService {
