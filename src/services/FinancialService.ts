@@ -88,6 +88,20 @@ class FinancialService {
       { id: 'tx-5', client: 'Carlos Souza', property: 'Solar das Palmeiras', value: 50000, date: new Date(Date.now() - 345600000), type: 'Entrega das Chaves', status: 'paid' },
     ];
   }
+
+  processPayment(transactionId: string) {
+    // In a real app, this would update the database
+    auditLogService.log({
+      entityType: 'financial',
+      entityId: transactionId,
+      action: 'payment_received',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Pagamento da transação ${transactionId} processado com sucesso.`
+    });
+    return true;
+  }
 }
 
 export const financialService = new FinancialService();
