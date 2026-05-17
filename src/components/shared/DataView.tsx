@@ -9,7 +9,8 @@ interface DataViewProps<T> {
   items: T[];
   renderGrid?: (item: T) => React.ReactNode;
   renderList?: () => React.ReactNode;
-  viewMode?: 'grid' | 'list';
+  renderTimeline?: () => React.ReactNode;
+  viewMode?: 'grid' | 'list' | 'timeline';
   isLoading?: boolean;
   skeletonType?: 'card' | 'table' | 'page' | 'list';
   emptyState?: {
