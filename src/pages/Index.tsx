@@ -38,7 +38,7 @@ import { financialService } from "@/services/FinancialService";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/shared/DataTable";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
 
 import { useAuth } from "@/contexts/AuthContext";
 
