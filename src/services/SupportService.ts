@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
 
@@ -39,7 +41,7 @@ class SupportService {
 
   createTicket(clientId: string, data: { subject: string, message: string, priority?: TicketPriority, category?: TicketCategory, attachments?: string[] }): SupportTicket {
     const newTicket: SupportTicket = {
-      id: `ticket-${Date.now()}`,
+      id: `ticket-${uuidv4().substring(0, 8)}`,
       clientId,
       subject: data.subject,
       message: data.message,
