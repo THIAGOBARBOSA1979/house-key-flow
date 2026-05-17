@@ -294,15 +294,15 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-lg border shadow-sem-sm hover:shadow-sem-md transition-all duration-300;
+    @apply bg-card text-card-foreground rounded-2xl border border-border/40 shadow-sem-sm hover:shadow-sem-md transition-all duration-500 overflow-hidden;
   }
 
   .card-hover-effect {
-    @apply hover:-translate-y-1 hover:border-primary/30;
+    @apply hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-sem-lg;
   }
 
   .card-glass {
-    @apply bg-background/80 backdrop-blur-md border border-white/20 dark:border-white/5;
+    @apply bg-background/40 backdrop-blur-xl border border-white/10 dark:border-white/5 shadow-sem-xl rounded-2xl;
   }
 
   /* Status Badges */
