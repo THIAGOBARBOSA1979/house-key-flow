@@ -582,21 +582,24 @@ class WarrantyFlowService {
     return { success: true, request: updatedRequest };
   }
 
-    const problemIndex = request.problems.findIndex(p => p.id === problemId);
-    if (problemIndex === -1) return { success: false, error: "Problema não encontrado" };
+  /**
+   * Add material to request
+   */
+  addMaterial(
+    requestId: string,
+    material: { name: string; quantity: number; unit: string; cost?: number },
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
 
-    const problems = [...request.problems];
-    const isResolving = problems[problemIndex].status !== "resolved";
+    const materials = request.materials || [];
+    const newMaterial = { ...material, id: `mat-${crypto.randomUUID()}` };
     
-    problems[problemIndex] = {
-      ...problems[problemIndex],
-      status: isResolving ? "resolved" : "pending",
-      resolvedAt: isResolving ? new Date() : undefined
-    };
-
     const updatedRequest: WarrantyRequestFlow = {
       ...request,
-      problems,
+      materials: [...materials, newMaterial],
+      actualCost: (request.actualCost || 0) + (material.cost || 0),
       updatedAt: new Date()
     };
 
@@ -606,24 +609,15 @@ class WarrantyFlowService {
     auditLogService.log({
       entityType: 'warranty',
       entityId: requestId,
-      action: 'updated',
+      action: 'info_added',
       performedBy: changedBy,
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Status do problema '${problems[problemIndex].description}' alterado para ${problems[problemIndex].status}`
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      details: `Novo material registrado: ${newMaterial.name} (${newMaterial.quantity} ${newMaterial.unit})`
     });
 
     return { success: true, request: updatedRequest };
   }
-
-  /**
-   * Add material to request
-   */
-  addMaterial(
-    requestId: string,
-    material: { name: string; quantity: number; unit: string; cost?: number },
-    changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     const request = this.requests.get(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
