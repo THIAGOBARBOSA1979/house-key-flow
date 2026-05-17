@@ -227,8 +227,17 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                 header: "Ver",
                 accessorKey: "id",
                 className: "text-right",
-                cell: () => (
-                  <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95">
+                cell: (log: AuditLogEntry) => (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedLog(log);
+                      setIsDetailOpen(true);
+                    }}
+                  >
                     <Maximize2 className="h-4.5 w-4.5" />
                   </Button>
                 )
