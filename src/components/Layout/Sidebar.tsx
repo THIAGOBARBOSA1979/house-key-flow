@@ -62,7 +62,7 @@ const systemItems = [
 ];
 
 
-function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
+function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
 
