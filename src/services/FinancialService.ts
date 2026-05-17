@@ -176,5 +176,3 @@ class FinancialService {
 }
 
 export const financialService = new FinancialService();
-
-export const financialService = new FinancialService();
