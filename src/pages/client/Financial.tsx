@@ -122,30 +122,28 @@ const Financial = () => {
   return (
     <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <DollarSign className="h-8 w-8 text-primary" />
-            Financeiro
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-3">
+            <div className="p-2.5 bg-primary/10 rounded-2xl">
+              <DollarSign className="h-6 w-6 text-primary" strokeWidth={3} />
+            </div>
+            Gestão Financeira
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Acompanhe seus pagamentos, parcelas e extratos financeiros.
+          <p className="text-muted-foreground font-medium">
+            Centralize seus pagamentos, simule antecipações e baixe documentos fiscais.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="gap-2 rounded-xl" onClick={() => {
-            toast({ title: "Gerando documento...", description: "Estamos preparando sua declaração de IR." });
-            setTimeout(() => toast({ title: "Sucesso!", description: "Declaração de IR baixada com sucesso." }), 2000);
+        <div className="flex items-center gap-3 flex-wrap">
+          <Button variant="outline" className="h-11 px-5 rounded-xl font-bold border-primary/20 hover:bg-primary/5 transition-all" onClick={() => {
+            toast({ title: "Preparando documento...", description: "Sua declaração de IR estará pronta em instantes." });
           }}>
-            <FileText className="h-4 w-4" />
+            <FileText className="h-4 w-4 mr-2 text-primary" />
             Declaração IR
           </Button>
-          <Button className="gap-2 rounded-xl" onClick={() => {
-            toast({ title: "Gerando extrato...", description: "Estamos preparando seu extrato financeiro." });
-            setTimeout(() => toast({ title: "Sucesso!", description: "Extrato financeiro baixado com sucesso." }), 2000);
-          }}>
-            <Download className="h-4 w-4" />
-            Baixar Extrato
+          <Button className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20">
+            <Download className="h-4 w-4 mr-2" />
+            Baixar Extrato Completo
           </Button>
         </div>
       </div>
