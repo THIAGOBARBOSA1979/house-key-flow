@@ -29,16 +29,16 @@ export function EmptyState({
   const handleAction = onAction || action?.onClick;
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-muted/10 rounded-2xl border-2 border-dashed border-muted">
-      <div className="p-4 rounded-full bg-background shadow-sm border mb-4">
-        {Icon && <Icon className="h-10 w-10 text-muted-foreground/40" />}
+    <div className="flex flex-col items-center justify-center py-20-sem px-6-sem text-center bg-muted/5 rounded-[2.5rem] border-2 border-dashed border-border/40 group hover:border-primary/20 transition-all duration-500">
+      <div className="p-6-sem rounded-2xl bg-background shadow-sem-sm border border-border/10 mb-6-sem group-hover:scale-110 group-hover:bg-primary/5 transition-all duration-500">
+        {Icon && <Icon className="h-12 w-12 text-muted-foreground/30 group-hover:text-primary transition-colors" />}
       </div>
-      <h3 className="text-xl font-bold tracking-tight text-foreground/80 mb-2">{title}</h3>
-      <p className="text-muted-foreground max-w-sm mb-8 font-medium">
+      <h3 className="text-2xl font-black tracking-tight text-foreground/90 mb-3-sem">{title}</h3>
+      <p className="text-sem-body-base text-muted-foreground/60 max-w-md mb-10-sem font-medium leading-relaxed">
         {description}
       </p>
       {displayActionLabel && handleAction && (
-        <Button onClick={handleAction} className="font-bold uppercase tracking-widest text-xs px-8">
+        <Button onClick={handleAction} className="font-black uppercase tracking-widest text-[10px] px-10 h-12 shadow-sem-md hover:shadow-sem-lg rounded-xl">
           {displayActionLabel}
         </Button>
       )}
