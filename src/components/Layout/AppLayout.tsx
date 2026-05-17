@@ -212,6 +212,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                     <User className="mr-3 h-4 w-4 opacity-50" />
                     <span className="text-sem-body-sm">Perfil do Sistema</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="py-3 px-4 rounded-xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all"
+                    onClick={() => setIsShortcutsOpen(true)}
+                  >
+                    <Keyboard className="mr-3 h-4 w-4 opacity-50" />
+                    <span className="text-sem-body-sm">Atalhos do Teclado</span>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator className="mx-2 bg-border/40" />
                   <DropdownMenuItem onClick={logout} className="py-3 px-4 rounded-xl font-black text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer transition-all">
                     <LogOut className="mr-3 h-4 w-4 opacity-50" />
