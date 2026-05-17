@@ -63,6 +63,9 @@ const systemItems = [
 
 
 function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between h-header-height px-5 border-b border-sidebar-border">
