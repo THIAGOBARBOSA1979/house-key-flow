@@ -55,7 +55,8 @@ const Announcements = () => {
     description: "",
     type: "news" as ConstructionUpdate['type'],
     isGlobal: true,
-    propertyId: "all"
+    propertyId: "all",
+    status: "published" as ConstructionUpdate['status']
   });
 
   const filteredUpdates = useMemo(() => {
@@ -72,7 +73,8 @@ const Announcements = () => {
       description: "",
       type: "news",
       isGlobal: true,
-      propertyId: "all"
+      propertyId: "all",
+      status: "published"
     });
     setIsDialogOpen(true);
   };
@@ -84,7 +86,8 @@ const Announcements = () => {
       description: update.description,
       type: update.type,
       isGlobal: update.isGlobal || false,
-      propertyId: "all" // In a real app we'd have the property ID
+      propertyId: "all", // In a real app we'd have the property ID
+      status: update.status || 'published'
     });
     setIsDialogOpen(true);
   };
@@ -114,7 +117,8 @@ const Announcements = () => {
         title: formData.title,
         description: formData.description,
         type: formData.type,
-        isGlobal: formData.isGlobal
+        isGlobal: formData.isGlobal,
+        status: formData.status
       });
       toast({ title: "Sucesso", description: "Comunicado atualizado com sucesso." });
     } else {
@@ -123,6 +127,7 @@ const Announcements = () => {
         description: formData.description,
         type: formData.type,
         isGlobal: formData.isGlobal,
+        status: formData.status,
         date: new Date()
       });
       toast({ title: "Sucesso", description: "Novo comunicado publicado." });
@@ -190,7 +195,7 @@ const Announcements = () => {
                 header: "Título", 
                 accessorKey: "title",
                 cell: (item) => (
-                  <div className="max-w-[300px]">
+                  <div className="max-w-[250px]">
                     <span className="font-black text-foreground block truncate">{item.title}</span>
                     <span className="text-xs text-muted-foreground font-medium line-clamp-1">{item.description}</span>
                   </div>
@@ -200,15 +205,31 @@ const Announcements = () => {
                 header: "Público", 
                 accessorKey: "isGlobal",
                 cell: (item) => (
-                  item.isGlobal ? (
-                    <Badge variant="outline" className="rounded-lg bg-purple-50 text-purple-700 border-purple-200 gap-1 font-bold text-[10px] uppercase">
-                      <Globe size={12} /> Global
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="rounded-lg bg-blue-50 text-blue-700 border-blue-200 gap-1 font-bold text-[10px] uppercase">
-                      <Building size={12} /> Específico
-                    </Badge>
-                  )
+                  <div className="flex flex-col gap-1">
+                    {item.isGlobal ? (
+                      <Badge variant="outline" className="rounded-lg bg-purple-50 text-purple-700 border-purple-200 gap-1 font-bold text-[10px] uppercase w-fit">
+                        <Globe size={10} /> Global
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="rounded-lg bg-blue-50 text-blue-700 border-blue-200 gap-1 font-bold text-[10px] uppercase w-fit">
+                        <Building size={10} /> Específico
+                      </Badge>
+                    )}
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground">
+                      <Eye size={10} /> {item.readBy?.length || 0} leituras
+                    </div>
+                  </div>
+                )
+              },
+              { 
+                header: "Status", 
+                accessorKey: "status",
+                cell: (item) => (
+                  <StatusBadge 
+                    status={item.status === 'published' ? 'complete' : item.status === 'scheduled' ? 'pending' : 'neutral'} 
+                    label={item.status === 'published' ? 'Publicado' : item.status === 'scheduled' ? 'Agendado' : 'Rascunho'} 
+                    size="sm" 
+                  />
                 )
               },
               { 
@@ -289,6 +310,30 @@ const Announcements = () => {
                     <SelectItem value="specific">Empreendimento Específico</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Status da Publicação</label>
+                <Select value={formData.status} onValueChange={(v: any) => setFormData({...formData, status: v})}>
+                  <SelectTrigger className="rounded-xl border-muted bg-muted/20 h-12">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-sem-lg">
+                    <SelectItem value="published">Publicar Imediatamente</SelectItem>
+                    <SelectItem value="scheduled">Agendar Publicação</SelectItem>
+                    <SelectItem value="draft">Salvar como Rascunho</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                {formData.status === 'scheduled' && (
+                   <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                     <label className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1">Data de Agendamento</label>
+                     <Input type="datetime-local" className="rounded-xl border-muted bg-muted/20 h-12" />
+                   </div>
+                )}
               </div>
             </div>
 

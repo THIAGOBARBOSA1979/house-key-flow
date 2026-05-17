@@ -34,7 +34,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { RefreshCw, AlertCircle, LayoutGrid, List, CheckSquare, MoveRight } from "lucide-react";
+import { RefreshCw, AlertCircle, LayoutGrid, List, CheckSquare, MoveRight, UserCheck } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ScheduleInspectionForm } from "@/components/Inspection/ScheduleInspectionForm";
 import { cn } from "@/lib/utils";
@@ -212,8 +212,6 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
   const handleBulkMove = (toStage: WarrantyStage) => {
     if (selectedCards.size === 0) return;
     
-    // In a real app, we'd check if all selected cards can move to toStage
-    // For now, we'll just move them
     const ids = Array.from(selectedCards);
     const requiresNotes = transitionRequiresNotes(toStage);
     
@@ -221,12 +219,27 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       setTransitionDialog({
         open: true,
         cardIds: ids,
-        fromStage: "opened", // Dummy, used for reference
+        fromStage: "opened",
         toStage,
         requiresNotes: true
       });
     } else {
       executeTransition(ids, "opened", toStage, "Movimentação em massa");
+    }
+  };
+
+  const handleBulkAssign = (techId: string, techName: string) => {
+    if (selectedCards.size === 0) return;
+    const ids = Array.from(selectedCards);
+    let successCount = 0;
+    ids.forEach(id => {
+      const result = warrantyFlowService.assignTechnician(id, techId, techName, 'admin-1');
+      if (result.success) successCount++;
+    });
+    if (successCount > 0) {
+      toast({ title: `${successCount} solicitações atribuídas`, description: `Técnico: ${techName}` });
+      loadData();
+      setSelectedCards(new Set());
     }
   };
 
@@ -374,6 +387,28 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
                     >
                       <div className={cn("w-2 h-2 rounded-full", `bg-${WARRANTY_STAGES[stage].color}-500`)} />
                       {WARRANTY_STAGES[stage].label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 gap-2 border-primary/30 text-primary">
+                    <UserCheck className="h-4 w-4" />
+                    Atribuir Técnico
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Selecionar Técnico...</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {technicians.map(tech => (
+                    <DropdownMenuItem 
+                      key={tech.id} 
+                      onClick={() => handleBulkAssign(tech.id, tech.name)}
+                      className="gap-2"
+                    >
+                      {tech.name}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>

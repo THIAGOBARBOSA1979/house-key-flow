@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
+import { TechnicalReportDialog } from "@/components/Warranty/TechnicalReportDialog";
+import { Printer } from "lucide-react";
 
 const TECHNICIANS = [
   { id: "tech-1", name: "Carlos Técnico" },
@@ -43,6 +45,7 @@ const Warranty = () => {
   const [activeTab, setActiveTab] = useState("kanban");
   const [selectedRequest, setSelectedRequest] = useState<WarrantyRequestFlow | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const handleExportData = () => {
     const requests = warrantyFlowService.getAllRequests();
@@ -110,9 +113,17 @@ const Warranty = () => {
                 </div>
                 Solicitação #{selectedRequest?.id.split('-')[0].toUpperCase()}
               </DialogTitle>
-              {selectedRequest?.isPaused && (
+               {selectedRequest?.isPaused && (
                 <StatusBadge status="warning" label="Pausada pelo Admin" size="sm" className="rounded-full px-4" />
               )}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-xl font-bold gap-2 ml-4 h-10 border-primary/30"
+                onClick={() => setReportDialogOpen(true)}
+              >
+                <Printer size={16} /> Gerar Laudo
+              </Button>
             </div>
           </DialogHeader>
 
@@ -362,6 +373,11 @@ const Warranty = () => {
           </div>
         </DialogContent>
       </Dialog>
+      <TechnicalReportDialog 
+        request={selectedRequest} 
+        open={reportDialogOpen} 
+        onOpenChange={setReportDialogOpen} 
+      />
     </div>
   );
 };

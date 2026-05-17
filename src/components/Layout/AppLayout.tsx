@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight, Home as HomeIcon } from "lucide-react";
+import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight, Home as HomeIcon, Keyboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -19,6 +19,13 @@ import { propertyService } from "@/services/PropertyService";
 import { userService } from "@/services/UserService";
 import { documentService } from "@/services/DocumentService";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -34,6 +41,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchTerm] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
   const sidebarWidthClass = sidebarCollapsed ? "pl-sidebar-collapsed-width" : "pl-sidebar-width";
 
@@ -57,8 +65,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         e.preventDefault();
         setIsSearchOpen(true);
       }
+      if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+        e.preventDefault();
+        setIsShortcutsOpen(true);
+      }
       if (e.key === 'Escape') {
         setIsSearchOpen(false);
+        setIsShortcutsOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -206,6 +219,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                     <User className="mr-3 h-4 w-4 opacity-50" />
                     <span className="text-sem-body-sm">Perfil do Sistema</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="py-3 px-4 rounded-xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all"
+                    onClick={() => setIsShortcutsOpen(true)}
+                  >
+                    <Keyboard className="mr-3 h-4 w-4 opacity-50" />
+                    <span className="text-sem-body-sm">Atalhos do Teclado</span>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator className="mx-2 bg-border/40" />
                   <DropdownMenuItem onClick={logout} className="py-3 px-4 rounded-xl font-black text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer transition-all">
                     <LogOut className="mr-3 h-4 w-4 opacity-50" />
@@ -241,6 +261,32 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </div>
         </footer>
       </div>
+
+      <Dialog open={isShortcutsOpen} onOpenChange={setIsShortcutsOpen}>
+        <DialogContent className="sm:max-w-[500px] rounded-[2rem] border-none shadow-sem-xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <Keyboard className="text-primary" />
+              Atalhos de Teclado
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-6 py-4">
+            {[
+              { key: 'Ctrl + K', desc: 'Abrir Busca Global' },
+              { key: 'Ctrl + /', desc: 'Ver Atalhos' },
+              { key: 'Esc', desc: 'Fechar Modais e Menus' },
+              { key: 'Alt + D', desc: 'Ir para Dashboard' },
+              { key: 'Alt + P', desc: 'Ir para Empreendimentos' },
+              { key: 'Alt + G', desc: 'Ir para Garantias' }
+            ].map(shortcut => (
+              <div key={shortcut.key} className="flex items-center justify-between">
+                <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{shortcut.desc}</span>
+                <Badge variant="outline" className="h-8 px-3 rounded-lg font-black bg-muted/20 border-border/50">{shortcut.key}</Badge>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
