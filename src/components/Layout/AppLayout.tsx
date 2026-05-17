@@ -90,12 +90,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <header 
           className="border-b-border/40 bg-background/80 backdrop-blur-2xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm"
         >
-          <div className="w-full flex items-center justify-between px-6 md:px-8 transition-all duration-slow">
+          <div className="w-full flex items-center justify-between px-6 md:px-8 transition-all duration-slow max-w-[1600px] mx-auto">
             <div className="flex items-center gap-4 flex-1">
-              <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4">
-                <HomeIcon size={14} />
+              <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4 group cursor-default">
+                <HomeIcon size={14} className="group-hover:text-primary transition-colors" />
                 <ChevronRight size={12} />
-                <span className="text-primary/60">Painel Administrativo</span>
+                <span className="text-primary/60 group-hover:text-primary transition-colors">Painel Administrativo</span>
               </div>
 
               {isMobile ? <div className="w-10" /> : (

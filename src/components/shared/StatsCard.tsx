@@ -46,11 +46,11 @@ export const StatsCard = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden group transition-all duration-500 border border-border/40 shadow-sem-sm hover:shadow-sem-lg rounded-2xl", 
+      "overflow-hidden group transition-all duration-500 border border-border/40 shadow-sem-sm hover:shadow-sem-lg rounded-2xl hover:-translate-y-1 active:scale-[0.98]", 
       variantStyles[variant], 
       className
     )}>
-      <CardContent className="p-6">
+      <CardContent className="p-6 cursor-pointer">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/80 mb-2 truncate">
