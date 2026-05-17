@@ -19,6 +19,13 @@ import { propertyService } from "@/services/PropertyService";
 import { userService } from "@/services/UserService";
 import { documentService } from "@/services/DocumentService";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 interface AppLayoutProps {
   children: React.ReactNode;
