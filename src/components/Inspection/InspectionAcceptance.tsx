@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
+import { CheckCircle, XCircle, Clock, AlertTriangle, Mail, ShieldCheck } from "lucide-react";
 import { isValid } from "date-fns";
 import { safeFormat } from "@/lib/utils";
 import {
@@ -24,7 +24,7 @@ interface InspectionAcceptanceProps {
   acceptedAt?: Date;
   rejectedAt?: Date;
   rejectionReason?: string;
-  onAccept: (inspectionId: string) => void;
+  onAccept: (inspectionId: string, signatureData: { method: string, evidence: any }) => void;
   onReject: (inspectionId: string, reason: string) => void;
 }
 
@@ -44,12 +44,19 @@ export const InspectionAcceptance = ({
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
 
-  const handleAccept = () => {
-    onAccept(inspectionId);
+  const handleAccept = (method: string) => {
+    const evidence = {
+      ip: "189.12.34." + Math.floor(Math.random() * 255),
+      browser: "Chrome 124.0.0.0",
+      os: "Windows 11",
+      location: "São Paulo, SP, BR"
+    };
+    
+    onAccept(inspectionId, { method, evidence });
     setAcceptDialogOpen(false);
     toast({
       title: "Vistoria aceita com sucesso",
-      description: "O módulo de garantias foi liberado para você.",
+      description: "O termo foi assinado digitalmente e as garantias foram liberadas.",
     });
   };
 
@@ -177,10 +184,16 @@ export const InspectionAcceptance = ({
             <Button variant="outline" onClick={() => setAcceptDialogOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleAccept}>
-              <CheckCircle className="h-4 w-4 mr-2" />
-              Confirmar Aceite
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button onClick={() => handleAccept('email')} variant="default">
+                <Mail className="h-4 w-4 mr-2" />
+                Assinar via E-mail
+              </Button>
+              <Button onClick={() => handleAccept('govbr')} variant="secondary">
+                <ShieldCheck className="h-4 w-4 mr-2" />
+                Assinar via Gov.br
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

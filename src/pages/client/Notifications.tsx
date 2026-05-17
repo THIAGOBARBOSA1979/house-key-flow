@@ -54,8 +54,8 @@ const ClientNotifications = () => {
   const { toast } = useToast();
   
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
-    email: { inspections: true, warranty: true, updates: true },
-    sms: { inspections: false, warranty: false, updates: false }
+    email: { inspections: true, warranty: true, updates: true, reminders: true },
+    sms: { inspections: false, warranty: false, updates: false, reminders: false }
   });
 
   useEffect(() => {
@@ -291,6 +291,17 @@ const ClientNotifications = () => {
                     onCheckedChange={() => toggleSetting('email', 'updates')} 
                   />
                 </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-bold">Lembretes</Label>
+                    <p className="text-sm text-muted-foreground">Alertas de proximidade de datas e tarefas.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.email.reminders} 
+                    onCheckedChange={() => toggleSetting('email', 'reminders')} 
+                  />
+                </div>
               </CardContent>
             </Card>
 
@@ -337,6 +348,17 @@ const ClientNotifications = () => {
                   <Switch 
                     checked={notificationSettings.sms.updates} 
                     onCheckedChange={() => toggleSetting('sms', 'updates')} 
+                  />
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-bold">Lembretes</Label>
+                    <p className="text-sm text-muted-foreground">Avisos urgentes de compromissos.</p>
+                  </div>
+                  <Switch 
+                    checked={notificationSettings.sms.reminders} 
+                    onCheckedChange={() => toggleSetting('sms', 'reminders')} 
                   />
                 </div>
               </CardContent>
