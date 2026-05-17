@@ -136,6 +136,84 @@ class InspectionService {
     return newTech;
   }
 
+  getAllConflicts() {
+    const conflicts: { date: string; technician: string; count: number }[] = [];
+    const grouped = this.inspections.reduce((acc, current) => {
+      if (current.status === 'cancelled') return acc;
+      const key = `${current.date.toDateString()}|${current.technician}`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    Object.entries(grouped).forEach(([key, count]) => {
+      if (count > 1) {
+        const [date, technician] = key.split('|');
+        conflicts.push({ date, technician, count });
+      }
+    });
+    return conflicts;
+  }
+
+  getReport(id: string) {
+    const inspection = this.inspections.find(i => i.id === id);
+    if (!inspection) return null;
+    
+    // In a real app, this would fetch data from the executed checklist too
+    const progress = localStorage.getItem(`inspection_progress_${id}`);
+    const checklistData = progress ? JSON.parse(progress) : null;
+    
+    return {
+      inspection,
+      checklist: checklistData,
+      generatedAt: new Date(),
+      company: "A2 Empreendimentos"
+    };
+  }
+
+  requestReschedule(id: string, clientId: string, newDate?: Date, newTime?: string, reason?: string) {
+    const inspection = this.inspections.find(i => i.id === id);
+    if (inspection) {
+      inspection.status = "reschedule_requested";
+      if (newDate) inspection.date = newDate;
+      if (newTime) inspection.time = newTime;
+      if (reason) inspection.notes = (inspection.notes ? inspection.notes + "\n" : "") + "Motivo do reagendamento: " + reason;
+      
+      this.persist();
+      
+      auditLogService.log({
+        entityType: 'inspection',
+        entityId: id,
+        action: 'updated',
+        performedBy: clientId,
+        performedByName: inspection.client,
+        performedByRole: 'client',
+        details: `Cliente solicitou reagendamento da vistoria para ${newDate?.toLocaleDateString()} às ${newTime}.${reason ? ` Motivo: ${reason}` : ""}`
+      });
+      return true;
+    }
+    return false;
+  }
+
+  confirmPresence(id: string, clientId: string) {
+    const inspection = this.inspections.find(i => i.id === id);
+    if (inspection) {
+      inspection.status = "presence_confirmed";
+      this.persist();
+      
+      auditLogService.log({
+        entityType: 'inspection',
+        entityId: id,
+        action: 'updated',
+        performedBy: clientId,
+        performedByName: inspection.client,
+        performedByRole: 'client',
+        details: `Cliente confirmou presença na vistoria.`
+      });
+      return true;
+    }
+    return false;
+  }
+
   schedule(data: ScheduleInspectionData, propertyInfo?: any) {
     const newInspection: Inspection = {
       id: crypto.randomUUID(),
