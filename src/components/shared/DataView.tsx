@@ -31,6 +31,7 @@ export function DataView<T>({
   renderGrid,
   renderList,
   viewMode = 'grid',
+  renderTimeline,
   isLoading = false,
   skeletonType = 'card',
   emptyState,
