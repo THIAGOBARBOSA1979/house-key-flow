@@ -373,6 +373,11 @@ const Warranty = () => {
           </div>
         </DialogContent>
       </Dialog>
+      <TechnicalReportDialog 
+        request={selectedRequest} 
+        open={reportDialogOpen} 
+        onOpenChange={setReportDialogOpen} 
+      />
     </div>
   );
 };
