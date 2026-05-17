@@ -546,53 +546,90 @@ const ClientWarranty = () => {
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <div>
-                        <h3 className="font-medium mb-2">Detalhes da Solicitação:</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                      <div className="space-y-6">
                         <div className="space-y-2">
-                          <div>
-                            <span className="text-sm text-muted-foreground">Categoria:</span>
-                            <p>{claim.category}</p>
+                          <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Detalhes da Solicitação</h3>
+                          <div className="grid grid-cols-1 gap-3">
+                            <div className="p-3 bg-muted/30 rounded-xl">
+                              <span className="text-[10px] font-black uppercase text-muted-foreground block">Categoria</span>
+                              <p className="font-bold text-sm">{claim.category}</p>
+                            </div>
+                            <div className="p-3 bg-muted/30 rounded-xl">
+                              <span className="text-[10px] font-black uppercase text-muted-foreground block">Imóvel</span>
+                              <p className="font-bold text-sm">{claim.propertyName || claim.property} - Unidade {claim.unitNumber || claim.unit}</p>
+                            </div>
+                            <div className="p-3 bg-muted/30 rounded-xl">
+                              <span className="text-[10px] font-black uppercase text-muted-foreground block">Protocolo</span>
+                              <p className="font-bold text-sm">#{claim.id.substring(0, 8).toUpperCase()}</p>
+                            </div>
                           </div>
-                          <div>
-                            <span className="text-sm text-muted-foreground">Imóvel:</span>
-                            <p>{claim.property} - Unidade {claim.unit}</p>
-                          </div>
-                          <div>
-                            <span className="text-sm text-muted-foreground">Protocolo:</span>
-                            <p>#{claim.id.padStart(6, '0')}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Breakdown de Problemas</h3>
+                          <div className="space-y-2">
+                            {claim.problems && claim.problems.length > 0 ? (
+                              claim.problems.map((prob: any) => (
+                                <div key={prob.id} className="p-4 border border-border/50 rounded-xl bg-card flex justify-between items-center shadow-sm">
+                                  <div>
+                                    <p className="font-bold text-sm">{prob.description}</p>
+                                    <div className="flex gap-2 mt-1">
+                                      <span className="text-[10px] font-bold text-muted-foreground bg-muted px-1.5 py-0.5 rounded uppercase">{prob.location}</span>
+                                      <span className={cn(
+                                        "text-[10px] font-bold px-1.5 py-0.5 rounded uppercase",
+                                        prob.severity === 'severe' ? "text-red-600 bg-red-50" : "text-amber-600 bg-amber-50"
+                                      )}>
+                                        {prob.severity === 'severe' ? 'Alta' : 'Média'}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <Badge variant={prob.status === 'resolved' ? 'default' : 'outline'} className={cn(
+                                    "font-black text-[10px] uppercase h-6",
+                                    prob.status === 'resolved' ? "bg-emerald-500" : "text-amber-600 border-amber-200"
+                                  )}>
+                                    {prob.status === 'resolved' ? 'Resolvido' : 'Pendente'}
+                                  </Badge>
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-sm text-muted-foreground italic bg-muted/10 p-4 rounded-xl border border-dashed text-center">Nenhum detalhe adicional informado.</p>
+                            )}
                           </div>
                         </div>
                       </div>
-                      <div>
-                        <h3 className="font-medium mb-2">Descrição:</h3>
-                        <p className="text-sm">{claim.description}</p>
+
+                      <div className="space-y-6">
+                        <div className="space-y-2">
+                          <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Descrição Original</h3>
+                          <div className="p-4 bg-muted/20 rounded-2xl border border-border/50">
+                            <p className="text-sm leading-relaxed font-medium text-foreground/80 italic">"{claim.description}"</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Próximos passos</h3>
+                          <div className="space-y-2">
+                            {[
+                              "Aguarde a análise da equipe técnica em até 72h",
+                              "Um técnico poderá entrar em contato via WhatsApp/Telefone",
+                              "Você receberá notificações em tempo real sobre o status"
+                            ].map((step, i) => (
+                              <div key={i} className="flex items-center gap-3 p-3 bg-white border border-border/30 rounded-xl">
+                                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">{i+1}</div>
+                                <span className="text-sm font-medium">{step}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    
-                    <div className="pt-2 border-t">
-                      <h3 className="font-medium mb-2">Próximos passos:</h3>
-                      <ul className="space-y-2 text-sm">
-                        <li className="flex items-center gap-2">
-                          <ArrowRight className="h-4 w-4 text-primary" />
-                          <span>Aguarde a análise da equipe técnica</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <ArrowRight className="h-4 w-4 text-primary" />
-                          <span>Um técnico poderá entrar em contato para agendar uma visita</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <ArrowRight className="h-4 w-4 text-primary" />
-                          <span>Você receberá atualizações sobre o status da solicitação</span>
-                        </li>
-                      </ul>
-                    </div>
                   </CardContent>
-                  <CardFooter className="flex justify-between border-t pt-4">
-                    <Button variant="outline" onClick={() => setCancelDialogOpen(true)}>
-                      Cancelar solicitação
+                  <CardFooter className="flex justify-between border-t border-border/40 pt-6 px-6 pb-6">
+                    <Button variant="ghost" className="text-status-critical hover:bg-red-50 hover:text-red-700 font-bold" onClick={() => setCancelDialogOpen(true)}>
+                      Cancelar chamado
                     </Button>
-                    <Button onClick={() => setAddInfoDialogOpen(true)}>
+                    <Button onClick={() => setAddInfoDialogOpen(true)} className="rounded-xl font-bold shadow-sem-md">
                       Adicionar informações
                     </Button>
                   </CardFooter>
