@@ -281,5 +281,84 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
         )}
       </CardContent>
     </Card>
+
+      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
+          <DialogHeader className="px-10 pt-10 pb-8 bg-primary/5 border-b border-border/10">
+            <div className="flex items-center justify-between mb-4">
+              <Badge variant="outline" className={cn("rounded-lg px-3 py-1 font-black uppercase tracking-widest text-[10px]", selectedLog && ACTION_COLORS[selectedLog.action])}>
+                {selectedLog && ACTION_LABELS[selectedLog.action]}
+              </Badge>
+              <div className="flex items-center gap-2 text-muted-foreground font-bold text-xs uppercase tracking-widest">
+                <ClockIcon size={14} className="opacity-50" />
+                {selectedLog && safeFormat(selectedLog.timestamp, "dd/MM/yyyy HH:mm:ss")}
+              </div>
+            </div>
+            <DialogTitle className="text-3xl font-black tracking-tighter leading-tight text-foreground/90">
+              Detalhes do Evento
+            </DialogTitle>
+            <DialogDescription className="text-sem-body-sm font-bold text-muted-foreground mt-2">
+              {selectedLog?.details}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="p-10 space-y-8">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
+                  <User size={12} /> Responsável
+                </span>
+                <div className="flex items-center gap-3 p-4 bg-muted/20 rounded-2xl border border-border/10">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-black text-primary">
+                    {selectedLog?.performedByName.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-foreground">{selectedLog?.performedByName}</p>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">{selectedLog?.performedByRole}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
+                  <Tag size={12} /> Entidade Afetada
+                </span>
+                <div className="flex items-center gap-3 p-4 bg-muted/20 rounded-2xl border border-border/10">
+                  <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center font-black text-muted-foreground">
+                    <Database size={16} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-foreground uppercase tracking-tight">{selectedLog?.entityType}</p>
+                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">ID: {selectedLog?.entityId}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {selectedLog?.metadata && (
+              <div className="space-y-4">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
+                  <Database size={12} /> Metadados do Sistema
+                </span>
+                <ScrollArea className="h-[200px] w-full rounded-2xl border border-border/10 bg-muted/10 p-6">
+                  <pre className="text-xs font-mono leading-relaxed text-muted-foreground/80">
+                    {JSON.stringify(selectedLog.metadata, null, 2)}
+                  </pre>
+                </ScrollArea>
+              </div>
+            )}
+          </div>
+
+          <div className="p-10 pt-0 flex justify-end">
+            <Button 
+              onClick={() => setIsDetailOpen(false)}
+              className="rounded-xl h-12 px-8 font-black uppercase text-[11px] tracking-widest shadow-lg shadow-primary/20"
+            >
+              Fechar Visualização
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
