@@ -32,8 +32,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     // Search focus: / or Ctrl+K
     if ((event.key === '/' || (event.ctrlKey && event.key === 'k')) && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')) {
       event.preventDefault();
-      document.querySelector<HTMLInputElement>('input[type="search"]')?.focus() || 
-      document.querySelector<HTMLInputElement>('input[placeholder*="Buscar"]')?.focus();
+      const searchInput = document.querySelector<HTMLInputElement>('input[type="search"]') || 
+                         document.querySelector<HTMLInputElement>('input[placeholder*="Buscar"]');
+      if (searchInput) searchInput.focus();
     }
     
     // Quick navigation: Alt + [D, P, I, W, L]
