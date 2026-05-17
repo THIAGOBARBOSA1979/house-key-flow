@@ -186,50 +186,93 @@ const Dashboard = () => {
             </Card>
           </section>
 
-          {/* Financial Overview */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-h2 flex items-center gap-2">
-                <DollarSign size={24} className="text-emerald-500" />
-                Saúde Financeira
-              </h2>
-              <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/financial")}>
-                Detalhes
-                <ChevronRight size={16} />
-              </Button>
-            </div>
-            <Card className="card-standard border-none bg-emerald-500/5 backdrop-blur-md overflow-hidden p-6 rounded-3xl border border-emerald-500/10">
+          {/* Financial Overview & Pending Docs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 gap-6">
+            <section>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700/60">Faturamento Mensal</span>
-                <Badge className="bg-emerald-500 text-white border-none font-bold">+12%</Badge>
+                <h2 className="text-h2 flex items-center gap-2">
+                  <DollarSign size={24} className="text-emerald-500" />
+                  Saúde Financeira
+                </h2>
+                <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/financial")}>
+                  Detalhes
+                  <ChevronRight size={16} />
+                </Button>
               </div>
-              <div className="text-3xl font-black tracking-tighter text-emerald-700 mb-1">
-                {formatCurrency(650000)}
-              </div>
-              <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-widest">Meta: {formatCurrency(600000)}</p>
-              
-              <div className="mt-6 pt-6 border-t border-emerald-500/10 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                    <Star className="w-4 h-4 text-emerald-600" />
+              <Card className="card-standard border-none bg-emerald-500/5 backdrop-blur-md overflow-hidden p-6 rounded-3xl border border-emerald-500/10">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700/60">Recebido vs Inadimplência</span>
+                  <Badge className="bg-red-500 text-white border-none font-bold">1.2% Atraso</Badge>
+                </div>
+                <div className="text-3xl font-black tracking-tighter text-emerald-700 mb-1">
+                  {formatCurrency(8450000)}
+                </div>
+                <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-widest">Inadimplência: {formatCurrency(125000)}</p>
+                
+                <div className="mt-6 pt-6 border-t border-emerald-500/10 flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-emerald-700/50 leading-none">Eficiência</p>
+                      <p className="text-sm font-black text-emerald-700">98.5%</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black uppercase text-emerald-700/50 leading-none">Satisfação</p>
-                    <p className="text-sm font-black text-emerald-700">4.8 / 5.0</p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                      <AlertCircle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-red-700/50 leading-none">Vencidos</p>
+                      <p className="text-sm font-black text-red-700">12 títulos</p>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Users className="w-4 h-4 text-primary" />
+              </Card>
+            </section>
+
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-h2 flex items-center gap-2">
+                  <ClipboardCheck size={24} className="text-amber-500" />
+                  Pendências de Documentos
+                </h2>
+              </div>
+              <Card className="card-standard border-none bg-amber-500/5 backdrop-blur-md overflow-hidden p-6 rounded-3xl border border-amber-500/10">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-2xl border border-amber-200/50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+                        <FileText size={20} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black uppercase text-amber-800/80 leading-none">Contratos</p>
+                        <p className="text-sm font-bold text-amber-900">8 aguardando assinatura</p>
+                      </div>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={() => navigate("/admin/documents")} className="text-amber-600 hover:bg-amber-100">
+                      <ChevronRight size={18} />
+                    </Button>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black uppercase text-primary/50 leading-none">Novos Leads</p>
-                    <p className="text-sm font-black text-primary">+24</p>
+                  <div className="flex items-center justify-between p-3 bg-white/50 rounded-2xl border border-amber-200/50">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
+                        <Clock size={20} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black uppercase text-red-800/80 leading-none">Vencidos</p>
+                        <p className="text-sm font-bold text-red-900">3 documentos expirados</p>
+                      </div>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={() => navigate("/admin/documents")} className="text-red-600 hover:bg-red-100">
+                      <ChevronRight size={18} />
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </Card>
-          </section>
+              </Card>
+            </section>
+          </div>
 
           {/* Warranty Claims */}
           <section>
