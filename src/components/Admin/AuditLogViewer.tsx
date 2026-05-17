@@ -110,6 +110,13 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
   const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'timeline'>(compact ? 'timeline' : 'table');
+  const [updateTrigger, setUpdateTrigger] = useState(0);
+
+  useEffect(() => {
+    const handleNewLog = () => setUpdateTrigger(prev => prev + 1);
+    window.addEventListener('a2_audit_log_created', handleNewLog);
+    return () => window.removeEventListener('a2_audit_log_created', handleNewLog);
+  }, []);
 
   const filteredLogs = useMemo(() => {
     return auditLogService.getFilteredLogs({
