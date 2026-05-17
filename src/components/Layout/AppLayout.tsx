@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight, Home as HomeIcon } from "lucide-react";
+import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight, Home as HomeIcon, Keyboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
