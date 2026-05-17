@@ -159,6 +159,35 @@ class AuditLogService {
   getAllLogs(): AuditLogEntry[] {
     return [...this.logs].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
+
+  getAuditStats() {
+    return {
+      totalLogs: this.logs.length,
+      logsByAction: this.logs.reduce((acc, log) => {
+        acc[log.action] = (acc[log.action] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      logsByRole: this.logs.reduce((acc, log) => {
+        acc[log.performedByRole] = (acc[log.performedByRole] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      recentActivityTrend: this.getRecentActivityTrend()
+    };
+  }
+
+  private getRecentActivityTrend() {
+    const now = new Date();
+    const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const prev24h = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+
+    const currentCount = this.logs.filter(l => l.timestamp >= last24h).length;
+    const prevCount = this.logs.filter(l => l.timestamp >= prev24h && l.timestamp < last24h).length;
+
+    return {
+      count: currentCount,
+      trend: prevCount === 0 ? 0 : ((currentCount - prevCount) / prevCount) * 100
+    };
+  }
 }
 
 export const auditLogService = new AuditLogService();
