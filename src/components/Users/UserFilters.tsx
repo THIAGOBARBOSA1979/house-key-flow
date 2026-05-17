@@ -35,15 +35,17 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
     setRoleFilter("all");
     setStatusFilter("all");
     setPropertyFilter("all");
+    setUnitFilter("");
     onFilterChange({
       search: "",
       role: "all",
       status: "all",
       property: "all",
+      unit: "",
     });
   };
 
-  const hasActiveFilters = searchTerm || roleFilter !== "all" || statusFilter !== "all" || propertyFilter !== "all";
+  const hasActiveFilters = searchTerm || roleFilter !== "all" || statusFilter !== "all" || propertyFilter !== "all" || unitFilter !== "";
 
   return (
     <Card>
