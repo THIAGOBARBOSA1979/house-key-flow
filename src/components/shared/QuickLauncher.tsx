@@ -11,7 +11,9 @@ import {
   MessageSquare,
   ChevronRight,
   ArrowRight,
-  Keyboard
+  Keyboard,
+  Activity,
+  Megaphone
 } from "lucide-react";
 import { 
   Dialog, 
