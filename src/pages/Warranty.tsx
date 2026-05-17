@@ -113,9 +113,17 @@ const Warranty = () => {
                 </div>
                 Solicitação #{selectedRequest?.id.split('-')[0].toUpperCase()}
               </DialogTitle>
-              {selectedRequest?.isPaused && (
+               {selectedRequest?.isPaused && (
                 <StatusBadge status="warning" label="Pausada pelo Admin" size="sm" className="rounded-full px-4" />
               )}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-xl font-bold gap-2 ml-4 h-10 border-primary/30"
+                onClick={() => setReportDialogOpen(true)}
+              >
+                <Printer size={16} /> Gerar Laudo
+              </Button>
             </div>
           </DialogHeader>
 
