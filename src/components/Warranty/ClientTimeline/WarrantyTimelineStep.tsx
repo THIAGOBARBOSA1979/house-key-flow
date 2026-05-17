@@ -150,8 +150,15 @@ export function WarrantyTimelineStep({
         
         {/* Notes */}
         {notes && (
-          <div className="mt-2 p-2 bg-muted/50 rounded-md">
-            <p className="text-sm text-muted-foreground">{notes}</p>
+          <div className="mt-3 p-4 bg-primary/5 rounded-2xl border border-primary/10 relative overflow-hidden group">
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/30" />
+            <p className="text-sm text-foreground/90 font-medium leading-relaxed italic">"{notes}"</p>
+            <div className="mt-2 flex items-center gap-2 opacity-60">
+               <div className="w-4 h-4 rounded-full bg-muted flex items-center justify-center">
+                 <Search size={10} className="text-muted-foreground" />
+               </div>
+               <span className="text-[10px] font-black uppercase tracking-widest">Nota Técnica</span>
+            </div>
           </div>
         )}
         
