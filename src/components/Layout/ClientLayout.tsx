@@ -346,7 +346,12 @@ const ClientLayout = () => {
       </div>
       
       {/* Backdrop overlay for mobile */}
-      {sidebarOpen && <div className="fixed inset-0 bg-black/20 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden animate-in fade-in duration-300" 
+          onClick={() => setSidebarOpen(false)} 
+        />
+      )}
       
       {/* Main content */}
       <div className="md:ml-sidebar-width min-h-screen flex flex-col">
