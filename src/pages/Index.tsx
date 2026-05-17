@@ -324,6 +324,10 @@ const Dashboard = () => {
                 <HistoryIcon size={24} className="text-primary" />
                 Atividades Recentes
               </h2>
+              <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/audit-logs")}>
+                Ver todos
+                <ChevronRight size={16} />
+              </Button>
             </div>
             <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-lg">
               <CardContent className="p-0">
@@ -345,16 +349,11 @@ const Dashboard = () => {
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="p-5 border-t border-border/5 text-center bg-muted/5">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="w-full h-11 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:bg-transparent transition-all"
-                    onClick={() => navigate("/admin/audit-logs")}
-                  >
-                    Ver Logs Completos <ChevronRight size={14} className="ml-1" />
-                  </Button>
+                  {recentActivities.length === 0 && (
+                    <div className="p-10 text-center">
+                      <p className="text-sm font-bold text-muted-foreground/50 uppercase tracking-widest">Nenhuma atividade recente</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
