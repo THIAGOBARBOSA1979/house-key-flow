@@ -239,7 +239,7 @@ const ClientInspections = () => {
         </div>
       </div>
 
-      <FeatureGate currentStage={stage} requiredStage="inspection_enabled" variant="overlay">
+      <FeatureGate isAllowed={canScheduleInspection} requiredStage="inspection_enabled" variant="overlay">
         <ResponsiveGrid columns={4} gap="layout">
           <StatsCard label="Total Realizadas" value={inspections.filter(i => i.status === 'complete').length} icon={CheckCircle} variant="complete" />
           <StatsCard label="Agendadas" value={inspections.filter(i => i.status === 'pending').length} icon={Calendar} variant="brand" />
