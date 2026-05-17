@@ -16,9 +16,11 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   PieChart,
-  Wallet
+  Wallet,
+  LineChart as LineChartIcon
 } from "lucide-react";
 import { financialService } from "@/services/FinancialService";
+import { exportService } from "@/services/ExportService";
 import { 
   BarChart, 
   Bar, 
@@ -29,7 +31,10 @@ import {
   ResponsiveContainer, 
   Cell,
   AreaChart,
-  Area
+  Area,
+  LineChart,
+  Line,
+  Legend
 } from 'recharts';
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
