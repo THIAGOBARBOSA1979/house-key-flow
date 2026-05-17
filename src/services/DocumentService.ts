@@ -305,7 +305,7 @@ OBSERVAÇÕES: {{observacoes}}`,
   createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus' | 'viewCount' | 'isSigned'>): Document {
     const newDocument: Document = {
       ...data,
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
       downloads: 0,
@@ -316,6 +316,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     };
     
     this.documents.push(newDocument);
+    this.persist();
     auditLogService.log({
       entityType: 'document',
       entityId: newDocument.id,
@@ -327,6 +328,10 @@ OBSERVAÇÕES: {{observacoes}}`,
     });
     console.log('DocumentService: Documento criado:', newDocument.title);
     return newDocument;
+  }
+
+  private persist() {
+    localStorage.setItem('a2_documents', JSON.stringify(this.documents));
   }
 
   updateDocument(id: string, data: Partial<Document>): Document | null {
