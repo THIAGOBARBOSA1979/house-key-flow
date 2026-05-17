@@ -359,7 +359,6 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </section>
-
         </div>
       </div>
     </div>
