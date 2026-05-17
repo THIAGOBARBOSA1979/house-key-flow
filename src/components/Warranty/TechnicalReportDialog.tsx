@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, FileText, Printer, Download, MapPin, User, Calendar, Clock, AlertCircle } from "lucide-react";
 import { WarrantyRequestFlow, WARRANTY_STAGES } from "@/types/warrantyFlow";
 import { format } from "date-fns";
