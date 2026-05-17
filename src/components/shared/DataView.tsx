@@ -69,7 +69,7 @@ export function DataView<T>({
     if (viewMode === 'list' && renderList) {
       return (
         <div className="animate-fade-in">
-          {renderList()}
+          {renderList(displayedItems)}
         </div>
       );
     }
@@ -77,7 +77,7 @@ export function DataView<T>({
     if (viewMode === 'timeline' && renderTimeline) {
       return (
         <div className="animate-fade-in">
-          {renderTimeline()}
+          {renderTimeline(displayedItems)}
         </div>
       );
     }
