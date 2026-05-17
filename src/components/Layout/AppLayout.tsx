@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Bell, Search } from "lucide-react";
+import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -14,6 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { propertyService } from "@/services/PropertyService";
+import { userService } from "@/services/UserService";
+import { documentService } from "@/services/DocumentService";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -25,9 +30,40 @@ interface AppLayoutProps {
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user, logout } = useAuth();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchTerm] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const sidebarWidthClass = sidebarCollapsed ? "pl-sidebar-collapsed-width" : "pl-sidebar-width";
+
+  // Global search logic
+  const searchResults = useMemo(() => {
+    if (!searchQuery || searchQuery.length < 2) return { properties: [], users: [], documents: [] };
+    
+    const query = searchQuery.toLowerCase();
+    return {
+      properties: propertyService.getAll().filter(p => p.name.toLowerCase().includes(query)).slice(0, 3),
+      users: userService.getAll().filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)).slice(0, 3),
+      documents: documentService.searchDocuments(searchQuery, {}).slice(0, 3)
+    };
+  }, [searchQuery]);
+
+  const hasResults = searchResults.properties.length > 0 || searchResults.users.length > 0 || searchResults.documents.length > 0;
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower">
@@ -41,8 +77,97 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           className="border-b-border/40 bg-background/80 backdrop-blur-2xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm"
         >
           <div className="w-full flex items-center justify-between px-6 md:px-10 transition-all duration-slow">
-            <div className="flex items-center gap-6">
-              {isMobile && <div className="w-10" />}
+            <div className="flex items-center gap-6 flex-1">
+              {isMobile ? <div className="w-10" /> : (
+                <div className="relative max-w-md w-full group hidden md:block">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-all" />
+                  <Input
+                    placeholder="Busca global... (Ctrl+K)"
+                    className="pl-11 h-11 bg-muted/20 border-none rounded-xl font-bold placeholder:font-medium transition-all focus-visible:ring-primary/20 w-full"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      if (e.target.value.length >= 2) setIsSearchOpen(true);
+                    }}
+                    onFocus={() => setIsSearchOpen(true)}
+                  />
+                  
+                  {isSearchOpen && (
+                    <>
+                      <div className="fixed inset-0 z-[-1]" onClick={() => setIsSearchOpen(false)} />
+                      <div className="absolute top-full left-0 right-0 mt-2 p-2 bg-card rounded-2xl shadow-sem-xl border border-border/40 animate-in fade-in zoom-in-95 duration-200">
+                        <ScrollArea className="max-h-[400px]">
+                          {hasResults ? (
+                            <div className="p-2 space-y-4">
+                              {searchResults.properties.length > 0 && (
+                                <div>
+                                  <p className="px-3 text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest mb-2 flex items-center gap-2">
+                                    <Building size={12} /> Empreendimentos
+                                  </p>
+                                  {searchResults.properties.map(p => (
+                                    <button 
+                                      key={p.id}
+                                      onClick={() => { navigate('/admin/properties'); setIsSearchOpen(false); }}
+                                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 group transition-all"
+                                    >
+                                      <span className="font-bold text-sm text-foreground/80 group-hover:text-primary">{p.name}</span>
+                                      <ChevronRight size={14} className="text-muted-foreground/40 group-hover:translate-x-1 transition-all" />
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                              {searchResults.users.length > 0 && (
+                                <div>
+                                  <p className="px-3 text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest mb-2 flex items-center gap-2">
+                                    <Users size={12} /> Usuários
+                                  </p>
+                                  {searchResults.users.map(u => (
+                                    <button 
+                                      key={u.id}
+                                      onClick={() => { navigate('/admin/users'); setIsSearchOpen(false); }}
+                                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 group transition-all"
+                                    >
+                                      <div className="text-left">
+                                        <p className="font-bold text-sm text-foreground/80 group-hover:text-primary">{u.name}</p>
+                                        <p className="text-[10px] text-muted-foreground">{u.email}</p>
+                                      </div>
+                                      <ChevronRight size={14} className="text-muted-foreground/40 group-hover:translate-x-1 transition-all" />
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                              {searchResults.documents.length > 0 && (
+                                <div>
+                                  <p className="px-3 text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest mb-2 flex items-center gap-2">
+                                    <FileText size={12} /> Documentos
+                                  </p>
+                                  {searchResults.documents.map(d => (
+                                    <button 
+                                      key={d.id}
+                                      onClick={() => { navigate('/admin/documents'); setIsSearchOpen(false); }}
+                                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 group transition-all"
+                                    >
+                                      <span className="font-bold text-sm text-foreground/80 group-hover:text-primary">{d.title}</span>
+                                      <ChevronRight size={14} className="text-muted-foreground/40 group-hover:translate-x-1 transition-all" />
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="p-10 text-center space-y-2">
+                              <Search className="h-10 w-10 text-muted-foreground/20 mx-auto" />
+                              <p className="text-sem-body-sm font-black text-muted-foreground/40 uppercase tracking-widest">
+                                {searchQuery.length < 2 ? "Digite para pesquisar" : "Nenhum resultado"}
+                              </p>
+                            </div>
+                          )}
+                        </ScrollArea>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-6">

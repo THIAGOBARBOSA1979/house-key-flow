@@ -13,23 +13,23 @@ import {
   Download, 
   Filter, 
   Calendar as CalendarIcon,
-  ArrowUpRight,
-  ArrowDownRight,
   PieChart,
-  Wallet
+  Wallet,
+  LineChart as LineChartIcon
 } from "lucide-react";
 import { financialService } from "@/services/FinancialService";
+import { exportService } from "@/services/ExportService";
 import { 
-  BarChart, 
-  Bar, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer, 
-  Cell,
   AreaChart,
-  Area
+  Area,
+  LineChart,
+  Line,
+  Legend
 } from 'recharts';
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -39,10 +39,21 @@ const FinancialDashboard = () => {
   const metrics = useMemo(() => financialService.getGlobalMetrics(), []);
   const transactions = useMemo(() => financialService.getRecentTransactions(), []);
   
+  // Projection data (mock for demonstration)
+  const projectionData = useMemo(() => {
+    return [
+      ...metrics.revenueByMonth.map(m => ({ ...m, isProjection: false })),
+      { month: 'Jul', value: 720000, isProjection: true },
+      { month: 'Ago', value: 780000, isProjection: true },
+      { month: 'Set', value: 850000, isProjection: true },
+    ];
+  }, [metrics]);
+
   const handleExport = () => {
+    exportService.exportToCSV(transactions, "relatorio_financeiro_transacoes");
     toast({
-      title: "Relatório gerado",
-      description: "O relatório financeiro consolidado foi enviado para seu e-mail.",
+      title: "Exportação iniciada",
+      description: "O arquivo CSV com as transações recentes está sendo gerado.",
     });
   };
 
@@ -189,6 +200,73 @@ const FinancialDashboard = () => {
                   "O faturamento deste mês superou a projeção inicial em 12%, impulsionado pela entrega das chaves do Residencial Aurora."
                 </p>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 gap-8">
+        <Card className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
+          <CardHeader className="p-8 pb-0">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+                  <LineChartIcon className="text-primary" />
+                  Projeção de Receita
+                </CardTitle>
+                <p className="text-sm text-muted-foreground font-medium">Previsão baseada em parcelas a vencer e tendências históricas</p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8 pt-6">
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={projectionData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#88888820" />
+                  <XAxis 
+                    dataKey="month" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 12, fontWeight: 700, fill: '#888888' }}
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fontSize: 12, fontWeight: 700, fill: '#888888' }}
+                    tickFormatter={(value) => `R$${value/1000}k`}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      borderRadius: '16px', 
+                      border: 'none', 
+                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                      padding: '12px'
+                    }}
+                    formatter={(value: number) => [formatCurrency(value), "Receita"]}
+                  />
+                  <Legend verticalAlign="top" height={36}/>
+                  <Line 
+                    name="Realizado"
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#3b82f6" 
+                    strokeWidth={4}
+                    dot={{ r: 6, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }}
+                    activeDot={{ r: 8 }}
+                  />
+                  <Line 
+                    name="Projeção"
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#10b981" 
+                    strokeWidth={4}
+                    strokeDasharray="8 8"
+                    dot={{ r: 6, fill: "#10b981", strokeWidth: 2, stroke: "#fff" }}
+                    data={projectionData.filter(d => d.isProjection || d.month === 'Jun')}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>

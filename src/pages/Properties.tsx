@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download, Clock, CheckCircle2 } from "lucide-react";
+import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download, Clock, CheckCircle2, ShieldCheck, Settings } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageHeader } from "@/components/Layout/PageHeader";
@@ -63,6 +64,7 @@ const Properties = () => {
   const [managerFilter, setManagerFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list" | "timeline">("grid");
   const [properties, setProperties] = useState<Property[]>(propertyService.getAll());
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
@@ -124,6 +126,17 @@ const Properties = () => {
     }
   };
 
+  const handleBulkDelete = () => {
+    selectedIds.forEach(id => propertyService.delete(id));
+    refreshList();
+    setSelectedIds([]);
+    toast({ 
+      title: "Ação concluída", 
+      description: `${selectedIds.length} empreendimentos foram removidos.`,
+      variant: "destructive"
+    });
+  };
+
   const openEdit = (property: Property) => {
     setEditingProperty(property);
   };
@@ -180,6 +193,28 @@ const Properties = () => {
           className="rounded-3xl"
         />
       </ResponsiveGrid>
+
+      {selectedIds.length > 0 && (
+        <Card className="p-4 bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-primary text-white p-2 rounded-xl">
+              <Settings className="w-5 h-5 animate-spin-slow" />
+            </div>
+            <div>
+              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote</p>
+              <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} selecionados</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={() => setSelectedIds([])}>
+               Cancelar
+             </Button>
+             <Button variant="destructive" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={handleBulkDelete}>
+               <Trash2 className="w-4 h-4" /> Excluir permanentemente
+             </Button>
+          </div>
+        </Card>
+      )}
 
 
       <FilterBar
@@ -254,6 +289,20 @@ const Properties = () => {
         renderList={() => (
           <DataTable
             columns={[
+              {
+                header: "",
+                accessorKey: "id",
+                cell: (p) => (
+                  <Checkbox 
+                    checked={selectedIds.includes(p.id!)}
+                    onCheckedChange={(checked) => {
+                      if (checked) setSelectedIds([...selectedIds, p.id!]);
+                      else setSelectedIds(selectedIds.filter(id => id !== p.id));
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )
+              },
               { 
                 header: "Nome", 
                 accessorKey: "name",
