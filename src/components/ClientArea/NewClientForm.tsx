@@ -37,19 +37,9 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Mock property data - will be replaced with real data from API
-const mockProperties = [
-  { id: "1", name: "Edifício Aurora" },
-  { id: "2", name: "Residencial Verde Vida" },
-  { id: "3", name: "Condomínio Monte Alto" },
-];
-
-interface NewClientFormProps {
-  onSubmit?: (data: FormValues) => void;
-  onCancel?: () => void;
-}
-
 export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
+  const propertiesList = useMemo(() => propertyService.getAll(), []);
+  
   // Initialize form with validation
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
