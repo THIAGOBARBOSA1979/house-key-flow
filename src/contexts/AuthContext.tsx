@@ -30,6 +30,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Check for existing session on mount
   useEffect(() => {
     checkAuth();
+    const cleanup = securityService.initialize(() => logout());
+    return cleanup;
   }, []);
 
   const checkAuth = () => {
