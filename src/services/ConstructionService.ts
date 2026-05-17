@@ -53,7 +53,7 @@ class ConstructionService {
   createUpdate(data: Omit<ConstructionUpdate, 'id'>) {
     const newUpdate = {
       ...data,
-      id: `upd-${Math.random().toString(36).substr(2, 9)}`,
+      id: crypto.randomUUID(),
       date: data.date || new Date()
     };
     this.updates.push(newUpdate);
