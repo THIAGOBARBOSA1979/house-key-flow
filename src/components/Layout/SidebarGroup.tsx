@@ -87,6 +87,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               key={item.to}
               to={item.to}
               end={item.end}
+              onClick={onItemClick}
               className={cn(
                 "flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 group",
                 isActive 
