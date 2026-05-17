@@ -30,7 +30,6 @@ const Users = () => {
   const { toast: showToast } = useToast();
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
-  const [selectedUserForDetail, setSelectedUserForDetail] = useState<UserType | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filters, setFilters] = useState({ search: "", role: "all", status: "all", property: "all", unit: "" });
   const [userList, setUserList] = useState<UserType[]>(userService.getAll());
