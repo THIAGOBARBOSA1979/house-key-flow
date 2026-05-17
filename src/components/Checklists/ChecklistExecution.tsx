@@ -80,7 +80,7 @@ export function ChecklistExecution({
                       evidence: [
                         ...(item.evidence || []),
                         ...Array.from(files).map(f => ({ 
-                          id: `ev-${Date.now()}-${Math.random()}`, 
+                          id: `ev-${crypto.randomUUID()}`, 
                           file: f, 
                           url: URL.createObjectURL(f), 
                           timestamp: new Date() 
