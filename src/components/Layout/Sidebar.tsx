@@ -113,12 +113,12 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
       {!collapsed && (
         <div className="p-4-sem border-t border-sidebar-border animate-fade-in bg-sidebar-accent/5 mt-auto">
           <div className="flex items-center justify-between gap-3-sem">
-            <div className="flex items-center gap-3-sem min-w-0 group cursor-pointer p-1 rounded-xl hover:bg-white/5 transition-all" onClick={() => window.location.href = '/admin/profile'}>
+            <div className="flex items-center gap-3-sem min-w-0 group cursor-pointer p-1 rounded-xl hover:bg-white/5 transition-all" onClick={() => navigate('/admin/profile')}>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary/20 to-sidebar-accent flex items-center justify-center text-sidebar-primary font-black shadow-sem-sm border border-sidebar-border shrink-0 group-hover:scale-110 transition-transform">
-                A
+                {user?.name?.charAt(0) || "A"}
               </div>
               <div className="min-w-0">
-                <p className="text-sem-label font-bold text-sidebar-foreground truncate group-hover:text-primary transition-colors">Administrador</p>
+                <p className="text-sem-label font-bold text-sidebar-foreground truncate group-hover:text-primary transition-colors">{user?.name || "Administrador"}</p>
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-status-complete animate-pulse" />
                   <p className="text-sem-tiny text-sidebar-foreground/50 truncate font-black uppercase tracking-tighter">Sessão ativa</p>
@@ -129,7 +129,7 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
               variant="ghost" 
               size="icon" 
               className="text-sidebar-foreground/40 hover:text-status-critical hover:bg-status-critical/10 rounded-xl h-10 w-10 transition-all active:scale-95"
-              onClick={() => window.location.href = '/login'}
+              onClick={logout}
             >
               <LogOut size={18} />
             </Button>
