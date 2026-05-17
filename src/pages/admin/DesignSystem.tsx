@@ -64,11 +64,11 @@ const DesignSystem = () => {
     <div className="container-responsive py-8 space-y-10 animate-fade-in">
       <PageHeader
         icon={Layout}
-        title="Design System v2.5"
+        title="Design System v3.0"
         description="Arquitetura robusta de Design Tokens, componentes compartilhados de alta performance e acessibilidade garantida."
       >
         <div className="flex gap-2">
-          <Badge variant="secondary" className="h-6 font-bold">Stable v2.5.0</Badge>
+          <Badge variant="secondary" className="h-6 font-bold">Stable v3.0.0</Badge>
           <Button variant="outline" size="sm" className="h-9 rounded-lg">
             <BookOpen className="w-4 h-4 mr-2" /> Docs
           </Button>
@@ -105,7 +105,7 @@ const DesignSystem = () => {
               <p className="text-body-base text-muted-foreground leading-relaxed">
                 Nosso sistema é construído sobre uma base sólida de <strong>Design Tokens</strong>. 
                 Cada token é uma variável semântica que permite escalabilidade, consistência e fácil manutenção. 
-                O foco da v2.5 é a <strong>reutilização de padrões</strong> e <strong>consistência responsiva</strong>.
+                O foco da v3.0 é a <strong>otimização do tema escuro</strong> e <strong>refinamento da escala tipográfica</strong>.
               </p>
               
               <div className="grid md:grid-cols-2 gap-4">
@@ -205,6 +205,7 @@ const DesignSystem = () => {
               <TypographyItem label="Heading 3" className="text-sem-h3" size="24px / 1.5rem" />
               <TypographyItem label="Body Base" className="text-sem-body-base" size="16px / 1rem" />
               <TypographyItem label="Caption" className="text-sem-caption uppercase" size="12px / 0.75rem" />
+              <TypographyItem label="Tiny" className="text-sem-tiny uppercase" size="10px / 0.625rem" />
             </div>
           </section>
         </TabsContent>
