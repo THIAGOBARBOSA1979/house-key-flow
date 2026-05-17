@@ -72,6 +72,24 @@ const Technicians = () => {
     totalJobs: technicians.reduce((acc, t) => acc + t.completedJobs, 0),
   }), [technicians]);
 
+  const handleSave = (data: any) => {
+    if (editingTech) {
+      technicianService.update(editingTech.id, data);
+      toast({ title: "Técnico atualizado", description: "As informações foram salvas com sucesso." });
+    } else {
+      technicianService.create(data);
+      toast({ title: "Técnico cadastrado", description: "O novo técnico já pode ser alocado para vistorias." });
+    }
+    refreshList();
+    setIsFormOpen(false);
+    setEditingTech(null);
+  };
+
+  const handleEdit = (tech: Technician) => {
+    setEditingTech(tech);
+    setIsFormOpen(true);
+  };
+
   const handleDelete = (id: string) => {
     if (technicianService.delete(id)) {
       refreshList();
@@ -84,6 +102,13 @@ const Technicians = () => {
     technicianService.update(tech.id, { status: newStatus });
     refreshList();
     toast({ title: "Status atualizado", description: `O técnico agora está ${newStatus === 'active' ? 'ativo' : 'inativo'}.` });
+  };
+
+  const handleBulkDelete = () => {
+    selectedIds.forEach(id => technicianService.delete(id));
+    refreshList();
+    setSelectedIds([]);
+    toast({ title: "Ação concluída", description: `${selectedIds.length} técnicos foram removidos.`, variant: "destructive" });
   };
 
   return (
