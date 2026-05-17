@@ -30,23 +30,23 @@ const ClientNavLink = ({
     <NavLink 
       to={to} 
       className={({ isActive }) => 
-        cn("flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-300 group", 
-        isActive ? "bg-primary text-primary-foreground font-bold shadow-lg shadow-primary/20 scale-[1.02]" : "hover:bg-primary/10 text-foreground/70 hover:text-primary hover:translate-x-1")
+        cn("flex items-center justify-between gap-3 px-4 py-3 rounded-2xl transition-all duration-slow group", 
+        isActive ? "bg-primary text-primary-foreground font-black shadow-lg shadow-primary/30 active:scale-[0.98]" : "hover:bg-primary/5 text-muted-foreground hover:text-primary")
       } 
       {...props}
     >
       {({ isActive }) => (
         <>
           <div className="flex items-center gap-3">
-            <Icon size={18} className={cn("transition-transform group-hover:scale-110")} />
-            <span className="text-sm">{children}</span>
+            <Icon size={20} className={cn("transition-all duration-normal group-hover:scale-110", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} strokeWidth={isActive ? 2.5 : 2} />
+            <span className={cn("text-sm tracking-tight", isActive ? "font-black" : "font-semibold")}>{children}</span>
           </div>
           <div className="flex items-center gap-2">
             {isActive ? (
-              <ChevronRight size={14} className="opacity-50" />
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
             ) : (
               typeof badgeCount === 'number' && badgeCount > 0 && (
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px] font-black h-5 min-w-[20px] flex justify-center items-center">
+                <Badge variant="secondary" className="bg-status-critical text-white border-none text-[10px] font-black h-5 min-w-[20px] flex justify-center items-center shadow-sm">
                   {badgeCount}
                 </Badge>
               )
