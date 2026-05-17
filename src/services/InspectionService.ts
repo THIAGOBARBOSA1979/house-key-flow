@@ -158,6 +158,17 @@ class InspectionService {
 
   getReport(id: string) {
     const inspection = this.inspections.find(i => i.id === id);
+    if (inspection) {
+      auditLogService.log({
+        entityType: 'inspection',
+        entityId: id,
+        action: 'viewed',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Relatório de vistoria ${id} visualizado.`
+      });
+    }
     if (!inspection) return null;
     
     const progress = localStorage.getItem(`inspection_progress_${id}`);

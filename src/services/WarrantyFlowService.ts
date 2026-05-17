@@ -349,7 +349,7 @@ class WarrantyFlowService {
       if (hasUnresolved) {
         return { 
           success: false, 
-          error: "Não é possível finalizar uma solicitação com itens pendentes. Resolva todos os problemas primeiro." 
+          error: "Não é possível finalizar uma solicitação com itens pendentes no breakdown. Resolva ou cancele todos os problemas primeiro." 
         };
       }
     }
@@ -502,18 +502,20 @@ class WarrantyFlowService {
     const problemIndex = request.problems.findIndex(p => p.id === problemId);
     if (problemIndex === -1) return { success: false, error: "Problema não encontrado" };
 
-    const problems = [...request.problems];
-    const isResolving = problems[problemIndex].status !== "resolved";
+    const problem = request.problems[problemIndex];
+    const newStatus = problem.status === 'resolved' ? 'pending' : 'resolved';
     
-    problems[problemIndex] = {
-      ...problems[problemIndex],
-      status: isResolving ? "resolved" : "pending",
-      resolvedAt: isResolving ? new Date() : undefined
+    const updatedProblems = [...request.problems];
+    updatedProblems[problemIndex] = {
+      ...problem,
+      status: newStatus,
+      resolvedAt: newStatus === 'resolved' ? new Date() : undefined,
+      updatedAt: new Date()
     };
 
     const updatedRequest: WarrantyRequestFlow = {
       ...request,
-      problems,
+      problems: updatedProblems,
       updatedAt: new Date()
     };
 
@@ -525,9 +527,56 @@ class WarrantyFlowService {
       entityId: requestId,
       action: 'updated',
       performedBy: changedBy,
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Status do problema '${problems[problemIndex].description}' alterado para ${problems[problemIndex].status}`
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      details: `Item do breakdown "${problem.description}" marcado como ${newStatus === 'resolved' ? 'resolvido' : 'pendente'}.`,
+      metadata: { problemId, newStatus }
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Add a problem to a request breakdown
+   */
+  addProblemToRequest(
+    requestId: string, 
+    problemData: Partial<WarrantyProblemDetail>,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const newProblem: WarrantyProblemDetail = {
+      id: `prob-${crypto.randomUUID()}`,
+      category: problemData.category || "Geral",
+      location: problemData.location || "A definir",
+      description: problemData.description || "Novo problema identificado",
+      severity: problemData.severity || "moderate",
+      photos: [],
+      status: "pending",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...problemData
+    };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems: [...(request.problems || []), newProblem],
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'info_added',
+      performedBy: changedBy,
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      details: `Novo item adicionado ao breakdown: ${newProblem.description}`
     });
 
     return { success: true, request: updatedRequest };
@@ -545,7 +594,7 @@ class WarrantyFlowService {
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const materials = request.materials || [];
-    const newMaterial = { ...material, id: `mat-${Date.now()}` };
+    const newMaterial = { ...material, id: `mat-${crypto.randomUUID()}` };
     
     const updatedRequest: WarrantyRequestFlow = {
       ...request,
@@ -556,6 +605,16 @@ class WarrantyFlowService {
 
     this.requests.set(requestId, updatedRequest);
     this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'info_added',
+      performedBy: changedBy,
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      details: `Novo material registrado: ${newMaterial.name} (${newMaterial.quantity} ${newMaterial.unit})`
+    });
 
     return { success: true, request: updatedRequest };
   }
@@ -598,51 +657,6 @@ class WarrantyFlowService {
     return { success: true, request: updatedRequest };
   }
 
-  /**
-   * Add a new problem item to an existing request
-   */
-  addProblemToRequest(
-    requestId: string,
-    problem: Partial<WarrantyProblemDetail>,
-    changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
-    if (!request) return { success: false, error: "Solicitação não encontrada" };
-
-    const newProblem: WarrantyProblemDetail = {
-      id: `prob-${Date.now()}`,
-      category: problem.category || "Outros",
-      location: problem.location || "Não informado",
-      description: problem.description || "",
-      severity: problem.severity || "moderate",
-      photos: problem.photos || [],
-      status: "pending",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...problem
-    };
-
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      problems: [...(request.problems || []), newProblem],
-      updatedAt: new Date()
-    };
-
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
-
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: requestId,
-      action: 'updated',
-      performedBy: changedBy,
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Novo item adicionado: ${newProblem.description}`
-    });
-
-    return { success: true, request: updatedRequest };
-  }
 
   /**
    * Update problem details
@@ -1070,7 +1084,7 @@ class WarrantyFlowService {
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newUpdate = {
-      id: `upd-${Date.now()}`,
+      id: `upd-${crypto.randomUUID()}`,
       date: new Date(),
       author: authorName,
       text: text
