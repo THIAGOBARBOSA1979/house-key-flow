@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
+import { TechnicalReportDialog } from "@/components/Warranty/TechnicalReportDialog";
+import { Printer } from "lucide-react";
 
 const TECHNICIANS = [
   { id: "tech-1", name: "Carlos Técnico" },
