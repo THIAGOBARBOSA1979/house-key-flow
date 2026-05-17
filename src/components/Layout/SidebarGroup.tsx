@@ -17,9 +17,10 @@ interface SidebarGroupProps {
   items: SidebarItem[];
   defaultOpen?: boolean;
   collapsed?: boolean;
+  onItemClick?: () => void;
 }
 
-export function SidebarGroup({ title, items, defaultOpen = true, collapsed = false }: SidebarGroupProps) {
+export function SidebarGroup({ title, items, defaultOpen = true, collapsed = false, onItemClick }: SidebarGroupProps) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(defaultOpen);
   
