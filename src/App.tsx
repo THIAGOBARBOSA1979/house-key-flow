@@ -160,6 +160,11 @@ const App = () => {
                     <AppLayout><Announcements /></AppLayout>
                   </ProtectedRoute>
                 } />
+                <Route path="/admin/technicians" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><Technicians /></AppLayout>
+                  </ProtectedRoute>
+                } />
 
 
 
