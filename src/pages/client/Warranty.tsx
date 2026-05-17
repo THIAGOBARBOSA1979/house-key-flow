@@ -176,7 +176,7 @@ const ClientWarranty = () => {
   const [commentText, setCommentText] = useState("");
   const [surveyDone, setSurveyDone] = useState<Record<string, boolean>>({});
   const { user } = useAuth();
-  const allClaims = useMemo(() => warrantyFlowService.getClientRequests(user?.id || "client-1"), [user?.id]);
+  const allClaims = useMemo(() => warrantyFlowService.getClientRequests(user?.id || "client-1").sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()), [user?.id]);
   const [claims, setClaims] = useState<any[]>(allClaims);
   const { toast } = useToast();
   
