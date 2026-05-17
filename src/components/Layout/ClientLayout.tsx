@@ -1,7 +1,7 @@
 import { Outlet, Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign, HelpCircle, ChevronRight } from "lucide-react";
+import { Home, ClipboardCheck, ShieldCheck, Building, LogOut, Menu, X, User, Bell, MessageSquare, FileText, CalendarDays, DollarSign, HelpCircle, ChevronRight, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
