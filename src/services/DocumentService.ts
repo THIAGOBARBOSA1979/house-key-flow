@@ -379,11 +379,31 @@ class DocumentService {
         status: 'trash', 
         deletedAt: new Date() 
       });
+      
+      auditLogService.log({
+        entityType: 'document',
+        entityId: id,
+        action: 'deleted',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Documento "${doc.title}" movido para a lixeira.`
+      });
       return true;
     }
 
     this.documents.splice(index, 1);
     this.persist();
+    
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'deleted',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento "${doc.title}" removido permanentemente.`
+    });
     return true;
   }
 
@@ -462,6 +482,16 @@ class DocumentService {
     this.updateDocument(id, { 
       status: 'published',
       deletedAt: undefined 
+    });
+
+    auditLogService.log({
+      entityType: 'document',
+      entityId: id,
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Documento "${doc.title}" restaurado da lixeira.`
     });
     return true;
   }

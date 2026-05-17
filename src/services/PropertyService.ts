@@ -142,22 +142,52 @@ class PropertyService {
     const property = this.getById(propertyId);
     if (!property || !property.milestones) return undefined;
 
+    const milestone = property.milestones.find(m => m.id === milestoneId);
     const milestones = property.milestones.map(m => 
       m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
     );
 
-    return this.update(propertyId, { milestones });
+    const updated = this.update(propertyId, { milestones });
+    
+    if (updated && milestone) {
+      auditLogService.log({
+        entityType: 'property',
+        entityId: propertyId,
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`
+      });
+    }
+
+    return updated;
   }
 
   updateUnitStatus(propertyId: string, unitId: string, status: PropertyUnit['status']): Property | undefined {
     const property = this.getById(propertyId);
     if (!property || !property.unitsList) return undefined;
 
+    const unit = property.unitsList.find(u => u.id === unitId);
     const unitsList = property.unitsList.map(u => 
       u.id === unitId ? { ...u, status } : u
     );
 
-    return this.update(propertyId, { unitsList });
+    const updated = this.update(propertyId, { unitsList });
+
+    if (updated && unit) {
+      auditLogService.log({
+        entityType: 'property',
+        entityId: propertyId,
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Status da unidade ${unit.number} do empreendimento ${property.name} alterado para ${status}.`
+      });
+    }
+
+    return updated;
   }
 
   update(id: string, property: Partial<Property>): Property | undefined {

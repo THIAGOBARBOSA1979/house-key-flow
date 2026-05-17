@@ -20,7 +20,30 @@ export interface FinancialSummary {
 
 class FinancialService {
   private installments: Installment[] = [
-    // ... keep existing code
+    {
+      id: 'inst-1',
+      number: 1,
+      dueDate: new Date(2024, 4, 15),
+      value: 2500,
+      status: 'paid',
+      type: 'monthly'
+    },
+    {
+      id: 'inst-2',
+      number: 2,
+      dueDate: new Date(2024, 5, 15),
+      value: 2500,
+      status: 'paid',
+      type: 'monthly'
+    },
+    {
+      id: 'inst-3',
+      number: 3,
+      dueDate: new Date(2024, 6, 15),
+      value: 2500,
+      status: 'pending',
+      type: 'monthly'
+    },
     {
       id: 'inst-7',
       number: 1,
@@ -38,6 +61,31 @@ class FinancialService {
       type: 'delivery'
     }
   ];
+
+  private storageKey = "a2_financial_data";
+
+  constructor() {
+    this.loadFromStorage();
+  }
+
+  private loadFromStorage() {
+    const stored = localStorage.getItem(this.storageKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        this.installments = parsed.map((i: any) => ({
+          ...i,
+          dueDate: new Date(i.dueDate)
+        }));
+      } catch (e) {
+        console.error("Erro ao carregar dados financeiros", e);
+      }
+    }
+  }
+
+  private saveToStorage() {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.installments));
+  }
 
   getInstallmentsByClient(clientId: string): Installment[] {
     return this.installments;
@@ -60,16 +108,27 @@ class FinancialService {
       paidValue,
       balanceDue,
       nextPayment,
-      progress: (paidValue / totalValue) * 100
+      progress: totalValue > 0 ? (paidValue / totalValue) * 100 : 0
     };
   }
 
   getGlobalMetrics() {
-    const installments = this.installments;
+    const totalPaid = this.installments
+      .filter(i => i.status === 'paid')
+      .reduce((acc, i) => acc + i.value, 0);
+    
+    const totalPending = this.installments
+      .filter(i => i.status === 'pending')
+      .reduce((acc, i) => acc + i.value, 0);
+
+    const totalOverdue = this.installments
+      .filter(i => i.status === 'overdue')
+      .reduce((acc, i) => acc + i.value, 0);
+
     return {
-      totalReceivable: 12500000,
-      totalPaid: 8450000,
-      totalOverdue: 125000,
+      totalReceivable: totalPaid + totalPending + totalOverdue,
+      totalPaid: 8450000 + totalPaid, // Simulation base + data
+      totalOverdue: 125000 + totalOverdue,
       collectionEfficiency: 98.5,
       billingGroups: [
         { id: "bg1", name: "Edifício Aurora - Mensalidades", propertyId: "1", total: 450000, count: 120 },
@@ -97,7 +156,12 @@ class FinancialService {
   }
 
   processPayment(transactionId: string) {
-    // In a real app, this would update the database
+    const installment = this.installments.find(i => i.id === transactionId);
+    if (installment) {
+      installment.status = 'paid';
+      this.saveToStorage();
+    }
+    
     auditLogService.log({
       entityType: 'financial',
       entityId: transactionId,

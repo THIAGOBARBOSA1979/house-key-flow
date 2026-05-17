@@ -65,7 +65,7 @@ const Support = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    supportService.createTicket(clientId, formState);
+    supportService.createTicket(clientId, user?.name || "Cliente", formState);
     setTickets(supportService.getTicketsByClient(clientId));
     toast({
       title: "Solicitação enviada",
@@ -282,13 +282,15 @@ const Support = () => {
                         <h4 className="font-black text-sm group-hover:text-primary transition-colors">{ticket.subject}</h4>
                         {ticket.priority === 'urgent' && <Badge variant="destructive" className="h-4 text-[8px] px-1 animate-pulse">URGENTE</Badge>}
                       </div>
-                      <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed font-medium">{ticket.message}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed font-medium">
+                        {ticket.messages[0]?.text}
+                      </p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">{ticket.createdAt.toLocaleDateString('pt-BR')}</p>
-                          {ticket.attachments && ticket.attachments.length > 0 && (
+                          {ticket.messages[0]?.attachments && ticket.messages[0].attachments.length > 0 && (
                              <span className="text-[10px] text-primary font-black uppercase flex items-center gap-1">
-                               <ExternalLink className="h-3 w-3" /> {ticket.attachments.length} Anexos
+                               <ExternalLink className="h-3 w-3" /> {ticket.messages[0].attachments.length} Anexos
                              </span>
                           )}
                         </div>

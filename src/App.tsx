@@ -31,6 +31,7 @@ import AuditLogs from "./pages/admin/AuditLogs";
 import FinancialDashboard from "./pages/admin/FinancialDashboard";
 import Announcements from "./pages/admin/Announcements";
 import Technicians from "./pages/Technicians";
+import AdminSupport from "./pages/admin/Support";
 
 
 
@@ -163,6 +164,11 @@ const App = () => {
                 <Route path="/admin/technicians" element={
                   <ProtectedRoute requiredRole="admin">
                     <AppLayout><Technicians /></AppLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/support" element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AppLayout><AdminSupport /></AppLayout>
                   </ProtectedRoute>
                 } />
 
