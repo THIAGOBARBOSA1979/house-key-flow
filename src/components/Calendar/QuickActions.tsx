@@ -94,10 +94,11 @@ export const QuickActions = ({
         />
         <StatsCard 
           label="SLA Médio" 
-          value={sla} 
+          value={sla.avgDeliveryTime} 
           icon={Clock} 
           variant="brand" 
-          description="Tempo médio de resposta"
+          description={`Contato: ${sla.avgFirstContact}`}
+          className="rounded-3xl"
         />
       </div>
 
