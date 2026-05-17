@@ -122,49 +122,54 @@ const ClientProperties = () => {
       </div>
 
       {/* Hero Property Card */}
-      <Card className="bg-white border-none shadow-xl overflow-hidden rounded-3xl group">
-        <div className="flex flex-col lg:flex-row">
-          <div className="lg:w-1/2 relative h-[300px] lg:h-auto overflow-hidden">
+      <Card className="bg-white border-none shadow-2xl overflow-hidden rounded-[2.5rem] group border border-border/10">
+        <div className="flex flex-col lg:flex-row min-h-[500px]">
+          <div className="lg:w-1/2 relative h-[350px] lg:h-auto overflow-hidden">
              <img 
                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80" 
                alt="Property facade"
-               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+               className="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105"
              />
-             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-             <div className="absolute bottom-6 left-6 text-white">
-                <h2 className="text-2xl font-black tracking-tight">{propertyData?.name || "Edifício Aurora"}</h2>
-                <div className="flex items-center gap-2 mt-2 text-white/80">
-                  <MapPin size={16} />
-                  <span className="text-sm font-bold uppercase tracking-wider">{propertyDetails.address}</span>
+             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+             <div className="absolute bottom-10 left-10 text-white">
+                <Badge className="bg-primary border-none font-black text-[10px] uppercase mb-4 shadow-lg shadow-primary/20">Imóvel A2 Exclusive</Badge>
+                <h2 className="text-4xl font-black tracking-tight leading-tight">{propertyData?.name || "Edifício Aurora"}</h2>
+                <div className="flex items-center gap-3 mt-4 text-white/80 font-bold bg-white/10 backdrop-blur-md w-fit px-4 py-2 rounded-full border border-white/20">
+                  <MapPin size={18} className="text-primary" />
+                  <span className="text-sm tracking-wide">{propertyDetails.address}</span>
                 </div>
              </div>
           </div>
-          <div className="lg:w-1/2 p-8 lg:p-12 space-y-8">
-            <div className="grid grid-cols-2 gap-8">
+          <div className="lg:w-1/2 p-10 lg:p-14 flex flex-col justify-between">
+            <div className="grid grid-cols-2 gap-x-10 gap-y-12">
                {specifications.map((spec, i) => {
                  const Icon = spec.icon;
                  return (
-                   <div key={i} className="space-y-2">
-                     <div className="flex items-center gap-2 text-muted-foreground">
-                        <Icon size={16} className="text-primary" />
-                        <span className="text-[10px] font-black uppercase tracking-widest">{spec.label}</span>
+                   <div key={i} className="space-y-3 group/spec">
+                     <div className="flex items-center gap-2 text-muted-foreground/60">
+                        <div className="p-2 bg-primary/5 rounded-xl text-primary group-hover/spec:bg-primary group-hover/spec:text-white transition-all duration-300 shadow-sm">
+                           <Icon size={16} />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">{spec.label}</span>
                      </div>
-                     <p className="text-lg font-black tracking-tight">{spec.value}</p>
+                     <p className="text-2xl font-black tracking-tight text-foreground/90">{spec.value}</p>
                    </div>
                  );
                })}
             </div>
-            <Separator className="opacity-50" />
-            <div className="flex items-center justify-between">
+            
+            <div className="pt-12 mt-12 border-t border-border/10 flex items-center justify-between">
                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Status de Entrega</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mb-2">Certificação Técnica</p>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-500" />
-                    <span className="font-black text-foreground">Imóvel Entregue</span>
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                       <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <span className="font-black text-foreground/80">Imóvel Aprovado & Entregue</span>
                   </div>
                </div>
-               <Button className="font-black uppercase tracking-widest text-[10px] h-12 px-8 rounded-2xl shadow-lg shadow-primary/20">
-                 Baixar Ficha Técnica
+               <Button className="font-black uppercase tracking-widest text-[11px] h-14 px-10 rounded-2xl shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-all active:scale-95">
+                 <Download className="mr-2 h-4 w-4" /> Baixar Dossier Completo
                </Button>
             </div>
           </div>
