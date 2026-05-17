@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { userService } from "@/services/UserService";
+import { propertyService } from "@/services/PropertyService";
 
 // Form schema with validation
 const formSchema = z.object({
