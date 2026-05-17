@@ -15,7 +15,8 @@ import {
   Star,
   CheckCircle2,
   Clock,
-  Briefcase
+  Briefcase,
+  Settings
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -35,11 +36,21 @@ import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { cn } from "@/lib/utils";
 import { exportService } from "@/services/ExportService";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { TechnicianForm } from "@/components/Admin/TechnicianForm";
 
 const Technicians = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [technicians, setTechnicians] = useState<Technician[]>(technicianService.getAll());
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingTech, setEditingTech] = useState<Technician | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const refreshList = () => {
     setTechnicians(technicianService.getAll());
