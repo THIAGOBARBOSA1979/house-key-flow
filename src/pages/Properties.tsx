@@ -63,6 +63,7 @@ const Properties = () => {
   const [managerFilter, setManagerFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list" | "timeline">("grid");
   const [properties, setProperties] = useState<Property[]>(propertyService.getAll());
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
