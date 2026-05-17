@@ -6,12 +6,35 @@ import { Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search, User, Shield, ChevronLeft, ChevronRight, Download, Activity, Filter, RotateCcw, Maximize2 } from "lucide-react";
+import { 
+  Search, 
+  User, 
+  Shield, 
+  ChevronLeft, 
+  ChevronRight, 
+  Download, 
+  Activity, 
+  Filter, 
+  RotateCcw, 
+  Maximize2,
+  Database,
+  Calendar,
+  Clock as ClockIcon,
+  Tag
+} from "lucide-react";
 import { isValid } from "date-fns";
 import { cn, safeFormat } from "@/lib/utils";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services/AuditLogService";
 import { exportService } from "@/services/ExportService";
 import { DataTable } from "@/components/shared/DataTable";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AuditLogViewerProps {
   entityType?: AuditEntityType;
