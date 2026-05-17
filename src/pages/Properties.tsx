@@ -289,6 +289,20 @@ const Properties = () => {
         renderList={() => (
           <DataTable
             columns={[
+              {
+                header: "",
+                accessorKey: "id",
+                cell: (p) => (
+                  <Checkbox 
+                    checked={selectedIds.includes(p.id!)}
+                    onCheckedChange={(checked) => {
+                      if (checked) setSelectedIds([...selectedIds, p.id!]);
+                      else setSelectedIds(selectedIds.filter(id => id !== p.id));
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )
+              },
               { 
                 header: "Nome", 
                 accessorKey: "name",
