@@ -45,6 +45,7 @@ const managementItems = [
   { to: "/admin/client-area", icon: User, label: "Área do Cliente" },
   { to: "/admin/documents", icon: FileText, label: "Documentos" },
   { to: "/admin/users", icon: Users, label: "Usuários" },
+  { to: "/admin/technicians", icon: Wrench, label: "Técnicos" },
 ];
 
 
