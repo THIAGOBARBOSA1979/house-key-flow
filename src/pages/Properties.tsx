@@ -187,8 +187,8 @@ const Properties = () => {
       >
         <div className="flex flex-wrap items-center gap-3">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-[190px] rounded-xl h-11 bg-background shadow-sem-sm">
-              <SelectValue placeholder="Filtrar por Status" />
+            <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
               <SelectItem value="all" className="rounded-lg font-medium">Todos os status</SelectItem>
@@ -198,21 +198,37 @@ const Properties = () => {
             </SelectContent>
           </Select>
 
-          {(searchTerm || statusFilter !== "all") && (
+          <Select value={managerFilter} onValueChange={setManagerFilter}>
+            <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
+              <SelectValue placeholder="Gerente" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
+              <SelectItem value="all" className="rounded-lg font-medium">Todos Gerentes</SelectItem>
+              {Array.from(new Set(properties.map(p => p.manager).filter(Boolean))).map(manager => (
+                <SelectItem key={manager} value={manager!} className="rounded-lg font-medium">{manager}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {(searchTerm || statusFilter !== "all" || managerFilter !== "all") && (
             <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground h-11 rounded-xl px-4 font-bold uppercase text-[10px] tracking-widest">
               <FilterX className="h-4 w-4 mr-2" /> Limpar Filtros
             </Button>
           )}
 
-          <div className="h-8 w-px bg-border/40 mx-2 hidden md:block" />
+          <div className="h-8 w-px bg-border/40 mx-2 hidden lg:block" />
 
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} className="hidden md:flex bg-muted/40 p-1.5 rounded-2xl shadow-inner shrink-0">
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="hidden md:flex bg-muted/40 p-1.5 rounded-2xl shadow-inner shrink-0">
             <TabsList className="bg-transparent border-none h-9 gap-1">
               <TabsTrigger value="grid" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
                 <LayoutGrid className="h-4 w-4" />
               </TabsTrigger>
               <TabsTrigger value="list" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
                 <List className="h-4 w-4" />
+              </TabsTrigger>
+              <TabsTrigger value="timeline" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all px-3 gap-2">
+                <BarChart3 className="h-4 w-4" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Timeline</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
