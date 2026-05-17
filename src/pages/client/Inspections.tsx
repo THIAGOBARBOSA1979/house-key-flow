@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock, Info, TrendingUp, AlertTriangle } from "lucide-react";
+import { Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, FileText, Lock, Info, TrendingUp, AlertTriangle, Activity, History, ArrowRight } from "lucide-react";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Badge } from "@/components/ui/badge";
