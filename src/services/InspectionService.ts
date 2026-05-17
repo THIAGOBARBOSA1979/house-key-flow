@@ -47,7 +47,7 @@ export interface Technician {
 class InspectionService {
   private inspections: Inspection[] = [
     { 
-      id: "1", 
+      id: crypto.randomUUID(), 
       property: "Edifício Aurora", 
       unit: "101", 
       client: "João Silva", 
@@ -59,7 +59,7 @@ class InspectionService {
       createdAt: new Date(Date.now() - 86400000 * 2)
     },
     { 
-      id: "2", 
+      id: crypto.randomUUID(), 
       property: "Residencial Bosque Verde", 
       unit: "302", 
       client: "Maria Santos", 
