@@ -46,6 +46,23 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
     await checklistService.archiveTemplate(id);
   };
 
+  const handleBulkArchive = async () => {
+    for (const id of selectedIds) {
+      await checklistService.archiveTemplate(id);
+    }
+    setSelectedIds([]);
+  };
+
+  const handleBulkExport = () => {
+    const selectedTemplates = templates.filter(t => selectedIds.includes(t.id));
+    exportService.exportToCSV(selectedTemplates, "checklists_selecionados");
+    setSelectedIds([]);
+  };
+
+  const handleSelect = (id: string) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-slow">
       {/* Header com busca e filtros */}
