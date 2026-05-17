@@ -11,6 +11,7 @@ import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { Badge } from "@/components/ui/badge";
 
 import { 
   Select, 
