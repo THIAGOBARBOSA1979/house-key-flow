@@ -122,7 +122,7 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Button>
             </div>
-            <ResponsiveGrid columns={2} gap="layout">
+            <ResponsiveGrid columns={2} mobileCols={1} gap="layout">
               {properties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
