@@ -58,7 +58,8 @@ const Properties = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [managerFilter, setManagerFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "timeline">("grid");
   const [properties, setProperties] = useState<Property[]>(propertyService.getAll());
   
   const [isFormOpen, setIsFormOpen] = useState(false);
