@@ -43,7 +43,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-slow">
       {/* Header com busca e filtros */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
