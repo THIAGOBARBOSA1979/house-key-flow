@@ -63,9 +63,14 @@ const systemItems = [
 function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between h-header-height px-4 border-b border-sidebar-border">
+      <div className="flex items-center justify-between h-header-height px-5 border-b border-sidebar-border">
         {!collapsed && (
-          <h1 className="text-h3 font-bold text-sidebar-foreground truncate">A2 Imobiliária</h1>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center shadow-sem-md">
+               <Building className="text-sidebar-primary-foreground h-5 w-5" />
+            </div>
+            <h1 className="text-h4 font-black text-sidebar-foreground tracking-tighter">A2 GESTÃO</h1>
+          </div>
         )}
         {onToggleCollapse && (
           <Button 
@@ -152,8 +157,8 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
         <SheetTrigger asChild>
           <Button 
             size="icon" 
-            variant="outline" 
-            className="fixed left-4 top-4 z-modal lg:hidden shadow-sem-md bg-background"
+            variant="ghost" 
+            className="fixed left-2 top-2 z-modal lg:hidden shadow-none bg-transparent hover:bg-primary/5 text-primary"
           >
             <Menu size={20} />
           </Button>

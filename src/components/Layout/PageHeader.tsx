@@ -28,15 +28,15 @@ export function PageHeader({
         </div>
       )}
       
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 py-4 px-1">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 py-2 px-1">
         <div className="space-y-3 max-w-2xl">
           <div className="flex items-center gap-5">
             {Icon && (
-              <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 shadow-sem-md animate-in zoom-in duration-700">
+              <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 shadow-sem-sm animate-in zoom-in duration-700">
                 <Icon className="h-7 w-7 text-primary" strokeWidth={2.5} />
               </div>
             )}
-            <h1 className="text-sem-display tracking-tighter font-black text-gradient leading-[1] text-3xl md:text-4xl lg:text-5xl">
+            <h1 className="text-sem-h1 tracking-tighter font-black text-gradient leading-[1.1] text-2xl md:text-3xl lg:text-4xl">
               {title}
             </h1>
           </div>
