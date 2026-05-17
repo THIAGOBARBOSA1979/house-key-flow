@@ -9,10 +9,13 @@ import {
   WARRANTY_STAGES,
   STAGE_ORDER,
   FINAL_STAGES,
-  isValidTransition,
   isFinalStage,
+  isValidTransition,
   DEFAULT_SLA_CONFIGS,
-  WarrantyProblemDetail
+  WarrantyProblemDetail,
+  WARRANTY_STAGES,
+  STAGE_ORDER,
+  FINAL_STAGES
 } from '@/types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService } from './AuditLogService';
