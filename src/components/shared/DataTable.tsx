@@ -92,7 +92,7 @@ export function DataTable<T>({
                   {column.sortable ? (
                     <Button 
                       variant="ghost" 
-                      onClick={() => handleSort(column.accessorKey)}
+                      onClick={() => handleSort(column.accessorKey as string)}
                       className="h-auto p-0 hover:bg-transparent font-black text-sem-tiny uppercase tracking-widest text-muted-foreground flex items-center gap-1"
                     >
                       {column.header}
