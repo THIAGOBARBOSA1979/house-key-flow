@@ -368,7 +368,7 @@ const Properties = () => {
                 )
               }
             ]}
-            data={filteredProperties}
+            data={items}
             onRowClick={(p) => setSelectedProperty(p)}
           />
         )}
