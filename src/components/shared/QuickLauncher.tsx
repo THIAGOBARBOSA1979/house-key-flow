@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { 
   Zap, 
   Search, 
@@ -120,11 +120,11 @@ export const QuickLauncher = () => {
     action.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAction = (path: string) => {
+  const handleAction = useCallback((path: string) => {
     navigate(path);
     setIsOpen(false);
     setSearch("");
-  };
+  }, [navigate]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -155,9 +155,6 @@ export const QuickLauncher = () => {
     setSelectedIndex(0);
   }, [search]);
 
-  // Remove original declarations since they are now above useEffect
-  // ... keep existing code
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -171,7 +168,7 @@ export const QuickLauncher = () => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
+      <DialogContent className="w-[95vw] sm:max-w-[600px] p-0 overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
         <DialogHeader className="p-8 border-b border-border/10 bg-primary/5">
           <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
             <Zap className="text-primary h-6 w-6" />
@@ -200,7 +197,7 @@ export const QuickLauncher = () => {
                     onClick={() => handleAction(action.path)}
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={cn(
-                      "flex items-center justify-between p-4 rounded-2xl group transition-all text-left border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+                      "flex items-center justify-between p-3 sm:p-4 rounded-2xl group transition-all text-left border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 touch-manipulation",
                       isSelected 
                         ? "bg-primary/10 border-primary/20 scale-[1.01]" 
                         : "hover:bg-primary/5 border-transparent hover:border-primary/10"

@@ -45,7 +45,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
-  const sidebarWidthClass = sidebarCollapsed ? "pl-sidebar-collapsed-width" : "pl-sidebar-width";
+  const sidebarWidthClass = sidebarCollapsed ? "md:pl-sidebar-collapsed-width" : "md:pl-sidebar-width";
 
   // Global search logic
   const searchResults = useMemo(() => {
@@ -248,7 +248,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         
         {/* Main Content Area */}
         <main 
-          className="flex-1 p-4 md:p-8 transition-all duration-slow"
+          className="flex-1 p-[var(--content-padding)] transition-all duration-slow overflow-x-hidden"
         >
           <div className="container-responsive animate-in fade-in slide-in-from-bottom-4 duration-slower">
             {children || <Outlet />}

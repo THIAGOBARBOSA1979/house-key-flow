@@ -50,7 +50,7 @@ export function KanbanCard({
     <Card
       onClick={onClick}
       className={cn(
-        "p-4 cursor-pointer transition-all border-l-4 relative rounded-xl bg-card",
+        "p-4 cursor-pointer transition-all border-l-4 relative rounded-xl bg-card interactive-active select-none touch-manipulation",
         slaBorderColors[slaInfo.status],
         isDragging && "shadow-2xl scale-[1.02] -rotate-1 opacity-100 z-50 ring-2 ring-primary/20",
         !isDragging && "hover:shadow-md hover:-translate-y-0.5",
@@ -131,8 +131,8 @@ export function KanbanCard({
         </div>
       )}
 
-      {/* SLA and assignment */}
-      <div className="flex items-center justify-between mt-2 pt-2 border-t">
+      {/* SLA and assignment - enhanced touch target */}
+      <div className="flex items-center justify-between mt-2 pt-2 border-t min-h-[40px]">
         <SLABadge 
           status={slaInfo.status} 
           hoursRemaining={slaInfo.hoursRemaining} 

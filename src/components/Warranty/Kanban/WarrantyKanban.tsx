@@ -433,8 +433,8 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       
       {/* Main View Area */}
       {viewMode === "kanban" ? (
-        <ScrollArea className="w-full whitespace-nowrap rounded-xl">
-          <div className="flex gap-6 pb-6 min-h-[600px] p-1">
+        <ScrollArea className="w-full whitespace-nowrap rounded-xl touch-pan-x">
+          <div className="flex gap-4 sm:gap-6 pb-6 min-h-[600px] p-1">
             {KANBAN_COLUMNS.map(stage => (
               <KanbanColumn
                 key={stage}
@@ -496,8 +496,11 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
           }
         }}
       >
-        <DialogContent className={cn(transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1 && "sm:max-w-[600px]")}>
-          <DialogHeader>
+        <DialogContent className={cn(
+          "w-[95vw] sm:max-w-lg p-0 overflow-hidden rounded-[1.5rem] sm:rounded-2xl border-none shadow-sem-xl",
+          transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1 && "sm:max-w-[600px]"
+        )}>
+          <DialogHeader className="p-4 sm:p-6 pb-0">
             <DialogTitle>
               {transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1
                 ? "Agendar Vistoria para Mudança de Status" 
@@ -508,7 +511,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
             </DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4">
+          <div className="p-4 sm:p-6 space-y-4">
             {transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1 ? (
               <div className="py-2">
                 {/* Reusing existing scheduling form */}

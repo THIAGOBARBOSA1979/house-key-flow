@@ -76,8 +76,9 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn("w-full animate-fade-in overflow-hidden", className)}>
-      <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm overflow-x-auto bg-card/40 backdrop-blur-sm">
+    <div className={cn("w-full animate-fade-in", className)}>
+      <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm bg-card/40 backdrop-blur-sm overflow-hidden">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader className="bg-muted/10">
             <TableRow className="hover:bg-transparent border-b-border/40">
@@ -130,13 +131,14 @@ export function DataTable<T>({
             ))}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-layout-gap md:hidden">
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-6-sem space-y-5-sem interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20 focus-within:ring-2 focus-within:ring-primary/40 outline-none"
+            className="card-standard p-4 md:p-6-sem space-y-4 md:space-y-5-sem interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20 focus-within:ring-2 focus-within:ring-primary/40 outline-none"
             onClick={() => onRowClick?.(item)}
             tabIndex={onRowClick ? 0 : -1}
             onKeyDown={(e) => {
@@ -148,13 +150,13 @@ export function DataTable<T>({
           >
             {columns.map((column, colIdx) => (
               <div key={colIdx} className={cn(
-                "flex justify-between items-center gap-4-sem pb-3-sem border-b border-border/10 last:border-0 last:pb-0",
+                "flex justify-between items-start gap-4-sem pb-3-sem border-b border-border/10 last:border-0 last:pb-0",
                 column.hideOnMobile && "hidden"
               )}>
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 shrink-0">
+                <span className="text-sem-tiny uppercase tracking-widest text-muted-foreground font-black shrink-0">
                   {column.header}
                 </span>
-                <div className="text-sem-body-sm font-bold text-right">
+                <div className="text-sem-body-sm font-medium text-right text-foreground/90">
                   {column.cell 
                     ? column.cell(item) 
                     : (item[column.accessorKey as keyof T] as unknown as React.ReactNode)}

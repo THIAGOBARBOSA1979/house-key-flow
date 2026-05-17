@@ -157,7 +157,7 @@ export function BottleneckAnalysis({ metrics }: BottleneckAnalysisProps) {
         {/* Flow visualization */}
         <div className="pt-4 border-t hidden md:block">
           <p className="text-sm font-medium mb-3">Fluxo de Processamento</p>
-          <div className="flex items-center gap-1 overflow-x-auto pb-2">
+          <div className="flex items-center gap-1 overflow-x-auto pb-2 scrollbar-hide">
             {analysisData.map((data, index) => (
               <div key={data.stage} className="flex items-center">
                 <div 

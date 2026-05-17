@@ -109,7 +109,7 @@ export function SLAComplianceChart({ metrics, previousPeriodRate }: SLAComplianc
         </div>
 
         {/* Breakdown */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
           <div className="text-center p-3 rounded-lg bg-emerald-50">
             <CheckCircle2 className="h-5 w-5 text-emerald-600 mx-auto mb-1" />
             <p className="text-lg font-semibold text-emerald-700">{onTrackCount}</p>
