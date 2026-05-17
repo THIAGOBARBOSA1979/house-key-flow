@@ -1,10 +1,9 @@
-
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Sidebar } from "./Sidebar";
-import { Breadcrumbs } from "./Breadcrumbs";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Bell } from "lucide-react";
+import { LogOut, User, Bell, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
