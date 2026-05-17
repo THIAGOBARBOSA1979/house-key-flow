@@ -109,18 +109,18 @@
     --container-max-width: 80rem; /* 1280px */
 
     /* --- Typography Tokens --- */
-    --font-display: 3.75rem;  /* 60px */
-    --font-h1: 2.25rem;       /* 36px */
-    --font-h2: 1.875rem;      /* 30px */
-    --font-h3: 1.5rem;        /* 24px */
-    --font-h4: 1.25rem;       /* 20px */
-    --font-body-lg: 1.125rem; /* 18px */
-    --font-body-base: 1rem;   /* 16px */
-    --font-body-sm: 0.875rem; /* 14px */
-    --font-body-xs: 0.75rem;  /* 12px */
-    --font-label: 0.875rem;   /* 14px */
-    --font-caption: 0.75rem;  /* 12px */
-    --font-tiny: 0.625rem;    /* 10px */
+    --font-display: clamp(2.5rem, 5vw + 1rem, 3.75rem);  /* Fluid display */
+    --font-h1: clamp(1.75rem, 3vw + 1rem, 2.25rem);
+    --font-h2: clamp(1.5rem, 2vw + 1rem, 1.875rem);
+    --font-h3: clamp(1.25rem, 1.5vw + 1rem, 1.5rem);
+    --font-h4: clamp(1.125rem, 1vw + 1rem, 1.25rem);
+    --font-body-lg: 1.125rem;
+    --font-body-base: 1rem;
+    --font-body-sm: 0.875rem;
+    --font-body-xs: 0.75rem;
+    --font-label: 0.875rem;
+    --font-caption: 0.75rem;
+    --font-tiny: 0.625rem;
 
     /* --- Z-Index Tokens --- */
     --z-hide: -1;
