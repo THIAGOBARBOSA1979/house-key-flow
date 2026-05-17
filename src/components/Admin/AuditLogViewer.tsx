@@ -103,6 +103,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAction, setFilterAction] = useState<string>("all");
   const [filterRole, setFilterRole] = useState<string>("all");
+  const [filterEntityType, setFilterEntityType] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -120,7 +121,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
         log.performedByName.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesAction = filterAction === "all" || log.action === filterAction;
       const matchesRole = filterRole === "all" || log.performedByRole === filterRole;
-      return matchesSearch && matchesAction && matchesRole;
+      const matchesEntityType = filterEntityType === "all" || log.entityType === filterEntityType;
+      return matchesSearch && matchesAction && matchesRole && matchesEntityType;
     });
   }, [allLogs, searchTerm, filterAction, filterRole]);
 
@@ -158,23 +160,38 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                   onChange={e => setSearchTerm(e.target.value)}
                 />
               </div>
+              <Select value={filterEntityType} onValueChange={setFilterEntityType}>
+                <SelectTrigger className="w-full sm:w-[150px] h-11 bg-background font-bold shadow-sem-sm">
+                  <SelectValue placeholder="Entidade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas entidades</SelectItem>
+                  <SelectItem value="inspection">Vistorias</SelectItem>
+                  <SelectItem value="warranty">Garantias</SelectItem>
+                  <SelectItem value="property">Imóveis</SelectItem>
+                  <SelectItem value="document">Documentos</SelectItem>
+                  <SelectItem value="user">Usuários</SelectItem>
+                  <SelectItem value="financial">Financeiro</SelectItem>
+                  <SelectItem value="system">Sistema</SelectItem>
+                </SelectContent>
+              </Select>
               <Select value={filterAction} onValueChange={setFilterAction}>
-                <SelectTrigger className="w-full sm:w-[160px] h-11 bg-background font-bold shadow-sem-sm">
+                <SelectTrigger className="w-full sm:w-[140px] h-11 bg-background font-bold shadow-sem-sm">
                   <SelectValue placeholder="Ação" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todas as ações</SelectItem>
+                  <SelectItem value="all">Todas ações</SelectItem>
                   {Object.entries(ACTION_LABELS).map(([key, label]) => (
                     <SelectItem key={key} value={key}>{label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <Select value={filterRole} onValueChange={setFilterRole}>
-                <SelectTrigger className="w-full sm:w-[140px] h-11 bg-background font-bold shadow-sem-sm">
+                <SelectTrigger className="w-full sm:w-[130px] h-11 bg-background font-bold shadow-sem-sm">
                   <SelectValue placeholder="Perfil" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="all">Todos perfis</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
                   <SelectItem value="client">Cliente</SelectItem>
                   <SelectItem value="user">Usuário</SelectItem>

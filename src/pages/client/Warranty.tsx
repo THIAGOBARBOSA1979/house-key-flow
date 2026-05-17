@@ -441,18 +441,22 @@ const ClientWarranty = () => {
             value={claims.length} 
             icon={ShieldCheck} 
             variant="brand"
+            className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-sm"
           />
           <StatsCard 
-            label="Em Atendimento" 
-            value={claims.filter(c => c.currentStage === 'in_progress').length} 
+            label="SLA de Atendimento" 
+            value={`${warrantyFlowService.calculateMetrics().slaComplianceRate}%`} 
             icon={TrendingUp} 
             variant="progress"
+            description="Chamados dentro do prazo"
+            className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-sm"
           />
           <StatsCard 
             label="Concluídas" 
             value={claims.filter(c => c.currentStage === 'completed').length} 
             icon={CheckCircle} 
             variant="complete"
+            className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-sm"
           />
         </ResponsiveGrid>
 
