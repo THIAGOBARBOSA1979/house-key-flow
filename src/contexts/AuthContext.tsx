@@ -34,15 +34,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const checkAuth = () => {
     try {
       const storedUser = localStorage.getItem('auth_user');
-      const rememberMe = localStorage.getItem('rememberMe');
       
-      if (storedUser && rememberMe === 'true') {
-        setUser(JSON.parse(storedUser));
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser && typeof parsedUser === 'object' && parsedUser.id) {
+            setUser(parsedUser);
+          }
+        } catch (e) {
+          console.error('Falha ao processar dados de autenticação:', e);
+          localStorage.removeItem('auth_user');
+        }
       }
     } catch (error) {
-      console.error('Error checking auth:', error);
-      localStorage.removeItem('auth_user');
-      localStorage.removeItem('rememberMe');
+      console.error('Erro ao verificar autenticação:', error);
     } finally {
       setIsLoading(false);
     }
