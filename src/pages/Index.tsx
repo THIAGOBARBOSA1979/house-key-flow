@@ -24,7 +24,8 @@ import {
   Star,
   TrendingUp,
   AlertCircle,
-  FileText
+  FileText,
+  MessageSquare
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,6 +36,7 @@ import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { auditLogService } from "@/services/AuditLogService";
 import { financialService } from "@/services/FinancialService";
+import { supportService } from "@/services/SupportService";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DataTable } from "@/components/shared/DataTable";
@@ -52,6 +54,8 @@ const Dashboard = () => {
   const inspections = useMemo(() => inspectionService.getAll().slice(0, 3), []);
   const warrantyClaims = useMemo(() => warrantyFlowService.getAllRequests().slice(0, 2), []);
   const recentActivities = useMemo(() => auditLogService.getRecentLogs(5), []);
+  const recentTickets = useMemo(() => supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3), []);
+  const financialMetrics = useMemo(() => financialService.getGlobalMetrics(), []);
 
   const handleRefresh = () => {
     setLoading(true);
@@ -205,12 +209,12 @@ const Dashboard = () => {
               <Card className="card-standard border-none bg-emerald-500/5 backdrop-blur-md overflow-hidden p-6 rounded-3xl border border-emerald-500/10">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-700/60">Recebido vs Inadimplência</span>
-                  <Badge className="bg-red-500 text-white border-none font-bold">1.2% Atraso</Badge>
+                  <Badge className="bg-red-500 text-white border-none font-bold">{((financialMetrics.totalOverdue / financialMetrics.totalReceivable) * 100).toFixed(1)}% Atraso</Badge>
                 </div>
                 <div className="text-3xl font-black tracking-tighter text-emerald-700 mb-1">
-                  {formatCurrency(8450000)}
+                  {formatCurrency(financialMetrics.totalPaid)}
                 </div>
-                <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-widest">Inadimplência: {formatCurrency(125000)}</p>
+                <p className="text-xs font-bold text-emerald-600/70 uppercase tracking-widest">Inadimplência: {formatCurrency(financialMetrics.totalOverdue)}</p>
                 
                 <div className="mt-6 pt-6 border-t border-emerald-500/10 flex justify-between items-center">
                   <div className="flex items-center gap-2">
@@ -316,6 +320,48 @@ const Dashboard = () => {
             </Button>
           </section>
 
+
+          {/* Support Tickets */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-h2 flex items-center gap-2">
+                <MessageSquare size={24} className="text-primary" />
+                Atendimentos Recentes
+              </h2>
+              <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/support")}>
+                Ver todos
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+            <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-slow">
+              {recentTickets.length > 0 ? (
+                recentTickets.map((ticket) => (
+                  <div 
+                    key={ticket.id} 
+                    className="card-standard p-5 interactive-active border-none bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-primary/30 rounded-2xl shadow-sem-sm transition-all" 
+                    onClick={() => navigate("/admin/support")}
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <StatusBadge 
+                        status={ticket.status === 'pending' ? 'pending' : 'progress'} 
+                        label={ticket.status === 'pending' ? 'Aguardando' : 'Em Atendimento'}
+                        size="sm"
+                      />
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/30 px-2 py-0.5 rounded-lg">#{ticket.id.substring(0, 8)}</span>
+                    </div>
+                    <h4 className="text-label group-hover:text-primary transition-colors font-black leading-tight">{ticket.subject}</h4>
+                    <p className="text-[11px] text-muted-foreground mt-2 font-bold uppercase tracking-tighter">
+                      {ticket.messages[0]?.senderName} • {ticket.category}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 bg-muted/10 rounded-2xl border border-dashed">
+                  <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Sem atendimentos pendentes</p>
+                </div>
+              )}
+            </div>
+          </section>
 
           {/* Recent Activities Timeline */}
           <section>
