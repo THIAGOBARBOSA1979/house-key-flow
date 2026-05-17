@@ -121,7 +121,7 @@ class AuditLogService {
   log(entry: NewAuditLogEntry): AuditLogEntry {
     const newEntry: AuditLogEntry = {
       ...entry,
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       timestamp: new Date(),
     };
     this.logs.unshift(newEntry);

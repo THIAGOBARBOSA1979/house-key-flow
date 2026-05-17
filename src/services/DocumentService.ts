@@ -10,7 +10,7 @@ export interface Document {
   fileUrl?: string;
   fileName?: string;
   fileSize?: string;
-  category: "contrato" | "manual" | "relatorio" | "certificado" | "outros";
+  category: "contrato" | "manual" | "relatorio" | "certificado" | "outros" | "financeiro" | "projeto" | "legal" | "seguranca";
   folderId?: string;
   associatedTo: {
     client?: string;
@@ -123,24 +123,7 @@ class DocumentService {
       folderId: "f1",
       viewCount: 45,
       isSigned: false,
-      template: `CONTRATO DE COMPRA E VENDA - RESIDENCIAL AURORA
-
-VENDEDOR: A2 Incorporadora e Engenharia LTDA
-COMPRADOR: {{nome_cliente}}
-CPF/CNPJ: {{documento_cliente}}
-IMÓVEL: {{endereco}}
-UNIDADE: {{unidade}}
-VALOR TOTAL: {{valor}}
-FORMA DE PAGAMENTO: {{forma_pagamento}}
-
-1. OBJETO DO CONTRATO
-O presente contrato tem por objeto a promessa de compra e venda da unidade imobiliária acima descrita.
-
-2. PRAZO DE ENTREGA
-A VENDEDORA se compromete a entregar o imóvel pronto para morar até a data de {{data_entrega}}.
-
-3. DAS ASSINATURAS
-Este documento utiliza tecnologia de assinatura eletrônica com plena validade jurídica.`,
+      template: `CONTRATO DE COMPRA E VENDA - RESIDENCIAL AURORA`,
       associatedTo: { client: "João Silva", property: "Edifício Aurora", unit: "204" },
       visible: true,
       createdAt: new Date(2025, 4, 10),
@@ -155,123 +138,42 @@ Este documento utiliza tecnologia de assinatura eletrônica com plena validade j
       description: "Contrato principal de aquisição da unidade 204",
       createdBy: "Admin",
       approvedBy: "Diretoria",
-      approvedAt: new Date(2025, 4, 10),
-      signatures: [
-        {
-          id: "sig-1",
-          name: "João Silva",
-          email: "joao.silva@exemplo.com",
-          role: "Comprador",
-          status: "pending",
-          confirmationMethod: "email",
-          order: 1
-        },
-        {
-          id: "sig-2",
-          name: "Ricardo Mendes",
-          email: "ricardo@a2empreendimentos.com",
-          role: "Representante A2",
-          status: "signed",
-          signedAt: new Date(2025, 4, 11, 14, 30),
-          ipAddress: "177.45.12.98",
-          confirmationMethod: "email",
-          order: 2,
-          documentHash: "SHA256-A8B9C10D11E12F13G14H15",
-          evidence: {
-            browser: "Chrome 124.0.0.0",
-            os: "macOS",
-            location: "São Paulo, SP"
-          }
-        }
-      ]
-    },
-    {
-      id: "2", 
-      title: "Manual do Proprietário",
-      type: "manual",
-      category: "manual",
-      folderId: "f1",
-      viewCount: 120,
-      fileUrl: "/docs/manual-proprietario.pdf",
-      fileName: "manual-proprietario.pdf",
-      fileSize: "850 KB",
-      associatedTo: { property: "Edifício Aurora" },
-      visible: true,
-      createdAt: new Date(2025, 4, 12),
-      updatedAt: new Date(2025, 4, 12),
-      downloads: 12,
-      status: "published",
-      approvalStatus: "approved",
-      tags: ["manual", "proprietário"],
-      isFavorite: true,
-      version: 2,
-      priority: "medium",
-      description: "Manual completo para proprietários",
-      createdBy: "Admin"
-    },
-    {
-      id: "3",
-      title: "Relatório de Vistoria",
-      type: "auto",
-      category: "relatorio",
-      folderId: "f2",
-      viewCount: 12,
-      template: `RELATÓRIO DE VISTORIA
-
-CLIENTE: {{nome_cliente}}
-IMÓVEL: {{endereco}}
-DATA DA VISTORIA: {{data_vistoria}}
-RESPONSÁVEL: {{responsavel_vistoria}}
-
-ITENS VERIFICADOS:
-- Estado geral do imóvel: {{estado_geral}}
-- Instalações elétricas: {{instalacoes_eletricas}}
-- Instalações hidráulicas: {{instalacoes_hidraulicas}}
-
-OBSERVAÇÕES: {{observacoes}}`,
-      associatedTo: { client: "Maria Santos", property: "Residencial Bosque", unit: "205" },
-      visible: true,
-      createdAt: new Date(2025, 4, 15),
-      updatedAt: new Date(2025, 4, 15),
-      downloads: 3,
-      status: "published",
-      approvalStatus: "pending",
-      tags: ["vistoria", "relatório"],
-      isFavorite: false,
-      version: 1,
-      priority: "low",
-      description: "Relatório detalhado de vistoria",
-      createdBy: "Inspetor",
-      expiresAt: new Date(2025, 10, 15)
+      approvedAt: new Date(2025, 4, 10)
     }
   ];
 
-  private categories: DocumentCategory[] = [
-    { id: "contrato", name: "Contratos", description: "Contratos e acordos comerciais", icon: "FileText", color: "blue" },
-    { id: "manual", name: "Manuais", description: "Manuais de uso e guias técnicos", icon: "Book", color: "green" },
-    { id: "relatorio", name: "Relatórios", description: "Relatórios e laudos de vistoria", icon: "BarChart", color: "purple" },
-    { id: "certificado", name: "Certificados", description: "Certidões, alvarás e documentos oficiais", icon: "Award", color: "orange" },
-    { id: "projeto", name: "Projetos", description: "Plantas e projetos arquitetônicos", icon: "Layout", color: "cyan" },
-    { id: "financeiro", name: "Financeiro", description: "Comprovantes e notas fiscais", icon: "DollarSign", color: "emerald" },
-    { id: "legal", name: "Documentos Legais", description: "Escrituras, alvarás e licenças municipais", icon: "Shield", color: "red" },
-    { id: "seguranca", name: "Segurança", description: "Certificados de segurança e brigada de incêndio", icon: "HardHat", color: "amber" },
-    { id: "outros", name: "Outros", description: "Outros documentos diversos", icon: "File", color: "gray" }
-  ];
+  private storageKey = "a2_documents";
 
-  private templateVariables: TemplateVariable[] = [
-    { key: "nome_cliente", label: "Nome do Cliente", description: "Nome completo do cliente", type: "text", required: true },
-    { key: "documento_cliente", label: "CPF/CNPJ", description: "Documento de identificação", type: "text", required: true },
-    { key: "endereco", label: "Endereço", description: "Endereço completo do imóvel", type: "text", required: true },
-    { key: "unidade", label: "Unidade", description: "Número da unidade/apartamento", type: "text", required: true },
-    { key: "valor", label: "Valor", description: "Valor do imóvel", type: "text", required: true },
-    { key: "forma_pagamento", label: "Forma de Pagamento", description: "Descrição das parcelas e entrada", type: "text", required: true },
-    { key: "data_entrega", label: "Data de Entrega", description: "Data prevista para entrega das chaves", type: "date", required: true },
-    { key: "data", label: "Data Atual", description: "Data de geração do documento", type: "date", required: true },
-    { key: "empreendimento", label: "Empreendimento", description: "Nome do empreendimento", type: "text", required: false }
-  ];
+  constructor() {
+    this.loadFromStorage();
+  }
+
+  private loadFromStorage() {
+    const stored = localStorage.getItem(this.storageKey);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        this.documents = parsed.map((d: any) => ({
+          ...d,
+          createdAt: new Date(d.createdAt),
+          updatedAt: new Date(d.updatedAt),
+          expiresAt: d.expiresAt ? new Date(d.expiresAt) : undefined,
+          validUntil: d.validUntil ? new Date(d.validUntil) : undefined,
+          deletedAt: d.deletedAt ? new Date(d.deletedAt) : undefined,
+          approvedAt: d.approvedAt ? new Date(d.approvedAt) : undefined,
+        }));
+      } catch (e) {
+        console.error("Failed to load documents", e);
+      }
+    }
+  }
+
+  private persist() {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.documents));
+  }
 
   getAllDocuments(): Document[] {
-    return this.documents;
+    return [...this.documents];
   }
 
   getDocumentById(id: string): Document | undefined {
@@ -302,10 +204,37 @@ OBSERVAÇÕES: {{observacoes}}`,
     );
   }
 
+  getCategories(): DocumentCategory[] {
+    return [
+      { id: "contrato", name: "Contratos", description: "Contratos e acordos comerciais", icon: "FileText", color: "blue" },
+      { id: "manual", name: "Manuais", description: "Manuais de uso e guias técnicos", icon: "Book", color: "green" },
+      { id: "relatorio", name: "Relatórios", description: "Relatórios e laudos de vistoria", icon: "BarChart", color: "purple" },
+      { id: "certificado", name: "Certificados", description: "Certidões, alvarás e documentos oficiais", icon: "Award", color: "orange" },
+      { id: "projeto", name: "Projetos", description: "Plantas e projetos arquitetônicos", icon: "Layout", color: "cyan" },
+      { id: "financeiro", name: "Financeiro", description: "Comprovantes e notas fiscais", icon: "DollarSign", color: "emerald" },
+      { id: "legal", name: "Documentos Legais", description: "Escrituras, alvarás e licenças municipais", icon: "Shield", color: "red" },
+      { id: "seguranca", name: "Segurança", description: "Certificados de segurança e brigada de incêndio", icon: "HardHat", color: "amber" },
+      { id: "outros", name: "Outros", description: "Outros documentos diversos", icon: "File", color: "gray" }
+    ];
+  }
+
+  searchDocuments(term: string, filters: any): Document[] {
+    return this.documents.filter(doc => {
+      const matchesSearch = !term || doc.title.toLowerCase().includes(term.toLowerCase()) || 
+                          doc.fileName?.toLowerCase().includes(term.toLowerCase());
+      const matchesCategory = !filters.category || doc.category === filters.category;
+      const matchesStatus = !filters.status || doc.status === filters.status;
+      const matchesPriority = !filters.priority || doc.priority === filters.priority;
+      const matchesFolder = !filters.folderId || doc.folderId === filters.folderId;
+      
+      return matchesSearch && matchesCategory && matchesStatus && matchesPriority && matchesFolder;
+    });
+  }
+
   createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus' | 'viewCount' | 'isSigned'>): Document {
     const newDocument: Document = {
       ...data,
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
       downloads: 0,
@@ -316,6 +245,7 @@ OBSERVAÇÕES: {{observacoes}}`,
     };
     
     this.documents.push(newDocument);
+    this.persist();
     auditLogService.log({
       entityType: 'document',
       entityId: newDocument.id,
@@ -325,7 +255,6 @@ OBSERVAÇÕES: {{observacoes}}`,
       performedByRole: 'admin',
       details: `Documento ${newDocument.title} criado.`
     });
-    console.log('DocumentService: Documento criado:', newDocument.title);
     return newDocument;
   }
 
@@ -343,10 +272,9 @@ OBSERVAÇÕES: {{observacoes}}`,
       version: hasContentChanges ? oldDocument.version + 1 : oldDocument.version
     };
 
-    // Criar entrada no histórico de versões se houve mudanças no conteúdo
     if (hasContentChanges) {
       const versionEntry: DocumentVersion = {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         version: oldDocument.version,
         title: oldDocument.title,
         template: oldDocument.template,
@@ -361,7 +289,7 @@ OBSERVAÇÕES: {{observacoes}}`,
       this.documents[index].versionHistory!.push(versionEntry);
     }
 
-    console.log('DocumentService: Documento atualizado:', this.documents[index].title);
+    this.persist();
     return this.documents[index];
   }
 
@@ -371,80 +299,16 @@ OBSERVAÇÕES: {{observacoes}}`,
 
     const doc = this.documents[index];
     
-    // Soft delete logic
     if (doc.status !== 'trash') {
       this.updateDocument(id, { 
         status: 'trash', 
         deletedAt: new Date() 
       });
-      
-      auditLogService.log({
-        entityType: 'document',
-        entityId: id,
-        action: 'archived',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Documento "${doc.title}" enviado para a lixeira.`
-      });
       return true;
     }
 
-    // Permanent delete if already in trash
-    console.log('DocumentService: Documento excluído permanentemente:', doc.title);
-    
-    auditLogService.log({
-      entityType: 'document',
-      entityId: id,
-      action: 'archived',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Documento "${doc.title}" foi excluído permanentemente.`
-    });
-
     this.documents.splice(index, 1);
-    return true;
-  }
-
-  restoreDocument(id: string): boolean {
-    const doc = this.getDocumentById(id);
-    if (!doc || doc.status !== 'trash') return false;
-
-    this.updateDocument(id, { 
-      status: 'published',
-      deletedAt: undefined 
-    });
-
-    auditLogService.log({
-      entityType: 'document',
-      entityId: id,
-      action: 'updated',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Documento "${doc.title}" restaurado da lixeira.`
-    });
-
-    return true;
-  }
-
-  moveDocument(id: string, folderId: string | undefined): boolean {
-    const doc = this.getDocumentById(id);
-    if (!doc) return false;
-
-    this.updateDocument(id, { folderId });
-
-    auditLogService.log({
-      entityType: 'document',
-      entityId: id,
-      action: 'updated',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Documento "${doc.title}" movido para pasta ${folderId || 'Raiz'}.`
-    });
-
+    this.persist();
     return true;
   }
 
@@ -461,16 +325,17 @@ OBSERVAÇÕES: {{observacoes}}`,
       viewCount: (doc.viewCount || 0) + 1,
       viewers 
     });
+  }
 
-    auditLogService.log({
-      entityType: 'document',
-      entityId: id,
-      action: 'updated',
-      performedBy: userId,
-      performedByName: 'Usuário',
-      performedByRole: 'admin',
-      details: `Documento "${doc.title}" visualizado.`
-    });
+  downloadDocument(id: string) {
+    const doc = this.getDocumentById(id);
+    if (doc) {
+      this.updateDocument(id, { downloads: (doc.downloads || 0) + 1 });
+    }
+  }
+
+  shareDocument(id: string): string {
+    return `${window.location.origin}/share/doc/${id}`;
   }
 
   deleteMultipleDocuments(ids: string[]): number {
@@ -498,114 +363,40 @@ OBSERVAÇÕES: {{observacoes}}`,
       performedByRole: 'admin',
       details: `Documento "${document.title}" ${!document.isFavorite ? 'marcado como favorito' : 'removido dos favoritos'}.`
     });
-    
     return true;
   }
 
-  shareDocument(id: string, email?: string): string {
-    const document = this.getDocumentById(id);
-    if (!document) throw new Error('Documento não encontrado');
-    
-    const shareLink = `https://a2-eng.lovable.app/share/doc/${id}-${uuidv4().substring(0, 8)}`;
-    
-    auditLogService.log({
-      entityType: 'document',
-      entityId: id,
-      action: 'updated',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Link de compartilhamento gerado para o documento "${document.title}"${email ? ` e enviado para ${email}` : ''}.`
-    });
-    
-    return shareLink;
-  }
-
-  getFolderStructure() {
-    // Simulação de estrutura de pastas para organização profunda
-    return [
-      { id: "root", name: "Raiz", icon: "Folder" },
-      { id: "f1", name: "Contratos", parentId: "root", icon: "FileText" },
-      { id: "f2", name: "Vistorias", parentId: "root", icon: "ClipboardCheck" },
-      { id: "f3", name: "Projetos", parentId: "root", icon: "Layout" },
-      { id: "f3-1", name: "Estrutural", parentId: "f3", icon: "Grid" },
-      { id: "f3-2", name: "Elétrico", parentId: "f3", icon: "Zap" },
-      { id: "f4", name: "Legal", parentId: "root", icon: "Shield" },
-    ];
-  }
-
   duplicateDocument(id: string): Document | null {
-    const original = this.getDocumentById(id);
-    if (!original) return null;
-
-    const duplicate = this.createDocument({
-      ...original,
-      title: `${original.title} (Cópia)`,
-      status: 'draft',
-      isFavorite: false,
-      createdBy: 'Sistema'
-    });
-
-    return duplicate;
-  }
-
-  generateDocument(documentId: string, variables: Record<string, string>): string {
-    const document = this.getDocumentById(documentId);
-    if (!document || !document.template) {
-      throw new Error('Documento ou template não encontrado');
-    }
-
-    let generatedContent = document.template;
+    const doc = this.getDocumentById(id);
+    if (!doc) return null;
     
-    // Substituir variáveis no template
-    Object.entries(variables).forEach(([key, value]) => {
-      const regex = new RegExp(`{{${key}}}`, 'g');
-      generatedContent = generatedContent.replace(regex, value);
+    const { id: _, ...data } = doc;
+    return this.createDocument({
+      ...data,
+      title: `${doc.title} (Cópia)`,
+      status: 'draft',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    } as any);
+  }
+
+  restoreDocument(id: string): boolean {
+    const doc = this.getDocumentById(id);
+    if (!doc || doc.status !== 'trash') return false;
+
+    this.updateDocument(id, { 
+      status: 'published',
+      deletedAt: undefined 
     });
-
-    // Incrementar contador de downloads
-    this.updateDocument(documentId, { downloads: document.downloads + 1 });
-
-    console.log('DocumentService: Documento gerado:', document.title);
-    return generatedContent;
+    return true;
   }
 
-  downloadDocument(documentId: string): void {
-    const document = this.getDocumentById(documentId);
-    if (!document) {
-      throw new Error('Documento não encontrado');
-    }
+  moveDocument(id: string, folderId: string | undefined): boolean {
+    const doc = this.getDocumentById(id);
+    if (!doc) return false;
 
-    // Incrementar contador de downloads
-    this.updateDocument(documentId, { downloads: document.downloads + 1 });
-
-    auditLogService.log({
-      entityType: 'document',
-      entityId: documentId,
-      action: 'downloaded',
-      performedBy: 'user-current',
-      performedByName: 'Usuário Atual',
-      performedByRole: 'admin',
-      details: `Download realizado do documento: ${document.title}`
-    });
-
-    if (document.type === 'manual' && document.fileUrl) {
-      // Simular download de arquivo usando window.document ao invés de document
-      const link = window.document.createElement('a');
-      link.href = document.fileUrl;
-      link.download = document.fileName || document.title;
-      link.click();
-    }
-
-    console.log('DocumentService: Download realizado:', document.title);
-  }
-
-  getTemplateVariables(): TemplateVariable[] {
-    return this.templateVariables;
-  }
-
-  getCategories(): DocumentCategory[] {
-    return this.categories;
+    this.updateDocument(id, { folderId });
+    return true;
   }
 
   getDocumentStats() {
@@ -614,177 +405,89 @@ OBSERVAÇÕES: {{observacoes}}`,
       published: this.documents.filter(d => d.status === 'published').length,
       draft: this.documents.filter(d => d.status === 'draft').length,
       archived: this.documents.filter(d => d.status === 'archived').length,
-      favorites: this.documents.filter(d => d.isFavorite).length,
-      expiring: this.getExpiringDocuments().length,
-      byCategory: this.categories.map(cat => ({
-        category: cat.name,
-        count: this.getDocumentsByCategory(cat.id).length
-      }))
+      expiring: this.getExpiringDocuments(30).length,
+      favorites: this.getFavoriteDocuments().length,
+      byCategory: this.documents.reduce((acc, doc) => {
+        acc[doc.category] = (acc[doc.category] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      byStatus: this.documents.reduce((acc, doc) => {
+        acc[doc.status] = (acc[doc.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>),
+      totalDownloads: this.documents.reduce((acc, doc) => acc + (doc.downloads || 0), 0),
+      totalViews: this.documents.reduce((acc, doc) => acc + (doc.viewCount || 0), 0),
     };
   }
 
-  uploadFile(file: File): Promise<string> {
-    return new Promise((resolve) => {
-      // Simular upload de arquivo
-      setTimeout(() => {
-        const fileUrl = `/uploads/${file.name}`;
-        console.log('DocumentService: Arquivo enviado:', file.name);
-        resolve(fileUrl);
-      }, 1000);
-    });
+  getFolderStructure() {
+    return [
+      { id: "f1", name: "Contratos", icon: "Folder", parentId: null },
+      { id: "f2", name: "Laudos Técnicos", icon: "Folder", parentId: null },
+      { id: "f3", name: "Projetos", icon: "Folder", parentId: null }
+    ];
   }
 
-  searchDocuments(query: string, filters?: {
-    category?: string;
-    status?: string;
-    priority?: string;
-    dateRange?: { from: Date; to: Date };
-    folderId?: string;
-  }): Document[] {
-    let filtered = this.documents;
-
-    // Filtro de busca por texto
-    if (query) {
-      const searchQuery = query.toLowerCase();
-      filtered = filtered.filter(doc => 
-        doc.title.toLowerCase().includes(searchQuery) ||
-        doc.description?.toLowerCase().includes(searchQuery) ||
-        doc.tags?.some(tag => tag.toLowerCase().includes(searchQuery))
-      );
-    }
-
-    // Aplicar filtros
-    if (filters?.category) {
-      filtered = filtered.filter(doc => doc.category === filters.category);
-    }
-    
-    if (filters?.status) {
-      filtered = filtered.filter(doc => doc.status === filters.status);
-    }
-    
-    if (filters?.priority) {
-      filtered = filtered.filter(doc => doc.priority === filters.priority);
-    }
-    
-    if (filters?.dateRange) {
-      filtered = filtered.filter(doc => 
-        doc.createdAt >= filters.dateRange!.from && 
-        doc.createdAt <= filters.dateRange!.to
-      );
-    }
-
-    if (filters?.folderId) {
-      filtered = filtered.filter(doc => doc.folderId === filters.folderId);
-    }
-
-    return filtered;
-  }
-
-  addSigner(documentId: string, signer: Omit<DocumentSignature, 'id' | 'status'>): DocumentSignature | null {
-    const doc = this.getDocumentById(documentId);
-    if (!doc) return null;
-
-    const newSignature: DocumentSignature = {
-      ...signer,
-      id: uuidv4(),
-      status: 'pending'
-    };
-
-    if (!doc.signatures) doc.signatures = [];
-    doc.signatures.push(newSignature);
-    
-    this.updateDocument(documentId, { signatures: doc.signatures });
-    
-    auditLogService.log({
-      entityType: 'document',
-      entityId: documentId,
-      action: 'updated',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Signatário ${signer.name} adicionado ao documento "${doc.title}".`
-    });
-
-    return newSignature;
-  }
-
-  signDocument(documentId: string, signerId: string, ipAddress: string, evidence?: DocumentSignature['evidence']): boolean {
-    const doc = this.getDocumentById(documentId);
-    if (!doc || !doc.signatures) return false;
-
-    // Verificar se é a vez deste signatário no fluxo sequencial
-    const signatureIndex = doc.signatures.findIndex(s => s.id === signerId);
-    if (signatureIndex === -1) return false;
-    
-    const signature = doc.signatures[signatureIndex];
-    if (signature.status !== 'pending') return false;
-
-    // Lógica para fluxo sequencial
-    if (signature.order && signature.order > 1) {
-      const previousSignatures = doc.signatures.filter(s => s.order && s.order < signature.order!);
-      const allPreviousSigned = previousSignatures.every(s => s.status === 'signed');
-      
-      if (!allPreviousSigned) {
-        console.warn('DocumentService: Signatário tentou assinar fora de ordem.');
-        return false;
-      }
-    }
-
-    signature.status = 'signed';
-    signature.signedAt = new Date();
-    signature.ipAddress = ipAddress;
-    signature.evidence = evidence;
-    
-    // Hash criptográfico simulado
-    signature.documentHash = `SHA256-${Math.random().toString(36).substring(2, 15).toUpperCase()}${Date.now().toString(36).toUpperCase()}`;
-
-    this.updateDocument(documentId, { signatures: [...doc.signatures] });
-
-    // Se todas as assinaturas foram concluídas, marcar documento como aprovado
-    const allSigned = doc.signatures.every(s => s.status === 'signed');
-    if (allSigned) {
-      this.updateDocument(documentId, { 
-        approvalStatus: 'approved', 
-        status: 'published',
-        isSigned: true,
-        signedUrl: `/signed/${doc.id}.pdf`
-      });
-    }
-
-    auditLogService.log({
-      entityType: 'document',
-      entityId: documentId,
-      action: 'updated',
-      performedBy: signature.email,
-      performedByName: signature.name,
-      performedByRole: 'client',
-      details: `Documento "${doc.title}" assinado digitalmente por ${signature.name}. Hash: ${signature.documentHash}`
-    });
-
-    return true;
-  }
-
-  rejectSignature(documentId: string, signerId: string, reason: string): boolean {
-    const doc = this.getDocumentById(documentId);
-    if (!doc || !doc.signatures) return false;
-
-    const signature = doc.signatures.find(s => s.id === signerId);
-    if (!signature || signature.status !== 'pending') return false;
-
-    signature.status = 'rejected';
-    
-    this.updateDocument(documentId, { 
-      signatures: doc.signatures,
-      approvalStatus: 'rejected',
-      approvalComment: `Assinatura recusada por ${signature.name}: ${reason}`
-    });
-
-    return true;
-  }
-
-  getSignatureHistory(documentId: string): DocumentSignature[] {
-    const doc = this.getDocumentById(documentId);
+  getSignatureHistory(id: string) {
+    const doc = this.getDocumentById(id);
     return doc?.signatures || [];
+  }
+
+  addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): DocumentSignature | null {
+    const doc = this.getDocumentById(id);
+    if (!doc) return null;
+    
+    const newSigner: DocumentSignature = {
+      ...signer,
+      id: crypto.randomUUID(),
+      status: "pending"
+    };
+    
+    const signatures = [...(doc.signatures || []), newSigner];
+    this.updateDocument(id, { signatures });
+    return newSigner;
+  }
+
+  signDocument(id: string, signerId: string, method?: string, evidence?: any) {
+    const doc = this.getDocumentById(id);
+    if (!doc || !doc.signatures) return false;
+    
+    const signatures = doc.signatures.map(s => 
+      s.id === signerId ? { 
+        ...s, 
+        status: "signed" as const, 
+        signedAt: new Date(),
+        confirmationMethod: (method as any) || s.confirmationMethod,
+        evidence: { ...s.evidence, ...evidence }
+      } : s
+    );
+    
+    const allSigned = signatures.every(s => s.status === "signed");
+    return this.updateDocument(id, { signatures, isSigned: allSigned });
+  }
+
+  rejectSignature(id: string, signerId: string, reason: string) {
+    const doc = this.getDocumentById(id);
+    if (!doc || !doc.signatures) return false;
+    
+    const signatures = doc.signatures.map(s => 
+      s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: reason } : s
+    );
+    
+    return this.updateDocument(id, { signatures });
+  }
+
+  generateDocument(templateId: string, data: any): string {
+    const doc = this.getDocumentById(templateId);
+    if (!doc || !doc.template) return "";
+    
+    let content = doc.template;
+    Object.keys(data).forEach(key => {
+      const regex = new RegExp(`{{${key}}}`, 'g');
+      content = content.replace(regex, data[key]);
+    });
+    
+    return content;
   }
 }
 

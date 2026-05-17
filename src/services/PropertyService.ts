@@ -70,7 +70,12 @@ class PropertyService {
     const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {
-        this.properties = JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        this.properties = parsed.map((p: any) => ({
+          ...p,
+          milestones: p.milestones?.map((m: any) => ({ ...m, targetDate: new Date(m.targetDate), completedAt: m.completedAt ? new Date(m.completedAt) : undefined })),
+          deliveryDate: p.deliveryDate ? new Date(p.deliveryDate) : undefined
+        }));
       } catch (e) {
         console.error("Failed to load properties from storage", e);
       }
@@ -92,7 +97,7 @@ class PropertyService {
   create(property: Omit<Property, "id">): Property {
     const newProperty = {
       ...property,
-      id: Math.random().toString(36).substr(2, 9),
+      id: crypto.randomUUID(),
     };
     this.properties.push(newProperty);
     this.persist();
@@ -106,6 +111,31 @@ class PropertyService {
       details: `Empreendimento ${newProperty.name} criado.`
     });
     return newProperty;
+  }
+
+  batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
+    const property = this.getById(propertyId);
+    if (!property) return null;
+
+    const newUnits: PropertyUnit[] = [];
+    for (let f = floorStart; f <= floorEnd; f++) {
+      for (let u = 1; u <= unitsPerFloor; u++) {
+        const unitNumber = `${prefix}${f}${u.toString().padStart(2, '0')}`;
+        newUnits.push({
+          id: crypto.randomUUID(),
+          number: unitNumber,
+          floor: f.toString(),
+          status: "available",
+          type: "Standard"
+        });
+      }
+    }
+
+    const unitsList = [...(property.unitsList || []), ...newUnits];
+    return this.update(propertyId, { 
+      unitsList,
+      units: unitsList.length 
+    });
   }
 
   updateMilestone(propertyId: string, milestoneId: string, completed: boolean): Property | undefined {
@@ -170,8 +200,8 @@ class PropertyService {
       return acc;
     }, {} as Record<string, number>);
 
-    const totalUnits = this.properties.reduce((acc, p) => acc + p.units, 0);
-    const totalCompleted = this.properties.reduce((acc, p) => acc + p.completedUnits, 0);
+    const totalUnits = this.properties.reduce((acc, p) => acc + (p.units || 0), 0);
+    const totalCompleted = this.properties.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
     
     return {
       total,
