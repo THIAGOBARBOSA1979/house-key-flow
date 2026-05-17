@@ -45,6 +45,7 @@ const Warranty = () => {
   const [activeTab, setActiveTab] = useState("kanban");
   const [selectedRequest, setSelectedRequest] = useState<WarrantyRequestFlow | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const handleExportData = () => {
     const requests = warrantyFlowService.getAllRequests();
