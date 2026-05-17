@@ -152,24 +152,30 @@ const Dashboard = () => {
   return (
     <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header with Stage Indicator */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          <h1 className="text-4xl font-black tracking-tighter text-foreground leading-tight">
             Bem-vindo, {userInfo.name}! 👋
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Acompanhe o progresso do seu imóvel e acesse seus serviços exclusivos.
-          </p>
-        </div>
-        <div className="flex flex-col md:flex-row items-end md:items-center gap-3">
-          {stage && (
-            <StageIndicator currentStage={stage} showDescription />
-          )}
-          <div className="h-10 w-px bg-border mx-2 hidden md:block" />
-          <div className="flex flex-col items-end bg-primary/5 px-4 py-2 rounded-xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-colors">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Status da Obra</span>
-            <span className="text-lg font-black text-primary leading-none">{Math.round(contractProgress)}% Concluído</span>
+          <div className="flex items-center gap-2 mt-1.5">
+             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+             <p className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest">
+               Sua jornada com a A2 Incorporadora
+             </p>
           </div>
+        </div>
+        <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
+          {stage && (
+            <StageIndicator currentStage={stage} showDescription variant="badge" />
+          )}
+          <div className="hidden md:block h-12 w-px bg-border/40 mx-2" />
+          <Card className="bg-primary/5 px-6 py-3 rounded-2xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-colors group cursor-pointer">
+            <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] mb-1.5 block">Status Geral</span>
+            <div className="flex items-center gap-3">
+               <span className="text-2xl font-black text-primary leading-none tracking-tighter">{Math.round(contractProgress)}%</span>
+               <TrendingUp size={18} className="text-primary group-hover:translate-y-[-2px] transition-transform" />
+            </div>
+          </Card>
         </div>
       </div>
 
