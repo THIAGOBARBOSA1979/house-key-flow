@@ -402,6 +402,11 @@ class DocumentService {
   getDocumentStats() {
     return {
       total: this.documents.length,
+      published: this.documents.filter(d => d.status === 'published').length,
+      draft: this.documents.filter(d => d.status === 'draft').length,
+      archived: this.documents.filter(d => d.status === 'archived').length,
+      expiring: this.getExpiringDocuments(30).length,
+      favorites: this.getFavoriteDocuments().length,
       byCategory: this.documents.reduce((acc, doc) => {
         acc[doc.category] = (acc[doc.category] || 0) + 1;
         return acc;
@@ -417,9 +422,9 @@ class DocumentService {
 
   getFolderStructure() {
     return [
-      { id: "f1", name: "Contratos", icon: "Folder" },
-      { id: "f2", name: "Laudos Técnicos", icon: "Folder" },
-      { id: "f3", name: "Projetos", icon: "Folder" }
+      { id: "f1", name: "Contratos", icon: "Folder", parentId: null },
+      { id: "f2", name: "Laudos Técnicos", icon: "Folder", parentId: null },
+      { id: "f3", name: "Projetos", icon: "Folder", parentId: null }
     ];
   }
 
@@ -428,7 +433,7 @@ class DocumentService {
     return doc?.signatures || [];
   }
 
-  addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">) {
+  addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): DocumentSignature | null {
     const doc = this.getDocumentById(id);
     if (!doc) return null;
     
@@ -439,15 +444,22 @@ class DocumentService {
     };
     
     const signatures = [...(doc.signatures || []), newSigner];
-    return this.updateDocument(id, { signatures });
+    this.updateDocument(id, { signatures });
+    return newSigner;
   }
 
-  signDocument(id: string, signerId: string) {
+  signDocument(id: string, signerId: string, method?: string, evidence?: any) {
     const doc = this.getDocumentById(id);
     if (!doc || !doc.signatures) return false;
     
     const signatures = doc.signatures.map(s => 
-      s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s
+      s.id === signerId ? { 
+        ...s, 
+        status: "signed" as const, 
+        signedAt: new Date(),
+        confirmationMethod: (method as any) || s.confirmationMethod,
+        evidence: { ...s.evidence, ...evidence }
+      } : s
     );
     
     const allSigned = signatures.every(s => s.status === "signed");
