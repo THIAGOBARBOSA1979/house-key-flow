@@ -8,8 +8,8 @@ import { SkeletonLoader } from "./SkeletonLoader";
 interface DataViewProps<T> {
   items: T[];
   renderGrid?: (item: T) => React.ReactNode;
-  renderList?: () => React.ReactNode;
-  renderTimeline?: () => React.ReactNode;
+  renderList?: (items: T[]) => React.ReactNode;
+  renderTimeline?: (items: T[]) => React.ReactNode;
   viewMode?: 'grid' | 'list' | 'timeline';
   isLoading?: boolean;
   skeletonType?: 'card' | 'table' | 'page' | 'list';
