@@ -74,6 +74,14 @@ export function DataView<T>({
       );
     }
 
+    if (viewMode === 'timeline' && renderTimeline) {
+      return (
+        <div className="animate-fade-in">
+          {renderTimeline()}
+        </div>
+      );
+    }
+
     return (
       <div className={cn("grid-layout animate-fade-in", gridClassName)}>
         {displayedItems.map((item, index) => (
