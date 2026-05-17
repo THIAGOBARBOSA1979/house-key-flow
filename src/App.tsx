@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -73,14 +73,8 @@ const App = () => {
               <Route path="/client/login" element={<Navigate to="/login" replace />} />
               
               {/* Protected Admin Routes */}
-              <Route path="/admin" element={
-                <ProtectedRoute requiredRole="admin">
-                  <AppLayout><Index /></AppLayout>
-                </ProtectedRoute>
-              } />
-              
-              {/* Grouped Admin Routes */}
-              <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AppLayout><Index /></AppLayout></ProtectedRoute>}>
+              <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AppLayout /></ProtectedRoute>}>
+                <Route index element={<Index />} />
                 <Route path="properties" element={<Properties />} />
                 <Route path="inspections" element={<Inspections />} />
                 <Route path="warranty" element={<Warranty />} />
@@ -99,11 +93,7 @@ const App = () => {
               </Route>
 
               {/* Protected Client Routes */}
-              <Route path="/client" element={
-                <ProtectedRoute requiredRole="client">
-                  <ClientLayout />
-                </ProtectedRoute>
-              }>
+              <Route path="/client" element={<ProtectedRoute requiredRole="client"><ClientLayout /></ProtectedRoute>}>
                 <Route index element={<ClientDashboard />} />
                 <Route path="documents" element={<ClientDocuments />} />
                 <Route path="inspections" element={<ClientInspections />} />
