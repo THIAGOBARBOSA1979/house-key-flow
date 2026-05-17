@@ -134,10 +134,7 @@ export function DataView<T>({
                       ? "shadow-sem-lg scale-110 bg-gradient-to-br from-primary to-primary/80 ring-2 ring-primary/20" 
                       : "text-muted-foreground/40 hover:bg-primary/5 hover:text-primary active:scale-95"
                   )}
-                  onClick={() => {
-                    setCurrentPage(page);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onClick={() => handlePageChange(page)}
                 >
                   {page}
                 </Button>
