@@ -44,6 +44,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               key={item.to}
               to={item.to}
               end={item.end}
+              title={item.label}
               className={cn(
                 "flex items-center justify-center h-12 w-12 rounded-2xl transition-all duration-500 active:scale-90 group relative",
                 isActive 
@@ -54,7 +55,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               <Icon size={20} className={cn("transition-all duration-500", isActive && "rotate-[10deg]")} />
               
               {/* Enhanced Tooltip for collapsed sidebar */}
-              <div className="absolute left-full ml-4 px-4 py-2 bg-sidebar-foreground text-sidebar-background rounded-xl text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 -translate-x-2 group-hover:translate-x-0 whitespace-nowrap z-tooltip shadow-sem-xl border border-sidebar-border/20 backdrop-blur-md">
+              <div className="absolute left-full ml-4 px-4 py-2 bg-sidebar-foreground text-sidebar-background rounded-xl text-[11px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 -translate-x-2 group-hover:translate-x-0 whitespace-nowrap z-tooltip shadow-sem-xl border border-sidebar-border/20 backdrop-blur-md">
                 {item.label}
               </div>
             </NavLink>

@@ -111,6 +111,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                     }}
                     onFocus={() => setIsSearchOpen(true)}
                     autoComplete="off"
+                    spellCheck={false}
                   />
                   
                   {isSearchOpen && (

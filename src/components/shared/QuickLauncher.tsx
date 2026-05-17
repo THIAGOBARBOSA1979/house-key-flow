@@ -112,18 +112,37 @@ const QUICK_ACTIONS: QuickAction[] = [
 export const QuickLauncher = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'q') {
         e.preventDefault();
-        setIsOpen(true);
+        setIsOpen(prev => !prev);
+      }
+      
+      if (!isOpen) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedIndex(prev => (prev + 1) % Math.max(1, filteredActions.length));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedIndex(prev => (prev - 1 + filteredActions.length) % Math.max(1, filteredActions.length));
+      } else if (e.key === 'Enter' && filteredActions.length > 0) {
+        e.preventDefault();
+        handleAction(filteredActions[selectedIndex].path);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isOpen, filteredActions, selectedIndex]);
+
+  // Reset selection when search changes
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [search]);
 
   const filteredActions = QUICK_ACTIONS.filter(action => 
     action.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -169,13 +188,20 @@ export const QuickLauncher = () => {
         <div className="p-4 max-h-[450px] overflow-y-auto">
           <div className="grid gap-2">
             {filteredActions.length > 0 ? (
-              filteredActions.map((action) => {
+              filteredActions.map((action, index) => {
                 const Icon = action.icon;
+                const isSelected = index === selectedIndex;
                 return (
                   <button
                     key={action.id}
                     onClick={() => handleAction(action.path)}
-                    className="flex items-center justify-between p-4 rounded-2xl hover:bg-primary/5 group transition-all text-left border border-transparent hover:border-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    className={cn(
+                      "flex items-center justify-between p-4 rounded-2xl group transition-all text-left border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+                      isSelected 
+                        ? "bg-primary/10 border-primary/20 scale-[1.01]" 
+                        : "hover:bg-primary/5 border-transparent hover:border-primary/10"
+                    )}
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-all">

@@ -41,7 +41,7 @@ export function PageHeader({
             </h1>
           </div>
           {description && (
-            <p className="text-sem-body-base text-muted-foreground/60 animate-in slide-in-from-left-4 duration-700 max-w-2xl font-medium leading-relaxed">
+            <p className="text-sem-body-sm md:text-sem-body-base text-muted-foreground/60 animate-in slide-in-from-left-4 duration-700 max-w-2xl font-medium leading-relaxed">
               {description}
             </p>
           )}
