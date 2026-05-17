@@ -39,9 +39,10 @@ import { ConstructionFeed, ConstructionUpdate } from "@/components/client/Constr
 import { Skeleton } from "@/components/ui/skeleton";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { StatsCard } from "@/components/shared/StatsCard";
-import { ClientBenefitCards } from "@/components/Dashboard/ClientBenefitCards";
-import { ClientFAQ } from "@/components/Dashboard/ClientFAQ";
+import { ClientBenefitCards } from "@/components/ClientArea/ClientBenefitCards";
+import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
+import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
   const { user } = useAuth();
