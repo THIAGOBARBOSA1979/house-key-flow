@@ -502,6 +502,89 @@ class WarrantyFlowService {
     const problemIndex = request.problems.findIndex(p => p.id === problemId);
     if (problemIndex === -1) return { success: false, error: "Problema não encontrado" };
 
+    const problem = request.problems[problemIndex];
+    const newStatus = problem.status === 'resolved' ? 'pending' : 'resolved';
+    
+    const updatedProblems = [...request.problems];
+    updatedProblems[problemIndex] = {
+      ...problem,
+      status: newStatus,
+      resolvedAt: newStatus === 'resolved' ? new Date() : undefined,
+      updatedAt: new Date()
+    };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems: updatedProblems,
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'updated',
+      performedBy: changedBy,
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      details: `Item do breakdown "${problem.description}" marcado como ${newStatus === 'resolved' ? 'resolvido' : 'pendente'}.`,
+      metadata: { problemId, newStatus }
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
+   * Add a problem to a request breakdown
+   */
+  addProblemToRequest(
+    requestId: string, 
+    problemData: Partial<WarrantyProblemDetail>,
+    changedBy: string
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.requests.get(requestId);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const newProblem: WarrantyProblemDetail = {
+      id: `prob-${crypto.randomUUID()}`,
+      category: problemData.category || "Geral",
+      location: problemData.location || "A definir",
+      description: problemData.description || "Novo problema identificado",
+      severity: problemData.severity || "moderate",
+      photos: [],
+      status: "pending",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...problemData
+    };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      problems: [...(request.problems || []), newProblem],
+      updatedAt: new Date()
+    };
+
+    this.requests.set(requestId, updatedRequest);
+    this.persist();
+
+    auditLogService.log({
+      entityType: 'warranty',
+      entityId: requestId,
+      action: 'info_added',
+      performedBy: changedBy,
+      performedByName: changedBy === 'admin-1' ? 'Administrador' : 'Usuário',
+      performedByRole: changedBy === 'admin-1' ? 'admin' : 'user',
+      details: `Novo item adicionado ao breakdown: ${newProblem.description}`
+    });
+
+    return { success: true, request: updatedRequest };
+  }
+
+    const problemIndex = request.problems.findIndex(p => p.id === problemId);
+    if (problemIndex === -1) return { success: false, error: "Problema não encontrado" };
+
     const problems = [...request.problems];
     const isResolving = problems[problemIndex].status !== "resolved";
     
