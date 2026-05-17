@@ -44,10 +44,21 @@ const FinancialDashboard = () => {
   const metrics = useMemo(() => financialService.getGlobalMetrics(), []);
   const transactions = useMemo(() => financialService.getRecentTransactions(), []);
   
+  // Projection data (mock for demonstration)
+  const projectionData = useMemo(() => {
+    return [
+      ...metrics.revenueByMonth,
+      { month: 'Jul', value: 720000, isProjection: true },
+      { month: 'Ago', value: 780000, isProjection: true },
+      { month: 'Set', value: 850000, isProjection: true },
+    ];
+  }, [metrics]);
+
   const handleExport = () => {
+    exportService.exportToCSV(transactions, "relatorio_financeiro_transacoes");
     toast({
-      title: "Relatório gerado",
-      description: "O relatório financeiro consolidado foi enviado para seu e-mail.",
+      title: "Exportação iniciada",
+      description: "O arquivo CSV com as transações recentes está sendo gerado.",
     });
   };
 
