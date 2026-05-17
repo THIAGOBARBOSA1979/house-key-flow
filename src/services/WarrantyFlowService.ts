@@ -765,9 +765,6 @@ class WarrantyFlowService {
     return { success: true, request: updatedRequest };
   }
 
-    return { success: true, request: updatedRequest };
-  }
-
   /**
    * Toggle problem resolution status
    */
