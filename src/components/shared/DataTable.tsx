@@ -150,13 +150,13 @@ export function DataTable<T>({
           >
             {columns.map((column, colIdx) => (
               <div key={colIdx} className={cn(
-                "flex justify-between items-center gap-4-sem pb-3-sem border-b border-border/10 last:border-0 last:pb-0",
+                "flex justify-between items-start gap-4-sem pb-3-sem border-b border-border/10 last:border-0 last:pb-0",
                 column.hideOnMobile && "hidden"
               )}>
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 shrink-0">
+                <span className="text-sem-tiny uppercase tracking-widest text-muted-foreground font-black shrink-0">
                   {column.header}
                 </span>
-                <div className="text-sem-body-sm font-bold text-right">
+                <div className="text-sem-body-sm font-medium text-right text-foreground/90">
                   {column.cell 
                     ? column.cell(item) 
                     : (item[column.accessorKey as keyof T] as unknown as React.ReactNode)}
