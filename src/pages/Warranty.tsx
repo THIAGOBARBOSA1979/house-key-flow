@@ -114,16 +114,45 @@ const Warranty = () => {
                 Solicitação #{selectedRequest?.id.split('-')[0].toUpperCase()}
               </DialogTitle>
                {selectedRequest?.isPaused && (
-                <StatusBadge status="warning" label="Pausada pelo Admin" size="sm" className="rounded-full px-4" />
+                <div className="flex items-center gap-2">
+                  <StatusBadge status="warning" label="Pausada" size="sm" className="rounded-full px-4" />
+                  <span className="text-[10px] font-bold text-muted-foreground max-w-[150px] truncate" title={selectedRequest.pauseReason}>
+                    Motivo: {selectedRequest.pauseReason}
+                  </span>
+                </div>
               )}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="rounded-xl font-bold gap-2 ml-4 h-10 border-primary/30"
-                onClick={() => setReportDialogOpen(true)}
-              >
-                <Printer size={16} /> Gerar Laudo
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className={cn(
+                    "rounded-xl font-bold gap-2 h-10 border-primary/30",
+                    selectedRequest?.isPaused ? "bg-amber-50 text-amber-700 hover:bg-amber-100" : ""
+                  )}
+                  onClick={() => {
+                    if (selectedRequest) {
+                      const reason = selectedRequest.isPaused ? "" : window.prompt("Motivo da pausa:", "Aguardando material");
+                      if (reason !== null) {
+                        const result = warrantyFlowService.togglePause(selectedRequest.id, !selectedRequest.isPaused, reason, 'admin-1');
+                        if (result.success && result.request) {
+                          setSelectedRequest(result.request);
+                          toast({ title: selectedRequest.isPaused ? "SLA Retomado" : "SLA Pausado", description: "O cronômetro do SLA foi atualizado." });
+                        }
+                      }
+                    }
+                  }}
+                >
+                  <Clock size={16} /> {selectedRequest?.isPaused ? "Retomar SLA" : "Pausar SLA"}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="rounded-xl font-bold gap-2 h-10 border-primary/30"
+                  onClick={() => setReportDialogOpen(true)}
+                >
+                  <Printer size={16} /> Gerar Laudo
+                </Button>
+              </div>
             </div>
           </DialogHeader>
 
