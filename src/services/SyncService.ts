@@ -21,7 +21,10 @@ export class SyncService {
     }
 
     try {
-      console.log('SyncService: Conectando ao socket:', apiUrl);
+      if (this.socket) {
+        this.socket.disconnect();
+      }
+
       this.socket = io(apiUrl, {
         reconnection: true,
         reconnectionDelay: 1000,
