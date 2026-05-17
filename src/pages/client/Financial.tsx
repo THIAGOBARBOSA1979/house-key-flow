@@ -377,20 +377,58 @@ const Financial = () => {
 
       {/* Information Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
-        <Card className="border-dashed">
-          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <div className="p-2 bg-primary/10 rounded-xl">
-              <AlertCircle className="h-5 w-5 text-primary" />
+        <Dialog>
+          <DialogTrigger asChild>
+            <Card className="border-dashed cursor-pointer hover:bg-primary/5 transition-colors group">
+              <CardHeader className="flex flex-row items-center gap-3 space-y-0">
+                <div className="p-2 bg-primary/10 rounded-xl group-hover:bg-primary group-hover:text-white transition-all">
+                  <AlertCircle className="h-5 w-5 text-primary group-hover:text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-sm font-bold">Informações sobre reajustes</CardTitle>
+                  <CardDescription className="text-xs">Como as parcelas são atualizadas</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="text-xs text-muted-foreground leading-relaxed">
+                As parcelas do seu contrato são reajustadas mensalmente pelo INCC até a entrega e IPCA + 1% após. <span className="text-primary font-bold">Clique para entender mais.</span>
+              </CardContent>
+            </Card>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-black tracking-tight">Entenda a correção do seu contrato</DialogTitle>
+              <DialogDescription className="font-medium">Índices utilizados no mercado imobiliário</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-6 py-4">
+              <div className="space-y-2">
+                <h4 className="font-bold text-sm flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary" />
+                  INCC (Até a Entrega das Chaves)
+                </h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  O Índice Nacional de Custo da Construção mede a variação dos custos de construção habitacional. Ele reflete o aumento de materiais, mão de obra e equipamentos. É aplicado sobre o saldo devedor até que o imóvel receba o Habite-se.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-bold text-sm flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                  IPCA + 1% (Pós-Entrega)
+                </h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Após a entrega do imóvel, o reajuste passa a ser baseado no Índice Nacional de Preços ao Consumidor Amplo (IPCA), que mede a inflação oficial do país, acrescido de uma taxa de juros compensatórios de 1% ao mês.
+                </p>
+              </div>
+              <div className="p-4 bg-muted/50 rounded-2xl border text-xs text-muted-foreground italic">
+                Dica: Antecipar parcelas ajuda a reduzir o montante sobre o qual incidem os reajustes mensais, gerando economia a longo prazo.
+              </div>
             </div>
-            <div>
-              <CardTitle className="text-sm font-bold">Informações sobre reajustes</CardTitle>
-              <CardDescription className="text-xs">Como as parcelas são atualizadas</CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="text-xs text-muted-foreground leading-relaxed">
-            As parcelas do seu contrato são reajustadas mensalmente pelo INCC (Índice Nacional de Custo da Construção) até a data da entrega das chaves. Após a entrega, o índice de correção passa a ser o IPCA + 1% ao mês, conforme cláusula contratual.
-          </CardContent>
-        </Card>
+            <Button className="w-full h-12 font-black uppercase tracking-widest text-[11px]" onClick={() => {
+              toast({ title: "Documento enviado", description: "Enviamos um PDF detalhado sobre os índices para seu e-mail." });
+            }}>
+              Baixar Guia de Reajustes (PDF)
+            </Button>
+          </DialogContent>
+        </Dialog>
 
         <Card className="border-dashed">
           <CardHeader className="flex flex-row items-center gap-3 space-y-0">
