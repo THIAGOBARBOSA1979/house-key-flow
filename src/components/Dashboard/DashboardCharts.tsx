@@ -80,53 +80,83 @@ export const DashboardCharts = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-2">
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
         <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-h4">Projeção de Receita Mensal</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-h4">Conformidade SLA</CardTitle>
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black text-[10px]">
+              {warrantyFlowService.calculateMetrics().slaComplianceRate}% META
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-8 flex flex-col items-center justify-center h-72">
+          <div className="relative w-48 h-48">
+             <svg className="w-full h-full transform -rotate-90">
+               <circle
+                 cx="96"
+                 cy="96"
+                 r="80"
+                 stroke="currentColor"
+                 strokeWidth="16"
+                 fill="transparent"
+                 className="text-muted/20"
+               />
+               <circle
+                 cx="96"
+                 cy="96"
+                 r="80"
+                 stroke="currentColor"
+                 strokeWidth="16"
+                 fill="transparent"
+                 strokeDasharray={2 * Math.PI * 80}
+                 strokeDashoffset={2 * Math.PI * 80 * (1 - warrantyFlowService.calculateMetrics().slaComplianceRate / 100)}
+                 className="text-primary transition-all duration-1000 ease-out"
+                 strokeLinecap="round"
+               />
+             </svg>
+             <div className="absolute inset-0 flex flex-col items-center justify-center">
+               <span className="text-4xl font-black tracking-tighter text-foreground">{warrantyFlowService.calculateMetrics().slaComplianceRate}%</span>
+               <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Global</span>
+             </div>
+          </div>
+          <p className="text-xs font-bold text-muted-foreground mt-4 italic text-center">
+            {warrantyFlowService.calculateMetrics().onTrackCount} chamados dentro do prazo acordado.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
+        <CardHeader className="pb-4 border-b border-border/10">
+          <CardTitle className="text-h4">Distribuição por Etapa</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" opacity={0.2} />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
-                />
+              <BarChart 
+                layout="vertical"
+                data={Object.entries(warrantyFlowService.calculateMetrics().stageDistribution)
+                  .filter(([_, value]) => value > 0)
+                  .map(([key, value]) => ({ 
+                    name: key === 'in_analysis' ? 'Análise' : key === 'inspection_scheduled' ? 'Vistoria' : key === 'in_execution' ? 'Execução' : key, 
+                    total: value 
+                  }))}
+                margin={{ top: 0, right: 30, left: 40, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="hsl(var(--muted))" opacity={0.2} />
+                <XAxis type="number" hide />
                 <YAxis 
+                  dataKey="name" 
+                  type="category" 
                   axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
-                  tickFormatter={(value) => `R$ ${(value / 1000)}k`}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))', fontWeight: 700 }}
                 />
                 <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))',
-                    borderRadius: 'var(--radius-md)', 
-                    border: '1px solid hsl(var(--border))',
-                    boxShadow: 'var(--shadow-md)',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}
-                  formatter={(value: number) => [new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value), 'Receita']}
+                  cursor={{ fill: 'hsl(var(--muted))', opacity: 0.1 }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px' }}
                 />
-                <Area 
-                  type="monotone" 
-                  dataKey="valor" 
-                  stroke="hsl(var(--primary))" 
-                  fillOpacity={1} 
-                  fill="url(#colorValor)" 
-                  strokeWidth={3}
-                />
-              </AreaChart>
+                <Bar dataKey="total" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
