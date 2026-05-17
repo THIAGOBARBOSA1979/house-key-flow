@@ -55,28 +55,72 @@ const mockNotifications: ClientNotification[] = [
 class NotificationService {
   private notifications: Map<string, ClientNotification[]> = new Map();
   private settings: Map<string, NotificationSettings> = new Map();
+  private storageKey = "a2_notifications";
+  private settingsKey = "a2_notification_settings";
 
   constructor() {
-    // Initialize with mock data
-    const defaultSettings: NotificationSettings = {
-      email: { inspections: true, warranty: true, updates: true, reminders: true },
-      sms: { inspections: true, warranty: true, updates: true, reminders: true }
-    };
-    this.settings.set('client-1', defaultSettings);
-    this.settings.set('2', defaultSettings);
-    this.notifications.set('2', [
-      {
-        id: 'notif-welcome-2',
-        clientId: '2',
-        type: 'stage_changed',
-        title: 'Bem-vindo ao Portal',
-        message: 'Seu acesso foi liberado com sucesso!',
-        createdAt: new Date(),
-        read: false,
-        urgent: false,
-        metadata: { relatedEntityType: 'stage' }
+    this.loadFromStorage();
+    
+    // Initialize with mock data if empty
+    if (this.notifications.size === 0) {
+      const defaultSettings: NotificationSettings = {
+        email: { inspections: true, warranty: true, updates: true, reminders: true },
+        sms: { inspections: true, warranty: true, updates: true, reminders: true }
+      };
+      this.settings.set('client-1', defaultSettings);
+      this.settings.set('2', defaultSettings);
+      this.notifications.set('2', [
+        {
+          id: crypto.randomUUID(),
+          clientId: '2',
+          type: 'stage_changed',
+          title: 'Bem-vindo ao Portal',
+          message: 'Seu acesso foi liberado com sucesso!',
+          createdAt: new Date(),
+          read: false,
+          urgent: false,
+          metadata: { relatedEntityType: 'stage' }
+        }
+      ]);
+      this.persist();
+    }
+  }
+
+  private loadFromStorage() {
+    const storedNotifs = localStorage.getItem(this.storageKey);
+    if (storedNotifs) {
+      try {
+        const parsed = JSON.parse(storedNotifs);
+        Object.entries(parsed).forEach(([clientId, notifs]: [string, any]) => {
+          this.notifications.set(clientId, notifs.map((n: any) => ({
+            ...n,
+            createdAt: new Date(n.createdAt)
+          })));
+        });
+      } catch (e) {
+        console.error("Failed to load notifications", e);
       }
-    ]);
+    }
+
+    const storedSettings = localStorage.getItem(this.settingsKey);
+    if (storedSettings) {
+      try {
+        const parsed = JSON.parse(storedSettings);
+        Object.entries(parsed).forEach(([clientId, settings]: [string, any]) => {
+          this.settings.set(clientId, settings);
+        });
+      } catch (e) {
+        console.error("Failed to load notification settings", e);
+      }
+    }
+  }
+
+  private persist() {
+    const notifsObj = Object.fromEntries(this.notifications.entries());
+    localStorage.setItem(this.storageKey, JSON.stringify(notifsObj));
+    
+    const settingsObj = Object.fromEntries(this.settings.entries());
+    localStorage.setItem(this.settingsKey, JSON.stringify(settingsObj));
   }
 
   // Create notification
@@ -89,7 +133,7 @@ class NotificationService {
     const template = NOTIFICATION_TEMPLATES[type];
     
     const notification: ClientNotification = {
-      id: `notif-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: crypto.randomUUID(),
       clientId,
       type,
       title: customMessage?.title || template.title,
@@ -101,8 +145,9 @@ class NotificationService {
     };
 
     const clientNotifications = this.notifications.get(clientId) || [];
-    clientNotifications.unshift(notification); // Add to beginning
+    clientNotifications.unshift(notification); 
     this.notifications.set(clientId, clientNotifications);
+    this.persist();
 
     console.log('[NotificationService] Notification created:', notification);
 
@@ -138,6 +183,7 @@ class NotificationService {
       if (notification) {
         notification.read = true;
         this.notifications.set(clientId, notifications);
+        this.persist();
         return true;
       }
     }
@@ -149,6 +195,7 @@ class NotificationService {
     const notifications = this.notifications.get(clientId) || [];
     notifications.forEach(n => n.read = true);
     this.notifications.set(clientId, notifications);
+    this.persist();
   }
 
   // Delete notification
@@ -158,6 +205,7 @@ class NotificationService {
       if (index !== -1) {
         notifications.splice(index, 1);
         this.notifications.set(clientId, notifications);
+        this.persist();
         return true;
       }
     }
@@ -209,6 +257,7 @@ class NotificationService {
 
   updateSettings(clientId: string, newSettings: NotificationSettings): void {
     this.settings.set(clientId, newSettings);
+    this.persist();
     console.log('[NotificationService] Settings updated for', clientId, newSettings);
   }
 }
