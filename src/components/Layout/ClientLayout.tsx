@@ -239,38 +239,43 @@ const ClientLayout = () => {
       <MobileHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       
       {/* Sidebar for desktop and mobile */}
-      <div className={cn("fixed inset-y-0 left-0 z-fixed w-sidebar-width bg-background border-r transform transition-transform duration-normal ease-in-out md:translate-x-0", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
+      <div className={cn("fixed inset-y-0 left-0 z-fixed w-sidebar-width bg-background border-r border-border/50 transform transition-all duration-slow ease-out-sem md:translate-x-0 shadow-sem-lg", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
         {/* Sidebar header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b">
-          <Link to="/client" className="flex items-center gap-2" onClick={handleLinkClick}>
-            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
+        <div className="h-20 flex items-center justify-between px-6 border-b border-border/40">
+          <Link to="/client" className="flex items-center gap-3" onClick={handleLinkClick}>
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/20">
               A2
             </div>
-            <span className="text-xl font-semibold">Portal do Cliente</span>
+            <div className="flex flex-col">
+              <span className="text-base font-black tracking-tight leading-none">Portal A2</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Exclusividade</span>
+            </div>
           </Link>
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(false)}>
-            <X size={18} />
+          <Button variant="ghost" size="icon" className="md:hidden rounded-lg" onClick={() => setSidebarOpen(false)}>
+            <X size={20} />
           </Button>
         </div>
         
         {/* User profile */}
-        <div className="p-6">
-          <Link to="/client/profile" onClick={handleLinkClick} className="flex items-center gap-4 p-2 rounded-2xl hover:bg-primary/5 transition-all group">
+        <div className="p-4">
+          <Link to="/client/profile" onClick={handleLinkClick} className="flex items-center gap-4 p-3 rounded-2xl bg-muted/30 border border-border/10 hover:bg-primary/5 hover:border-primary/10 transition-all duration-300 group">
             <div className="relative">
-              <Avatar className="h-12 w-12 border-2 border-primary/10 group-hover:border-primary transition-colors">
-                <AvatarFallback className="bg-primary/10 text-primary font-black uppercase">{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
+              <Avatar className="h-12 w-12 border-2 border-primary/20 group-hover:border-primary transition-all duration-500 group-hover:scale-105">
+                <AvatarFallback className="bg-primary/10 text-primary font-black uppercase text-xs">{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 border-2 border-background rounded-full" />
+              <div className="absolute -bottom-1 -right-1 h-3.5 w-3.5 bg-emerald-500 border-2 border-background rounded-full animate-pulse" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-black text-sm text-foreground truncate">{user?.name || "Cliente"}</p>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest truncate">
-                {profile?.unitNumber ? `Unidade ${profile.unitNumber}` : "Meu Perfil"}
+              <p className="font-black text-sm text-foreground truncate group-hover:text-primary transition-colors">{user?.name || "Cliente"}</p>
+              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest truncate mt-0.5">
+                {profile?.unitNumber ? `Unidade ${profile.unitNumber}` : "Configurações"}
               </p>
             </div>
           </Link>
         </div>
-        <Separator className="opacity-50" />
+        <div className="px-6 py-2">
+           <div className="h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+        </div>
         
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
