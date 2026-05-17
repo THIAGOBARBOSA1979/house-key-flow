@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Plus, MessageSquare, Calendar, AlertTriangle, Clock, ArrowRight, Lock, History, Star, CheckCircle, TrendingUp } from "lucide-react";
 import { StatsCard } from "@/components/shared/StatsCard";
@@ -151,6 +152,8 @@ const WarrantyStatus = ({ status }: { status: "pending" | "progress" | "complete
 };
 
 const ClientWarranty = () => {
+  const [searchParams] = useSearchParams();
+  const inspectionId = searchParams.get("inspectionId");
   const [selectedClaim, setSelectedClaim] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedWarrantyItem, setSelectedWarrantyItem] = useState<WarrantyItem | null>(null);
@@ -158,6 +161,17 @@ const ClientWarranty = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [addInfoDialogOpen, setAddInfoDialogOpen] = useState(false);
   const [additionalInfo, setAdditionalInfo] = useState("");
+
+  useEffect(() => {
+    if (inspectionId) {
+      setIsDialogOpen(true);
+      setRequestStep("fill_form");
+      toast({
+        title: "Reportando Defeito",
+        description: `Iniciando chamado vinculado à vistoria #${inspectionId}`,
+      });
+    }
+  }, [inspectionId]);
   const [commentText, setCommentText] = useState("");
   const [surveyDone, setSurveyDone] = useState<Record<string, boolean>>({});
   const { user } = useAuth();
