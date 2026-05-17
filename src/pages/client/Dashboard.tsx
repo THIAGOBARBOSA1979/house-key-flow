@@ -48,6 +48,7 @@ import { constructionService } from "@/services/ConstructionService";
 import { ConstructionFeed } from "@/components/ClientArea/ConstructionFeed";
 import { ReferralCard } from "@/components/ClientArea/ReferralCard";
 import { useMemo } from "react";
+import { ClientBenefitCards } from "@/components/ClientArea/ClientBenefitCards";
 
 const Dashboard = () => {
   // Get client stage data
