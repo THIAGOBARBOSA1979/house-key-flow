@@ -195,7 +195,7 @@ const Announcements = () => {
                 header: "Título", 
                 accessorKey: "title",
                 cell: (item) => (
-                  <div className="max-w-[300px]">
+                  <div className="max-w-[250px]">
                     <span className="font-black text-foreground block truncate">{item.title}</span>
                     <span className="text-xs text-muted-foreground font-medium line-clamp-1">{item.description}</span>
                   </div>
@@ -205,15 +205,31 @@ const Announcements = () => {
                 header: "Público", 
                 accessorKey: "isGlobal",
                 cell: (item) => (
-                  item.isGlobal ? (
-                    <Badge variant="outline" className="rounded-lg bg-purple-50 text-purple-700 border-purple-200 gap-1 font-bold text-[10px] uppercase">
-                      <Globe size={12} /> Global
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="rounded-lg bg-blue-50 text-blue-700 border-blue-200 gap-1 font-bold text-[10px] uppercase">
-                      <Building size={12} /> Específico
-                    </Badge>
-                  )
+                  <div className="flex flex-col gap-1">
+                    {item.isGlobal ? (
+                      <Badge variant="outline" className="rounded-lg bg-purple-50 text-purple-700 border-purple-200 gap-1 font-bold text-[10px] uppercase w-fit">
+                        <Globe size={10} /> Global
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="rounded-lg bg-blue-50 text-blue-700 border-blue-200 gap-1 font-bold text-[10px] uppercase w-fit">
+                        <Building size={10} /> Específico
+                      </Badge>
+                    )}
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground">
+                      <Eye size={10} /> {item.readBy?.length || 0} leituras
+                    </div>
+                  </div>
+                )
+              },
+              { 
+                header: "Status", 
+                accessorKey: "status",
+                cell: (item) => (
+                  <StatusBadge 
+                    status={item.status === 'published' ? 'complete' : item.status === 'scheduled' ? 'pending' : 'neutral'} 
+                    label={item.status === 'published' ? 'Publicado' : item.status === 'scheduled' ? 'Agendado' : 'Rascunho'} 
+                    size="sm" 
+                  />
                 )
               },
               { 
