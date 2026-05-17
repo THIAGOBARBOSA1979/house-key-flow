@@ -1084,7 +1084,7 @@ class WarrantyFlowService {
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newUpdate = {
-      id: `upd-${Date.now()}`,
+      id: `upd-${crypto.randomUUID()}`,
       date: new Date(),
       author: authorName,
       text: text
