@@ -55,7 +55,8 @@ const Announcements = () => {
     description: "",
     type: "news" as ConstructionUpdate['type'],
     isGlobal: true,
-    propertyId: "all"
+    propertyId: "all",
+    status: "published" as ConstructionUpdate['status']
   });
 
   const filteredUpdates = useMemo(() => {
