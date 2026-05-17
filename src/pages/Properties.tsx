@@ -288,7 +288,7 @@ const Properties = () => {
             onDelete={() => setPropertyToDelete(property)}
           />
         )}
-        renderList={() => (
+        renderList={(items) => (
           <DataTable
             columns={[
               {
