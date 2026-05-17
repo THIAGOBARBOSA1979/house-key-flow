@@ -212,8 +212,6 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
   const handleBulkMove = (toStage: WarrantyStage) => {
     if (selectedCards.size === 0) return;
     
-    // In a real app, we'd check if all selected cards can move to toStage
-    // For now, we'll just move them
     const ids = Array.from(selectedCards);
     const requiresNotes = transitionRequiresNotes(toStage);
     
@@ -221,12 +219,27 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       setTransitionDialog({
         open: true,
         cardIds: ids,
-        fromStage: "opened", // Dummy, used for reference
+        fromStage: "opened",
         toStage,
         requiresNotes: true
       });
     } else {
       executeTransition(ids, "opened", toStage, "Movimentação em massa");
+    }
+  };
+
+  const handleBulkAssign = (techId: string, techName: string) => {
+    if (selectedCards.size === 0) return;
+    const ids = Array.from(selectedCards);
+    let successCount = 0;
+    ids.forEach(id => {
+      const result = warrantyFlowService.assignTechnician(id, techId, techName, 'admin-1');
+      if (result.success) successCount++;
+    });
+    if (successCount > 0) {
+      toast({ title: `${successCount} solicitações atribuídas`, description: `Técnico: ${techName}` });
+      loadData();
+      setSelectedCards(new Set());
     }
   };
 
