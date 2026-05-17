@@ -159,52 +159,120 @@ const Warranty = () => {
           <div className="flex-1 overflow-y-auto p-8">
           {selectedRequest && (
             <Tabs defaultValue="timeline" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-5 p-1 bg-muted/50 rounded-xl">
+              <TabsList className="grid w-full grid-cols-6 p-1 bg-muted/50 rounded-xl">
                 <TabsTrigger value="timeline" className="rounded-lg data-[state=active]:shadow-sm">Timeline</TabsTrigger>
-                <TabsTrigger value="problems" className="rounded-lg data-[state=active]:shadow-sm">Problemas</TabsTrigger>
+                <TabsTrigger value="problems" className="rounded-lg data-[state=active]:shadow-sm">Itens Breakdown</TabsTrigger>
                 <TabsTrigger value="costs" className="rounded-lg data-[state=active]:shadow-sm">Custos</TabsTrigger>
+                <TabsTrigger value="assignment" className="rounded-lg data-[state=active]:shadow-sm">Atribuição</TabsTrigger>
                 <TabsTrigger value="chat" className="rounded-lg data-[state=active]:shadow-sm">Chat</TabsTrigger>
-                <TabsTrigger value="logs" className="rounded-lg data-[state=active]:shadow-sm">Logs</TabsTrigger>
+                <TabsTrigger value="logs" className="rounded-lg data-[state=active]:shadow-sm">Histórico</TabsTrigger>
               </TabsList>
               
               <TabsContent value="timeline" className="space-y-4">
-                <div className="flex flex-col md:flex-row items-center justify-between p-4 bg-muted/30 rounded-lg border gap-4">
-                  <div className="flex items-center gap-4 w-full">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <UserPlus className="h-6 w-6 text-primary" />
+                <div className="p-6 bg-muted/20 rounded-2xl border border-border/10 mb-6">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <ShieldCheck className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Etapa Atual</p>
+                        <p className="text-lg font-black">{WARRANTY_STAGES[selectedRequest.currentStage].label}</p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Responsável</p>
-                      <p className="text-base font-bold">{selectedRequest.assignedToName || "Não atribuído"}</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-bold text-muted-foreground">Mover para:</span>
+                      <div className="flex flex-wrap gap-2">
+                        {STAGE_ORDER.filter(s => s !== selectedRequest.currentStage).slice(0, 3).map(stage => (
+                          <Button 
+                            key={stage}
+                            size="sm"
+                            variant="outline"
+                            className="rounded-lg h-9 font-bold hover:bg-primary/5 hover:text-primary border-primary/20"
+                            onClick={() => {
+                              const result = warrantyFlowService.changeStatus(selectedRequest.id, stage, 'admin-1');
+                              if (result.success && result.request) {
+                                setSelectedRequest(result.request);
+                                toast({ title: "Status Atualizado", description: `Solicitação movida para ${WARRANTY_STAGES[stage].label}` });
+                              } else if (result.error) {
+                                toast({ title: "Ação não permitida", description: result.error, variant: "destructive" });
+                              }
+                            }}
+                          >
+                            {WARRANTY_STAGES[stage].label}
+                          </Button>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <Select 
-                    value={selectedRequest.assignedTo || "unassigned"} 
-                    onValueChange={(value) => {
-                      const tech = TECHNICIANS.find(t => t.id === value);
-                      if (tech) {
-                        const result = warrantyFlowService.assignTechnician(selectedRequest.id, tech.id, tech.name, 'admin-1');
-                        if (result.success && result.request) {
-                          setSelectedRequest(result.request);
-                          toast({ title: "Técnico alterado", description: `Responsável agora é ${tech.name}` });
-                        }
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="w-full md:w-[240px] h-11 rounded-xl bg-background shadow-sem-sm">
-                      <SelectValue placeholder="Alterar responsável" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="unassigned">Sem responsável</SelectItem>
-                      {TECHNICIANS.map(t => (
-                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
                 <WarrantyRequestTimeline request={selectedRequest} />
               </TabsContent>
               
+              <TabsContent value="assignment" className="space-y-4">
+                <Card className="border-none bg-muted/20 shadow-none ring-1 ring-border/50">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-bold">Gestão de Responsabilidade</CardTitle>
+                    <CardDescription>Atribua um técnico ou equipe para execução desta garantia.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="flex flex-col md:flex-row items-center justify-between p-6 bg-white rounded-2xl border border-border/10 gap-6">
+                      <div className="flex items-center gap-6 w-full">
+                        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <UserPlus className="h-8 w-8 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground uppercase font-black tracking-widest mb-1">Responsável Atual</p>
+                          <p className="text-xl font-black text-foreground">{selectedRequest.assignedToName || "Aguardando Atribuição"}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <StatusBadge 
+                              status={selectedRequest.assignedTo ? "complete" : "pending"} 
+                              label={selectedRequest.assignedTo ? "Técnico Alocado" : "Sem Responsável"} 
+                              size="sm" 
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="w-full md:w-[300px] space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Selecionar Técnico</label>
+                        <Select 
+                          value={selectedRequest.assignedTo || "unassigned"} 
+                          onValueChange={(value) => {
+                            const tech = TECHNICIANS.find(t => t.id === value);
+                            if (tech) {
+                              const result = warrantyFlowService.assignTechnician(selectedRequest.id, tech.id, tech.name, 'admin-1');
+                              if (result.success && result.request) {
+                                setSelectedRequest(result.request);
+                                toast({ title: "Atribuição Concluída", description: `O técnico ${tech.name} agora é o responsável.` });
+                              }
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="h-12 rounded-xl bg-background border-border/20 shadow-sem-sm">
+                            <SelectValue placeholder="Selecione um profissional" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="unassigned">Remover atribuição</SelectItem>
+                            {TECHNICIANS.map(t => (
+                              <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="p-6 bg-blue-50 border border-blue-100 rounded-2xl">
+                      <h4 className="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2">
+                        <AlertCircle size={16} /> Regra de Negócio
+                      </h4>
+                      <p className="text-xs text-blue-700 leading-relaxed">
+                        A atribuição de um responsável é obrigatória para mover a solicitação para as etapas de <strong>Vistoria Agendada</strong> ou <strong>Em Execução</strong>. O sistema impede avanços sistêmicos sem um executor designado.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
               <TabsContent value="problems" className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-bold">Itens da Solicitação</h3>
