@@ -117,7 +117,8 @@ const Announcements = () => {
         title: formData.title,
         description: formData.description,
         type: formData.type,
-        isGlobal: formData.isGlobal
+        isGlobal: formData.isGlobal,
+        status: formData.status
       });
       toast({ title: "Sucesso", description: "Comunicado atualizado com sucesso." });
     } else {
@@ -126,6 +127,7 @@ const Announcements = () => {
         description: formData.description,
         type: formData.type,
         isGlobal: formData.isGlobal,
+        status: formData.status,
         date: new Date()
       });
       toast({ title: "Sucesso", description: "Novo comunicado publicado." });
