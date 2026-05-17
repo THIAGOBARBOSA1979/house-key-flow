@@ -43,6 +43,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { TechnicianForm } from "@/components/Admin/TechnicianForm";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Technicians = () => {
   const { toast } = useToast();
@@ -111,6 +112,12 @@ const Technicians = () => {
     toast({ title: "Ação concluída", description: `${selectedIds.length} técnicos foram removidos.`, variant: "destructive" });
   };
 
+  const handleSelect = (id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
   return (
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
       <PageHeader 
@@ -177,10 +184,20 @@ const Technicians = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTechnicians.map((tech) => (
-          <Card key={tech.id} className="card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md hover:shadow-sem-lg transition-all group">
+          <Card key={tech.id} className={cn(
+            "card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md hover:shadow-sem-lg transition-all group relative",
+            selectedIds.includes(tech.id) && "ring-2 ring-primary"
+          )}>
+            <div className="absolute top-4 left-4 z-10">
+              <Checkbox 
+                checked={selectedIds.includes(tech.id)}
+                onCheckedChange={() => handleSelect(tech.id)}
+                className="rounded-md"
+              />
+            </div>
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 pl-6">
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform">
                     <Wrench size={24} />
                   </div>
@@ -199,10 +216,10 @@ const Technicians = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl shadow-sem-xl border-none">
-                    <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer">
+                    <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer" onClick={() => toast({ title: "Perfil do Técnico", description: `Visualizando dados de ${tech.name}.` })}>
                       <Eye className="mr-3 h-4 w-4 text-muted-foreground" /> Ver Perfil
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer">
+                    <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer" onClick={() => handleEdit(tech)}>
                       <Edit className="mr-3 h-4 w-4 text-muted-foreground" /> Editar
                     </DropdownMenuItem>
                     <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer" onClick={() => toggleStatus(tech)}>
@@ -216,7 +233,7 @@ const Technicians = () => {
                 </DropdownMenu>
               </div>
 
-              <div className="space-y-3 mb-6">
+              <div className="space-y-3 mb-6 pl-6">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
                   <Mail size={16} className="text-primary/60" />
                   <span className="truncate">{tech.email}</span>
@@ -227,7 +244,7 @@ const Technicians = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6 pl-6">
                 {tech.specialty.map((s) => (
                   <Badge key={s} variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold px-3 py-1 rounded-lg">
                     {s}
@@ -235,7 +252,7 @@ const Technicians = () => {
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border/10">
+              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border/10 pl-6">
                 <div>
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Concluídos</p>
                   <p className="text-xl font-black">{tech.completedJobs}</p>
@@ -249,6 +266,21 @@ const Technicians = () => {
           </Card>
         ))}
       </div>
+
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <DialogContent className="sm:max-w-[550px] rounded-3xl border-none shadow-sem-xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black tracking-tight">
+              {editingTech ? "Editar Técnico" : "Novo Cadastro de Técnico"}
+            </DialogTitle>
+          </DialogHeader>
+          <TechnicianForm 
+            initialData={editingTech} 
+            onSubmit={handleSave} 
+            onCancel={() => setIsFormOpen(false)} 
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
