@@ -77,25 +77,26 @@ const App = () => {
                 <ProtectedRoute requiredRole="admin">
                   <AppLayout><Index /></AppLayout>
                 </ProtectedRoute>
-              }>
-                <Route index element={<Index />} />
-              </Route>
+              } />
               
-              <Route path="/admin/properties" element={<ProtectedRoute requiredRole="admin"><AppLayout><Properties /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/inspections" element={<ProtectedRoute requiredRole="admin"><AppLayout><Inspections /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/warranty" element={<ProtectedRoute requiredRole="admin"><AppLayout><Warranty /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/documents" element={<ProtectedRoute requiredRole="admin"><AppLayout><AdminDocuments /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/calendar" element={<ProtectedRoute requiredRole="admin"><AppLayout><Calendar /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><AppLayout><Users /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/client-area" element={<ProtectedRoute requiredRole="admin"><AppLayout><ClientArea /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/checklist" element={<ProtectedRoute requiredRole="admin"><AppLayout><Checklist /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/settings" element={<ProtectedRoute requiredRole="admin"><AppLayout><Settings /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/design-system" element={<ProtectedRoute requiredRole="admin"><AppLayout><DesignSystem /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/audit-logs" element={<ProtectedRoute requiredRole="admin"><AppLayout><AuditLogs /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/financial" element={<ProtectedRoute requiredRole="admin"><AppLayout><FinancialDashboard /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/announcements" element={<ProtectedRoute requiredRole="admin"><AppLayout><Announcements /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/technicians" element={<ProtectedRoute requiredRole="admin"><AppLayout><Technicians /></AppLayout></ProtectedRoute>} />
-              <Route path="/admin/support" element={<ProtectedRoute requiredRole="admin"><AppLayout><AdminSupport /></AppLayout></ProtectedRoute>} />
+              {/* Grouped Admin Routes */}
+              <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AppLayout><Index /></AppLayout></ProtectedRoute>}>
+                <Route path="properties" element={<Properties />} />
+                <Route path="inspections" element={<Inspections />} />
+                <Route path="warranty" element={<Warranty />} />
+                <Route path="documents" element={<AdminDocuments />} />
+                <Route path="calendar" element={<Calendar />} />
+                <Route path="users" element={<Users />} />
+                <Route path="client-area" element={<ClientArea />} />
+                <Route path="checklist" element={<Checklist />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="design-system" element={<DesignSystem />} />
+                <Route path="audit-logs" element={<AuditLogs />} />
+                <Route path="financial" element={<FinancialDashboard />} />
+                <Route path="announcements" element={<Announcements />} />
+                <Route path="technicians" element={<Technicians />} />
+                <Route path="support" element={<AdminSupport />} />
+              </Route>
 
               {/* Protected Client Routes */}
               <Route path="/client" element={
