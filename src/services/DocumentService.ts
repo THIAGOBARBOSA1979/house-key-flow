@@ -113,7 +113,30 @@ export interface DocumentCategory {
   color: string;
 }
 
-class DocumentService {
+  constructor() {
+    const stored = localStorage.getItem('a2_documents');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        this.documents = parsed.map((d: any) => ({
+          ...d,
+          createdAt: new Date(d.createdAt),
+          updatedAt: new Date(d.updatedAt),
+          expiresAt: d.expiresAt ? new Date(d.expiresAt) : undefined,
+          validUntil: d.validUntil ? new Date(d.validUntil) : undefined,
+          deletedAt: d.deletedAt ? new Date(d.deletedAt) : undefined,
+          approvalAt: d.approvedAt ? new Date(d.approvedAt) : undefined,
+        }));
+      } catch (e) {
+        console.error("Failed to load documents", e);
+      }
+    }
+  }
+
+  private persist() {
+    localStorage.setItem('a2_documents', JSON.stringify(this.documents));
+  }
+
   private documents: Document[] = [
     {
       id: "1",
