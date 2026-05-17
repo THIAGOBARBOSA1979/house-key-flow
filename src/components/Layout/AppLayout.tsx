@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight } from "lucide-react";
+import { LogOut, User, Bell, Search, X, Building, Users, FileText, ChevronRight, Home as HomeIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -77,7 +77,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           className="border-b-border/40 bg-background/80 backdrop-blur-2xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm"
         >
           <div className="w-full flex items-center justify-between px-6 md:px-10 transition-all duration-slow">
-            <div className="flex items-center gap-6 flex-1">
+            <div className="flex items-center gap-4 flex-1">
+              <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4">
+                <HomeIcon size={14} />
+                <ChevronRight size={12} />
+                <span className="text-primary/60">Painel Administrativo</span>
+              </div>
+
               {isMobile ? <div className="w-10" /> : (
                 <div className="relative max-w-md w-full group hidden md:block">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-all" />
