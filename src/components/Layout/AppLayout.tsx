@@ -30,9 +30,40 @@ interface AppLayoutProps {
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user, logout } = useAuth();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchTerm] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const sidebarWidthClass = sidebarCollapsed ? "pl-sidebar-collapsed-width" : "pl-sidebar-width";
+
+  // Global search logic
+  const searchResults = useMemo(() => {
+    if (!searchQuery || searchQuery.length < 2) return { properties: [], users: [], documents: [] };
+    
+    const query = searchQuery.toLowerCase();
+    return {
+      properties: propertyService.getAll().filter(p => p.name.toLowerCase().includes(query)).slice(0, 3),
+      users: userService.getAll().filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)).slice(0, 3),
+      documents: documentService.searchDocuments(searchQuery, {}).slice(0, 3)
+    };
+  }, [searchQuery]);
+
+  const hasResults = searchResults.properties.length > 0 || searchResults.users.length > 0 || searchResults.documents.length > 0;
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower">
