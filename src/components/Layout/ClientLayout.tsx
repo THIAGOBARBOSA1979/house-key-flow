@@ -370,13 +370,13 @@ const ClientLayout = () => {
             
             <div className="h-8 w-px bg-border/40 mx-2" />
 
-            <Link to="/client/profile" className="flex items-center gap-2 hover:bg-muted p-1 rounded-lg transition-colors">
-              <Avatar>
-                <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
+            <Link to="/client/profile" className="flex items-center gap-3 hover:bg-primary/5 p-1.5 rounded-2xl transition-all duration-300 group border border-transparent hover:border-primary/10">
+              <Avatar className="h-10 w-10 border border-border/40 group-hover:border-primary/30 transition-all">
+                <AvatarFallback className="bg-primary/10 text-primary font-black text-xs">{user?.name?.substring(0, 2).toUpperCase() || "CL"}</AvatarFallback>
               </Avatar>
-              <div className="hidden md:block">
-                <p className="text-sm font-medium">{user?.name || "Cliente"}</p>
-                <p className="text-xs text-muted-foreground">Ver perfil</p>
+              <div className="hidden lg:flex flex-col text-left leading-tight">
+                <p className="text-sm font-black text-foreground/80 group-hover:text-primary transition-colors">{user?.name || "Cliente"}</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Sessão Ativa</p>
               </div>
             </Link>
           </div>
