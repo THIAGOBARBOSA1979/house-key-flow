@@ -180,7 +180,7 @@ class WarrantyFlowService {
    * Create a new warranty request
    */
   createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
-    const id = data.id || `wr-${Date.now()}`;
+    const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
     const slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === category) || DEFAULT_SLA_CONFIGS[0];
     
@@ -206,7 +206,7 @@ class WarrantyFlowService {
       assignedToName: undefined,
       history: [
         {
-          id: `hist-${Date.now()}`,
+          id: `hist-${crypto.randomUUID()}`,
           requestId: id,
           fromStatus: null,
           toStatus: "opened",
@@ -218,7 +218,7 @@ class WarrantyFlowService {
       ],
       problems: (data.problems || []).map(p => ({
         ...p,
-        id: p.id || `prob-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        id: p.id || `prob-${crypto.randomUUID()}`,
         status: p.status || "pending",
         createdAt: p.createdAt || new Date(),
         updatedAt: p.updatedAt || new Date()

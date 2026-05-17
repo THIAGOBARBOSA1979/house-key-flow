@@ -250,7 +250,7 @@ class ChecklistService {
     const { score, conformityRate } = this.calculateScore(groups);
 
     const newExecution: ChecklistExecutionRecord = {
-      id: `exec-${Date.now()}`,
+      id: `exec-${crypto.randomUUID()}`,
       templateId,
       templateTitle: template?.title || "Checklist Avulso",
       performedBy: "admin-1",
