@@ -43,12 +43,6 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <div className="w-full flex items-center justify-between px-6 md:px-10 transition-all duration-slow">
             <div className="flex items-center gap-6">
               {isMobile && <div className="w-10" />}
-              {!isMobile && (
-                <div className="hidden lg:flex items-center gap-2 bg-muted/20 px-3 py-1.5 rounded-xl border border-border/10 text-muted-foreground">
-                  <Search size={14} className="opacity-50" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Pressione / para buscar</span>
-                </div>
-              )}
             </div>
 
             <div className="flex items-center gap-6">
