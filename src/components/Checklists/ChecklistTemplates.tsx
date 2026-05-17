@@ -94,7 +94,32 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
           >
             <List className="h-4 w-4" />
           </Button>
-        </div>
+      </div>
+
+      {selectedIds.length > 0 && (
+        <Card className="p-4 bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-primary text-white p-2 rounded-xl">
+              <Settings className="w-5 h-5 animate-spin-slow" />
+            </div>
+            <div>
+              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote</p>
+              <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} templates selecionados</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={() => setSelectedIds([])}>
+               Cancelar
+             </Button>
+             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={handleBulkExport}>
+               <Download className="w-4 h-4" /> Exportar CSV
+             </Button>
+             <Button variant="destructive" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={handleBulkArchive}>
+               <Archive className="w-4 h-4" /> Arquivar selecionados
+             </Button>
+          </div>
+        </Card>
+      )}
 
         <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
           {categories.map((category) => (
