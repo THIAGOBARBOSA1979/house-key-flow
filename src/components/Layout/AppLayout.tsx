@@ -89,7 +89,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <header 
           className="border-b-border/40 bg-background/80 backdrop-blur-2xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm"
         >
-          <div className="w-full flex items-center justify-between px-6 md:px-10 transition-all duration-slow">
+          <div className="w-full flex items-center justify-between px-6 md:px-8 transition-all duration-slow">
             <div className="flex items-center gap-4 flex-1">
               <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4">
                 <HomeIcon size={14} />
@@ -239,7 +239,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         
         {/* Main Content Area */}
         <main 
-          className="flex-1 p-6 md:p-10 transition-all duration-slow"
+          className="flex-1 p-4 md:p-8 transition-all duration-slow"
         >
           <div className="container-responsive animate-in fade-in slide-in-from-bottom-4 duration-slower">
             {children}

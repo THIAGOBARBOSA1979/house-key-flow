@@ -66,7 +66,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="mb-4">
-      <CollapsibleTrigger className="flex items-center justify-between w-full px-5 py-3 text-[10px] text-sidebar-foreground/30 hover:text-sidebar-foreground/80 transition-all duration-300 group">
+      <CollapsibleTrigger className="flex items-center justify-between w-full px-5 py-2 text-[10px] text-sidebar-foreground/30 hover:text-sidebar-foreground/80 transition-all duration-300 group">
         <span className="font-black uppercase tracking-[0.2em]">{title}</span>
         <ChevronDown className={cn(
           "h-3 w-3 transition-all duration-500 opacity-0 group-hover:opacity-100",
@@ -86,7 +86,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               to={item.to}
               end={item.end}
               className={cn(
-                "flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-300 active:scale-95 group",
+                "flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 group",
                 isActive 
                   ? "bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground shadow-sem-md shadow-sidebar-primary/30 font-black" 
                   : "hover:bg-sidebar-accent/30 text-sidebar-foreground/60 hover:text-sidebar-foreground font-bold"
