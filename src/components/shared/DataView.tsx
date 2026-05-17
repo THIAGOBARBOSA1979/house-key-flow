@@ -110,7 +110,9 @@ export function DataView<T>({
               disabled={effectivePage === 1}
               onClick={() => {
                 setCurrentPage(prev => Math.max(1, prev - 1));
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const header = document.querySelector('header');
+                const scrollTarget = header ? header.offsetHeight + 100 : 0;
+                window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
               }}
             >
               <ChevronLeft size={18} />
@@ -129,7 +131,9 @@ export function DataView<T>({
                   )}
                   onClick={() => {
                     setCurrentPage(page);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    const header = document.querySelector('header');
+                    const scrollTarget = header ? header.offsetHeight + 100 : 0;
+                    window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
                   }}
                 >
                   {page}
@@ -143,7 +147,9 @@ export function DataView<T>({
               disabled={effectivePage === totalPages}
               onClick={() => {
                 setCurrentPage(prev => Math.min(totalPages, prev + 1));
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const header = document.querySelector('header');
+                const scrollTarget = header ? header.offsetHeight + 100 : 0;
+                window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
               }}
             >
               <ChevronRight size={18} />
