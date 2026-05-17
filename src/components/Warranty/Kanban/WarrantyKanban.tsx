@@ -378,6 +378,28 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 gap-2 border-primary/30 text-primary">
+                    <UserCheck className="h-4 w-4" />
+                    Atribuir Técnico
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Selecionar Técnico...</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {technicians.map(tech => (
+                    <DropdownMenuItem 
+                      key={tech.id} 
+                      onClick={() => handleBulkAssign(tech.id, tech.name)}
+                      className="gap-2"
+                    >
+                      {tech.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Button 
                 variant="ghost" 
                 size="sm" 
