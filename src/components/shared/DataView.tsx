@@ -39,6 +39,16 @@ export function DataView<T>({
   itemsPerPage = 0
 }: DataViewProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    if (containerRef.current) {
+      const yOffset = -100; // Offset to account for sticky header
+      const y = containerRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   if (isLoading) {
     return <SkeletonLoader type={skeletonType} count={itemsPerPage || 6} />;
