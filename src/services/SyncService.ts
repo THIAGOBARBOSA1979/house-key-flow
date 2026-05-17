@@ -55,6 +55,14 @@ export class SyncService {
       });
     });
 
+    this.socket.on('ticket_update', (data: any) => {
+      toast({
+        title: "Atualização de Chamado",
+        description: `O chamado #${data.id} foi atualizado para: ${data.status}`,
+      });
+      window.dispatchEvent(new CustomEvent('ticket_update', { detail: data }));
+    });
+
     this.socket.on('warranty_update', (data: any) => {
       // Dispatch warranty update event
       window.dispatchEvent(new CustomEvent('warranty_update', { detail: data }));

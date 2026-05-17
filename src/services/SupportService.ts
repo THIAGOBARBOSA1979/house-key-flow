@@ -1,10 +1,16 @@
 
+export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
+
 export interface SupportTicket {
   id: string;
   clientId: string;
   subject: string;
   message: string;
   status: 'pending' | 'in_progress' | 'closed';
+  priority: TicketPriority;
+  category: TicketCategory;
+  attachments?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,6 +23,8 @@ class SupportService {
       subject: 'Dúvida sobre boleto',
       message: 'Não recebi o boleto deste mês por e-mail.',
       status: 'closed',
+      priority: 'medium',
+      category: 'financial',
       createdAt: new Date(2024, 3, 15),
       updatedAt: new Date(2024, 3, 16)
     }
@@ -26,18 +34,29 @@ class SupportService {
     return this.tickets.filter(t => t.clientId === clientId);
   }
 
-  createTicket(clientId: string, subject: string, message: string): SupportTicket {
+  createTicket(clientId: string, data: { subject: string, message: string, priority?: TicketPriority, category?: TicketCategory, attachments?: string[] }): SupportTicket {
     const newTicket: SupportTicket = {
       id: `ticket-${Date.now()}`,
       clientId,
-      subject,
-      message,
+      subject: data.subject,
+      message: data.message,
       status: 'pending',
+      priority: data.priority || 'medium',
+      category: data.category || 'other',
+      attachments: data.attachments || [],
       createdAt: new Date(),
       updatedAt: new Date()
     };
     this.tickets.unshift(newTicket);
     return newTicket;
+  }
+
+  updateTicketStatus(ticketId: string, status: SupportTicket['status']): void {
+    const ticket = this.tickets.find(t => t.id === ticketId);
+    if (ticket) {
+      ticket.status = status;
+      ticket.updatedAt = new Date();
+    }
   }
 }
 
