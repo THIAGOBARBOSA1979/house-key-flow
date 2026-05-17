@@ -142,7 +142,7 @@ const Properties = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 animate-in fade-in duration-500">
       <PageHeader
         icon={Building}
         title="Empreendimentos"
