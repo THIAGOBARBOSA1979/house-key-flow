@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { QuickLauncher } from "@/components/shared/QuickLauncher";
 
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /**
@@ -245,7 +246,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           className="flex-1 p-4 md:p-8 transition-all duration-slow"
         >
           <div className="container-responsive animate-in fade-in slide-in-from-bottom-4 duration-slower">
-            {children}
+            {children || <Outlet />}
           </div>
         </main>
 
