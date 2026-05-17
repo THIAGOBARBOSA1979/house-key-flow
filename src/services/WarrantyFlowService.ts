@@ -206,7 +206,7 @@ class WarrantyFlowService {
       assignedToName: undefined,
       history: [
         {
-          id: `hist-${crypto.randomUUID()}`,
+          id: crypto.randomUUID(),
           requestId: id,
           fromStatus: null,
           toStatus: "opened",
@@ -366,7 +366,7 @@ class WarrantyFlowService {
     
     // Create history entry
     const historyEntry: WarrantyStatusHistory = {
-      id: `hist-${crypto.randomUUID()}`,
+      id: crypto.randomUUID(),
       requestId,
       fromStatus: request.currentStage,
       toStatus: newStatus,
@@ -440,7 +440,7 @@ class WarrantyFlowService {
       history: [
         ...request.history,
         {
-          id: `hist-${crypto.randomUUID()}`,
+          id: crypto.randomUUID(),
           requestId,
           fromStatus: request.currentStage,
           toStatus: request.currentStage,
@@ -562,7 +562,7 @@ class WarrantyFlowService {
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newProblem: WarrantyProblemDetail = {
-      id: `prob-${crypto.randomUUID()}`,
+      id: crypto.randomUUID(),
       category: problemData.category || "Geral",
       location: problemData.location || "A definir",
       description: problemData.description || "Novo problema identificado",
@@ -608,7 +608,7 @@ class WarrantyFlowService {
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const materials = request.materials || [];
-    const newMaterial = { ...material, id: `mat-${crypto.randomUUID()}` };
+    const newMaterial = { ...material, id: crypto.randomUUID() };
     
     const updatedRequest: WarrantyRequestFlow = {
       ...request,
