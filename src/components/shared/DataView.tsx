@@ -118,12 +118,7 @@ export function DataView<T>({
               size="icon"
               className="h-10 w-10 rounded-xl border-border/10 hover:bg-primary/5 hover:text-primary transition-all active:scale-90 disabled:opacity-30"
               disabled={effectivePage === 1}
-              onClick={() => {
-                setCurrentPage(prev => Math.max(1, prev - 1));
-                const header = document.querySelector('header');
-                const scrollTarget = header ? header.offsetHeight + 100 : 0;
-                window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
-              }}
+              onClick={() => handlePageChange(Math.max(1, effectivePage - 1))}
             >
               <ChevronLeft size={18} />
             </Button>
