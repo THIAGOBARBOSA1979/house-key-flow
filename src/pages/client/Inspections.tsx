@@ -301,7 +301,49 @@ const ClientInspections = () => {
                 ) : (
                   <div className="text-center py-12 px-4 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center">
                     <ClipboardCheck className="h-10 w-10 text-muted-foreground/30 mb-3" />
-                    <p className="text-sm font-bold text-muted-foreground">Nenhuma vistoria agendada</p>
+                    <p className="text-sm font-bold text-muted-foreground">Nenhuma vistoria no histórico</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white">
+              <CardHeader className="p-6 pb-2">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <History className="h-5 w-5 text-primary" />
+                  Histórico de Vistorias
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 p-6 pt-2">
+                {inspections.filter(i => i.status === 'complete').length > 0 ? (
+                  inspections.filter(i => i.status === 'complete').map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={cn(
+                        "p-4 border rounded-2xl cursor-pointer transition-all duration-300 group hover:shadow-md",
+                        selectedInspection === item.id 
+                          ? "border-primary bg-primary/5 ring-1 ring-primary/20" 
+                          : "hover:bg-accent/50 border-border/50"
+                      )}
+                      onClick={() => setSelectedInspection(item.id)}
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="min-w-0">
+                          <h3 className="font-bold truncate text-foreground/90 group-hover:text-primary transition-colors">{item.title}</h3>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <Calendar className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+                              {safeFormat(item.scheduledDate, "dd/MM/yyyy")}
+                            </span>
+                          </div>
+                        </div>
+                        <StatusBadge status={item.status} size="sm" />
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-6 px-4 bg-muted/20 rounded-2xl border border-dashed">
+                    <p className="text-xs font-bold text-muted-foreground">Nenhuma vistoria finalizada</p>
                   </div>
                 )}
               </CardContent>

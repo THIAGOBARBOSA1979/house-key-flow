@@ -274,7 +274,7 @@ class DocumentService {
     );
 
     const dossier: Document = {
-      id: `dossier-${Date.now()}`,
+      id: `dossier-${crypto.randomUUID().substring(0, 8)}`,
       title: `Dossier Completo - Unidade ${unitNumber}`,
       type: 'auto',
       category: 'legal',

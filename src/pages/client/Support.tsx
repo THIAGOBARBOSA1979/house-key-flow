@@ -267,22 +267,40 @@ const Support = () => {
                   {tickets.map((ticket) => (
                     <div key={ticket.id} className="p-6 hover:bg-muted/30 transition-all duration-300 cursor-pointer border-l-4 border-transparent hover:border-primary group">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted px-2 py-1 rounded">#{ticket.id.split('-')[1]}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted px-2 py-1 rounded">#{ticket.id.includes('-') ? ticket.id.split('-')[1] : ticket.id}</span>
+                          <Badge variant="outline" className="text-[9px] font-black uppercase bg-primary/5 border-primary/20">{ticket.category}</Badge>
+                        </div>
                         <StatusBadge 
                           status={ticket.status === 'closed' ? 'complete' : (ticket.status === 'in_progress' ? 'progress' : 'pending')} 
                           label={ticket.status === 'closed' ? 'Resolvido' : (ticket.status === 'in_progress' ? 'Em Atendimento' : 'Aguardando')}
                           size="sm"
                         />
                       </div>
-                      <h4 className="font-black text-sm mb-1.5 group-hover:text-primary transition-colors">{ticket.subject}</h4>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h4 className="font-black text-sm group-hover:text-primary transition-colors">{ticket.subject}</h4>
+                        {ticket.priority === 'urgent' && <Badge variant="destructive" className="h-4 text-[8px] px-1 animate-pulse">URGENTE</Badge>}
+                      </div>
                       <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed font-medium">{ticket.message}</p>
                       <div className="flex items-center justify-between">
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">{ticket.createdAt.toLocaleDateString('pt-BR')}</p>
-                        {ticket.status === 'closed' && (
+                        <div className="flex items-center gap-3">
+                          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">{ticket.createdAt.toLocaleDateString('pt-BR')}</p>
+                          {ticket.attachments && ticket.attachments.length > 0 && (
+                             <span className="text-[10px] text-primary font-black uppercase flex items-center gap-1">
+                               <ExternalLink className="h-3 w-3" /> {ticket.attachments.length} Anexos
+                             </span>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          {ticket.status === 'closed' && (
+                            <Button variant="ghost" size="sm" className="h-7 text-[10px] font-black uppercase text-primary hover:bg-primary/5 rounded-lg px-3">
+                              Avaliar
+                            </Button>
+                          )}
                           <Button variant="ghost" size="sm" className="h-7 text-[10px] font-black uppercase text-primary hover:bg-primary/5 rounded-lg px-3">
-                            Avaliar Atendimento
+                            Ver Chat
                           </Button>
-                        )}
+                        </div>
                       </div>
                     </div>
                   ))}
