@@ -1,5 +1,5 @@
 
-import { v4 as uuidv4 } from 'uuid';
+
 import { auditLogService } from './AuditLogService';
 
 export interface Document {
@@ -252,15 +252,58 @@ class DocumentService {
 
   searchDocuments(term: string, filters: any): Document[] {
     return this.documents.filter(doc => {
-      const matchesSearch = !term || doc.title.toLowerCase().includes(term.toLowerCase()) || 
-                          doc.fileName?.toLowerCase().includes(term.toLowerCase());
-      const matchesCategory = !filters.category || doc.category === filters.category;
-      const matchesStatus = !filters.status || doc.status === filters.status;
-      const matchesPriority = !filters.priority || doc.priority === filters.priority;
-      const matchesFolder = !filters.folderId || doc.folderId === filters.folderId;
+      const matchesSearch = !term || 
+                          doc.title.toLowerCase().includes(term.toLowerCase()) || 
+                          doc.fileName?.toLowerCase().includes(term.toLowerCase()) ||
+                          doc.tags?.some(tag => tag.toLowerCase().includes(term.toLowerCase()));
       
-      return matchesSearch && matchesCategory && matchesStatus && matchesPriority && matchesFolder;
+      const matchesCategory = !filters.category || filters.category === 'all' || doc.category === filters.category;
+      const matchesStatus = !filters.status || filters.status === 'all' || doc.status === filters.status;
+      const matchesPriority = !filters.priority || filters.priority === 'all' || doc.priority === filters.priority;
+      const matchesFolder = !filters.folderId || filters.folderId === 'all' || doc.folderId === filters.folderId;
+      const matchesType = !filters.type || filters.type === 'all' || doc.type === filters.type;
+      
+      return matchesSearch && matchesCategory && matchesStatus && matchesPriority && matchesFolder && matchesType;
     });
+  }
+
+  generateDossier(clientId: string, propertyId: string, unitNumber: string): Document {
+    const documents = this.getDocumentsByClient("João Silva"); // Simplified for demo
+    const bundleDocs = documents.filter(d => 
+      ['relatorio', 'certificado', 'projeto', 'manual'].includes(d.category)
+    );
+
+    const dossier: Document = {
+      id: `dossier-${crypto.randomUUID().substring(0, 8)}`,
+      title: `Dossier Completo - Unidade ${unitNumber}`,
+      type: 'auto',
+      category: 'legal',
+      viewCount: 0,
+      isSigned: false,
+      associatedTo: { client: "João Silva", property: propertyId, unit: unitNumber },
+      visible: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      downloads: 0,
+      status: 'published',
+      approvalStatus: 'approved',
+      version: 1,
+      priority: 'high',
+      description: `Pacote completo de documentos contendo ${bundleDocs.length} arquivos técnicos.`,
+      createdBy: 'Sistema',
+      attachments: bundleDocs.map(d => ({
+        id: d.id,
+        name: d.title,
+        url: d.fileUrl || '#',
+        size: d.fileSize || '1MB',
+        type: d.category,
+        createdAt: d.createdAt
+      }))
+    };
+
+    this.documents.push(dossier);
+    this.persist();
+    return dossier;
   }
 
   createDocument(data: Omit<Document, 'id' | 'createdAt' | 'updatedAt' | 'downloads' | 'version' | 'approvalStatus' | 'viewCount' | 'isSigned'>): Document {

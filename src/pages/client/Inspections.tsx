@@ -272,8 +272,58 @@ const ClientInspections = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 p-6 pt-2">
-                {inspections.length > 0 ? (
-                  inspections.map((item) => (
+                {inspections.filter(i => i.status !== 'complete').length > 0 ? (
+                  inspections.filter(i => i.status !== 'complete').map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={cn(
+                        "p-4 border rounded-2xl cursor-pointer transition-all duration-300 group hover:shadow-md relative",
+                        selectedInspection === item.id 
+                          ? "border-primary bg-primary/5 ring-1 ring-primary/20" 
+                          : "hover:bg-accent/50 border-border/50"
+                      )}
+                      onClick={() => setSelectedInspection(item.id)}
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="min-w-0">
+                          <h3 className="font-bold truncate text-foreground/90 group-hover:text-primary transition-colors">{item.title}</h3>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <Calendar className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">
+                              {safeFormat(item.scheduledDate, "dd/MM/yyyy")}
+                            </span>
+                          </div>
+                        </div>
+                        <StatusBadge status={item.status} size="sm" />
+                      </div>
+                      {item.status === 'pending' && (
+                        <div className="mt-2 flex items-center gap-1.5">
+                          <Badge variant="outline" className="text-[8px] h-4 bg-blue-50 text-blue-600 border-blue-200">
+                             Presença Confirmada
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 px-4 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center">
+                    <ClipboardCheck className="h-10 w-10 text-muted-foreground/30 mb-3" />
+                    <p className="text-sm font-bold text-muted-foreground">Nenhum agendamento pendente</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white">
+              <CardHeader className="p-6 pb-2">
+                <CardTitle className="text-lg font-bold flex items-center gap-2">
+                  <History className="h-5 w-5 text-primary" />
+                  Histórico de Vistorias
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 p-6 pt-2">
+                {inspections.filter(i => i.status === 'complete').length > 0 ? (
+                  inspections.filter(i => i.status === 'complete').map((item) => (
                     <div 
                       key={item.id} 
                       className={cn(
@@ -299,9 +349,8 @@ const ClientInspections = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12 px-4 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center">
-                    <ClipboardCheck className="h-10 w-10 text-muted-foreground/30 mb-3" />
-                    <p className="text-sm font-bold text-muted-foreground">Nenhuma vistoria agendada</p>
+                  <div className="text-center py-6 px-4 bg-muted/20 rounded-2xl border border-dashed">
+                    <p className="text-xs font-bold text-muted-foreground">Nenhuma vistoria finalizada</p>
                   </div>
                 )}
               </CardContent>
@@ -326,6 +375,17 @@ const ClientInspections = () => {
                       <ShieldCheck size={16} /> Abrir Chamado de Garantia
                     </a>
                   </Button>
+                  {selectedInspection && inspection?.status === 'complete' && (
+                    <Button 
+                      variant="secondary" 
+                      className="w-full rounded-xl font-bold gap-2 h-11 bg-amber-100 text-amber-700 hover:bg-amber-200"
+                      onClick={() => {
+                        window.location.href = `/client/warranty?inspectionId=${selectedInspection}`;
+                      }}
+                    >
+                      <AlertTriangle size={16} /> Reportar Defeito na Vistoria
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -333,8 +393,9 @@ const ClientInspections = () => {
           
           <div className="lg:col-span-2">
             {inspection ? (
-              <Tabs defaultValue="details" className="animate-in fade-in slide-in-from-right-4 duration-slow">
-                <TabsList className="bg-muted/50 p-1 rounded-2xl w-full grid grid-cols-3">
+              <Tabs defaultValue="all_inspections" className="animate-in fade-in slide-in-from-right-4 duration-slow">
+                <TabsList className="bg-muted/50 p-1 rounded-2xl w-full grid grid-cols-4">
+                  <TabsTrigger value="all_inspections" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Ações</TabsTrigger>
                   <TabsTrigger value="details" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Detalhes</TabsTrigger>
                   <TabsTrigger value="checklist" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Checklist</TabsTrigger>
                   <TabsTrigger 
@@ -345,6 +406,62 @@ const ClientInspections = () => {
                     Relatório
                   </TabsTrigger>
                 </TabsList>
+                
+                <TabsContent value="all_inspections" className="space-y-4 pt-4">
+                  {inspection.status === 'pending' && (
+                    <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-primary/5">
+                      <CardHeader className="p-8 pb-4">
+                        <CardTitle className="text-xl font-black flex items-center gap-2">
+                          <Clock className="h-5 w-5 text-primary" />
+                          Próxima Vistoria
+                        </CardTitle>
+                        <CardDescription className="font-medium">Confirme sua presença ou solicite alteração.</CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-8 pt-0 flex flex-col sm:flex-row gap-4">
+                        <Button className="flex-1 h-12 rounded-xl font-black uppercase tracking-widest text-[11px]" onClick={handleConfirmPresence}>
+                          Confirmar Presença
+                        </Button>
+                        <Button variant="outline" className="flex-1 h-12 rounded-xl font-black uppercase tracking-widest text-[11px]" onClick={handleRequestReschedule}>
+                          Solicitar Reagendamento
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {inspection.status === 'reschedule_requested' && (
+                    <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-amber-50">
+                      <CardHeader className="p-8 pb-4">
+                        <CardTitle className="text-xl font-black text-amber-700 flex items-center gap-2">
+                          <AlertTriangle className="h-5 w-5" />
+                          Reagendamento Solicitado
+                        </CardTitle>
+                        <CardDescription className="text-amber-600 font-medium">Nossa equipe está analisando sua proposta de nova data.</CardDescription>
+                      </CardHeader>
+                    </Card>
+                  )}
+
+                  {inspection.status === 'complete' && !inspection.acceptanceStatus && (
+                    <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-indigo-50">
+                      <CardHeader className="p-8 pb-4">
+                        <CardTitle className="text-xl font-black text-indigo-700 flex items-center gap-2">
+                          <CheckCircle className="h-5 w-5" />
+                          Vistoria Finalizada
+                        </CardTitle>
+                        <CardDescription className="text-indigo-600 font-medium">Por favor, assine o termo de aceite para liberar as chaves e garantia.</CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-8 pt-0">
+                        <InspectionAcceptance
+                          inspectionId={inspection.id}
+                          status="pending_acceptance"
+                          conformeCount={inspection.checklist.filter((i: any) => i.completed).length}
+                          naoConformeCount={inspection.checklist.filter((i: any) => !i.completed).length}
+                          onAccept={handleAcceptInspection}
+                          onReject={handleRejectInspection}
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+                </TabsContent>
                 
                 <TabsContent value="details" className="space-y-4 pt-4">
                   {inspection.status === "complete" && inspection.acceptanceStatus && (

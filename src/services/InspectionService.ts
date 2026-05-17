@@ -5,6 +5,7 @@ import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { auditLogService } from "./AuditLogService";
+import { eventAutomationService } from "./EventAutomationService";
 
 interface ScheduleInspectionData {
   inspectionType: string;
@@ -208,13 +209,22 @@ class InspectionService {
     return true;
   }
 
-  requestReschedule(id: string, clientId: string, newDate?: Date, newTime?: string, reason?: string) {
+  requestReschedule(id: string, clientId: string, newDate: Date, newTime: string, reason: string) {
     const inspection = this.inspections.find(i => i.id === id);
     if (inspection) {
+      const oldDate = inspection.date;
+      const oldTime = inspection.time;
+      
       inspection.status = "reschedule_requested";
-      if (newDate) inspection.date = newDate;
-      if (newTime) inspection.time = newTime;
-      if (reason) inspection.notes = (inspection.notes ? inspection.notes + "\n" : "") + "Motivo do reagendamento: " + reason;
+      inspection.date = newDate;
+      inspection.time = newTime;
+      
+      const rescheduleNote = `\n[SOLICITAÇÃO DE REAGENDAMENTO - ${new Date().toLocaleDateString()}]\n` +
+        `De: ${oldDate.toLocaleDateString()} ${oldTime}\n` +
+        `Para: ${newDate.toLocaleDateString()} ${newTime}\n` +
+        `Motivo: ${reason}`;
+        
+      inspection.notes = (inspection.notes || "") + rescheduleNote;
       
       this.persist();
       
@@ -225,8 +235,12 @@ class InspectionService {
         performedBy: clientId,
         performedByName: inspection.client,
         performedByRole: 'client',
-        details: `Cliente solicitou reagendamento da vistoria para ${newDate?.toLocaleDateString()} às ${newTime}.${reason ? ` Motivo: ${reason}` : ""}`
+        details: `Cliente solicitou reagendamento da vistoria. Motivo: ${reason}`
       });
+
+      // Notify through event system
+      eventAutomationService.onInspectionScheduled(id, clientId, newDate);
+      
       return true;
     }
     return false;
