@@ -65,11 +65,16 @@ class FinancialService {
   }
 
   getGlobalMetrics() {
+    const installments = this.installments;
     return {
       totalReceivable: 12500000,
       totalPaid: 8450000,
       totalOverdue: 125000,
       collectionEfficiency: 98.5,
+      billingGroups: [
+        { id: "bg1", name: "Edifício Aurora - Mensalidades", propertyId: "1", total: 450000, count: 120 },
+        { id: "bg2", name: "Residencial Bosque - Intermediárias", propertyId: "2", total: 150000, count: 15 }
+      ],
       revenueByMonth: [
         { month: 'Jan', value: 450000 },
         { month: 'Fev', value: 520000 },
