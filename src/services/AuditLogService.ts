@@ -118,11 +118,14 @@ class AuditLogService {
     this.persist();
   }
 
-  log(entry: NewAuditLogEntry): AuditLogEntry {
+  log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole }): AuditLogEntry {
     const newEntry: AuditLogEntry = {
       ...entry,
       id: crypto.randomUUID(),
       timestamp: new Date(),
+      performedBy: userContext?.id || entry.performedBy || 'system',
+      performedByName: userContext?.name || entry.performedByName || 'Sistema',
+      performedByRole: userContext?.role || entry.performedByRole || 'user',
     };
     this.logs.unshift(newEntry);
     this.persist();

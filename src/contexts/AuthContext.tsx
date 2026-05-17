@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useNavigate } from 'react-router-dom';
 import { AuthContextType, User } from '@/types/auth';
 import { useToast } from '@/components/ui/use-toast';
+import { securityService } from '@/services/SystemSecurityService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -29,6 +30,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Check for existing session on mount
   useEffect(() => {
     checkAuth();
+    const cleanup = securityService.initialize(() => logout());
+    return cleanup;
   }, []);
 
   const checkAuth = () => {

@@ -1,15 +1,15 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User, Building, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { userService } from "@/services/UserService";
+import { propertyService } from "@/services/PropertyService";
 
 // Form schema with validation
 const formSchema = z.object({
@@ -36,19 +36,14 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Mock property data - will be replaced with real data from API
-const mockProperties = [
-  { id: "1", name: "Edifício Aurora" },
-  { id: "2", name: "Residencial Verde Vida" },
-  { id: "3", name: "Condomínio Monte Alto" },
-];
-
 interface NewClientFormProps {
   onSubmit?: (data: FormValues) => void;
   onCancel?: () => void;
 }
 
 export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
+  const propertiesList = useMemo(() => propertyService.getAll(), []);
+  
   // Initialize form with validation
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -66,7 +61,7 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
   // Handle form submission
   const handleSubmit = (values: FormValues) => {
     // Create the client in the user service
-    const propertyName = mockProperties.find(p => p.id === values.property)?.name || values.property;
+    const propertyName = propertiesList.find(p => p.id === values.property)?.name || values.property;
     
     const newUser = userService.create({
       name: values.name,
@@ -168,8 +163,8 @@ export function NewClientForm({ onSubmit, onCancel }: NewClientFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="shadow-sem-xl border-none">
-                      {mockProperties.map(property => (
-                        <SelectItem key={property.id} value={property.id}>
+                      {propertiesList.map(property => (
+                        <SelectItem key={property.id} value={property.id!}>
                           {property.name}
                         </SelectItem>
                       ))}

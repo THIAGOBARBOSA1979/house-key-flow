@@ -17,9 +17,10 @@ interface SidebarGroupProps {
   items: SidebarItem[];
   defaultOpen?: boolean;
   collapsed?: boolean;
+  onItemClick?: () => void;
 }
 
-export function SidebarGroup({ title, items, defaultOpen = true, collapsed = false }: SidebarGroupProps) {
+export function SidebarGroup({ title, items, defaultOpen = true, collapsed = false, onItemClick }: SidebarGroupProps) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(defaultOpen);
   
@@ -86,6 +87,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               key={item.to}
               to={item.to}
               end={item.end}
+              onClick={onItemClick}
               className={cn(
                 "flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 group",
                 isActive 

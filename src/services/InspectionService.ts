@@ -104,9 +104,12 @@ class InspectionService {
     const storedTechs = localStorage.getItem(this.storageKeyTechs);
     if (storedTechs) {
       try {
-        this.technicians = JSON.parse(storedTechs);
+        const parsedTechs = JSON.parse(storedTechs);
+        if (Array.isArray(parsedTechs) && parsedTechs.length > 0) {
+          this.technicians = parsedTechs;
+        }
       } catch (e) {
-        console.error("Failed to load technicians", e);
+        console.error("Erro ao carregar técnicos", e);
       }
     }
   }

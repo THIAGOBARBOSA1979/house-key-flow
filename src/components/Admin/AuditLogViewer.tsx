@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -110,6 +110,13 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
   const [selectedLog, setSelectedLog] = useState<AuditLogEntry | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'timeline'>(compact ? 'timeline' : 'table');
+  const [updateTrigger, setUpdateTrigger] = useState(0);
+
+  useEffect(() => {
+    const handleNewLog = () => setUpdateTrigger(prev => prev + 1);
+    window.addEventListener('a2_audit_log_created', handleNewLog);
+    return () => window.removeEventListener('a2_audit_log_created', handleNewLog);
+  }, []);
 
   const filteredLogs = useMemo(() => {
     return auditLogService.getFilteredLogs({
@@ -121,7 +128,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
       dateFrom: dateFrom ? new Date(dateFrom) : undefined,
       dateTo: dateTo ? new Date(dateTo) : undefined
     });
-  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo]);
+  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo, updateTrigger]);
 
   const totalPages = Math.max(1, Math.ceil(filteredLogs.length / ITEMS_PER_PAGE));
   const paginatedLogs = filteredLogs.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);

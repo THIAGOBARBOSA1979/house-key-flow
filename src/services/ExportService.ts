@@ -50,7 +50,9 @@ class ExportService {
       if (typeof obj[k] === 'object' && obj[k] !== null && !(obj[k] instanceof Date) && !Array.isArray(obj[k])) {
         Object.assign(acc, this.flattenObject(obj[k], pre + k));
       } else if (Array.isArray(obj[k])) {
-        acc[pre + k] = obj[k].join('; ');
+        acc[pre + k] = obj[k].map((v: any) => 
+          typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v)
+        ).join('; ');
       } else {
         acc[pre + k] = obj[k];
       }

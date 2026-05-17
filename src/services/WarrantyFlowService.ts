@@ -332,7 +332,8 @@ class WarrantyFlowService {
     changedBy: string,
     isAutomatic: boolean = false,
     notes?: string,
-    performedByRole: 'admin' | 'client' = 'admin'
+    performedByRole: 'admin' | 'client' = 'admin',
+    userName?: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     const request = this.requests.get(requestId);
     

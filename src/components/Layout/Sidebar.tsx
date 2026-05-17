@@ -62,7 +62,7 @@ const systemItems = [
 ];
 
 
-function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; onToggleCollapse?: () => void }) {
+function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
 
@@ -95,18 +95,21 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
           items={operationalItems} 
           defaultOpen={true}
           collapsed={collapsed}
+          onItemClick={onItemClick}
         />
         <SidebarGroup 
           title="Gestão" 
           items={managementItems}
           defaultOpen={true}
           collapsed={collapsed}
+          onItemClick={onItemClick}
         />
         <SidebarGroup 
           title="Sistema" 
           items={systemItems}
           defaultOpen={false}
           collapsed={collapsed}
+          onItemClick={onItemClick}
         />
       </nav>
       
@@ -141,7 +144,7 @@ function SidebarContent({ collapsed, onToggleCollapse }: { collapsed: boolean; o
 }
 
 export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
@@ -169,7 +172,7 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="p-0 w-sidebar-width bg-sidebar border-r-sidebar-border shadow-sem-xl">
-          <SidebarContent collapsed={false} />
+          <SidebarContent collapsed={false} onItemClick={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>
     );
