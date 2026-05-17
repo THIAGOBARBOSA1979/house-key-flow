@@ -18,6 +18,7 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
   const [roleFilter, setRoleFilter] = useState(activeFilters.role || "all");
   const [statusFilter, setStatusFilter] = useState(activeFilters.status || "all");
   const [propertyFilter, setPropertyFilter] = useState(activeFilters.property || "all");
+  const [unitFilter, setUnitFilter] = useState(activeFilters.unit || "");
 
   const handleFilterChange = () => {
     onFilterChange({
@@ -25,6 +26,7 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
       role: roleFilter,
       status: statusFilter,
       property: propertyFilter,
+      unit: unitFilter,
     });
   };
 
