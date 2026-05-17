@@ -145,10 +145,7 @@ export function DataView<T>({
               size="icon"
               className="h-10 w-10 rounded-xl border-border/10 hover:bg-primary/5 hover:text-primary transition-all active:scale-90 disabled:opacity-30"
               disabled={effectivePage === totalPages}
-              onClick={() => {
-                setCurrentPage(prev => Math.min(totalPages, prev + 1));
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onClick={() => handlePageChange(Math.min(totalPages, effectivePage + 1))}
             >
               <ChevronRight size={18} />
             </Button>
