@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ChecklistItem, ChecklistTemplate, checklistService } from "@/services/ChecklistService";
-import { Plus, FileText, Copy, Edit, Trash, Search, Star, LayoutGrid, List, Archive } from "lucide-react";
+import { Plus, FileText, Copy, Edit, Trash, Search, Star, LayoutGrid, List, Archive, Download, Settings, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/components/ui/use-toast";
+import { exportService } from "@/services/ExportService";
 
 
 interface ChecklistTemplatesProps {
