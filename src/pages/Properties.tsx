@@ -151,8 +151,8 @@ const Properties = () => {
         description="Gestão de portfólio e acompanhamento do progresso físico das obras"
       >
         <div className="flex flex-wrap items-center gap-3">
-          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => toast({ title: "Relatório gerado", description: "O PDF consolidado do portfólio será baixado em instantes." })}>
-            <Download className="mr-2 h-4 w-4" /> Exportar PDF
+          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(properties, 'empreendimentos_a2')}>
+            <Download className="mr-2 h-4 w-4" /> Exportar Planilha
           </Button>
           <Button onClick={() => setIsFormOpen(true)} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
             <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
