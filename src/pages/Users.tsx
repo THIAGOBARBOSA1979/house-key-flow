@@ -200,6 +200,20 @@ const Users = () => {
                   <Eye className="mr-2 h-4 w-4 text-muted-foreground" />Ver perfil
                 </DropdownMenuItem>
                 <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleEditUser(user)}><Edit className="mr-2 h-4 w-4 text-muted-foreground" />Editar</DropdownMenuItem>
+                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => {
+                  showToast({ title: "Convite enviado", description: `Um convite foi enviado via WhatsApp para ${user.name}.` });
+                  auditLogService.log({
+                    entityType: 'user',
+                    entityId: user.id!,
+                    action: 'info_added',
+                    performedBy: 'admin-1',
+                    performedByName: 'Administrador',
+                    performedByRole: 'admin',
+                    details: `Convite de acesso enviado via WhatsApp para ${user.name}.`
+                  });
+                }}>
+                  <Share2 className="mr-2 h-4 w-4 text-muted-foreground" /> Reenviar Convite
+                </DropdownMenuItem>
                 <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleToggleUserStatus(user.id!)}>
                   {user.status === "active" ? <UserMinus className="mr-2 h-4 w-4 text-muted-foreground" /> : <UserCheck className="mr-2 h-4 w-4 text-muted-foreground" />}
                   {user.status === "active" ? "Desativar" : "Ativar"}
