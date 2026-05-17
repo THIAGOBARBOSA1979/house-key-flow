@@ -185,10 +185,23 @@ class PropertyService {
   }
 
   delete(id: string): boolean {
+    const property = this.getById(id);
     const initialLength = this.properties.length;
     this.properties = this.properties.filter(p => p.id !== id);
     if (this.properties.length !== initialLength) {
       this.persist();
+      
+      if (property) {
+        auditLogService.log({
+          entityType: 'property',
+          entityId: id,
+          action: 'deleted',
+          performedBy: 'admin-1',
+          performedByName: 'Administrador',
+          performedByRole: 'admin',
+          details: `Empreendimento ${property.name} removido do sistema.`
+        });
+      }
       return true;
     }
     return false;

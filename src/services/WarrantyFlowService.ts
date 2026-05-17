@@ -349,7 +349,7 @@ class WarrantyFlowService {
       if (hasUnresolved) {
         return { 
           success: false, 
-          error: "Não é possível finalizar uma solicitação com itens pendentes. Resolva todos os problemas primeiro." 
+          error: "Não é possível finalizar uma solicitação com itens pendentes no breakdown. Resolva ou cancele todos os problemas primeiro." 
         };
       }
     }

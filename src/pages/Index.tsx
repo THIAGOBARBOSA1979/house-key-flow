@@ -317,12 +317,12 @@ const Dashboard = () => {
           </section>
 
 
-          {/* Recent Activities */}
+          {/* Recent Activities Timeline */}
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h2 flex items-center gap-2">
                 <HistoryIcon size={24} className="text-primary" />
-                Atividades Recentes
+                Auditoria do Sistema
               </h2>
               <Button variant="ghost" size="sm" className="gap-1 font-bold text-primary" onClick={() => navigate("/admin/audit-logs")}>
                 Ver todos
@@ -330,19 +330,31 @@ const Dashboard = () => {
               </Button>
             </div>
             <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-lg animate-in fade-in slide-in-from-right-4 duration-slow">
-              <CardContent className="p-0">
-                <div className="divide-y divide-border/5">
-                  {recentActivities.map((activity) => (
-                    <div key={activity.id} className="p-5 hover:bg-primary/5 transition-all group">
-                      <div className="flex items-start gap-4">
-                        <div className="mt-1 w-2.5 h-2.5 rounded-full bg-primary/20 group-hover:bg-primary transition-colors flex-shrink-0 shadow-[0_0_8px_rgba(var(--primary),0.2)]" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sem-body-sm leading-relaxed">
-                            <span className="font-black text-foreground">{activity.performedByName}</span>{" "}
-                            <span className="text-muted-foreground font-medium">{activity.details}</span>
-                          </p>
-                          <p className="text-[10px] text-muted-foreground/60 mt-2 flex items-center gap-1.5 font-black uppercase tracking-widest">
-                            <Clock size={12} className="opacity-50" />
+              <CardContent className="p-6">
+                <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border/50 before:to-transparent">
+                  {recentActivities.map((activity, idx) => (
+                    <div key={activity.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full border border-border bg-background shadow-sem-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <div className={cn(
+                          "w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(var(--primary),0.3)]",
+                          idx === 0 ? "bg-primary animate-pulse" : "bg-muted-foreground/30"
+                        )} />
+                      </div>
+                      <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl bg-white/50 border border-border/50 shadow-sem-sm group-hover:shadow-sem-md transition-all">
+                        <div className="flex items-center justify-between space-x-2 mb-1">
+                          <div className="font-black text-foreground text-xs uppercase tracking-widest">{activity.performedByName}</div>
+                          <time className="text-[10px] font-bold text-muted-foreground/60 uppercase">{new Date(activity.timestamp).toLocaleDateString()}</time>
+                        </div>
+                        <div className="text-sem-body-sm text-muted-foreground font-medium leading-relaxed">
+                          {activity.details}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </section>
                             {new Date(activity.timestamp).toLocaleDateString('pt-BR')} • {new Date(activity.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
