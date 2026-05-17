@@ -27,12 +27,12 @@ export const StatsCard = ({
   className
 }: StatsCardProps) => {
   const variantStyles = {
-    default: "bg-card/40 backdrop-blur-md border-border/40",
-    pending: "bg-status-pending/5 backdrop-blur-md border-status-pending/20 text-status-pending shadow-sem-sm hover:shadow-status-pending/20",
-    progress: "bg-status-progress/5 backdrop-blur-md border-status-progress/20 text-status-progress shadow-sem-sm hover:shadow-status-progress/20",
-    complete: "bg-status-complete/5 backdrop-blur-md border-status-complete/20 text-status-complete shadow-sem-sm hover:shadow-status-complete/20",
-    critical: "bg-status-critical/5 backdrop-blur-md border-status-critical/20 text-status-critical shadow-sem-sm hover:shadow-status-critical/20",
-    brand: "bg-brand/5 backdrop-blur-md border-brand/20 text-brand shadow-sem-sm hover:shadow-brand/20",
+    default: "bg-card/40 backdrop-blur-md border-border/40 hover:bg-card/60",
+    pending: "bg-status-pending/5 backdrop-blur-md border-status-pending/20 text-status-pending shadow-sem-sm hover:shadow-status-pending/30 hover:bg-status-pending/10",
+    progress: "bg-status-progress/5 backdrop-blur-md border-status-progress/20 text-status-progress shadow-sem-sm hover:shadow-status-progress/30 hover:bg-status-progress/10",
+    complete: "bg-status-complete/5 backdrop-blur-md border-status-complete/20 text-status-complete shadow-sem-sm hover:shadow-status-complete/30 hover:bg-status-complete/10",
+    critical: "bg-status-critical/5 backdrop-blur-md border-status-critical/20 text-status-critical shadow-sem-sm hover:shadow-status-critical/30 hover:bg-status-critical/10",
+    brand: "bg-brand/5 backdrop-blur-md border-brand/20 text-brand shadow-sem-sm hover:shadow-brand/30 hover:bg-brand/10",
   };
 
   const iconStyles = {

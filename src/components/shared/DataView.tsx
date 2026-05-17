@@ -106,22 +106,22 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-11 w-11 rounded-xl border-2 hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
+              className="h-10 w-10 rounded-xl border hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
               disabled={effectivePage === 1}
               onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
             </Button>
-            <div className="flex items-center gap-2-sem mx-2-sem">
+            <div className="flex items-center gap-1.5-sem mx-2-sem">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <Button
                   key={page}
                   variant={effectivePage === page ? "default" : "ghost"}
                   size="icon"
                   className={cn(
-                    "h-11 w-11 rounded-xl text-xs font-black transition-all duration-300",
+                    "h-10 w-10 rounded-xl text-xs font-black transition-all duration-300",
                     effectivePage === page 
-                      ? "shadow-sem-lg scale-110 bg-gradient-to-br from-primary to-primary/80" 
+                      ? "shadow-sem-lg scale-105 bg-gradient-to-br from-primary to-primary/80" 
                       : "text-muted-foreground/40 hover:bg-primary/5 hover:text-primary active:scale-95"
                   )}
                   onClick={() => setCurrentPage(page)}
@@ -133,11 +133,11 @@ export function DataView<T>({
             <Button
               variant="outline"
               size="icon"
-              className="h-11 w-11 rounded-xl border-2 hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
+              className="h-10 w-10 rounded-xl border hover:bg-primary/5 hover:text-primary transition-all active:scale-90"
               disabled={effectivePage === totalPages}
               onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={18} />
             </Button>
           </div>
         </div>
