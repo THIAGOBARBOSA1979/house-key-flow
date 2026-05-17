@@ -855,50 +855,6 @@ class WarrantyFlowService {
     return { success: true, request: updatedRequest };
   }
 
-  /**
-   * Complete warranty
-   */
-  completeWarranty(
-    requestId: string,
-    notes: string,
-    completedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
-    
-    if (!request) {
-      return { success: false, error: "Solicitação não encontrada" };
-    }
-
-    // Business Rule: Check if all problems are resolved
-    if (request.problems && request.problems.some(p => p.status !== "resolved")) {
-      return { 
-        success: false, 
-        error: "Não é possível finalizar a garantia com problemas pendentes. Resolva todos os itens primeiro." 
-      };
-    }
-    
-    const statusResult = this.changeStatus(
-      requestId,
-      "completed",
-      completedBy,
-      false,
-      notes
-    );
-    
-    if (!statusResult.success) {
-      return statusResult;
-    }
-    
-    const updatedRequest: WarrantyRequestFlow = {
-      ...statusResult.request!,
-      completionDate: new Date(),
-      completionNotes: notes
-    };
-    
-    this.requests.set(requestId, updatedRequest);
-    
-    return { success: true, request: updatedRequest };
-  }
 
   /**
    * Get timeline for a request (for client view)
