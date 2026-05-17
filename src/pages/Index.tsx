@@ -172,11 +172,11 @@ const Dashboard = () => {
                 size="sm"
               />
             </div>
-            <Card className="card-standard border-none bg-card/40 backdrop-blur-md p-6 rounded-3xl shadow-sem-md">
+            <Card className="card-standard border-none bg-card/40 backdrop-blur-md p-6 rounded-3xl shadow-sem-md group hover:shadow-sem-lg transition-all duration-500">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Logs de Auditoria</p>
-                  <p className="text-xl font-black">{healthMetrics.database.auditLogCount}</p>
+                  <p className="text-xl font-black group-hover:text-primary transition-colors animate-pulse">{healthMetrics.database.auditLogCount}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Armazenamento</p>
@@ -198,7 +198,7 @@ const Dashboard = () => {
                     <span className="text-xs font-bold text-muted-foreground">{service.name}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-mono text-muted-foreground/50">{service.latency}</span>
-                      <div className={`w-2 h-2 rounded-full ${service.status === 'online' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500'}`} />
+                      <div className={`w-2 h-2 rounded-full transition-all duration-300 ${service.status === 'online' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 animate-pulse'}`} />
                     </div>
                   </div>
                 ))}
