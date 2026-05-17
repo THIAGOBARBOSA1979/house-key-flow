@@ -254,6 +254,32 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </div>
         </footer>
       </div>
+
+      <Dialog open={isShortcutsOpen} onOpenChange={setIsShortcutsOpen}>
+        <DialogContent className="sm:max-w-[500px] rounded-[2rem] border-none shadow-sem-xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <Keyboard className="text-primary" />
+              Atalhos de Teclado
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-6 py-4">
+            {[
+              { key: 'Ctrl + K', desc: 'Abrir Busca Global' },
+              { key: 'Ctrl + /', desc: 'Ver Atalhos' },
+              { key: 'Esc', desc: 'Fechar Modais e Menus' },
+              { key: 'Alt + D', desc: 'Ir para Dashboard' },
+              { key: 'Alt + P', desc: 'Ir para Empreendimentos' },
+              { key: 'Alt + G', desc: 'Ir para Garantias' }
+            ].map(shortcut => (
+              <div key={shortcut.key} className="flex items-center justify-between">
+                <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{shortcut.desc}</span>
+                <Badge variant="outline" className="h-8 px-3 rounded-lg font-black bg-muted/20 border-border/50">{shortcut.key}</Badge>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
