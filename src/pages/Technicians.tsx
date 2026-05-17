@@ -122,7 +122,7 @@ const Technicians = () => {
           <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={() => exportService.exportToCSV(technicians, 'tecnicos_a2')}>
             <Download className="mr-2 h-4 w-4" /> Exportar
           </Button>
-          <Button className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
+          <Button onClick={() => { setEditingTech(null); setIsFormOpen(true); }} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
             <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
             Novo Técnico
           </Button>
@@ -135,6 +135,28 @@ const Technicians = () => {
         <StatsCard label="Avaliação Média" value={stats.avgRating} icon={Star} variant="progress" className="rounded-3xl" />
         <StatsCard label="Serviços Concluídos" value={stats.totalJobs} icon={Briefcase} variant="default" className="rounded-3xl" />
       </ResponsiveGrid>
+
+      {selectedIds.length > 0 && (
+        <Card className="p-4 bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-primary text-white p-2 rounded-xl">
+              <Settings className="w-5 h-5 animate-spin-slow" />
+            </div>
+            <div>
+              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote</p>
+              <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} técnicos selecionados</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={() => setSelectedIds([])}>
+               Cancelar
+             </Button>
+             <Button variant="destructive" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={handleBulkDelete}>
+               <Trash2 className="w-4 h-4" /> Excluir permanentemente
+             </Button>
+          </div>
+        </Card>
+      )}
 
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-border/10">
         <div className="relative w-full md:w-96">
