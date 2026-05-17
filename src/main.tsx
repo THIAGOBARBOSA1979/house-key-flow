@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { SyncService } from './services/SyncService.ts'
+import { ErrorBoundary } from './components/shared/ErrorBoundary.tsx'
 
 // Initialize the SyncService with error handling
 try {
