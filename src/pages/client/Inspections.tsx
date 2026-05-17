@@ -24,6 +24,7 @@ import { eventAutomationService } from "@/services/EventAutomationService";
 import { useAuth } from "@/contexts/AuthContext";
 import { inspectionService, Inspection } from "@/services/InspectionService";
 import { checklistService } from "@/services/ChecklistService";
+import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
 
 // Inspections are fetched from inspectionService
 
