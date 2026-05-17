@@ -82,6 +82,22 @@ const QUICK_ACTIONS: QuickAction[] = [
     shortcut: "Alt + S"
   },
   { 
+    id: "announcements", 
+    title: "Novo Comunicado", 
+    description: "Enviar aviso para clientes", 
+    icon: Megaphone, 
+    path: "/admin/announcements", 
+    category: "Gestão"
+  },
+  { 
+    id: "audit", 
+    title: "Ver Auditoria", 
+    description: "Consultar logs do sistema", 
+    icon: Activity, 
+    path: "/admin/audit-logs", 
+    category: "Sistema"
+  },
+  { 
     id: "users", 
     title: "Gerenciar Usuários", 
     description: "Configurar permissões e contas", 
