@@ -80,7 +80,7 @@ export function KanbanColumn({
   return (
     <div 
       className={cn(
-        "flex flex-col bg-muted/20 rounded-xl border-t-4 min-w-[300px] max-w-[340px] shadow-sm",
+        "flex flex-col bg-muted/20 rounded-xl border-t-4 min-w-[280px] sm:min-w-[300px] max-w-[340px] shadow-sm",
         columnColors[config.color] || "border-t-muted"
       )}
       onDragOver={handleDragOver}

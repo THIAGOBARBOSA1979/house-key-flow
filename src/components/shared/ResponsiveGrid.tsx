@@ -40,8 +40,8 @@ export function ResponsiveGrid({
     4: "lg:grid-cols-4",
     5: "lg:grid-cols-5",
     6: "lg:grid-cols-6",
-    'auto': "lg:grid-cols-3 xl:grid-cols-4",
-    '2-wide': "xl:grid-cols-3"
+    'auto': "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+    '2-wide': "md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
   };
 
   const tabletColMap = {

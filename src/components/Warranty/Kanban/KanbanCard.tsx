@@ -131,8 +131,8 @@ export function KanbanCard({
         </div>
       )}
 
-      {/* SLA and assignment */}
-      <div className="flex items-center justify-between mt-2 pt-2 border-t">
+      {/* SLA and assignment - enhanced touch target */}
+      <div className="flex items-center justify-between mt-2 pt-2 border-t min-h-[40px]">
         <SLABadge 
           status={slaInfo.status} 
           hoursRemaining={slaInfo.hoursRemaining} 

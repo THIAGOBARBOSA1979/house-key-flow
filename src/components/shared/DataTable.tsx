@@ -76,8 +76,9 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn("w-full animate-fade-in overflow-hidden", className)}>
-      <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm overflow-x-auto bg-card/40 backdrop-blur-sm">
+    <div className={cn("w-full animate-fade-in", className)}>
+      <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm bg-card/40 backdrop-blur-sm overflow-hidden">
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader className="bg-muted/10">
             <TableRow className="hover:bg-transparent border-b-border/40">
@@ -130,13 +131,14 @@ export function DataTable<T>({
             ))}
           </TableBody>
         </Table>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-layout-gap md:hidden">
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-6-sem space-y-5-sem interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20 focus-within:ring-2 focus-within:ring-primary/40 outline-none"
+            className="card-standard p-4 md:p-6-sem space-y-4 md:space-y-5-sem interactive-active border-none bg-card/50 backdrop-blur-sm shadow-sem-md hover:ring-2 hover:ring-primary/20 focus-within:ring-2 focus-within:ring-primary/40 outline-none"
             onClick={() => onRowClick?.(item)}
             tabIndex={onRowClick ? 0 : -1}
             onKeyDown={(e) => {

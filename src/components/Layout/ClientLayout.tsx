@@ -357,7 +357,7 @@ const ClientLayout = () => {
       {/* Main content */}
       <div className="md:ml-sidebar-width min-h-screen flex flex-col">
         {/* Desktop header - simplified without images */}
-        <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-20 px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
+        <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-20 px-6 lg:px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
           <div className="flex flex-col">
             <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
             <div className="flex items-center gap-2 mt-1">
