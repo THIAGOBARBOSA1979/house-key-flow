@@ -434,6 +434,7 @@ const ClientLayout = () => {
           &copy; 2025 A2 Incorporadora. Todos os direitos reservados.
         </footer>
       </div>
+      <QuickLauncher />
     </div>;
 };
 
