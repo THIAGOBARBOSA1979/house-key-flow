@@ -120,11 +120,11 @@ export const QuickLauncher = () => {
     action.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAction = (path: string) => {
+  const handleAction = useCallback((path: string) => {
     navigate(path);
     setIsOpen(false);
     setSearch("");
-  };
+  }, [navigate]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -154,11 +154,6 @@ export const QuickLauncher = () => {
   useEffect(() => {
     setSelectedIndex(0);
   }, [search]);
-
-  const handleAction = useCallback((path: string) => {
-    setIsOpen(false);
-    navigate(path);
-  }, [navigate]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
