@@ -422,8 +422,10 @@ const ClientLayout = () => {
         </header>
         
         {/* Main content */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8">
-          <Outlet />
+        <main className="flex-1 p-5 md:p-10 transition-all duration-slow">
+          <div className="container-responsive animate-in fade-in slide-in-from-bottom-4 duration-slower">
+            <Outlet />
+          </div>
         </main>
         
         {/* Footer */}
