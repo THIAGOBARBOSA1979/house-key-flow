@@ -1,0 +1,198 @@
+
+import { useState, useMemo } from "react";
+import { 
+  Wrench, 
+  Plus, 
+  Mail, 
+  Phone, 
+  MoreVertical, 
+  Edit, 
+  Trash2, 
+  Eye, 
+  Download, 
+  Search,
+  FilterX,
+  Star,
+  CheckCircle2,
+  Clock,
+  Briefcase
+} from "lucide-react";
+import { PageHeader } from "@/components/Layout/PageHeader";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { technicianService, type Technician } from "@/services/TechnicianService";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { cn } from "@/lib/utils";
+import { exportService } from "@/services/ExportService";
+
+const Technicians = () => {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [technicians, setTechnicians] = useState<Technician[]>(technicianService.getAll());
+
+  const refreshList = () => {
+    setTechnicians(technicianService.getAll());
+  };
+
+  const filteredTechnicians = useMemo(() => {
+    return technicians.filter(tech => {
+      const searchLower = searchTerm.toLowerCase();
+      return tech.name.toLowerCase().includes(searchLower) ||
+             tech.email.toLowerCase().includes(searchLower) ||
+             tech.specialty.some(s => s.toLowerCase().includes(searchLower));
+    });
+  }, [technicians, searchTerm]);
+
+  const stats = useMemo(() => ({
+    total: technicians.length,
+    active: technicians.filter(t => t.status === "active").length,
+    avgRating: (technicians.reduce((acc, t) => acc + t.rating, 0) / technicians.length || 0).toFixed(1),
+    totalJobs: technicians.reduce((acc, t) => acc + t.completedJobs, 0),
+  }), [technicians]);
+
+  const handleDelete = (id: string) => {
+    if (technicianService.delete(id)) {
+      refreshList();
+      toast({ title: "Técnico removido", description: "O cadastro foi excluído com sucesso.", variant: "destructive" });
+    }
+  };
+
+  const toggleStatus = (tech: Technician) => {
+    const newStatus = tech.status === 'active' ? 'inactive' : 'active';
+    technicianService.update(tech.id, { status: newStatus });
+    refreshList();
+    toast({ title: "Status atualizado", description: `O técnico agora está ${newStatus === 'active' ? 'ativo' : 'inativo'}.` });
+  };
+
+  return (
+    <div className="space-y-8 pb-10 animate-in fade-in duration-500">
+      <PageHeader 
+        icon={Wrench} 
+        title="Gestão de Técnicos" 
+        description="Gerenciamento de prestadores de serviço, especialidades e avaliações de desempenho."
+      >
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={() => exportService.exportToCSV(technicians, 'tecnicos_a2')}>
+            <Download className="mr-2 h-4 w-4" /> Exportar
+          </Button>
+          <Button className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
+            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+            Novo Técnico
+          </Button>
+        </div>
+      </PageHeader>
+
+      <ResponsiveGrid columns={4} gap="layout">
+        <StatsCard label="Total de Técnicos" value={stats.total} icon={Wrench} variant="brand" className="rounded-3xl" />
+        <StatsCard label="Ativos" value={stats.active} icon={CheckCircle2} variant="complete" className="rounded-3xl" />
+        <StatsCard label="Avaliação Média" value={stats.avgRating} icon={Star} variant="progress" className="rounded-3xl" />
+        <StatsCard label="Serviços Concluídos" value={stats.totalJobs} icon={Briefcase} variant="default" className="rounded-3xl" />
+      </ResponsiveGrid>
+
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-border/10">
+        <div className="relative w-full md:w-96">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Buscar por nome, especialidade ou email..." 
+            className="pl-10 h-11 rounded-xl border-none bg-background/50 focus-visible:ring-primary"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        {searchTerm && (
+          <Button variant="ghost" onClick={() => setSearchTerm("")} className="text-muted-foreground hover:text-foreground">
+            <FilterX className="mr-2 h-4 w-4" /> Limpar filtros
+          </Button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredTechnicians.map((tech) => (
+          <Card key={tech.id} className="card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md hover:shadow-sem-lg transition-all group">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform">
+                    <Wrench size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-lg tracking-tight group-hover:text-primary transition-colors">{tech.name}</h3>
+                    <div className="flex items-center gap-1 text-amber-500">
+                      <Star size={14} fill="currentColor" />
+                      <span className="text-sm font-black">{tech.rating}</span>
+                    </div>
+                  </div>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5">
+                      <MoreVertical className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl shadow-sem-xl border-none">
+                    <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer">
+                      <Eye className="mr-3 h-4 w-4 text-muted-foreground" /> Ver Perfil
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer">
+                      <Edit className="mr-3 h-4 w-4 text-muted-foreground" /> Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="py-3 rounded-xl font-bold cursor-pointer" onClick={() => toggleStatus(tech)}>
+                      <Clock className="mr-3 h-4 w-4 text-muted-foreground" /> {tech.status === 'active' ? 'Desativar' : 'Ativar'}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="my-2 bg-border/10" />
+                    <DropdownMenuItem className="py-3 rounded-xl font-black text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer" onClick={() => handleDelete(tech.id)}>
+                      <Trash2 className="mr-3 h-4 w-4" /> Excluir permanentemente
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
+                  <Mail size={16} className="text-primary/60" />
+                  <span className="truncate">{tech.email}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
+                  <Phone size={16} className="text-primary/60" />
+                  <span>{tech.phone}</span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-6">
+                {tech.specialty.map((s) => (
+                  <Badge key={s} variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold px-3 py-1 rounded-lg">
+                    {s}
+                  </Badge>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border/10">
+                <div>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Concluídos</p>
+                  <p className="text-xl font-black">{tech.completedJobs}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Ativos</p>
+                  <p className="text-xl font-black text-primary">{tech.activeJobs}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Technicians;
