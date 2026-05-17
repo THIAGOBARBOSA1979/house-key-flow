@@ -113,11 +113,13 @@ const ClientArea = () => {
         </Button>
       </PageHeader>
 
-      <FilterBar
-        searchPlaceholder="Buscar por nome, email, telefone ou empreendimento..."
-        searchValue={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-slow">
+        <FilterBar
+          searchPlaceholder="Buscar por nome, email, telefone ou empreendimento..."
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <StatsCard label="Total Clientes" value={allProfiles.length} icon={User} variant="brand" />
