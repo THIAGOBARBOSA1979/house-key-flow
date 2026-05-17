@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system';
+export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial';
 export type AuditAction = 
   | 'created' 
   | 'updated' 
@@ -22,7 +22,9 @@ export type AuditAction =
   | 'published'
   | 'favorited'
   | 'deleted'
-  | 'viewed';
+  | 'viewed'
+  | 'payment_received'
+  | 'invoice_issued';
 
 export type AuditRole = 'admin' | 'client' | 'user';
 
@@ -43,9 +45,10 @@ type NewAuditLogEntry = Omit<AuditLogEntry, 'id' | 'timestamp'>;
 
 class AuditLogService {
   private logs: AuditLogEntry[] = [];
+  private storageKey = "a2_audit_logs";
 
   constructor() {
-    const stored = localStorage.getItem('a2_audit_logs');
+    const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
@@ -60,7 +63,7 @@ class AuditLogService {
   }
 
   private persist() {
-    localStorage.setItem('a2_audit_logs', JSON.stringify(this.logs));
+    localStorage.setItem(this.storageKey, JSON.stringify(this.logs));
   }
 
   private seedMockData() {
@@ -112,6 +115,7 @@ class AuditLogService {
         metadata: { assignedTo: 'Carlos Andrade' }
       },
     ];
+    this.persist();
   }
 
   log(entry: NewAuditLogEntry): AuditLogEntry {
