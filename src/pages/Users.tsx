@@ -346,7 +346,7 @@ const Users = () => {
       )}
 
       <Tabs defaultValue="all" className="space-y-6">
-        <TabsList className="bg-muted/50 p-1 rounded-xl w-full justify-start overflow-x-auto h-auto">
+        <TabsList className="bg-muted/50 p-1 rounded-xl w-full justify-start overflow-x-auto h-auto no-scrollbar">
           <TabsTrigger value="all" className="rounded-lg py-2 font-bold text-xs">Todos ({filteredUsers.length})</TabsTrigger>
           <TabsTrigger value="admin" className="rounded-lg py-2 font-bold text-xs">Administradores ({filteredUsers.filter(u => u.role === "admin" || u.role === "manager").length})</TabsTrigger>
           <TabsTrigger value="staff" className="rounded-lg py-2 font-bold text-xs">Funcionários ({filteredUsers.filter(u => u.role === "technical").length})</TabsTrigger>
