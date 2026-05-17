@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { PropertyUnit, propertyService } from "@/services/PropertyService";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { Plus, Settings2, Trash2, CheckCircle2 } from "lucide-react";
+import { Plus, Settings2, Trash2, CheckCircle2, MoreVertical, LayoutPanelTop, ShoppingCart, Truck } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface PropertyUnitMapProps {
   propertyId: string;
@@ -48,6 +54,17 @@ export function PropertyUnitMap({ propertyId, units, onUnitClick, onUpdate }: Pr
         description: `Lote de unidades gerado com sucesso para o ${result.name}.`,
       });
       setIsBatchDialogOpen(false);
+      onUpdate?.();
+    }
+  };
+
+  const handleUpdateStatus = (unitId: string, status: PropertyUnit['status']) => {
+    const result = propertyService.updateUnitStatus(propertyId, unitId, status);
+    if (result) {
+      toast({
+        title: "Status atualizado",
+        description: `Unidade movida para ${statusLabels[status]}.`,
+      });
       onUpdate?.();
     }
   };
@@ -116,22 +133,37 @@ export function PropertyUnitMap({ propertyId, units, onUnitClick, onUpdate }: Pr
                 <TooltipProvider>
                   {units.filter(u => u.floor === floor).sort((a, b) => a.number.localeCompare(b.number)).map(unit => (
                     <Tooltip key={unit.id}>
-                      <TooltipTrigger asChild>
-                        <div
-                          onClick={() => onUnitClick?.(unit)}
-                          className={cn(
-                            "w-12 h-12 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all active:scale-90 hover:shadow-sem-md hover:-translate-y-0.5 relative group/unit overflow-hidden",
-                            statusColors[unit.status]
-                          )}
-                        >
-                          <span className="text-[11px] font-black tracking-tighter">{unit.number}</span>
-                          {unit.status === 'delivered' && <CheckCircle2 size={10} className="absolute bottom-1 right-1 text-emerald-600" />}
-                        </div>
-                      </TooltipTrigger>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <TooltipTrigger asChild>
+                            <div
+                              className={cn(
+                                "w-12 h-12 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all active:scale-90 hover:shadow-sem-md hover:-translate-y-0.5 relative group/unit overflow-hidden",
+                                statusColors[unit.status]
+                              )}
+                            >
+                              <span className="text-[11px] font-black tracking-tighter">{unit.number}</span>
+                              {unit.status === 'delivered' && <CheckCircle2 size={10} className="absolute bottom-1 right-1 text-emerald-600" />}
+                            </div>
+                          </TooltipTrigger>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="p-2 rounded-2xl shadow-sem-xl border-none animate-in zoom-in-95 duration-200">
+                          <DropdownMenuItem className="py-2 px-4 rounded-xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary" onClick={() => handleUpdateStatus(unit.id, 'available')}>
+                            <LayoutPanelTop size={14} className="mr-2 opacity-50" /> {statusLabels.available}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="py-2 px-4 rounded-xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary" onClick={() => handleUpdateStatus(unit.id, 'sold')}>
+                            <ShoppingCart size={14} className="mr-2 opacity-50" /> {statusLabels.sold}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="py-2 px-4 rounded-xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary" onClick={() => handleUpdateStatus(unit.id, 'delivered')}>
+                            <Truck size={14} className="mr-2 opacity-50" /> {statusLabels.delivered}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                       <TooltipContent className="p-3 rounded-xl border-none shadow-sem-xl">
                         <div className="space-y-1">
                           <p className="font-black text-sm">Unidade {unit.number}</p>
                           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{statusLabels[unit.status]}</p>
+                          <p className="text-[9px] font-bold text-primary/60">Clique para alterar status</p>
                         </div>
                       </TooltipContent>
                     </Tooltip>
@@ -152,30 +184,30 @@ export function PropertyUnitMap({ propertyId, units, onUnitClick, onUpdate }: Pr
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Andar Inicial</Label>
-                <Input 
+                <input 
                   type="number" 
                   value={batchData.floorStart}
                   onChange={e => setBatchData({...batchData, floorStart: parseInt(e.target.value)})}
-                  className="rounded-xl font-bold h-11"
+                  className="w-full bg-background border border-border rounded-xl font-bold h-11 px-4 focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Andar Final</Label>
-                <Input 
+                <input 
                   type="number" 
                   value={batchData.floorEnd}
                   onChange={e => setBatchData({...batchData, floorEnd: parseInt(e.target.value)})}
-                  className="rounded-xl font-bold h-11"
+                  className="w-full bg-background border border-border rounded-xl font-bold h-11 px-4 focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Unidades por Andar</Label>
-              <Input 
+              <input 
                 type="number" 
                 value={batchData.unitsPerFloor}
                 onChange={e => setBatchData({...batchData, unitsPerFloor: parseInt(e.target.value)})}
-                className="rounded-xl font-bold h-11"
+                className="w-full bg-background border border-border rounded-xl font-bold h-11 px-4 focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
