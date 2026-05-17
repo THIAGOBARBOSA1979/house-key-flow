@@ -385,6 +385,14 @@ const Dashboard = () => {
         </div>
       </div>
 
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <Gift className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-black tracking-tight">Benefícios & Oportunidades</h2>
+        </div>
+        <ClientBenefitCards />
+      </div>
+
       {/* Stats Grid */}
       <ResponsiveGrid columns={4} gap="layout">
         <StatsCard 
@@ -393,6 +401,7 @@ const Dashboard = () => {
           icon={FileText} 
           description={`${allDocs.filter(d => d.status === 'published').length} disponíveis`}
           variant="brand"
+          className="rounded-3xl shadow-sem-md border-none"
         />
         <StatsCard 
           label="Vistorias" 
@@ -400,6 +409,7 @@ const Dashboard = () => {
           icon={ClipboardCheck} 
           description={upcomingInspections.length > 0 ? `${upcomingInspections.length} pendente(s)` : 'Nenhuma pendente'}
           variant={allInspections.filter(i => i.status === 'complete').length > 0 ? 'complete' : 'pending'}
+          className="rounded-3xl shadow-sem-md border-none"
         />
         <StatsCard 
           label="Garantias" 
@@ -407,6 +417,7 @@ const Dashboard = () => {
           icon={ShieldCheck} 
           description={canRequestWarranty ? `${warrantyRequests.filter(r => r.currentStage !== 'completed').length} em aberto` : 'Aguardando liberação'}
           variant={canRequestWarranty ? 'progress' : 'default'}
+          className="rounded-3xl shadow-sem-md border-none"
         />
         <StatsCard 
           label="Notificações" 
@@ -414,6 +425,7 @@ const Dashboard = () => {
           icon={Bell} 
           description={urgentNotifications.length > 0 ? `${urgentNotifications.length} urgentes` : 'Nenhuma urgente'}
           variant={unreadCount > 0 ? 'critical' : 'default'}
+          className="rounded-3xl shadow-sem-md border-none"
         />
       </ResponsiveGrid>
 
