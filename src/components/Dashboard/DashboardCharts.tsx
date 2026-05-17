@@ -11,18 +11,22 @@ import {
   Cell, 
   PieChart, 
   Pie,
-  Legend
+  Legend,
+  AreaChart,
+  Area
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { inspectionService } from '@/services/InspectionService';
 import { warrantyFlowService } from '@/services/WarrantyFlowService';
+import { financialService } from '@/services/FinancialService';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export const DashboardCharts = () => {
   const inspections = useMemo(() => inspectionService.getAll(), []);
   const warranties = useMemo(() => warrantyFlowService.getAllRequests(), []);
+  const financialData = useMemo(() => financialService.getGlobalMetrics(), []);
 
   const inspectionChartData = useMemo(() => {
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
@@ -35,7 +39,6 @@ export const DashboardCharts = () => {
       }
     });
 
-    // Ensure some data exists for visual
     if (data.every(d => d.vistorias === 0)) {
       return [
         { name: 'Jan', vistorias: 4 },
@@ -68,8 +71,67 @@ export const DashboardCharts = () => {
     return data;
   }, [warranties]);
 
+  const revenueData = useMemo(() => {
+    return financialData.revenueByMonth.map(item => ({
+      name: item.month,
+      valor: item.value
+    }));
+  }, [financialData]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-2">
+        <CardHeader className="pb-4 border-b border-border/10">
+          <CardTitle className="text-h4">Projeção de Receita Mensal</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" opacity={0.2} />
+                <XAxis 
+                  dataKey="name" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
+                  tickFormatter={(value) => `R$ ${(value / 1000)}k`}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'hsl(var(--card))',
+                    borderRadius: 'var(--radius-md)', 
+                    border: '1px solid hsl(var(--border))',
+                    boxShadow: 'var(--shadow-md)',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
+                  }}
+                  formatter={(value: number) => [new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value), 'Receita']}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="valor" 
+                  stroke="hsl(var(--primary))" 
+                  fillOpacity={1} 
+                  fill="url(#colorValor)" 
+                  strokeWidth={3}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/10">
           <CardTitle className="text-h4">Vistorias por Mês</CardTitle>

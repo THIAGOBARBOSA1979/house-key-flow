@@ -1,4 +1,6 @@
 
+import { auditLogService } from "./AuditLogService";
+
 export interface Installment {
   id: string;
   number: number;
@@ -87,6 +89,20 @@ class FinancialService {
       { id: 'tx-4', client: 'Ana Costa', property: 'Residencial Aurora', value: 2500, date: new Date(Date.now() - 259200000), type: 'Mensalidade', status: 'paid' },
       { id: 'tx-5', client: 'Carlos Souza', property: 'Solar das Palmeiras', value: 50000, date: new Date(Date.now() - 345600000), type: 'Entrega das Chaves', status: 'paid' },
     ];
+  }
+
+  processPayment(transactionId: string) {
+    // In a real app, this would update the database
+    auditLogService.log({
+      entityType: 'financial',
+      entityId: transactionId,
+      action: 'payment_received',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: `Pagamento da transação ${transactionId} processado com sucesso.`
+    });
+    return true;
   }
 }
 

@@ -67,6 +67,8 @@ const ACTION_LABELS: Record<AuditAction, string> = {
   favorited: "Favoritado",
   deleted: "Exclusão",
   viewed: "Visualização",
+  payment_received: "Pagamento Recebido",
+  invoice_issued: "Fatura Emitida",
 };
 
 const ACTION_COLORS: Record<AuditAction, string> = {
@@ -91,6 +93,8 @@ const ACTION_COLORS: Record<AuditAction, string> = {
   favorited: "bg-status-pending/10 text-status-pending border-status-pending/20",
   deleted: "bg-status-critical/10 text-status-critical border-status-critical/20",
   viewed: "bg-muted text-muted-foreground border-border",
+  payment_received: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  invoice_issued: "bg-blue-500/10 text-blue-600 border-blue-500/20",
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -228,18 +232,20 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                   accessorKey: "id",
                   className: "text-right",
                   cell: (log: AuditLogEntry) => (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedLog(log);
-                        setIsDetailOpen(true);
-                      }}
-                    >
-                      <Maximize2 className="h-4.5 w-4.5" />
-                    </Button>
+                    <div className="flex justify-end">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedLog(log);
+                          setIsDetailOpen(true);
+                        }}
+                      >
+                        <Maximize2 className="h-4.5 w-4.5" />
+                      </Button>
+                    </div>
                   )
                 }
               ]}
@@ -260,7 +266,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
               </span>
               <div className="flex gap-2">
                 <Button
-                  variant="outline" size="sm"
+                  variant="outline" 
+                  size="sm"
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
                 >
@@ -270,7 +277,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                   {page}/{totalPages}
                 </span>
                 <Button
-                  variant="outline" size="sm"
+                  variant="outline" 
+                  size="sm"
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
                 >
