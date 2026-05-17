@@ -40,15 +40,17 @@ const Users = () => {
 
   const filteredUsers = useMemo(() => {
     return userList.filter(user => {
+      const searchLower = filters.search.toLowerCase();
       const matchesSearch = !filters.search || 
-        user.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        user.email.toLowerCase().includes(filters.search.toLowerCase()) ||
+        user.name.toLowerCase().includes(searchLower) ||
+        user.email.toLowerCase().includes(searchLower) ||
         user.phone.includes(filters.search);
       const matchesRole = filters.role === "all" || user.role === filters.role;
       const matchesStatus = filters.status === "all" || user.status === filters.status;
       const matchesProperty = filters.property === "all" || 
         (user.propertyName && user.propertyName.toLowerCase().includes(filters.property.toLowerCase()));
-      return matchesSearch && matchesRole && matchesStatus && matchesProperty;
+      const matchesUnit = !filters.unit || (user.unit && user.unit.includes(filters.unit));
+      return matchesSearch && matchesRole && matchesStatus && matchesProperty && matchesUnit;
     });
   }, [userList, filters]);
 
