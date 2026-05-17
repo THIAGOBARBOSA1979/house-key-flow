@@ -57,7 +57,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cn("w-full animate-fade-in", className)}>
+    <div className={cn("w-full animate-fade-in overflow-hidden", className)}>
       {/* Desktop Table View */}
       <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm overflow-hidden bg-card/40 backdrop-blur-sm">
         <Table>
