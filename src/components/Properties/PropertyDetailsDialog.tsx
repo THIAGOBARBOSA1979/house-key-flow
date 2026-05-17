@@ -133,6 +133,7 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
 
             <TabsContent value="units" className="animate-in fade-in duration-300">
               <PropertyUnitMap 
+                propertyId={property.id || ""}
                 units={property.unitsList || []} 
                 onUnitClick={(unit) => {
                   toast({
@@ -140,6 +141,7 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
                     description: `Status atual: ${unit.status === 'available' ? 'Disponível' : unit.status === 'sold' ? 'Vendido' : 'Entregue'}`,
                   });
                 }}
+                onUpdate={onUpdate}
               />
             </TabsContent>
           </Tabs>
