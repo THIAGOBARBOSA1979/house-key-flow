@@ -198,9 +198,12 @@ class NotificationService {
 
   // Settings methods
   getSettings(clientId: string): NotificationSettings {
-    return this.settings.get(clientId) || {
-      email: { inspections: true, warranty: true, updates: true },
-      sms: { inspections: false, warranty: false, updates: false }
+    const settings = this.settings.get(clientId);
+    if (settings) return settings;
+    
+    return {
+      email: { inspections: true, warranty: true, updates: true, reminders: true },
+      sms: { inspections: true, warranty: true, updates: true, reminders: true }
     };
   }
 

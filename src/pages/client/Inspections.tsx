@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, 
   FileText, Lock, Info, TrendingUp, AlertTriangle, Activity, 
-  History, ArrowRight, ChevronRight, MessageSquare 
+  History, ArrowRight, ChevronRight, MessageSquare, ShieldCheck
 } from "lucide-react";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
@@ -161,10 +161,13 @@ const ClientInspections = () => {
     }
   };
 
-  const handleAcceptInspection = (inspectionId: string) => {
+  const handleAcceptInspection = (inspectionId: string, signatureData: { method: string, evidence: any }) => {
+    // Register signature in service
+    inspectionService.signAcceptance(inspectionId, clientId, signatureData);
+    
     setInspections(prev => prev.map(i => 
       i.id === inspectionId 
-        ? { ...i, acceptanceStatus: "accepted" as InspectionAcceptanceStatus, acceptedAt: new Date() }
+        ? { ...i, acceptanceStatus: "accepted" as InspectionAcceptanceStatus, acceptedAt: new Date(), signatureMethod: signatureData.method }
         : i
     ));
     eventAutomationService.onInspectionAccepted(inspectionId, clientId);
