@@ -657,51 +657,6 @@ class WarrantyFlowService {
     return { success: true, request: updatedRequest };
   }
 
-  /**
-   * Add a new problem item to an existing request
-   */
-  addProblemToRequest(
-    requestId: string,
-    problem: Partial<WarrantyProblemDetail>,
-    changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
-    if (!request) return { success: false, error: "Solicitação não encontrada" };
-
-    const newProblem: WarrantyProblemDetail = {
-      id: `prob-${Date.now()}`,
-      category: problem.category || "Outros",
-      location: problem.location || "Não informado",
-      description: problem.description || "",
-      severity: problem.severity || "moderate",
-      photos: problem.photos || [],
-      status: "pending",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...problem
-    };
-
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      problems: [...(request.problems || []), newProblem],
-      updatedAt: new Date()
-    };
-
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
-
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: requestId,
-      action: 'updated',
-      performedBy: changedBy,
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Novo item adicionado: ${newProblem.description}`
-    });
-
-    return { success: true, request: updatedRequest };
-  }
 
   /**
    * Update problem details
