@@ -32,6 +32,8 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { propertyService, type Property } from "@/services/PropertyService";
+import { exportService } from "@/services/ExportService";
+
 import {
   Dialog,
   DialogContent,
