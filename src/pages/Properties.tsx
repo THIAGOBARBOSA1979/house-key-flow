@@ -11,6 +11,7 @@ import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { Badge } from "@/components/ui/badge";
 
 import { 
   Select, 
@@ -321,51 +322,54 @@ const Properties = () => {
           />
         )}
         renderTimeline={() => (
-          <div className="space-y-6">
-            {filteredProperties.map(property => (
-              <Card key={property.id} className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden p-6 rounded-3xl shadow-sem-sm">
-                <div className="flex flex-col md:flex-row md:items-center gap-6">
-                  <div className="w-full md:w-1/4">
-                    <h4 className="text-lg font-black tracking-tight">{property.name}</h4>
-                    <p className="text-xs text-muted-foreground font-medium">{property.location}</p>
-                    <div className="mt-4">
-                      <StatusBadge status={property.status} size="sm" />
+          <div className="space-y-8">
+            <Card className="p-6 border-none bg-primary/5 rounded-[2rem]">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-black uppercase tracking-widest text-primary flex items-center gap-3">
+                  <BarChart3 className="w-6 h-6" />
+                  Visão Consolidada de Cronograma
+                </h3>
+              </div>
+              <div className="space-y-6">
+                {filteredProperties.map(property => (
+                  <div key={property.id} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-white shadow-sem-sm flex items-center justify-center text-primary font-black">
+                          {property.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="text-sm font-black text-slate-900">{property.name}</p>
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase">{property.location}</p>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="bg-background/80 font-black text-[10px] uppercase tracking-widest">{property.status}</Badge>
                     </div>
-                  </div>
-                  <div className="flex-1 space-y-4">
-                    <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                      <span>Cronograma de Obra</span>
-                      <span>{Math.round((property.completedUnits / property.units) * 100)}% Concluído</span>
-                    </div>
-                    <div className="relative h-12 w-full bg-muted/30 rounded-2xl border border-border/5 overflow-hidden p-1 flex gap-1">
+                    <div className="grid grid-cols-12 gap-1 h-8">
                       {property.milestones?.map((m, idx) => (
                         <div 
                           key={m.id} 
                           className={cn(
-                            "h-full rounded-xl flex-1 flex items-center justify-center transition-all group relative",
-                            m.completed ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" : "bg-muted/50"
+                            "h-full rounded-md flex items-center justify-center transition-all group relative cursor-pointer",
+                            m.completed ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.2)]" : "bg-slate-200/50"
                           )}
                         >
-                          <div className="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-[10px] font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap z-10 border border-border">
-                            {m.title}
+                          <div className="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded shadow-xl whitespace-nowrap z-50 pointer-events-none">
+                            {m.title} - {m.completed ? 'Concluído' : 'Pendente'}
                           </div>
-                          {m.completed ? (
-                            <CheckCircle2 className="w-4 h-4 text-white" />
-                          ) : (
-                            <Clock className="w-4 h-4 text-muted-foreground/50" />
-                          )}
+                          {m.completed && <CheckCircle2 className="w-3 h-3 text-white" />}
                         </div>
                       ))}
                       {!property.milestones && (
-                        <div className="w-full h-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
-                          Sem marcos cadastrados
+                        <div className="col-span-12 h-full flex items-center justify-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30 bg-slate-100 rounded-md">
+                          Configurar marcos de obra para visualizar timeline
                         </div>
                       )}
                     </div>
                   </div>
-                </div>
-              </Card>
-            ))}
+                ))}
+              </div>
+            </Card>
           </div>
         )}
         emptyState={{

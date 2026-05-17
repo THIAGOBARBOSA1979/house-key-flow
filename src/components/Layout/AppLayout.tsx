@@ -1,10 +1,9 @@
-
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Sidebar } from "./Sidebar";
-import { Breadcrumbs } from "./Breadcrumbs";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, Bell } from "lucide-react";
+import { LogOut, User, Bell, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,8 +24,35 @@ interface AppLayoutProps {
  */
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const handleKeyPress = useCallback((event: KeyboardEvent) => {
+    // Search focus: / or Ctrl+K
+    if ((event.key === '/' || (event.ctrlKey && event.key === 'k')) && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')) {
+      event.preventDefault();
+      const searchInput = document.querySelector<HTMLInputElement>('input[type="search"]') || 
+                         document.querySelector<HTMLInputElement>('input[placeholder*="Buscar"]');
+      if (searchInput) searchInput.focus();
+    }
+    
+    // Quick navigation: Alt + [D, P, I, W, L]
+    if (event.altKey) {
+      switch(event.key.toLowerCase()) {
+        case 'd': navigate('/admin'); break;
+        case 'p': navigate('/admin/properties'); break;
+        case 'i': navigate('/admin/inspections'); break;
+        case 'u': navigate('/admin/users'); break;
+        case 'f': navigate('/admin/financial'); break;
+      }
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [handleKeyPress]);
 
   const sidebarWidthClass = sidebarCollapsed ? "pl-sidebar-collapsed-width" : "pl-sidebar-width";
 
@@ -44,6 +70,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <div className="w-full flex items-center justify-between px-6 md:px-10 transition-all duration-slow">
             <div className="flex items-center gap-6">
               {isMobile && <div className="w-10" />}
+              {!isMobile && (
+                <div className="hidden lg:flex items-center gap-2 bg-muted/20 px-3 py-1.5 rounded-xl border border-border/10 text-muted-foreground">
+                  <Search size={14} className="opacity-50" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Pressione / para buscar</span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-6">

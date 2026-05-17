@@ -30,6 +30,7 @@ const Users = () => {
   const { toast: showToast } = useToast();
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
+  const [selectedUserForDetail, setSelectedUserForDetail] = useState<UserType | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filters, setFilters] = useState({ search: "", role: "all", status: "all", property: "all", unit: "" });
   const [userList, setUserList] = useState<UserType[]>(userService.getAll());
@@ -195,12 +196,14 @@ const Users = () => {
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
-                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => showToast({ title: "Perfil do usuário", description: `Visualizando perfil de ${user.name}.` })}>
-                  <Eye className="mr-2 h-4 w-4 text-muted-foreground" />Ver perfil
+              <DropdownMenuContent align="end" className="w-56 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200 p-2 rounded-2xl border-none">
+                <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => setSelectedUserForDetail(user)}>
+                  <Eye className="mr-3 h-4 w-4 text-muted-foreground" />Ver Perfil Completo
                 </DropdownMenuItem>
-                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleEditUser(user)}><Edit className="mr-2 h-4 w-4 text-muted-foreground" />Editar</DropdownMenuItem>
-                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => {
+                <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => handleEditUser(user)}>
+                  <Edit className="mr-3 h-4 w-4 text-muted-foreground" />Editar Dados
+                </DropdownMenuItem>
+                <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => {
                   showToast({ title: "Convite enviado", description: `Um convite foi enviado via WhatsApp para ${user.name}.` });
                   auditLogService.log({
                     entityType: 'user',
@@ -212,15 +215,15 @@ const Users = () => {
                     details: `Convite de acesso enviado via WhatsApp para ${user.name}.`
                   });
                 }}>
-                  <Share2 className="mr-2 h-4 w-4 text-muted-foreground" /> Reenviar Convite
+                  <Share2 className="mr-3 h-4 w-4 text-muted-foreground" /> Reenviar Convite
                 </DropdownMenuItem>
-                <DropdownMenuItem className="py-2.5 font-medium cursor-pointer" onClick={() => handleToggleUserStatus(user.id!)}>
-                  {user.status === "active" ? <UserMinus className="mr-2 h-4 w-4 text-muted-foreground" /> : <UserCheck className="mr-2 h-4 w-4 text-muted-foreground" />}
-                  {user.status === "active" ? "Desativar" : "Ativar"}
+                <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => handleToggleUserStatus(user.id!)}>
+                  {user.status === "active" ? <UserMinus className="mr-3 h-4 w-4 text-muted-foreground" /> : <UserCheck className="mr-3 h-4 w-4 text-muted-foreground" />}
+                  {user.status === "active" ? "Desativar Acesso" : "Ativar Acesso"}
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleDeleteUser(user.id!)} className="py-2.5 font-bold text-destructive focus:text-destructive cursor-pointer">
-                  <Trash2 className="mr-2 h-4 w-4" />Remover
+                <DropdownMenuSeparator className="my-2" />
+                <DropdownMenuItem onClick={() => handleDeleteUser(user.id!)} className="py-3 px-4 font-black text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer rounded-xl">
+                  <Trash2 className="mr-3 h-4 w-4 opacity-50" />Remover Permanentemente
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
