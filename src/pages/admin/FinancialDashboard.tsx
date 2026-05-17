@@ -13,8 +13,6 @@ import {
   Download, 
   Filter, 
   Calendar as CalendarIcon,
-  ArrowUpRight,
-  ArrowDownRight,
   PieChart,
   Wallet,
   LineChart as LineChartIcon
@@ -22,14 +20,11 @@ import {
 import { financialService } from "@/services/FinancialService";
 import { exportService } from "@/services/ExportService";
 import { 
-  BarChart, 
-  Bar, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer, 
-  Cell,
   AreaChart,
   Area,
   LineChart,
@@ -192,9 +187,25 @@ const FinancialDashboard = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Recebimento de Chaves</span>
                 <span className="text-sm font-black text-emerald-600">92%</span>
+              </div>
+              <div className="h-3 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5">
+                <div className="h-full bg-emerald-500 w-[92%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-border/10 space-y-4">
+              <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground/60">Insight Estratégico</h4>
+              <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                <p className="text-sm font-medium text-foreground leading-relaxed italic">
+                  "O faturamento deste mês superou a projeção inicial em 12%, impulsionado pela entrega das chaves do Residencial Aurora."
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <Card className="rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
           <CardHeader className="p-8 pb-0">
             <div className="flex items-center justify-between">
@@ -243,7 +254,6 @@ const FinancialDashboard = () => {
                     strokeWidth={4}
                     dot={{ r: 6, fill: "#3b82f6", strokeWidth: 2, stroke: "#fff" }}
                     activeDot={{ r: 8 }}
-                    connectNulls
                   />
                   <Line 
                     name="Projeção"
@@ -257,22 +267,6 @@ const FinancialDashboard = () => {
                   />
                 </LineChart>
               </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-              <div className="h-3 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5">
-                <div className="h-full bg-emerald-500 w-[92%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-border/10 space-y-4">
-              <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground/60">Insight Estratégico</h4>
-              <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-                <p className="text-sm font-medium text-foreground leading-relaxed italic">
-                  "O faturamento deste mês superou a projeção inicial em 12%, impulsionado pela entrega das chaves do Residencial Aurora."
-                </p>
-              </div>
             </div>
           </CardContent>
         </Card>
