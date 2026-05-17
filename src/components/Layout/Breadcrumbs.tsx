@@ -16,7 +16,13 @@ const routeLabels: Record<string, string> = {
   "client-area": "Área do Cliente",
   "settings": "Configurações",
   "client": "Portal do Cliente",
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "support": "Suporte",
+  "financial": "Financeiro",
+  "announcements": "Comunicados",
+  "technicians": "Técnicos",
+  "design-system": "Design System",
+  "audit-logs": "Auditoria"
 };
 
 interface BreadcrumbsProps {
