@@ -71,7 +71,8 @@ const statusConfig: Record<StatusType, {
   },
   error: {
     badgeClass: "badge-critical",
-    defaultLabel: "Erro",
+    defaultLabel: "Instabilidade",
+
     icon: XCircle,
   },
   info: {

@@ -172,12 +172,13 @@ export const QuickLauncher = () => {
         <DialogHeader className="p-6 md:p-8 border-b border-border/10 bg-primary/5">
           <DialogTitle className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-3">
             <Zap className="text-primary h-5 w-5 md:h-6 md:w-6" />
-            Central de Ações
+            Centro de Comando Estratégico
           </DialogTitle>
+
           <div className="relative mt-4 md:mt-6">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
             <Input 
-              placeholder="O que você deseja fazer hoje?" 
+              placeholder="Defina sua próxima ação operacional..." 
               className="pl-10 md:pl-12 h-12 md:h-14 bg-background border-none rounded-2xl font-bold text-base md:text-lg shadow-sem-sm"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -231,7 +232,7 @@ export const QuickLauncher = () => {
             ) : (
               <div className="p-12 text-center">
                 <Search className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />
-                <p className="text-sem-body-sm font-black text-muted-foreground/40 uppercase tracking-widest">Nenhuma ação encontrada</p>
+                <p className="text-sem-body-sm font-black text-muted-foreground/40 uppercase tracking-widest">Nenhuma diretriz de ação localizada</p>
               </div>
             )}
           </div>

@@ -73,6 +73,7 @@ function DataTableComponent<T>({
         title={emptyState?.title || "Repositório Digital Vazio"} 
         description={emptyState?.description || "Nenhum protocolo ou registro estratégico foi localizado nesta coordenada."}
 
+
         icon={emptyState?.icon}
       />
     );

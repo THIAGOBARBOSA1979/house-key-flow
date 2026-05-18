@@ -1,5 +1,6 @@
-
+// Optimized UI state component with standardized premium microcopy.
 import { Skeleton } from "@/components/ui/skeleton";
+
 import { cn } from "@/lib/utils";
 
 interface SkeletonLoaderProps {

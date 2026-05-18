@@ -1,4 +1,6 @@
+// Optimized UI state component with standardized premium microcopy.
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useState, useMemo, memo } from 'react';
 import { ChevronLeft, ChevronRight, LucideIcon, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -94,10 +96,11 @@ function DataViewComponent<T>({
     return (
       <EmptyState 
         variant="error"
-        title={error?.title || "Sincronização interrompida"}
-        description={error?.message || "Não foi possível processar sua solicitação no momento. Verifique sua conexão estratégica e tente novamente."}
+        title={error?.title || "Sincronização Interrompida"}
+        description={error?.message || "Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente."}
 
-        actionLabel={error?.retry ? "Tentar Novamente" : undefined}
+
+        actionLabel={error?.retry ? "Reiniciar Protocolo" : undefined}
         onAction={error?.retry}
       />
     );

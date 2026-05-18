@@ -113,7 +113,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <div className="relative max-w-md w-full group hidden lg:block">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-all" />
                   <Input
-                    placeholder="Busca global... (Ctrl+K)"
+                    placeholder="Sincronização global... (Ctrl+K)"
                     className="pl-11 h-11 bg-muted/20 border-none rounded-2xl font-bold placeholder:font-medium transition-all focus-visible:ring-primary/20 w-full"
                     value={searchQuery}
                     onChange={(e) => {
@@ -191,7 +191,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                             <div className="p-10 text-center space-y-2">
                               <Search className="h-10 w-10 text-muted-foreground/20 mx-auto" />
                               <p className="text-sem-body-sm font-black text-muted-foreground/40 uppercase tracking-widest">
-                                {searchQuery.length < 2 ? "Digite para pesquisar" : "Nenhum resultado"}
+                                {searchQuery.length < 2 ? "Aguardando diretriz de pesquisa" : "Nenhum protocolo localizado"}
                               </p>
                             </div>
                           )}
