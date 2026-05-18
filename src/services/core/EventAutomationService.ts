@@ -1,5 +1,5 @@
-import { clientStageService } from './ClientStageService';
-import { notificationService } from './NotificationService';
+import { clientStageService } from '@/services';
+import { notificationService } from '@/services';
 import { ClientEvent, EventType } from '@/types/clientFlow';
 import { auditLogService } from '../core/AuditLogService';
 
