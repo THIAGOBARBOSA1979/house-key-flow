@@ -6,7 +6,7 @@ import { UserFilters } from "@/components/Users/UserFilters";
 import { UserCard } from "@/components/Users/UserCard";
 import { UserDialogs } from "@/components/Users/UserDialogs";
 import { useToast } from "@/hooks/use-toast";
-import { DataView } from "@/components/shared/DataView";
+import { DataView, DataViewMode } from "@/components/shared/DataView";
 import { exportService } from "@/services/ExportService";
 import { useUsers } from "@/hooks/useUsers";
 import { auditLogService } from "@/services/AuditLogService";
