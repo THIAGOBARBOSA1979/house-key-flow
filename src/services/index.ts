@@ -1,4 +1,4 @@
-export * from '../BaseService';
+export * from './BaseService';
 export * from './SupabaseService';
 
 // Identity Domain
