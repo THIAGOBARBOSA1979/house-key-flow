@@ -99,12 +99,12 @@ export const WarrantyDetailsDialog = ({
                     <p className="text-lg font-black">{WARRANTY_STAGES[request.currentStage].label}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    {STAGE_ORDER.filter(s => s !== request.currentStage).slice(0, 3).map(stage => (
+                    {STAGE_ORDER.filter(s => s !== request.currentStage).slice(0, 3).map((stage: WarrantyStage) => (
                       <Button 
                         key={stage}
                         size="sm"
                         variant="outline"
-                        onClick={() => onStatusChange(request.id, stage as WarrantyStage)}
+                        onClick={() => onStatusChange(request.id, stage)}
                       >
                         {WARRANTY_STAGES[stage].label}
                       </Button>
@@ -123,7 +123,7 @@ export const WarrantyDetailsDialog = ({
                 <CardContent>
                   <Select 
                     value={request.assignedTo || "unassigned"} 
-                    onValueChange={(val) => {
+                    onValueChange={(val: string) => {
                       const tech = TECHNICIANS.find(t => t.id === val);
                       if (tech) onAssignTech(request.id, tech.id, tech.name);
                     }}
