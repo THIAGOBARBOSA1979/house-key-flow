@@ -148,8 +148,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
       previous: oldItem
     });
     
+    if (this.options.shouldSyncWithSupabase) {
+      Supabase.db.update(this.options.storageKey, id, data as any)
+        .catch(err => console.error(`[BaseService] Failed to sync update to Supabase for ${this.options.storageKey}:`, err));
+    }
+    
     return this.items[index];
   }
+
 
   delete(id: string): boolean {
     const initialLength = this.items.length;
