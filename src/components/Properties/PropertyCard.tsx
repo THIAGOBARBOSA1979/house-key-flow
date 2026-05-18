@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Building, Home, Users, MapPin, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { StatusBadge } from "../shared/StatusBadge";
-import { Property } from "@/services/PropertyService";
+import { Property } from "@/services";
 import {
   DropdownMenu,
   DropdownMenuContent,

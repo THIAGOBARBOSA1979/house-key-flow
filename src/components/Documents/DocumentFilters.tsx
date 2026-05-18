@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Card, CardContent } from "@/components/ui/card";
-import { documentService } from "@/services/DocumentService";
+import { documentService } from "@/services";
 import { cn } from "@/lib/utils";
 
 interface DocumentFiltersProps {

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { BaseService } from "./BaseService";
-import { auditLogService } from "./AuditLogService";
+import { BaseService } from "../BaseService";
+import { auditLogService } from "../core/AuditLogService";
 import { Property, PropertyMilestone, PropertyUnit, PropertyMetrics } from "@/types/property";
 
 export const propertyMilestoneSchema = z.object({

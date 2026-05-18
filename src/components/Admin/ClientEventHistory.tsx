@@ -19,7 +19,7 @@ import {
   User
 } from "lucide-react";
 import { ClientEvent, EventType } from "@/types/clientFlow";
-import { clientStageService } from "@/services/ClientStageService";
+import { clientStageService } from "@/services";
 import { isValid } from "date-fns";
 import { safeFormat, cn } from "@/lib/utils";
 

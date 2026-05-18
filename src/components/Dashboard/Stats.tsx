@@ -3,9 +3,7 @@ import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Building, ShieldCheck, ClipboardCheck, Activity } from "lucide-react";
 import { StatsCard } from "@/components/shared/StatsCard";
-import { propertyService } from "@/services/PropertyService";
-import { inspectionService } from "@/services/InspectionService";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { propertyService, inspectionService, warrantyFlowService } from "@/services";
 
 interface StatItem {
   title: string;

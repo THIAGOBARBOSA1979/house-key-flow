@@ -1,4 +1,4 @@
-import { BaseService } from "./BaseService";
+import { BaseService } from "../BaseService";
 import { User, UserStats } from "@/types/user";
 import { Supabase } from "@/integration/supabase";
 import { SupabaseRealtime } from "@/integration/supabase/realtime";

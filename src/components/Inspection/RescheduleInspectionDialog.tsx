@@ -32,7 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { inspectionService } from "@/services/InspectionService";
+import { inspectionService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({

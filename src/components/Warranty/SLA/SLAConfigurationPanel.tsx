@@ -24,10 +24,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SLAConfig, DEFAULT_SLA_CONFIGS } from "@/types/warrantyFlow";
-import { warrantySLAService } from "@/services/WarrantySLAService";
+import { warrantySLAService, auditLogService } from "@/services";
 import { useToast } from "@/components/ui/use-toast";
 import { Settings, Save, Clock, AlertCircle, Edit2 } from "lucide-react";
-import { auditLogService } from "@/services/AuditLogService";
+
 
 export function SLAConfigurationPanel() {
   const { toast } = useToast();

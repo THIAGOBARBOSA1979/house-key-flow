@@ -1,13 +1,16 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
-import { propertyService } from "@/services/PropertyService";
-import { inspectionService } from "@/services/InspectionService";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
-import { auditLogService } from "@/services/AuditLogService";
-import { supportService } from "@/services/SupportService";
-import { financialService } from "@/services/FinancialService";
-import { systemHealthService, SystemHealthMetrics } from "@/services/SystemHealthService";
+import { propertyService } from "@/services";
+import { inspectionService } from "@/services";
+import { 
+  warrantyFlowService, 
+  auditLogService, 
+  supportService, 
+  financialService, 
+  systemHealthService 
+} from "@/services";
+import { SystemHealthMetrics } from "@/services";
 import { useToast } from "@/components/ui/use-toast";
 
 /**

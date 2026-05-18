@@ -17,7 +17,7 @@ import {
   ChevronRight,
   CheckCircle2
 } from "lucide-react";
-import { financialService, Installment } from "@/services/FinancialService";
+import { financialService, Installment } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMemo, useState } from "react";
 import { 

@@ -31,13 +31,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { technicianService, type Technician } from "@/services/TechnicianService";
+import { technicianService, type Technician } from "@/services";
 import { DataView } from "@/components/shared/DataView";
 
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { cn } from "@/lib/utils";
-import { exportService } from "@/services/ExportService";
+import { exportService } from "@/services";
 import {
   Dialog,
   DialogContent,

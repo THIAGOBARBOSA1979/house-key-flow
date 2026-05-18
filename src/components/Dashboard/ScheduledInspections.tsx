@@ -3,7 +3,7 @@ import { ChevronRight, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
-import { Inspection } from "@/services/InspectionService";
+import { Inspection } from "@/services";
 
 interface ScheduledInspectionsProps {
   inspections: Inspection[];

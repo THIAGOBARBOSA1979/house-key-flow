@@ -8,7 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Property, propertyService } from "@/services/PropertyService";
+import { Property, propertyService } from "@/services";
 import { PropertyMilestones } from "./PropertyMilestones";
 import { PropertyUnitMap } from "./PropertyUnitMap";
 import { Building, MapPin, User, Ruler, Calendar, LayoutGrid, ListChecks, Info } from "lucide-react";

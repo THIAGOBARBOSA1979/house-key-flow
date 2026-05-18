@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ChecklistItem, ChecklistTemplate, checklistService } from "@/services/ChecklistService";
+import { ChecklistItem, ChecklistTemplate, checklistService } from "@/services";
 import { Plus, FileText, Copy, Edit, Trash, Search, Star, LayoutGrid, List, Archive, Download, Settings, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { exportService } from "@/services/ExportService";
+import { exportService } from "@/services";
 
 
 interface ChecklistTemplatesProps {

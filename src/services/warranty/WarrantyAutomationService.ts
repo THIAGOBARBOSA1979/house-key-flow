@@ -5,9 +5,9 @@ import {
   WARRANTY_NOTIFICATION_TEMPLATES,
   WarrantyRequestFlow
 } from '@/types/warrantyFlow';
-import { warrantyFlowService } from './WarrantyFlowService';
+import { warrantyFlowService } from '@/services';
 import { warrantySLAService } from './WarrantySLAService';
-import { notificationService } from './NotificationService';
+import { notificationService } from '../core/NotificationService';
 import { NotificationType } from '@/types/clientFlow';
 
 /**

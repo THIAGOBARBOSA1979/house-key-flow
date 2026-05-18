@@ -28,8 +28,8 @@ import {
   User
 } from "lucide-react";
 import { ClientStage, ClientProfile, STAGE_CONFIG } from "@/types/clientFlow";
-import { clientStageService } from "@/services/ClientStageService";
-import { notificationService } from "@/services/NotificationService";
+import { clientStageService } from "@/services";
+import { notificationService } from "@/services";
 import { useToast } from "@/components/ui/use-toast";
 import { StageIndicator } from "../ClientFlow/StageIndicator";
 import { format } from "date-fns";

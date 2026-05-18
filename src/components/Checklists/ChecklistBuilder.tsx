@@ -24,7 +24,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { ChecklistItem, ChecklistGroup } from "@/services/ChecklistService";
+import { ChecklistItem, ChecklistGroup } from "@/services";
 import { Plus, Trash, Check, GripVertical, FolderPlus, MoreVertical, Copy } from "lucide-react";
 import { 
   DndContext, 

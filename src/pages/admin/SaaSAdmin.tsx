@@ -1,6 +1,6 @@
 import React from "react";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { Company } from "@/services/CompanyService";
+import { Company } from "@/services";
 import { DataTable } from "@/components/shared/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,9 +39,9 @@ import { CompanyDetailsDialog } from "@/components/Admin/SaaS/CompanyDetailsDial
 import { GovernanceManager } from "@/components/Admin/GovernanceManager";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 
-import { propertyService } from "@/services/PropertyService";
-import { inspectionService } from "@/services/InspectionService";
-import { userService } from "@/services/UserService";
+import { propertyService } from "@/services";
+import { inspectionService } from "@/services";
+import { userService } from "@/services";
 
 export default function SaaSAdmin() {
   const {

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { MessageSquare, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { SupportTicket } from "@/services/SupportService";
+import { SupportTicket } from "@/services";
 
 interface RecentTicketsProps {
   tickets: SupportTicket[];

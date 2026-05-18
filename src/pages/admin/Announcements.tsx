@@ -18,8 +18,8 @@ import {
   Send,
   Bell
 } from "lucide-react";
-import { constructionService, type ConstructionUpdate } from "@/services/ConstructionService";
-import { propertyService } from "@/services/PropertyService";
+import { constructionService, type ConstructionUpdate } from "@/services";
+import { propertyService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Dialog, 

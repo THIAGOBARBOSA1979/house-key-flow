@@ -1,26 +1,35 @@
 export * from './BaseService';
 export * from './SupabaseService';
-export * from './CompanyService';
-export * from './UserService';
-export * from './PropertyService';
-export * from './InspectionService';
-export * from './AuditLogService';
-export * from './DocumentService';
-export * from './SupportService';
-export * from './FinancialService';
-export * from './SystemHealthService';
-export * from './NotificationService';
-export * from './TechnicianService';
-export * from './WarrantyFlowService';
-export * from './ClientStageService';
-export * from './ChecklistService';
-export * from './SyncService';
-export * from './ExportService';
-export * from './SystemSecurityService';
-export * from './SystemSettingsService';
-export * from './GoogleDriveService';
-export * from './WarrantyAutomationService';
-export * from './WarrantyValidationService';
-export * from './WarrantySLAService';
-export * from './ConstructionService';
-export * from './EventAutomationService';
+
+// Identity Domain
+export * from './identity/CompanyService';
+export * from './identity/UserService';
+export * from './identity/SystemSecurityService';
+export * from './identity/SystemSettingsService';
+
+// Operations Domain
+export * from './operations/PropertyService';
+export * from './operations/InspectionService';
+export * from './operations/TechnicianService';
+export * from './operations/ConstructionService';
+export * from './operations/ClientStageService';
+export * from './operations/DocumentService';
+export * from './operations/ChecklistService';
+export * from './operations/FinancialService';
+
+// Warranty Domain
+export * from './warranty/WarrantyFlowService';
+export * from './warranty/WarrantyAutomationService';
+export * from './warranty/WarrantyValidationService';
+export * from './warranty/WarrantySLAService';
+
+// Core Domain
+export * from './core/AuditLogService';
+export * from './core/NotificationService';
+export * from './core/ExportService';
+export * from './core/SyncService';
+export * from './core/SystemHealthService';
+export * from './core/EventAutomationService';
+
+// External Domain
+export * from './external/GoogleDriveService';

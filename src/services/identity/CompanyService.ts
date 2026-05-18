@@ -1,4 +1,4 @@
-import { BaseService } from "./BaseService";
+import { BaseService } from "../BaseService";
 
 export type CompanyStatus = 'active' | 'suspended' | 'cancelled';
 export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise';

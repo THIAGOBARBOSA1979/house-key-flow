@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { documentService, Document } from "@/services/DocumentService";
+import { documentService, Document } from "@/services";
 
 interface BulkActionsProps {
   documents: Document[];

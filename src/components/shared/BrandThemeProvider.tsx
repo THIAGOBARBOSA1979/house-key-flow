@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { companyService } from '@/services/CompanyService';
+import { companyService } from '@/services';
 
 export const BrandThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();

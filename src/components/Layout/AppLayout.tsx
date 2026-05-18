@@ -16,10 +16,10 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { propertyService } from "@/services/PropertyService";
-import { userService } from "@/services/UserService";
-import { companyService } from "@/services/CompanyService";
-import { documentService } from "@/services/DocumentService";
+import { propertyService } from "@/services";
+import { userService } from "@/services";
+import { companyService } from "@/services";
+import { documentService } from "@/services";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 

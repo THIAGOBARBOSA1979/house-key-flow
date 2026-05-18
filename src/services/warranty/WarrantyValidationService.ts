@@ -6,8 +6,8 @@ import {
   WarrantyRequest,
   WarrantyProblemData
 } from "@/types/warranty";
-import { warrantyFlowService } from "./WarrantyFlowService";
-import { clientStageService } from "./ClientStageService";
+import { warrantyFlowService } from "../warranty/WarrantyFlowService";
+import { clientStageService } from "../operations/ClientStageService";
 
 // Mock data for warranty items
 const mockWarrantyItems: WarrantyItem[] = [

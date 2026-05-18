@@ -18,8 +18,8 @@ import {
   Wallet,
   LineChart as LineChartIcon
 } from "lucide-react";
-import { financialService } from "@/services/FinancialService";
-import { exportService } from "@/services/ExportService";
+import { financialService } from "@/services";
+import { exportService } from "@/services";
 import { 
   XAxis, 
   YAxis, 

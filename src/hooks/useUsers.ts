@@ -1,8 +1,8 @@
 import { useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
-import { userService } from "@/services/UserService";
-import { auditLogService } from "@/services/AuditLogService";
+import { userService } from "@/services";
+import { auditLogService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useService } from "@/hooks/useService";
 import { User, UserFiltersData, UserFormData } from "@/types/user";

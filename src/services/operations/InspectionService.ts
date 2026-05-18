@@ -1,6 +1,6 @@
-import { BaseService } from "./BaseService";
-import { auditLogService } from "./AuditLogService";
-import { technicianService, Technician } from "./TechnicianService";
+import { BaseService } from "../BaseService";
+import { auditLogService } from "../core/AuditLogService";
+import { technicianService, Technician } from "../operations/TechnicianService";
 
 export interface Inspection {
   id: string;

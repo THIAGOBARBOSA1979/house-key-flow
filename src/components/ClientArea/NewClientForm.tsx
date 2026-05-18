@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
-import { userService } from "@/services/UserService";
-import { propertyService } from "@/services/PropertyService";
+import { userService } from "@/services";
+import { propertyService } from "@/services";
 
 // Form schema with validation
 const formSchema = z.object({

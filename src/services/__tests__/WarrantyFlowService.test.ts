@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { warrantyFlowService } from '../WarrantyFlowService';
+import { warrantyFlowService } from '../warranty/WarrantyFlowService';
 
 describe('WarrantyFlowService', () => {
   it('should create a new request with correct initial state', () => {

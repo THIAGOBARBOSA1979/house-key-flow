@@ -25,11 +25,13 @@ import { EnhancedWarrantyRequestForm } from "@/components/Warranty/EnhancedWarra
 import { WarrantyItemSelector } from "@/components/Warranty/WarrantyItemSelector";
 import { useToast } from "@/components/ui/use-toast";
 import { WarrantyItem } from "@/types/warranty";
-import { warrantyValidationService } from "@/services/WarrantyValidationService";
+import { 
+  warrantyValidationService, 
+  eventAutomationService, 
+  warrantyFlowService 
+} from "@/services";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
-import { eventAutomationService } from "@/services/EventAutomationService";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { WarrantyRequestTimeline, WarrantyRequestList } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { useAuth } from "@/contexts/AuthContext";
 import { SatisfactionSurvey } from "@/components/Warranty/SatisfactionSurvey";

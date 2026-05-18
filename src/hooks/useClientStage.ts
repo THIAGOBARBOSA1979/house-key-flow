@@ -7,7 +7,7 @@ import {
   TimelineItem,
   ClientEvent
 } from '@/types/clientFlow';
-import { clientStageService } from '@/services/ClientStageService';
+import { clientStageService } from '@/services';
 
 export interface UseClientStageResult {
   profile: ClientProfile | null;

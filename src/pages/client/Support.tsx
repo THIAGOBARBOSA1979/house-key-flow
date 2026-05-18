@@ -36,7 +36,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { supportService, SupportTicket, TicketPriority, TicketCategory } from "@/services/SupportService";
+import { supportService, SupportTicket, TicketPriority, TicketCategory } from "@/services";
 import { useMemo, useEffect } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useAuth } from "@/contexts/AuthContext";

@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { documentService } from "@/services/DocumentService";
+import { documentService } from "@/services";
 import { TrendingUp, TrendingDown, Download, Star, Clock, FileText } from "lucide-react";
 
 export function DocumentAnalytics() {

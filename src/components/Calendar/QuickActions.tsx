@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from "@/components/shared/StatsCard";
-import { inspectionService } from "@/services/InspectionService";
+import { inspectionService } from "@/services";
 
 interface QuickActionsProps {
   todayAppointments: number;

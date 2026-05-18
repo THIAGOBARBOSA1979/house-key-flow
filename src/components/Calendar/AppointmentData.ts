@@ -1,5 +1,5 @@
 
-import { inspectionService } from "@/services/InspectionService";
+import { inspectionService } from "@/services";
 
 export type AppointmentType = "inspection" | "warranty" | "delivery" | "technical_visit";
 export type AppointmentStatus = "pending" | "confirmed" | "completed" | "cancelled" | "rescheduled";
