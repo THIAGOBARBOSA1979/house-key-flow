@@ -41,12 +41,38 @@ export const useWarranty = () => {
   }, [loadData]);
 
   const filteredRequests = useMemo(() => {
-    return warrantyFlowService.getFilteredRequests(filters);
+    return requests.filter(r => {
+      if (filters.search) {
+        const s = filters.search.toLowerCase();
+        if (!r.title.toLowerCase().includes(s) && !r.clientName.toLowerCase().includes(s)) return false;
+      }
+      if (filters.propertyId && r.propertyId !== filters.propertyId) return false;
+      return true;
+    });
   }, [filters, requests]);
 
   const kanbanData = useMemo(() => {
-    return warrantyFlowService.getKanbanData(filters);
-  }, [filters, requests]);
+    // We reuse the filtered requests to build kanban data
+    const data = new Map<WarrantyStage, KanbanCardData[]>();
+    filteredRequests.forEach(request => {
+      const stage = request.currentStage;
+      if (!data.has(stage)) data.set(stage, []);
+      data.get(stage)?.push({
+        id: request.id,
+        request,
+        slaInfo: {
+          stage: request.currentStage,
+          startedAt: request.stageStartedAt,
+          deadline: request.slaDeadline,
+          status: request.slaStatus,
+          hoursRemaining: 0, // Placeholder
+          percentageRemaining: 0 // Placeholder
+        },
+        dragDisabled: false
+      });
+    });
+    return data;
+  }, [filteredRequests]);
 
   const selectedRequest = useMemo(() => {
     return requests.find(r => r.id === selectedRequestId) || null;
