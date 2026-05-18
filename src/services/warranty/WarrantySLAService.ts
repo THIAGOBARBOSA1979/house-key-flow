@@ -7,7 +7,7 @@ import {
   DEFAULT_SLA_CONFIGS,
   WARRANTY_STAGES,
   WarrantyRequestFlow
-} from '../types/warrantyFlow';
+} from '../../types/warrantyFlow';
 
 /**
  * Service for managing SLA configurations and calculations
