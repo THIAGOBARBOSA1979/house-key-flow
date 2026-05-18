@@ -65,7 +65,7 @@ const Users = () => {
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
       <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95">
-        <Upload className="mr-2 h-4 w-4" /> Importar
+        <Upload className="mr-2 h-4 w-4" /> Importação em Massa
       </Button>
       <Button onClick={() => handleOpenForm()} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
         <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
@@ -88,7 +88,7 @@ const Users = () => {
         <UserBulkActions 
           selectedCount={selectedUsers.length} 
           onBulkAction={bulkAction} 
-          onExport={() => exportService.exportToCSV(userList, 'usuarios_a2')} 
+          onExport={() => exportService.exportToCSV(userList, 'governancausuarios_a2')} 
         />
       </UserActionBanner>
 
