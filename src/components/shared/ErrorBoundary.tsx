@@ -53,13 +53,15 @@ export class ErrorBoundary extends Component<Props, State> {
                 <AlertCircle className="w-10 h-10 text-destructive" />
               </div>
               <CardTitle className="text-3xl font-black tracking-tight text-foreground">
-                Algo não correu bem
+                Sincronização Interrompida
               </CardTitle>
+
             </CardHeader>
             <CardContent className="text-center px-10 pb-6">
               <p className="text-muted-foreground font-bold leading-relaxed">
-                Ocorreu um erro inesperado na aplicação. Nossa equipe técnica já foi notificada.
+                Detectamos uma instabilidade no protocolo de carregamento. Nossa equipe de governança técnica já foi notificada para normalizar o acesso.
               </p>
+
               
               {isDev && this.state.error && (
                 <div className="mt-6 p-4 bg-muted rounded-2xl text-left overflow-auto max-h-40">
@@ -77,8 +79,9 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 shadow-lg shadow-primary/20"
               >
                 <RotateCcw className="w-4 h-4" />
-                Recarregar Sistema
+                Reiniciar Módulo
               </Button>
+
               <Button 
                 onClick={this.handleGoHome}
                 variant="outline"
