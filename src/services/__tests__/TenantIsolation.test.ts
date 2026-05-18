@@ -7,17 +7,20 @@ import { userService } from '../identity/UserService';
 describe('Security: Multi-tenant Data Isolation', () => {
   beforeEach(() => {
     // Reset simulator state
-    (simulator as any).tables.set('profiles', [
-      { id: 'admin-t1', company_id: 'tenant-1', role: 'admin' },
-      { id: 'client-t2', company_id: 'tenant-2', role: 'client' }
-    ]);
-    (simulator as any).tables.set('a2_properties', [
-      { id: 'p-t1', company_id: 'tenant-1', name: 'Secret Property T1' },
-      { id: 'p-t2', company_id: 'tenant-2', name: 'Secret Property T2' }
-    ]);
+  beforeEach(() => {
+    // Completely clear internal state of singleton
+    (propertyService as any).items = [];
+    
+    // Seed test data with specific tenant IDs
+    propertyService.create({ name: 'Prop T1', location: 'L1', units: 1, completedUnits: 0, status: 'pending' }, 'tenant-1');
+    propertyService.create({ name: 'Prop T2', location: 'L2', units: 1, completedUnits: 0, status: 'pending' }, 'tenant-2');
   });
 
   it('should strictly filter data by company_id in BaseService', async () => {
+    const allItems = (propertyService as any).items;
+    const p1 = allItems.find((i: any) => i.company_id === 'tenant-1');
+    const p2 = allItems.find((i: any) => i.company_id === 'tenant-2');
+
     // Tenant 1 request
     const t1Data = propertyService.getAll('tenant-1', false);
     expect(t1Data).toHaveLength(1);
