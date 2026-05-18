@@ -1,6 +1,6 @@
 
 // Client Stage Types
-export type ClientStage = 'registered' | 'inspection_enabled' | 'warranty_enabled';
+export type ClientStage = 'lead' | 'registered' | 'inspection_enabled' | 'warranty_enabled';
 
 // Inspection Acceptance Types
 export type InspectionAcceptanceStatus = 'pending_acceptance' | 'accepted' | 'rejected';
@@ -137,6 +137,12 @@ export const STAGE_CONFIG: Record<ClientStage, {
   order: number;
   description: string;
 }> = {
+  lead: {
+    label: 'Lead',
+    order: 0,
+    description: 'Interessado em um imóvel. Aguardando registro completo.'
+  },
+
   registered: {
     label: 'Cadastrado',
     order: 1,
@@ -156,6 +162,16 @@ export const STAGE_CONFIG: Record<ClientStage, {
 
 // Permission mappings per stage
 export const STAGE_PERMISSIONS: Record<ClientStage, StagePermissions> = {
+  lead: {
+    canViewDashboard: true,
+    canViewDocuments: false,
+    canViewProperty: false,
+    canScheduleInspection: false,
+    canStartInspection: false,
+    canRequestWarranty: false,
+    canViewWarrantyHistory: false
+  },
+
   registered: {
     canViewDashboard: true,
     canViewDocuments: true,

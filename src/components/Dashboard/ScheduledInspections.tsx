@@ -34,10 +34,11 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
           inspections.map((inspection) => (
             <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md card-hover-effect rounded-2xl shadow-sem-sm hover:shadow-sem-md transition-all">
               <CardContent className="p-0">
-                <InspectionItem inspection={inspection as any} />
+                <InspectionItem inspection={inspection as any} onUpdate={() => navigate("/admin/inspections")} />
               </CardContent>
             </Card>
           ))
+
         ) : (
           <div className="py-12 text-center bg-muted/10 rounded-2xl border border-dashed">
             <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Nenhuma vistoria para hoje</p>

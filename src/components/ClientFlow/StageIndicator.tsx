@@ -16,12 +16,19 @@ interface StageIndicatorProps {
 }
 
 const stageIcons: Record<ClientStage, typeof UserCheck> = {
+  lead: UserCheck,
   registered: UserCheck,
   inspection_enabled: ClipboardCheck,
   warranty_enabled: ShieldCheck
 };
 
+
 const stageColors: Record<ClientStage, { bg: string; text: string; border: string }> = {
+  lead: {
+    bg: 'bg-muted/10',
+    text: 'text-muted-foreground',
+    border: 'border-muted/20'
+  },
   registered: {
     bg: 'bg-status-pending/10',
     text: 'text-status-pending',
@@ -38,6 +45,7 @@ const stageColors: Record<ClientStage, { bg: string; text: string; border: strin
     border: 'border-status-complete/20'
   }
 };
+
 
 export function StageIndicator({ 
   currentStage, 
@@ -86,7 +94,7 @@ export function StageIndicator({
   }
 
   // Steps variant
-  const stages: ClientStage[] = ['registered', 'inspection_enabled', 'warranty_enabled'];
+  const stages: ClientStage[] = ['lead', 'registered', 'inspection_enabled', 'warranty_enabled'];
   const currentIndex = stages.indexOf(currentStage);
 
   return (
