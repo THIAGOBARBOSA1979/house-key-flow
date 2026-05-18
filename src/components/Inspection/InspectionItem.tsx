@@ -87,7 +87,7 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
 
   return (
     <div className="relative group">
-      <div className="p-4 md:p-5 flex flex-col md:flex-row gap-4 md:items-center justify-between transition-all duration-300 group-hover:bg-muted/30">
+      <div className="p-4 lg:p-5 flex flex-col lg:flex-row gap-4 lg:items-center justify-between transition-all duration-300 group-hover:bg-muted/30">
         <div className="flex flex-col gap-2 min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-primary/10 rounded-lg text-primary shrink-0">
@@ -116,10 +116,10 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
           </div>
         </div>
         
-        <div className="flex gap-2 items-center shrink-0 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-3 md:pt-0 mt-2 md:mt-0">
+        <div className="flex gap-2 items-center shrink-0 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0 mt-2 lg:mt-0">
           <StatusBadge status={inspection.status as any} size="sm" showIcon />
           
-          <div className="flex gap-2 items-center w-full md:w-auto overflow-x-auto md:overflow-visible pb-1 md:pb-0">
+          <div className="flex gap-2 items-center w-full lg:w-auto overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">
             {(inspection.status === "pending" || inspection.status === "progress") && (
               <Button 
                 variant="default" 

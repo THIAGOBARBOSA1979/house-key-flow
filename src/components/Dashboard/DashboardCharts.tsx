@@ -85,8 +85,8 @@ export const DashboardCharts = ({
   }, [financialData]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden md:col-span-1">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
         <CardHeader className="pb-4 border-b border-border/10">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg md:text-h4 font-black">Conformidade SLA</CardTitle>
@@ -131,7 +131,7 @@ export const DashboardCharts = ({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden md:col-span-1">
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
         <CardHeader className="pb-4 border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Distribuição por Etapa</CardTitle>
         </CardHeader>

@@ -144,7 +144,7 @@ export default function Login() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left side - Dynamic Information */}
             <div className="space-y-8">
               <div className="space-y-4">

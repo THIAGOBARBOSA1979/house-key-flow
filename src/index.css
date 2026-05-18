@@ -110,16 +110,16 @@
     --content-padding: var(--space-8);
 
     /* --- Typography Tokens (Fluid with clamp) --- */
-    --font-display: clamp(2rem, 5vw + 0.5rem, 3.75rem);
-    --font-h1: clamp(1.5rem, 3vw + 0.5rem, 2.25rem);
-    --font-h2: clamp(1.25rem, 2.5vw + 0.5rem, 1.875rem);
-    --font-h3: clamp(1.125rem, 2vw + 0.5rem, 1.5rem);
-    --font-h4: clamp(1rem, 1.5vw + 0.5rem, 1.25rem);
-    --font-body-lg: clamp(1rem, 0.5vw + 0.75rem, 1.125rem);
-    --font-body-base: 1rem;
-    --font-body-sm: 0.875rem;
+    --font-display: clamp(1.75rem, 5vw + 0.5rem, 3.75rem);
+    --font-h1: clamp(1.25rem, 3vw + 0.5rem, 2.25rem);
+    --font-h2: clamp(1.125rem, 2.5vw + 0.5rem, 1.875rem);
+    --font-h3: clamp(1rem, 2vw + 0.5rem, 1.5rem);
+    --font-h4: clamp(0.9rem, 1.5vw + 0.5rem, 1.25rem);
+    --font-body-lg: clamp(0.9rem, 0.5vw + 0.75rem, 1.125rem);
+    --font-body-base: clamp(0.875rem, 0.25vw + 0.75rem, 1rem);
+    --font-body-sm: clamp(0.8125rem, 0.15vw + 0.75rem, 0.875rem);
     --font-body-xs: 0.75rem;
-    --font-label: 0.875rem;
+    --font-label: clamp(0.8125rem, 0.15vw + 0.75rem, 0.875rem);
     --font-caption: 0.75rem;
     --font-tiny: 0.625rem;
 

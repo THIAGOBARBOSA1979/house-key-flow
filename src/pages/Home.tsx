@@ -182,7 +182,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-900 dark:bg-black text-white py-12">
         <div className="container-responsive">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white font-bold">
@@ -231,7 +231,7 @@ export default function Home() {
           
           <Separator className="bg-white/20 mb-6" />
           
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
               © 2025 A2 Incorporadora. Todos os direitos reservados.
             </p>

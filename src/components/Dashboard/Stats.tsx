@@ -56,7 +56,7 @@ export const Stats = ({ className }: { className?: string }) => {
 
   return (
     <div className={cn(
-      "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4-sem",
+      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4-sem",
       className
     )}>
       {stats.map((stat) => (

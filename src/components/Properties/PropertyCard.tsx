@@ -51,7 +51,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
         </div>
       </div>
 
-      <CardHeader className="pb-2 space-y-1 px-4 md:px-6">
+      <CardHeader className="pb-2 space-y-1 px-4 lg:px-6">
         <div className="flex justify-between items-start gap-2">
           <div className="min-w-0">
             <CardTitle className="text-lg font-bold truncate leading-tight group-hover:text-primary transition-colors">
@@ -65,7 +65,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pt-2 flex-1 px-4 md:px-6">
+      <CardContent className="space-y-4 pt-2 flex-1 px-4 lg:px-6">
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-muted/20 p-2.5-sem rounded-lg border border-border/10 flex flex-col justify-center">
             <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
@@ -120,7 +120,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
         )}
       </CardContent>
 
-      <CardFooter className="flex-col sm:flex-row gap-2 pt-4 border-t border-border/5 bg-muted/5 px-4 md:px-6">
+      <CardFooter className="flex-col sm:flex-row gap-2 pt-4 border-t border-border/5 bg-muted/5 px-4 lg:px-6">
         <Button 
           variant="default" 
           size="sm" 
