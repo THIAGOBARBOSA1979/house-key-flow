@@ -49,8 +49,9 @@ const Dashboard = () => {
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
       <PageHeader
         icon={Home}
-        title={`Olá, ${user?.name?.split(' ')[0] || 'Administrador'}`}
-        description="Gestão integrada de empreendimentos, vistorias e garantias."
+        title={`Bem-vindo, ${user?.name?.split(' ')[0] || 'Administrador'}`}
+        description="Acompanhe a saúde operacional, o progresso das obras e os indicadores de performance da sua incorporadora."
+
       >
         <div className="flex items-center gap-2">
           <Button 
@@ -68,7 +69,7 @@ const Dashboard = () => {
             className="rounded-lg h-9"
           >
             <Layers className="mr-2 h-4 w-4" />
-            Design System
+            Brand Book
           </Button>
           <Button 
             onClick={() => navigate("/admin/properties")} 

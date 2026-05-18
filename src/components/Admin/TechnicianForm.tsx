@@ -142,7 +142,7 @@ export function TechnicianForm({ initialData, onSubmit, onCancel }: TechnicianFo
             Cancelar
           </Button>
           <Button type="submit" className="rounded-xl h-11 px-8 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20">
-            {initialData ? "Atualizar Técnico" : "Cadastrar Técnico"}
+            {initialData ? "Confirmar Atualização" : "Finalizar Cadastro"}
           </Button>
         </div>
       </form>

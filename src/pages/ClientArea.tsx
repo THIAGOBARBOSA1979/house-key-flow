@@ -98,8 +98,9 @@ const ClientArea = () => {
     <div className="space-y-6">
       <PageHeader
         icon={User}
-        title="Área do Cliente"
-        description="Gestão centralizada de clientes e acesso"
+        title="Gestão de Experiência do Cliente"
+        description="Portal administrativo para governança de acessos, documentos e jornada do proprietário."
+
       >
         <Button variant="outline" onClick={() => exportService.exportToCSV(allProfiles, 'clientes_a2')}>
           <Download className="mr-2 h-4 w-4" />

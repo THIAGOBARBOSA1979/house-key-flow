@@ -16,38 +16,39 @@ export const QuickActions = () => {
 
   const actions = [
     { 
-      label: "Nova Obra", 
-      icon: Building, 
-      onClick: () => navigate("/admin/properties"),
-      color: "text-blue-500",
-      bgColor: "bg-blue-50",
-      description: "Cadastrar empreendimento"
-    },
-    { 
-      label: "Novo Chamado", 
+      label: "Novo Atendimento", 
       icon: ShieldCheck, 
       onClick: () => navigate("/admin/warranty"),
       color: "text-status-critical",
       bgColor: "bg-status-critical/10",
-      description: "Solicitação de assistência"
+      description: "Abrir chamado de garantia"
     },
     { 
-      label: "Área do Cliente", 
+      label: "Novo Empreendimento", 
+      icon: Building, 
+      onClick: () => navigate("/admin/properties"),
+      color: "text-blue-500",
+      bgColor: "bg-blue-50",
+      description: "Expandir o portfólio"
+    },
+    { 
+      label: "Gestão de Clientes", 
       icon: User, 
       onClick: () => navigate("/admin/client-area"),
       color: "text-emerald-500",
       bgColor: "bg-emerald-50",
-      description: "Ver portal do cliente"
+      description: "Painel de relacionamento"
     },
     { 
-      label: "Upload Documento", 
+      label: "Enviar Documentos", 
       icon: FileUp, 
       onClick: () => navigate("/admin/documents"),
       color: "text-purple-500",
       bgColor: "bg-purple-50",
-      description: "Enviar para cliente"
+      description: "Sincronização de arquivos"
     },
   ];
+
 
   return (
     <section>

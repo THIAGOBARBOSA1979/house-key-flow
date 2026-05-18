@@ -17,7 +17,7 @@ export const ActiveProperties = ({ properties }: ActivePropertiesProps) => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
           <Building className="text-primary h-5 w-5 md:h-6 md:w-6" />
-          Empreendimentos Ativos
+          Portfólio Estratégico
         </h2>
         <Button 
           variant="ghost" 

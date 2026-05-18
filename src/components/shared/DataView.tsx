@@ -94,8 +94,9 @@ function DataViewComponent<T>({
     return (
       <EmptyState 
         variant="error"
-        title={error?.title || "Ops! Algo deu errado"}
-        description={error?.message || "Não foi possível carregar os dados. Verifique sua conexão e tente novamente."}
+        title={error?.title || "Sincronização interrompida"}
+        description={error?.message || "Não foi possível processar sua solicitação no momento. Verifique sua conexão estratégica e tente novamente."}
+
         actionLabel={error?.retry ? "Tentar Novamente" : undefined}
         onAction={error?.retry}
       />
@@ -105,8 +106,9 @@ function DataViewComponent<T>({
   if (items.length === 0) {
     return (
       <EmptyState 
-        title={emptyState?.title || "Nenhum registro encontrado"}
-        description={emptyState?.description || "Tente ajustar seus filtros para encontrar o que procura."}
+        title={emptyState?.title || "Nenhum dado encontrado"}
+        description={emptyState?.description || "Ajuste seus parâmetros de busca para refinar os resultados."}
+
         icon={emptyState?.icon}
         action={emptyState?.action}
       />

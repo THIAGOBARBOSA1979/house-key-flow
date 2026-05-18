@@ -79,43 +79,44 @@ export default function Login() {
   const adminFeatures = [
     {
       icon: Users,
-      title: "Gestão de Usuários",
-      description: "Controle completo de clientes e equipe"
+      title: "Inteligência de Equipe",
+      description: "Governança completa de acessos, perfis e produtividade do time."
     },
     {
       icon: Building2,
-      title: "Gestão de Imóveis", 
-      description: "Administre todo o portfólio de imóveis"
+      title: "Ecossistema de Portfólio", 
+      description: "Visão estratégica e detalhada de todos os seus empreendimentos."
     },
     {
       icon: BarChart3,
-      title: "Relatórios Avançados",
-      description: "Insights e métricas detalhadas"
+      title: "Analytics de Decisão",
+      description: "Insights em tempo real para otimizar a saúde do seu negócio."
     },
     {
       icon: Settings,
-      title: "Configurações",
-      description: "Personalize o sistema conforme sua necessidade"
+      title: "Arquitetura Customizável",
+      description: "Configure fluxos e regras que se adaptam à sua operação."
     }
   ];
 
   const clientBenefits = [
     {
       icon: Building2,
-      title: "Gestão Completa",
-      description: "Visualize todos os detalhes do seu imóvel e documentos."
+      title: "Seu Imóvel na Palma da Mão",
+      description: "Acesse documentos, plantas e o histórico completo do seu patrimônio."
     },
     {
       icon: CheckCircle2,
-      title: "Vistorias Digitais",
-      description: "Agende vistorias online e receba relatórios detalhados."
+      title: "Vistorias sem Fricção",
+      description: "Acompanhe cronogramas e aprove vistorias com total segurança jurídica."
     },
     {
       icon: Shield,
-      title: "Garantias Ágeis",
-      description: "Solicite atendimentos de garantia 24/7."
+      title: "Suporte de Excelência",
+      description: "Solicite e acompanhe garantias com a agilidade que você merece."
     }
   ];
+
 
   const stats = [
     { value: "98%", label: "Satisfação", icon: Star },
@@ -152,25 +153,26 @@ export default function Login() {
                   <Shield className="h-4 w-4" />
                   {activeTab === "admin" ? "Área Administrativa" : "Portal do Cliente"}
                 </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tight">
                   {activeTab === "admin" ? (
                     <>
-                      Controle total do seu
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-blue-600"> negócio imobiliário</span>
+                      Domine sua operação com
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> inteligência estratégica</span>
                     </>
                   ) : (
                     <>
-                      Sua casa, nosso
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> compromisso</span>
+                      Experiência premium para o
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> seu novo lar</span>
                     </>
                   )}
                 </h2>
-                <p className="text-body-lg text-muted-foreground leading-relaxed">
+                <p className="text-body-lg text-muted-foreground leading-relaxed font-medium">
                   {activeTab === "admin" 
-                    ? "Acesse o painel administrativo e gerencie todos os aspectos do seu empreendimento com eficiência e segurança."
-                    : "Acesse sua área exclusiva e tenha controle total sobre seu imóvel, vistorias e garantias de forma simples e intuitiva."
+                    ? "O centro de comando definitivo para gerir incorporadoras de alta performance com segurança e agilidade."
+                    : "Acesse seu ecossistema exclusivo e gerencie seu imóvel, vistorias e garantias com o padrão A2 de excelência."
                   }
                 </p>
+
               </div>
 
               {/* Stats for client */}

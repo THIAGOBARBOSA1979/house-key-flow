@@ -24,17 +24,18 @@ export default function ForgotPassword() {
           <div className="inline-flex w-16 h-16 rounded-2xl bg-gradient-to-br from-brand to-indigo-600 items-center justify-center text-brand-foreground font-bold text-2xl shadow-xl mb-4">
             A2
           </div>
-          <h1 className="text-2xl font-black tracking-tighter">Recuperar Senha</h1>
+          <h1 className="text-2xl font-black tracking-tighter">Recuperação de Acesso</h1>
         </div>
 
         <Card className="shadow-2xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
           <CardHeader className="pb-6">
-            <CardTitle className="text-xl font-bold">Esqueceu sua senha?</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-xl font-black">Problemas com sua senha?</CardTitle>
+            <CardDescription className="text-sm font-medium">
               {submitted 
-                ? "Se o email estiver cadastrado, você receberá um link de recuperação em instantes."
-                : "Digite seu email e enviaremos as instruções para você criar uma nova senha."}
+                ? "Se o endereço estiver em nossa base de dados, você receberá instruções de segurança em instantes."
+                : "Informe seu e-mail corporativo para iniciarmos o protocolo de redefinição de segurança."}
             </CardDescription>
+
           </CardHeader>
           <CardContent>
             {!submitted ? (

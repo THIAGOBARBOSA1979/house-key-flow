@@ -23,14 +23,14 @@ export const Stats = ({ className }: { className?: string }) => {
 
   const stats: StatItem[] = useMemo(() => [
     {
-      title: "Empreendimentos",
+      title: "Portfólio",
       value: properties.length,
       icon: Building,
       description: `${properties.filter(p => p.status === 'progress').length} em execução`,
       variant: "brand",
     },
     {
-      title: "Vistorias",
+      title: "Entregas Técnicas",
       value: inspections.length,
       icon: ClipboardCheck,
       description: `${inspections.filter(i => i.status === 'pending').length} pendentes`,
@@ -45,10 +45,10 @@ export const Stats = ({ className }: { className?: string }) => {
       variant: "progress",
     },
     {
-      title: "Eficiência",
+      title: "Saúde Operacional",
       value: "96%",
       icon: Activity,
-      description: "SLA dentro do prazo",
+      description: "SLA de conformidade",
       variant: "pending",
       trend: { value: "3%", isPositive: true }
     },

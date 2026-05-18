@@ -92,8 +92,9 @@ export default function Inspections() {
 
   return (
     <PageTemplate
-      title="Vistorias e Entregas"
-      description="Gestão do ciclo de vida de vistorias, desde a técnica até a entrega das chaves."
+      title="Vistorias e Entregas Técnicas"
+      description="Controle absoluto do ciclo de vida das vistorias, garantindo conformidade e excelência na entrega das chaves."
+
       icon={ClipboardCheck}
       actions={actions}
     >
