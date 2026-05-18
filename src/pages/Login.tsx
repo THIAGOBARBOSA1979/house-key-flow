@@ -62,19 +62,24 @@ export default function Login() {
     try {
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
-        localStorage.setItem(activeTab === "admin" ? "rememberAdmin" : "rememberClient", "true");
+        localStorage.setItem(
+          activeTab === "master" ? "rememberMaster" : (activeTab === "admin" ? "rememberAdmin" : "rememberClient"), 
+          "true"
+        );
       } else {
         localStorage.removeItem("rememberMe");
         localStorage.removeItem("rememberAdmin");
         localStorage.removeItem("rememberClient");
+        localStorage.removeItem("rememberMaster");
       }
 
-      
-      await login(values.email, values.password, activeTab as 'admin' | 'client');
+      const role = activeTab === 'master' ? 'admin' : (activeTab as 'admin' | 'client');
+      await login(values.email, values.password, role);
     } catch (error) {
       console.error("Login error:", error);
     }
   };
+
 
   const adminFeatures = [
     {
@@ -225,10 +230,12 @@ export default function Login() {
                 <CardContent className="space-y-6">
                   {/* Tabs for switching between admin and client */}
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
                       <TabsTrigger value="client">Portal do Cliente</TabsTrigger>
                       <TabsTrigger value="admin">Área Administrativa</TabsTrigger>
+                      <TabsTrigger value="master">SaaS Master</TabsTrigger>
                     </TabsList>
+
                     
                     <TabsContent value="client" className="mt-6">
                       <Form {...form}>
