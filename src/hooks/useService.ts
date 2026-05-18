@@ -12,36 +12,27 @@ interface UseServiceOptions<T> {
   };
 }
 
-/**
- * Generic hook to interact with any BaseService.
- * Handles loading state, local state management, and common toast notifications.
- */
 export function useService<T extends { id?: string }>(
   service: BaseService<T>,
   options: UseServiceOptions<T> = {}
 ) {
   const { toast } = useToast();
-  const [items, setItems] = useState<T[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const refresh = useCallback(() => {
-    setIsLoading(true);
-    try {
-      const data = service.getAll();
-      setItems(data);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [service]);
+  const [items, setItems] = useState<T[]>(() => service.getAll());
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    return service.subscribe((newItems) => {
+      setItems(newItems);
+    });
+  }, [service]);
+
+  const refresh = useCallback(() => {
+    setItems(service.getAll());
+  }, [service]);
 
   const create = useCallback(async (data: Omit<T, "id">) => {
     try {
       const newItem = service.create(data);
-      refresh();
       if (options.toastMessages?.create) {
         toast({ title: "Sucesso", description: options.toastMessages.create });
       }
@@ -51,13 +42,12 @@ export function useService<T extends { id?: string }>(
       options.onError?.(error);
       toast({ title: "Erro", description: "Falha ao criar item.", variant: "destructive" });
     }
-  }, [service, refresh, options, toast]);
+  }, [service, options, toast]);
 
   const update = useCallback(async (id: string, data: Partial<T>) => {
     try {
       const updatedItem = service.update(id, data);
       if (updatedItem) {
-        refresh();
         if (options.toastMessages?.update) {
           toast({ title: "Sucesso", description: options.toastMessages.update });
         }
@@ -68,14 +58,13 @@ export function useService<T extends { id?: string }>(
       options.onError?.(error);
       toast({ title: "Erro", description: "Falha ao atualizar item.", variant: "destructive" });
     }
-  }, [service, refresh, options, toast]);
+  }, [service, options, toast]);
 
   const remove = useCallback(async (id: string) => {
     try {
       const deletedItem = service.getById(id);
       const success = service.delete(id);
       if (success) {
-        refresh();
         if (options.toastMessages?.delete) {
           toast({ title: "Sucesso", description: options.toastMessages.delete });
         }
@@ -86,7 +75,7 @@ export function useService<T extends { id?: string }>(
       options.onError?.(error);
       toast({ title: "Erro", description: "Falha ao remover item.", variant: "destructive" });
     }
-  }, [service, refresh, options, toast]);
+  }, [service, options, toast]);
 
   return {
     items,
@@ -98,4 +87,5 @@ export function useService<T extends { id?: string }>(
     getById: useCallback((id: string) => service.getById(id), [service])
   };
 }
+
 
