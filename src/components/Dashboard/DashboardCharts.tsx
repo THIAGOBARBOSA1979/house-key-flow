@@ -116,7 +116,7 @@ export const DashboardCharts = () => {
                />
              </svg>
              <div className="absolute inset-0 flex flex-col items-center justify-center">
-               <span className="text-4xl font-black tracking-tighter text-foreground">{warrantyFlowService.calculateMetrics().slaComplianceRate}%</span>
+               <span className="text-4xl font-black tracking-tighter text-foreground font-sans">{warrantyFlowService.calculateMetrics().slaComplianceRate}%</span>
                <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Global</span>
              </div>
           </div>
@@ -150,11 +150,11 @@ export const DashboardCharts = () => {
                   type="category" 
                   axisLine={false} 
                   tickLine={false}
-                  tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))', fontWeight: 700 }}
+                  tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))', fontWeight: 700, fontFamily: 'var(--font-sans)' }}
                 />
                 <Tooltip 
                   cursor={{ fill: 'hsl(var(--muted))', opacity: 0.1 }}
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px', fontFamily: 'var(--font-sans)' }}
                 />
                 <Bar dataKey="total" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20} />
               </BarChart>
@@ -176,12 +176,12 @@ export const DashboardCharts = () => {
                   dataKey="name" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
+                   tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600, fontFamily: 'var(--font-sans)' }}
                 />
                 <YAxis 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600 }}
+                  tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))', fontWeight: 600, fontFamily: 'var(--font-sans)' }}
                 />
                 <Tooltip 
                   cursor={{ fill: 'hsl(var(--muted))', opacity: 0.1 }}
@@ -190,8 +190,9 @@ export const DashboardCharts = () => {
                     borderRadius: 'var(--radius-md)', 
                     border: '1px solid hsl(var(--border))',
                     boxShadow: 'var(--shadow-md)',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
+                     fontSize: '12px',
+                    fontWeight: 'bold',
+                    fontFamily: 'var(--font-sans)'
                   }}
                 />
                 <Bar 
@@ -239,14 +240,15 @@ export const DashboardCharts = () => {
                     borderRadius: 'var(--radius-md)', 
                     border: '1px solid hsl(var(--border))',
                     boxShadow: 'var(--shadow-md)',
-                    fontSize: '12px'
+                     fontSize: '12px',
+                    fontFamily: 'var(--font-sans)'
                   }}
                 />
                 <Legend 
                   verticalAlign="bottom" 
                   height={36}
                   iconType="circle"
-                  formatter={(value) => <span className="text-tiny font-bold text-muted-foreground uppercase tracking-wider ml-1">{value}</span>}
+                  formatter={(value) => <span className="text-tiny font-bold text-muted-foreground uppercase tracking-wider ml-1 font-sans">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
