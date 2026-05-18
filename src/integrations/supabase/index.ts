@@ -116,6 +116,7 @@ export class SupabaseDatabase {
       select?: string;
     }
   ): Promise<SupabaseResponse<T[]>> {
+    // @ts-ignore
     let query = supabase.from(table).select(params?.select || '*');
 
     if (params?.filters) {
@@ -141,26 +142,31 @@ export class SupabaseDatabase {
   }
 
   static async findOne<T>(table: string, id: string, idColumn: string = 'id'): Promise<SupabaseResponse<T>> {
+    // @ts-ignore
     const result = await supabase.from(table).select('*').eq(idColumn, id).single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async create<T>(table: string, data: Partial<T>): Promise<SupabaseResponse<T>> {
+    // @ts-ignore
     const result = await supabase.from(table).insert(data as any).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async update<T>(table: string, id: string, data: Partial<T>, idColumn: string = 'id'): Promise<SupabaseResponse<T>> {
+    // @ts-ignore
     const result = await supabase.from(table).update(data as any).eq(idColumn, id).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async delete(table: string, id: string, idColumn: string = 'id'): Promise<SupabaseResponse<void>> {
+    // @ts-ignore
     const result = await supabase.from(table).delete().eq(idColumn, id);
     return SupabaseErrorHandler.wrap(Promise.resolve({ data: null, error: result.error }));
   }
 
   static async rpc<T>(name: string, params?: any): Promise<SupabaseResponse<T>> {
+    // @ts-ignore
     const result = await supabase.rpc(name, params);
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
@@ -224,7 +230,7 @@ export class SupabaseStorage {
 
       if (error) throw error;
       if (onProgress) onProgress(100);
-      return { data: { path: data.path }, error: null };
+      return { data: { path: (data as any).path }, error: null };
     } catch (error: any) {
       return { data: null, error: SupabaseErrorHandler.handle(error) };
     }
