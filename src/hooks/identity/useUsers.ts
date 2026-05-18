@@ -97,10 +97,16 @@ export const useUsers = () => {
     filteredUsers,
     selectedUsers,
     stats,
-    filters: { ...filters, search: searchTerm },
-    setFilters: (newFilters: any) => {
+    filters: {
+      search: searchTerm,
+      role: (filters.role as any) || "all",
+      status: (filters.status as any) || "all",
+      property: (filters.property as any) || "all",
+      unit: (filters.unit as any) || ""
+    } as UserFiltersData,
+    setFilters: (newFilters: Partial<UserFiltersData>) => {
       if (newFilters.search !== undefined) setSearchTerm(newFilters.search);
-      setFilters(newFilters);
+      setFilters(prev => ({ ...prev, ...newFilters }));
     },
     saveUser,
     deleteUser,
