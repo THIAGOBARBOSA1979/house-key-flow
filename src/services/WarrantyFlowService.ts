@@ -482,7 +482,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
 
   updateCosts(
     requestId: string,
-    data: { estimatedCost?: number; actualCost?: number; materials?: unknown[] },
+    data: { estimatedCost?: number; actualCost?: number; materials?: WarrantyRequestFlow["materials"] },
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     const request = this.getById(requestId);
