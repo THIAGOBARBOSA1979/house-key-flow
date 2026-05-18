@@ -89,11 +89,18 @@ const Users = () => {
         />
       </UserActionBanner>
 
-      <UserFilters onFilterChange={setFilters} totalUsers={filteredUsers.length} activeFilters={filters} />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <UserFilters onFilterChange={setFilters} totalUsers={filteredUsers.length} activeFilters={filters} />
+        <div className="flex bg-muted/40 p-1 rounded-xl">
+           <Button variant={viewMode === 'grid' ? 'default' : 'ghost'} size="sm" onClick={() => setViewMode('grid')} className="rounded-lg h-8 w-8 p-0"><UsersIcon className="h-4 w-4" /></Button>
+           <Button variant={viewMode === 'table' ? 'default' : 'ghost'} size="sm" onClick={() => setViewMode('table')} className="rounded-lg h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4 rotate-90" /></Button>
+        </div>
+      </div>
 
       <DataView<UserType>
         items={filteredUsers}
-        viewMode="grid"
+        viewMode={viewMode}
+        itemsPerPage={8}
         renderGrid={(user) => (
           <UserCard 
             key={user.id}
@@ -107,12 +114,67 @@ const Users = () => {
             onViewProfile={(u) => toast({ title: "Perfil", description: `Visualizando ${u.name}` })}
           />
         )}
+        columns={[
+          {
+            header: "",
+            accessorKey: "id",
+            cell: (user: UserType) => (
+              <Checkbox 
+                checked={selectedUsers.includes(user.id!)}
+                onCheckedChange={() => toggleSelectUser(user.id!)}
+                onClick={(e) => e.stopPropagation()}
+              />
+            )
+          },
+          { 
+            header: "Usuário", 
+            accessorKey: "name",
+            cell: (user: UserType) => (
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
+                  {user.name.charAt(0)}
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-bold">{user.name}</span>
+                  <span className="text-[10px] text-muted-foreground">{user.email}</span>
+                </div>
+              </div>
+            )
+          },
+          { header: "Perfil", accessorKey: "role", cell: (user: UserType) => (
+            <span className="text-xs font-medium uppercase tracking-wider">{user.role}</span>
+          )},
+          { header: "Status", accessorKey: "status", cell: (user: UserType) => (
+            <StatusBadge status={user.status === 'active' ? 'complete' : 'pending'} size="sm" />
+          )},
+          {
+            header: "Ações",
+            accessorKey: "id",
+            className: "text-right",
+            cell: (user: UserType) => (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => handleOpenForm(user)}><Pencil className="mr-2 h-4 w-4" /> Editar</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleResendInvite(user)}><Mail className="mr-2 h-4 w-4" /> Reenviar Convite</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => toggleUserStatus(user.id!)}><ShieldCheck className="mr-2 h-4 w-4" /> {user.status === 'active' ? 'Desativar' : 'Ativar'}</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive font-bold" onClick={() => deleteUser(user.id!)}><Trash2 className="mr-2 h-4 w-4" /> Excluir</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
+          }
+        ]}
         emptyState={{
           title: "Nenhum usuário encontrado",
           description: "Ajuste os filtros para encontrar o que procura.",
           action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" }) }
         }}
       />
+
 
       <UserDialogs 
         isFormOpen={isUserFormOpen} 
