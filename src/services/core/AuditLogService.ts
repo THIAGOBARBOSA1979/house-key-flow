@@ -1,4 +1,4 @@
-import { SupabaseService } from "./SupabaseService";
+import { SupabaseService } from "../SupabaseService";
 import { Supabase } from "@/integration/supabase";
 import { SupabaseRealtime } from "@/integration/supabase/realtime";
 

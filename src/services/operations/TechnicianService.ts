@@ -1,4 +1,4 @@
-import { BaseService } from "./BaseService";
+import { BaseService } from "../BaseService";
 import { auditLogService } from '../core/AuditLogService';
 
 export interface Technician {

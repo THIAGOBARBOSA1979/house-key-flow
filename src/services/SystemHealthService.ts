@@ -1,5 +1,5 @@
 
-import { auditLogService } from './AuditLogService';
+import { auditLogService } from '../core/AuditLogService';
 import { propertyService } from './PropertyService';
 import { inspectionService } from './InspectionService';
 import { warrantyFlowService } from './warranty/WarrantyFlowService';

@@ -1,5 +1,5 @@
-import { BaseService } from "./BaseService";
-import { auditLogService } from "./AuditLogService";
+import { BaseService } from "../BaseService";
+import { auditLogService } from "../core/AuditLogService";
 import { technicianService, Technician } from "./TechnicianService";
 
 export interface Inspection {

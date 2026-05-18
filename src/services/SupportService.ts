@@ -1,5 +1,5 @@
-import { BaseService } from "./BaseService";
-import { auditLogService } from "./AuditLogService";
+import { BaseService } from "../BaseService";
+import { auditLogService } from "../core/AuditLogService";
 
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';

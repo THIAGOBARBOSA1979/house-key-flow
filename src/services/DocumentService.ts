@@ -1,5 +1,5 @@
-import { BaseService } from "./BaseService";
-import { auditLogService } from "./AuditLogService";
+import { BaseService } from "../BaseService";
+import { auditLogService } from "../core/AuditLogService";
 
 export interface SignatureEvidence {
   browser?: string;

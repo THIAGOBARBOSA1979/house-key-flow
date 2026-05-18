@@ -1,7 +1,7 @@
 import { clientStageService } from './ClientStageService';
 import { notificationService } from './NotificationService';
 import { ClientEvent, EventType } from '@/types/clientFlow';
-import { auditLogService } from './AuditLogService';
+import { auditLogService } from '../core/AuditLogService';
 
 export interface AutomationResult {
   success: boolean;
