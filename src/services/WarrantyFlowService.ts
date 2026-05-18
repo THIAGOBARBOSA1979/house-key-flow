@@ -363,8 +363,9 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
       return { success: false, error: "Solicitação não encontrada" };
     }
     
-    if (isFinalStage(request.currentStage)) {
-      return { success: false, error: "Não é possível alterar uma solicitação finalizada" };
+    if (isFinalStage(request.currentStage) && newStatus !== 'in_analysis') {
+      this.log('error', `Cannot move finalized request ${requestId} to ${newStatus}`);
+      return { success: false, error: "Não é possível alterar uma solicitação finalizada (exceto para reabertura em análise)" };
     }
 
     // Validation: Require assignee for 'inspection_scheduled' or 'in_execution'

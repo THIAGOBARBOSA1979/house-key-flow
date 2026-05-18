@@ -99,8 +99,10 @@ describe('WarrantyFlowService Extended Tests', () => {
     expect(rejectResult.success).toBe(true);
     expect(rejectResult.request?.currentStage).toBe('rejected');
 
-    // Note: Reopening is not explicitly in changeStatus but would be a transition back to opened or in_analysis
-    // If isValidTransition allows it.
+    // Reopening
+    const reopenResult = warrantyFlowService.changeStatus(request.id, 'in_analysis', 'admin-1', false, 'Reaberto para revisão');
+    expect(reopenResult.success).toBe(true);
+    expect(reopenResult.request?.currentStage).toBe('in_analysis');
   });
 
   it('should validate mandatory fields for each stage', () => {
