@@ -5,21 +5,31 @@ import { SupabaseRealtime } from "@/integration/supabase/realtime";
 
 class UserService extends BaseService<User> {
   constructor() {
-    super("a2_users", []);
+    super({
+      storageKey: "a2_users",
+      auditEntityType: "user",
+      shouldSyncWithSupabase: true
+    }, []);
     this.initializeSupabase();
   }
 
   private async initializeSupabase() {
     const { data } = await Supabase.db.findMany<User>('profiles');
     if (data) {
-      this.items = data;
+      this.items = data.map(raw => ({
+        ...raw,
+        name: (raw as any).full_name || (raw as any).name
+      } as User));
       this.persist();
     }
 
     SupabaseRealtime.subscribeToTable('profiles', async () => {
       const { data: newData } = await Supabase.db.findMany<User>('profiles');
       if (newData) {
-        this.items = newData;
+        this.items = newData.map(raw => ({
+          ...raw,
+          name: (raw as any).full_name || (raw as any).name
+        } as User));
         this.persist();
       }
     });
