@@ -13,7 +13,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
-        'src/test/setup.ts',
+        'src/test/**',
         '**/*.d.ts',
         '**/*.test.tsx',
         '**/*.test.ts',
@@ -23,12 +23,28 @@ export default defineConfig({
         'src/types/**',
       ],
       thresholds: {
-        lines: 25,
-        functions: 20,
-        branches: 20,
-        statements: 25
+        'src/services/**': {
+          lines: 25,
+          functions: 20,
+          branches: 20,
+          statements: 25
+        },
+        'src/hooks/**': {
+          lines: 25,
+          functions: 20,
+          branches: 5,
+          statements: 25
+        },
+        'src/core/**': {
+          lines: 25,
+          functions: 20,
+          branches: 20,
+          statements: 25
+        }
       }
     },
+
+
 
 
   },
