@@ -1,5 +1,5 @@
 import { Folder, FileText, Plus, FolderPlus, Upload, ClipboardCheck, LayoutGrid, ShieldCheck, Zap, Grid, CheckCircle2 } from "lucide-react";
-import { documentService } from "@/services/DocumentService";
+import { documentService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";

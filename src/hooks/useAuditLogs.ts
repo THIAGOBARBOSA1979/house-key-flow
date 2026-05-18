@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { auditLogService, AuditLogEntry, AuditEntityType } from "@/services/AuditLogService";
+import { auditLogService, AuditLogEntry, AuditEntityType } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface UseAuditLogsProps {

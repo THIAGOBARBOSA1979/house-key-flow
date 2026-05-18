@@ -48,7 +48,7 @@ import {
 import { useInspections } from "@/hooks/useInspections";
 import { Button } from "@/components/ui/button";
 import { DataViewMode } from "@/components/shared/DataView";
-import { inspectionService } from "@/services/InspectionService";
+import { inspectionService } from "@/services";
 
 
 

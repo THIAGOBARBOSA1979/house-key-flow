@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ConstructionUpdate } from "@/services/ConstructionService";
+import { ConstructionUpdate } from "@/services";
 import { Calendar, Camera, FileText, Video, ChevronRight, Newspaper, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";

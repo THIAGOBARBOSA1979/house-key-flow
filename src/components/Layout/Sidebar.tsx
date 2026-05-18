@@ -31,7 +31,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { companyService } from "@/services/CompanyService";
+import { companyService } from "@/services";
 import { AuthGuard } from "@/integration/supabase/auth-guard";
 
 

@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
-import { propertyService } from "@/services/PropertyService";
+import { propertyService } from "@/services";
 import { useService } from "@/hooks/useService";
 import { Property } from "@/types/property";
 

@@ -26,7 +26,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { supportService, SupportTicket, TicketMessage } from "@/services/SupportService";
+import { supportService, SupportTicket, TicketMessage } from "@/services";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";

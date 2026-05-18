@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { notificationService } from "@/services/NotificationService";
+import { notificationService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationSettings } from "@/types/clientFlow";
 

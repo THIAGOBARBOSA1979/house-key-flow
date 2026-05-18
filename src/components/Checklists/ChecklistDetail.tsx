@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ChecklistItem, ChecklistGroup } from '@/services/ChecklistService';
+import { ChecklistItem, ChecklistGroup } from '@/services';
 import { Check, X, AlertCircle, ArrowLeft, Camera, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';

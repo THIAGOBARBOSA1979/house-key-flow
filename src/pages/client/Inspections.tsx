@@ -16,13 +16,13 @@ import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDi
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { RescheduleInspectionDialog } from "@/components/Inspection/RescheduleInspectionDialog";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
-import { documentService } from "@/services/DocumentService";
+import { documentService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks/useClientStage";
 import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptance";
 import { useAuth } from "@/contexts/AuthContext";
-import { inspectionService, Inspection } from "@/services/InspectionService";
+import { inspectionService, Inspection } from "@/services";
 import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
 import { cn } from "@/lib/utils";
 

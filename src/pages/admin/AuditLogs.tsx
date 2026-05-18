@@ -4,8 +4,8 @@ import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { useToast } from "@/hooks/use-toast";
-import { exportService } from "@/services/ExportService";
-import { auditLogService } from "@/services/AuditLogService";
+import { exportService } from "@/services";
+import { auditLogService } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
 
 const AuditLogs = () => {

@@ -21,8 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { systemSettingsService, SystemSettings } from "@/services/SystemSettingsService";
-import { companyService, CompanySettings } from "@/services/CompanyService";
+import { systemSettingsService, SystemSettings } from "@/services";
+import { companyService, CompanySettings } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {

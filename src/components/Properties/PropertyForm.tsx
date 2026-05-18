@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn, safeFormat } from "@/lib/utils";
-import { propertySchema, type Property } from "@/services/PropertyService";
+import { propertySchema, type Property } from "@/services";
 
 interface PropertyFormProps {
   initialData?: Property;

@@ -2,7 +2,7 @@
 import React from "react";
 import { CheckCircle2, Circle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PropertyMilestone } from "@/services/PropertyService";
+import { PropertyMilestone } from "@/services";
 import { safeFormat } from "@/lib/utils";
 
 interface PropertyMilestonesProps {

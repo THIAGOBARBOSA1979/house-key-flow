@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { checklistService } from "@/services/ChecklistService";
+import { checklistService } from "@/services";
 
 export const ChecklistSelector = ({ 
   onSelect 

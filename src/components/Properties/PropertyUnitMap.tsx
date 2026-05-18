@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { PropertyUnit, propertyService } from "@/services/PropertyService";
+import { PropertyUnit, propertyService } from "@/services";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Plus, Settings2, Trash2, CheckCircle2, MoreVertical, LayoutPanelTop, ShoppingCart, Truck } from "lucide-react";

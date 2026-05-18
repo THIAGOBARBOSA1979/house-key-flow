@@ -31,7 +31,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks/useClientStage";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { propertyService, Property } from "@/services/PropertyService";
+import { propertyService, Property } from "@/services";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 

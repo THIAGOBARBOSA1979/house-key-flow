@@ -3,7 +3,7 @@ import { ChevronRight, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
-import { Property } from "@/services/PropertyService";
+import { Property } from "@/services";
 
 interface ActivePropertiesProps {
   properties: Property[];

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DocumentVersion, Document } from "@/services/DocumentService";
+import { DocumentVersion, Document } from "@/services";
 import { History, Download, Eye, Clock, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 

@@ -12,16 +12,16 @@ import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredent
 import { ClientStageManager } from "@/components/Admin/ClientStageManager";
 import { ClientEventHistory } from "@/components/Admin/ClientEventHistory";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
-import { clientStageService } from "@/services/ClientStageService";
-import { notificationService } from "@/services/NotificationService";
-import { auditLogService } from "@/services/AuditLogService";
+import { clientStageService } from "@/services";
+import { notificationService } from "@/services";
+import { auditLogService } from "@/services";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { exportService } from "@/services/ExportService";
+import { exportService } from "@/services";
 import { DataViewMode } from "@/components/shared/DataView";
 
 

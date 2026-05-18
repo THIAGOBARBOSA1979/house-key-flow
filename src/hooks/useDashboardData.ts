@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
-import { propertyService } from "@/services/PropertyService";
-import { inspectionService } from "@/services/InspectionService";
+import { propertyService } from "@/services";
+import { inspectionService } from "@/services";
 import { 
   warrantyFlowService, 
   auditLogService, 
@@ -10,7 +10,7 @@ import {
   financialService, 
   systemHealthService 
 } from "@/services";
-import { SystemHealthMetrics } from "@/services/SystemHealthService";
+import { SystemHealthMetrics } from "@/services";
 import { useToast } from "@/components/ui/use-toast";
 
 /**

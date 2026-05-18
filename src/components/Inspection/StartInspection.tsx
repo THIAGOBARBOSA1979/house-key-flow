@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Check, X, Upload, Camera, AlertCircle, ArrowLeft, ClipboardList, CheckCircle2 } from "lucide-react";
-import { checklistService, ChecklistTemplate, ChecklistGroup, ChecklistItem } from "@/services/ChecklistService";
-import { inspectionService } from "@/services/InspectionService";
-import { documentService } from "@/services/DocumentService";
+import { checklistService, ChecklistTemplate, ChecklistGroup, ChecklistItem } from "@/services";
+import { inspectionService } from "@/services";
+import { documentService } from "@/services";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";

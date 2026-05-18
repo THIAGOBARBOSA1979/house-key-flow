@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
-import { BaseService } from '@/services/BaseService';
+import { BaseService } from '@/services';
 import { useToast } from '@/hooks/use-toast';
 
 interface UseServiceOptions<T> {

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
-import { companyService, Company, CompanyStatus, SubscriptionPlan, CompanySettings } from "@/services/CompanyService";
-import { userService } from "@/services/UserService";
+import { companyService, Company, CompanyStatus, SubscriptionPlan, CompanySettings } from "@/services";
+import { userService } from "@/services";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 

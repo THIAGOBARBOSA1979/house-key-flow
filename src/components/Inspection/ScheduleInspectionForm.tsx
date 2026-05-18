@@ -34,7 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { ChecklistSelector } from "./ChecklistSelector";
-import { inspectionService } from "@/services/InspectionService";
+import { inspectionService } from "@/services";
 
 
 const formSchema = z.object({

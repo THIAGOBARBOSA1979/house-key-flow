@@ -25,7 +25,7 @@ import {
   Trash2, 
   Users as UsersIcon 
 } from "lucide-react";
-import { Company, CompanySettings, SubscriptionPlan } from "@/services/CompanyService";
+import { Company, CompanySettings, SubscriptionPlan } from "@/services";
 import { User } from "@/types/user";
 
 interface CompanyDetailsDialogProps {

@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { ClientNotification, NotificationType } from '@/types/clientFlow';
-import { notificationService } from '@/services/NotificationService';
+import { notificationService } from '@/services';
 
 export interface UseNotificationsResult {
   notifications: ClientNotification[];

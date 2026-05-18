@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChecklistItem, ChecklistGroup } from "@/services/ChecklistService";
+import { ChecklistItem, ChecklistGroup } from "@/services";
 import { Check, X, AlertCircle, Camera, Save, Send, PenTool, User, ShieldCheck, MapPin, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
