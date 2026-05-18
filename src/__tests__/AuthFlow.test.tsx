@@ -5,6 +5,18 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from '../components/ui/toaster';
 
+// Mock AuthGuard
+vi.mock('@/integrations/supabase/auth-guard', () => ({
+  AuthGuard: {
+    initialize: vi.fn(),
+    isAdmin: vi.fn(() => true),
+    hasRole: vi.fn(() => true),
+    isSuperAdmin: vi.fn(() => false),
+    hasPermission: vi.fn(() => true),
+  }
+}));
+
+
 // Helper component to test useAuth hook
 const AuthTestComponent = () => {
   const { user, login, logout, isAuthenticated, isLoading } = useAuth();
