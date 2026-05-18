@@ -115,6 +115,11 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     }
     return false;
   }
+
+  clearAllData() {
+    this.items = [];
+    this.persist();
+  }
 }
 
 

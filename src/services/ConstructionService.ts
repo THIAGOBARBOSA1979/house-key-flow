@@ -1,4 +1,6 @@
 
+import { BaseService } from "./BaseService";
+
 export interface ConstructionUpdate {
   id: string;
   date: Date;
@@ -110,8 +112,8 @@ class ConstructionService {
     this.persist();
   }
 
-  getLatestProgress(propertyId?: string) {
-    const source = propertyId ? this.getUpdatesByProperty(propertyId) : this.updates;
+  getLatestProgress(propertyId?: string, companyId?: string, isSuperAdmin?: boolean) {
+    const source = propertyId ? this.getUpdatesByProperty(propertyId, companyId, isSuperAdmin) : this.getUpdates(companyId, isSuperAdmin);
     const updateWithProgress = [...source]
       .sort((a, b) => b.date.getTime() - a.date.getTime())
       .find(u => u.progressItems);
@@ -119,12 +121,11 @@ class ConstructionService {
   }
 
   markAsRead(updateId: string, userId: string) {
-    const update = this.updates.find(u => u.id === updateId);
+    const update = this.getById(updateId);
     if (update) {
-      if (!update.readBy) update.readBy = [];
-      if (!update.readBy.includes(userId)) {
-        update.readBy.push(userId);
-        this.persist();
+      const readBy = update.readBy || [];
+      if (!readBy.includes(userId)) {
+        this.update(updateId, { readBy: [...readBy, userId] });
       }
     }
   }
