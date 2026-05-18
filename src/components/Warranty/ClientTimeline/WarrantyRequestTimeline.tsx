@@ -8,7 +8,7 @@ import {
   STAGE_ORDER,
   isFinalStage
 } from "@/types/warrantyFlow";
-import { warrantySLAService } from "@/services/WarrantySLAService";
+import { warrantySLAService } from "@/services";
 import { WarrantyTimelineStep as TimelineStepComponent } from "./WarrantyTimelineStep";
 import { SLAIndicator } from "./SLAIndicator";
 import { History, AlertTriangle, ShieldCheck, Clock, XCircle } from "lucide-react";

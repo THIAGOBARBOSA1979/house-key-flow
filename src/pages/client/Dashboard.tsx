@@ -32,7 +32,7 @@ import { useClientStage } from "@/hooks/useClientStage";
 import { documentService } from "@/services/DocumentService";
 import { financialService } from "@/services/FinancialService";
 import { inspectionService } from "@/services/InspectionService";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { warrantyFlowService } from "@/services";
 import { useMemo, useState, useEffect } from "react";
 import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
 import { ConstructionFeed, ConstructionUpdate } from "@/components/client/ConstructionFeed";

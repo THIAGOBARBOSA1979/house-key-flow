@@ -4,7 +4,7 @@ import { SLAStatus, SLADeadlineInfo } from "@/types/warrantyFlow";
 import { Clock, AlertTriangle, XCircle, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { warrantySLAService } from "@/services/WarrantySLAService";
+import { warrantySLAService } from "@/services";
 
 interface SLAIndicatorProps {
   slaInfo: SLADeadlineInfo;

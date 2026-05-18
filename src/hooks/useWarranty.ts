@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { warrantyFlowService } from "@/services";
 import { 
   WarrantyRequestFlow, 
   WarrantyFilters, 
