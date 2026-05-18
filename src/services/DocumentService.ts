@@ -98,15 +98,6 @@ class DocumentService extends BaseService<Document> {
     super("a2_documents", INITIAL_DOCUMENTS);
   }
 
-  protected loadFromStorage() {
-    super.loadFromStorage();
-    this.items = this.items.map(d => ({
-      ...d,
-      createdAt: new Date(d.createdAt),
-      updatedAt: new Date(d.updatedAt),
-      expiresAt: d.expiresAt ? new Date(d.expiresAt) : undefined,
-    }));
-  }
 
   getAllDocuments(): Document[] { return [...this.items]; }
   getDocumentById(id: string): Document | undefined { return this.getById(id); }
