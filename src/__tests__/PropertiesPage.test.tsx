@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, getAllByText } from '@testing-library/react';
 import Properties from '../pages/Properties';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -19,8 +19,12 @@ describe('Properties Page', () => {
       </QueryClientProvider>
     );
     
-    expect(screen.getByText(/Empreendimentos/i)).toBeDefined();
+    // Multiple "Empreendimentos" text found, we can use getAllByText
+    const titles = screen.getAllByText(/Empreendimentos/i);
+    expect(titles.length).toBeGreaterThan(0);
+    
     expect(screen.getByText(/Novo Empreendimento/i)).toBeDefined();
     expect(screen.getByText(/Total de Projetos/i)).toBeDefined();
   });
 });
+

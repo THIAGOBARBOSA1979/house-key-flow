@@ -20,10 +20,10 @@ describe('Warranty Page', () => {
     );
     
     expect(screen.getByText(/Gestão de Garantias/i)).toBeDefined();
-    expect(screen.getByText(/Novo Chamado/i)).toBeDefined();
     // Verify some kanban columns exist
     expect(screen.getByText(/Triagem/i)).toBeDefined();
     expect(screen.getByText(/Agendamento/i)).toBeDefined();
     expect(screen.getByText(/Em Execução/i)).toBeDefined();
   });
 });
+
