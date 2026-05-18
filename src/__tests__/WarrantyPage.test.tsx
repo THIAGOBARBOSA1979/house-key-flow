@@ -20,10 +20,12 @@ describe('Warranty Page', () => {
     );
     
     expect(screen.getByText(/Gestão de Garantias/i)).toBeDefined();
-    // Verify some kanban columns exist
-    expect(screen.getByText(/Triagem/i)).toBeDefined();
-    expect(screen.getByText(/Agendamento/i)).toBeDefined();
+    // Verify some kanban columns labels (labels from WARRANTY_STAGES)
+    expect(screen.getByText(/Solicitação Aberta/i)).toBeDefined();
+    expect(screen.getByText(/Em Análise/i)).toBeDefined();
+    expect(screen.getByText(/Vistoria Agendada/i)).toBeDefined();
     expect(screen.getByText(/Em Execução/i)).toBeDefined();
   });
 });
+
 
