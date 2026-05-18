@@ -50,7 +50,7 @@ export const StatsCard = ({
       variantStyles[variant], 
       className
     )}>
-      <CardContent className="p-6 cursor-pointer">
+      <CardContent className="p-4 md:p-6 cursor-pointer">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/80 mb-2 truncate">
@@ -77,10 +77,10 @@ export const StatsCard = ({
           </div>
           {Icon && (
             <div className={cn(
-              "p-4 rounded-xl transition-all duration-300 group-hover:scale-110 shadow-sem-md border border-border/10",
+              "p-3 md:p-4 rounded-xl transition-all duration-300 group-hover:scale-110 shadow-sem-md border border-border/10",
               iconStyles[variant]
             )}>
-              <Icon size={24} strokeWidth={2.5} />
+              <Icon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={2.5} />
             </div>
           )}
         </div>
