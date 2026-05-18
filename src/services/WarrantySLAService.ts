@@ -98,7 +98,7 @@ class WarrantySLAService {
 
     if (considerBusinessDays) {
       let hoursRemaining = slaHours;
-      let currentDate = new Date(startDate);
+      const currentDate = new Date(startDate);
       
       // Advance to the next business hour/day
       while (hoursRemaining > 0) {
@@ -129,7 +129,7 @@ class WarrantySLAService {
     stage: WarrantyStage = request.currentStage
   ): SLADeadlineInfo {
     const slaHours = this.getSLAHoursForStage(request.category, stage);
-    let startedAt = request.stageStartedAt;
+    const startedAt = request.stageStartedAt;
     
     // Adjust startedAt if the request is paused to preserve SLA
     if (request.isPaused && request.pausedAt) {

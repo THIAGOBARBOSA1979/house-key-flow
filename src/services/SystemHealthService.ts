@@ -42,7 +42,7 @@ class SystemHealthService {
 
     // Advanced storage monitoring
     let totalSize = 0;
-    let tableMetrics = [];
+    const tableMetrics = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key) {

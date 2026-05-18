@@ -36,11 +36,12 @@ interface InspectionItemProps {
  * Reusable InspectionItem refactored with Design System tokens.
  */
 export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) => {
-  if (!inspection) return null;
-
   const { toast } = useToast();
   const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
   const [startInspectionDialogOpen, setStartInspectionDialogOpen] = useState(false);
+
+  if (!inspection) return null;
+
   
   const handleViewDetails = () => {
     toast({
