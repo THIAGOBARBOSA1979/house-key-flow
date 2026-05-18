@@ -26,7 +26,6 @@ export class SupabaseErrorHandler {
       status: error.status || 500,
     };
   }
-...
 
   static wrap<T>(promise: Promise<{ data: T | null; error: any }>): Promise<{ data: T | null; error: SupabaseError | null }> {
     return promise.then(({ data, error }) => {
