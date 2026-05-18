@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
+
 import { ChevronLeft, ChevronRight, LucideIcon, Table as TableIcon, LayoutGrid, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
