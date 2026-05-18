@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { ChevronLeft, ChevronRight, LucideIcon, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -85,7 +85,7 @@ export interface DataViewProps<T> {
  * />
  */
 
-export function DataView<T>({
+function DataViewComponent<T>({
   items,
   viewMode = 'grid',
   isLoading = false,
@@ -137,9 +137,10 @@ export function DataView<T>({
   const totalPages = isPaginationEnabled ? Math.ceil(totalItems / itemsPerPage) : 1;
   const effectivePage = Math.min(currentPage, totalPages);
   
-  const displayedItems = isPaginationEnabled 
-    ? items.slice((effectivePage - 1) * itemsPerPage, effectivePage * itemsPerPage)
-    : items;
+  const displayedItems = useMemo(() => {
+    if (!isPaginationEnabled) return items;
+    return items.slice((effectivePage - 1) * itemsPerPage, effectivePage * itemsPerPage);
+  }, [items, isPaginationEnabled, effectivePage, itemsPerPage]);
 
   const renderContent = () => {
     switch (viewMode) {
@@ -321,3 +322,5 @@ export function DataView<T>({
     </div>
   );
 }
+
+export const DataView = memo(DataViewComponent) as typeof DataViewComponent;

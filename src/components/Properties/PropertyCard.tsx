@@ -1,5 +1,6 @@
 
 
+import { memo } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building, Home, Users, MapPin, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -24,7 +25,7 @@ interface PropertyCardProps {
 /**
  * Enhanced PropertyCard following the new Design System tokens.
  */
-export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }: PropertyCardProps) => {
+export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, className }: PropertyCardProps) => {
   const completionPercentage = Math.round((property.completedUnits / property.units) * 100);
   const completedMilestones = property.milestones?.filter(m => m.completed).length || 0;
   const totalMilestones = property.milestones?.length || 0;
@@ -152,5 +153,5 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
       </CardFooter>
     </Card>
   );
-};
+});
 
