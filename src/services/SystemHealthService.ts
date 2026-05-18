@@ -32,7 +32,7 @@ class SystemHealthService {
     const allRequests = warrantyFlowService.getAllRequests();
     const allInspections = inspectionService.getAll(undefined, true);
     const allProperties = propertyService.getAll(undefined, true);
-    const allLogs = auditLogService.getAllLogs(undefined, true);
+    const allLogs = auditLogService.getAllLogs();
     
     let status: 'healthy' | 'warning' | 'critical' = 'healthy';
     
