@@ -3,7 +3,7 @@ import { userService } from "@/services/UserService";
 import { auditLogService } from "@/services/AuditLogService";
 import { useToast } from "@/hooks/use-toast";
 import { useService } from "@/hooks/useService";
-import { User, UserFiltersData } from "@/types/user";
+import { User, UserFiltersData, UserFormData } from "@/types/user";
 
 /**
  * Custom hook to manage users logic.
