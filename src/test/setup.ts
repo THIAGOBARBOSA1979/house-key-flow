@@ -35,20 +35,12 @@ const ResizeObserverMock = vi.fn(() => ({
 
 vi.stubGlobal('ResizeObserver', ResizeObserverMock);
 
-// Mock Supabase to avoid infinite recursion or actual network calls in tests
+import { simulator } from './supabase-simulator';
+
+// Mock Supabase to use the Simulator
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValue({ data: null, error: null }),
-      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-      order: vi.fn().mockReturnThis(),
-      range: vi.fn().mockReturnThis(),
-    })),
+    from: vi.fn((table) => simulator.getBuilder(table)),
     auth: {
       getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
       getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
@@ -58,7 +50,8 @@ vi.mock('@/integrations/supabase/client', () => ({
       }),
       signOut: vi.fn().mockResolvedValue({ error: null }),
       onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
-    }
+    },
+    rpc: vi.fn((fn, params) => (simulator as any).getBuilder('rpc').rpc(fn, params))
   }
 }));
 
@@ -66,11 +59,25 @@ vi.mock('@/integrations/supabase/client', () => ({
 vi.mock('@/integration/supabase', () => ({
   Supabase: {
     db: {
-      findMany: vi.fn().mockResolvedValue({ data: [], error: null }),
-      create: vi.fn().mockResolvedValue({ data: {}, error: null }),
-      update: vi.fn().mockResolvedValue({ data: {}, error: null }),
-      delete: vi.fn().mockResolvedValue({ data: true, error: null }),
-      rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
+      findMany: vi.fn(async (table, options) => {
+        const builder = simulator.getBuilder(table);
+        if (options?.filters) {
+          options.filters.forEach((f: any) => {
+            if (f.operator === 'eq') builder.eq(f.column, f.value);
+          });
+        }
+        if (options?.pagination) {
+          const from = (options.pagination.page - 1) * options.pagination.pageSize;
+          const to = from + options.pagination.pageSize - 1;
+          builder.range(from, to);
+        }
+        return builder.single().then(res => ({ data: [res.data], error: res.error })); // findMany returns array
+      }),
+      findOne: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).single()),
+      create: vi.fn((table, data) => simulator.getBuilder(table).insert(data)),
+      update: vi.fn((table, id, data) => simulator.getBuilder(table).eq('id', id).update(data)),
+      delete: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).delete()),
+      rpc: vi.fn((fn, params) => (simulator as any).getBuilder('rpc').rpc(fn, params)),
     },
     auth: {
       signInWithPassword: vi.fn().mockResolvedValue({ 
@@ -87,6 +94,7 @@ vi.mock('@/integration/supabase', () => ({
     }
   }
 }));
+
 
 // Mock i18next
 vi.mock('react-i18next', () => ({
