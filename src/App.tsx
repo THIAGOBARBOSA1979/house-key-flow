@@ -38,7 +38,9 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <BrandThemeProvider>
+              <ConfirmProvider>
+                <BrandThemeProvider>
+
                 <Suspense fallback={<SkeletonLoader type="page" />}>
                 <Routes>
                 {/* Public Routes */}
