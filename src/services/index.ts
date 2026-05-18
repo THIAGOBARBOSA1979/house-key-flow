@@ -1,5 +1,5 @@
 export * from './BaseService';
-export * from '../SupabaseService';
+export * from './SupabaseService';
 
 // Identity Domain
 export * from './identity/CompanyService';
