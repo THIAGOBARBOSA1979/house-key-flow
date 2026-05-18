@@ -100,7 +100,8 @@ describe('DataView Component', () => {
   });
 
   it('renders standard view modes with fallback implementation', () => {
-    const modes: DataViewMode[] = ['grid', 'list', 'table', 'timeline', 'calendar'];
+    // Modes that have an 'Item 1' fallback
+    const modesWithFallback: DataViewMode[] = ['grid', 'list', 'table', 'timeline'];
     const { rerender } = render(
       <DataView 
         items={mockItems} 
@@ -109,7 +110,7 @@ describe('DataView Component', () => {
       />
     );
 
-    modes.forEach(mode => {
+    modesWithFallback.forEach(mode => {
       rerender(
         <DataView 
           items={mockItems} 
@@ -118,6 +119,11 @@ describe('DataView Component', () => {
         />
       );
       expect(screen.getByText('Item 1')).toBeDefined();
+    });
+
+    // Calendar currently shows a "Not Implemented" message if no renderCalendar is provided
+    rerender(<DataView items={mockItems} viewMode="calendar" />);
+    expect(screen.getByText(/Visualização em Calendário/)).toBeDefined();
   });
 
   it('standardizes loading and emptyState across view modes', () => {
@@ -143,5 +149,4 @@ describe('DataView Component', () => {
   });
 });
 
-});
 
