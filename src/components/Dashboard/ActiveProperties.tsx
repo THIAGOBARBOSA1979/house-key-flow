@@ -31,8 +31,9 @@ export const ActiveProperties = ({ properties }: ActivePropertiesProps) => {
       </div>
       <ResponsiveGrid columns={2} mobileCols={1} gap="layout">
         {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+          <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
         ))}
+
       </ResponsiveGrid>
     </section>
   );
