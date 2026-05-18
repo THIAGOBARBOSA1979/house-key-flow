@@ -56,7 +56,7 @@ vi.mock('@/integrations/supabase/client', () => ({
 }));
 
 // Mock the internal Supabase helper to use the simulator
-vi.mock('@/integration/supabase', () => ({
+vi.mock('@/integrations/supabase', () => ({
   Supabase: {
     db: {
       findMany: vi.fn(async (table, options) => {
@@ -115,7 +115,7 @@ vi.mock('react-i18next', () => ({
   },
 }));
 
-vi.mock('@/integration/supabase/realtime', () => ({
+vi.mock('@/integrations/supabase/realtime', () => ({
   SupabaseRealtime: {
     subscribeToTable: vi.fn(),
     unsubscribe: vi.fn()
