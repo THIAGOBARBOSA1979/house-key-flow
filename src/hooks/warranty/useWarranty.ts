@@ -1,45 +1,39 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
-import { warrantyFlowService } from "@/services";
+import { useState, useCallback, useMemo } from "react";
+import { warrantyFlowService, exportService } from "@/services";
 import { 
   WarrantyRequestFlow, 
   WarrantyFilters, 
   WarrantyStage,
   KanbanCardData
 } from "@/types/warrantyFlow";
-import { useToast } from "@/hooks";
-import { exportService } from "@/services";
+import { useToast, useService, useDataList } from "@/hooks";
 
 export const useWarranty = () => {
   const { toast } = useToast();
-  const [filters, setFilters] = useState<WarrantyFilters>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  
+  const { items: requests, isLoading: isServiceLoading } = useService<WarrantyRequestFlow>(warrantyFlowService);
+
+  const filterFn = useCallback((request: WarrantyRequestFlow, filters: WarrantyFilters) => {
+    if (filters.propertyId && request.propertyId !== filters.propertyId) return false;
+    if (filters.category && request.category !== filters.category) return false;
+    if (filters.priority && request.priority !== filters.priority) return false;
+    if (filters.slaStatus && request.slaStatus !== filters.slaStatus) return false;
+    if (filters.isPaused !== undefined && request.isPaused !== filters.isPaused) return false;
+    return true;
+  }, []);
+
+  const {
+    filteredItems: filteredRequests,
+    filters,
+    setFilters,
+    searchTerm,
+    setSearchTerm,
+    clearFilters
+  } = useDataList<WarrantyRequestFlow>(requests, {
+    filterFn
+  });
+
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-  const [requests, setRequests] = useState<WarrantyRequestFlow[]>(() => warrantyFlowService.getAllRequests());
-
-  useEffect(() => {
-    return warrantyFlowService.subscribe((newRequests) => {
-      setRequests(newRequests);
-    });
-  }, []);
-
-  const loadData = useCallback(() => {
-    setRequests(warrantyFlowService.getAllRequests());
-  }, []);
-
-  const filteredRequests = useMemo(() => {
-    return requests.filter(r => {
-      if (filters.search) {
-        const s = filters.search.toLowerCase();
-        if (!r.title.toLowerCase().includes(s) && !r.clientName.toLowerCase().includes(s)) return false;
-      }
-      if (filters.propertyId && r.propertyId !== filters.propertyId) return false;
-      if (filters.category && r.category !== filters.category) return false;
-      if (filters.priority && r.priority !== filters.priority) return false;
-      if (filters.slaStatus && r.slaStatus !== filters.slaStatus) return false;
-      return true;
-    });
-  }, [filters, requests]);
 
   const kanbanData = useMemo(() => {
     const data = new Map<WarrantyStage, KanbanCardData[]>();
@@ -68,7 +62,6 @@ export const useWarranty = () => {
   }, [requests, selectedRequestId]);
 
   const changeStatus = useCallback(async (requestId: string, newStage: WarrantyStage, notes?: string) => {
-    setIsLoading(true);
     try {
       const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, "admin-1", false, notes));
       if (result.success) {
@@ -82,8 +75,6 @@ export const useWarranty = () => {
       const errorMessage = err instanceof Error ? err.message : "Erro ao atualizar status";
       toast({ title: "Erro inesperado", description: errorMessage, variant: "destructive" });
       return { success: false, error: errorMessage };
-    } finally {
-      setIsLoading(false);
     }
   }, [toast]);
 
@@ -112,17 +103,20 @@ export const useWarranty = () => {
     requests,
     filteredRequests,
     kanbanData,
-    isLoading,
-    error,
-    filters,
-    setFilters,
+    isLoading: isServiceLoading,
+    filters: { ...filters, search: searchTerm },
+    setFilters: (newFilters: Partial<WarrantyFilters>) => {
+      if (newFilters.search !== undefined) setSearchTerm(newFilters.search);
+      setFilters(prev => ({ ...prev, ...newFilters }));
+    },
     selectedRequest,
     setSelectedRequestId,
     changeStatus,
     togglePause,
     assignTechnician,
     exportData,
-    refresh: loadData
+    clearFilters,
+    refresh: () => {} // Refresh handled by useService effect
   };
 };
 
