@@ -166,6 +166,7 @@ const Dashboard = () => {
         </div>
         <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
           <StageIndicator currentStage={stage || 'lead'} showDescription variant="badge" />
+
           <div className="hidden md:block h-12 w-px bg-border/40 mx-2" />
           <Card className="bg-primary/5 px-6 py-3 rounded-2xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-colors group cursor-pointer">
             <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] mb-1.5 block">Status Geral</span>
