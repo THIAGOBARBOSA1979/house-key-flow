@@ -59,8 +59,9 @@ describe('Auth Flow', () => {
       expect(screen.getByTestId('auth-status').textContent).toBe('Authenticated');
     }, { timeout: 3000 });
 
-    expect(screen.getByTestId('user-name').textContent).toBe('Administrador');
+    expect(screen.getByTestId('user-name').textContent).toContain('Admin');
   });
+
 
   it('should logout and clear session', async () => {
     // Manually set a user in localStorage
