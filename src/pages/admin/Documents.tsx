@@ -201,7 +201,7 @@ const AdminDocuments = () => {
                     {documents.length} Arquivos encontrados
                   </div>
                   <Button variant="outline" size="icon" onClick={() => setViewMode(v => v === "table" ? "grid" : "table")} className="h-8 w-8">
-                    {viewMode === "list" ? <LayoutGrid size={16} /> : <List size={16} />}
+                    {viewMode === "table" ? <LayoutGrid size={16} /> : <List size={16} />}
                   </Button>
                 </div>
 
