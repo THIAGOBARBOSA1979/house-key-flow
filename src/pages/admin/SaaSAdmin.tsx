@@ -387,9 +387,11 @@ export default function SaaSAdmin() {
 
               <div className="flex gap-3 justify-end pt-4 border-t">
                 <Button variant="ghost" onClick={() => setIsEditing(false)} className="rounded-xl h-11 px-6 font-bold">Cancelar</Button>
-                <Button onClick={handleSaveEdit} className="rounded-xl h-11 px-8 font-black uppercase tracking-widest text-xs gap-2">
-                  <Save className="w-4 h-4" /> Salvar Alterações
+                <Button onClick={handleSaveEdit} disabled={isSaving} className="rounded-xl h-11 px-8 font-black uppercase tracking-widest text-xs gap-2">
+                  <Save className="w-4 h-4" /> 
+                  {isSaving ? "Salvando..." : "Salvar Alterações"}
                 </Button>
+
               </div>
             </div>
           ) : (
