@@ -40,48 +40,50 @@ const App = () => {
                 <Suspense fallback={<SkeletonLoader type="page" />}>
                 <Routes>
                 {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/" element={<Pages.Home />} />
+                <Route path="/login" element={<Pages.Login />} />
+                <Route path="/forgot-password" element={<Pages.ForgotPassword />} />
                 
                 {/* Redirect legacy login paths */}
                 <Route path="/admin/login" element={<Navigate to="/login" replace />} />
                 <Route path="/client/login" element={<Navigate to="/login" replace />} />
                 
                 {/* Protected Admin Routes */}
-                <Route path="/admin" element={<ProtectedRoute requiredRole={['admin', 'super_admin']}><AppLayout /></ProtectedRoute>}>
-                  <Route index element={<Index />} />
-                  <Route path="properties" element={<Properties />} />
-                  <Route path="inspections" element={<Inspections />} />
-                  <Route path="warranty" element={<Warranty />} />
-                  <Route path="documents" element={<AdminDocuments />} />
-                  <Route path="calendar" element={<Calendar />} />
-                  <Route path="users" element={<Users />} />
-                  <Route path="client-area" element={<ClientArea />} />
-                  <Route path="checklist" element={<Checklist />} />
-                  <Route path="settings" element={<Settings />} />
-                  <Route path="design-system" element={<DesignSystem />} />
-                  <Route path="audit-logs" element={<AuditLogs />} />
-                  <Route path="financial" element={<FinancialDashboard />} />
-                  <Route path="announcements" element={<Announcements />} />
-                  <Route path="technicians" element={<Technicians />} />
-                  <Route path="support" element={<AdminSupport />} />
-                  <Route path="saas" element={<ProtectedRoute requiredRole="super_admin"><SaaSAdmin /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute requiredRole={['admin', 'super_admin']}><Pages.AppLayout /></ProtectedRoute>}>
+                  <Route index element={<Pages.AdminIndex />} />
+                  <Route path="properties" element={<Pages.Properties />} />
+                  <Route path="inspections" element={<Pages.Inspections />} />
+                  <Route path="warranty" element={<Pages.Warranty />} />
+                  <Route path="documents" element={<Pages.AdminDocuments />} />
+                  <Route path="calendar" element={<Pages.Calendar />} />
+                  <Route path="users" element={<Pages.Users />} />
+                  <Route path="client-area" element={<Pages.ClientArea />} />
+                  <Route path="checklist" element={<Pages.Checklist />} />
+                  <Route path="settings" element={<Pages.Settings />} />
+                  <Route path="design-system" element={<Pages.DesignSystem />} />
+                  <Route path="audit-logs" element={<Pages.AuditLogs />} />
+                  <Route path="financial" element={<Pages.FinancialDashboard />} />
+                  <Route path="announcements" element={<Pages.Announcements />} />
+                  <Route path="technicians" element={<Pages.Technicians />} />
+                  <Route path="support" element={<Pages.AdminSupport />} />
+                  <Route path="saas" element={<ProtectedRoute requiredRole="super_admin"><Pages.SaaSAdmin /></ProtectedRoute>} />
                 </Route>
+
 
 
                 {/* Protected Client Routes */}
-                <Route path="/client" element={<ProtectedRoute requiredRole={['user', 'admin', 'super_admin']}><ClientLayout /></ProtectedRoute>}>
-                  <Route index element={<ClientDashboard />} />
-                  <Route path="documents" element={<ClientDocuments />} />
-                  <Route path="inspections" element={<ClientInspections />} />
-                  <Route path="warranty" element={<ClientWarranty />} />
-                  <Route path="properties" element={<ClientProperties />} />
-                  <Route path="notifications" element={<ClientNotifications />} />
-                  <Route path="profile" element={<ClientProfile />} />
-                  <Route path="financial" element={<ClientFinancial />} />
-                  <Route path="support" element={<ClientSupport />} />
+                <Route path="/client" element={<ProtectedRoute requiredRole={['user', 'admin', 'super_admin']}><Pages.ClientLayout /></ProtectedRoute>}>
+                  <Route index element={<Pages.ClientDashboard />} />
+                  <Route path="documents" element={<Pages.ClientDocuments />} />
+                  <Route path="inspections" element={<Pages.ClientInspections />} />
+                  <Route path="warranty" element={<Pages.ClientWarranty />} />
+                  <Route path="properties" element={<Pages.ClientProperties />} />
+                  <Route path="notifications" element={<Pages.ClientNotifications />} />
+                  <Route path="profile" element={<Pages.ClientProfile />} />
+                  <Route path="financial" element={<Pages.ClientFinancial />} />
+                  <Route path="support" element={<Pages.ClientSupport />} />
                 </Route>
+
 
                 {/* Legacy redirects for top-level paths */}
                 <Route path="/properties" element={<Navigate to="/admin/properties" replace />} />
@@ -94,7 +96,7 @@ const App = () => {
                 <Route path="/settings" element={<Navigate to="/admin/settings" replace />} />
 
                 {/* Catch-all route */}
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<Pages.NotFound />} />
               </Routes>
                 </Suspense>
               </BrandThemeProvider>
