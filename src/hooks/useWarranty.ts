@@ -9,40 +9,23 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { exportService } from "@/services/ExportService";
 
-/**
- * Centralized hook for Warranty management logic.
- */
 export const useWarranty = () => {
   const { toast } = useToast();
-  const [requests, setRequests] = useState<WarrantyRequestFlow[]>([]);
   const [filters, setFilters] = useState<WarrantyFilters>({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-
-  const loadData = useCallback(() => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = warrantyFlowService.getAllRequests();
-      setRequests(data);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
-      console.error("Error loading warranty data:", err);
-      setError(errorMessage);
-      toast({
-        title: "Erro ao carregar dados",
-        description: "Não foi possível carregar as solicitações de garantia.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [toast]);
+  const [requests, setRequests] = useState<WarrantyRequestFlow[]>(() => warrantyFlowService.getAllRequests());
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    return warrantyFlowService.subscribe((newRequests) => {
+      setRequests(newRequests);
+    });
+  }, []);
+
+  const loadData = useCallback(() => {
+    setRequests(warrantyFlowService.getAllRequests());
+  }, []);
 
   const filteredRequests = useMemo(() => {
     return requests.filter(r => {
@@ -89,63 +72,40 @@ export const useWarranty = () => {
     try {
       const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, "admin-1", false, notes));
       if (result.success) {
-        loadData();
-        toast({
-          title: "Status atualizado",
-          description: `Solicitação movida para ${newStage}.`
-        });
+        toast({ title: "Status atualizado", description: `Solicitação movida para ${newStage}.` });
         return result;
       } else {
-        toast({
-          title: "Erro ao atualizar",
-          description: result.error || "Não foi possível alterar o status.",
-          variant: "destructive"
-        });
+        toast({ title: "Erro ao atualizar", description: result.error || "Não foi possível alterar o status.", variant: "destructive" });
         return result;
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Erro ao atualizar status";
-      toast({
-        title: "Erro inesperado",
-        description: errorMessage,
-        variant: "destructive"
-      });
+      toast({ title: "Erro inesperado", description: errorMessage, variant: "destructive" });
       return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
-  }, [loadData, toast]);
+  }, [toast]);
 
   const togglePause = useCallback((requestId: string, isPaused: boolean, reason: string) => {
     const result = warrantyFlowService.togglePause(requestId, isPaused, reason, "admin-1");
     if (result.success) {
-      loadData();
-      toast({
-        title: isPaused ? "SLA Pausado" : "SLA Retomado",
-        description: isPaused ? `Motivo: ${reason}` : "O cronômetro do SLA foi retomado."
-      });
+      toast({ title: isPaused ? "SLA Pausado" : "SLA Retomado", description: isPaused ? `Motivo: ${reason}` : "O cronômetro do SLA foi retomado." });
     }
     return result;
-  }, [loadData, toast]);
+  }, [toast]);
 
   const assignTechnician = useCallback((requestId: string, techId: string, techName: string) => {
     const result = warrantyFlowService.assignTechnician(requestId, techId, techName, "admin-1");
     if (result.success) {
-      loadData();
-      toast({
-        title: "Técnico atribuído",
-        description: `O profissional ${techName} agora é o responsável.`
-      });
+      toast({ title: "Técnico atribuído", description: `O profissional ${techName} agora é o responsável.` });
     }
     return result;
-  }, [loadData, toast]);
+  }, [toast]);
 
   const exportData = useCallback(() => {
     exportService.exportToCSV(requests, "garantias_a2");
-    toast({
-      title: "Exportação concluída",
-      description: "O arquivo CSV foi baixado com sucesso."
-    });
+    toast({ title: "Exportação concluída", description: "O arquivo CSV foi baixado com sucesso." });
   }, [requests, toast]);
 
   return {
@@ -165,3 +125,4 @@ export const useWarranty = () => {
     refresh: loadData
   };
 };
+
