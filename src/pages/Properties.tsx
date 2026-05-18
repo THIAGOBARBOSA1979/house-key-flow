@@ -1,53 +1,26 @@
-import { useState } from "react";
-import { Building, Plus, LayoutGrid, List as ListIcon, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download, Settings } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Building, Plus, MoreHorizontal, Pencil, Trash2, Download, Settings } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { FilterBar } from "@/components/Layout/FilterBar";
 import { cn } from "@/lib/utils";
 import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services/ExportService";
 import { PropertyForm } from "@/components/Properties/PropertyForm";
 import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
 import { formatDate } from "@/utils/formatters";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useProperties } from "@/hooks/useProperties";
 import { Property } from "@/services/PropertyService";
 import { Button } from "@/components/ui/button";
+import { PropertyStats } from "@/components/Properties/PropertyStats";
+import { PropertyFilters } from "@/components/Properties/PropertyFilters";
+import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
 
 const Properties = () => {
   const {
@@ -77,6 +50,11 @@ const Properties = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
 
+  const managers = useMemo(() => 
+    Array.from(new Set(properties.map(p => p.manager).filter(Boolean))) as string[],
+    [properties]
+  );
+
   const handleOpenEdit = (property: Property) => {
     setEditingProperty(property);
     setIsFormOpen(true);
@@ -101,12 +79,7 @@ const Properties = () => {
       icon={Building}
       actions={actions}
     >
-      <ResponsiveGrid columns={4} gap="layout">
-        <StatsCard label="Total de Projetos" value={metrics.total} icon={Building} description="Ativos no portfólio" trend={{ value: "12%", isPositive: true }} className="rounded-3xl" />
-        <StatsCard label="Em Andamento" value={metrics.byStatus.progress || 0} icon={TrendingUp} variant="progress" description="Obras em execução" className="rounded-3xl" />
-        <StatsCard label="Total de Unidades" value={metrics.totalUnits} icon={PieChart} variant="brand" description="Apartamentos cadastrados" className="rounded-3xl" />
-        <StatsCard label="Eficiência Média" value={`${metrics.averageProgress}%`} icon={BarChart3} variant="complete" description="Progresso consolidado" className="rounded-3xl" />
-      </ResponsiveGrid>
+      <PropertyStats metrics={metrics} />
 
       {selectedIds.length > 0 && (
         <Card className="p-4 bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
@@ -124,49 +97,18 @@ const Properties = () => {
         </Card>
       )}
 
-      <FilterBar searchPlaceholder="Buscar..." searchValue={searchTerm} onSearchChange={setSearchTerm}>
-        <div className="flex flex-wrap items-center gap-3">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
-              <SelectItem value="all" className="rounded-lg font-medium">Todos os status</SelectItem>
-              <SelectItem value="pending" className="rounded-lg font-medium">⏳ Pendentes</SelectItem>
-              <SelectItem value="progress" className="rounded-lg font-medium">🏗️ Em andamento</SelectItem>
-              <SelectItem value="complete" className="rounded-lg font-medium">✅ Concluídos</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={managerFilter} onValueChange={setManagerFilter}>
-            <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
-              <SelectValue placeholder="Gerente" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
-              <SelectItem value="all" className="rounded-lg font-medium">Todos Gerentes</SelectItem>
-              {Array.from(new Set(properties.map(p => p.manager).filter(Boolean))).map(manager => (
-                <SelectItem key={manager} value={manager!} className="rounded-lg font-medium">{manager}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {(searchTerm || statusFilter !== "all" || managerFilter !== "all") && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground h-11 rounded-xl px-4 font-bold uppercase text-[10px] tracking-widest">
-              <FilterX className="h-4 w-4 mr-2" /> Limpar Filtros
-            </Button>
-          )}
-
-          <div className="h-8 w-px bg-border/40 mx-2 hidden lg:block" />
-
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="hidden md:flex bg-muted/40 p-1.5 rounded-2xl shadow-inner shrink-0">
-            <TabsList className="bg-transparent border-none h-9 gap-1">
-              <TabsTrigger value="grid" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all"><LayoutGrid className="h-4 w-4" /></TabsTrigger>
-              <TabsTrigger value="list" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all"><ListIcon className="h-4 w-4" /></TabsTrigger>
-              <TabsTrigger value="timeline" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all px-3 gap-2"><BarChart3 className="h-4 w-4" /><span className="text-[10px] font-black uppercase tracking-widest">Timeline</span></TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-      </FilterBar>
+      <PropertyFilters 
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusFilter={statusFilter}
+        onStatusChange={setStatusFilter}
+        managerFilter={managerFilter}
+        onManagerChange={setManagerFilter}
+        managers={managers}
+        onClearFilters={clearFilters}
+      >
+        <PropertyViewTabs viewMode={viewMode} onViewModeChange={setViewMode} />
+      </PropertyFilters>
 
       <DataView<Property>
         items={filteredProperties}
@@ -320,4 +262,5 @@ const Properties = () => {
 };
 
 export default Properties;
+
 
