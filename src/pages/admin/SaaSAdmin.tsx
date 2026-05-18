@@ -317,8 +317,10 @@ export default function SaaSAdmin() {
           setSelectedCompany(null);
           setIsUpdatingSub(false);
           setIsEditing(false);
+          setSlugError(null);
         }
       }}>
+
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="flex flex-row items-center justify-between pr-8">
             <DialogTitle className="text-xl font-black uppercase tracking-tighter">
