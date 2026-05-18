@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * Common view modes for data display components.
+ * Use this type instead of string literals for viewMode props.
+ */
+export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
+
 import React, { useState } from 'react';
+
 
 import { ChevronLeft, ChevronRight, LucideIcon, Table as TableIcon, LayoutGrid, Calendar as CalendarIcon, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
