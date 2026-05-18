@@ -1,4 +1,4 @@
-import { Supabase, FilterParams, PaginationParams } from '@/integration/supabase';
+import { Supabase, FilterParams, PaginationParams } from '@/integrations/supabase';
 
 export abstract class SupabaseService<T extends { id: string; company_id?: string }> {
   protected table: string;
@@ -72,16 +72,5 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
   async delete(id: string, idColumn: string = 'id'): Promise<boolean> {
     const { error } = await Supabase.db.delete(this.table, id, idColumn);
     return !error;
-  }
-
-  async count(companyId?: string, isSuperAdmin?: boolean): Promise<number> {
-    const filters: FilterParams[] = [];
-    if (!isSuperAdmin && companyId) {
-      filters.push({ column: 'company_id', operator: 'eq', value: companyId });
-    }
-    
-    const { data, error } = await Supabase.db.count(this.table, filters);
-    if (error) return 0;
-    return data || 0;
   }
 }

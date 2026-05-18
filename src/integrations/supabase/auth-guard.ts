@@ -48,6 +48,20 @@ export const AuthGuard = {
     return rolePermissions[role]?.includes(permission) || false;
   },
 
+  isAdmin(): boolean {
+    const userJson = localStorage.getItem('auth_user');
+    if (!userJson) return false;
+    const user = JSON.parse(userJson);
+    return user.role === 'admin' || user.role === 'manager' || user.is_super_admin;
+  },
+
+  isSuperAdmin(): boolean {
+    const userJson = localStorage.getItem('auth_user');
+    if (!userJson) return false;
+    const user = JSON.parse(userJson);
+    return !!user.is_super_admin;
+  },
+
   mapInternalRole(internalRole: string): Role {
     if (internalRole === 'admin') return 'admin';
     if (internalRole === 'manager') return 'manager';

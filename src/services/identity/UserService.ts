@@ -22,7 +22,7 @@ class UserService extends BaseService<User> {
       this.persist();
     }
 
-    SupabaseRealtime.subscribeToTable('profiles', async () => {
+    Supabase.realtime.subscribeToTable('profiles', async () => {
       const { data: newData } = await Supabase.db.findMany<User>('profiles');
       if (newData) {
         this.items = newData.map(raw => ({

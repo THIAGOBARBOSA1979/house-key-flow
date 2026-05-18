@@ -32,7 +32,7 @@ import { useIsMobile } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { companyService } from "@/services";
-import { AuthGuard } from "@/integration/supabase/auth-guard";
+import { AuthGuard } from "@/integrations/supabase/auth-guard";
 
 
 interface SidebarProps {
@@ -239,4 +239,3 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
     </div>
   );
 };
-
