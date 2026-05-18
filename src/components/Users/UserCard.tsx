@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { User } from "@/services/UserService";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/utils/formatters";
 
 interface UserCardProps {
+
   user: User;
   isSelected: boolean;
   onSelect: (userId: string) => void;
@@ -47,11 +49,12 @@ export const UserCard = ({
           <div className="flex items-center gap-3">
             <Checkbox checked={isSelected} onCheckedChange={() => onSelect(user.id!)} className="rounded-md" />
             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary font-bold text-lg border border-primary/20 group-hover:bg-primary group-hover:text-white transition-all">
-              {user.avatar}
+              {user.avatar || user.name.charAt(0)}
             </div>
             <div className="min-w-0">
               <h3 className="font-bold text-base truncate group-hover:text-primary transition-colors">{user.name}</h3>
-              <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">Login: {user.lastLogin || '-'}</p>
+              <p className="text-sem-tiny text-muted-foreground uppercase font-bold tracking-tighter">Login: {user.lastLogin ? formatDate(user.lastLogin) : '-'}</p>
+
             </div>
           </div>
           <DropdownMenu>

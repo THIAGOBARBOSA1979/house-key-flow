@@ -12,6 +12,34 @@ export abstract class BaseService<T extends { id?: string }> {
     this.loadFromStorage();
   }
 
+  /**
+   * Helper to deserialize dates from storage
+   */
+  protected deserializeDates(item: any): T {
+    const newItem = { ...item };
+    Object.keys(newItem).forEach(key => {
+      const value = newItem[key];
+      // Basic heuristic for date strings
+      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          newItem[key] = date;
+        }
+      } else if (value && typeof value === 'object') {
+        // Recursive check for nested objects/arrays
+        if (Array.isArray(value)) {
+          newItem[key] = value.map(v => typeof v === 'object' ? this.deserializeDates(v) : v);
+        } else {
+          // Avoid recursion on null or non-plain objects
+          if (Object.getPrototypeOf(value) === Object.prototype) {
+            newItem[key] = this.deserializeDates(value);
+          }
+        }
+      }
+    });
+    return newItem as T;
+  }
+
   protected loadFromStorage() {
     if (typeof window === 'undefined') return;
     
@@ -20,7 +48,7 @@ export abstract class BaseService<T extends { id?: string }> {
       try {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          this.items = parsed;
+          this.items = parsed.map(item => this.deserializeDates(item));
         }
       } catch (e) {
         console.error(`Failed to load ${this.storageKey} from storage`, e);
@@ -70,3 +98,4 @@ export abstract class BaseService<T extends { id?: string }> {
     return false;
   }
 }
+
