@@ -1,28 +1,21 @@
 
 import { useState, useMemo } from "react";
-import { User, Key, Plus, FileText, ClipboardCheck, ShieldCheck, History, MoreHorizontal, UserCheck, Download } from "lucide-react";
+import { User, Key, Plus, History, MoreHorizontal, UserCheck, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { safeFormat } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NewClientForm } from "@/components/ClientArea/NewClientForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
-import { ClientStageManager } from "@/components/Admin/ClientStageManager";
-import { ClientEventHistory } from "@/components/Admin/ClientEventHistory";
+import { ClientDetailsDialog } from "@/components/ClientArea/ClientDetailsDialog";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
-import { clientStageService } from "@/services";
-import { notificationService } from "@/services";
-import { auditLogService } from "@/services";
+import { clientStageService, notificationService, auditLogService, exportService } from "@/services";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks";
 import { StatsCard } from "@/components/shared/StatsCard";
-import { DataView } from "@/components/shared/DataView";
+import { DataView, DataViewMode } from "@/components/shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { exportService } from "@/services";
-import { DataViewMode } from "@/components/shared/DataView";
+
 
 
 // Clients are managed via clientStageService
