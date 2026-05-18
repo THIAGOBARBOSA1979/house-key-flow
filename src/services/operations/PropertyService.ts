@@ -111,7 +111,7 @@ class PropertyService extends BaseService<Property> {
       m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
     );
 
-    const updated = this.update(propertyId, { milestones });
+    const updated = this.update(propertyId, { milestones }, isSuperAdmin);
     
     if (updated && milestone) {
       auditLogService.log({
