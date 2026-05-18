@@ -35,7 +35,7 @@ describe('WarrantyFlowService', () => {
   it('should prevent completion with unresolved problems', () => {
     const request = warrantyFlowService.createRequest({ 
       title: 'Problems Test',
-      problems: [{ id: 'p1', category: 'Test', description: 'Problem', status: 'pending', location: 'X', severity: 'minor' }]
+      problems: [{ id: 'p1', category: 'Test', description: 'Problem', status: 'pending', location: 'X', severity: 'minor', photos: [] }]
     });
     
     // Move to approved first (needed to reach completed eventually)
