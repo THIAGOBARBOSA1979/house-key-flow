@@ -49,7 +49,7 @@ import { useInspections, useConfirm } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { DataViewMode } from "@/components/Shared/DataView";
 import { inspectionService } from "@/services";
-import { ConfirmationDialog } from "@/components/Shared/ConfirmationDialog";
+
 
 
 
