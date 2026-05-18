@@ -81,7 +81,7 @@ const Warranty = () => {
 
       {selectedRequest && (
         <TechnicalReportDialog 
-          isOpen={reportDialogOpen}
+          open={reportDialogOpen}
           onOpenChange={setReportDialogOpen}
           request={selectedRequest}
         />

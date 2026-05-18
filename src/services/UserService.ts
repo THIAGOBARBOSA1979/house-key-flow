@@ -34,7 +34,7 @@ class UserService extends BaseService<User> {
   }
 
   create(user: Omit<User, "id">): User {
-    const avatar = user.name.split(" ").map(n => n[0]).join("").toUpperCase().substr(0, 2);
+    const avatar = user.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
     const newUser = super.create({
       ...user,
       avatar,
