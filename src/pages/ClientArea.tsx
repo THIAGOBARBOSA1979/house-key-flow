@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { NewClientForm } from "@/components/ClientArea/NewClientForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ClientStageManager } from "@/components/Admin/ClientStageManager";
 import { ClientEventHistory } from "@/components/Admin/ClientEventHistory";
 import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
@@ -18,12 +17,13 @@ import { notificationService } from "@/services/NotificationService";
 import { auditLogService } from "@/services/AuditLogService";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportService } from "@/services/ExportService";
+import { DataViewMode } from "@/types/dataView";
+
 
 // Clients are managed via clientStageService
 
@@ -34,6 +34,8 @@ const ClientArea = () => {
   const [isNewClientDialogOpen, setNewClientDialogOpen] = useState(false);
   const [isCredentialsDialogOpen, setCredentialsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const [viewMode, setViewMode] = useState<DataViewMode>("table");
+
 
   const handleNewClientSubmit = (data: any) => {
     auditLogService.log({
@@ -129,78 +131,80 @@ const ClientArea = () => {
 
       <DataView
         items={filteredClients}
-        viewMode="table"
-        renderTable={(items) => (
-          <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
-            <ScrollArea className="w-full">
-              <Table>
-                <TableHeader className="bg-muted/30">
-                  <TableRow>
-                    <TableHead className="font-bold py-4 px-6">Nome</TableHead>
-                    <TableHead className="hidden md:table-cell font-bold py-4 px-6">Contato</TableHead>
-                    <TableHead className="hidden lg:table-cell font-bold py-4 px-6">Imóvel</TableHead>
-                    <TableHead className="font-bold py-4 px-6">Status</TableHead>
-                    <TableHead className="text-right font-bold py-4 px-6">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {items.map(client => (
-                    <TableRow key={client.id} className="group hover:bg-primary/5 transition-all border-b border-border/50">
-                      <TableCell className="py-4 px-6">
-                        <div className="flex flex-col">
-                          <span className="text-label group-hover:text-primary transition-colors">{client.name}</span>
-                          <span className="md:hidden text-caption mt-0.5 text-muted-foreground">{client.email}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell py-4 px-6">
-                        <div className="flex flex-col text-sem-body-sm">
-                          <span>{client.email}</span>
-                          <span className="text-muted-foreground">{client.phone}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell py-4 px-6 text-sem-body-sm text-muted-foreground font-medium">
-                        {client.propertyName} • {client.unitNumber}
-                      </TableCell>
-                      <TableCell className="py-4 px-6">
-                        <div className="flex flex-col gap-1.5">
-                          {(() => {
-                            const profile = clientStageService.getClientProfile(client.id);
-                            return profile ? (
-                              <StageIndicator currentStage={profile.currentStage} variant="compact" />
-                            ) : (
-                              <Badge className="bg-status-complete/10 text-status-complete border-status-complete/20 rounded-lg text-sem-tiny font-bold uppercase">Ativo</Badge>
-                            );
-                          })()}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right py-4 px-6">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
-                            <DropdownMenuItem onClick={() => setSelectedClient(client)} className="py-2.5 font-medium cursor-pointer">
-                              <User className="mr-2 h-4 w-4 text-muted-foreground" /> Ver Detalhes
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleUpdateStatus(client.id)} className="py-2.5 font-medium cursor-pointer">
-                              <History className="mr-2 h-4 w-4 text-muted-foreground" /> Sincronizar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setCredentialsDialogOpen(true)} className="py-2.5 font-medium cursor-pointer">
-                              <Key className="mr-2 h-4 w-4 text-muted-foreground" /> Credenciais
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          </Card>
-        )}
+        viewMode={viewMode}
+        itemsPerPage={10}
+        columns={[
+          {
+            header: "Nome",
+            accessorKey: "name",
+            cell: (client: any) => (
+              <div className="flex flex-col">
+                <span className="text-label group-hover:text-primary transition-colors">{client.name}</span>
+                <span className="md:hidden text-caption mt-0.5 text-muted-foreground">{client.email}</span>
+              </div>
+            )
+          },
+          {
+            header: "Contato",
+            accessorKey: "email",
+            className: "hidden md:table-cell",
+            cell: (client: any) => (
+              <div className="flex flex-col text-sem-body-sm">
+                <span>{client.email}</span>
+                <span className="text-muted-foreground">{client.phone}</span>
+              </div>
+            )
+          },
+          {
+            header: "Imóvel",
+            accessorKey: "propertyName",
+            className: "hidden lg:table-cell",
+            cell: (client: any) => (
+              <span className="text-sem-body-sm text-muted-foreground font-medium">
+                {client.propertyName} • {client.unitNumber}
+              </span>
+            )
+          },
+          {
+            header: "Status",
+            accessorKey: "currentStage",
+            cell: (client: any) => {
+              const profile = clientStageService.getClientProfile(client.id);
+              return profile ? (
+                <StageIndicator currentStage={profile.currentStage} variant="compact" />
+              ) : (
+                <Badge className="bg-status-complete/10 text-status-complete border-status-complete/20 rounded-lg text-sem-tiny font-bold uppercase">Ativo</Badge>
+              );
+            }
+          },
+          {
+            header: "Ações",
+            accessorKey: "id",
+            className: "text-right",
+            cell: (client: any) => (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
+                  <DropdownMenuItem onClick={() => setSelectedClient(client)} className="py-2.5 font-medium cursor-pointer">
+                    <User className="mr-2 h-4 w-4 text-muted-foreground" /> Ver Detalhes
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleUpdateStatus(client.id)} className="py-2.5 font-medium cursor-pointer">
+                    <History className="mr-2 h-4 w-4 text-muted-foreground" /> Sincronizar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setCredentialsDialogOpen(true)} className="py-2.5 font-medium cursor-pointer">
+                    <Key className="mr-2 h-4 w-4 text-muted-foreground" /> Credenciais
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
+          }
+        ]}
+        onRowClick={(client) => setSelectedClient(client)}
+
         emptyState={{
           title: "Nenhum cliente encontrado",
           description: "Não encontramos clientes com os termos pesquisados.",
