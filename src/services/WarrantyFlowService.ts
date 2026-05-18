@@ -16,6 +16,7 @@ import {
 } from '@/types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService } from './AuditLogService';
+import { BaseService } from './BaseService';
 
 // Mock warranty requests data
 const initialMockRequests: WarrantyRequestFlow[] = [
@@ -138,17 +139,20 @@ const initialMockRequests: WarrantyRequestFlow[] = [
   }
 ];
 
-class WarrantyFlowService {
-  private requests: Map<string, WarrantyRequestFlow> = new Map();
-  private storageKey = "a2_warranty_requests";
-
+class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
   constructor() {
+    super("a2_warranty_requests", initialMockRequests);
+  }
+
+  protected loadFromStorage() {
+    if (typeof window === 'undefined') return;
+    
     const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        parsed.forEach((req: any) => {
-          this.requests.set(req.id, {
+        if (Array.isArray(parsed)) {
+          this.items = parsed.map((req: any) => ({
             ...req,
             stageStartedAt: new Date(req.stageStartedAt),
             createdAt: new Date(req.createdAt),
@@ -156,23 +160,20 @@ class WarrantyFlowService {
             slaDeadline: req.slaDeadline ? new Date(req.slaDeadline) : undefined,
             inspectionDate: req.inspectionDate ? new Date(req.inspectionDate) : undefined,
             history: req.history.map((h: any) => ({ ...h, changedAt: new Date(h.changedAt) }))
-          });
-        });
+          }));
+        }
       } catch (e) {
-        console.error("Failed to load warranty requests", e);
+        console.error(`Failed to load ${this.storageKey} from storage`, e);
       }
-    }
-
-    if (this.requests.size === 0) {
-      initialMockRequests.forEach(request => {
-        this.requests.set(request.id, request);
-      });
-      this.persist();
     }
   }
 
-  private persist() {
-    localStorage.setItem(this.storageKey, JSON.stringify(Array.from(this.requests.values())));
+  getAllRequests(): WarrantyRequestFlow[] {
+    return this.getAll();
+  }
+
+  getRequest(requestId: string): WarrantyRequestFlow | undefined {
+    return this.getById(requestId);
   }
 
 
