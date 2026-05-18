@@ -2,12 +2,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { UploadDocumentDialog } from '../components/Documents/UploadDocumentDialog';
-import { documentService } from '../services/operations/DocumentService';
+import { documentService } from '@/services';
 import { Toaster } from '../components/ui/toaster';
 
 // Mock documentService.createDocument
-vi.mock('../services/operations/DocumentService', async () => {
-  const actual = await vi.importActual('../services/operations/DocumentService');
+vi.mock('@/services', async () => {
+  const actual = await vi.importActual('@/services');
   return {
     ...actual as any,
     documentService: {
