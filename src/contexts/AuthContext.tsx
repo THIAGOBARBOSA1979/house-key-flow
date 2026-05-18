@@ -6,7 +6,7 @@ import { User } from '@/types/user';
 import { useToast } from '@/components/ui/use-toast';
 import { securityService } from '@/services/SystemSecurityService';
 import { companyService } from '@/services/CompanyService';
-
+import { AuthGuard } from '@/integration/supabase/auth-guard';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -25,6 +25,13 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      AuthGuard.initialize();
+    }
+  }, [user]);
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
