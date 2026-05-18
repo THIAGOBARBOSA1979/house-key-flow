@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback } from "react";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { warrantyFlowService } from "@/services";
 import { WarrantyMetrics } from "@/types/warrantyFlow";
 import { MetricsCards } from "./MetricsCards";
 import { PerformanceCharts } from "./PerformanceCharts";

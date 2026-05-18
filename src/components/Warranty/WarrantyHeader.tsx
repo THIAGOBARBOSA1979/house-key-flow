@@ -25,7 +25,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { exportService } from "@/services/ExportService";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
+import { warrantyFlowService } from "@/services";
 
 interface WarrantyHeaderProps {
   onExportData: () => void;

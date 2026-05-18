@@ -1,7 +1,7 @@
 
 import { useState, useMemo } from "react";
 import { WarrantyItem } from "@/types/warranty";
-import { warrantyValidationService } from "@/services/WarrantyValidationService";
+import { warrantyValidationService } from "@/services";
 import { WarrantyItemCard } from "./WarrantyItemCard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

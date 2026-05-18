@@ -7,8 +7,7 @@ import {
   KanbanCardData
 } from "@/types/warrantyFlow";
 import { useWarranty } from "@/hooks/useWarranty";
-import { warrantyFlowService } from "@/services/WarrantyFlowService";
-import { warrantyAutomationService } from "@/services/WarrantyAutomationService";
+import { warrantyFlowService, warrantyAutomationService } from "@/services";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanCard } from "./KanbanCard";
 import { KanbanFilters } from "./KanbanFilters";
