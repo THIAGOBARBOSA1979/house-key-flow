@@ -12,13 +12,14 @@ export const useUsers = () => {
   const { user } = useAuth();
   const companyId = user?.company_id;
 
-  const { items: userList, isLoading, create, update, remove } = useService<User>(userService, {
+  const { items: userList, isLoading, create, update, remove, bulkUpdate, bulkRemove } = useService<User>(userService, {
     toastMessages: {
       create: "Novo usuário foi criado com sucesso.",
       update: "As informações do usuário foram atualizadas com sucesso.",
       delete: "O usuário foi removido do sistema."
     }
   });
+
 
   const filterFn = useCallback((user: User, filters: UserFiltersData) => {
     const matchesRole = filters.role === "all" || user.role === filters.role;
