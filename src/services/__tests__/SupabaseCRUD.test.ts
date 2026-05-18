@@ -21,7 +21,7 @@ vi.mock('@/integrations/supabase/client', () => ({
 }));
 
 // Mock the internal Supabase helper used by UserService
-vi.mock('@/integration/supabase', () => ({
+vi.mock('@/integrations/supabase', () => ({
   Supabase: {
     db: {
       findMany: vi.fn().mockResolvedValue({ data: [], error: null }),
@@ -32,7 +32,7 @@ vi.mock('@/integration/supabase', () => ({
   }
 }));
 
-vi.mock('@/integration/supabase/realtime', () => ({
+vi.mock('@/integrations/supabase/realtime', () => ({
   SupabaseRealtime: {
     subscribeToTable: vi.fn()
   }
@@ -56,7 +56,7 @@ describe('Supabase Sync: User Service', () => {
     expect(newUser.id).toBeDefined();
     // The create method calls Supabase.db.create in the background
     // Since it's background/async in the source, we might need a small wait or just check if it was called
-    const { Supabase } = await import('@/integration/supabase');
+    const { Supabase } = await import('@/integrations/supabase');
     expect(Supabase.db.create).toHaveBeenCalled();
   });
 
@@ -70,7 +70,7 @@ describe('Supabase Sync: User Service', () => {
 
     userService.update(user.id, { name: 'New Name' });
     
-    const { Supabase } = await import('@/integration/supabase');
+    const { Supabase } = await import('@/integrations/supabase');
     expect(Supabase.db.update).toHaveBeenCalledWith('profiles', user.id, expect.objectContaining({
       full_name: 'New Name'
     }));

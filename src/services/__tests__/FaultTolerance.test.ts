@@ -9,7 +9,7 @@ describe('Fault Tolerance: Supabase Outage Simulation', () => {
 
   it('should handle simulated failures when using Supabase client directly', async () => {
     simulator.setOptions({ failRate: 1.0 }); // 100% failure
-    const { Supabase } = await import('@/integration/supabase');
+    const { Supabase } = await import('@/integrations/supabase');
     
     try {
       await Supabase.db.findOne('profiles', 'u1');
@@ -23,7 +23,7 @@ describe('Fault Tolerance: Supabase Outage Simulation', () => {
     simulator.setOptions({ latency: 150 });
     const start = Date.now();
     
-    const { Supabase } = await import('@/integration/supabase');
+    const { Supabase } = await import('@/integrations/supabase');
     await Supabase.db.findOne('profiles', 'u1');
     
     const duration = Date.now() - start;

@@ -1,5 +1,6 @@
 import { User, UserFormData } from "@/types/user";
 import { UserForm } from "./UserForm";
+import { FormDialog } from "@/components/shared/FormDialog";
 
 interface UserDialogsProps {
   isFormOpen: boolean;
@@ -15,18 +16,20 @@ export const UserDialogs = ({
   onSave 
 }: UserDialogsProps) => {
   return (
-    <>
-      {isFormOpen && (
-        <UserForm 
-          isOpen={isFormOpen} 
-          onClose={() => setIsFormOpen(false)} 
-          onSave={(data) => {
-            onSave(data);
-            setIsFormOpen(false);
-          }}
-          editingUser={editingUser}
-        />
-      )}
-    </>
+    <FormDialog
+      isOpen={isFormOpen}
+      onClose={() => setIsFormOpen(false)}
+      title={editingUser ? "Editar Usuário" : "Novo Usuário"}
+      description={editingUser ? "Atualize as permissões e dados cadastrais." : "Configure o perfil e nível de acesso do novo integrante."}
+    >
+      <UserForm 
+        onSave={(data) => {
+          onSave(data);
+          setIsFormOpen(false);
+        }}
+        onCancel={() => setIsFormOpen(false)}
+        editingUser={editingUser}
+      />
+    </FormDialog>
   );
 };

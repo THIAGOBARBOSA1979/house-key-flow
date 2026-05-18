@@ -1,4 +1,4 @@
-import { Supabase, FilterParams, PaginationParams } from '@/integration/supabase';
+import { Supabase, FilterParams, PaginationParams } from '@/integrations/supabase';
 
 export abstract class SupabaseService<T extends { id: string; company_id?: string }> {
   protected table: string;

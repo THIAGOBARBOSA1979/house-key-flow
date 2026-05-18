@@ -1,0 +1,4 @@
+src/test/setup.ts
+src/services/__tests__/FaultTolerance.test.ts
+src/services/__tests__/CoreServices.test.ts
+src/services/__tests__/SupabaseCRUD.test.ts

@@ -4,13 +4,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { SkeletonLoader } from "@/components/shared/SkeletonLoader";
 import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
 import { exportService } from "@/services";
 import { formatDate } from "@/utils/formatters";
-import { useProperties } from "@/hooks";
+import { useProperties, useConfirm } from "@/hooks";
 import { Property } from "@/services";
 import { Button } from "@/components/ui/button";
 import { PropertyStats } from "@/components/Properties/PropertyStats";
@@ -50,7 +50,7 @@ const Properties = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null);
+  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
 
   const managers = useMemo(() => 
     Array.from(new Set(properties.map(p => p.manager).filter(Boolean))) as string[],
@@ -127,7 +127,15 @@ const Properties = () => {
             property={property} 
             onClick={() => setSelectedProperty(property)}
             onEdit={() => handleOpenEdit(property)}
-            onDelete={() => setPropertyToDelete(property)}
+            onDelete={async () => {
+              if (await confirm({
+                title: "Confirmar Exclusão",
+                description: `Deseja realmente excluir o empreendimento "${property.name}"? Esta ação não pode ser desfeita.`,
+                confirmLabel: "Excluir",
+              })) {
+                deleteProperty(property.id!);
+              }
+            }}
           />
         )}
         renderTable={(items) => (
@@ -185,7 +193,15 @@ const Properties = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40 shadow-sem-lg">
                       <DropdownMenuItem onClick={() => handleOpenEdit(p)} className="cursor-pointer"><Pencil className="mr-2 h-4 w-4" /> Editar</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive font-bold" onClick={() => setPropertyToDelete(p)}><Trash2 className="mr-2 h-4 w-4" /> Excluir</DropdownMenuItem>
+                      <DropdownMenuItem className="text-destructive font-bold" onClick={async () => {
+                        if (await confirm({
+                          title: "Confirmar Exclusão",
+                          description: `Deseja realmente excluir o empreendimento "${p.name}"? Esta ação não pode ser desfeita.`,
+                          confirmLabel: "Excluir",
+                        })) {
+                          deleteProperty(p.id!);
+                        }
+                      }}><Trash2 className="mr-2 h-4 w-4" /> Excluir</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )
@@ -232,11 +248,15 @@ const Properties = () => {
         editingProperty={editingProperty}
         selectedProperty={selectedProperty}
         setSelectedProperty={setSelectedProperty}
-        propertyToDelete={propertyToDelete}
-        setPropertyToDelete={setPropertyToDelete}
         onSave={(id, data) => id ? updateProperty(id, data) : createProperty(data)}
-        onDelete={deleteProperty}
         onRefresh={refreshList}
+      />
+
+      <ConfirmationDialog 
+        isOpen={isConfirmOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        {...confirmOptions}
       />
     </PageTemplate>
   );

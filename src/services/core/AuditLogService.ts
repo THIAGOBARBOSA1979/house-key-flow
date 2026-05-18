@@ -1,6 +1,5 @@
 import { SupabaseService } from "../SupabaseService";
-import { Supabase } from "@/integration/supabase";
-import { SupabaseRealtime } from "@/integration/supabase/realtime";
+import { Supabase, FilterParams } from "@/integrations/supabase";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -40,7 +39,6 @@ export interface AuditLogEntry {
   payload: any;
   previous_values: any;
   created_at: string;
-  // UI expected fields
   details: string;
   timestamp: Date;
   performedByName: string;
@@ -148,12 +146,12 @@ class AuditLogService extends SupabaseService<any> {
       callback(logs);
     });
 
-    const channel = SupabaseRealtime.subscribeToTable('audit_logs', async () => {
+    const channel = Supabase.realtime.subscribeToTable('audit_logs', async () => {
       const logs = await this.getRecentLogsAsync(50);
       this.localLogs = logs;
       callback(logs);
     });
-    return () => SupabaseRealtime.unsubscribe(channel);
+    return () => channel.unsubscribe();
   }
 
   async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
@@ -161,8 +159,12 @@ class AuditLogService extends SupabaseService<any> {
   }
 
   async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
-    const count = await this.count(companyId, isSuperAdmin);
-    return { totalLogs: count, currentCount24h: 0 };
+    const filters: FilterParams[] = [];
+    if (!isSuperAdmin && companyId) {
+      filters.push({ column: 'company_id', operator: 'eq', value: companyId });
+    }
+    const { data, error } = await Supabase.db.count('audit_logs', filters);
+    return { totalLogs: data || 0, currentCount24h: 0 };
   }
 }
 

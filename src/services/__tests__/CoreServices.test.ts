@@ -3,7 +3,7 @@ import { notificationService } from '../core/NotificationService';
 import { auditLogService } from '../core/AuditLogService';
 
 // Mock Supabase for AuditLogService
-vi.mock('@/integration/supabase', () => ({
+vi.mock('@/integrations/supabase', () => ({
   Supabase: {
     db: {
       findMany: vi.fn().mockResolvedValue({ data: [], error: null }),
@@ -45,7 +45,7 @@ describe('Core Services Integration', () => {
       payload: { name: 'Novo Usuário' }
     });
 
-    const { Supabase } = await import('@/integration/supabase');
+    const { Supabase } = await import('@/integrations/supabase');
     expect(Supabase.db.rpc).toHaveBeenCalledWith('log_audit_action', expect.objectContaining({
       p_action: 'created',
       p_entity_type: 'user'

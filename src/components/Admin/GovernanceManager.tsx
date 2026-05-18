@@ -3,8 +3,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Lock, CheckCircle2, XCircle } from "lucide-react";
-import { Supabase } from "@/integration/supabase";
-import { Role, ROLE_PERMISSIONS } from "@/integration/supabase/auth-types";
+import { Supabase } from "@/integrations/supabase";
+import { Role } from "@/integrations/supabase/auth-guard";
 
 export const GovernanceManager = () => {
   const [dbRoles, setDbRoles] = useState<any[]>([]);
@@ -21,7 +21,7 @@ export const GovernanceManager = () => {
     fetchRoles();
   }, []);
 
-  const roles: Role[] = ['super_admin', 'admin', 'staff', 'technical', 'user'];
+  const roles: Role[] = ['super_admin', 'admin', 'manager', 'staff', 'technical', 'user'];
 
   return (
     <div className="space-y-6">
@@ -48,35 +48,15 @@ export const GovernanceManager = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Object.keys(ROLE_PERMISSIONS.super_admin).map((_, idx) => {
-                // Get a list of all unique permissions across all roles
-                const allPermissions = Array.from(new Set(Object.values(ROLE_PERMISSIONS).flat()));
-                const permission = allPermissions[idx];
-                if (!permission) return null;
-
-                return (
-                  <TableRow key={permission}>
-                    <TableCell className="font-medium text-sm">
-                      <div className="flex items-center gap-2">
-                        <Lock className="h-3 w-3 text-muted-foreground" />
-                        {permission}
-                      </div>
-                    </TableCell>
-                    {roles.map(role => {
-                      const hasPermission = ROLE_PERMISSIONS[role].includes(permission as any);
-                      return (
-                        <TableCell key={role} className="text-center">
-                          {hasPermission ? (
-                            <CheckCircle2 className="h-4 w-4 text-status-complete mx-auto" />
-                          ) : (
-                            <XCircle className="h-4 w-4 text-muted-foreground/30 mx-auto" />
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+              {/* Simplified for now until permissions are fully mapped in new guard */}
+              <TableRow>
+                <TableCell className="font-medium text-sm">Controle Total</TableCell>
+                {roles.map(role => (
+                  <TableCell key={role} className="text-center">
+                    {role === 'super_admin' ? <CheckCircle2 className="h-4 w-4 text-status-complete mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
+                  </TableCell>
+                ))}
+              </TableRow>
             </TableBody>
           </Table>
         </CardContent>

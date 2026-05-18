@@ -1,7 +1,6 @@
 import { BaseService } from "../BaseService";
 import { User, UserStats } from "@/types/user";
-import { Supabase } from "@/integration/supabase";
-import { SupabaseRealtime } from "@/integration/supabase/realtime";
+import { Supabase } from "@/integrations/supabase";
 
 class UserService extends BaseService<User> {
   constructor() {
@@ -23,7 +22,7 @@ class UserService extends BaseService<User> {
       this.persist();
     }
 
-    SupabaseRealtime.subscribeToTable('profiles', async () => {
+    Supabase.realtime.subscribeToTable('profiles', async () => {
       const { data: newData } = await Supabase.db.findMany<User>('profiles');
       if (newData) {
         this.items = newData.map(raw => ({

@@ -6,8 +6,8 @@ import { User } from '@/types/user';
 import { useToast } from '@/components/ui/use-toast';
 import { securityService } from '@/services';
 import { companyService } from '@/services';
-import { AuthGuard } from '@/integration/supabase/auth-guard';
-import { Supabase } from '@/integration/supabase';
+import { AuthGuard } from '@/integrations/supabase/auth-guard';
+import { Supabase } from '@/integrations/supabase';
 import { findMockUser } from '@/mocks/users';
 
 

@@ -5,6 +5,7 @@ export * from './shared/useDataTable';
 export * from './shared/useDataList';
 export * from './shared/useService';
 export * from './shared/utils/useDebounce';
+export * from './ui/useConfirm';
 
 // Identity Domain
 export * from './identity/useUsers';
