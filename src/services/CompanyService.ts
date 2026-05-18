@@ -45,8 +45,15 @@ class CompanyService extends BaseService<Company> {
   }
 
   getCompanyBySlug(slug: string): Company | undefined {
-    return this.items.find(c => c.slug === slug);
+    return this.items.find(c => c.slug.toLowerCase() === slug.toLowerCase());
   }
+
+  isSlugAvailable(slug: string, excludeId?: string): boolean {
+    const slugLower = slug.toLowerCase().trim();
+    if (!slugLower) return false;
+    return !this.items.some(c => c.slug.toLowerCase() === slugLower && c.id !== excludeId);
+  }
+
 
   updateSubscription(id: string, plan: SubscriptionPlan, expiresAt?: Date) {
     return this.update(id, {

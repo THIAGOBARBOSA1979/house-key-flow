@@ -59,6 +59,9 @@ export default function SaaSAdmin() {
   const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'basic' as SubscriptionPlan });
   const [isUpdatingSub, setIsUpdatingSub] = useState(false);
   const [expiryDate, setExpiryDate] = useState<string>('');
+  const [slugError, setSlugError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
 
   const companyUsers = useMemo(() => {
     if (!selectedCompany) return [];
@@ -85,22 +88,43 @@ export default function SaaSAdmin() {
   };
 
   const handleAddCompany = () => {
-    if (!newCompany.name || !newCompany.slug) return;
+    setSlugError(null);
+    if (!newCompany.name || !newCompany.slug) {
+      toast({ title: "Erro", description: "Nome e Slug são obrigatórios.", variant: "destructive" });
+      return;
+    }
+
+    const normalizedSlug = newCompany.slug.toLowerCase().trim().replace(/\s+/g, '-');
     
-    companyService.create({
-      name: newCompany.name,
-      slug: newCompany.slug,
-      status: 'active',
-      owner_id: 'pending',
-      subscription_plan: newCompany.plan,
-      created_at: new Date(),
-      updated_at: new Date()
-    });
+    if (!companyService.isSlugAvailable(normalizedSlug)) {
+      setSlugError("Este slug já está em uso por outro tenant.");
+      toast({ title: "Erro de Validação", description: "O slug informado já existe.", variant: "destructive" });
+      return;
+    }
     
-    setCompanies(companyService.getAll(undefined, true));
-    setIsAddOpen(false);
-    toast({ title: "Empresa cadastrada", description: "O novo tenant foi criado com sucesso." });
+    setIsSaving(true);
+    try {
+      companyService.create({
+        name: newCompany.name,
+        slug: normalizedSlug,
+        status: 'active',
+        owner_id: 'pending',
+        subscription_plan: newCompany.plan,
+        created_at: new Date(),
+        updated_at: new Date()
+      });
+      
+      setCompanies(companyService.getAll(undefined, true));
+      setIsAddOpen(false);
+      setNewCompany({ name: '', slug: '', plan: 'basic' });
+      toast({ title: "Empresa cadastrada", description: "O novo tenant foi criado com sucesso." });
+    } catch (error) {
+      toast({ title: "Erro", description: "Falha ao criar empresa.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
   };
+
 
   const handleUpdateSubscription = () => {
     if (!selectedCompany || !expiryDate) return;
@@ -117,6 +141,7 @@ export default function SaaSAdmin() {
 
   const startEditing = () => {
     if (!selectedCompany) return;
+    setSlugError(null);
     setEditData({
       name: selectedCompany.name,
       slug: selectedCompany.slug,
@@ -127,23 +152,43 @@ export default function SaaSAdmin() {
   };
 
   const handleSaveEdit = () => {
-    if (!selectedCompany || !editData.name) return;
+    if (!selectedCompany || !editData.name || !editData.slug) {
+      toast({ title: "Erro", description: "Campos obrigatórios faltando.", variant: "destructive" });
+      return;
+    }
+
+    const normalizedSlug = editData.slug.toLowerCase().trim().replace(/\s+/g, '-');
     
-    companyService.update(selectedCompany.id, {
-      name: editData.name,
-      slug: editData.slug,
-      subscription_plan: editData.subscription_plan,
-      settings: editData.settings as CompanySettings,
-      updated_at: new Date()
-    });
-    
-    const updated = companyService.getById(selectedCompany.id, undefined, true);
-    if (updated) setSelectedCompany(updated);
-    
-    setCompanies(companyService.getAll(undefined, true));
-    setIsEditing(false);
-    toast({ title: "Tenant Atualizado", description: "As informações da empresa foram salvas." });
+    if (!companyService.isSlugAvailable(normalizedSlug, selectedCompany.id)) {
+      setSlugError("Este slug já está em uso por outro tenant.");
+      toast({ title: "Erro de Validação", description: "O slug informado já existe.", variant: "destructive" });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      companyService.update(selectedCompany.id, {
+        name: editData.name,
+        slug: normalizedSlug,
+        subscription_plan: editData.subscription_plan,
+        settings: editData.settings as CompanySettings,
+        updated_at: new Date()
+      });
+      
+      const updated = companyService.getById(selectedCompany.id, undefined, true);
+      if (updated) setSelectedCompany(updated);
+      
+      setCompanies(companyService.getAll(undefined, true));
+      setIsEditing(false);
+      setSlugError(null);
+      toast({ title: "Tenant Atualizado", description: "As informações da empresa foram salvas." });
+    } catch (error) {
+      toast({ title: "Erro", description: "Falha ao salvar alterações.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
   };
+
 
   const handleDeleteCompany = (id: string) => {
     if (confirm("Deseja realmente excluir permanentemente este tenant? Todos os dados serão perdidos.")) {
@@ -272,8 +317,10 @@ export default function SaaSAdmin() {
           setSelectedCompany(null);
           setIsUpdatingSub(false);
           setIsEditing(false);
+          setSlugError(null);
         }
       }}>
+
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader className="flex flex-row items-center justify-between pr-8">
             <DialogTitle className="text-xl font-black uppercase tracking-tighter">
@@ -301,10 +348,15 @@ export default function SaaSAdmin() {
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Slug (ID Único)</Label>
                   <Input 
                     value={editData.slug || ''} 
-                    onChange={e => setEditData({...editData, slug: e.target.value})}
-                    className="h-11 rounded-xl"
+                    onChange={e => {
+                      setEditData({...editData, slug: e.target.value});
+                      setSlugError(null);
+                    }}
+                    className={`h-11 rounded-xl ${slugError ? 'border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.2)]' : ''}`}
                   />
+                  {slugError && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{slugError}</p>}
                 </div>
+
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Plano de Assinatura</Label>
                   <Select 
@@ -337,9 +389,11 @@ export default function SaaSAdmin() {
 
               <div className="flex gap-3 justify-end pt-4 border-t">
                 <Button variant="ghost" onClick={() => setIsEditing(false)} className="rounded-xl h-11 px-6 font-bold">Cancelar</Button>
-                <Button onClick={handleSaveEdit} className="rounded-xl h-11 px-8 font-black uppercase tracking-widest text-xs gap-2">
-                  <Save className="w-4 h-4" /> Salvar Alterações
+                <Button onClick={handleSaveEdit} disabled={isSaving} className="rounded-xl h-11 px-8 font-black uppercase tracking-widest text-xs gap-2">
+                  <Save className="w-4 h-4" /> 
+                  {isSaving ? "Salvando..." : "Salvar Alterações"}
                 </Button>
+
               </div>
             </div>
           ) : (
@@ -505,24 +559,44 @@ export default function SaaSAdmin() {
 
 
 
-      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent>
+      <Dialog open={isAddOpen} onOpenChange={(open) => {
+        setIsAddOpen(open);
+        if (!open) setSlugError(null);
+      }}>
+        <DialogContent className="rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Nova Empresa Multi-tenant</DialogTitle>
+            <DialogTitle className="text-xl font-black uppercase tracking-tighter">Nova Empresa Multi-tenant</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label>Nome da Incorporadora</Label>
-              <Input placeholder="Ex: Incorporadora Alpha" onChange={e => setNewCompany({...newCompany, name: e.target.value})} />
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome da Incorporadora</Label>
+              <Input 
+                placeholder="Ex: Incorporadora Alpha" 
+                value={newCompany.name}
+                onChange={e => setNewCompany({...newCompany, name: e.target.value})} 
+                className="h-11 rounded-xl"
+              />
             </div>
             <div className="space-y-2">
-              <Label>Slug Identificador (subdomain/id)</Label>
-              <Input placeholder="incorporadora-alpha" onChange={e => setNewCompany({...newCompany, slug: e.target.value})} />
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Slug Identificador (URL/ID)</Label>
+              <Input 
+                placeholder="incorporadora-alpha" 
+                value={newCompany.slug}
+                onChange={e => {
+                  setNewCompany({...newCompany, slug: e.target.value});
+                  setSlugError(null);
+                }} 
+                className={`h-11 rounded-xl ${slugError ? 'border-red-500' : ''}`}
+              />
+              {slugError && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{slugError}</p>}
             </div>
             <div className="space-y-2">
-              <Label>Plano Inicial</Label>
-              <Select onValueChange={v => setNewCompany({...newCompany, plan: v as SubscriptionPlan})}>
-                <SelectTrigger>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Plano Inicial</Label>
+              <Select 
+                value={newCompany.plan}
+                onValueChange={v => setNewCompany({...newCompany, plan: v as SubscriptionPlan})}
+              >
+                <SelectTrigger className="h-11 rounded-xl">
                   <SelectValue placeholder="Selecione o plano" />
                 </SelectTrigger>
                 <SelectContent>
@@ -533,12 +607,15 @@ export default function SaaSAdmin() {
               </Select>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancelar</Button>
-            <Button onClick={handleAddCompany}>Confirmar Ativação</Button>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setIsAddOpen(false)} className="rounded-xl font-bold">Cancelar</Button>
+            <Button onClick={handleAddCompany} disabled={isSaving} className="rounded-xl font-black uppercase tracking-widest text-xs h-11 px-8">
+              {isSaving ? "Processando..." : "Confirmar Ativação"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </PageTemplate>
   );
 }
