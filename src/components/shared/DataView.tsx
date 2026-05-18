@@ -1,24 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight, LucideIcon, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { EmptyState } from "./EmptyState";
+import { SkeletonLoader } from "./SkeletonLoader";
+import { DataTable } from "./DataTable";
+import { ResponsiveGrid } from "./ResponsiveGrid";
+
 /**
  * Common view modes for data display components.
  * Use this type instead of string literals for viewMode props.
  */
 export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
 
-import React, { useState } from 'react';
-
-
-import { ChevronLeft, ChevronRight, LucideIcon, Table as TableIcon, LayoutGrid, Calendar as CalendarIcon, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { EmptyState } from "./EmptyState";
-import { SkeletonLoader } from "./SkeletonLoader";
-import { DataViewMode } from "@/types/dataView";
-import { DataTable } from "./DataTable";
-import { ResponsiveGrid } from "./ResponsiveGrid";
-
-
 export interface DataViewProps<T> {
+
   items: T[];
   viewMode?: DataViewMode;
   isLoading?: boolean;
