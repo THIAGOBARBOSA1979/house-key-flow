@@ -118,7 +118,30 @@ describe('DataView Component', () => {
         />
       );
       expect(screen.getByText('Item 1')).toBeDefined();
-    });
   });
+
+  it('standardizes loading and emptyState across view modes', () => {
+    // Loading
+    const { rerender } = render(<DataView items={mockItems} isLoading={true} skeletonType="table" />);
+    expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'table');
+    
+    rerender(<DataView items={mockItems} isLoading={true} skeletonType="list" />);
+    expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'list');
+
+    // Empty State
+    rerender(
+      <DataView 
+        items={[]} 
+        emptyState={{ 
+          title: "Custom Empty Title", 
+          description: "Custom Description" 
+        }} 
+      />
+    );
+    expect(screen.getByTestId('empty-title').textContent).toBe("Custom Empty Title");
+    expect(screen.getByTestId('empty-description').textContent).toBe("Custom Description");
+  });
+});
+
 });
 
