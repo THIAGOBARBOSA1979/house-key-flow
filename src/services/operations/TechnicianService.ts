@@ -1,5 +1,5 @@
 import { BaseService } from "./BaseService";
-import { auditLogService } from './AuditLogService';
+import { auditLogService } from '../core/AuditLogService';
 
 export interface Technician {
   id: string;

@@ -1,5 +1,5 @@
 
-import { auditLogService } from './AuditLogService';
+import { auditLogService } from '../core/AuditLogService';
 
 class SystemSecurityService {
   private static SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
