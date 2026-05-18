@@ -1,4 +1,6 @@
 import { auditLogService, AuditAction, AuditEntityType } from "./core/AuditLogService";
+import { Supabase } from "@/integrations/supabase";
+
 
 type Listener<T> = (items: T[]) => void;
 
