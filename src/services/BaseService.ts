@@ -6,11 +6,13 @@ type Listener<T> = (items: T[]) => void;
 
 export interface BaseServiceOptions {
   storageKey: string;
+  supabaseTable?: string;
   auditEntityType?: AuditEntityType;
   shouldSyncWithSupabase?: boolean;
 }
 
 export abstract class BaseService<T extends { id: string; company_id?: string }> {
+
   protected items: T[] = [];
   protected options: BaseServiceOptions;
   private listeners: Listener<T>[] = [];
