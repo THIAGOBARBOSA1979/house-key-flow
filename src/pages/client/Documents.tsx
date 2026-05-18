@@ -197,7 +197,7 @@ export default function ClientDocuments() {
     disponivel: documents.filter(d => d.status === "disponivel").length,
     processando: documents.filter(d => d.status === "processando").length,
     thisMonth: documents.filter(d => d.createdAt.getMonth() === new Date().getMonth()).length,
-    favorites: documents.filter(d => d.isFavorite).length
+    favorites: documents.filter(d => (d as any).isFavorite).length
   };
 
   return (
