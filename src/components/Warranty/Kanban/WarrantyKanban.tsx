@@ -243,8 +243,9 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
   }
 
   // Count totals
-  const totalCards = Array.from(filteredKanbanData.values()).reduce((acc, cards) => acc + cards.length, 0);
-  const expiredCards = Array.from(filteredKanbanData.values()).flat().filter(c => c.slaInfo.status === "expired").length;
+  const totalCards = Array.from(filteredKanbanData.values()).reduce((acc, cards: KanbanCardData[]) => acc + cards.length, 0);
+  const expiredCards = Array.from(filteredKanbanData.values()).flat().filter((c: any) => c.slaInfo.status === "expired").length;
+
 
   return (
     <div className="space-y-4">
