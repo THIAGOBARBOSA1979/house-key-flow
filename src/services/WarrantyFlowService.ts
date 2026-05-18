@@ -181,7 +181,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
    * Create a new warranty request
    */
   createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
-    console.log('[WarrantyFlowService] Creating request:', data.title);
+    
     const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
     const slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === category) || DEFAULT_SLA_CONFIGS[0];
