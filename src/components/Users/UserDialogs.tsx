@@ -27,7 +27,7 @@ export const UserDialogs = ({
         onClose={() => setIsFormOpen(false)} 
         onSave={(data) => {
           onSave(data);
-          setIsUserFormOpen(false);
+          setIsFormOpen(false);
         }}
         editingUser={editingUser}
       />
