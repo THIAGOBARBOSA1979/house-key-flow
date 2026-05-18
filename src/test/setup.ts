@@ -72,8 +72,9 @@ vi.mock('@/integration/supabase', () => ({
           const to = from + options.pagination.pageSize - 1;
           builder.range(from, to);
         }
-        const { data } = await builder;
-        return { data, error: null };
+        const res = await (builder as any);
+        return { data: res.data, error: null };
+
       }),
       findOne: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).single()),
       create: vi.fn((table, data) => simulator.getBuilder(table).insert(data)),
