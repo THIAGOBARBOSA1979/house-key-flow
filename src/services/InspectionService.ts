@@ -118,12 +118,20 @@ class InspectionService extends BaseService<Inspection> {
     return updated;
   }
 
+  getStatsByStatus() {
+    return this.items.reduce((acc, curr) => {
+      acc[curr.status] = (acc[curr.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+  }
+
   getStatsByType() {
     return this.items.reduce((acc, curr) => {
       acc[curr.type] = (acc[curr.type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
   }
+
 
   getStatsByTechnician() {
     return this.items.reduce((acc, curr) => {
