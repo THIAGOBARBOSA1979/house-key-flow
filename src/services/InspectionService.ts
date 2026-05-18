@@ -1,5 +1,6 @@
 import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
+import { technicianService } from "./TechnicianService";
 
 export interface Inspection {
   id: string;
@@ -43,10 +44,6 @@ const INITIAL_INSPECTIONS: Inspection[] = [
 ];
 
 class InspectionService extends BaseService<Inspection> {
-  private technicians: Technician[] = [
-    { id: "1", name: "Carlos Andrade", specialty: "Hidráulica/Geral", contact: "(11) 98888-7777", active: true },
-    { id: "2", name: "Luiza Mendes", specialty: "Elétrica/Acabamento", contact: "(11) 97777-6666", active: true },
-  ];
 
   constructor() {
     super("a2_inspections", INITIAL_INSPECTIONS);
@@ -54,11 +51,25 @@ class InspectionService extends BaseService<Inspection> {
 
 
   getTechnicians() {
-    return [...this.technicians];
+    return technicianService.getAll().map(t => ({
+      id: t.id,
+      name: t.name,
+      specialty: t.specialty.join(", "),
+      contact: t.phone,
+      active: t.status === "active"
+    }));
   }
 
   getTechnicianById(id: string) {
-    return this.technicians.find(t => t.id === id);
+    const t = technicianService.getById(id);
+    if (!t) return undefined;
+    return {
+      id: t.id,
+      name: t.name,
+      specialty: t.specialty.join(", "),
+      contact: t.phone,
+      active: t.status === "active"
+    };
   }
 
   schedule(data: { date: Date; time: string; inspectionType: string; technician: string; checklist?: string; notes?: string; requestId?: string; priority?: Inspection["priority"] }, propertyInfo?: { property: string; unit: string; client: string }): Inspection {

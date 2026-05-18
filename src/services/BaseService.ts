@@ -1,6 +1,6 @@
 type Listener<T> = (items: T[]) => void;
 
-export abstract class BaseService<T extends { id?: string }> {
+export abstract class BaseService<T extends { id: string }> {
   protected items: T[] = [];
   protected storageKey: string;
   private listeners: Listener<T>[] = [];
@@ -73,7 +73,7 @@ export abstract class BaseService<T extends { id?: string }> {
   create(item: Omit<T, "id">): T {
     const newItem = {
       ...item,
-      id: crypto.randomUUID(),
+      id: (item as any).id || crypto.randomUUID(),
     } as T;
     this.items.push(newItem);
     this.persist();

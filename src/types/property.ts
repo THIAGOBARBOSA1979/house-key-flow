@@ -15,7 +15,7 @@ export interface PropertyUnit {
 }
 
 export interface Property {
-  id?: string;
+  id: string;
   name: string;
   location: string;
   units: number;
