@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { simulator } from '../supabase-simulator';
+import { simulator } from '../../test/supabase-simulator';
 import { propertyService } from '../operations/PropertyService';
+
 import { userService } from '../identity/UserService';
 
 describe('Security: Multi-tenant Data Isolation', () => {
