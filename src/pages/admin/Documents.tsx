@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { 
   FileText, FolderPlus, Clock, CheckCircle2, 
-  Plus, FileUp, Download, Archive, Trash2
+  Plus, FileUp, Download, Archive, Trash2,
+  LayoutGrid, List, LayoutDashboard, BarChart, Eye,
+  MoreHorizontal, Share2, Edit, ShieldCheck, Move, RotateCw
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -25,8 +27,12 @@ import { SignatureWorkflowDialog } from "@/components/Documents/SignatureWorkflo
 import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
 import { DataViewMode } from "@/types/dataView";
 import { Checkbox } from "@/components/ui/checkbox";
-import { formatDate } from "@/utils/formatters";
-import { DocumentCard } from "@/components/Documents/DocumentCard";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+
 
 
 const AdminDocuments = () => {

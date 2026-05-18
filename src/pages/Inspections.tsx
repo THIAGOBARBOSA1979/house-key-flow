@@ -10,7 +10,8 @@ import {
   LayoutGrid, 
   Filter, 
   Download,
-  Building
+  Building,
+  List
 } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
@@ -23,7 +24,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { Inspection } from "@/types/inspection";
@@ -46,6 +47,8 @@ import {
 import { useInspections } from "@/hooks/useInspections";
 import { Button } from "@/components/ui/button";
 import { DataViewMode } from "@/types/dataView";
+import { inspectionService } from "@/services/InspectionService";
+
 
 
 export default function Inspections() {
