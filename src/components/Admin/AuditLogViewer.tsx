@@ -26,6 +26,7 @@ import { isValid } from "date-fns";
 import { cn, safeFormat } from "@/lib/utils";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services/AuditLogService";
 import { exportService } from "@/services/ExportService";
+import { useAuth } from "@/contexts/AuthContext";
 import { DataTable } from "@/components/shared/DataTable";
 import {
   Dialog,
