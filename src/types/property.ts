@@ -16,6 +16,8 @@ export interface PropertyUnit {
 
 export interface Property {
   id: string;
+  company_id?: string;
+
   name: string;
   location: string;
   units: number;
