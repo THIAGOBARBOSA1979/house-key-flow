@@ -13,7 +13,7 @@ const AuditLogs = () => {
   const { user } = useAuth();
 
   const handleExport = () => {
-    const logs = auditLogService.getAllLogs(user?.company_id, user?.is_super_admin);
+    const logs = auditLogService.getAllLogs();
     exportService.exportToCSV(logs, "logs_auditoria_sistema");
     toast({
       title: "Exportação concluída",

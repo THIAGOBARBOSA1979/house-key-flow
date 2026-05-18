@@ -1,4 +1,6 @@
-import { BaseService } from "./BaseService";
+import { SupabaseService } from "./SupabaseService";
+import { Supabase } from "@/integration/supabase";
+import { SupabaseRealtime } from "@/integration/supabase/realtime";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -9,129 +11,158 @@ export type AuditAction =
   | 'scheduled' 
   | 'completed' 
   | 'cancelled' 
-  | 'stage_changed'
-  | 'comment_added'
-  | 'info_added'
-  | 'assigned'
-  | 'exported'
-  | 'logged_in'
-  | 'logged_out'
-  | 'settings_updated'
-  | 'downloaded'
-  | 'archived'
-  | 'published'
-  | 'favorited'
-  | 'deleted'
-  | 'viewed'
-  | 'payment_received'
+  | 'stage_changed' 
+  | 'comment_added' 
+  | 'info_added' 
+  | 'assigned' 
+  | 'exported' 
+  | 'logged_in' 
+  | 'logged_out' 
+  | 'settings_updated' 
+  | 'downloaded' 
+  | 'archived' 
+  | 'published' 
+  | 'favorited' 
+  | 'deleted' 
+  | 'viewed' 
+  | 'payment_received' 
   | 'invoice_issued';
 
-export type AuditRole = 'admin' | 'client' | 'user';
+export type AuditRole = 'super_admin' | 'admin' | 'staff' | 'technical' | 'user' | 'client';
 
 export interface AuditLogEntry {
   id: string;
-  company_id?: string;
-  entityType: AuditEntityType;
-  entityId: string;
-  action: AuditAction;
-  performedBy: string;
-  performedByName: string;
-  performedByRole: AuditRole;
-  timestamp: Date;
+  company_id: string | null;
+  user_id: string;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  payload: any;
+  previous_values: any;
+  created_at: string;
+  // UI expected fields
   details: string;
-  metadata?: Record<string, unknown>;
+  timestamp: Date;
+  performedByName: string;
+  performedByRole: string;
+  entityType: string;
+  entityId: string;
+  metadata?: any;
 }
 
-type NewAuditLogEntry = Omit<AuditLogEntry, 'id' | 'timestamp'>;
+class AuditLogService extends SupabaseService<any> {
+  private localLogs: AuditLogEntry[] = [];
 
-const INITIAL_LOGS: AuditLogEntry[] = [
-  {
-    id: "log-1", entityType: 'inspection', entityId: '1',
-    action: 'created', performedBy: 'admin-1', performedByName: 'Ana Costa',
-    performedByRole: 'admin', timestamp: new Date(Date.now() - 30 * 86400000),
-    details: 'Protocolo de vistoria homologado para Edifício Aurora, Unidade estratégica 204.'
-  },
-  {
-    id: "log-2", entityType: 'inspection', entityId: '1',
-    action: 'scheduled', performedBy: 'admin-1', performedByName: 'Ana Costa',
-    performedByRole: 'admin', timestamp: new Date(Date.now() - 28 * 86400000),
-    details: 'Vistoria técnica integrada ao cronograma operacional: 15/05/2025 às 10:00.'
-  },
-];
-
-class AuditLogService extends BaseService<AuditLogEntry> {
   constructor() {
-    super("a2_audit_logs", INITIAL_LOGS);
+    super("audit_logs");
   }
 
-  getAllLogs(companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    return [...relevantItems].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }
-
-
-  log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole, company_id?: string }): AuditLogEntry {
-    const newEntry: AuditLogEntry = {
-      ...entry,
-      id: (entry as any).id || crypto.randomUUID(),
-      timestamp: new Date(),
-      performedBy: userContext?.id || entry.performedBy || 'system',
-      performedByName: userContext?.name || entry.performedByName || 'Sistema',
-      performedByRole: userContext?.role || entry.performedByRole || 'user',
-      company_id: userContext?.company_id || entry.company_id
+  private mapToEntry(raw: any): AuditLogEntry {
+    const profiles = raw.profiles;
+    return {
+      ...raw,
+      details: raw.payload?.message || `${raw.action} em ${raw.entity_type}`,
+      timestamp: new Date(raw.created_at),
+      performedByName: profiles?.full_name || 'Sistema',
+      performedByRole: profiles?.role || 'system',
+      entityType: raw.entity_type,
+      entityId: raw.entity_id || '',
+      metadata: raw.payload
     };
-    
-    this.items.unshift(newEntry);
-    this.persist();
-    
-    window.dispatchEvent(new CustomEvent('a2_audit_log_created', { detail: newEntry }));
-    return newEntry;
   }
 
-  getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    return relevantItems.slice(0, limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }
-
-  getFilteredLogs(filters: {
-    searchTerm?: string;
-    action?: string;
-    role?: string;
-    entityType?: string;
-    entityId?: string;
-    dateFrom?: Date;
-    dateTo?: Date;
+  async getLogs(params: {
     companyId?: string;
     isSuperAdmin?: boolean;
-  }): AuditLogEntry[] {
-    const baseItems = this.getAll(filters.companyId, filters.isSuperAdmin);
-    return baseItems.filter(log => {
-      const matchesSearch = !filters.searchTerm || 
-        (log.details?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
-        (log.performedByName?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
-        (log.entityId?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase());
-      
-      const matchesAction = !filters.action || filters.action === "all" || log.action === filters.action;
-      const matchesRole = !filters.role || filters.role === "all" || log.performedByRole === filters.role;
-      const matchesEntityType = !filters.entityType || filters.entityType === "all" || log.entityType === filters.entityType;
-      const matchesEntityId = !filters.entityId || log.entityId === filters.entityId;
-      const matchesDateFrom = !filters.dateFrom || log.timestamp >= filters.dateFrom;
-      const matchesDateTo = !filters.dateTo || log.timestamp <= filters.dateTo;
+    page?: number;
+    pageSize?: number;
+    searchTerm?: string;
+    action?: string;
+    entityType?: string;
+  }): Promise<AuditLogEntry[]> {
+    const filters: any[] = [];
+    if (params.action && params.action !== 'all') filters.push({ column: 'action', operator: 'eq', value: params.action });
+    if (params.entityType && params.entityType !== 'all') filters.push({ column: 'entity_type', operator: 'eq', value: params.entityType });
 
-      return matchesSearch && matchesAction && matchesRole && matchesEntityType && matchesEntityId && matchesDateFrom && matchesDateTo;
-    }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    const { data, error } = await Supabase.db.findMany<any>(this.table, {
+      filters,
+      pagination: {
+        page: params.page || 1,
+        pageSize: params.pageSize || 50,
+        orderBy: 'created_at',
+        orderDirection: 'desc'
+      },
+      select: '*, profiles(full_name, role)'
+    });
+
+    if (error) return [];
+    return (data || []).map(raw => this.mapToEntry(raw));
   }
 
-  getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    const now = new Date();
-    const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const currentCount = relevantItems.filter(l => l.timestamp >= last24h).length;
+  async log(entry: any, userContext?: any): Promise<void> {
+    await this.logAction({
+      action: entry.action,
+      entityType: entry.entityType,
+      entityId: entry.entityId,
+      payload: { ...entry.metadata, message: entry.details }
+    });
+  }
 
-    return {
-      totalLogs: relevantItems.length,
-      currentCount24h: currentCount
-    };
+  async logAction(data: {
+    action: AuditAction;
+    entityType: AuditEntityType;
+    entityId?: string;
+    payload?: any;
+    previousValues?: any;
+  }): Promise<void> {
+    const { error } = await Supabase.db.rpc('log_audit_action', {
+      p_action: data.action,
+      p_entity_type: data.entityType,
+      p_entity_id: data.entityId || null,
+      p_payload: data.payload || null,
+      p_previous_values: data.previousValues || null
+    });
+
+    if (error) console.error('Failed to log audit action:', error);
+  }
+
+  getRecentLogs(limit: number = 20): AuditLogEntry[] {
+    return this.localLogs.slice(0, limit);
+  }
+
+  getAllLogs(): AuditLogEntry[] {
+    return this.localLogs;
+  }
+
+  getFilteredLogs(filters: any): AuditLogEntry[] {
+    return this.localLogs.filter(log => {
+      if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
+      if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
+      return true;
+    });
+  }
+
+  subscribe(callback: (logs: AuditLogEntry[]) => void) {
+    this.getRecentLogsAsync(50).then(logs => {
+      this.localLogs = logs;
+      callback(logs);
+    });
+
+    const channel = SupabaseRealtime.subscribeToTable('audit_logs', async () => {
+      const logs = await this.getRecentLogsAsync(50);
+      this.localLogs = logs;
+      callback(logs);
+    });
+    return () => SupabaseRealtime.unsubscribe(channel);
+  }
+
+  async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
+    return this.getLogs({ pageSize: limit });
+  }
+
+  async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
+    const count = await this.count(companyId, isSuperAdmin);
+    return { totalLogs: count, currentCount24h: 0 };
   }
 }
 

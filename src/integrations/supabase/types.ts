@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          company_id: string | null
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          payload: Json | null
+          previous_values: Json | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          company_id?: string | null
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          payload?: Json | null
+          previous_values?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          company_id?: string | null
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          payload?: Json | null
+          previous_values?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           created_at: string
@@ -168,12 +218,56 @@ export type Database = {
           },
         ]
       }
+      roles_permissions: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          enabled: boolean | null
+          id: string
+          permission: string
+          role: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          permission: string
+          role: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          permission?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roles_permissions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_audit_action: {
+        Args: {
+          p_action: string
+          p_entity_id: string
+          p_entity_type: string
+          p_payload?: Json
+          p_previous_values?: Json
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

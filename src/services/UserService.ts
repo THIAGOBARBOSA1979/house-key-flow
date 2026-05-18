@@ -1,35 +1,80 @@
 import { BaseService } from "./BaseService";
-import { User } from "@/types/user";
-
-const INITIAL_USERS: User[] = [
-  { id: "1", company_id: "comp-1", name: "João Silva", email: "joao@exemplo.com", role: "admin", status: "active", createdAt: new Date(2023, 10, 5) },
-  { id: "2", company_id: "comp-1", name: "Maria Oliveira", email: "maria@exemplo.com", role: "manager", status: "active", createdAt: new Date(2023, 11, 10) },
-  { id: "3", company_id: "comp-1", name: "Pedro Santos", email: "pedro@exemplo.com", role: "client", status: "active", propertyName: "Edifício Aurora", unit: "101", createdAt: new Date(2024, 0, 15) },
-  { id: "4", company_id: "comp-1", name: "Ana Costa", email: "ana@exemplo.com", role: "staff", status: "inactive", createdAt: new Date(2024, 1, 20) },
-
-];
+import { User, UserStats } from "@/types/user";
+import { Supabase } from "@/integration/supabase";
+import { SupabaseRealtime } from "@/integration/supabase/realtime";
 
 class UserService extends BaseService<User> {
   constructor() {
-    super("a2_users", INITIAL_USERS);
+    super("a2_users", []);
+    this.initializeSupabase();
   }
 
-  getStats(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
+  private async initializeSupabase() {
+    const { data } = await Supabase.db.findMany<User>('profiles');
+    if (data) {
+      this.items = data;
+      this.persist();
+    }
+
+    SupabaseRealtime.subscribeToTable('profiles', async () => {
+      const { data: newData } = await Supabase.db.findMany<User>('profiles');
+      if (newData) {
+        this.items = newData;
+        this.persist();
+      }
+    });
+  }
+
+  // Override create to use Supabase
+  create(item: Omit<User, "id">, companyId?: string): User {
+    const newItem = super.create(item, companyId);
+    
+    // Async call to Supabase in background
+    Supabase.db.create('profiles', {
+      id: newItem.id,
+      full_name: newItem.name,
+      role: newItem.role,
+      company_id: companyId || newItem.company_id,
+      status: newItem.status
+    } as any).catch(err => console.error('Failed to sync create to Supabase:', err));
+
+    return newItem;
+  }
+
+  // Override update to use Supabase
+  update(id: string, data: Partial<User>): User | undefined {
+    const updated = super.update(id, data);
+    if (updated) {
+      Supabase.db.update('profiles', id, {
+        full_name: updated.name,
+        role: updated.role,
+        status: updated.status,
+        company_id: updated.company_id
+      } as any).catch(err => console.error('Failed to sync update to Supabase:', err));
+    }
+    return updated;
+  }
+
+  // Override delete to use Supabase
+  delete(id: string): boolean {
+    const success = super.delete(id);
+    if (success) {
+      Supabase.db.delete('profiles', id).catch(err => console.error('Failed to sync delete to Supabase:', err));
+    }
+    return success;
+  }
+
+  getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
+    const relevant = this.getAll(companyId, isSuperAdmin);
+    const clients = relevant.filter(u => u.role === 'client').length;
     return {
-      total: relevantItems.length,
-      active: relevantItems.filter(u => u.status === "active").length,
-      inactive: relevantItems.filter(u => u.status === "inactive").length,
-      clients: relevantItems.filter(u => u.role === "client").length,
-      staff: relevantItems.filter(u => u.role !== "client").length,
+      total: relevant.length,
+      active: relevant.filter(u => u.status === 'active').length,
+      inactive: relevant.filter(u => u.status === 'inactive').length,
+      clients,
+      staff: relevant.length - clients,
     };
   }
-
-  clearAllData() {
-    this.items = [];
-    this.persist();
-  }
-
 }
 
 export const userService = new UserService();
