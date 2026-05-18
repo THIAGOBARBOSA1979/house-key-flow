@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+
 import { BaseService } from '@/services/BaseService';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,32 +14,47 @@ interface UseServiceOptions<T> {
   };
 }
 
-export function useService<T extends { id: string }>(
+export function useService<T extends { id: string; company_id?: string }>(
   service: BaseService<T>,
+
   options: UseServiceOptions<T> = {}
 ) {
   const { toast } = useToast();
-  const [items, setItems] = useState<T[]>(() => service.getAll());
+  const { user } = useAuth();
+  const companyId = user?.company_id;
+  const [items, setItems] = useState<T[]>(() => service.getAll(companyId));
   const [isLoading, setIsLoading] = useState(false);
+
 
   // We use a ref for options to avoid re-triggering callbacks when options object changes but functions stay same
   const optionsRef = useRef(options);
   optionsRef.current = options;
 
   useEffect(() => {
-    return service.subscribe((newItems) => {
-      setItems(newItems);
+    return service.subscribe((allNewItems) => {
+      if (companyId) {
+        setItems(allNewItems.filter(item => item.company_id === companyId));
+      } else {
+        setItems(allNewItems);
+      }
     });
-  }, [service]);
+  }, [service, companyId]);
 
   const refresh = useCallback(() => {
-    setItems(service.getAll());
-  }, [service]);
+    setItems(service.getAll(companyId));
+  }, [service, companyId]);
 
   const create = useCallback(async (data: Omit<T, "id">) => {
     setIsLoading(true);
     try {
-      const newItem = service.create(data);
+      // Auto-assign company_id on creation
+      const dataWithTenant = {
+        ...data,
+        company_id: companyId
+      } as Omit<T, "id">;
+
+      const newItem = service.create(dataWithTenant);
+
       if (optionsRef.current.toastMessages?.create) {
         toast({ title: "Sucesso", description: optionsRef.current.toastMessages.create });
       }
