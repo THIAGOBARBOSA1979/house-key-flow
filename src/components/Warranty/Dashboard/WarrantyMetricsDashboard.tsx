@@ -65,10 +65,11 @@ export function WarrantyMetricsDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold">Dashboard de Métricas</h2>
-          <p className="text-sm text-muted-foreground">
-            Visão geral do desempenho das garantias
+          <h2 className="text-xl font-black tracking-tight">Analytics de Assistência</h2>
+          <p className="text-sm text-muted-foreground font-medium">
+            Monitoramento de performance operacional e conformidade de portfólio.
           </p>
+
         </div>
         
         <div className="flex items-center gap-3">

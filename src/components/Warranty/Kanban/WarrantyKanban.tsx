@@ -209,8 +209,9 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
     
     if (successCount > 0) {
       toast({
-        title: successCount > 1 ? `${successCount} solicitações atualizadas` : "Status atualizado",
-        description: `Movido para ${WARRANTY_STAGES[toStage].label}`
+        title: successCount > 1 ? `${successCount} protocolos atualizados` : "Sincronização de Status Efetuada",
+        description: `O fluxo avançou para a etapa estratégica: ${WARRANTY_STAGES[toStage].label}`
+
       });
       loadData(); // Refresh data
       setSelectedCards(new Set()); // Clear selection
@@ -261,7 +262,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       {expiredCards > 0 && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Atenção: SLAs Estourados</AlertTitle>
+          <AlertTitle className="font-black">Protocolo de Emergência: SLAs Excedidos</AlertTitle>
           <AlertDescription>
             {expiredCards} solicitaç{expiredCards > 1 ? 'ões' : 'ão'} com prazo SLA excedido.
           </AlertDescription>
@@ -435,10 +436,11 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
           <DialogHeader className="p-4 sm:p-6 pb-0">
             <DialogTitle>
               {transitionDialog.toStage === "inspection_scheduled" && transitionDialog.cardIds.length === 1
-                ? "Agendar Vistoria para Mudança de Status" 
+                ? "Configurar Cronograma para Transição de Status" 
                 : transitionDialog.cardIds.length > 1
-                  ? `Mover ${transitionDialog.cardIds.length} solicitações para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
-                  : `Confirmar mudança para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
+                  ? `Homologar transição de ${transitionDialog.cardIds.length} itens para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
+                  : `Confirmar evolução para ${WARRANTY_STAGES[transitionDialog.toStage]?.label}`
+
               }
             </DialogTitle>
           </DialogHeader>
