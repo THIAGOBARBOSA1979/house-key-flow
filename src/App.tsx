@@ -12,7 +12,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
 
 import { lazy, Suspense } from "react";
-import { SkeletonLoader } from "./components/shared/SkeletonLoader";
+import { SkeletonLoader } from "./components/Shared/SkeletonLoader";
 
 import * as Pages from "./routes/pages";
 
