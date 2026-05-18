@@ -7,7 +7,6 @@ import { UserCard } from "@/components/Users/UserCard";
 import { UserDialogs } from "@/components/Users/UserDialogs";
 import { useToast, useConfirm } from "@/hooks";
 import { DataView, DataViewMode } from "@/components/Shared/DataView";
-
 import { exportService } from "@/services";
 import { useUsers } from "@/hooks";
 import { auditLogService } from "@/services";
@@ -15,11 +14,14 @@ import { User as UserType, UserFiltersData } from "@/types/user";
 import { UserStats } from "@/components/Users/UserStats";
 import { UserActionBanner } from "@/components/Users/UserActionBanner";
 import { UserBulkActions } from "@/components/Users/UserBulkActions";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 const Users = () => {
   const { toast } = useToast();
@@ -39,8 +41,6 @@ const Users = () => {
   } = useUsers();
   
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
-
-
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
   const { confirm } = useConfirm();
@@ -79,7 +79,6 @@ const Users = () => {
     <PageTemplate
       title="Governança de Usuários"
       description="Gerencie permissões, controle de acesso e vincule clientes às suas respectivas unidades com segurança."
-
       icon={UsersIcon}
       actions={actions}
     >
@@ -96,8 +95,12 @@ const Users = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <UserFilters onFilterChange={setFilters} totalUsers={filteredUsers.length} activeFilters={filters} />
         <div className="flex bg-muted/40 p-1 rounded-xl">
-           <Button variant={viewMode === 'grid' ? 'default' : 'ghost'} size="sm" onClick={() => setViewMode('grid')} className="rounded-lg h-8 w-8 p-0"><UsersIcon className="h-4 w-4" /></Button>
-           <Button variant={viewMode === 'table' ? 'default' : 'ghost'} size="sm" onClick={() => setViewMode('table')} className="rounded-lg h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4 rotate-90" /></Button>
+           <Button variant={viewMode === 'grid' ? 'default' : 'ghost'} size="sm" onClick={() => setViewMode('grid')} className="rounded-lg h-8 w-8 p-0">
+             <UsersIcon className="h-4 w-4" />
+           </Button>
+           <Button variant={viewMode === 'table' ? 'default' : 'ghost'} size="sm" onClick={() => setViewMode('table')} className="rounded-lg h-8 w-8 p-0">
+             <MoreHorizontal className="h-4 w-4 rotate-90" />
+           </Button>
         </div>
       </div>
       
@@ -105,7 +108,6 @@ const Users = () => {
         items={filteredUsers}
         isLoading={isLoading}
         skeletonType="table"
-
         viewMode={viewMode}
         itemsPerPage={8}
         renderGrid={(user) => (
@@ -116,13 +118,13 @@ const Users = () => {
             onSelect={toggleSelectUser}
             onEdit={handleOpenForm}
             onDelete={async (id) => {
-              if (await confirm({
+              const result = await confirm({
                 title: "Confirmar Exclusão",
                 description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
                 confirmLabel: "Excluir",
-              })) {
-                deleteUser(id);
-              }
+                variant: "destructive"
+              });
+              if (result) deleteUser(id);
             }}
             onToggleStatus={toggleUserStatus}
             onResendInvite={handleResendInvite}
@@ -177,15 +179,20 @@ const Users = () => {
                   <DropdownMenuItem onClick={() => handleOpenForm(user)}><Pencil className="mr-2 h-4 w-4" /> Editar</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleResendInvite(user)}><Mail className="mr-2 h-4 w-4" /> Reenviar Convite</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => toggleUserStatus(user.id!)}><ShieldCheck className="mr-2 h-4 w-4" /> {user.status === 'active' ? 'Desativar' : 'Ativar'}</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive font-bold" onClick={async () => {
-                    if (await confirm({
-                      title: "Confirmar Exclusão",
-                      description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
-                      confirmLabel: "Excluir",
-                    })) {
-                      deleteUser(user.id!);
-                    }
-                  }}><Trash2 className="mr-2 h-4 w-4" /> Excluir</DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="text-destructive font-bold" 
+                    onClick={async () => {
+                      const result = await confirm({
+                        title: "Confirmar Exclusão",
+                        description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
+                        confirmLabel: "Excluir",
+                        variant: "destructive"
+                      });
+                      if (result) deleteUser(user.id!);
+                    }}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" /> Excluir
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )
@@ -194,11 +201,12 @@ const Users = () => {
         emptyState={{
           title: "Nenhum usuário encontrado",
           description: "Ajuste os filtros para encontrar o que procura.",
-          action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" } as UserFiltersData) }
+          action: { 
+            label: "Limpar filtros", 
+            onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" } as UserFiltersData) 
+          }
         }}
       />
-
-
 
       <UserDialogs 
         isFormOpen={isUserFormOpen} 
@@ -210,6 +218,4 @@ const Users = () => {
   );
 };
 
-
 export default Users;
-
