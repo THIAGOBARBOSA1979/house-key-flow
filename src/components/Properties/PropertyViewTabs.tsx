@@ -1,9 +1,9 @@
-import { LayoutGrid, List as ListIcon, BarChart3 } from "lucide-react";
+import { LayoutGrid, Table as TableIcon, BarChart3 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PropertyViewTabsProps {
-  viewMode: "grid" | "list" | "timeline";
-  onViewModeChange: (mode: "grid" | "list" | "timeline") => void;
+  viewMode: "grid" | "table" | "timeline";
+  onViewModeChange: (mode: "grid" | "table" | "timeline") => void;
 }
 
 export const PropertyViewTabs = ({ viewMode, onViewModeChange }: PropertyViewTabsProps) => {
@@ -17,8 +17,8 @@ export const PropertyViewTabs = ({ viewMode, onViewModeChange }: PropertyViewTab
         <TabsTrigger value="grid" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
           <LayoutGrid className="h-4 w-4" />
         </TabsTrigger>
-        <TabsTrigger value="list" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
-          <ListIcon className="h-4 w-4" />
+        <TabsTrigger value="table" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all">
+          <TableIcon className="h-4 w-4" />
         </TabsTrigger>
         <TabsTrigger value="timeline" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all px-3 gap-2">
           <BarChart3 className="h-4 w-4" />

@@ -5,14 +5,15 @@ import { cn } from "@/lib/utils";
 import { EmptyState } from "./EmptyState";
 import { SkeletonLoader } from "./SkeletonLoader";
 
-interface DataViewProps<T> {
+export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
+
+export interface DataViewProps<T> {
   items: T[];
-  renderGrid?: (item: T) => React.ReactNode;
-  renderList?: (items: T[]) => React.ReactNode;
-  renderTimeline?: (items: T[]) => React.ReactNode;
-  viewMode?: 'grid' | 'list' | 'timeline';
+  viewMode?: DataViewMode;
   isLoading?: boolean;
   skeletonType?: 'card' | 'table' | 'page' | 'list';
+  itemsPerPage?: number;
+  gridClassName?: string;
   emptyState?: {
     title: string;
     description: string;
@@ -22,21 +23,26 @@ interface DataViewProps<T> {
       onClick: () => void;
     };
   };
-  gridClassName?: string;
-  itemsPerPage?: number;
+  renderGrid?: (item: T) => React.ReactNode;
+  renderList?: (items: T[]) => React.ReactNode;
+  renderTimeline?: (items: T[]) => React.ReactNode;
+  renderTable?: (items: T[]) => React.ReactNode;
+  renderCalendar?: (items: T[]) => React.ReactNode;
 }
 
 export function DataView<T>({
   items,
-  renderGrid,
-  renderList,
   viewMode = 'grid',
-  renderTimeline,
   isLoading = false,
   skeletonType = 'card',
-  emptyState,
+  itemsPerPage = 0,
   gridClassName,
-  itemsPerPage = 0
+  emptyState,
+  renderGrid,
+  renderList,
+  renderTimeline,
+  renderTable,
+  renderCalendar,
 }: DataViewProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -76,31 +82,42 @@ export function DataView<T>({
     : items;
 
   const renderContent = () => {
-    if (viewMode === 'list' && renderList) {
-      return (
-        <div className="animate-fade-in">
-          {renderList(displayedItems)}
-        </div>
-      );
+    switch (viewMode) {
+      case 'list':
+        if (renderList) {
+          return <div className="animate-fade-in">{renderList(displayedItems)}</div>;
+        }
+        break;
+      case 'timeline':
+        if (renderTimeline) {
+          return <div className="animate-fade-in">{renderTimeline(displayedItems)}</div>;
+        }
+        break;
+      case 'table':
+        if (renderTable) {
+          return <div className="animate-fade-in">{renderTable(displayedItems)}</div>;
+        }
+        break;
+      case 'calendar':
+        if (renderCalendar) {
+          return <div className="animate-fade-in">{renderCalendar(displayedItems)}</div>;
+        }
+        break;
+      case 'grid':
+      default:
+        if (renderGrid) {
+          return (
+            <div className={cn("grid-layout animate-fade-in", gridClassName)}>
+              {displayedItems.map((item, index) => (
+                <React.Fragment key={index}>
+                  {renderGrid(item)}
+                </React.Fragment>
+              ))}
+            </div>
+          );
+        }
     }
-
-    if (viewMode === 'timeline' && renderTimeline) {
-      return (
-        <div className="animate-fade-in">
-          {renderTimeline(displayedItems)}
-        </div>
-      );
-    }
-
-    return (
-      <div className={cn("grid-layout animate-fade-in", gridClassName)}>
-        {displayedItems.map((item, index) => (
-          <React.Fragment key={index}>
-            {renderGrid ? renderGrid(item) : null}
-          </React.Fragment>
-        ))}
-      </div>
-    );
+    return null;
   };
 
   return (

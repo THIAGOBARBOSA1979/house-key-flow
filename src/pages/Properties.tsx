@@ -41,7 +41,7 @@ const Properties = () => {
     refreshList
   } = useProperties();
 
-  const [viewMode, setViewMode] = useState<"grid" | "list" | "timeline">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "table" | "timeline">("grid");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -109,7 +109,7 @@ const Properties = () => {
 
       <DataView<Property>
         items={filteredProperties}
-        viewMode={viewMode}
+        viewMode={viewMode === 'table' ? 'table' : viewMode}
         itemsPerPage={6}
         renderGrid={(property) => (
           <PropertyCard 
@@ -120,7 +120,7 @@ const Properties = () => {
             onDelete={() => setPropertyToDelete(property)}
           />
         )}
-        renderList={(items) => (
+        renderTable={(items) => (
           <DataTable
             columns={[
               {

@@ -63,7 +63,7 @@ export default function Inspections() {
   } = useInspections();
 
   const [activeTab, setActiveTab] = useState("list");
-  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
@@ -76,7 +76,7 @@ export default function Inspections() {
       </Button>
       <Button 
         variant={viewMode === "calendar" ? "default" : "outline"}
-        onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+        onClick={() => setViewMode(viewMode === "grid" ? "calendar" : "grid")}
         className="rounded-xl h-11 px-5 font-bold border-primary/20 transition-all active:scale-95"
       >
         {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
@@ -142,27 +142,27 @@ export default function Inspections() {
             </div>
           </FilterBar>
 
-          {viewMode === "calendar" ? (
-            <InspectionCalendar inspections={filteredInspections} />
-          ) : (
-            <DataView<Inspection>
-              items={filteredInspections}
-              itemsPerPage={6}
-              gridClassName="grid-cols-1 xl:grid-cols-2"
-              renderGrid={(inspection) => (
-                <Card key={inspection.id} className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm">
-                  <CardContent className="p-0">
-                    <InspectionItem inspection={inspection} onUpdate={loadData} />
-                  </CardContent>
-                </Card>
-              )}
-              emptyState={{
-                title: "Nenhuma vistoria encontrada",
-                description: "Ajuste os filtros para encontrar o que procura.",
-                action: { label: "Limpar filtros", onClick: clearFilters }
-              }}
-            />
-          )}
+          <DataView<Inspection>
+            items={filteredInspections}
+            viewMode={viewMode}
+            itemsPerPage={6}
+            gridClassName="grid-cols-1 xl:grid-cols-2"
+            renderGrid={(inspection) => (
+              <Card key={inspection.id} className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-0">
+                  <InspectionItem inspection={inspection} onUpdate={loadData} />
+                </CardContent>
+              </Card>
+            )}
+            renderCalendar={(inspections) => (
+              <InspectionCalendar inspections={inspections} />
+            )}
+            emptyState={{
+              title: "Nenhuma vistoria encontrada",
+              description: "Ajuste os filtros para encontrar o que procura.",
+              action: { label: "Limpar filtros", onClick: clearFilters }
+            }}
+          />
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">

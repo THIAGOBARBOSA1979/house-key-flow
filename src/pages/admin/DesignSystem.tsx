@@ -23,6 +23,8 @@ import {
   Type,
   LayoutGrid,
   List,
+  Table as TableIcon,
+  Calendar as CalendarIcon,
   BarChart3,
   Search
 } from 'lucide-react';
@@ -257,14 +259,15 @@ const DesignSystem = () => {
                   <h3 className="text-h4">DataView</h3>
                 </div>
                 <Card className="card-standard p-6 border-dashed bg-muted/5">
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <p className="text-body-sm text-muted-foreground max-w-lg">
-                      O <code>DataView</code> gerencia automaticamente estados de carregamento, 
-                      vazio e alterna entre views de Grid e Lista.
+                      O <code>DataView</code> é um componente agnóstico que gerencia visualizações (Grid, Table, Timeline, Calendar), estados de carregamento, paginação e estados vazios de forma declarativa.
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button size="sm" variant="outline" className="h-8"><LayoutGrid size={14} className="mr-1.5" /> Grid</Button>
+                      <Button size="sm" variant="outline" className="h-8"><TableIcon size={14} className="mr-1.5" /> Table</Button>
                       <Button size="sm" variant="outline" className="h-8"><List size={14} className="mr-1.5" /> List</Button>
+                      <Button size="sm" variant="outline" className="h-8"><CalendarIcon size={14} className="mr-1.5" /> Calendar</Button>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
