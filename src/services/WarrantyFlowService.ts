@@ -141,7 +141,7 @@ const initialMockRequests: WarrantyRequestFlow[] = [
 
 class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
   private debugMode = false;
-  private logs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: any }> = [];
+  private logs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: unknown }> = [];
 
   constructor() {
     super("a2_warranty_requests", initialMockRequests);
@@ -159,7 +159,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     this.logs = [];
   }
 
-  private log(level: 'info' | 'error', message: string, data?: any) {
+  private log(level: 'info' | 'error', message: string, data?: unknown) {
     const entry = { timestamp: new Date(), level, message, data };
     this.logs.push(entry);
     if (this.debugMode) {
@@ -480,12 +480,9 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     return { success: true, request: updatedRequest };
   }
 
-  /**
-   * Update request costs and materials
-   */
   updateCosts(
     requestId: string,
-    data: { estimatedCost?: number; actualCost?: number; materials?: any[] },
+    data: { estimatedCost?: number; actualCost?: number; materials?: unknown[] },
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     const request = this.getById(requestId);
