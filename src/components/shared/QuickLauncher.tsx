@@ -204,7 +204,7 @@ export const QuickLauncher = () => {
                     )}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-all">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-all">
                         <Icon className="h-6 w-6" />
                       </div>
                       <div>
