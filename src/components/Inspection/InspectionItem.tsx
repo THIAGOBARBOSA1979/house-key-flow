@@ -87,8 +87,8 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
 
   return (
     <div className="relative group">
-      <div className="p-4 sm:p-5 flex flex-col md:flex-row gap-4 md:items-center justify-between transition-all duration-300 group-hover:bg-muted/30">
-        <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+      <div className="p-4 md:p-5 flex flex-col md:flex-row gap-4 md:items-center justify-between transition-all duration-300 group-hover:bg-muted/30">
+        <div className="flex flex-col gap-2 min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-primary/10 rounded-lg text-primary shrink-0">
               <MapPin size={14} />
