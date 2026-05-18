@@ -1,12 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { simulator } from '../../test/supabase-simulator';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { propertyService } from '../operations/PropertyService';
 
-import { userService } from '../identity/UserService';
-
 describe('Security: Multi-tenant Data Isolation', () => {
-  beforeEach(() => {
-    // Reset simulator state
   beforeEach(() => {
     // Completely clear internal state of singleton
     (propertyService as any).items = [];
@@ -24,21 +19,25 @@ describe('Security: Multi-tenant Data Isolation', () => {
     // Tenant 1 request
     const t1Data = propertyService.getAll('tenant-1', false);
     expect(t1Data).toHaveLength(1);
-    expect(t1Data[0].id).toBe('p-t1');
+    expect(t1Data[0].id).toBe(p1.id);
 
     // Tenant 2 request
     const t2Data = propertyService.getAll('tenant-2', false);
     expect(t2Data).toHaveLength(1);
-    expect(t2Data[0].id).toBe('p-t2');
+    expect(t2Data[0].id).toBe(p2.id);
   });
 
   it('should block getById if ID belongs to another tenant', async () => {
+    const allItems = (propertyService as any).items;
+    const p1 = allItems.find((i: any) => i.company_id === 'tenant-1');
+    const p2 = allItems.find((i: any) => i.company_id === 'tenant-2');
+
     // Try to get T2 property from T1 context
-    const maliciousAccess = propertyService.getById('p-t2', 'tenant-1', false);
+    const maliciousAccess = propertyService.getById(p2.id, 'tenant-1', false);
     expect(maliciousAccess).toBeUndefined();
     
     // Successful access
-    const legitAccess = propertyService.getById('p-t1', 'tenant-1', false);
+    const legitAccess = propertyService.getById(p1.id, 'tenant-1', false);
     expect(legitAccess).toBeDefined();
   });
 
