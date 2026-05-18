@@ -25,7 +25,7 @@ interface WarrantyDetailsDialogProps {
   request: WarrantyRequestFlow | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onStatusChange: (requestId: string, stage: WarrantyStage) => void;
+  onStatusChange: (requestId: string, stage: WarrantyStage, notes?: string) => void;
   onTogglePause: (requestId: string, isPaused: boolean, reason: string) => void;
   onAssignTech: (requestId: string, techId: string, techName: string) => void;
   onAddProblem: (requestId: string) => void;
@@ -99,17 +99,22 @@ export const WarrantyDetailsDialog = ({
                     <p className="text-lg font-black">{WARRANTY_STAGES[request.currentStage].label}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    {STAGE_ORDER.filter(s => s !== request.currentStage).slice(0, 3).map((stage: WarrantyStage) => (
+                    {STAGE_ORDER.filter(s => s !== request.currentStage).slice(0, 4).map((stage: WarrantyStage) => (
                       <Button 
                         key={stage}
                         size="sm"
                         variant="outline"
-                        onClick={() => onStatusChange(request.id, stage)}
+                        className="rounded-xl font-bold"
+                        onClick={() => {
+                          const notes = window.prompt(`Confirma mudança para ${WARRANTY_STAGES[stage].label}?`, "");
+                          if (notes !== null) onStatusChange(request.id, stage, notes);
+                        }}
                       >
                         {WARRANTY_STAGES[stage].label}
                       </Button>
                     ))}
                   </div>
+
                 </div>
               </div>
               <WarrantyRequestTimeline request={request} />
