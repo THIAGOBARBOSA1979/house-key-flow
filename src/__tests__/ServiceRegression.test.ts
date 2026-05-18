@@ -30,8 +30,20 @@ describe('Service Logic Regression', () => {
   });
 
   it('PropertyService should enforce tenant isolation through BaseService', () => {
-    propertyService.create({ name: 'Project A' }, 'comp-1');
-    propertyService.create({ name: 'Project B' }, 'comp-2');
+    propertyService.create({ 
+      name: 'Project A', 
+      location: 'Loc A', 
+      units: 10, 
+      completedUnits: 5, 
+      status: 'active' 
+    }, 'comp-1');
+    propertyService.create({ 
+      name: 'Project B', 
+      location: 'Loc B', 
+      units: 20, 
+      completedUnits: 10, 
+      status: 'active' 
+    }, 'comp-2');
     
     const comp1Properties = propertyService.getAll('comp-1', false);
     expect(comp1Properties).toHaveLength(1);
@@ -42,7 +54,14 @@ describe('Service Logic Regression', () => {
     const { auditLogService } = await import('@/services/core/AuditLogService');
     const spy = vi.spyOn(auditLogService, 'logAction');
     
-    propertyService.create({ name: 'New Project' }, 'comp-1');
+    propertyService.create({ 
+      name: 'New Project', 
+      location: 'Loc C', 
+      units: 30, 
+      completedUnits: 0, 
+      status: 'planning' 
+    }, 'comp-1');
+
     
     expect(spy).toHaveBeenCalledWith(expect.objectContaining({
       action: 'created',
