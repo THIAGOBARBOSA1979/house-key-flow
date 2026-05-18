@@ -1,5 +1,5 @@
 import { SupabaseService } from "../SupabaseService";
-import { Supabase } from "@/integrations/supabase";
+import { Supabase, FilterParams } from "@/integrations/supabase";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -159,7 +159,11 @@ class AuditLogService extends SupabaseService<any> {
   }
 
   async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
-    const { data, error } = await Supabase.db.rpc('count_table_rows', { p_table: 'audit_logs', p_company_id: companyId });
+    const filters: FilterParams[] = [];
+    if (!isSuperAdmin && companyId) {
+      filters.push({ column: 'company_id', operator: 'eq', value: companyId });
+    }
+    const { data, error } = await Supabase.db.count('audit_logs', filters);
     return { totalLogs: data || 0, currentCount24h: 0 };
   }
 }
