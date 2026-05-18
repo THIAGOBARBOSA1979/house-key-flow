@@ -189,7 +189,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
    * Create a new warranty request
    */
   createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
-    this.log('info', 'Creating new request', { title: data.title });
+    this.internalLog('info', 'Creating new request', { title: data.title });
     const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
     const slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === category) || DEFAULT_SLA_CONFIGS[0];
@@ -248,18 +248,15 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
       this.update(id, newRequest);
     }
 
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: id,
-      action: 'created',
+    this.log('created', id, `Solicitação de garantia criada: ${newRequest.title}`, {
       performedBy: data.clientId || 'client',
       performedByName: data.clientName || 'Cliente',
-      performedByRole: 'client',
-      details: `Solicitação de garantia criada: ${newRequest.title}`
+      performedByRole: 'client'
     });
 
     return newRequest;
   }
+
 
 
   /**
