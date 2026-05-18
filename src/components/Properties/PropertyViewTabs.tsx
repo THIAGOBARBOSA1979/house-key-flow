@@ -1,9 +1,10 @@
 import { LayoutGrid, Table as TableIcon, BarChart3 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DataViewMode } from "@/types/dataView";
 
 interface PropertyViewTabsProps {
-  viewMode: "grid" | "table" | "timeline";
-  onViewModeChange: (mode: "grid" | "table" | "timeline") => void;
+  viewMode: DataViewMode;
+  onViewModeChange: (mode: DataViewMode) => void;
 }
 
 export const PropertyViewTabs = ({ viewMode, onViewModeChange }: PropertyViewTabsProps) => {
