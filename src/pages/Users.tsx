@@ -7,7 +7,7 @@ import { UserCard } from "@/components/Users/UserCard";
 import { UserDialogs } from "@/components/Users/UserDialogs";
 import { useToast, useConfirm } from "@/hooks";
 import { DataView, DataViewMode } from "@/components/Shared/DataView";
-import { ConfirmationDialog } from "@/components/Shared/ConfirmationDialog";
+
 import { exportService } from "@/services";
 import { useUsers } from "@/hooks";
 import { auditLogService } from "@/services";
