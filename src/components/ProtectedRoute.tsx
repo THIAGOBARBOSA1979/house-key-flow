@@ -13,10 +13,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children, 
   requiredRole 
 }) => {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if (isLoading) {
     return <SkeletonLoader type="page" />;
   }
 
@@ -24,8 +24,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Get role from user metadata (Supabase Auth)
-  const userRole = (user.user_metadata?.role as Role) || 'user';
+  // Mapping existing legacy roles to RBAC roles
+  let userRole: Role = 'user';
+  if (user.is_super_admin) {
+    userRole = 'super_admin';
+  } else if (user.role === 'admin' || user.role === 'manager') {
+    userRole = 'admin';
+  } else {
+    userRole = 'user';
+  }
 
   if (requiredRole) {
     const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
