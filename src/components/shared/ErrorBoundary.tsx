@@ -1,7 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AlertCircle, RotateCcw, Home } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -9,7 +8,6 @@ interface Props extends WithTranslation {
   children: ReactNode;
   fallback?: ReactNode;
 }
-
 
 interface State {
   hasError: boolean;
@@ -60,13 +58,11 @@ class ErrorBoundaryComponent extends Component<Props, State> {
               <CardTitle className="text-3xl font-black tracking-tight text-foreground">
                 {t('common.error_title', 'Sincronização Interrompida')}
               </CardTitle>
-
             </CardHeader>
             <CardContent className="text-center px-10 pb-6">
               <p className="text-muted-foreground font-bold leading-relaxed">
                 {t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
               </p>
-
               
               {isDev && this.state.error && (
                 <div className="mt-6 p-4 bg-muted rounded-2xl text-left overflow-auto max-h-40">
@@ -86,15 +82,13 @@ class ErrorBoundaryComponent extends Component<Props, State> {
                 <RotateCcw className="w-4 h-4" />
                 {t('common.retry', 'Reiniciar Módulo')}
               </Button>
-
-
               <Button 
                 onClick={this.handleGoHome}
                 variant="outline"
                 className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 border-border/40"
               >
                 <Home className="w-4 h-4" />
-                Voltar ao Início
+                {t('common.home', 'Voltar ao Início')}
               </Button>
             </CardFooter>
           </Card>
@@ -105,3 +99,6 @@ class ErrorBoundaryComponent extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export const ErrorBoundary = withTranslation()(ErrorBoundaryComponent);
+
