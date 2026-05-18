@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,11 +9,10 @@ import { Search, Filter, X, Users } from "lucide-react";
 import { UserFiltersData } from "@/types/user";
 
 interface UserFiltersProps {
-  onFilterChange: (filters: UserFiltersData) => void;
+  onFilterChange: (filters: Partial<UserFiltersData>) => void;
   totalUsers: number;
   activeFilters: UserFiltersData;
 }
-
 
 export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserFiltersProps) => {
   const [searchTerm, setSearchTerm] = useState(activeFilters.search || "");
@@ -21,6 +20,14 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
   const [statusFilter, setStatusFilter] = useState(activeFilters.status || "all");
   const [propertyFilter, setPropertyFilter] = useState(activeFilters.property || "all");
   const [unitFilter, setUnitFilter] = useState(activeFilters.unit || "");
+
+  useEffect(() => {
+    setSearchTerm(activeFilters.search || "");
+    setRoleFilter(activeFilters.role || "all");
+    setStatusFilter(activeFilters.status || "all");
+    setPropertyFilter(activeFilters.property || "all");
+    setUnitFilter(activeFilters.unit || "");
+  }, [activeFilters]);
 
   const handleFilterChange = () => {
     onFilterChange({
@@ -33,11 +40,6 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
   };
 
   const clearFilters = () => {
-    setSearchTerm("");
-    setRoleFilter("all");
-    setStatusFilter("all");
-    setPropertyFilter("all");
-    setUnitFilter("");
     onFilterChange({
       search: "",
       role: "all",
@@ -65,7 +67,7 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:flex gap-2 md:gap-3">
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
+            <Select value={roleFilter} onValueChange={(val) => { setRoleFilter(val); onFilterChange({ role: val }); }}>
               <SelectTrigger className="w-full lg:w-[150px] rounded-xl h-11 bg-background border-none shadow-sem-sm">
                 <SelectValue placeholder="Função" />
               </SelectTrigger>
@@ -78,7 +80,7 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
               </SelectContent>
             </Select>
             
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={(val) => { setStatusFilter(val); onFilterChange({ status: val }); }}>
               <SelectTrigger className="w-full lg:w-[120px] rounded-xl h-11 bg-background border-none shadow-sem-sm">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
@@ -89,7 +91,7 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
               </SelectContent>
             </Select>
             
-            <Select value={propertyFilter} onValueChange={setPropertyFilter}>
+            <Select value={propertyFilter} onValueChange={(val) => { setPropertyFilter(val); onFilterChange({ property: val }); }}>
               <SelectTrigger className="w-full lg:w-[180px] rounded-xl h-11 bg-background border-none shadow-sem-sm">
                 <SelectValue placeholder="Empreendimento" />
               </SelectTrigger>
