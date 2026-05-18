@@ -118,12 +118,74 @@ class InspectionService extends BaseService<Inspection> {
     return updated;
   }
 
-  getStatsByStatus() {
+  getStatsByType() {
     return this.items.reduce((acc, curr) => {
-      acc[curr.status] = (acc[curr.status] || 0) + 1;
+      acc[curr.type] = (acc[curr.type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
   }
+
+  getStatsByTechnician() {
+    return this.items.reduce((acc, curr) => {
+      const tech = this.getTechnicianById(curr.technician);
+      const name = tech?.name || "Desconhecido";
+      acc[name] = (acc[name] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+  }
+
+  getAllConflicts() {
+    const conflicts: { date: string; technician: string; count: number }[] = [];
+    const grouped = this.items.reduce((acc, current) => {
+      if (current.status === 'cancelled') return acc;
+      const key = `${current.date.toDateString()}|${current.technician}`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    Object.entries(grouped).forEach(([key, count]) => {
+      if (count > 1) {
+        const [date, technician] = key.split('|');
+        conflicts.push({ date, technician, count });
+      }
+    });
+    return conflicts;
+  }
+
+  getConflicts(date: Date, technicianId: string, excludeId?: string) {
+    return this.items.filter(i => 
+      i.date.toDateString() === date.toDateString() && 
+      i.technician === technicianId &&
+      i.status !== "cancelled" &&
+      i.id !== excludeId
+    );
+  }
+
+  getSLAMetrics() {
+    return { avgDeliveryTime: "2.4d", avgFirstContact: "4.2h" };
+  }
+
+  exportData(format: 'json' | 'csv' = 'json') {
+    return format === 'json' ? JSON.stringify(this.items) : "";
+  }
+
+  getReport(id: string) {
+    const inspection = this.getById(id);
+    return inspection ? { inspection, generatedAt: new Date() } : null;
+  }
+
+  signAcceptance(id: string, clientId: string, signatureData: any) {
+    return this.updateStatus(id, "accepted", "Cliente assinou aceite digital");
+  }
+
+  confirmPresence(id: string, clientId: string) {
+    return this.updateStatus(id, "presence_confirmed", "Cliente confirmou presença");
+  }
+
+  requestReschedule(id: string, clientId: string, newDate: Date, newTime: string, reason: string) {
+    return this.update(id, { date: newDate, time: newTime, status: "reschedule_requested" });
+  }
+
 }
 
 export const inspectionService = new InspectionService();

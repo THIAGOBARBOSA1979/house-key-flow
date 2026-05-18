@@ -1,37 +1,44 @@
+import { z } from "zod";
 import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
 
-export interface PropertyMilestone {
-  id: string;
-  title: string;
-  targetDate: Date;
-  completed: boolean;
-  completedAt?: Date;
-}
+export const propertyMilestoneSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  targetDate: z.date(),
+  completed: z.boolean().default(false),
+  completedAt: z.date().optional(),
+});
 
-export interface PropertyUnit {
-  id: string;
-  number: string;
-  floor?: string;
-  status: "available" | "sold" | "delivered";
-  type?: string;
-}
+export type PropertyMilestone = z.infer<typeof propertyMilestoneSchema>;
 
-export interface Property {
-  id: string;
-  name: string;
-  location: string;
-  units: number;
-  completedUnits: number;
-  status: "pending" | "progress" | "complete";
-  imageUrl?: string;
-  description?: string;
-  totalArea?: number;
-  deliveryDate?: Date;
-  manager?: string;
-  milestones?: PropertyMilestone[];
-  unitsList?: PropertyUnit[];
-}
+export const propertyUnitSchema = z.object({
+  id: z.string(),
+  number: z.string(),
+  floor: z.string().optional(),
+  status: z.enum(["available", "sold", "delivered"]).default("available"),
+  type: z.string().optional(),
+});
+
+export type PropertyUnit = z.infer<typeof propertyUnitSchema>;
+
+export const propertySchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
+  location: z.string().min(5, "A localização deve ter pelo menos 5 caracteres"),
+  units: z.number().min(1, "O número de unidades deve ser pelo menos 1"),
+  completedUnits: z.number().min(0).default(0),
+  status: z.enum(["pending", "progress", "complete"]).default("pending"),
+  imageUrl: z.string().optional(),
+  description: z.string().optional(),
+  totalArea: z.number().optional(),
+  deliveryDate: z.date().optional(),
+  manager: z.string().optional(),
+  milestones: z.array(propertyMilestoneSchema).optional(),
+  unitsList: z.array(propertyUnitSchema).optional(),
+});
+
+export type Property = z.infer<typeof propertySchema>;
 
 const INITIAL_PROPERTIES: Property[] = [
   { 
@@ -104,18 +111,102 @@ class PropertyService extends BaseService<Property> {
     return updated;
   }
 
+  updateMilestone(propertyId: string, milestoneId: string, completed: boolean): Property | undefined {
+    const property = this.getById(propertyId);
+    if (!property || !property.milestones) return undefined;
+
+    const milestone = property.milestones.find(m => m.id === milestoneId);
+    const milestones = property.milestones.map(m => 
+      m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
+    );
+
+    const updated = this.update(propertyId, { milestones });
+    
+    if (updated && milestone) {
+      auditLogService.log({
+        entityType: 'property',
+        entityId: propertyId,
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`
+      });
+    }
+
+    return updated;
+  }
+
+  updateUnitStatus(propertyId: string, unitId: string, status: PropertyUnit['status']): Property | undefined {
+    const property = this.getById(propertyId);
+    if (!property || !property.unitsList) return undefined;
+
+    const unit = property.unitsList.find(u => u.id === unitId);
+    const unitsList = property.unitsList.map(u => 
+      u.id === unitId ? { ...u, status } : u
+    );
+
+    const updated = this.update(propertyId, { unitsList });
+
+    if (updated && unit) {
+      auditLogService.log({
+        entityType: 'property',
+        entityId: propertyId,
+        action: 'updated',
+        performedBy: 'admin-1',
+        performedByName: 'Administrador',
+        performedByRole: 'admin',
+        details: `Status da unidade ${unit.number} do empreendimento ${property.name} alterado para ${status}.`
+      });
+    }
+
+    return updated;
+  }
+
+  batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
+    const property = this.getById(propertyId);
+    if (!property) return null;
+
+    const newUnits: PropertyUnit[] = [];
+    for (let f = floorStart; f <= floorEnd; f++) {
+      for (let u = 1; u <= unitsPerFloor; u++) {
+        const unitNumber = `${prefix}${f}${u.toString().padStart(2, '0')}`;
+        newUnits.push({
+          id: crypto.randomUUID(),
+          number: unitNumber,
+          floor: f.toString(),
+          status: "available",
+          type: "Standard"
+        });
+      }
+    }
+
+    const unitsList = [...(property.unitsList || []), ...newUnits];
+    return this.update(propertyId, { 
+      unitsList,
+      units: unitsList.length 
+    });
+  }
+
   getMetrics() {
     const total = this.items.length;
+    const byStatus = this.items.reduce((acc, p) => {
+      acc[p.status] = (acc[p.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
     const totalUnits = this.items.reduce((acc, p) => acc + (p.units || 0), 0);
     const totalCompleted = this.items.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
     
     return {
       total,
+      byStatus,
       totalUnits,
       totalCompleted,
       averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
     };
   }
+
 }
 
 export const propertyService = new PropertyService();
