@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { BaseService } from "../BaseService";
-import { auditLogService } from "../core/AuditLogService";
 import { Property, PropertyMilestone, PropertyUnit, PropertyMetrics } from "@/types/property";
 
 export const propertyMilestoneSchema = z.object({
@@ -41,7 +40,6 @@ const INITIAL_PROPERTIES: Property[] = [
     id: "1", 
     company_id: "comp-1",
     name: "Edifício Aurora", 
-
     location: "São Paulo, SP", 
     units: 120, 
     completedUnits: 85, 
@@ -57,7 +55,6 @@ const INITIAL_PROPERTIES: Property[] = [
   },
   { id: "2", company_id: "comp-1", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400, createdAt: new Date(2022, 5, 1) },
   { id: "3", company_id: "comp-1", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200, createdAt: new Date(2023, 10, 1) },
-
 ];
 
 class PropertyService extends BaseService<Property> {
@@ -69,13 +66,11 @@ class PropertyService extends BaseService<Property> {
   }
 
   create(property: Omit<Property, "id">, companyId?: string): Property {
-    const newProperty = super.create({
+    return super.create({
       ...property,
-      createdAt: new Date(),
+      createdAt: property.createdAt || new Date(),
     }, companyId);
-    return newProperty;
   }
-
 
   update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Property | undefined {
     const oldItem = this.getById(id, undefined, isSuperAdmin);
@@ -90,10 +85,8 @@ class PropertyService extends BaseService<Property> {
     return updated;
   }
 
-
   updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Property | undefined {
     const property = this.getById(propertyId, undefined, isSuperAdmin);
-
     if (!property || !property.milestones) return undefined;
 
     const milestone = property.milestones.find(m => m.id === milestoneId);
@@ -127,7 +120,6 @@ class PropertyService extends BaseService<Property> {
 
     return updated;
   }
-
 
   batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
     const property = this.getById(propertyId);
@@ -169,11 +161,9 @@ class PropertyService extends BaseService<Property> {
       total,
       byStatus,
       totalUnits,
-      totalCompleted,
-      averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
+      totalCompleted, averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
     };
   }
-
 }
 
 export const propertyService = new PropertyService();
