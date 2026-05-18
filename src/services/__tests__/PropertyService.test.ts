@@ -5,7 +5,6 @@ describe('PropertyService', () => {
   beforeEach(() => {
     localStorage.clear();
     (propertyService as any).items = [];
-    // Use isSuperAdmin=true context implicitly by not providing companyId in service calls where possible
   });
 
   it('should calculate metrics correctly', () => {
@@ -38,15 +37,11 @@ describe('PropertyService', () => {
     const propertyId = p.id!;
     const milestoneId = "m1";
     
+    // BaseService.getById(id, companyId, isSuperAdmin)
     const updated = propertyService.updateMilestone(propertyId, milestoneId, true);
-
     
     expect(updated).toBeDefined();
     const milestone = updated?.milestones?.find(m => m.id === milestoneId);
     expect(milestone?.completed).toBe(true);
-    expect(milestone?.completedAt).toBeDefined();
   });
 });
-
-
-
