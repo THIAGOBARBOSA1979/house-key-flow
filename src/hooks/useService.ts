@@ -1,10 +1,10 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { BaseService } from '@/services/BaseService';
 import { useToast } from '@/hooks/use-toast';
 
 interface UseServiceOptions<T> {
   onSuccess?: (item: T, action: 'create' | 'update' | 'delete') => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
   toastMessages?: {
     create?: string;
     update?: string;
@@ -98,3 +98,4 @@ export function useService<T extends { id?: string }>(
     getById: useCallback((id: string) => service.getById(id), [service])
   };
 }
+
