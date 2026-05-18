@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { QuickLauncher } from "@/components/shared/QuickLauncher";
+import { useDebounce } from "@/hooks/useDebounce";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AppLayoutProps {
   children?: React.ReactNode;
@@ -47,17 +49,19 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
   const sidebarWidthClass = sidebarCollapsed ? "md:pl-sidebar-collapsed-width" : "md:pl-sidebar-width";
 
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
   // Global search logic
   const searchResults = useMemo(() => {
-    if (!searchQuery || searchQuery.length < 2) return { properties: [], users: [], documents: [] };
+    if (!debouncedSearchQuery || debouncedSearchQuery.length < 2) return { properties: [], users: [], documents: [] };
     
-    const query = searchQuery.toLowerCase();
+    const query = debouncedSearchQuery.toLowerCase();
     return {
       properties: propertyService.getAll().filter(p => p.name.toLowerCase().includes(query)).slice(0, 3),
       users: userService.getAll().filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)).slice(0, 3),
-      documents: documentService.searchDocuments(searchQuery, {}).slice(0, 3)
+      documents: documentService.searchDocuments(debouncedSearchQuery, {}).slice(0, 3)
     };
-  }, [searchQuery]);
+  }, [debouncedSearchQuery]);
 
   const hasResults = searchResults.properties.length > 0 || searchResults.users.length > 0 || searchResults.documents.length > 0;
 
@@ -251,8 +255,18 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <main 
           className="flex-1 p-[var(--content-padding)] transition-all duration-slow overflow-x-hidden w-full"
         >
-          <div className="container-responsive animate-in fade-in slide-in-from-bottom-4 duration-slower">
-            {children || <Outlet />}
+          <div className="container-responsive">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                {children || <Outlet />}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </main>
 

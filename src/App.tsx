@@ -10,42 +10,45 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
 
-// Public pages
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword";
+import { lazy, Suspense } from "react";
+import { SkeletonLoader } from "./components/shared/SkeletonLoader";
 
-// Admin pages and layout
-import { AppLayout } from "./components/Layout/AppLayout";
-import AdminDocuments from "./pages/admin/Documents";
-import DesignSystem from "./pages/admin/DesignSystem";
-import Index from "./pages/Index";
-import Properties from "./pages/Properties";
-import Inspections from "./pages/Inspections";
-import Warranty from "./pages/Warranty";
-import Calendar from "./pages/Calendar";
-import Users from "./pages/Users";
-import ClientArea from "./pages/ClientArea";
-import Checklist from "./pages/Checklist";
-import Settings from "./pages/Settings";
-import AuditLogs from "./pages/admin/AuditLogs";
-import FinancialDashboard from "./pages/admin/FinancialDashboard";
-import Announcements from "./pages/admin/Announcements";
-import Technicians from "./pages/Technicians";
-import AdminSupport from "./pages/admin/Support";
+// Public pages (Lazy loaded)
+const Home = lazy(() => import("./pages/Home"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Login = lazy(() => import("./pages/Login"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
-// Client pages and layout
-import ClientLayout from "./components/Layout/ClientLayout";
-import ClientDashboard from "./pages/client/Dashboard";
-import ClientDocuments from "./pages/client/Documents";
-import ClientInspections from "./pages/client/Inspections";
-import ClientWarranty from "./pages/client/Warranty";
-import ClientProperties from "./pages/client/Properties";
-import ClientNotifications from "./pages/client/Notifications";
-import ClientProfile from "./pages/client/Profile";
-import ClientFinancial from "./pages/client/Financial";
-import ClientSupport from "./pages/client/Support";
+// Admin pages and layout (Lazy loaded)
+const AppLayout = lazy(() => import("./components/Layout/AppLayout").then(module => ({ default: module.AppLayout })));
+const AdminDocuments = lazy(() => import("./pages/admin/Documents"));
+const DesignSystem = lazy(() => import("./pages/admin/DesignSystem"));
+const Index = lazy(() => import("./pages/Index"));
+const Properties = lazy(() => import("./pages/Properties"));
+const Inspections = lazy(() => import("./pages/Inspections"));
+const Warranty = lazy(() => import("./pages/Warranty"));
+const Calendar = lazy(() => import("./pages/Calendar"));
+const Users = lazy(() => import("./pages/Users"));
+const ClientArea = lazy(() => import("./pages/ClientArea"));
+const Checklist = lazy(() => import("./pages/Checklist"));
+const Settings = lazy(() => import("./pages/Settings"));
+const AuditLogs = lazy(() => import("./pages/admin/AuditLogs"));
+const FinancialDashboard = lazy(() => import("./pages/admin/FinancialDashboard"));
+const Announcements = lazy(() => import("./pages/admin/Announcements"));
+const Technicians = lazy(() => import("./pages/Technicians"));
+const AdminSupport = lazy(() => import("./pages/admin/Support"));
+
+// Client pages and layout (Lazy loaded)
+const ClientLayout = lazy(() => import("./components/Layout/ClientLayout"));
+const ClientDashboard = lazy(() => import("./pages/client/Dashboard"));
+const ClientDocuments = lazy(() => import("./pages/client/Documents"));
+const ClientInspections = lazy(() => import("./pages/client/Inspections"));
+const ClientWarranty = lazy(() => import("./pages/client/Warranty"));
+const ClientProperties = lazy(() => import("./pages/client/Properties"));
+const ClientNotifications = lazy(() => import("./pages/client/Notifications"));
+const ClientProfile = lazy(() => import("./pages/client/Profile"));
+const ClientFinancial = lazy(() => import("./pages/client/Financial"));
+const ClientSupport = lazy(() => import("./pages/client/Support"));
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
@@ -66,7 +69,8 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <Routes>
+              <Suspense fallback={<SkeletonLoader type="page" />}>
+                <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
@@ -122,6 +126,7 @@ const App = () => {
                 {/* Catch-all route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              </Suspense>
             </AuthProvider>
           </BrowserRouter>
         </GlobalErrorBoundary>

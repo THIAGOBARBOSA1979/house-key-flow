@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, memo } from 'react';
 
 import { 
   Table, 
@@ -37,7 +37,7 @@ interface DataTableProps<T> {
   className?: string;
 }
 
-export function DataTable<T>({
+function DataTableComponent<T>({
   columns,
   data,
   isLoading,
@@ -172,3 +172,5 @@ export function DataTable<T>({
     </div>
   );
 }
+
+export const DataTable = memo(DataTableComponent) as typeof DataTableComponent;

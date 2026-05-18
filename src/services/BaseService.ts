@@ -13,8 +13,12 @@ export abstract class BaseService<T extends { id: string }> {
 
   subscribe(listener: Listener<T>) {
     this.listeners.push(listener);
+    // Return unsubscribe function immediately
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      const index = this.listeners.indexOf(listener);
+      if (index !== -1) {
+        this.listeners.splice(index, 1);
+      }
     };
   }
 
