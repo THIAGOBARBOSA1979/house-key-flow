@@ -141,10 +141,13 @@ const initialMockRequests: WarrantyRequestFlow[] = [
 
 class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
   private debugMode = false;
-  private logs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: unknown }> = [];
+  private debugLogs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: unknown }> = [];
 
   constructor() {
-    super("a2_warranty_requests", initialMockRequests);
+    super({
+      storageKey: "a2_warranty_requests",
+      auditEntityType: "warranty"
+    }, initialMockRequests);
     this.items = this.items.map(item => ({
       ...item,
       company_id: (item as any).company_id || "comp-1"
@@ -156,16 +159,16 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
   }
 
   getLogs() {
-    return [...this.logs];
+    return [...this.debugLogs];
   }
 
   clearLogs() {
-    this.logs = [];
+    this.debugLogs = [];
   }
 
-  private log(level: 'info' | 'error', message: string, data?: unknown) {
+  private internalLog(level: 'info' | 'error', message: string, data?: unknown) {
     const entry = { timestamp: new Date(), level, message, data };
-    this.logs.push(entry);
+    this.debugLogs.push(entry);
     if (this.debugMode) {
       const consoleMethod = level === 'error' ? 'error' : 'log';
       console[consoleMethod](`[WarrantyFlowService] ${message}`, data || '');
