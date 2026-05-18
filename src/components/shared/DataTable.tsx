@@ -70,8 +70,9 @@ function DataTableComponent<T>({
   if (data.length === 0) {
     return (
       <EmptyState 
-        title={emptyState?.title || "Sem dados"} 
-        description={emptyState?.description || "Nenhum registro foi encontrado."}
+        title={emptyState?.title || "Repositório Digital Vazio"} 
+        description={emptyState?.description || "Nenhum protocolo ou registro estratégico foi localizado nesta coordenada."}
+
         icon={emptyState?.icon}
       />
     );
