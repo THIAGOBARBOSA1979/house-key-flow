@@ -136,22 +136,18 @@ const Users = () => {
       <DataView<UserType>
         items={filteredUsers}
         viewMode="grid"
-        renderGrid={(items) => (
-          <ResponsiveGrid columns={3} gap="layout">
-            {items.map((user) => (
-              <UserCard 
-                key={user.id}
-                user={user}
-                isSelected={selectedUsers.includes(user.id!)}
-                onSelect={toggleSelectUser}
-                onEdit={handleOpenForm}
-                onDelete={deleteUser}
-                onToggleStatus={toggleUserStatus}
-                onResendInvite={handleResendInvite}
-                onViewProfile={(u) => toast({ title: "Perfil", description: `Visualizando ${u.name}` })}
-              />
-            ))}
-          </ResponsiveGrid>
+        renderGrid={(user) => (
+          <UserCard 
+            key={user.id}
+            user={user}
+            isSelected={selectedUsers.includes(user.id!)}
+            onSelect={toggleSelectUser}
+            onEdit={handleOpenForm}
+            onDelete={deleteUser}
+            onToggleStatus={toggleUserStatus}
+            onResendInvite={handleResendInvite}
+            onViewProfile={(u) => toast({ title: "Perfil", description: `Visualizando ${u.name}` })}
+          />
         )}
         emptyState={{
           title: "Nenhum usuário encontrado",
