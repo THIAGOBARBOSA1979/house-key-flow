@@ -84,8 +84,9 @@ class ErrorBoundaryComponent extends Component<Props, State> {
                 className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 shadow-lg shadow-primary/20"
               >
                 <RotateCcw className="w-4 h-4" />
-                Reiniciar Módulo
+                {t('common.retry', 'Reiniciar Módulo')}
               </Button>
+
 
               <Button 
                 onClick={this.handleGoHome}
