@@ -109,6 +109,29 @@ class DocumentService extends BaseService<Document> {
     }, INITIAL_DOCUMENTS);
   }
 
+  // Backward compatibility aliases
+  getAllDocuments() { return this.getAll(undefined, true); }
+  getDocumentById(id: string) { return this.getById(id, undefined, true); }
+  getDocumentsByClient(clientName: string) { return this.items.filter(doc => doc?.associatedTo?.client === clientName); }
+  getFavoriteDocuments() { return this.items.filter(doc => doc.isFavorite); }
+  getExpiringDocuments() { return this.items.filter(d => d.expiresAt); }
+  getCategories() {
+    return [
+      { id: "contrato", name: "Contratos", icon: "FileText", color: "blue" },
+      { id: "manual", name: "Manuais", icon: "Book", color: "green" },
+    ];
+  }
+  getSignatureHistory(id: string) { return this.getById(id, undefined, true)?.signatures || []; }
+  createDocument(data: any) { return this.create(data); }
+  updateDocument(id: string, data: any) { return this.update(id, data, true); }
+  deleteDocument(id: string) { return this.delete(id); }
+  deleteMultipleDocuments(ids: string[]) { return this.bulkDelete(ids); }
+  shareDocument(id: string) { return `${window.location.origin}/share/doc/${id}`; }
+  restoreDocument(id: string) { return !!this.update(id, { status: "published" }, true); }
+  getFolderStructure() { return []; }
+  moveDocument(id: string, folderId: string) { return !!this.update(id, { status: "published" }, true); }
+  generateDocument(type: string, data: any) { return this.create({ title: `Novo ${type}`, type: "auto", ...data } as any); }
+
   searchDocuments(term: string, filters: { category?: string; companyId?: string; isSuperAdmin?: boolean }): Document[] {
     const allDocs = this.getAll(filters.companyId, filters.isSuperAdmin);
     return allDocs.filter(doc => {
@@ -119,8 +142,9 @@ class DocumentService extends BaseService<Document> {
   }
 
   create(item: Omit<Document, "id">, companyId?: string): Document {
+    const { id, ...rest } = item as any;
     return super.create({
-      ...item,
+      ...rest,
       version: 1,
       approvalStatus: "pending",
       downloads: 0,
@@ -134,9 +158,9 @@ class DocumentService extends BaseService<Document> {
   duplicateDocument(id: string) {
     const doc = this.getById(id, undefined, true);
     if (!doc) return null;
+    const { id: _, ...rest } = doc;
     return this.create({
-      ...doc,
-      id: undefined as any,
+      ...rest,
       title: `${doc.title} (Cópia)`,
       status: "draft"
     }, doc.company_id);
@@ -176,7 +200,7 @@ class DocumentService extends BaseService<Document> {
     return stats;
   }
   
-  signDocument(id: string, signerId: string) { 
+  signDocument(id: string, signerId: string, method?: string, evidence?: any) { 
     const doc = this.getById(id, undefined, true);
     if (!doc) return false;
     const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s);
@@ -186,7 +210,7 @@ class DocumentService extends BaseService<Document> {
   rejectSignature(id: string, signerId: string, reason: string) { 
     const doc = this.getById(id, undefined, true);
     if (!doc) return false;
-    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: reason } : s);
+    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: (reason as any) } : s);
     return !!this.update(id, { signatures }, true);
   }
 
