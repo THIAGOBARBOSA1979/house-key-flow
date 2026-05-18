@@ -45,13 +45,13 @@ type NewAuditLogEntry = Omit<AuditLogEntry, 'id' | 'timestamp'>;
 
 const INITIAL_LOGS: AuditLogEntry[] = [
   {
-    id: crypto.randomUUID(), entityType: 'inspection', entityId: '1',
+    id: "log-1", entityType: 'inspection', entityId: '1',
     action: 'created', performedBy: 'admin-1', performedByName: 'Ana Costa',
     performedByRole: 'admin', timestamp: new Date(Date.now() - 30 * 86400000),
     details: 'Vistoria de pré-entrega criada para Edifício Aurora, Unidade 204.'
   },
   {
-    id: crypto.randomUUID(), entityType: 'inspection', entityId: '1',
+    id: "log-2", entityType: 'inspection', entityId: '1',
     action: 'scheduled', performedBy: 'admin-1', performedByName: 'Ana Costa',
     performedByRole: 'admin', timestamp: new Date(Date.now() - 28 * 86400000),
     details: 'Vistoria agendada para 15/05/2025 às 10:00.'
@@ -71,7 +71,7 @@ class AuditLogService extends BaseService<AuditLogEntry> {
   log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole }): AuditLogEntry {
     const newEntry: AuditLogEntry = {
       ...entry,
-      id: crypto.randomUUID(),
+      id: (entry as any).id || crypto.randomUUID(),
       timestamp: new Date(),
       performedBy: userContext?.id || entry.performedBy || 'system',
       performedByName: userContext?.name || entry.performedByName || 'Sistema',

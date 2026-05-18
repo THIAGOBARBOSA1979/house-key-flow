@@ -46,8 +46,8 @@ export abstract class BaseService<T extends { id: string }> {
     const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored) as Record<string, unknown>[];
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
           this.items = parsed.map(item => this.deserializeDates(item));
         }
       } catch (e) {
