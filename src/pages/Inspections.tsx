@@ -13,7 +13,7 @@ import {
   Building
 } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { 
   Select, 
@@ -26,7 +26,8 @@ import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspec
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { inspectionService, Inspection } from "@/services/InspectionService";
+import { inspectionService } from "@/services/InspectionService";
+import { Inspection } from "@/types/inspection";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
@@ -64,33 +65,34 @@ export default function Inspections() {
   const [activeTab, setActiveTab] = useState("list");
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
 
-  return (
-    <div className="space-y-8 pb-10 animate-fade-in">
-      <PageHeader
-        icon={ClipboardCheck}
-        title="Vistorias e Entregas"
-        description="Gestão do ciclo de vida de vistorias, desde a técnica até a entrega das chaves."
+  const actions = (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button 
+        variant="outline"
+        onClick={handleExport}
+        className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
       >
-        <div className="flex flex-wrap items-center gap-3">
-          <Button 
-            variant="outline"
-            onClick={handleExport}
-            className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
-          >
-            <Download className="mr-2 h-4 w-4" /> Exportar Dados
-          </Button>
-          <Button 
-            variant={viewMode === "calendar" ? "default" : "outline"}
-            onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
-            className="rounded-xl h-11 px-5 font-bold border-primary/20 transition-all active:scale-95"
-          >
-            {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
-            {viewMode === "calendar" ? "Visualizar Lista" : "Visualizar Calendário"}
-          </Button>
-          <ScheduleInspectionDialog onSuccess={loadData} />
-        </div>
-      </PageHeader>
+        <Download className="mr-2 h-4 w-4" /> Exportar Dados
+      </Button>
+      <Button 
+        variant={viewMode === "calendar" ? "default" : "outline"}
+        onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+        className="rounded-xl h-11 px-5 font-bold border-primary/20 transition-all active:scale-95"
+      >
+        {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
+        {viewMode === "calendar" ? "Visualizar Lista" : "Visualizar Calendário"}
+      </Button>
+      <ScheduleInspectionDialog onSuccess={loadData} />
+    </div>
+  );
 
+  return (
+    <PageTemplate
+      title="Vistorias e Entregas"
+      description="Gestão do ciclo de vida de vistorias, desde a técnica até a entrega das chaves."
+      icon={ClipboardCheck}
+      actions={actions}
+    >
       <ResponsiveGrid columns={3} gap="layout">
         <StatsCard label="Vistorias Pendentes" value={stats.pending} icon={Clock} variant="pending" description="Aguardando atendimento" className="rounded-3xl" />
         <StatsCard label="Vistorias Concluídas" value={stats.completed} icon={CheckCircle2} variant="complete" description="Total de unidades entregues" className="rounded-3xl" />
@@ -206,6 +208,6 @@ export default function Inspections() {
           <AuditLogViewer entityType="inspection" title="Logs de Auditoria - Vistorias" />
         </TabsContent>
       </Tabs>
-    </div>
+    </PageTemplate>
   );
 }
