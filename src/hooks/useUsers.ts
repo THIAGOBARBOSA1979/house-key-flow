@@ -3,7 +3,7 @@ import { userService } from "@/services/UserService";
 import { auditLogService } from "@/services/AuditLogService";
 import { useToast } from "@/hooks/use-toast";
 import { useService } from "@/hooks/useService";
-import { User } from "@/types/user";
+import { User, UserFiltersData } from "@/types/user";
 
 /**
  * Custom hook to manage users logic.
@@ -11,7 +11,7 @@ import { User } from "@/types/user";
 export const useUsers = () => {
   const { toast } = useToast();
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [filters, setFilters] = useState({ search: "", role: "all", status: "all", property: "all", unit: "" });
+  const [filters, setFilters] = useState<UserFiltersData>({ search: "", role: "all", status: "all", property: "all", unit: "" });
 
   const { items: userList, create, update, remove, refresh } = useService<User>(userService, {
     toastMessages: {
@@ -39,7 +39,7 @@ export const useUsers = () => {
 
   const stats = useMemo(() => userService.getStats(), [userList]);
 
-  const saveUser = useCallback(async (userData: any, editingUserId?: string) => {
+  const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     if (editingUserId) {
       const updated = await update(editingUserId, userData);
       if (updated) {
