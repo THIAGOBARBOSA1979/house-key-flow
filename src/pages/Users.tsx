@@ -65,6 +65,7 @@ const Users = () => {
       </Button>
     </div>
   );
+
   return (
     <PageTemplate
       title="Gestão de Usuários"
@@ -73,7 +74,6 @@ const Users = () => {
       actions={actions}
     >
       <ResponsiveGrid columns="auto" gap="layout">
-
         <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" className="rounded-3xl" />
         <StatsCard label="Ativos hoje" value={stats.active} icon={UserCheck} variant="complete" className="rounded-3xl" />
         <StatsCard label="Pendências" value={stats.inactive} icon={UserMinus} variant="critical" className="rounded-3xl" />
@@ -170,4 +170,3 @@ const Users = () => {
 };
 
 export default Users;
-
