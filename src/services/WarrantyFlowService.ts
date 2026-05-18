@@ -168,34 +168,10 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     }
   }
 
-  protected loadFromStorage() {
-    if (typeof window === 'undefined') return;
-    
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          this.items = parsed.map((req: any) => ({
-            ...req,
-            stageStartedAt: new Date(req.stageStartedAt),
-            createdAt: new Date(req.createdAt),
-            updatedAt: new Date(req.updatedAt),
-            slaDeadline: req.slaDeadline ? new Date(req.slaDeadline) : undefined,
-            inspectionDate: req.inspectionDate ? new Date(req.inspectionDate) : undefined,
-            history: (req.history || []).map((h: any) => ({ ...h, changedAt: new Date(h.changedAt) }))
-          }));
-          this.log('info', `Loaded ${this.items.length} requests from storage`);
-        }
-      } catch (e) {
-        this.log('error', 'Failed to load from storage', e);
-      }
-    }
-  }
-
   getAllRequests(): WarrantyRequestFlow[] {
     return this.getAll();
   }
+
 
   getRequest(requestId: string): WarrantyRequestFlow | undefined {
     return this.getById(requestId);
