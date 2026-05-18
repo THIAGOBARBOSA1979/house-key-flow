@@ -115,7 +115,7 @@ vi.mock('react-i18next', () => ({
   },
 }));
 
-vi.mock('@/integrations/supabase/realtime', () => ({
+vi.mock('@/integrations/supabase/auth-guard', () => ({
   AuthGuard: {
     hasRole: vi.fn().mockReturnValue(true),
     hasPermission: vi.fn().mockReturnValue(true),

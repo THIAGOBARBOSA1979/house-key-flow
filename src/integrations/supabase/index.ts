@@ -170,6 +170,21 @@ export class SupabaseDatabase {
     const result = await supabase.rpc(name, params);
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
+  
+  static async count(table: string, filters?: FilterParams[]): Promise<SupabaseResponse<number>> {
+    // @ts-ignore
+    let query = supabase.from(table).select('*', { count: 'exact', head: true });
+
+    if (filters) {
+      filters.forEach(filter => {
+        // @ts-ignore
+        query = query[filter.operator](filter.column, filter.value);
+      });
+    }
+
+    const { count, error } = await query;
+    return { data: count || 0, error: error ? SupabaseErrorHandler.handle(error) : null };
+  }
 }
 
 export class SupabaseStorage {
