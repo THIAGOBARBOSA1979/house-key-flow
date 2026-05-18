@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { AppLayout } from "./AppLayout";
 import { PageHeader } from "./PageHeader";
 import { cn } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
 
 interface PageTemplateProps {
   children: ReactNode;
@@ -9,7 +10,7 @@ interface PageTemplateProps {
   description?: string;
   className?: string;
   actions?: ReactNode;
-  breadcrumbs?: Array<{ label: string; href?: string }>;
+  icon?: LucideIcon;
 }
 
 export function PageTemplate({
@@ -18,7 +19,7 @@ export function PageTemplate({
   description,
   className,
   actions,
-  breadcrumbs
+  icon
 }: PageTemplateProps) {
   return (
     <AppLayout>
@@ -26,11 +27,13 @@ export function PageTemplate({
         <PageHeader 
           title={title} 
           description={description}
-          actions={actions}
-          breadcrumbs={breadcrumbs}
-        />
+          icon={icon}
+        >
+          {actions}
+        </PageHeader>
         {children}
       </div>
     </AppLayout>
   );
 }
+
