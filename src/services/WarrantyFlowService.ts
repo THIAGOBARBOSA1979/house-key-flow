@@ -163,7 +163,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
           }));
         }
       } catch (e) {
-        console.error(`Failed to load ${this.storageKey} from storage`, e);
+        // Silently fail in production, or handle appropriately
       }
     }
   }
