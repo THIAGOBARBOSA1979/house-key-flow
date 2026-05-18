@@ -1,47 +1,45 @@
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { ReactNode } from 'react';
-import { UserRole } from '@/types/user';
+import { SkeletonLoader } from './shared/SkeletonLoader';
+import { Role } from '@/integration/supabase/auth-types';
 
 interface ProtectedRouteProps {
-  children: ReactNode;
-  requiredRole?: UserRole;
-  redirectTo?: string;
+  children: React.ReactNode;
+  requiredRole?: Role | Role[];
 }
 
-export const ProtectedRoute = ({ 
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
-  requiredRole = 'admin',
-  redirectTo 
-}: ProtectedRouteProps) => {
-  const { isAuthenticated, user, isLoading } = useAuth();
+  requiredRole 
+}) => {
+  const { user, loading } = useAuth();
   const location = useLocation();
 
-  // Show loading while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
+  if (loading) {
+    return <SkeletonLoader type="page" />;
   }
 
-  // Not authenticated - redirect to unified login
-  if (!isAuthenticated) {
-    return <Navigate to={redirectTo || '/login'} state={{ from: location }} replace />;
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Authenticated but wrong role
-  if (user && user.role !== requiredRole) {
-    // Basic role check
-    if (requiredRole === 'admin' && user.role !== 'admin' && user.role !== 'manager' && user.role !== 'staff' && user.role !== 'technical') {
-       if (!location.pathname.startsWith('/client')) return <Navigate to="/client" replace />;
-    }
-    if (requiredRole === 'client' && user.role !== 'client') {
-       if (!location.pathname.startsWith('/admin')) return <Navigate to="/admin" replace />;
+  // Get role from user metadata (Supabase Auth)
+  const userRole = (user.user_metadata?.role as Role) || 'user';
+
+  if (requiredRole) {
+    const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
+    
+    // Super Admin has access to everything
+    if (userRole !== 'super_admin' && !roles.includes(userRole)) {
+      // If user is client/user but trying to access admin
+      if (userRole === 'user' && location.pathname.startsWith('/admin')) {
+        return <Navigate to="/client" replace />;
+      }
+      // If admin trying to access saas admin but not super_admin
+      return <Navigate to="/" replace />;
     }
   }
 
   return <>{children}</>;
 };
-

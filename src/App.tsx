@@ -85,7 +85,7 @@ const App = () => {
                 <Route path="/client/login" element={<Navigate to="/login" replace />} />
                 
                 {/* Protected Admin Routes */}
-                <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AppLayout /></ProtectedRoute>}>
+                <Route path="/admin" element={<ProtectedRoute requiredRole={['admin', 'super_admin']}><AppLayout /></ProtectedRoute>}>
                   <Route index element={<Index />} />
                   <Route path="properties" element={<Properties />} />
                   <Route path="inspections" element={<Inspections />} />
@@ -102,12 +102,12 @@ const App = () => {
                   <Route path="announcements" element={<Announcements />} />
                   <Route path="technicians" element={<Technicians />} />
                   <Route path="support" element={<AdminSupport />} />
-                  <Route path="saas" element={<SaaSAdmin />} />
+                  <Route path="saas" element={<ProtectedRoute requiredRole="super_admin"><SaaSAdmin /></ProtectedRoute>} />
                 </Route>
 
 
                 {/* Protected Client Routes */}
-                <Route path="/client" element={<ProtectedRoute requiredRole="client"><ClientLayout /></ProtectedRoute>}>
+                <Route path="/client" element={<ProtectedRoute requiredRole={['user', 'admin', 'super_admin']}><ClientLayout /></ProtectedRoute>}>
                   <Route index element={<ClientDashboard />} />
                   <Route path="documents" element={<ClientDocuments />} />
                   <Route path="inspections" element={<ClientInspections />} />
