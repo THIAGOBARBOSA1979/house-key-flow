@@ -15,15 +15,31 @@ interface UseServiceOptions<T> {
 }
 
 export function useService<T extends { id: string; company_id?: string }>(
-  service: BaseService<T>,
-
+  service: any, // Using any for transition between BaseService and SupabaseService
   options: UseServiceOptions<T> = {}
 ) {
   const { toast } = useToast();
   const { user } = useAuth();
   const companyId = user?.company_id;
-  const [items, setItems] = useState<T[]>(() => service.getAll(companyId, user?.is_super_admin));
-  const [isLoading, setIsLoading] = useState(false);
+  const [items, setItems] = useState<T[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchItems = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await service.getAll(companyId, user?.is_super_admin);
+      setItems(data);
+    } catch (error) {
+      console.error('Failed to fetch items:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [service, companyId, user?.is_super_admin]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
+
 
 
   // We use a ref for options to avoid re-triggering callbacks when options object changes but functions stay same
@@ -31,32 +47,33 @@ export function useService<T extends { id: string; company_id?: string }>(
   optionsRef.current = options;
 
   useEffect(() => {
-    return service.subscribe((allNewItems) => {
-      // Re-apply tenant filtering in the subscription callback to ensure data isolation
-      if (user?.is_super_admin) {
-        setItems(allNewItems);
-      } else if (companyId) {
-        setItems(allNewItems.filter(item => item.company_id === companyId));
-      } else {
-        setItems([]);
-      }
-    });
+    if (typeof service.subscribe === 'function') {
+      return service.subscribe((allNewItems: T[]) => {
+        if (user?.is_super_admin) {
+          setItems(allNewItems);
+        } else if (companyId) {
+          setItems(allNewItems.filter(item => item.company_id === companyId));
+        } else {
+          setItems([]);
+        }
+      });
+    }
   }, [service, companyId, user?.is_super_admin]);
 
   const refresh = useCallback(() => {
-    setItems(service.getAll(companyId, user?.is_super_admin));
-  }, [service, companyId, user?.is_super_admin]);
+    fetchItems();
+  }, [fetchItems]);
+
 
   const create = useCallback(async (data: Omit<T, "id">) => {
     setIsLoading(true);
     try {
-      // Auto-assign company_id on creation if not a super admin or if not provided
       const dataWithTenant = {
         ...data,
         company_id: (data as any).company_id || companyId
       } as Omit<T, "id">;
 
-      const newItem = service.create(dataWithTenant, dataWithTenant.company_id);
+      const newItem = await service.create(dataWithTenant, dataWithTenant.company_id);
 
       if (optionsRef.current.toastMessages?.create) {
         toast({ title: "Sucesso", description: optionsRef.current.toastMessages.create });
@@ -69,20 +86,12 @@ export function useService<T extends { id: string; company_id?: string }>(
     } finally {
       setIsLoading(false);
     }
-  }, [service, toast]);
+  }, [service, toast, companyId]);
 
   const update = useCallback(async (id: string, data: Partial<T>) => {
     setIsLoading(true);
     try {
-      // Verify tenant ownership before update if not super admin
-      if (!user?.is_super_admin) {
-        const existing = service.getById(id, companyId, false);
-        if (!existing) {
-          throw new Error("Acesso negado ou item não encontrado.");
-        }
-      }
-      
-      const updatedItem = service.update(id, data);
+      const updatedItem = await service.update(id, data);
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
           toast({ title: "Sucesso", description: optionsRef.current.toastMessages.update });
@@ -101,18 +110,12 @@ export function useService<T extends { id: string; company_id?: string }>(
   const remove = useCallback(async (id: string) => {
     setIsLoading(true);
     try {
-      // Verify tenant ownership before delete if not super admin
-      const deletedItem = service.getById(id, companyId, user?.is_super_admin);
-      if (!deletedItem) {
-        throw new Error("Acesso negado ou item não encontrado.");
-      }
-      
-      const success = service.delete(id);
+      const success = await service.delete(id);
       if (success) {
         if (optionsRef.current.toastMessages?.delete) {
           toast({ title: "Sucesso", description: optionsRef.current.toastMessages.delete });
         }
-        if (deletedItem) optionsRef.current.onSuccess?.(deletedItem, 'delete');
+        optionsRef.current.onSuccess?.({ id } as T, 'delete');
       }
       return success;
     } catch (error) {
@@ -122,6 +125,7 @@ export function useService<T extends { id: string; company_id?: string }>(
       setIsLoading(false);
     }
   }, [service, toast]);
+
 
   return {
     items,
