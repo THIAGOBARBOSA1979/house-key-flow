@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { CalendarHeader } from "@/components/Calendar/CalendarHeader";
 import { CalendarView } from "@/components/Calendar/CalendarView";
 import { ListView } from "@/components/Calendar/ListView";
@@ -7,84 +6,29 @@ import { AppointmentDetails } from "@/components/Calendar/AppointmentDetails";
 import { CalendarFilters } from "@/components/Calendar/CalendarFilters";
 import { QuickActions } from "@/components/Calendar/QuickActions";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { getUnifiedAppointments, type Appointment } from "@/components/Calendar/AppointmentData";
-import { useEffect, useCallback } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useCalendar } from "@/hooks";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar as CalendarIcon, List } from "lucide-react";
 
 const Calendar = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [view, setView] = useState<"month" | "week" | "day">("month");
+  const {
+    appointments,
+    filteredAppointments,
+    isLoading,
+    filters,
+    setFilters,
+    stats,
+    handleStatusChange,
+    handleUpdateAppointment,
+    loadData
+  } = useCalendar();
+
   const [selectedAppointment, setSelectedAppointment] = useState<string | null>(null);
-  const [filters, setFilters] = useState({
-    type: "all",
-    status: "all",
-    property: "all",
-  });
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const loadAppointments = useCallback(() => {
-    setIsLoading(true);
-    // Simulate loading for better UX
-    setTimeout(() => {
-      const data = getUnifiedAppointments();
-      setAppointments(data);
-      setIsLoading(false);
-    }, 300);
-  }, []);
-
-  useEffect(() => {
-    loadAppointments();
-  }, [loadAppointments]);
-
-  const filteredAppointments = appointments.filter(apt => {
-    const matchesType = filters.type === "all" || apt.type === filters.type;
-    const matchesStatus = filters.status === "all" || apt.status === filters.status;
-    const matchesProperty = filters.property === "all" || apt.property === filters.property;
-    return matchesType && matchesStatus && matchesProperty;
-  });
-
-  // Calculate stats for QuickActions
-  const today = new Date();
-  const todayAppointments = filteredAppointments.filter(apt => 
-    apt.date.toDateString() === today.toDateString()
-  ).length;
-
-  const pendingAppointments = filteredAppointments.filter(apt => 
-    apt.status === "pending"
-  ).length;
-
-  const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay());
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-  const completedThisWeek = filteredAppointments.filter(apt =>
-    apt.status === "completed" &&
-    apt.date >= startOfWeek &&
-    apt.date <= endOfWeek
-  ).length;
 
   const handleNewAppointment = () => {
     setScheduleDialogOpen(true);
-  };
-
-  const handleStatusChange = (id: string, newStatus: string) => {
-    import("@/services").then(({ inspectionService }) => {
-      inspectionService.updateStatus(id, newStatus);
-      loadAppointments(); // Refresh list
-    });
-  };
-
-  const handleUpdateAppointment = (id: string, data: any) => {
-    import("@/services").then(({ inspectionService }) => {
-      inspectionService.update(id, data);
-      loadAppointments();
-    });
   };
 
   return (
@@ -99,20 +43,20 @@ const Calendar = () => {
 
 
       <QuickActions
-        todayAppointments={todayAppointments}
-        pendingAppointments={pendingAppointments}
-        completedThisWeek={completedThisWeek}
+        todayAppointments={stats.todayAppointments}
+        pendingAppointments={stats.pendingAppointments}
+        completedThisWeek={stats.completedThisWeek}
         onNewAppointment={handleNewAppointment}
         setFilterSheetOpen={setFilterSheetOpen}
       />
 
       <CalendarFilters
         filterType={filters.type}
-        setFilterType={(type) => setFilters({...filters, type})}
+        setFilterType={(type) => setFilters(prev => ({ ...prev, type }))}
         filterProperty={filters.property}
-        setFilterProperty={(property) => setFilters({...filters, property})}
+        setFilterProperty={(property) => setFilters(prev => ({ ...prev, property }))}
         filterStatus={filters.status}
-        setFilterStatus={(status) => setFilters({...filters, status})}
+        setFilterStatus={(status) => setFilters(prev => ({ ...prev, status }))}
         dateFilter="all"
         setDateFilter={() => {}}
         filterSheetOpen={filterSheetOpen}
@@ -179,7 +123,7 @@ const Calendar = () => {
           triggerButton={<div className="hidden" />} 
           onSuccess={() => {
             setScheduleDialogOpen(false);
-            loadAppointments();
+            loadData();
           }}
         />
       )}

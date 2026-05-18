@@ -3,7 +3,7 @@ import { safeFormat } from "@/lib/utils";
 import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play, ClipboardList } from "lucide-react";
 import { checklistService } from "@/services";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "../shared/StatusBadge";
+import { StatusBadge } from "../Shared/StatusBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,12 +30,13 @@ interface InspectionItemProps {
     checklistId?: string;
   };
   onUpdate?: () => void;
+  onCancel?: () => void;
 }
 
 /**
  * Reusable InspectionItem refactored with Design System tokens.
  */
-export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) => {
+export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionItemProps) => {
   const { toast } = useToast();
   const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
   const [startInspectionDialogOpen, setStartInspectionDialogOpen] = useState(false);
@@ -52,14 +53,17 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
   };
 
   const handleCancelInspection = () => {
-    inspectionService.updateStatus(inspection.id, "cancelled");
-    toast({
-      title: "Agendamento Descontinuado",
-      description: `O protocolo de vistoria para ${inspection.client} foi removido do cronograma ativo.`,
-      variant: "destructive",
-    });
-
-    if (onUpdate) onUpdate();
+    if (onCancel) {
+      onCancel();
+    } else {
+      inspectionService.updateStatus(inspection.id, "cancelled");
+      toast({
+        title: "Agendamento Descontinuado",
+        description: `O protocolo de vistoria para ${inspection.client} foi removido do cronograma ativo.`,
+        variant: "destructive",
+      });
+      if (onUpdate) onUpdate();
+    }
   };
 
   const handleSendReminder = () => {

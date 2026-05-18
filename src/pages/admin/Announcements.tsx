@@ -36,8 +36,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DataTable } from "@/components/shared/DataTable";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+import { DataTable } from "@/components/Shared/DataTable";
+import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 

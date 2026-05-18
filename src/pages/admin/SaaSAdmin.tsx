@@ -1,7 +1,7 @@
 import React from "react";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { Company } from "@/services";
-import { DataTable } from "@/components/shared/DataTable";
+import { DataTable } from "@/components/Shared/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 

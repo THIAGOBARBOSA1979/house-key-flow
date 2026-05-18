@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Building, TrendingUp, PieChart, BarChart3 } from "lucide-react";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { PropertyMetrics } from "@/types/property";
 
 interface PropertyStatsProps {

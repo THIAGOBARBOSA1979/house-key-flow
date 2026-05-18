@@ -30,9 +30,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { Inspection } from "@/types/inspection";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { DataView } from "@/components/shared/DataView";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { DataView } from "@/components/Shared/DataView";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { 
   PieChart, 
   Pie, 
@@ -45,10 +45,11 @@ import {
   Tooltip as ReTooltip, 
   Legend 
 } from 'recharts';
-import { useInspections } from "@/hooks";
+import { useInspections, useConfirm } from "@/hooks";
 import { Button } from "@/components/ui/button";
-import { DataViewMode } from "@/components/shared/DataView";
+import { DataViewMode } from "@/components/Shared/DataView";
 import { inspectionService } from "@/services";
+import { ConfirmationDialog } from "@/components/Shared/ConfirmationDialog";
 
 
 
@@ -70,6 +71,7 @@ export default function Inspections() {
 
   const [activeTab, setActiveTab] = useState("list");
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
+  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
@@ -159,7 +161,20 @@ export default function Inspections() {
             renderGrid={(inspection) => (
               <Card key={inspection.id} className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-0">
-                  <InspectionItem inspection={inspection} onUpdate={loadData} />
+                  <InspectionItem 
+                    inspection={inspection} 
+                    onUpdate={loadData} 
+                    onCancel={async () => {
+                      if (await confirm({
+                        title: "Cancelar Vistoria",
+                        description: `Deseja realmente cancelar a vistoria da unidade ${inspection.unit} do empreendimento ${inspection.property}?`,
+                        confirmLabel: "Cancelar Vistoria",
+                      })) {
+                        await inspectionService.updateStatus(inspection.id, "cancelled");
+                        loadData();
+                      }
+                    }}
+                  />
                 </CardContent>
               </Card>
             )}
@@ -217,6 +232,13 @@ export default function Inspections() {
           <AuditLogViewer entityType="inspection" title="Logs de Auditoria - Vistorias" />
         </TabsContent>
       </Tabs>
+
+      <ConfirmationDialog 
+        isOpen={isConfirmOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        {...confirmOptions}
+      />
     </PageTemplate>
   );
 }

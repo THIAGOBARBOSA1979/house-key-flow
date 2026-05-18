@@ -2,7 +2,7 @@ import { format, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { StatusBadge } from "../shared/StatusBadge";
+import { StatusBadge } from "../Shared/StatusBadge";
 import { Calendar, MessageSquare, Building, Home, ListTodo } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 

@@ -11,9 +11,9 @@ import { ChecklistItem, ChecklistGroup, checklistService } from '@/services';
 import { FileText, PlayCircle, BarChart, ArrowLeft, CheckCircle2, Plus, Clock, Filter, History, AlertCircle } from 'lucide-react';
 import { PageHeader } from '@/components/Layout/PageHeader';
 import { useToast } from "@/components/ui/use-toast";
-import { StatsCard } from '@/components/shared/StatsCard';
-import { ResponsiveGrid } from '@/components/shared/ResponsiveGrid';
-import { StatusBadge } from '@/components/shared/StatusBadge';
+import { StatsCard } from '@/components/Shared/StatsCard';
+import { ResponsiveGrid } from '@/components/Shared/ResponsiveGrid';
+import { StatusBadge } from '@/components/Shared/StatusBadge';
 import { cn } from '@/lib/utils';
 import { exportService } from '@/services';
 

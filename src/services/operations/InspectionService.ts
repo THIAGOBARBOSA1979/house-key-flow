@@ -1,6 +1,28 @@
+import { z } from "zod";
 import { BaseService } from "../BaseService";
 import { auditLogService } from "../core/AuditLogService";
 import { technicianService, Technician } from "../operations/TechnicianService";
+
+export const inspectionSchema = z.object({
+  inspectionType: z.string({
+    required_error: "Selecione o tipo de vistoria",
+  }),
+  date: z.date({
+    required_error: "Selecione uma data",
+  }),
+  time: z.string({
+    required_error: "Selecione um horário",
+  }),
+  technician: z.string({
+    required_error: "Selecione um responsável técnico",
+  }),
+  checklist: z.string({
+    required_error: "Selecione um checklist",
+  }),
+  notes: z.string().optional(),
+  notifyClient: z.boolean().default(true),
+  requestId: z.string().optional(),
+});
 
 export interface Inspection {
   id: string;

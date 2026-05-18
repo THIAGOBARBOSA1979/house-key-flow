@@ -4,7 +4,7 @@ import { memo } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building, Home, Users, MapPin, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { StatusBadge } from "../shared/StatusBadge";
+import { StatusBadge } from "../Shared/StatusBadge";
 import { Property } from "@/services";
 import {
   DropdownMenu,

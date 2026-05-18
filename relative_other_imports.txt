@@ -1,0 +1,2 @@
+src/integrations/supabase/index.ts
+src/types/index.ts

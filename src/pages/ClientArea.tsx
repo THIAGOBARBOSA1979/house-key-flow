@@ -12,8 +12,8 @@ import { clientStageService, notificationService, auditLogService, exportService
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { useToast } from "@/hooks";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { DataView, DataViewMode } from "@/components/shared/DataView";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { DataView, DataViewMode } from "@/components/Shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 

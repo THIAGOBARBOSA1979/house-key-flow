@@ -34,32 +34,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { ChecklistSelector } from "./ChecklistSelector";
-import { inspectionService } from "@/services";
+import { inspectionService, inspectionSchema } from "@/services";
 
 
-const formSchema = z.object({
-  inspectionType: z.string({
-    required_error: "Selecione o tipo de vistoria",
-  }),
-  date: z.date({
-    required_error: "Selecione uma data",
-  }),
-  time: z.string({
-    required_error: "Selecione um horário",
-  }),
-  technician: z.string({
-    required_error: "Selecione um responsável técnico",
-  }),
-  checklist: z.string({
-    required_error: "Selecione um checklist",
-  }),
-  notes: z.string().optional(),
-  notifyClient: z.boolean().default(true),
-  requestId: z.string().optional(),
-});
-
-
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof inspectionSchema>;
 
 // Example data - in a real app, these would come from your database
 const inspectionTypes = [
@@ -96,7 +74,7 @@ export const ScheduleInspectionForm = ({
   const [conflictWarning, setConflictWarning] = React.useState<string | null>(null);
   
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(inspectionSchema),
     defaultValues: {
       inspectionType: "",
       date: new Date(),

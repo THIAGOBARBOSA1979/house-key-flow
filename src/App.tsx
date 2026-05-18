@@ -7,12 +7,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
 import { AuthProvider } from "@/contexts/AuthContext";
-import { BrandThemeProvider } from "@/components/shared/BrandThemeProvider";
+import { BrandThemeProvider } from "@/components/Shared/BrandThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
 
 import { lazy, Suspense } from "react";
-import { SkeletonLoader } from "./components/shared/SkeletonLoader";
+import { SkeletonLoader } from "./components/Shared/SkeletonLoader";
 
 import * as Pages from "./routes/pages";
 

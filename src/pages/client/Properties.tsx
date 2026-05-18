@@ -32,8 +32,8 @@ import { useClientStage } from "@/hooks";
 import { useToast } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { propertyService, Property } from "@/services";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 
 const ClientProperties = () => {
   const { user } = useAuth();

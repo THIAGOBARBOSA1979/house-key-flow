@@ -1,35 +1,34 @@
 import { useState, useMemo, useCallback } from "react";
 import { inspectionService } from "@/services";
-import { useService } from "@/hooks";
+import { useService, useDataList } from "@/hooks";
 import { Inspection } from "@/types/inspection";
 
 /**
  * Custom hook to manage inspections logic.
  */
 export const useInspections = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterTechnician, setFilterTechnician] = useState("all");
-  const [filterProperty, setFilterProperty] = useState("all");
-  const [filterChecklist, setFilterChecklist] = useState("all");
+  const { items: inspections, isLoading, refresh: loadData } = useService<Inspection>(inspectionService);
 
-  const { items: inspections, refresh: loadData } = useService<Inspection>(inspectionService);
+  const filterFn = useCallback((inspection: Inspection, filters: any) => {
+    const matchesStatus = filters.status === "all" || inspection.status === filters.status;
+    const matchesTech = filters.technician === "all" || inspection.technician === filters.technician;
+    const matchesProperty = filters.property === "all" || inspection.property === filters.property;
+    const matchesChecklist = filters.checklist === "all" || inspection.checklistId === filters.checklist;
+    
+    return matchesStatus && matchesTech && matchesProperty && matchesChecklist;
+  }, []);
 
-  const filteredInspections = useMemo(() => {
-    return inspections.filter(inspection => {
-      const matchesSearch = 
-        inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inspection.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inspection.unit.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = filterStatus === "all" || inspection.status === filterStatus;
-      const matchesTech = filterTechnician === "all" || inspection.technician === filterTechnician;
-      const matchesProperty = filterProperty === "all" || inspection.property === filterProperty;
-      const matchesChecklist = filterChecklist === "all" || inspection.checklistId === filterChecklist;
-      
-      return matchesSearch && matchesStatus && matchesTech && matchesProperty && matchesChecklist;
-    });
-  }, [inspections, searchTerm, filterStatus, filterTechnician, filterProperty, filterChecklist]);
+  const {
+    filteredItems: filteredInspections,
+    filters,
+    setFilters,
+    searchTerm,
+    setSearchTerm,
+    clearFilters
+  } = useDataList<Inspection>(inspections, {
+    initialFilters: { status: "all", technician: "all", property: "all", checklist: "all" },
+    filterFn
+  });
 
   const stats = useMemo(() => {
     const today = new Date();
@@ -42,14 +41,6 @@ export const useInspections = () => {
       }).length
     };
   }, [inspections]);
-
-  const clearFilters = useCallback(() => {
-    setSearchTerm("");
-    setFilterStatus("all");
-    setFilterTechnician("all");
-    setFilterProperty("all");
-    setFilterChecklist("all");
-  }, []);
 
   const handleExport = useCallback(() => {
     const data = inspectionService.exportData('csv');
@@ -69,15 +60,16 @@ export const useInspections = () => {
     filteredInspections,
     searchTerm,
     setSearchTerm,
-    filterStatus,
-    setFilterStatus,
-    filterTechnician,
-    setFilterTechnician,
-    filterProperty,
-    setFilterProperty,
-    filterChecklist,
-    setFilterChecklist,
+    filterStatus: filters.status,
+    setFilterStatus: (val: string) => setFilters(prev => ({ ...prev, status: val })),
+    filterTechnician: filters.technician,
+    setFilterTechnician: (val: string) => setFilters(prev => ({ ...prev, technician: val })),
+    filterProperty: filters.property,
+    setFilterProperty: (val: string) => setFilters(prev => ({ ...prev, property: val })),
+    filterChecklist: filters.checklist,
+    setFilterChecklist: (val: string) => setFilters(prev => ({ ...prev, checklist: val })),
     stats,
+    isLoading,
     loadData,
     clearFilters,
     handleExport

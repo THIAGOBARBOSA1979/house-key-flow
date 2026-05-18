@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks";
 import { documentService, Document } from "@/services";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks";

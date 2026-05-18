@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { Property } from "@/services";
 
