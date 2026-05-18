@@ -4,25 +4,31 @@ import { propertyService } from '../operations/PropertyService';
 describe('PropertyService', () => {
   beforeEach(() => {
     localStorage.clear();
-    // Re-initialize or reset items if needed, but BaseService uses INITIAL_PROPERTIES
-    // and we can pass true for isSuperAdmin to get everything
+    // Re-initialize or reset items if needed
+    (propertyService as any).items = [];
+    // Manually add a property for testing to ensure isolation from INITIAL_PROPERTIES state
+    propertyService.create({
+      name: "Test Property",
+      location: "Test Location",
+      units: 10,
+      completedUnits: 0,
+      status: "pending",
+      milestones: [
+        { id: "m1", title: "Milestone 1", targetDate: new Date(), completed: false }
+      ]
+    }, "comp-test");
   });
 
   it('should calculate metrics correctly', () => {
-    // Pass isSuperAdmin=true to ensure we bypass company check in test
     const metrics = propertyService.getMetrics(undefined, true);
-    
-    expect(metrics).toHaveProperty('total');
-    expect(metrics).toHaveProperty('totalUnits');
-    expect(metrics).toHaveProperty('averageProgress');
-    
-    // Based on INITIAL_PROPERTIES (3 items)
-    expect(metrics.total).toBe(3);
+    expect(metrics.total).toBe(1);
+    expect(metrics.totalUnits).toBe(10);
   });
 
   it('should update milestone status and log it', () => {
-    const propertyId = "1";
-    const milestoneId = "m3";
+    const all = propertyService.getAll(undefined, true);
+    const propertyId = all[0].id!;
+    const milestoneId = "m1";
     
     const updated = propertyService.updateMilestone(propertyId, milestoneId, true);
     
@@ -32,4 +38,5 @@ describe('PropertyService', () => {
     expect(milestone?.completedAt).toBeDefined();
   });
 });
+
 
