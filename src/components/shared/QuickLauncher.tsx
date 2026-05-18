@@ -159,11 +159,11 @@ export const QuickLauncher = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
-          className="fixed bottom-8 right-8 h-14 w-14 rounded-2xl shadow-sem-xl bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all duration-300 z-modal group"
+          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 h-12 w-12 sm:h-14 sm:w-14 rounded-2xl shadow-sem-xl bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all duration-300 z-modal group"
           size="icon"
         >
           <Zap className="h-6 w-6 group-hover:rotate-12 transition-transform" />
-          <span className="absolute right-full mr-4 px-3 py-1.5 bg-card text-foreground text-[10px] font-black uppercase tracking-widest rounded-2xl border shadow-sem-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <span className="absolute right-full mr-4 px-3 py-1.5 bg-card text-foreground text-[10px] font-black uppercase tracking-widest rounded-2xl border shadow-sem-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block">
             Ações Rápidas (Ctrl+Q)
           </span>
         </Button>
@@ -236,7 +236,7 @@ export const QuickLauncher = () => {
             )}
           </div>
         </div>
-        <div className="p-6 bg-muted/5 border-t border-border/10 flex items-center justify-between">
+        <div className="p-6 bg-muted/5 border-t border-border/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <kbd className="h-6 px-1.5 rounded-2xl bg-muted/20 border border-border/40 flex items-center justify-center text-[10px] font-black">Esc</kbd>

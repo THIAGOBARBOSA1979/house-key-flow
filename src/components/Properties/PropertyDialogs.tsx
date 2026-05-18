@@ -32,7 +32,7 @@ export const PropertyDialogs = ({
   return (
     <>
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-[700px] rounded-[2rem] border-none shadow-2xl p-8 overflow-y-auto max-h-[90vh]">
+        <DialogContent className="sm:max-w-[700px] w-[95vw] rounded-[2rem] border-none shadow-2xl p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
           <DialogHeader className="mb-6">
             <DialogTitle className="text-3xl font-black tracking-tight">{editingProperty ? "Editar" : "Novo"} Empreendimento</DialogTitle>
           </DialogHeader>

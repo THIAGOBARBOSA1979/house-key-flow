@@ -90,7 +90,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       />
       <div className={cn(
         "min-h-screen flex flex-col transition-all duration-slow ease-out-sem",
-        !isMobile && sidebarWidthClass
+        !isMobile && sidebarWidthClass,
+        isMobile && "pt-16" // Space for mobile menu trigger if needed
       )}>
         {/* Header - Top bar */}
         <header 
@@ -248,7 +249,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         
         {/* Main Content Area */}
         <main 
-          className="flex-1 p-[var(--content-padding)] transition-all duration-slow overflow-x-hidden"
+          className="flex-1 p-[var(--content-padding)] transition-all duration-slow overflow-x-hidden w-full"
         >
           <div className="container-responsive animate-in fade-in slide-in-from-bottom-4 duration-slower">
             {children || <Outlet />}

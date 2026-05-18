@@ -167,12 +167,12 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
           <Button 
             size="icon" 
             variant="ghost" 
-            className="fixed left-2 top-2 z-modal lg:hidden shadow-none bg-transparent hover:bg-primary/5 text-primary"
+            className="fixed left-2 top-3 z-modal lg:hidden shadow-none bg-background/50 backdrop-blur-sm hover:bg-primary/5 text-primary border border-primary/10 rounded-xl"
           >
             <Menu size={20} />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-sidebar-width bg-sidebar border-r-sidebar-border shadow-sem-xl">
+        <SheetContent side="left" className="p-0 w-[280px] bg-sidebar border-r-sidebar-border shadow-sem-xl">
           <SidebarContent collapsed={false} onItemClick={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>

@@ -29,7 +29,7 @@ export const ActiveProperties = ({ properties }: ActivePropertiesProps) => {
           <ChevronRight size={16} />
         </Button>
       </div>
-      <ResponsiveGrid columns={2} mobileCols={1} gap="layout">
+      <ResponsiveGrid columns={2} mobileCols={1} tabletCols={2} gap="layout">
         {properties.map((property) => (
           <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
         ))}
