@@ -45,8 +45,17 @@ export class AuthGuard {
   }
 
   static isAdmin(): boolean {
-    return this.hasRole('admin');
+    return this.hasRole(['admin', 'super_admin']);
   }
+
+  static getPermissions(): Permission[] {
+    return this.currentUserContext?.permissions || [];
+  }
+
+  static getRole(): Role | null {
+    return this.currentUserContext?.role || null;
+  }
+
 
   static canAccessTenant(targetCompanyId: string): boolean {
     if (this.isSuperAdmin()) return true;

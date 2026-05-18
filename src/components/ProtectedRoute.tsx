@@ -30,9 +30,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     userRole = 'super_admin';
   } else if (user.role === 'admin' || user.role === 'manager') {
     userRole = 'admin';
+  } else if (user.role === 'staff') {
+    userRole = 'staff';
+  } else if (user.role === 'technical') {
+    userRole = 'technical';
   } else {
     userRole = 'user';
   }
+
 
   if (requiredRole) {
     const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
