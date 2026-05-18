@@ -25,7 +25,7 @@ const Warranty = () => {
     assignTechnician, 
     exportData,
     isLoading,
-    error,
+    // error property removed from useWarranty
     refresh
   } = useWarranty();
 
@@ -40,7 +40,7 @@ const Warranty = () => {
 
       actions={<WarrantyPageActions onExport={exportData} />}
     >
-      {error && <WarrantyErrorAlert error={error} onRefresh={refresh} />}
+      {/* Error alert removed as error state is now handled globally in useService or not exposed */}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <WarrantyTabsHeader />
