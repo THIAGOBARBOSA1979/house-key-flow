@@ -131,20 +131,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 
       
-      setUser(mockUser);
+      setUser(authenticatedUser);
       
       // Store user data
       const rememberMe = localStorage.getItem('rememberMe') === 'true';
 
-      
       if (rememberMe) {
-        localStorage.setItem('auth_user', JSON.stringify(mockUser));
-        localStorage.setItem('rememberMe', 'true');
+        localStorage.setItem('auth_user', JSON.stringify(authenticatedUser));
       }
       
       toast({
         title: "✅ Login realizado com sucesso",
-        description: `Bem-vindo, ${mockUser.name}!`,
+        description: `Bem-vindo, ${authenticatedUser.name}!`,
       });
       
       // Redirect based on role
@@ -152,6 +150,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (window.location.pathname !== redirectTo) {
         navigate(redirectTo);
       }
+
       
     } catch (error) {
       toast({
