@@ -145,6 +145,10 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
 
   constructor() {
     super("a2_warranty_requests", initialMockRequests);
+    this.items = this.items.map(item => ({
+      ...item,
+      company_id: (item as any).company_id || "comp-1"
+    } as WarrantyRequestFlow));
   }
 
   setDebugMode(enabled: boolean) {

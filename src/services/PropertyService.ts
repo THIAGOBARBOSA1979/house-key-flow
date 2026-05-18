@@ -178,8 +178,8 @@ class PropertyService extends BaseService<Property> {
     });
   }
 
-  getMetrics(companyId?: string): PropertyMetrics {
-    const relevantItems = companyId ? this.items.filter(p => p.company_id === companyId) : this.items;
+  getMetrics(companyId?: string, isSuperAdmin?: boolean): PropertyMetrics {
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     const total = relevantItems.length;
     const byStatus = relevantItems.reduce((acc, p) => {
       acc[p.status] = (acc[p.status] || 0) + 1;

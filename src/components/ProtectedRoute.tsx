@@ -34,11 +34,11 @@ export const ProtectedRoute = ({
   // Authenticated but wrong role
   if (user && user.role !== requiredRole) {
     // Basic role check
-    if (requiredRole === 'admin' && user.role !== 'admin' && user.role !== 'manager' && user.role !== 'staff') {
-       if (location.pathname !== '/client') return <Navigate to="/client" replace />;
+    if (requiredRole === 'admin' && user.role !== 'admin' && user.role !== 'manager' && user.role !== 'staff' && user.role !== 'technical') {
+       if (!location.pathname.startsWith('/client')) return <Navigate to="/client" replace />;
     }
     if (requiredRole === 'client' && user.role !== 'client') {
-       if (location.pathname !== '/admin') return <Navigate to="/admin" replace />;
+       if (!location.pathname.startsWith('/admin')) return <Navigate to="/admin" replace />;
     }
   }
 

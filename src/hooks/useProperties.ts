@@ -25,7 +25,7 @@ export const useProperties = () => {
     }
   });
 
-  const metrics = useMemo(() => propertyService.getMetrics(companyId), [companyId]);
+  const metrics = useMemo(() => propertyService.getMetrics(companyId, user?.is_super_admin), [companyId, user?.is_super_admin]);
 
   const filteredProperties = useMemo(() => {
     return properties.filter(property => {

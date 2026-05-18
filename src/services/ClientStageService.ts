@@ -16,6 +16,7 @@ class ClientStageService extends BaseService<ClientProfile> {
     super("a2_client_profiles", [
       { 
         id: "client-1", 
+        company_id: "comp-1",
         name: "João Silva", 
         email: "joao@email.com", 
         propertyName: "Edifício Aurora", 
@@ -41,7 +42,8 @@ class ClientStageService extends BaseService<ClientProfile> {
     const storedEvents = localStorage.getItem("a2_client_events");
     if (storedEvents) {
       try {
-        this.events = JSON.parse(storedEvents).map((e: any) => ({
+        const parsed = JSON.parse(storedEvents);
+        this.events = parsed.map((e: any) => ({
           ...e,
           createdAt: new Date(e.createdAt)
         }));
@@ -55,12 +57,12 @@ class ClientStageService extends BaseService<ClientProfile> {
     localStorage.setItem("a2_client_events", JSON.stringify(this.events));
   }
 
-  getAllProfiles(): ClientProfile[] {
-    return [...this.items];
+  getAllProfiles(companyId?: string, isSuperAdmin?: boolean): ClientProfile[] {
+    return [...this.getAll(companyId, isSuperAdmin)];
   }
 
-  getClientProfile(id: string): ClientProfile | undefined {
-    return this.getById(id);
+  getClientProfile(id: string, companyId?: string, isSuperAdmin?: boolean): ClientProfile | undefined {
+    return this.getById(id, companyId, isSuperAdmin);
   }
 
   advanceStage(id: string, stage: ClientStage, notes: string = "", changedBy: string = "system", automatic: boolean = false) {
@@ -85,7 +87,8 @@ class ClientStageService extends BaseService<ClientProfile> {
     if (updated) {
       this.addEvent({
         clientId: id,
-        eventType: 'stage_changed' as any, // This is not in EventType but used in history/UI sometimes
+        company_id: profile.company_id,
+        eventType: 'stage_changed' as any,
         title: 'Mudança de Etapa',
         description: notes || `Cliente movido para a etapa: ${stage}`,
         metadata: { performedBy: changedBy, isAutomatic: automatic }
@@ -107,7 +110,8 @@ class ClientStageService extends BaseService<ClientProfile> {
     return newEvent;
   }
 
-  getEvents(clientId: string): ClientEvent[] {
+  getEvents(clientId: string, companyId?: string, isSuperAdmin?: boolean): ClientEvent[] {
+    // Basic filtering by company if provided, but typically clientId is specific enough
     return this.events.filter(e => e.clientId === clientId);
   }
 
@@ -118,7 +122,7 @@ class ClientStageService extends BaseService<ClientProfile> {
   }
 
   getTimeline(clientId: string) {
-    return []; 
+    return this.getEvents(clientId);
   }
 
   canScheduleInspection(clientId: string): boolean {

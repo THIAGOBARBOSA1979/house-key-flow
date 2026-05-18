@@ -30,9 +30,9 @@ class SystemHealthService {
 
   getHealthMetrics(): SystemHealthMetrics {
     const allRequests = warrantyFlowService.getAllRequests();
-    const allInspections = inspectionService.getAll();
-    const allProperties = propertyService.getAll();
-    const allLogs = auditLogService.getAllLogs();
+    const allInspections = inspectionService.getAll(undefined, true);
+    const allProperties = propertyService.getAll(undefined, true);
+    const allLogs = auditLogService.getAllLogs(undefined, true);
     
     let status: 'healthy' | 'warning' | 'critical' = 'healthy';
     

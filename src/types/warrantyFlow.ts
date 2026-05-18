@@ -222,6 +222,7 @@ export interface SLADeadlineInfo {
 // Extended warranty request with flow data
 export interface WarrantyRequestFlow {
   id: string;
+  company_id?: string;
   clientId: string;
   clientName: string;
   propertyId: string;

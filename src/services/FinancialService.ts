@@ -29,12 +29,12 @@ class FinancialService extends BaseService<Installment> {
     super("a2_financial_data", INITIAL_INSTALLMENTS);
   }
 
-  getInstallmentsByClient(clientId: string): Installment[] { 
-    return this.items; 
+  getInstallmentsByClient(clientId: string, companyId?: string, isSuperAdmin?: boolean): Installment[] { 
+    return this.getAll(companyId, isSuperAdmin); 
   }
 
-  getFinancialSummary(clientId: string): FinancialSummary {
-    const installments = this.items;
+  getFinancialSummary(clientId: string, companyId?: string, isSuperAdmin?: boolean): FinancialSummary {
+    const installments = this.getAll(companyId, isSuperAdmin);
     const totalValue = installments.reduce((acc, curr) => acc + curr.value, 0);
     const paidValue = installments
       .filter(i => i.status === 'paid')
@@ -84,10 +84,17 @@ class FinancialService extends BaseService<Installment> {
     };
   }
 
-  getRecentTransactions() {
-    return [
-      { id: 'tx-1', client: 'João Silva', property: 'Residencial Aurora', value: 2500, date: new Date(), type: 'Mensalidade', status: 'paid' },
-    ];
+  getRecentTransactions(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
+    return relevantItems.map(i => ({
+      id: i.id,
+      client: 'Cliente Exemplo', // In a real app, join with users
+      property: 'Edifício Aurora', // In a real app, join with properties
+      value: i.value,
+      date: i.dueDate,
+      type: i.type === 'monthly' ? 'Mensalidade' : 'Extra',
+      status: i.status
+    })).slice(0, 5);
   }
 
   processPayment(transactionId: string) {

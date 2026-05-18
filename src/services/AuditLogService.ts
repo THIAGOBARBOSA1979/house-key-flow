@@ -65,7 +65,7 @@ class AuditLogService extends BaseService<AuditLogEntry> {
   }
 
   getAllLogs(companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
-    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((l: any) => l.company_id === companyId) : []);
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     return [...relevantItems].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
@@ -89,7 +89,7 @@ class AuditLogService extends BaseService<AuditLogEntry> {
   }
 
   getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
-    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((l: any) => l.company_id === companyId) : []);
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     return relevantItems.slice(0, limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
@@ -104,7 +104,7 @@ class AuditLogService extends BaseService<AuditLogEntry> {
     companyId?: string;
     isSuperAdmin?: boolean;
   }): AuditLogEntry[] {
-    const baseItems = filters.isSuperAdmin ? this.items : (filters.companyId ? this.items.filter((l: any) => l.company_id === filters.companyId) : []);
+    const baseItems = this.getAll(filters.companyId, filters.isSuperAdmin);
     return baseItems.filter(log => {
       const matchesSearch = !filters.searchTerm || 
         (log.details?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
@@ -123,7 +123,7 @@ class AuditLogService extends BaseService<AuditLogEntry> {
   }
 
   getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((l: any) => l.company_id === companyId) : []);
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     const now = new Date();
     const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const currentCount = relevantItems.filter(l => l.timestamp >= last24h).length;
