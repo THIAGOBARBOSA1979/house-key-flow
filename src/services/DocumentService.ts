@@ -9,6 +9,10 @@ export interface DocumentSignature {
   status: "pending" | "signed" | "rejected";
   signedAt?: Date;
   confirmationMethod: "email" | "sms" | "govbr" | "facial";
+  order?: number;
+  ipAddress?: string;
+  documentHash?: string;
+  evidence?: any;
 }
 
 export interface ApprovalHistoryEntry {
@@ -60,6 +64,8 @@ export interface Document {
   approvedAt?: Date;
   approvalComment?: string;
   createdBy?: string;
+  priority?: "low" | "medium" | "high";
+  expiresAt?: Date;
 }
 
 const INITIAL_DOCUMENTS: Document[] = [
@@ -80,7 +86,8 @@ const INITIAL_DOCUMENTS: Document[] = [
     approvalStatus: "approved",
     template: "Contrato de exemplo",
     signatures: [],
-    createdBy: "Admin"
+    createdBy: "Admin",
+    priority: "high"
   },
 ];
 
@@ -95,6 +102,7 @@ class DocumentService extends BaseService<Document> {
       ...d,
       createdAt: new Date(d.createdAt),
       updatedAt: new Date(d.updatedAt),
+      expiresAt: d.expiresAt ? new Date(d.expiresAt) : undefined,
     }));
   }
 
@@ -102,7 +110,7 @@ class DocumentService extends BaseService<Document> {
   getDocumentById(id: string): Document | undefined { return this.getById(id); }
   getDocumentsByClient(clientName: string): Document[] { return this.items.filter(doc => doc.associatedTo.client === clientName); }
   getFavoriteDocuments(): Document[] { return this.items.filter(doc => doc.isFavorite); }
-  getExpiringDocuments(): Document[] { return []; }
+  getExpiringDocuments(): Document[] { return this.items.filter(d => d.expiresAt); }
 
   searchDocuments(term: string, filters: any): Document[] {
     return this.items.filter(doc => {
@@ -113,7 +121,16 @@ class DocumentService extends BaseService<Document> {
   }
 
   createDocument(data: any): Document {
-    const doc = super.create({ ...data, version: 1, approvalStatus: "pending", downloads: 0, viewCount: 0, createdAt: new Date(), updatedAt: new Date() });
+    const doc = super.create({ 
+      ...data, 
+      version: 1, 
+      approvalStatus: "pending", 
+      downloads: 0, 
+      viewCount: 0, 
+      createdAt: new Date(), 
+      updatedAt: new Date(),
+      status: data.status || "draft"
+    });
     auditLogService.log({ entityType: 'document', entityId: doc.id, action: 'created', performedBy: 'admin-1', performedByName: 'Admin', performedByRole: 'admin', details: `Doc ${doc.title} criado` });
     return doc;
   }
@@ -149,16 +166,44 @@ class DocumentService extends BaseService<Document> {
     ];
   }
 
-  getDocumentStats() { return { total: this.items.length, pending: this.items.filter(d => d.approvalStatus === 'pending').length }; }
+  getDocumentStats() { 
+    const stats = { 
+      total: this.items.length, 
+      pending: this.items.filter(d => d.approvalStatus === 'pending').length,
+      published: this.items.filter(d => d.status === 'published').length,
+      draft: this.items.filter(d => d.status === 'draft').length,
+      archived: this.items.filter(d => d.status === 'archived').length,
+      favorites: this.items.filter(d => d.isFavorite).length,
+      expiring: 0,
+      byCategory: {} as Record<string, number>
+    };
+    this.items.forEach(d => {
+      stats.byCategory[d.category] = (stats.byCategory[d.category] || 0) + 1;
+    });
+    return stats;
+  }
+  
   getSignatureHistory(id: string) { return this.getById(id)?.signatures || []; }
-  signDocument(id: string, data: any) { return this.update(id, { status: "published" }); }
-  rejectSignature(id: string, reason: string) { return this.update(id, { approvalStatus: "rejected", approvalComment: reason }); }
+  signDocument(id: string, signerId: string, method: string, evidence: any) { 
+    const doc = this.getById(id);
+    if (!doc) return false;
+    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s);
+    return !!this.update(id, { signatures });
+  }
+  rejectSignature(id: string, signerId: string, reason: string) { 
+    const doc = this.getById(id);
+    if (!doc) return false;
+    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: reason } : s);
+    return !!this.update(id, { signatures });
+  }
   getFolderStructure() { return []; }
   moveDocument(id: string, folderId: string) { return !!this.update(id, { status: "published" }); }
-  addSigner(id: string, signer: any) { 
+  addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): DocumentSignature | null { 
     const doc = this.getById(id);
     if (!doc) return null;
-    return this.update(id, { signatures: [...(doc.signatures || []), signer] });
+    const newSigner: DocumentSignature = { ...signer, id: crypto.randomUUID(), status: "pending" };
+    this.update(id, { signatures: [...(doc.signatures || []), newSigner] });
+    return newSigner;
   }
   generateDocument(type: string, data: any) { return this.createDocument({ title: `Novo ${type}`, type: "auto", ...data }); }
 }
