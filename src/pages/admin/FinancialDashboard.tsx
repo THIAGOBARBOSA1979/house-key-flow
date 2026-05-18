@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,8 +37,9 @@ import { useToast } from "@/hooks/use-toast";
 
 const FinancialDashboard = () => {
   const { toast } = useToast();
-  const metrics = useMemo(() => financialService.getGlobalMetrics(), []);
-  const transactions = useMemo(() => financialService.getRecentTransactions(), []);
+  const { user } = useAuth();
+  const metrics = useMemo(() => financialService.getGlobalMetrics(user?.company_id, user?.is_super_admin), [user]);
+  const transactions = useMemo(() => financialService.getRecentTransactions(user?.company_id, user?.is_super_admin), [user]);
   
   // Projection data (mock for demonstration)
   const projectionData = useMemo(() => {

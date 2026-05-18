@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   ClipboardCheck, 
   Calendar as CalendarIcon, 
@@ -52,6 +53,7 @@ import { inspectionService } from "@/services/InspectionService";
 
 
 export default function Inspections() {
+  const { user } = useAuth();
   const {
     filteredInspections,
     searchTerm,
@@ -180,11 +182,11 @@ export default function Inspections() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={Object.entries(inspectionService.getStatsByStatus()).map(([name, value]) => ({ name, value }))}
+                      data={Object.entries(inspectionService.getStatsByStatus(user?.company_id, user?.is_super_admin)).map(([name, value]) => ({ name, value }))}
                       cx="50%" cy="50%" outerRadius={100} dataKey="value"
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
-                      {Object.entries(inspectionService.getStatsByStatus()).map((_, index) => (
+                      {Object.entries(inspectionService.getStatsByStatus(user?.company_id, user?.is_super_admin)).map((_, index) => (
                         <Cell key={`cell-${index}`} fill={['#F59E0B', '#3B82F6', '#10B981', '#EF4444'][index % 4]} />
                       ))}
                     </Pie>
@@ -199,7 +201,7 @@ export default function Inspections() {
               <CardContent className="h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <ReBarChart
-                    data={Object.entries(inspectionService.getStatsByTechnician()).map(([name, value]) => ({ name, value }))}
+                    data={Object.entries(inspectionService.getStatsByTechnician(user?.company_id, user?.is_super_admin)).map(([name, value]) => ({ name, value }))}
                     layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
                   >
                     <XAxis type="number" hide /><YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} /><ReTooltip />
