@@ -128,7 +128,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
       dateFrom: dateFrom ? new Date(dateFrom) : undefined,
       dateTo: dateTo ? new Date(dateTo) : undefined
     });
-  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo, updateTrigger]);
+  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo]);
 
   const totalPages = Math.max(1, Math.ceil(filteredLogs.length / ITEMS_PER_PAGE));
   const paginatedLogs = filteredLogs.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);

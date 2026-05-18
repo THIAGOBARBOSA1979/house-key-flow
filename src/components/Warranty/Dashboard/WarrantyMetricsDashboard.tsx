@@ -23,7 +23,7 @@ export function WarrantyMetricsDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState("quarter");
 
-  const loadMetrics = () => {
+  const loadMetrics = useCallback(() => {
     setIsLoading(true);
     try {
       const data = warrantyFlowService.calculateMetrics();
@@ -38,7 +38,7 @@ export function WarrantyMetricsDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   useEffect(() => {
     loadMetrics();

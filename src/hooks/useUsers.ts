@@ -37,7 +37,7 @@ export const useUsers = () => {
     });
   }, [userList, filters]);
 
-  const stats = useMemo(() => userService.getStats(), [userList]);
+  const stats = useMemo(() => userService.getStats(), []);
 
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     if (editingUserId) {
