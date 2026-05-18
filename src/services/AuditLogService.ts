@@ -100,9 +100,9 @@ class AuditLogService extends BaseService<AuditLogEntry> {
   }): AuditLogEntry[] {
     return this.items.filter(log => {
       const matchesSearch = !filters.searchTerm || 
-        log.details.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        log.performedByName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        log.entityId.toLowerCase().includes(filters.searchTerm.toLowerCase());
+        (log.details?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
+        (log.performedByName?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
+        (log.entityId?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase());
       
       const matchesAction = !filters.action || filters.action === "all" || log.action === filters.action;
       const matchesRole = !filters.role || filters.role === "all" || log.performedByRole === filters.role;
