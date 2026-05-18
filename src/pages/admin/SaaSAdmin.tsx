@@ -550,24 +550,44 @@ export default function SaaSAdmin() {
 
 
 
-      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent>
+      <Dialog open={isAddOpen} onOpenChange={(open) => {
+        setIsAddOpen(open);
+        if (!open) setSlugError(null);
+      }}>
+        <DialogContent className="rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Nova Empresa Multi-tenant</DialogTitle>
+            <DialogTitle className="text-xl font-black uppercase tracking-tighter">Nova Empresa Multi-tenant</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label>Nome da Incorporadora</Label>
-              <Input placeholder="Ex: Incorporadora Alpha" onChange={e => setNewCompany({...newCompany, name: e.target.value})} />
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome da Incorporadora</Label>
+              <Input 
+                placeholder="Ex: Incorporadora Alpha" 
+                value={newCompany.name}
+                onChange={e => setNewCompany({...newCompany, name: e.target.value})} 
+                className="h-11 rounded-xl"
+              />
             </div>
             <div className="space-y-2">
-              <Label>Slug Identificador (subdomain/id)</Label>
-              <Input placeholder="incorporadora-alpha" onChange={e => setNewCompany({...newCompany, slug: e.target.value})} />
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Slug Identificador (URL/ID)</Label>
+              <Input 
+                placeholder="incorporadora-alpha" 
+                value={newCompany.slug}
+                onChange={e => {
+                  setNewCompany({...newCompany, slug: e.target.value});
+                  setSlugError(null);
+                }} 
+                className={`h-11 rounded-xl ${slugError ? 'border-red-500' : ''}`}
+              />
+              {slugError && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{slugError}</p>}
             </div>
             <div className="space-y-2">
-              <Label>Plano Inicial</Label>
-              <Select onValueChange={v => setNewCompany({...newCompany, plan: v as SubscriptionPlan})}>
-                <SelectTrigger>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Plano Inicial</Label>
+              <Select 
+                value={newCompany.plan}
+                onValueChange={v => setNewCompany({...newCompany, plan: v as SubscriptionPlan})}
+              >
+                <SelectTrigger className="h-11 rounded-xl">
                   <SelectValue placeholder="Selecione o plano" />
                 </SelectTrigger>
                 <SelectContent>
@@ -578,12 +598,15 @@ export default function SaaSAdmin() {
               </Select>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancelar</Button>
-            <Button onClick={handleAddCompany}>Confirmar Ativação</Button>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setIsAddOpen(false)} className="rounded-xl font-bold">Cancelar</Button>
+            <Button onClick={handleAddCompany} disabled={isSaving} className="rounded-xl font-black uppercase tracking-widest text-xs h-11 px-8">
+              {isSaving ? "Processando..." : "Confirmar Ativação"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </PageTemplate>
   );
 }
