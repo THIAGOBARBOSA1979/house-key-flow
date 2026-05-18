@@ -20,12 +20,10 @@ describe('Warranty Page', () => {
     );
     
     expect(screen.getByText(/Gestão de Garantias/i)).toBeDefined();
-    // Verify some kanban columns labels (labels from WARRANTY_STAGES)
-    expect(screen.getByText(/Solicitação Aberta/i)).toBeDefined();
-    expect(screen.getByText(/Em Análise/i)).toBeDefined();
-    expect(screen.getByText(/Vistoria Agendada/i)).toBeDefined();
-    expect(screen.getByText(/Em Execução/i)).toBeDefined();
+    // Use getAllByText for labels that might repeat in the sidebar or breadcrumbs
+    expect(screen.getAllByText(/Solicitação Aberta/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Em Análise/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Vistoria Agendada/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Em Execução/i).length).toBeGreaterThan(0);
   });
 });
-
-
