@@ -92,8 +92,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(mockUser);
       
       // Store user data
-      const rememberMe = localStorage.getItem('rememberClient') === 'true' || 
-                        localStorage.getItem('rememberAdmin') === 'true';
+      const rememberMe = localStorage.getItem('rememberMe') === 'true';
+
       
       if (rememberMe) {
         localStorage.setItem('auth_user', JSON.stringify(mockUser));

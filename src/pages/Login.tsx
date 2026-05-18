@@ -61,8 +61,14 @@ export default function Login() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (rememberMe) {
+        localStorage.setItem("rememberMe", "true");
         localStorage.setItem(activeTab === "admin" ? "rememberAdmin" : "rememberClient", "true");
+      } else {
+        localStorage.removeItem("rememberMe");
+        localStorage.removeItem("rememberAdmin");
+        localStorage.removeItem("rememberClient");
       }
+
       
       await login(values.email, values.password, activeTab as 'admin' | 'client');
     } catch (error) {
