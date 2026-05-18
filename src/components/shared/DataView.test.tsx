@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { DataView } from './DataView';
 import React from 'react';
+import { DataViewMode } from '@/types/dataView';
+
 
 // Mock components that might be problematic in tests
 vi.mock('./SkeletonLoader', () => ({
@@ -64,13 +66,53 @@ describe('DataView Component', () => {
     
     // Page 1 should have 5 items
     expect(screen.getAllByTestId('grid-item')).toHaveLength(5);
-    // Should show pagination text
-    expect(screen.getByText(/Mostrando/)).toBeDefined();
+    expect(screen.getByText('Item 0')).toBeDefined();
+    expect(screen.getByText('Item 4')).toBeDefined();
     
-    // Use getAllByText and check for specific roles or contents if possible
-    const pageButtons = screen.getAllByRole('button').filter(b => 
-      b.textContent === '1' || b.textContent === '2' || b.textContent === '3'
+    // Should show pagination buttons
+    const nextButton = screen.getAllByRole('button').find(b => b.querySelector('svg.lucide-chevron-right'));
+    const prevButton = screen.getAllByRole('button').find(b => b.querySelector('svg.lucide-chevron-left'));
+    
+    expect(nextButton).toBeDefined();
+    expect(prevButton).toBeDefined();
+    expect(prevButton).toHaveProperty('disabled', true);
+    
+    // Go to next page
+    if (nextButton) fireEvent.click(nextButton);
+    
+    expect(screen.getByText('Item 5')).toBeDefined();
+    expect(screen.getByText('Item 9')).toBeDefined();
+    expect(prevButton).toHaveProperty('disabled', false);
+    
+    // Click page 3 directly
+    const page3Button = screen.getByRole('button', { name: '3' });
+    fireEvent.click(page3Button);
+    
+    expect(screen.getByText('Item 10')).toBeDefined();
+    expect(screen.getByText('Item 14')).toBeDefined();
+    expect(nextButton).toHaveProperty('disabled', true);
+  });
+
+  it('renders standard view modes with fallback implementation', () => {
+    const modes: DataViewMode[] = ['grid', 'list', 'table', 'timeline', 'calendar'];
+    const { rerender } = render(
+      <DataView 
+        items={mockItems} 
+        viewMode="grid" 
+        renderGrid={(item: any) => <div data-testid="grid-item">{item.name}</div>}
+      />
     );
-    expect(pageButtons.length).toBeGreaterThan(0);
+
+    modes.forEach(mode => {
+      rerender(
+        <DataView 
+          items={mockItems} 
+          viewMode={mode} 
+          renderGrid={(item: any) => <div data-testid="grid-item">{item.name}</div>}
+        />
+      );
+      expect(screen.getByText('Item 1')).toBeDefined();
+    });
   });
 });
+
