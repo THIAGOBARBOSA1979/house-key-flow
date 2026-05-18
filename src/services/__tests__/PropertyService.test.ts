@@ -4,32 +4,41 @@ import { propertyService } from '../operations/PropertyService';
 describe('PropertyService', () => {
   beforeEach(() => {
     localStorage.clear();
-    // Re-initialize or reset items if needed
     (propertyService as any).items = [];
-    // Manually add a property for testing to ensure isolation from INITIAL_PROPERTIES state
+    // Use isSuperAdmin=true context implicitly by not providing companyId in service calls where possible
+  });
+
+  it('should calculate metrics correctly', () => {
     propertyService.create({
       name: "Test Property",
       location: "Test Location",
       units: 10,
       completedUnits: 0,
       status: "pending",
-      milestones: [
-        { id: "m1", title: "Milestone 1", targetDate: new Date(), completed: false }
-      ]
+      milestones: []
     }, "comp-test");
-  });
 
-  it('should calculate metrics correctly', () => {
     const metrics = propertyService.getMetrics(undefined, true);
     expect(metrics.total).toBe(1);
     expect(metrics.totalUnits).toBe(10);
   });
 
   it('should update milestone status and log it', () => {
-    const all = propertyService.getAll(undefined, true);
-    const propertyId = all[0].id!;
+    const p = propertyService.create({
+      name: "Test Property 2",
+      location: "Test Location 2",
+      units: 5,
+      completedUnits: 0,
+      status: "pending",
+      milestones: [
+        { id: "m1", title: "Milestone 1", targetDate: new Date(), completed: false }
+      ]
+    }, "comp-test-2");
+
+    const propertyId = p.id!;
     const milestoneId = "m1";
     
+    // Pass isSuperAdmin=true to getById if BaseService uses it
     const updated = propertyService.updateMilestone(propertyId, milestoneId, true);
     
     expect(updated).toBeDefined();
@@ -38,5 +47,6 @@ describe('PropertyService', () => {
     expect(milestone?.completedAt).toBeDefined();
   });
 });
+
 
 
