@@ -126,9 +126,10 @@ const ClientArea = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <StatsCard label="Total Clientes" value={allProfiles.length} icon={User} variant="brand" />
-        <StatsCard label="Acessos Recentes" value="28" icon={UserCheck} variant="complete" />
-        <StatsCard label="Novos Leads" value="15" icon={Plus} variant="progress" />
+        <StatsCard label="Proprietários Homologados" value={allProfiles.length} icon={User} variant="brand" />
+        <StatsCard label="Interações no Portal" value="28" icon={UserCheck} variant="complete" />
+        <StatsCard label="Evolução de Leads" value="15" icon={Plus} variant="progress" />
+
       </div>
 
       <DataView
