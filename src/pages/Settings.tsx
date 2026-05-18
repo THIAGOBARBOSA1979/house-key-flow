@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook, FileText, Mail, Trash2, Activity } from "lucide-react";
+import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook, FileText, Mail, Trash2, Activity, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 import { useToast } from "@/components/ui/use-toast";
@@ -55,6 +55,7 @@ const Settings = () => {
         <div className="overflow-x-auto pb-2">
           <TabsList className="bg-muted/50 p-1 h-auto inline-flex min-w-full lg:min-w-0">
             <TabsTrigger value="general" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Building size={14} /> Geral</TabsTrigger>
+            <TabsTrigger value="company" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Layers size={14} /> Empresa (SaaS)</TabsTrigger>
             <TabsTrigger value="branding" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><FileText size={14} /> Branding</TabsTrigger>
             <TabsTrigger value="notifications" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Bell size={14} /> Notificações</TabsTrigger>
             <TabsTrigger value="warranty" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><ShieldCheck size={14} /> Garantias</TabsTrigger>

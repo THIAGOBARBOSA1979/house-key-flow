@@ -4,6 +4,7 @@ import { companyService, Company, CompanyStatus, SubscriptionPlan } from "@/serv
 import { DataTable } from "@/components/shared/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { 
   Building, 
   MoreHorizontal, 
@@ -12,8 +13,14 @@ import {
   AlertTriangle,
   Calendar,
   CreditCard,
-  Plus
+  Plus,
+  Users as UsersIcon,
+  Users
 } from "lucide-react";
+import { propertyService } from "@/services/PropertyService";
+import { inspectionService } from "@/services/InspectionService";
+import { userService } from "@/services/UserService";
+
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -39,7 +46,11 @@ export default function SaaSAdmin() {
   const { toast } = useToast();
   const [companies, setCompanies] = useState<Company[]>(companyService.getAll(undefined, true));
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'basic' as SubscriptionPlan });
+
+  const totalUsers = companies.reduce((acc, curr) => acc + (userService.count(curr.id, true) || 0), 0);
+
 
   // Safety check for super admin
   if (!user?.is_super_admin) {
@@ -156,7 +167,83 @@ export default function SaaSAdmin() {
         </Button>
       }
     >
-      <DataTable columns={columns} data={companies} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="p-6 bg-primary/5 border-none shadow-none rounded-2xl">
+          <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Total de Tenants</p>
+          <h3 className="text-3xl font-black">{companies.length}</h3>
+        </Card>
+        <Card className="p-6 bg-emerald-500/5 border-none shadow-none rounded-2xl">
+          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-1">Empresas Ativas</p>
+          <h3 className="text-3xl font-black">{companies.filter(c => c.status === 'active').length}</h3>
+        </Card>
+        <Card className="p-6 bg-blue-500/5 border-none shadow-none rounded-2xl">
+          <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-1">Usuários Globais</p>
+          <h3 className="text-3xl font-black">{totalUsers}</h3>
+        </Card>
+      </div>
+
+      <DataTable 
+        columns={columns} 
+        data={companies} 
+        onRowClick={(c) => setSelectedCompany(c)}
+      />
+
+      <Dialog open={!!selectedCompany} onOpenChange={() => setSelectedCompany(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Gestão de Tenant: {selectedCompany?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-muted/30 rounded-xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Identificador (Slug)</p>
+                <p className="font-bold">{selectedCompany?.slug}</p>
+              </div>
+              <div className="p-4 bg-muted/30 rounded-xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Status Atual</p>
+                <Badge className={selectedCompany?.status === 'active' ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" : "bg-amber-500/10 text-amber-600 border-amber-500/20"}>
+                  {selectedCompany?.status.toUpperCase()}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Indicadores Operacionais
+              </h4>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="p-3 border rounded-xl text-center">
+                  <p className="text-[10px] font-black text-muted-foreground uppercase">Usuários</p>
+                  <p className="text-xl font-bold">{selectedCompany ? userService.count(selectedCompany.id, true) : 0}</p>
+                </div>
+                <div className="p-3 border rounded-xl text-center">
+                  <p className="text-[10px] font-black text-muted-foreground uppercase">Empreendimentos</p>
+                  <p className="text-xl font-bold">{selectedCompany ? propertyService.count(selectedCompany.id, true) : 0}</p>
+                </div>
+                <div className="p-3 border rounded-xl text-center">
+                  <p className="text-[10px] font-black text-muted-foreground uppercase">Vistorias</p>
+                  <p className="text-xl font-bold">{selectedCompany ? inspectionService.count(selectedCompany.id, true) : 0}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t flex gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => selectedCompany && handleToggleStatus(selectedCompany.id, selectedCompany.status)}
+              >
+                {selectedCompany?.status === 'active' ? "Suspender Acesso" : "Ativar Acesso"}
+              </Button>
+              <Button className="flex-1">
+                Ajustar Assinatura
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent>
