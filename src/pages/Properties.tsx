@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 const Properties = () => {
   const {
     properties,
+    isLoading,
     filteredProperties,
     searchTerm,
     setSearchTerm,
@@ -109,9 +110,12 @@ const Properties = () => {
       >
         <PropertyViewTabs viewMode={viewMode} onViewModeChange={(m) => setViewMode(m as DataViewMode)} />
       </PropertyFilters>
-
-      <DataView<Property>
-        items={filteredProperties}
+      
+      {isLoading ? (
+        <SkeletonLoader type="card" count={6} />
+      ) : (
+        <DataView<Property>
+          items={filteredProperties}
         viewMode={viewMode}
         itemsPerPage={6}
         renderGrid={(property) => (
@@ -217,6 +221,7 @@ const Properties = () => {
           </div>
         )}
       />
+      )}
 
       <PropertyDialogs 
         isFormOpen={isFormOpen}

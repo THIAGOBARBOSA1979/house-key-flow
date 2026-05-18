@@ -13,7 +13,7 @@ export const useUsers = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filters, setFilters] = useState<UserFiltersData>({ search: "", role: "all", status: "all", property: "all", unit: "" });
 
-  const { items: userList, create, update, remove, refresh } = useService<User>(userService, {
+  const { items: userList, isLoading, create, update, remove, refresh } = useService<User>(userService, {
     toastMessages: {
       create: "Novo usuário foi criado com sucesso.",
       update: "As informações do usuário foram atualizadas com sucesso.",
@@ -138,6 +138,7 @@ export const useUsers = () => {
 
   return {
     userList,
+    isLoading,
     filteredUsers,
     selectedUsers,
     stats,

@@ -25,6 +25,7 @@ const Users = () => {
   const {
     userList,
     filteredUsers,
+    isLoading,
     selectedUsers,
     stats,
     filters,
@@ -96,9 +97,12 @@ const Users = () => {
            <Button variant={viewMode === 'table' ? 'default' : 'ghost'} size="sm" onClick={() => setViewMode('table')} className="rounded-lg h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4 rotate-90" /></Button>
         </div>
       </div>
-
-      <DataView<UserType>
-        items={filteredUsers}
+      
+      {isLoading ? (
+        <SkeletonLoader type="table" count={5} />
+      ) : (
+        <DataView<UserType>
+          items={filteredUsers}
         viewMode={viewMode}
         itemsPerPage={8}
         renderGrid={(user) => (
@@ -174,6 +178,7 @@ const Users = () => {
           action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" }) }
         }}
       />
+      )}
 
 
       <UserDialogs 
