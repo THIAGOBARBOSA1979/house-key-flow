@@ -40,7 +40,12 @@ class UserService extends BaseService<User> {
   // We can remove these overrides if we trust the new BaseService implementation.
   // However, profiles table in Supabase has different column names (full_name vs name).
 
-  async create(item: Omit<User, "id">, companyId?: string): Promise<User> {
+  // BaseService handles audit logging and basic operations.
+  // Overriding only for Supabase specific logic if needed, but BaseService handles it better now.
+  // We can remove these overrides if we trust the new BaseService implementation.
+  // However, profiles table in Supabase has different column names (full_name vs name).
+
+  create(item: Omit<User, "id">, companyId?: string): User {
     const newItem = super.create(item, companyId);
     
     if (this.options.shouldSyncWithSupabase) {
@@ -56,8 +61,8 @@ class UserService extends BaseService<User> {
     return newItem;
   }
 
-  async update(id: string, data: Partial<User>): Promise<User | undefined> {
-    const updated = super.update(id, data);
+  update(id: string, data: Partial<User>, isSuperAdmin?: boolean): User | undefined {
+    const updated = super.update(id, data, isSuperAdmin);
     if (updated && this.options.shouldSyncWithSupabase) {
       Supabase.db.update('profiles', id, {
         full_name: updated.name,
@@ -69,13 +74,14 @@ class UserService extends BaseService<User> {
     return updated;
   }
 
-  async delete(id: string): Promise<boolean> {
+  delete(id: string): boolean {
     const success = super.delete(id);
     if (success && this.options.shouldSyncWithSupabase) {
       Supabase.db.delete('profiles', id).catch(err => console.error('Failed to sync delete to Supabase:', err));
     }
     return success;
   }
+
 
   getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
     const relevant = this.getAll(companyId, isSuperAdmin);
