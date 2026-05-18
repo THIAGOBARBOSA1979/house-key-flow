@@ -49,7 +49,7 @@ const INITIAL_TICKETS: SupportTicket[] = [
   }
 ];
 
-class SupportService extends BaseService<SupportTicket> {
+export class SupportService extends BaseService<SupportTicket> {
   constructor() {
     super("a2_support_tickets", INITIAL_TICKETS);
   }

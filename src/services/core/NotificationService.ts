@@ -6,7 +6,7 @@ import {
   NotificationSettings
 } from '@/types/clientFlow';
 
-class NotificationService extends BaseService<ClientNotification> {
+export class NotificationService extends BaseService<ClientNotification> {
   private settings: Map<string, NotificationSettings> = new Map();
   private settingsKey = "a2_notification_settings";
 
@@ -150,4 +150,3 @@ class NotificationService extends BaseService<ClientNotification> {
 }
 
 export const notificationService = new NotificationService();
-

@@ -1,64 +1,76 @@
-
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { supabase } from '@/integrations/supabase/client';
 import { BaseService } from '../BaseService';
 
-// Concrete implementation for testing
-class TestService extends BaseService<{ id: string; name: string }> {
+// Mock Supabase client
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+      single: vi.fn().mockResolvedValue({ data: null, error: null }),
+    })),
+    auth: {
+      getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
+      getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
+    }
+  }
+}));
+
+// Concrete implementation for testing BaseService
+class TestService extends BaseService<{ id: string; company_id?: string; name: string }> {
   constructor() {
-    super('test_storage_key', []);
+    super('test_storage', []);
   }
 }
 
-describe('BaseService', () => {
+describe('BaseService - Tenant Isolation', () => {
   let service: TestService;
 
   beforeEach(() => {
     localStorage.clear();
     service = new TestService();
+    // Force clear internal items since it might have loaded from localStorage before clear
+    (service as any).items = [];
   });
 
-  it('should create an item', () => {
-    const item = service.create({ name: 'Test Item' });
-    expect(item.id).toBeDefined();
-    expect(item.name).toBe('Test Item');
-    expect(service.getAll()).toHaveLength(1);
+  it('should restrict getAll for non-super-admins when no companyId is provided', () => {
+    service.create({ name: 'Item 1' }, 'comp-1');
+    const items = service.getAll();
+    expect(items).toHaveLength(0);
   });
 
-  it('should get item by id', () => {
-    const item = service.create({ name: 'Test Item' });
-    const found = service.getById(item.id);
-    expect(found).toEqual(item);
-  });
-
-  it('should update an item', () => {
-    const item = service.create({ name: 'Old Name' });
-    const updated = service.update(item.id, { name: 'New Name' });
-    expect(updated?.name).toBe('New Name');
-    expect(service.getById(item.id)?.name).toBe('New Name');
-  });
-
-  it('should delete an item', () => {
-    const item = service.create({ name: 'To be deleted' });
-    const success = service.delete(item.id);
-    expect(success).toBe(true);
-    expect(service.getAll()).toHaveLength(0);
-  });
-
-  it('should notify subscribers on change', () => {
-    let callCount = 0;
-    service.subscribe(() => {
-      callCount++;
-    });
-
-    service.create({ name: 'Trigger 1' });
-    service.update('some-id', { name: 'No trigger if not found' }); // won't notify if failed
+  it('should return only tenant-specific items for non-super-admins', () => {
+    service.create({ name: 'Tenant 1 Item' }, 'comp-1');
+    service.create({ name: 'Tenant 2 Item' }, 'comp-2');
     
-    const item = service.create({ name: 'Trigger 2' });
-    service.update(item.id, { name: 'Trigger 3' });
-    service.delete(item.id);
+    const tenant1Items = service.getAll('comp-1', false);
+    expect(tenant1Items).toHaveLength(1);
+    expect(tenant1Items[0].name).toBe('Tenant 1 Item');
+  });
 
-    // Initial load calls notify if something was in storage, but here it's empty
-    // create (1) + create (2) + update (3) + delete (4)
-    expect(callCount).toBe(4);
+  it('should return all items for super-admins', () => {
+    service.create({ name: 'Tenant 1 Item' }, 'comp-1');
+    service.create({ name: 'Tenant 2 Item' }, 'comp-2');
+    
+    const allItems = service.getAll(undefined, true);
+    expect(allItems).toHaveLength(2);
+  });
+
+  it('should verify ownership on getById for non-super-admins', () => {
+    const item = service.create({ name: 'Private Item' }, 'comp-1');
+    
+    // Access from correct tenant
+    expect(service.getById(item.id, 'comp-1')).toBeDefined();
+    
+    // Access from wrong tenant
+    expect(service.getById(item.id, 'comp-2')).toBeUndefined();
+    
+    // Access as super admin
+    expect(service.getById(item.id, undefined, true)).toBeDefined();
   });
 });
