@@ -27,7 +27,7 @@ export const formatDate = (date: Date | string | number | null | undefined) => {
 export function safeFormat(
   date: Date | string | number | null | undefined,
   formatStr: string,
-  options?: any
+  options?: Parameters<typeof format>[2]
 ) {
   if (!date) return "—";
   const d = new Date(date);

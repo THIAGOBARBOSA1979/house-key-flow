@@ -148,7 +148,7 @@ export const QuickLauncher = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, filteredActions, selectedIndex]);
+  }, [isOpen, filteredActions, selectedIndex, handleAction]);
 
   // Reset selection when search changes
   useEffect(() => {

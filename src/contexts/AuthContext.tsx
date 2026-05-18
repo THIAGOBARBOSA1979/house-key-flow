@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuth();
     const cleanup = securityService.initialize(() => logout());
     return cleanup;
-  }, []);
+  }, [logout]);
 
   const checkAuth = () => {
     try {

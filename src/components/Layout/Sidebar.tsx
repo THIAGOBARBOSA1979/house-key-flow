@@ -157,7 +157,7 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
   // Notify parent of initial state
   useEffect(() => {
     onCollapseChange?.(isCollapsed);
-  }, []);
+  }, [onCollapseChange, isCollapsed]);
 
   if (isMobile) {
     return (
