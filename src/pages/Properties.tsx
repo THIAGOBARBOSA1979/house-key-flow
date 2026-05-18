@@ -3,7 +3,7 @@ import { Building, Plus, LayoutGrid, List as ListIcon, MoreHorizontal, Pencil, T
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { cn } from "@/lib/utils";
 import { DataView } from "@/components/shared/DataView";
@@ -82,24 +82,25 @@ const Properties = () => {
     setIsFormOpen(true);
   };
 
-  return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-500">
-      <PageHeader
-        icon={Building}
-        title="Empreendimentos"
-        description="Gestão de portfólio e acompanhamento do progresso físico das obras"
-      >
-        <div className="flex flex-wrap items-center gap-3">
-          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(properties, 'empreendimentos_a2')}>
-            <Download className="mr-2 h-4 w-4" /> Exportar Planilha
-          </Button>
-          <Button onClick={() => { setEditingProperty(null); setIsFormOpen(true); }} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
-            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
-            Novo Empreendimento
-          </Button>
-        </div>
-      </PageHeader>
+  const actions = (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(properties, 'empreendimentos_a2')}>
+        <Download className="mr-2 h-4 w-4" /> Exportar Planilha
+      </Button>
+      <Button onClick={() => { setEditingProperty(null); setIsFormOpen(true); }} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
+        <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+        Novo Empreendimento
+      </Button>
+    </div>
+  );
 
+  return (
+    <PageTemplate
+      title="Empreendimentos"
+      description="Gestão de portfólio e acompanhamento do progresso físico das obras"
+      icon={Building}
+      actions={actions}
+    >
       <ResponsiveGrid columns={4} gap="layout">
         <StatsCard label="Total de Projetos" value={metrics.total} icon={Building} description="Ativos no portfólio" trend={{ value: "12%", isPositive: true }} className="rounded-3xl" />
         <StatsCard label="Em Andamento" value={metrics.byStatus.progress || 0} icon={TrendingUp} variant="progress" description="Obras em execução" className="rounded-3xl" />
@@ -314,8 +315,9 @@ const Properties = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageTemplate>
   );
 };
 
 export default Properties;
+
