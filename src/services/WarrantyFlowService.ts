@@ -78,7 +78,7 @@ const initialMockRequests: WarrantyRequestFlow[] = [
         changedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
         changedBy: "admin-1",
         isAutomatic: false,
-        notes: "Iniciada análise técnica"
+        notes: "Abertura de protocolo técnico inicial"
       }
     ]
   },
@@ -133,7 +133,7 @@ const initialMockRequests: WarrantyRequestFlow[] = [
         changedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
         changedBy: "admin-1",
         isAutomatic: false,
-        notes: "Vistoria agendada para 10/02/2026"
+        notes: "Vistoria técnica integrada ao cronograma operacional"
       }
     ]
   }
@@ -216,7 +216,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
           changedAt: new Date(),
           changedBy: data.clientId || "client",
           isAutomatic: false,
-          notes: "Solicitação aberta pelo cliente"
+          notes: "Protocolo de assistência técnica aberto estrategicamente pelo cliente"
         }
       ],
       problems: (data.problems || []).map(p => ({
@@ -418,7 +418,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
       performedBy: changedBy,
       performedByName: performedByRole === 'admin' ? 'Administrador' : (request.clientName || 'Cliente'),
       performedByRole: performedByRole,
-      details: notes || `Solicitação movida para a etapa ${WARRANTY_STAGES[newStatus].label}`,
+      details: notes || `Sincronização estratégica: protocolo avançou para ${WARRANTY_STAGES[newStatus].label}`,
       metadata: { 
         fromStatus: request.currentStage, 
         toStatus: newStatus,
