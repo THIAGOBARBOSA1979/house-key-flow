@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Users as UsersIcon, Plus, Upload } from "lucide-react";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { Button } from "@/components/ui/button";
-import { UserForm } from "@/components/Users/UserForm";
 import { UserFilters } from "@/components/Users/UserFilters";
 import { UserCard } from "@/components/Users/UserCard";
+import { UserDialogs } from "@/components/Users/UserDialogs";
 import { useToast } from "@/hooks/use-toast";
 import { DataView } from "@/components/shared/DataView";
 import { exportService } from "@/services/ExportService";
@@ -106,17 +106,12 @@ const Users = () => {
         }}
       />
 
-      {isUserFormOpen && (
-        <UserForm 
-          isOpen={isUserFormOpen} 
-          onClose={() => setIsUserFormOpen(false)} 
-          onSave={(data) => {
-            saveUser(data, editingUser?.id);
-            setIsUserFormOpen(false);
-          }}
-          editingUser={editingUser}
-        />
-      )}
+      <UserDialogs 
+        isFormOpen={isUserFormOpen} 
+        setIsFormOpen={setIsUserFormOpen} 
+        editingUser={editingUser} 
+        onSave={(data) => saveUser(data, editingUser?.id)} 
+      />
     </PageTemplate>
   );
 };
