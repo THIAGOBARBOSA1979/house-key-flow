@@ -20,7 +20,7 @@ export const useProperties = () => {
     }
   });
 
-  const metrics = useMemo(() => propertyService.getMetrics(), [properties]);
+  const metrics = useMemo(() => propertyService.getMetrics(), []);
 
   const filteredProperties = useMemo(() => {
     return properties.filter(property => {

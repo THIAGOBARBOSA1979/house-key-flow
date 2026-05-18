@@ -157,7 +157,8 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
   // Notify parent of initial state
   useEffect(() => {
     onCollapseChange?.(isCollapsed);
-  }, [onCollapseChange, isCollapsed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isMobile) {
     return (
