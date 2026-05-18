@@ -8,6 +8,9 @@ export interface CompanySettings {
   logo_url?: string;
   support_email?: string;
   support_phone?: string;
+  primary_color?: string;
+  secondary_color?: string;
+  is_dark_mode_forced?: boolean;
 }
 
 export interface Company {
