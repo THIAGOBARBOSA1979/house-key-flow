@@ -1,4 +1,5 @@
-import { BaseService } from "./BaseService";
+import { SupabaseService } from "./SupabaseService";
+import { Supabase } from "@/integration/supabase";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -26,111 +27,93 @@ export type AuditAction =
   | 'payment_received'
   | 'invoice_issued';
 
-export type AuditRole = 'admin' | 'client' | 'user';
+export type AuditRole = 'super_admin' | 'admin' | 'staff' | 'technical' | 'user';
 
 export interface AuditLogEntry {
   id: string;
-  company_id?: string;
-  entityType: AuditEntityType;
-  entityId: string;
-  action: AuditAction;
-  performedBy: string;
-  performedByName: string;
-  performedByRole: AuditRole;
-  timestamp: Date;
-  details: string;
-  metadata?: Record<string, unknown>;
+  company_id: string | null;
+  user_id: string;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  payload: any;
+  previous_values: any;
+  created_at: string;
+  // Joined fields
+  profiles?: {
+    full_name: string;
+    role: string;
+  };
 }
 
-type NewAuditLogEntry = Omit<AuditLogEntry, 'id' | 'timestamp'>;
-
-const INITIAL_LOGS: AuditLogEntry[] = [
-  {
-    id: "log-1", entityType: 'inspection', entityId: '1',
-    action: 'created', performedBy: 'admin-1', performedByName: 'Ana Costa',
-    performedByRole: 'admin', timestamp: new Date(Date.now() - 30 * 86400000),
-    details: 'Protocolo de vistoria homologado para Edifício Aurora, Unidade estratégica 204.'
-  },
-  {
-    id: "log-2", entityType: 'inspection', entityId: '1',
-    action: 'scheduled', performedBy: 'admin-1', performedByName: 'Ana Costa',
-    performedByRole: 'admin', timestamp: new Date(Date.now() - 28 * 86400000),
-    details: 'Vistoria técnica integrada ao cronograma operacional: 15/05/2025 às 10:00.'
-  },
-];
-
-class AuditLogService extends BaseService<AuditLogEntry> {
+class AuditLogService extends SupabaseService<any> {
   constructor() {
-    super("a2_audit_logs", INITIAL_LOGS);
+    super("audit_logs");
   }
 
-  getAllLogs(companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    return [...relevantItems].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }
-
-
-  log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole, company_id?: string }): AuditLogEntry {
-    const newEntry: AuditLogEntry = {
-      ...entry,
-      id: (entry as any).id || crypto.randomUUID(),
-      timestamp: new Date(),
-      performedBy: userContext?.id || entry.performedBy || 'system',
-      performedByName: userContext?.name || entry.performedByName || 'Sistema',
-      performedByRole: userContext?.role || entry.performedByRole || 'user',
-      company_id: userContext?.company_id || entry.company_id
-    };
-    
-    this.items.unshift(newEntry);
-    this.persist();
-    
-    window.dispatchEvent(new CustomEvent('a2_audit_log_created', { detail: newEntry }));
-    return newEntry;
-  }
-
-  getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    return relevantItems.slice(0, limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }
-
-  getFilteredLogs(filters: {
-    searchTerm?: string;
-    action?: string;
-    role?: string;
-    entityType?: string;
-    entityId?: string;
-    dateFrom?: Date;
-    dateTo?: Date;
+  async getLogs(params: {
     companyId?: string;
     isSuperAdmin?: boolean;
-  }): AuditLogEntry[] {
-    const baseItems = this.getAll(filters.companyId, filters.isSuperAdmin);
-    return baseItems.filter(log => {
-      const matchesSearch = !filters.searchTerm || 
-        (log.details?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
-        (log.performedByName?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
-        (log.entityId?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase());
-      
-      const matchesAction = !filters.action || filters.action === "all" || log.action === filters.action;
-      const matchesRole = !filters.role || filters.role === "all" || log.performedByRole === filters.role;
-      const matchesEntityType = !filters.entityType || filters.entityType === "all" || log.entityType === filters.entityType;
-      const matchesEntityId = !filters.entityId || log.entityId === filters.entityId;
-      const matchesDateFrom = !filters.dateFrom || log.timestamp >= filters.dateFrom;
-      const matchesDateTo = !filters.dateTo || log.timestamp <= filters.dateTo;
+    page?: number;
+    pageSize?: number;
+    searchTerm?: string;
+    action?: string;
+    entityType?: string;
+  }): Promise<AuditLogEntry[]> {
+    const filters: any[] = [];
+    
+    if (params.action && params.action !== 'all') {
+      filters.push({ column: 'action', operator: 'eq', value: params.action });
+    }
+    
+    if (params.entityType && params.entityType !== 'all') {
+      filters.push({ column: 'entity_type', operator: 'eq', value: params.entityType });
+    }
 
-      return matchesSearch && matchesAction && matchesRole && matchesEntityType && matchesEntityId && matchesDateFrom && matchesDateTo;
-    }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    // Since findMany is generic but we need joins, we might need a custom query or use findMany with select
+    const { data, error } = await Supabase.db.findMany<AuditLogEntry>(this.table, {
+      filters,
+      pagination: {
+        page: params.page || 1,
+        pageSize: params.pageSize || 50,
+        orderBy: 'created_at',
+        orderDirection: 'desc'
+      },
+      select: '*, profiles(full_name, role)'
+    });
+
+    if (error) throw new Error(error.message);
+    return data || [];
   }
 
-  getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    const now = new Date();
-    const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const currentCount = relevantItems.filter(l => l.timestamp >= last24h).length;
+  async logAction(data: {
+    action: AuditAction;
+    entityType: AuditEntityType;
+    entityId?: string;
+    payload?: any;
+    previousValues?: any;
+  }): Promise<void> {
+    // We can use the RPC function we created in the migration for security definer context
+    const { error } = await Supabase.db.rpc('log_audit_action', {
+      p_action: data.action,
+      p_entity_type: data.entityType,
+      p_entity_id: data.entityId,
+      p_payload: data.payload,
+      p_previous_values: data.previousValues
+    });
 
+    if (error) {
+      console.error('Failed to log audit action:', error);
+    }
+  }
+
+  // Legacy compatibility / helpers
+  async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
+    const total = await this.count(companyId, isSuperAdmin);
+    // For 24h count, we'd need more complex filtering in count() or a separate query
     return {
-      totalLogs: relevantItems.length,
-      currentCount24h: currentCount
+      totalLogs: total,
+      currentCount24h: 0 // Placeholder
     };
   }
 }
