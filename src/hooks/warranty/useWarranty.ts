@@ -13,7 +13,7 @@ export const useWarranty = () => {
   
   const { items: requests, isLoading: isServiceLoading } = useService<WarrantyRequestFlow>(warrantyFlowService);
 
-  const filterFn = useCallback((request: WarrantyRequestFlow, filters: WarrantyFilters) => {
+  const filterFn = useCallback((request: WarrantyRequestFlow, filters: any) => {
     if (filters.propertyId && request.propertyId !== filters.propertyId) return false;
     if (filters.category && request.category !== filters.category) return false;
     if (filters.priority && request.priority !== filters.priority) return false;
@@ -116,7 +116,6 @@ export const useWarranty = () => {
     assignTechnician,
     exportData,
     clearFilters,
-    refresh: () => {} // Refresh handled by useService effect
+    refresh: () => {} 
   };
 };
-
