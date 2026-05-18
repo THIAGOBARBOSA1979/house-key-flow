@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useMemo, useState, memo } from 'react';
+import React, { memo } from 'react';
+import { useDataTable } from "@/hooks/useDataTable";
 
 import { 
   Table, 
@@ -45,25 +46,8 @@ function DataTableComponent<T>({
   emptyState,
   className
 }: DataTableProps<T>) {
-  const [sortConfig, setSortConfig] = useState<{ key: string | null, direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
+  const { sortedData, handleSort } = useDataTable<T>(data);
 
-  const sortedData = useMemo(() => {
-    if (!sortConfig.key) return data;
-    return [...data].sort((a: any, b: any) => {
-      const aVal = a[sortConfig.key!];
-      const bVal = b[sortConfig.key!];
-      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [data, sortConfig]);
-
-  const handleSort = (key: string) => {
-    setSortConfig(current => ({
-      key,
-      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
-    }));
-  };
 
   if (isLoading) return <SkeletonLoader type="table" />;
 
