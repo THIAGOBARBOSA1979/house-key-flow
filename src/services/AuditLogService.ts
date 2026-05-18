@@ -70,7 +70,7 @@ class AuditLogService extends BaseService<AuditLogEntry> {
   }
 
 
-  log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole }): AuditLogEntry {
+  log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole, company_id?: string }): AuditLogEntry {
     const newEntry: AuditLogEntry = {
       ...entry,
       id: (entry as any).id || crypto.randomUUID(),
@@ -78,6 +78,7 @@ class AuditLogService extends BaseService<AuditLogEntry> {
       performedBy: userContext?.id || entry.performedBy || 'system',
       performedByName: userContext?.name || entry.performedByName || 'Sistema',
       performedByRole: userContext?.role || entry.performedByRole || 'user',
+      company_id: userContext?.company_id || entry.company_id
     };
     
     this.items.unshift(newEntry);
