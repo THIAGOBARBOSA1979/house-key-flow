@@ -140,8 +140,32 @@ const initialMockRequests: WarrantyRequestFlow[] = [
 ];
 
 class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
+  private debugMode = false;
+  private logs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: any }> = [];
+
   constructor() {
     super("a2_warranty_requests", initialMockRequests);
+  }
+
+  setDebugMode(enabled: boolean) {
+    this.debugMode = enabled;
+  }
+
+  getLogs() {
+    return [...this.logs];
+  }
+
+  clearLogs() {
+    this.logs = [];
+  }
+
+  private log(level: 'info' | 'error', message: string, data?: any) {
+    const entry = { timestamp: new Date(), level, message, data };
+    this.logs.push(entry);
+    if (this.debugMode) {
+      const consoleMethod = level === 'error' ? 'error' : 'log';
+      console[consoleMethod](`[WarrantyFlowService] ${message}`, data || '');
+    }
   }
 
   protected loadFromStorage() {
@@ -159,11 +183,12 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
             updatedAt: new Date(req.updatedAt),
             slaDeadline: req.slaDeadline ? new Date(req.slaDeadline) : undefined,
             inspectionDate: req.inspectionDate ? new Date(req.inspectionDate) : undefined,
-            history: req.history.map((h: any) => ({ ...h, changedAt: new Date(h.changedAt) }))
+            history: (req.history || []).map((h: any) => ({ ...h, changedAt: new Date(h.changedAt) }))
           }));
+          this.log('info', `Loaded ${this.items.length} requests from storage`);
         }
       } catch (e) {
-        // Silently fail in production, or handle appropriately
+        this.log('error', 'Failed to load from storage', e);
       }
     }
   }
@@ -181,7 +206,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
    * Create a new warranty request
    */
   createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
-    
+    this.log('info', 'Creating new request', { title: data.title });
     const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
     const slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === category) || DEFAULT_SLA_CONFIGS[0];
@@ -330,9 +355,11 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     performedByRole: 'admin' | 'client' = 'admin',
     userName?: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    this.log('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
     const request = this.getById(requestId);
     
     if (!request) {
+      this.log('error', `Request ${requestId} not found for status change`);
       return { success: false, error: "Solicitação não encontrada" };
     }
     
@@ -364,6 +391,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     // Business Rule: moving to approved requires at least one problem to be confirmed/analyzed (simplified for now)
     
     if (!isValidTransition(request.currentStage, newStatus)) {
+      this.log('error', `Invalid transition from ${request.currentStage} to ${newStatus}`);
       return { 
         success: false, 
         error: `Transição inválida de ${WARRANTY_STAGES[request.currentStage].label} para ${WARRANTY_STAGES[newStatus].label}` 
