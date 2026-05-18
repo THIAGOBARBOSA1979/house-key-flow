@@ -19,8 +19,9 @@ describe('Users Page', () => {
       </QueryClientProvider>
     );
     
-    expect(screen.getByText(/Gestão de Usuários/i)).toBeDefined();
+    expect(screen.getByText(/Governança de Usuários/i)).toBeDefined();
     expect(screen.getByText(/Novo Usuário/i)).toBeDefined();
+
   });
 });
 

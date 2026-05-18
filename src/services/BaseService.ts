@@ -83,9 +83,18 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {
     const item = this.items.find(item => item.id === id);
     if (isSuperAdmin) return item;
+    
+    // Strict isolation for getById: if not super admin, must match companyId
     if (item && item.company_id === companyId) return item;
+    
+    // Log only if not found due to isolation
+    if (item && item.company_id !== companyId) {
+      console.warn(`[BaseService] Tenant Isolation: Access denied to ${this.storageKey}:${id} (owner: ${item.company_id}, requested: ${companyId})`);
+    }
+    
     return undefined;
   }
+
 
   create(item: Omit<T, "id">, companyId?: string): T {
     const newItem = {
@@ -98,8 +107,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return newItem;
   }
 
-  update(id: string, data: Partial<T>): T | undefined {
+  update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
+
     if (index === -1) return undefined;
     this.items[index] = { ...this.items[index], ...data };
     this.persist();

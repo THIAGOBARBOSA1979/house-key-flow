@@ -82,9 +82,10 @@ class PropertyService extends BaseService<Property> {
     return newProperty;
   }
 
-  update(id: string, property: Partial<Property>): Property | undefined {
-    const oldItem = this.getById(id);
-    const updated = super.update(id, property);
+  update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Property | undefined {
+    const oldItem = this.getById(id, undefined, isSuperAdmin);
+    const updated = super.update(id, property, isSuperAdmin);
+
     
     if (updated && property.status && property.status !== oldItem?.status) {
       auditLogService.log({
@@ -101,8 +102,9 @@ class PropertyService extends BaseService<Property> {
     return updated;
   }
 
-  updateMilestone(propertyId: string, milestoneId: string, completed: boolean): Property | undefined {
-    const property = this.getById(propertyId);
+  updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Property | undefined {
+    const property = this.getById(propertyId, undefined, isSuperAdmin);
+
     if (!property || !property.milestones) return undefined;
 
     const milestone = property.milestones.find(m => m.id === milestoneId);
@@ -110,7 +112,7 @@ class PropertyService extends BaseService<Property> {
       m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
     );
 
-    const updated = this.update(propertyId, { milestones });
+    const updated = this.update(propertyId, { milestones }, isSuperAdmin);
     
     if (updated && milestone) {
       auditLogService.log({
