@@ -1,6 +1,6 @@
 import { UserRole } from "./user";
 
-export interface User {
+export interface AuthUser {
   id: string;
   name: string;
   email: string;
@@ -9,7 +9,7 @@ export interface User {
 }
 
 export interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -19,4 +19,3 @@ export interface AuthContextType extends AuthState {
   logout: () => void;
   checkAuth: () => void;
 }
-
