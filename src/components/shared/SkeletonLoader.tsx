@@ -1,7 +1,8 @@
 // Optimized UI state component with standardized premium microcopy.
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+
 
 interface SkeletonLoaderProps {
   type: 'card' | 'table' | 'page' | 'list';
@@ -10,6 +11,8 @@ interface SkeletonLoaderProps {
 }
 
 export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderProps) {
+  const { t } = useTranslation();
+
   if (type === 'card') {
     return (
       <div className={cn("grid-layout", className)}>
@@ -86,7 +89,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
 
   if (type === 'page') {
     return (
-      <div className={cn("space-y-10-sem animate-in fade-in duration-500", className)}>
+      <div className={cn("space-y-10-sem animate-in fade-in duration-500", className)} aria-label={t('common.loading', 'Carregando protocolo...')}>
         <div className="space-y-4-sem">
           <Skeleton className="h-14 w-1/4 rounded-2xl" />
           <Skeleton className="h-7 w-1/2 rounded-xl" />
@@ -102,7 +105,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
   }
 
   return (
-    <div className={cn("grid gap-4", className)}>
+    <div className={cn("grid gap-4", className)} aria-label={t('common.loading', 'Carregando protocolo...')}>
       {Array.from({ length: count }).map((_, i) => (
         <Skeleton key={i} className="h-20 w-full rounded-xl" />
       ))}
