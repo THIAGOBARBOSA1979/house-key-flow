@@ -62,14 +62,6 @@ class PropertyService extends BaseService<Property> {
     super("a2_properties", INITIAL_PROPERTIES);
   }
 
-  // Re-export types for backward compatibility
-}
-
-export type { Property, PropertyMilestone, PropertyUnit, PropertyMetrics };
-export const propertyService = new PropertyService();
-
-
-
   create(property: Omit<Property, "id">): Property {
     const newProperty = super.create({
       ...property,
@@ -183,7 +175,7 @@ export const propertyService = new PropertyService();
     });
   }
 
-  getMetrics() {
+  getMetrics(): PropertyMetrics {
     const total = this.items.length;
     const byStatus = this.items.reduce((acc, p) => {
       acc[p.status] = (acc[p.status] || 0) + 1;
@@ -201,7 +193,7 @@ export const propertyService = new PropertyService();
       averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
     };
   }
-
 }
 
 export const propertyService = new PropertyService();
+export type { Property, PropertyMilestone, PropertyUnit, PropertyMetrics };
