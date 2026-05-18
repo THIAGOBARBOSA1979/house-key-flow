@@ -27,8 +27,6 @@ vi.mock('./EmptyState', () => ({
   )
 }));
 
-
-
 describe('DataView Component', () => {
   const mockItems = [
     { id: 1, name: 'Item 1', description: 'Desc 1' },
@@ -146,7 +144,6 @@ describe('DataView Component', () => {
     rerender(<DataView items={mockItems} isLoading={true} skeletonType="page" />);
     expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'page');
 
-
     // Empty State
     rerender(
       <DataView 
@@ -159,6 +156,8 @@ describe('DataView Component', () => {
     );
     expect(screen.getByTestId('empty-title').textContent).toBe("Custom Empty Title");
     expect(screen.getByTestId('empty-description').textContent).toBe("Custom Description");
+  });
+
   it('renders error state with retry action', () => {
     const onRetry = vi.fn();
     render(
@@ -178,6 +177,3 @@ describe('DataView Component', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });
-
-
-
