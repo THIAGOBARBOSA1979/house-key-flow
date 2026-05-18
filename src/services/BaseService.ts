@@ -1,10 +1,9 @@
-/**
- * Abstract base class for all domain services.
- * Implements basic CRUD patterns and storage persistence.
- */
+type Listener<T> = (items: T[]) => void;
+
 export abstract class BaseService<T extends { id?: string }> {
   protected items: T[] = [];
   protected storageKey: string;
+  private listeners: Listener<T>[] = [];
 
   constructor(storageKey: string, initialData: T[] = []) {
     this.storageKey = storageKey;
@@ -12,28 +11,29 @@ export abstract class BaseService<T extends { id?: string }> {
     this.loadFromStorage();
   }
 
-  /**
-   * Helper to deserialize dates from storage
-   */
+  subscribe(listener: Listener<T>) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  }
+
+  private notify() {
+    this.listeners.forEach(listener => listener([...this.items]));
+  }
+
   protected deserializeDates(item: any): T {
     const newItem = { ...item };
     Object.keys(newItem).forEach(key => {
       const value = newItem[key];
-      // Basic heuristic for date strings
       if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
         const date = new Date(value);
-        if (!isNaN(date.getTime())) {
-          newItem[key] = date;
-        }
+        if (!isNaN(date.getTime())) newItem[key] = date;
       } else if (value && typeof value === 'object') {
-        // Recursive check for nested objects/arrays
         if (Array.isArray(value)) {
           newItem[key] = value.map(v => typeof v === 'object' ? this.deserializeDates(v) : v);
-        } else {
-          // Avoid recursion on null or non-plain objects
-          if (Object.getPrototypeOf(value) === Object.prototype) {
-            newItem[key] = this.deserializeDates(value);
-          }
+        } else if (Object.getPrototypeOf(value) === Object.prototype) {
+          newItem[key] = this.deserializeDates(value);
         }
       }
     });
@@ -42,7 +42,6 @@ export abstract class BaseService<T extends { id?: string }> {
 
   protected loadFromStorage() {
     if (typeof window === 'undefined') return;
-    
     const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {
@@ -59,6 +58,7 @@ export abstract class BaseService<T extends { id?: string }> {
   protected persist() {
     if (typeof window === 'undefined') return;
     localStorage.setItem(this.storageKey, JSON.stringify(this.items));
+    this.notify();
   }
 
   getAll(): T[] {
@@ -82,7 +82,6 @@ export abstract class BaseService<T extends { id?: string }> {
   update(id: string, data: Partial<T>): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
     if (index === -1) return undefined;
-
     this.items[index] = { ...this.items[index], ...data };
     this.persist();
     return this.items[index];
@@ -98,4 +97,5 @@ export abstract class BaseService<T extends { id?: string }> {
     return false;
   }
 }
+
 
