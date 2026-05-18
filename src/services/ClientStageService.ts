@@ -4,9 +4,12 @@ export interface ClientEvent {
   id: string;
   clientId: string;
   type: string;
+  eventType?: string;
   title: string;
   description: string;
   date: Date;
+  createdAt?: Date;
+  metadata?: any;
 }
 
 export interface ClientProfile {
@@ -20,6 +23,8 @@ export interface ClientProfile {
   currentStage: any;
   createdAt?: Date;
   stageHistory?: any[];
+  success?: boolean;
+  error?: string;
 }
 
 const INITIAL_PROFILES: ClientProfile[] = [
@@ -47,11 +52,18 @@ class ClientStageService extends BaseService<ClientProfile> {
   getClientProfile(id: string) { return this.getById(id); }
   
   advanceStage(id: string, stage: any) {
-    return this.update(id, { currentStage: stage });
+    const result = this.update(id, { currentStage: stage });
+    return result ? { ...result, success: true } : { success: false, error: "Profile not found" };
   }
 
-  addEvent(clientId: string, event: Omit<ClientEvent, "id" | "date">) {
-    this.events.unshift({ ...event, id: crypto.randomUUID(), clientId, date: new Date() });
+  addEvent(clientId: string, event: any) {
+    this.events.unshift({ 
+      ...event, 
+      id: crypto.randomUUID(), 
+      clientId, 
+      date: new Date(),
+      createdAt: new Date()
+    });
   }
 
   getEvents(clientId: string) {

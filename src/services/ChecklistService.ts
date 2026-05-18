@@ -7,10 +7,10 @@ export interface ChecklistItem {
   notes?: string;
   description?: string;
   required?: boolean;
-  severity?: "low" | "medium" | "high";
-  status?: "pending" | "conform" | "non_conform" | "not_applicable";
-  evidence?: string[];
-  conformity?: "conform" | "non_conform" | "not_applicable";
+  severity?: "low" | "medium" | "high" | "critical";
+  status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na";
+  evidence?: any[];
+  conformity?: "conform" | "non_conform" | "not_applicable" | "pending";
 }
 
 export interface ChecklistGroup {
@@ -61,7 +61,13 @@ class ChecklistService extends BaseService<ChecklistTemplate> {
   constructor() {
     super("a2_checklist_templates", INITIAL_TEMPLATES);
     const stored = localStorage.getItem("a2_checklist_executions");
-    if (stored) this.executions = JSON.parse(stored).map((e: any) => ({ ...e, date: new Date(e.date) }));
+    if (stored) {
+      try {
+        this.executions = JSON.parse(stored).map((e: any) => ({ ...e, date: new Date(e.date) }));
+      } catch (e) {
+        console.error("Error loading executions", e);
+      }
+    }
   }
 
   getAllTemplates() { return [...this.items]; }
