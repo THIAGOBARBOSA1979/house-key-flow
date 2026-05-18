@@ -3,8 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { WarrantyItem, WarrantyEligibilityResult, CATEGORY_ICONS } from "@/types/warranty";
 import { WarrantyEligibilityBadge } from "./WarrantyEligibilityBadge";
-import { isValid } from "date-fns";
-import { safeFormat } from "@/lib/utils";
+import { formatDate } from "@/utils/formatters";
 import { 
   Droplets, Shield, Grid3x3, DoorOpen, Building, Zap, 
   PaintBucket, Settings, CheckCircle 
@@ -102,10 +101,10 @@ export function WarrantyItemCard({
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>
-                    Início: {safeFormat(item.dataInicioGarantia, "dd/MM/yyyy")}
+                    Início: {formatDate(item.dataInicioGarantia)}
                   </span>
                   <span>
-                    Fim: {safeFormat(item.dataFimGarantia, "dd/MM/yyyy")}
+                    Fim: {formatDate(item.dataFimGarantia)}
                   </span>
                 </div>
               </div>
@@ -115,13 +114,13 @@ export function WarrantyItemCard({
             {!eligibility.isEligible && (
               <div className="text-xs text-muted-foreground">
                 {eligibility.reason === "expired" && (
-                  <span>Expirou em {safeFormat(item.dataFimGarantia, "dd/MM/yyyy")}</span>
+                  <span>Expirou em {formatDate(item.dataFimGarantia)}</span>
                 )}
                 {eligibility.reason === "cancelled" && (
                   <span>Garantia cancelada</span>
                 )}
                 {eligibility.reason === "not_started" && (
-                  <span>Inicia em {safeFormat(item.dataInicioGarantia, "dd/MM/yyyy")}</span>
+                  <span>Inicia em {formatDate(item.dataInicioGarantia)}</span>
                 )}
               </div>
             )}

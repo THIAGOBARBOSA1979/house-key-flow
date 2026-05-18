@@ -7,7 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldCheck, Clock, Printer, UserPlus, AlertCircle, Plus } from "lucide-react";
-import { WarrantyRequestFlow, WARRANTY_STAGES, STAGE_ORDER } from "@/types/warrantyFlow";
+import { WarrantyRequestFlow, WARRANTY_STAGES, STAGE_ORDER, WarrantyStage } from "@/types/warrantyFlow";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -25,7 +25,7 @@ interface WarrantyDetailsDialogProps {
   request: WarrantyRequestFlow | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onStatusChange: (requestId: string, stage: any) => void;
+  onStatusChange: (requestId: string, stage: WarrantyStage) => void;
   onTogglePause: (requestId: string, isPaused: boolean, reason: string) => void;
   onAssignTech: (requestId: string, techId: string, techName: string) => void;
   onAddProblem: (requestId: string) => void;
@@ -104,7 +104,7 @@ export const WarrantyDetailsDialog = ({
                         key={stage}
                         size="sm"
                         variant="outline"
-                        onClick={() => onStatusChange(request.id, stage)}
+                        onClick={() => onStatusChange(request.id, stage as WarrantyStage)}
                       >
                         {WARRANTY_STAGES[stage].label}
                       </Button>
