@@ -66,22 +66,28 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.notify();
   }
 
-  getAll(companyId?: string): T[] {
+  getAll(companyId?: string, isSuperAdmin?: boolean): T[] {
+    if (isSuperAdmin) {
+      return [...this.items];
+    }
     if (companyId) {
       return this.items.filter(item => item.company_id === companyId);
     }
-    return [...this.items];
+    return [];
   }
 
-
-  getById(id: string): T | undefined {
-    return this.items.find(item => item.id === id);
+  getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {
+    const item = this.items.find(item => item.id === id);
+    if (isSuperAdmin) return item;
+    if (item && item.company_id === companyId) return item;
+    return undefined;
   }
 
-  create(item: Omit<T, "id">): T {
+  create(item: Omit<T, "id">, companyId?: string): T {
     const newItem = {
       ...item,
       id: (item as any).id || crypto.randomUUID(),
+      company_id: companyId || (item as any).company_id
     } as T;
     this.items.push(newItem);
     this.persist();

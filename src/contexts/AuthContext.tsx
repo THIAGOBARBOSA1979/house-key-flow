@@ -119,8 +119,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       // Check company status if user belongs to one
-      if (mockUser.company_id) {
-        const company = companyService.getById(mockUser.company_id);
+      if (mockUser.company_id && !mockUser.is_super_admin) {
+        const company = companyService.getById(mockUser.company_id, undefined, true);
         if (company) {
           if (company.status !== 'active') {
             throw new Error(`Empresa ${company.status === 'suspended' ? 'suspensa' : 'cancelada'}. Entre em contato com o suporte.`);
@@ -128,6 +128,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           if (company.subscription_expires_at && new Date(company.subscription_expires_at) < new Date()) {
             throw new Error('Assinatura expirada. Por favor, renove seu plano.');
           }
+        } else {
+          throw new Error('Empresa não encontrada ou acesso negado.');
         }
       }
 
