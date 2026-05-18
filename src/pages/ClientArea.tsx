@@ -22,7 +22,7 @@ import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportService } from "@/services/ExportService";
-import { DataViewMode } from "@/types/dataView";
+import { DataViewMode } from "@/components/shared/DataView";
 
 
 // Clients are managed via clientStageService

@@ -1,15 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, LucideIcon, Table as TableIcon, LayoutGrid, Calendar as CalendarIcon, Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight, LucideIcon, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EmptyState } from "./EmptyState";
 import { SkeletonLoader } from "./SkeletonLoader";
-import { DataViewMode } from "@/types/dataView";
 import { DataTable } from "./DataTable";
 import { ResponsiveGrid } from "./ResponsiveGrid";
 
+/**
+ * Common view modes for data display components.
+ * Use this type instead of string literals for viewMode props.
+ */
+export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
 
 export interface DataViewProps<T> {
+
   items: T[];
   viewMode?: DataViewMode;
   isLoading?: boolean;
@@ -43,17 +49,47 @@ export interface DataViewProps<T> {
  * with built-in support for pagination, loading states, and empty states.
  * 
  * @example
+ * // Grid View (Default)
  * <DataView
  *   items={properties}
  *   viewMode="grid"
  *   renderGrid={(item) => <PropertyCard item={item} />}
  * />
+ * 
+ * @example
+ * // Table View with columns
+ * <DataView
+ *   items={users}
+ *   viewMode="table"
+ *   columns={[
+ *     { header: "Nome", accessorKey: "name" },
+ *     { header: "Email", accessorKey: "email" }
+ *   ]}
+ * />
+ * 
+ * @example
+ * // Timeline View (Chronological)
+ * <DataView
+ *   items={events}
+ *   viewMode="timeline"
+ *   // Uses fallback if renderTimeline is not provided, 
+ *   // looking for .date and .title properties
+ * />
+ * 
+ * @example
+ * // Calendar View
+ * <DataView
+ *   items={inspections}
+ *   viewMode="calendar"
+ *   renderCalendar={(items) => <MyCalendarComponent data={items} />}
+ * />
  */
+
 export function DataView<T>({
   items,
   viewMode = 'grid',
   isLoading = false,
-  skeletonType = 'card',
+  skeletonType,
   itemsPerPage = 0,
   gridClassName,
   emptyState,
@@ -65,6 +101,7 @@ export function DataView<T>({
   columns,
   onRowClick,
 }: DataViewProps<T>) {
+
   const [currentPage, setCurrentPage] = useState(1);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -78,8 +115,11 @@ export function DataView<T>({
   };
 
   if (isLoading) {
-    return <SkeletonLoader type={skeletonType} count={itemsPerPage || 6} />;
+    // Determinar skeletonType automaticamente se não for passado
+    const effectiveSkeletonType = skeletonType || (viewMode === 'table' ? 'table' : viewMode === 'list' ? 'list' : 'card');
+    return <SkeletonLoader type={effectiveSkeletonType} count={itemsPerPage || 6} />;
   }
+
 
   if (items.length === 0) {
     return (

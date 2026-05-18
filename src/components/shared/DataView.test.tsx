@@ -1,18 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi } from 'vitest';
+
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DataView } from './DataView';
 import React from 'react';
-import { DataViewMode } from '@/types/dataView';
+import { DataViewMode } from './DataView';
 
 
 // Mock components that might be problematic in tests
 vi.mock('./SkeletonLoader', () => ({
-  SkeletonLoader: () => <div data-testid="skeleton">Loading...</div>
+  SkeletonLoader: ({ type }: { type: string }) => <div data-testid="skeleton" data-type={type}>Loading...</div>
 }));
 
 vi.mock('./EmptyState', () => ({
-  EmptyState: ({ title }: { title: string }) => <div data-testid="empty">{title}</div>
+  EmptyState: ({ title, description }: { title: string; description: string }) => (
+    <div data-testid="empty">
+      <h3 data-testid="empty-title">{title}</h3>
+      <p data-testid="empty-description">{description}</p>
+    </div>
+  )
 }));
+
 
 describe('DataView Component', () => {
   const mockItems = [
@@ -94,7 +102,8 @@ describe('DataView Component', () => {
   });
 
   it('renders standard view modes with fallback implementation', () => {
-    const modes: DataViewMode[] = ['grid', 'list', 'table', 'timeline', 'calendar'];
+    // Modes that have an 'Item 1' fallback
+    const modesWithFallback: DataViewMode[] = ['grid', 'list', 'table', 'timeline'];
     const { rerender } = render(
       <DataView 
         items={mockItems} 
@@ -103,7 +112,7 @@ describe('DataView Component', () => {
       />
     );
 
-    modes.forEach(mode => {
+    modesWithFallback.forEach(mode => {
       rerender(
         <DataView 
           items={mockItems} 
@@ -113,6 +122,37 @@ describe('DataView Component', () => {
       );
       expect(screen.getByText('Item 1')).toBeDefined();
     });
+
+    // Calendar currently shows a "Not Implemented" message if no renderCalendar is provided
+    rerender(<DataView items={mockItems} viewMode="calendar" />);
+    expect(screen.getByText(/Visualização em Calendário/)).toBeDefined();
+  });
+
+  it('standardizes loading and emptyState across view modes', () => {
+    // Loading - Automatic skeleton selection
+    const { rerender } = render(<DataView items={mockItems} isLoading={true} viewMode="table" />);
+    expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'table');
+    
+    rerender(<DataView items={mockItems} isLoading={true} viewMode="list" />);
+    expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'list');
+
+    rerender(<DataView items={mockItems} isLoading={true} skeletonType="page" />);
+    expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'page');
+
+
+    // Empty State
+    rerender(
+      <DataView 
+        items={[]} 
+        emptyState={{ 
+          title: "Custom Empty Title", 
+          description: "Custom Description" 
+        }} 
+      />
+    );
+    expect(screen.getByTestId('empty-title').textContent).toBe("Custom Empty Title");
+    expect(screen.getByTestId('empty-description').textContent).toBe("Custom Description");
   });
 });
+
 

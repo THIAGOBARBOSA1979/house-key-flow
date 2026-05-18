@@ -46,7 +46,7 @@ import {
 } from 'recharts';
 import { useInspections } from "@/hooks/useInspections";
 import { Button } from "@/components/ui/button";
-import { DataViewMode } from "@/types/dataView";
+import { DataViewMode } from "@/components/shared/DataView";
 import { inspectionService } from "@/services/InspectionService";
 
 

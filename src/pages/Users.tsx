@@ -6,7 +6,7 @@ import { UserFilters } from "@/components/Users/UserFilters";
 import { UserCard } from "@/components/Users/UserCard";
 import { UserDialogs } from "@/components/Users/UserDialogs";
 import { useToast } from "@/hooks/use-toast";
-import { DataView } from "@/components/shared/DataView";
+import { DataView, DataViewMode } from "@/components/shared/DataView";
 import { exportService } from "@/services/ExportService";
 import { useUsers } from "@/hooks/useUsers";
 import { auditLogService } from "@/services/AuditLogService";
@@ -14,7 +14,7 @@ import { User as UserType } from "@/types/user";
 import { UserStats } from "@/components/Users/UserStats";
 import { UserActionBanner } from "@/components/Users/UserActionBanner";
 import { UserBulkActions } from "@/components/Users/UserBulkActions";
-import { DataViewMode } from "@/types/dataView";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
