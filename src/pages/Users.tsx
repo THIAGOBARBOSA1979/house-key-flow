@@ -14,7 +14,7 @@ import { User as UserType } from "@/types/user";
 import { UserStats } from "@/components/Users/UserStats";
 import { UserActionBanner } from "@/components/Users/UserActionBanner";
 import { UserBulkActions } from "@/components/Users/UserBulkActions";
-import { DataViewMode } from "@/types/dataView";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
