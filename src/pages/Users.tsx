@@ -99,11 +99,11 @@ const Users = () => {
         </div>
       </div>
       
-      {isLoading ? (
-        <SkeletonLoader type="table" count={5} />
-      ) : (
-        <DataView<UserType>
-          items={filteredUsers}
+      <DataView<UserType>
+        items={filteredUsers}
+        isLoading={isLoading}
+        skeletonType="table"
+
         viewMode={viewMode}
         itemsPerPage={8}
         renderGrid={(user) => (
@@ -179,7 +179,7 @@ const Users = () => {
           action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" }) }
         }}
       />
-      )}
+
 
 
       <UserDialogs 

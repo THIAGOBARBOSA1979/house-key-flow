@@ -89,6 +89,8 @@ function DataViewComponent<T>({
   items,
   viewMode = 'grid',
   isLoading = false,
+  isError = false,
+  error,
   skeletonType,
   itemsPerPage = 0,
   gridClassName,
@@ -101,6 +103,7 @@ function DataViewComponent<T>({
   columns,
   onRowClick,
 }: DataViewProps<T>) {
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -121,6 +124,18 @@ function DataViewComponent<T>({
   }
 
 
+  if (isError) {
+    return (
+      <EmptyState 
+        variant="error"
+        title={error?.title || "Ops! Algo deu errado"}
+        description={error?.message || "Não foi possível carregar os dados. Verifique sua conexão e tente novamente."}
+        actionLabel={error?.retry ? "Tentar Novamente" : undefined}
+        onAction={error?.retry}
+      />
+    );
+  }
+
   if (items.length === 0) {
     return (
       <EmptyState 
@@ -131,6 +146,7 @@ function DataViewComponent<T>({
       />
     );
   }
+
 
   const totalItems = items.length;
   const isPaginationEnabled = itemsPerPage > 0 && totalItems > itemsPerPage;
