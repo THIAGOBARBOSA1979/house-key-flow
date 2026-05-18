@@ -10,7 +10,8 @@ import {
   LayoutGrid, 
   Filter, 
   Download,
-  Building
+  Building,
+  List
 } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
@@ -26,7 +27,6 @@ import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspec
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { inspectionService } from "@/services/InspectionService";
 import { Inspection } from "@/types/inspection";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 import { StatsCard } from "@/components/shared/StatsCard";
@@ -46,6 +46,10 @@ import {
 } from 'recharts';
 import { useInspections } from "@/hooks/useInspections";
 import { Button } from "@/components/ui/button";
+import { DataViewMode } from "@/types/dataView";
+import { inspectionService } from "@/services/InspectionService";
+
+
 
 export default function Inspections() {
   const {
@@ -63,7 +67,7 @@ export default function Inspections() {
   } = useInspections();
 
   const [activeTab, setActiveTab] = useState("list");
-  const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
+  const [viewMode, setViewMode] = useState<DataViewMode>("grid");
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">

@@ -1,46 +1,19 @@
 import { useState, useEffect } from "react";
 import { 
-  FileText, Search, Upload, Filter, Download, Trash2, 
-  MoreHorizontal, FileUp, FolderPlus, Clock, CheckCircle2, 
-  AlertCircle, Plus, LayoutGrid, List, Edit, Eye, Star, 
-  Archive, Copy, BarChart, LayoutDashboard, Folder,
-  ShieldCheck, Share2, History as HistoryIcon, Tag, RotateCw, Move
+  FileText, FolderPlus, Clock, CheckCircle2, 
+  Plus, FileUp, Download, Archive, Trash2,
+  LayoutGrid, List, LayoutDashboard, BarChart, Eye,
+  MoreHorizontal, Share2, Edit, ShieldCheck, Move, RotateCw,
+  History as HistoryIcon
 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger,
-  DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import { documentService, Document } from "@/services/DocumentService";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-
+import { DataView } from "@/components/shared/DataView";
 import { exportService } from "@/services/ExportService";
 import { BulkActions } from "@/components/Documents/BulkActions";
 import { DocumentFilters } from "@/components/Documents/DocumentFilters";
@@ -53,12 +26,22 @@ import { UploadDocumentDialog } from "@/components/Documents/UploadDocumentDialo
 import { DocumentVersionHistory } from "@/components/Documents/DocumentVersionHistory";
 import { SignatureWorkflowDialog } from "@/components/Documents/SignatureWorkflowDialog";
 import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
+import { DataViewMode } from "@/types/dataView";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+
+
+
 
 const AdminDocuments = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [viewMode, setViewMode] = useState<DataViewMode>("table");
   const [activeTab, setActiveTab] = useState("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeFilters, setActiveFilters] = useState<any>({

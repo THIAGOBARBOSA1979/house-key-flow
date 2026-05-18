@@ -1,16 +1,14 @@
 import { useState, useMemo } from "react";
-import { Building, Plus, MoreHorizontal, Pencil, Trash2, Download, Settings } from "lucide-react";
+import { Building, Plus, Trash2, Download, Settings, MoreHorizontal, Pencil } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { cn } from "@/lib/utils";
 import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services/ExportService";
 import { formatDate } from "@/utils/formatters";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useProperties } from "@/hooks/useProperties";
 import { Property } from "@/services/PropertyService";
 import { Button } from "@/components/ui/button";
@@ -18,6 +16,11 @@ import { PropertyStats } from "@/components/Properties/PropertyStats";
 import { PropertyFilters } from "@/components/Properties/PropertyFilters";
 import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
 import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
+import { DataViewMode } from "@/types/dataView";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+
+
 
 const Properties = () => {
   const {
@@ -41,7 +44,7 @@ const Properties = () => {
     refreshList
   } = useProperties();
 
-  const [viewMode, setViewMode] = useState<"grid" | "table" | "timeline">("grid");
+  const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -104,7 +107,7 @@ const Properties = () => {
         managers={managers}
         onClearFilters={clearFilters}
       >
-        <PropertyViewTabs viewMode={viewMode} onViewModeChange={setViewMode} />
+        <PropertyViewTabs viewMode={viewMode} onViewModeChange={(m) => setViewMode(m as DataViewMode)} />
       </PropertyFilters>
 
       <DataView<Property>
@@ -168,7 +171,7 @@ const Properties = () => {
                 className: "text-right",
                 cell: (p) => (
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuTrigger asChild onClick={(e) => { e.stopPropagation(); }}>
                       <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
@@ -181,7 +184,7 @@ const Properties = () => {
                 )
               }
             ]}
-            data={items}
+            data={items as Property[]}
             onRowClick={(p) => setSelectedProperty(p)}
           />
         )}
