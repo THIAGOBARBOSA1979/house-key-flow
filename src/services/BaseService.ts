@@ -163,8 +163,15 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     if (this.items.length !== initialLength) {
       this.persist();
       this.log('deleted', id, `Item removido de ${this.options.storageKey}`);
+      
+      if (this.options.shouldSyncWithSupabase) {
+        Supabase.db.delete(this.options.storageKey, id)
+          .catch(err => console.error(`[BaseService] Failed to sync delete to Supabase for ${this.options.storageKey}:`, err));
+      }
+      
       return true;
     }
+
     return false;
   }
 
