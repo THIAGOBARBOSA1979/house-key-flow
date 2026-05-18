@@ -123,7 +123,7 @@ class InspectionService extends BaseService<Inspection> {
   }
 
   getStatsByStatus(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((i: any) => i.company_id === companyId) : []);
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     return relevantItems.reduce((acc, curr) => {
       acc[curr.status] = (acc[curr.status] || 0) + 1;
       return acc;
@@ -131,7 +131,7 @@ class InspectionService extends BaseService<Inspection> {
   }
 
   getStatsByType(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((i: any) => i.company_id === companyId) : []);
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     return relevantItems.reduce((acc, curr) => {
       acc[curr.type] = (acc[curr.type] || 0) + 1;
       return acc;
@@ -140,7 +140,7 @@ class InspectionService extends BaseService<Inspection> {
 
 
   getStatsByTechnician(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((i: any) => i.company_id === companyId) : []);
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     return relevantItems.reduce((acc, curr) => {
       const tech = this.getTechnicianById(curr.technician);
       const name = tech?.name || "Desconhecido";

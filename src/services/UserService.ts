@@ -15,7 +15,7 @@ class UserService extends BaseService<User> {
   }
 
   getStats(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter(u => u.company_id === companyId) : []);
+    const relevantItems = this.getAll(companyId, isSuperAdmin);
     return {
       total: relevantItems.length,
       active: relevantItems.filter(u => u.status === "active").length,
