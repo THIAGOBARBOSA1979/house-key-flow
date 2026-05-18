@@ -416,7 +416,71 @@ export default function Login() {
                         </form>
                       </Form>
                     </TabsContent>
+                    <TabsContent value="master" className="mt-6">
+                      <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                          <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-base font-medium">Email Master</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                    <Input 
+                                      placeholder="master@exemplo.com" 
+                                      className="pl-11 h-12 text-base border-gray-200 focus:border-brand focus:ring-brand" 
+                                      {...field} 
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-base font-medium">Senha Master</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                    <Input 
+                                      type={showPassword ? "text" : "password"} 
+                                      className="pl-11 pr-11 h-12 text-base border-gray-200 focus:border-brand focus:ring-brand" 
+                                      placeholder="••••••••"
+                                      {...field} 
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon"
+                                      className="absolute right-1 top-1 h-10 w-10 text-gray-400 hover:text-gray-600"
+                                      onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    </Button>
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="submit" 
+                            className="w-full h-12 text-base font-semibold bg-gradient-to-r from-brand to-indigo-700 hover:from-brand/90 hover:to-indigo-800 transition-all duration-200" 
+                            disabled={isLoading}
+                          >
+                            {isLoading ? "Autenticando..." : "Entrar no SaaS Master"}
+                          </Button>
+                        </form>
+                      </Form>
+                    </TabsContent>
                   </Tabs>
+
 
                   <div className="space-y-4">
                     <Separator className="bg-gray-200" />
