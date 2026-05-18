@@ -1,7 +1,8 @@
 // Optimized UI state component with standardized premium microcopy.
 import { ReactNode } from "react";
-
+import { useTranslation } from "react-i18next";
 import { LucideIcon, RefreshCw, AlertCircle } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,9 @@ export function EmptyState({
   variant = 'default',
   children
 }: EmptyStateProps) {
+  const { t } = useTranslation();
   const displayActionLabel = actionLabel || action?.label;
+
   const handleAction = onAction || action?.onClick;
   
   const isError = variant === 'error';
@@ -74,7 +77,7 @@ export function EmptyState({
           )}
         >
           {isError && !actionLabel && <RefreshCw className="mr-2 h-3 w-3 animate-spin-slow" />}
-          {displayActionLabel || (isError ? "Sincronizar Dados" : "Recomeçar")}
+          {displayActionLabel || (isError ? t('common.error_action', 'Sincronizar Dados') : t('common.restart', 'Recomeçar'))}
 
         </Button>
       )}
