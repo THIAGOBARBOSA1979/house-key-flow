@@ -7,9 +7,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ConfirmProvider } from "@/contexts/ConfirmContext";
 import { BrandThemeProvider } from "@/components/Shared/BrandThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
+
 
 import { lazy, Suspense } from "react";
 import { SkeletonLoader } from "./components/Shared/SkeletonLoader";
