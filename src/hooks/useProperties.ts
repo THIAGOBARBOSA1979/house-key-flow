@@ -1,26 +1,26 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
-import { propertyService, Property } from "@/services/PropertyService";
-import { useToast } from "@/components/ui/use-toast";
+import { useState, useMemo, useCallback } from "react";
+import { propertyService } from "@/services/PropertyService";
+import { useService } from "@/hooks/useService";
+import { Property } from "@/types/property";
 
 /**
  * Custom hook to manage properties logic.
  */
 export const useProperties = () => {
-  const { toast } = useToast();
-  const [properties, setProperties] = useState<Property[]>(propertyService.getAll());
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [managerFilter, setManagerFilter] = useState("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [metrics, setMetrics] = useState(propertyService.getMetrics());
 
-  useEffect(() => {
-    setMetrics(propertyService.getMetrics());
-  }, [properties]);
+  const { items: properties, create: createProperty, update: updateProperty, remove: deleteProperty, refresh: refreshList } = useService<Property>(propertyService, {
+    toastMessages: {
+      create: "Empreendimento criado com sucesso.",
+      update: "Empreendimento atualizado com sucesso.",
+      delete: "Empreendimento removido com sucesso."
+    }
+  });
 
-  const refreshList = useCallback(() => {
-    setProperties(propertyService.getAll());
-  }, []);
+  const metrics = useMemo(() => propertyService.getMetrics(), [properties]);
 
   const filteredProperties = useMemo(() => {
     return properties.filter(property => {
@@ -38,35 +38,14 @@ export const useProperties = () => {
     setManagerFilter("all");
   }, []);
 
-  const createProperty = useCallback((data: Property) => {
-    propertyService.create(data);
-    refreshList();
-    toast({ title: "Sucesso", description: "Empreendimento criado com sucesso." });
-  }, [refreshList, toast]);
-
-  const updateProperty = useCallback((id: string, data: Property) => {
-    propertyService.update(id, data);
-    refreshList();
-    toast({ title: "Sucesso", description: "Empreendimento atualizado com sucesso." });
-  }, [refreshList, toast]);
-
-  const deleteProperty = useCallback((id: string) => {
-    propertyService.delete(id);
-    refreshList();
-    toast({ title: "Sucesso", description: "Empreendimento removido com sucesso." });
-  }, [refreshList, toast]);
-
-  const bulkDelete = useCallback(() => {
-    selectedIds.forEach(id => propertyService.delete(id));
-    refreshList();
+  const bulkDelete = useCallback(async () => {
+    for (const id of selectedIds) {
+      await deleteProperty(id);
+    }
     const count = selectedIds.length;
     setSelectedIds([]);
-    toast({ 
-      title: "Ação concluída", 
-      description: `${count} empreendimentos foram removidos.`,
-      variant: "destructive"
-    });
-  }, [selectedIds, refreshList, toast]);
+    // Toast is handled by deleteProperty for each, or we could customize it
+  }, [selectedIds, deleteProperty]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
