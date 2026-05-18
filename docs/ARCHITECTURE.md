@@ -1,56 +1,48 @@
-# Arquitetura do Sistema A2
+# Arquitetura do Projeto A2
 
-Este documento descreve os padrões arquiteturais e a organização do projeto para facilitar a manutenção e escalabilidade.
+Esta documentação descreve os padrões arquiteturais e a organização do código do projeto.
 
-## 1. Organização de Pastas
+## Estrutura de Pastas
 
-O projeto segue uma estrutura modular baseada em responsabilidades:
+- `src/components`: Componentes React organizados por domínio (e.g., `Warranty`, `Properties`, `Users`).
+- `src/services`: Camada de serviços para lógica de negócio e integração com API/Supabase.
+- `src/hooks`: Hooks customizados para gerenciamento de estado e lógica de UI.
+- `src/types`: Definições de tipos TypeScript.
+- `src/utils`: Funções utilitárias e formatadores.
+- `src/contexts`: Contextos do React para estado global (e.g., Autenticação).
 
-- `src/components/`: Componentes de UI reutilizáveis.
-  - `shared/`: Componentes globais (botões, inputs, badges).
-  - `[Domain]/`: Componentes específicos de um domínio (ex: `Warranty/`, `Properties/`).
-- `src/hooks/`: Custom hooks para encapsular lógica de estado e efeitos.
-- `src/services/`: Camada de serviços para comunicação com APIs ou persistência local.
-- `src/types/`: Definições de tipos TypeScript centralizadas por domínio.
-- `src/utils/`: Funções utilitárias e formatadores globais.
+## Camada de Serviços (Services)
 
-## 2. Padrão de Services (Camada de Dados)
+Todos os serviços de domínio devem herdar de `BaseService` para manter padrões de CRUD consistentes.
 
-Todos os serviços devem herdar de `BaseService<T>` para garantir consistência em operações de CRUD e persistência.
-
-### Exemplo:
+### Exemplo
 ```typescript
-class MyDomainService extends BaseService<MyType> {
+class MyService extends BaseService<MyType> {
   constructor() {
-    super("storage_key", initialData);
+    super("storage_key", INITIAL_DATA);
   }
-  // Métodos específicos de negócio aqui
+  // Lógica específica aqui
 }
 ```
 
-**Regras:**
-- Serviços não devem gerenciar estado de UI (loading, erros de exibição).
-- Regras de negócio complexas devem residir no serviço, não no componente.
+## Camada de Hooks
 
-## 3. Padrão de Custom Hooks (Camada de Lógica)
+Os hooks customizados são responsáveis por:
+- Buscar dados dos serviços.
+- Gerenciar estados locais da página.
+- Filtragem e ordenação.
+- Notificações de feedback (Toasts).
 
-Hooks centralizam a lógica que seria repetida em múltiplas telas ou componentes complexos.
+### Hook useWarranty
+Centraliza toda a lógica de garantias, incluindo tratamento de erros e estados de carregamento.
 
-### Exemplo (`useWarranty.ts`):
-Encapsula fetching, filtragem, atualização de status e estados de loading/error.
+## Padrões de Código
 
-**Responsabilidades do Hook:**
-- Gerenciar estados de `isLoading` e `error`.
-- Chamar os serviços apropriados.
-- Fornecer dados formatados ou filtrados para os componentes.
+- **Formatadores**: Use sempre `src/utils/formatters.ts` para datas e moedas.
+- **Componentes Compartilhados**: Utilize `DataView`, `PageHeader` e `StatsCard` para manter a consistência visual.
+- **Tipagem**: Evite o uso de `any`. Utilize os tipos definidos em `src/types`.
 
-## 4. Design System e Tokens
+## Fluxo de Trabalho de Garantias
 
-- **Bordas:** Preferencialmente `rounded-2xl` para cards e diálogos grandes.
-- **Tipografia:** Uso consistente de pesos `font-black` para títulos e `font-medium` para labels.
-- **Formatadores:** Sempre use `src/utils/formatters.ts` para datas, moedas e porcentagens.
-
-## 5. Fluxos de Trabalho (Workflows)
-
-- **Garantias:** O fluxo é gerido pelo `WarrantyFlowService` com validações rigorosas de transição de status (definidas em `src/types/warrantyFlow.ts`).
-- **Logs:** Todas as ações críticas devem ser registradas via `AuditLogService`.
+O fluxo de garantias segue estágios bem definidos (`opened` -> `in_analysis` -> `inspection_scheduled` -> etc.).
+As transições de status são validadas pelo `WarrantyFlowService`.

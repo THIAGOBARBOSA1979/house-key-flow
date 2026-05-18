@@ -16,6 +16,7 @@ import { exportService } from "@/services/ExportService";
 import { useUsers } from "@/hooks/useUsers";
 import { auditLogService } from "@/services/AuditLogService";
 import { User as UserType } from "@/services/UserService";
+import { formatDate } from "@/utils/formatters";
 
 /**
  * Refactored Users management page.

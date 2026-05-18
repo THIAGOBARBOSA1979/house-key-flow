@@ -51,12 +51,14 @@ export const useWarranty = () => {
         if (!r.title.toLowerCase().includes(s) && !r.clientName.toLowerCase().includes(s)) return false;
       }
       if (filters.propertyId && r.propertyId !== filters.propertyId) return false;
+      if (filters.category && r.category !== filters.category) return false;
+      if (filters.priority && r.priority !== filters.priority) return false;
+      if (filters.slaStatus && r.slaStatus !== filters.slaStatus) return false;
       return true;
     });
   }, [filters, requests]);
 
   const kanbanData = useMemo(() => {
-    // We reuse the filtered requests to build kanban data
     const data = new Map<WarrantyStage, KanbanCardData[]>();
     filteredRequests.forEach(request => {
       const stage = request.currentStage;
@@ -69,8 +71,8 @@ export const useWarranty = () => {
           startedAt: request.stageStartedAt,
           deadline: request.slaDeadline,
           status: request.slaStatus,
-          hoursRemaining: 0, // Placeholder
-          percentageRemaining: 0 // Placeholder
+          hoursRemaining: 0, 
+          percentageRemaining: 0 
         },
         dragDisabled: false
       });
@@ -85,12 +87,12 @@ export const useWarranty = () => {
   const changeStatus = useCallback(async (requestId: string, newStage: WarrantyStage, notes?: string) => {
     setIsLoading(true);
     try {
-      const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, 'admin-1', false, notes));
+      const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, "admin-1", false, notes));
       if (result.success) {
         loadData();
         toast({
           title: "Status atualizado",
-          description: `Solicitação movida para a etapa desejada.`
+          description: `Solicitação movida para ${newStage}.`
         });
         return result;
       } else {
@@ -115,19 +117,19 @@ export const useWarranty = () => {
   }, [loadData, toast]);
 
   const togglePause = useCallback((requestId: string, isPaused: boolean, reason: string) => {
-    const result = warrantyFlowService.togglePause(requestId, isPaused, reason, 'admin-1');
+    const result = warrantyFlowService.togglePause(requestId, isPaused, reason, "admin-1");
     if (result.success) {
       loadData();
       toast({
         title: isPaused ? "SLA Pausado" : "SLA Retomado",
-        description: "O cronômetro do SLA foi atualizado."
+        description: isPaused ? `Motivo: ${reason}` : "O cronômetro do SLA foi retomado."
       });
     }
     return result;
   }, [loadData, toast]);
 
   const assignTechnician = useCallback((requestId: string, techId: string, techName: string) => {
-    const result = warrantyFlowService.assignTechnician(requestId, techId, techName, 'admin-1');
+    const result = warrantyFlowService.assignTechnician(requestId, techId, techName, "admin-1");
     if (result.success) {
       loadData();
       toast({
@@ -139,13 +141,12 @@ export const useWarranty = () => {
   }, [loadData, toast]);
 
   const exportData = useCallback(() => {
-    const allRequests = warrantyFlowService.getAllRequests();
-    exportService.exportToCSV(allRequests, 'garantias_a2');
+    exportService.exportToCSV(requests, "garantias_a2");
     toast({
       title: "Exportação concluída",
       description: "O arquivo CSV foi baixado com sucesso."
     });
-  }, [toast]);
+  }, [requests, toast]);
 
   return {
     requests,

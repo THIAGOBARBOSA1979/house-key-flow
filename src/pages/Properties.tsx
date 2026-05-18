@@ -22,6 +22,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services/ExportService";
 import { PropertyForm } from "@/components/Properties/PropertyForm";
 import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
+import { formatDate } from "@/utils/formatters";
 import {
   Dialog,
   DialogContent,
