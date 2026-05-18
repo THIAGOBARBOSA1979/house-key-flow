@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { 
   Zap, 
+
   Search, 
   Plus, 
   Building, 
@@ -110,7 +112,9 @@ const QUICK_ACTIONS: QuickAction[] = [
 ];
 
 export const QuickLauncher = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+
   const [search, setSearch] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
@@ -164,7 +168,7 @@ export const QuickLauncher = () => {
         >
           <Zap className="h-6 w-6 group-hover:rotate-12 transition-transform" />
           <span className="absolute right-full mr-4 px-3 py-1.5 bg-card text-foreground text-[10px] font-black uppercase tracking-widest rounded-2xl border shadow-sem-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block">
-            Ações Rápidas (Ctrl+Q)
+            {t('common.quick_actions', 'Ações Rápidas')} (Ctrl+Q)
           </span>
         </Button>
       </DialogTrigger>
@@ -172,13 +176,13 @@ export const QuickLauncher = () => {
         <DialogHeader className="p-6 md:p-8 border-b border-border/10 bg-primary/5">
           <DialogTitle className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-3">
             <Zap className="text-primary h-5 w-5 md:h-6 md:w-6" />
-            Centro de Comando Estratégico
+            {t('common.quick_launcher_title', 'Centro de Comando Estratégico')}
           </DialogTitle>
 
           <div className="relative mt-4 md:mt-6">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
             <Input 
-              placeholder="Defina sua próxima ação operacional..." 
+              placeholder={t('common.quick_launcher_placeholder', 'Defina sua próxima ação operacional...')} 
               className="pl-10 md:pl-12 h-12 md:h-14 bg-background border-none rounded-2xl font-bold text-base md:text-lg shadow-sem-sm"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -232,7 +236,7 @@ export const QuickLauncher = () => {
             ) : (
               <div className="p-12 text-center">
                 <Search className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />
-                <p className="text-sem-body-sm font-black text-muted-foreground/40 uppercase tracking-widest">Nenhuma diretriz de ação localizada</p>
+                <p className="text-sem-body-sm font-black text-muted-foreground/40 uppercase tracking-widest">{t('common.no_actions', 'Nenhuma diretriz de ação localizada')}</p>
               </div>
             )}
           </div>

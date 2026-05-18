@@ -1,11 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi } from 'vitest';
-
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DataView } from './DataView';
 import React from 'react';
 import { DataViewMode } from './DataView';
 
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, defaultValue: string) => defaultValue,
+  }),
+}));
 
 // Mock components that might be problematic in tests
 vi.mock('./SkeletonLoader', () => ({
@@ -13,14 +18,14 @@ vi.mock('./SkeletonLoader', () => ({
 }));
 
 vi.mock('./EmptyState', () => ({
-  EmptyState: ({ title, description }: { title: string; description: string }) => (
+  EmptyState: ({ title, description, actionLabel, onAction }: { title: string; description: string; actionLabel?: string; onAction?: () => void }) => (
     <div data-testid="empty">
       <h3 data-testid="empty-title">{title}</h3>
       <p data-testid="empty-description">{description}</p>
+      {actionLabel && <button data-testid="empty-action" onClick={onAction}>{actionLabel}</button>}
     </div>
   )
 }));
-
 
 describe('DataView Component', () => {
   const mockItems = [
@@ -139,7 +144,6 @@ describe('DataView Component', () => {
     rerender(<DataView items={mockItems} isLoading={true} skeletonType="page" />);
     expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'page');
 
-
     // Empty State
     rerender(
       <DataView 
@@ -153,6 +157,23 @@ describe('DataView Component', () => {
     expect(screen.getByTestId('empty-title').textContent).toBe("Custom Empty Title");
     expect(screen.getByTestId('empty-description').textContent).toBe("Custom Description");
   });
+
+  it('renders error state with retry action', () => {
+    const onRetry = vi.fn();
+    render(
+      <DataView 
+        items={mockItems} 
+        isError={true} 
+        error={{ title: 'Error Title', message: 'Error Message', retry: onRetry }} 
+      />
+    );
+    
+    expect(screen.getByTestId('empty-title').textContent).toBe('Error Title');
+    expect(screen.getByTestId('empty-description').textContent).toBe('Error Message');
+    
+    const actionButton = screen.getByTestId('empty-action');
+    expect(actionButton).toBeDefined();
+    fireEvent.click(actionButton);
+    expect(onRetry).toHaveBeenCalledTimes(1);
+  });
 });
-
-

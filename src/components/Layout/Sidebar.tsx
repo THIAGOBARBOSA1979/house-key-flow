@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { 
+
   Home, 
   Building, 
   ClipboardCheck, 
@@ -64,7 +66,14 @@ const systemItems = [
 
 function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { logout, user } = useAuth();
+
+  const toggleLanguage = () => {
+    const nextLng = i18n.language === 'pt' ? 'en' : 'pt';
+    i18n.changeLanguage(nextLng);
+  };
+
 
   return (
     <div className="flex flex-col h-full">
@@ -88,6 +97,20 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
           </Button>
         )}
       </div>
+
+      {!collapsed && (
+        <div className="px-5 py-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={toggleLanguage}
+            className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest h-8 border-sidebar-border hover:bg-sidebar-accent"
+          >
+            {i18n.language === 'pt' ? 'Switch to English' : 'Mudar para Português'}
+          </Button>
+        </div>
+      )}
+
       
       <nav className="flex-1 overflow-y-auto py-4-sem px-3-sem space-y-2-sem">
         <SidebarGroup 

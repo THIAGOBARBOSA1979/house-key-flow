@@ -2,7 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useState, useMemo, memo } from 'react';
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, LucideIcon, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EmptyState } from "./EmptyState";
@@ -74,6 +76,8 @@ function DataViewComponent<T>({
   columns,
   onRowClick,
 }: DataViewProps<T>) {
+  const { t } = useTranslation();
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -96,11 +100,12 @@ function DataViewComponent<T>({
     return (
       <EmptyState 
         variant="error"
-        title={error?.title || "Sincronização Interrompida"}
-        description={error?.message || "Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente."}
+        title={error?.title || t('common.error_title', 'Sincronização Interrompida')}
+        description={error?.message || t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
 
 
-        actionLabel={error?.retry ? "Reiniciar Protocolo" : undefined}
+        actionLabel={error?.retry ? t('common.retry', 'Reiniciar Protocolo') : undefined}
+
         onAction={error?.retry}
       />
     );
@@ -109,8 +114,9 @@ function DataViewComponent<T>({
   if (items.length === 0) {
     return (
       <EmptyState 
-        title={emptyState?.title || "Nenhum dado encontrado"}
-        description={emptyState?.description || "Ajuste seus parâmetros de busca para refinar os resultados."}
+        title={emptyState?.title || t('common.empty_title', 'Repositório Digital Vazio')}
+        description={emptyState?.description || t('common.empty_description', 'Nenhum protocolo ou registro estratégico foi localizado nesta coordenada.')}
+
 
         icon={emptyState?.icon}
         action={emptyState?.action}
@@ -250,8 +256,9 @@ function DataViewComponent<T>({
       {isPaginationEnabled && (
         <div className="flex flex-col md:flex-row items-center justify-between py-6 border-t border-border/10 gap-4 mt-8">
           <p className="text-sm text-muted-foreground font-medium">
-            Mostrando <span className="font-bold text-foreground">{(effectivePage - 1) * itemsPerPage + 1}</span> a <span className="font-bold text-foreground">{Math.min(effectivePage * itemsPerPage, totalItems)}</span> de <span className="font-bold text-foreground">{totalItems}</span> registros
+            {t('common.showing', 'Mostrando')} <span className="font-bold text-foreground">{(effectivePage - 1) * itemsPerPage + 1}</span> {t('common.to', 'a')} <span className="font-bold text-foreground">{Math.min(effectivePage * itemsPerPage, totalItems)}</span> {t('common.of', 'de')} <span className="font-bold text-foreground">{totalItems}</span> {t('common.records', 'registros')}
           </p>
+
           <div className="flex items-center gap-2">
             <Button
               variant="outline"

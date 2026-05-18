@@ -1,9 +1,10 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { AlertCircle, RotateCcw, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface Props {
+interface Props extends WithTranslation {
   children: ReactNode;
   fallback?: ReactNode;
 }
@@ -13,7 +14,7 @@ interface State {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryComponent extends Component<Props, State> {
   public state: State = {
     hasError: false,
     error: null
@@ -39,6 +40,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      const { t } = this.props;
+
       if (this.props.fallback) {
         return this.props.fallback;
       }
@@ -53,15 +56,13 @@ export class ErrorBoundary extends Component<Props, State> {
                 <AlertCircle className="w-10 h-10 text-destructive" />
               </div>
               <CardTitle className="text-3xl font-black tracking-tight text-foreground">
-                Sincronização Interrompida
+                {t('common.error_title', 'Sincronização Interrompida')}
               </CardTitle>
-
             </CardHeader>
             <CardContent className="text-center px-10 pb-6">
               <p className="text-muted-foreground font-bold leading-relaxed">
-                Detectamos uma instabilidade no protocolo de carregamento. Nossa equipe de governança técnica já foi notificada para normalizar o acesso.
+                {t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
               </p>
-
               
               {isDev && this.state.error && (
                 <div className="mt-6 p-4 bg-muted rounded-2xl text-left overflow-auto max-h-40">
@@ -79,16 +80,15 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 shadow-lg shadow-primary/20"
               >
                 <RotateCcw className="w-4 h-4" />
-                Reiniciar Módulo
+                {t('common.retry', 'Reiniciar Módulo')}
               </Button>
-
               <Button 
                 onClick={this.handleGoHome}
                 variant="outline"
                 className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 border-border/40"
               >
                 <Home className="w-4 h-4" />
-                Voltar ao Início
+                {t('common.home', 'Voltar ao Início')}
               </Button>
             </CardFooter>
           </Card>
@@ -99,3 +99,6 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export const ErrorBoundary = withTranslation()(ErrorBoundaryComponent);
+
