@@ -53,7 +53,6 @@ export interface Document {
   fileName?: string;
   fileSize?: string;
   tags?: string[];
-  isSigned?: boolean;
   template?: string;
   signatures?: DocumentSignature[];
   versionHistory?: DocumentVersion[];
@@ -66,6 +65,8 @@ export interface Document {
   createdBy?: string;
   priority?: "low" | "medium" | "high";
   expiresAt?: Date;
+  isSigned?: boolean;
+  isFavorite?: boolean;
 }
 
 const INITIAL_DOCUMENTS: Document[] = [
@@ -81,13 +82,14 @@ const INITIAL_DOCUMENTS: Document[] = [
     downloads: 5,
     viewCount: 45,
     status: "published",
-    isSigned: false,
     version: 1,
     approvalStatus: "approved",
     template: "Contrato de exemplo",
     signatures: [],
     createdBy: "Admin",
-    priority: "high"
+    priority: "high",
+    isSigned: false,
+    isFavorite: true
   },
 ];
 
@@ -149,7 +151,7 @@ class DocumentService extends BaseService<Document> {
 
   logView(id: string) {
     const doc = this.getById(id);
-    if (doc) this.update(id, { viewCount: (doc.viewCount || 0) + 1, isSigned: true });
+    if (doc) this.update(id, { viewCount: (doc.viewCount || 0) + 1 });
   }
 
   downloadDocument(id: string) {
@@ -188,7 +190,7 @@ class DocumentService extends BaseService<Document> {
     const doc = this.getById(id);
     if (!doc) return false;
     const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s);
-    return !!this.update(id, { signatures });
+    return !!this.update(id, { signatures, isSigned: true });
   }
   rejectSignature(id: string, signerId: string, reason: string) { 
     const doc = this.getById(id);
