@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
-
 import { PageHeader } from "./PageHeader";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { SubscriptionBanner } from "../shared/SubscriptionBanner";
 
 interface PageTemplateProps {
   children: ReactNode;
