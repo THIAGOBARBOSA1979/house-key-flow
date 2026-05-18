@@ -1,5 +1,6 @@
 export interface Inspection {
   id: string;
+  company_id?: string;
   property: string;
   unit: string;
   client: string;

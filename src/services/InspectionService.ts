@@ -4,6 +4,7 @@ import { technicianService } from "./TechnicianService";
 
 export interface Inspection {
   id: string;
+  company_id?: string;
   property: string;
   unit: string;
   client: string;
@@ -121,23 +122,26 @@ class InspectionService extends BaseService<Inspection> {
     return updated;
   }
 
-  getStatsByStatus() {
-    return this.items.reduce((acc, curr) => {
+  getStatsByStatus(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((i: any) => i.company_id === companyId) : []);
+    return relevantItems.reduce((acc, curr) => {
       acc[curr.status] = (acc[curr.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
   }
 
-  getStatsByType() {
-    return this.items.reduce((acc, curr) => {
+  getStatsByType(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((i: any) => i.company_id === companyId) : []);
+    return relevantItems.reduce((acc, curr) => {
       acc[curr.type] = (acc[curr.type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
   }
 
 
-  getStatsByTechnician() {
-    return this.items.reduce((acc, curr) => {
+  getStatsByTechnician(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter((i: any) => i.company_id === companyId) : []);
+    return relevantItems.reduce((acc, curr) => {
       const tech = this.getTechnicianById(curr.technician);
       const name = tech?.name || "Desconhecido";
       acc[name] = (acc[name] || 0) + 1;

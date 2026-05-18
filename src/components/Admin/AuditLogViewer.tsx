@@ -26,6 +26,7 @@ import { isValid } from "date-fns";
 import { cn, safeFormat } from "@/lib/utils";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services/AuditLogService";
 import { exportService } from "@/services/ExportService";
+import { useAuth } from "@/contexts/AuthContext";
 import { DataTable } from "@/components/shared/DataTable";
 import {
   Dialog,
@@ -118,6 +119,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
     return () => window.removeEventListener('a2_audit_log_created', handleNewLog);
   }, []);
 
+  const { user } = useAuth();
+  
   const filteredLogs = useMemo(() => {
     return auditLogService.getFilteredLogs({
       searchTerm,
@@ -126,9 +129,11 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
       entityType: filterEntityType,
       entityId,
       dateFrom: dateFrom ? new Date(dateFrom) : undefined,
-      dateTo: dateTo ? new Date(dateTo) : undefined
+      dateTo: dateTo ? new Date(dateTo) : undefined,
+      companyId: user?.company_id,
+      isSuperAdmin: user?.is_super_admin
     });
-  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo]);
+  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo, user?.company_id, user?.is_super_admin]);
 
   const totalPages = Math.max(1, Math.ceil(filteredLogs.length / ITEMS_PER_PAGE));
   const paginatedLogs = filteredLogs.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);

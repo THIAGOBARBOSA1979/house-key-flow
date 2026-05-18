@@ -42,7 +42,7 @@ export const useUsers = () => {
     });
   }, [userList, filters]);
 
-  const stats = useMemo(() => userService.getStats(companyId), [companyId]);
+  const stats = useMemo(() => userService.getStats(companyId, user?.is_super_admin), [companyId, user?.is_super_admin]);
 
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     if (editingUserId) {

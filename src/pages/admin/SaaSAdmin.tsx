@@ -37,7 +37,7 @@ import { Navigate } from "react-router-dom";
 export default function SaaSAdmin() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [companies, setCompanies] = useState<Company[]>(companyService.getAll());
+  const [companies, setCompanies] = useState<Company[]>(companyService.getAll(undefined, true));
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'basic' as SubscriptionPlan });
 
@@ -49,7 +49,7 @@ export default function SaaSAdmin() {
   const handleToggleStatus = (id: string, currentStatus: CompanyStatus) => {
     const nextStatus: CompanyStatus = currentStatus === 'active' ? 'suspended' : 'active';
     companyService.toggleStatus(id, nextStatus);
-    setCompanies(companyService.getAll());
+    setCompanies(companyService.getAll(undefined, true));
     toast({
       title: "Status atualizado",
       description: `Empresa agora está ${nextStatus === 'active' ? 'Ativa' : 'Suspensa'}.`
@@ -69,7 +69,7 @@ export default function SaaSAdmin() {
       updated_at: new Date()
     });
     
-    setCompanies(companyService.getAll());
+    setCompanies(companyService.getAll(undefined, true));
     setIsAddOpen(false);
     toast({ title: "Empresa cadastrada", description: "O novo tenant foi criado com sucesso." });
   };

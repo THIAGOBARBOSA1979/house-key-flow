@@ -6,12 +6,14 @@ import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { useToast } from "@/hooks/use-toast";
 import { exportService } from "@/services/ExportService";
 import { auditLogService } from "@/services/AuditLogService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AuditLogs = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleExport = () => {
-    const logs = auditLogService.getAllLogs();
+    const logs = auditLogService.getAllLogs(user?.company_id, user?.is_super_admin);
     exportService.exportToCSV(logs, "logs_auditoria_sistema");
     toast({
       title: "Exportação concluída",
