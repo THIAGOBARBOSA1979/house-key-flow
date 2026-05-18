@@ -13,18 +13,21 @@ describe('Architectural Regression - BaseService', () => {
     company_id?: string;
   }
 
-  let service: BaseService<TestItem>;
+  class TestService extends BaseService<TestItem> {}
+
+  let service: TestService;
 
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
     
-    service = new BaseService<TestItem>({
+    service = new TestService({
       storageKey: 'regression_test',
       auditEntityType: 'user',
       shouldSyncWithSupabase: true
     }, []);
   });
+
 
   it('should sync create operation to Supabase when enabled', async () => {
     const spy = vi.spyOn(Supabase.db, 'create');
