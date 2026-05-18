@@ -98,8 +98,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return newItem;
   }
 
-  update(id: string, data: Partial<T>): T | undefined {
+  update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
+
     if (index === -1) return undefined;
     this.items[index] = { ...this.items[index], ...data };
     this.persist();
