@@ -53,7 +53,18 @@ class FinancialService extends BaseService<Installment> {
     };
   }
 
-  getGlobalMetrics() {
+  getGlobalMetrics(companyId?: string, isSuperAdmin?: boolean) {
+    // In a real multi-tenant scenario, these would be filtered by companyId in the database
+    // Mocking filtering for now
+    if (!isSuperAdmin && !companyId) return {
+      totalReceivable: 0,
+      totalPaid: 0,
+      totalOverdue: 0,
+      collectionEfficiency: 0,
+      billingGroups: [],
+      revenueByMonth: []
+    };
+
     return {
       totalReceivable: 10000000,
       totalPaid: 8450000,
