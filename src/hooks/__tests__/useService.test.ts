@@ -1,16 +1,17 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useService } from '../useService';
-import { useAuth } from '@/contexts/AuthContext';
+import * as AuthContext from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 // Mock dependencies
-vi.mock('@/contexts/AuthContext', () => ({
-  useAuth: vi.fn(),
-}));
-
 vi.mock('@/hooks/use-toast', () => ({
   useToast: vi.fn(() => ({ toast: vi.fn() })),
+}));
+
+// We mock the whole module to control useAuth
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: vi.fn(),
 }));
 
 const mockService = {
@@ -27,20 +28,20 @@ describe('useService Hook', () => {
   });
 
   it('should subscribe to service and return items for a tenant', async () => {
-    (useAuth as any).mockReturnValue({
+    // Inject mock implementation
+    (AuthContext.useAuth as any).mockReturnValue({
       user: { id: 'user-1', company_id: 'comp-1', is_super_admin: false }
     });
 
     const { result } = renderHook(() => useService(mockService));
     
-    // items should be filtered by company_id in the subscribe callback logic of useService
     expect(result.current.items).toHaveLength(1);
     expect(result.current.items[0].id).toBe('1');
     expect(mockService.subscribe).toHaveBeenCalled();
   });
 
   it('should show empty list if no companyId and not super admin', () => {
-    (useAuth as any).mockReturnValue({
+    (AuthContext.useAuth as any).mockReturnValue({
       user: { id: 'user-2', company_id: null, is_super_admin: false }
     });
 
