@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { companyService, Company, CompanyStatus, SubscriptionPlan } from "@/services/CompanyService";
+import { companyService, Company, CompanyStatus, SubscriptionPlan, CompanySettings } from "@/services/CompanyService";
 import { DataTable } from "@/components/shared/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,13 @@ import {
   CreditCard,
   Plus,
   Users as UsersIcon,
-  Users,
-  Activity
+  Activity,
+  Edit2,
+  Save,
+  Trash2,
+  Mail,
+  Smartphone,
+  ShieldCheck
 } from "lucide-react";
 import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
@@ -41,6 +46,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import { Separator } from "@/components/ui/separator";
 
 export default function SaaSAdmin() {
   const { user } = useAuth();
@@ -48,6 +54,8 @@ export default function SaaSAdmin() {
   const [companies, setCompanies] = useState<Company[]>(companyService.getAll(undefined, true));
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState<Partial<Company>>({});
   const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'basic' as SubscriptionPlan });
   const [isUpdatingSub, setIsUpdatingSub] = useState(false);
   const [expiryDate, setExpiryDate] = useState<string>('');
