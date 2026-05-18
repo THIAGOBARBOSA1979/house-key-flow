@@ -93,36 +93,40 @@ function DataViewComponent<T>({
 
   if (isLoading) {
     const effectiveSkeletonType = skeletonType || (viewMode === 'table' ? 'table' : viewMode === 'list' ? 'list' : 'card');
-    return <SkeletonLoader type={effectiveSkeletonType} count={itemsPerPage || 6} />;
+    return (
+      <div className="space-y-4 animate-in fade-in duration-500">
+        <SkeletonLoader type={effectiveSkeletonType} count={itemsPerPage || 6} />
+      </div>
+    );
   }
 
   if (isError) {
     return (
-      <EmptyState 
-        variant="error"
-        title={error?.title || t('common.error_title', 'Sincronização Interrompida')}
-        description={error?.message || t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
-
-
-        actionLabel={error?.retry ? t('common.retry', 'Reiniciar Protocolo') : undefined}
-
-        onAction={error?.retry}
-      />
+      <div className="animate-in zoom-in duration-300">
+        <EmptyState 
+          variant="error"
+          title={error?.title || t('common.error_title', 'Sincronização Interrompida')}
+          description={error?.message || t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
+          actionLabel={error?.retry ? t('common.retry', 'Reiniciar Protocolo') : undefined}
+          onAction={error?.retry}
+        />
+      </div>
     );
   }
 
   if (items.length === 0) {
     return (
-      <EmptyState 
-        title={emptyState?.title || t('common.empty_title', 'Repositório Digital Vazio')}
-        description={emptyState?.description || t('common.empty_description', 'Nenhum protocolo ou registro estratégico foi localizado nesta coordenada.')}
-
-
-        icon={emptyState?.icon}
-        action={emptyState?.action}
-      />
+      <div className="animate-in fade-in zoom-in duration-500">
+        <EmptyState 
+          title={emptyState?.title || t('common.empty_title', 'Repositório Digital Vazio')}
+          description={emptyState?.description || t('common.empty_description', 'Nenhum protocolo ou registro estratégico foi localizado nesta coordenada.')}
+          icon={emptyState?.icon}
+          action={emptyState?.action}
+        />
+      </div>
     );
   }
+
 
   const totalItems = items.length;
   const isPaginationEnabled = itemsPerPage > 0 && totalItems > itemsPerPage;
