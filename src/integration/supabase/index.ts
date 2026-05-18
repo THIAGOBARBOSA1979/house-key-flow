@@ -1,3 +1,4 @@
+import { SupabaseConfig } from './config';
 import { SupabaseAuth } from './auth';
 import { SupabaseDatabase } from './database';
 import { SupabaseStorage } from './storage';
@@ -13,6 +14,7 @@ export * from './types';
  * a unified interface for Auth, Database, Storage, and Edge Functions.
  */
 export const Supabase = {
+  config: SupabaseConfig,
   auth: SupabaseAuth,
   db: SupabaseDatabase,
   storage: SupabaseStorage,
