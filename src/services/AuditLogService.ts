@@ -48,13 +48,13 @@ const INITIAL_LOGS: AuditLogEntry[] = [
     id: "log-1", entityType: 'inspection', entityId: '1',
     action: 'created', performedBy: 'admin-1', performedByName: 'Ana Costa',
     performedByRole: 'admin', timestamp: new Date(Date.now() - 30 * 86400000),
-    details: 'Vistoria de pré-entrega criada para Edifício Aurora, Unidade 204.'
+    details: 'Protocolo de vistoria homologado para Edifício Aurora, Unidade estratégica 204.'
   },
   {
     id: "log-2", entityType: 'inspection', entityId: '1',
     action: 'scheduled', performedBy: 'admin-1', performedByName: 'Ana Costa',
     performedByRole: 'admin', timestamp: new Date(Date.now() - 28 * 86400000),
-    details: 'Vistoria agendada para 15/05/2025 às 10:00.'
+    details: 'Vistoria técnica integrada ao cronograma operacional: 15/05/2025 às 10:00.'
   },
 ];
 

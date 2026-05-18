@@ -35,8 +35,9 @@ const Warranty = () => {
 
   return (
     <PageTemplate
-      title="Gestão de Garantias"
-      description="Fluxo completo de assistência técnica, controle de SLA e métricas de desempenho."
+      title="Ecossistema de Garantias & Assistência"
+      description="Governança completa do pós-venda: controle de SLAs, fluxos de assistência e inteligência operacional."
+
       actions={<WarrantyPageActions onExport={exportData} />}
     >
       {error && <WarrantyErrorAlert error={error} onRefresh={refresh} />}

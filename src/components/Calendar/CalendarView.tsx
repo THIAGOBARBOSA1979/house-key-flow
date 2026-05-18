@@ -45,7 +45,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
       <Card className="lg:col-span-7 xl:col-span-8 card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="space-y-1">
-            <CardTitle className="text-h4">Calendário de Agendamentos</CardTitle>
+            <CardTitle className="text-h4 font-black">Cronograma de Operações</CardTitle>
             <CardDescription className="text-sem-body-sm font-medium">
               Visualize e selecione datas para detalhes
             </CardDescription>
@@ -53,7 +53,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
           <div className="hidden sm:flex items-center gap-2">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full bg-primary"></div>
-              <span className="text-[10px] font-bold text-muted-foreground uppercase">Com agenda</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase">Protocolos Ativos</span>
             </div>
           </div>
         </CardHeader>
@@ -81,7 +81,7 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
               {date ? safeFormat(date, "dd/MM/yyyy") : safeFormat(new Date(), "dd/MM/yyyy")}
             </CardTitle>
             <CardDescription className="text-sem-tiny uppercase font-bold tracking-tighter text-primary mt-1">
-              {filteredAppointments.length} agendamentos encontrados
+              {filteredAppointments.length} protocolos integrados
             </CardDescription>
           </div>
           {date && (
@@ -100,8 +100,9 @@ export function CalendarView({ appointments, onViewDetails }: CalendarViewProps)
               <div className="p-4 bg-muted/20 rounded-full w-fit mx-auto mb-4">
                 <CalendarIcon className="h-10 w-10 text-muted-foreground/30" />
               </div>
-              <h3 className="text-label mb-1">Nenhum agendamento</h3>
-              <p className="text-sem-body-sm text-muted-foreground">Não há compromissos registrados para esta data.</p>
+              <h3 className="text-label mb-1 font-black">Janela Livre</h3>
+              <p className="text-sem-body-sm text-muted-foreground font-medium">Nenhum protocolo estratégico agendado para este ciclo.</p>
+
             </div>
           ) : (
             filteredAppointments.map((appointment) => (

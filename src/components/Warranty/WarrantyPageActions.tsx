@@ -13,7 +13,8 @@ export const WarrantyPageActions = ({ onExport }: WarrantyPageActionsProps) => {
       onClick={onExport} 
       className="h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
     >
-      <Download className="mr-2 h-4 w-4" /> Exportar Dados
+      <Download className="mr-2 h-4 w-4" /> Relatório Executivo
     </Button>
+
   );
 };

@@ -73,7 +73,8 @@ export function EmptyState({
           )}
         >
           {isError && !actionLabel && <RefreshCw className="mr-2 h-3 w-3 animate-spin-slow" />}
-          {displayActionLabel}
+          {displayActionLabel || (isError ? "Sincronizar Dados" : "Recomeçar")}
+
         </Button>
       )}
       

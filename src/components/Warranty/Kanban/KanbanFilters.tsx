@@ -61,7 +61,7 @@ export function KanbanFilters({
       <div className="relative flex-1 min-w-[200px] max-w-[300px]">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Buscar solicitações..."
+          placeholder="Pesquisar protocolos..."
           value={filters.search || ""}
           onChange={(e) => updateFilter("search", e.target.value)}
           className="pl-9"
@@ -115,10 +115,11 @@ export function KanbanFilters({
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Filtros Avançados</SheetTitle>
-            <SheetDescription>
-              Refine a visualização do Kanban
+            <SheetTitle className="font-black">Inteligência de Dados</SheetTitle>
+            <SheetDescription className="font-medium">
+              Refine a análise do portfólio para tomadas de decisão estratégica.
             </SheetDescription>
+
           </SheetHeader>
           
           <div className="space-y-4 mt-6">

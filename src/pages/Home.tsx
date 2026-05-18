@@ -102,12 +102,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link to="/login">
                 <Button size="lg" className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-brand/20">
-                  Acessar Plataforma
+                  Integrar Operação
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </Link>
               <Button size="lg" variant="outline" className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-2">
-                Agendar Demonstração
+                Análise Técnica de Portfólio
+
               </Button>
             </div>
 

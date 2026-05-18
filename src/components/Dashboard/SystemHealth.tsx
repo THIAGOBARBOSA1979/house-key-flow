@@ -13,7 +13,7 @@ export const SystemHealth = ({ metrics }: SystemHealthProps) => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-h2 flex items-center gap-2">
           <Activity size={24} className="text-primary" />
-          Saúde do Sistema
+          Métricas de Infraestrutura
         </h2>
         <StatusBadge 
           status={metrics.status === 'healthy' ? 'success' : metrics.status} 
@@ -24,15 +24,15 @@ export const SystemHealth = ({ metrics }: SystemHealthProps) => {
       <Card className="card-standard border-none bg-card/40 backdrop-blur-md p-6 rounded-3xl shadow-sem-md group hover:shadow-sem-lg transition-all duration-500">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Logs de Auditoria</p>
+            <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Protocolos Registrados</p>
             <p className="text-xl font-black group-hover:text-primary transition-colors animate-pulse">{metrics.database.auditLogCount}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Armazenamento</p>
+            <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Ativos Digitais</p>
             <p className="text-xl font-black">{metrics.storageUsage}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Tempo Online</p>
+            <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Disponibilidade Operacional</p>
             <p className="text-sm font-bold text-emerald-600">{metrics.uptime}</p>
           </div>
           <div className="space-y-1">

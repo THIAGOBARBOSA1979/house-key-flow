@@ -53,7 +53,7 @@ export const StatsCard = ({
       <CardContent className="p-4 md:p-6 cursor-pointer">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/80 mb-2 truncate">
+            <p className="text-[10px] uppercase font-black tracking-[0.15em] text-muted-foreground/80 mb-2 truncate">
               {label}
             </p>
             <div className="flex items-baseline gap-2">

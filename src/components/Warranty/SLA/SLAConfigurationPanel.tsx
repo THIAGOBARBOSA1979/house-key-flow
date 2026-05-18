@@ -111,14 +111,15 @@ export function SLAConfigurationPanel() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
-          Configuração de SLA por Tipo
+        <CardTitle className="flex items-center gap-2 font-black tracking-tight">
+          <Settings className="h-5 w-5 text-primary" />
+          Governança de SLAs por Categoria
         </CardTitle>
-        <CardDescription>
-          Defina os prazos máximos (em dias úteis) para cada etapa do fluxo de garantia
+        <CardDescription className="font-medium text-muted-foreground/70">
+          Configure as diretrizes de tempo para cada etapa técnica, garantindo a agilidade do ecossistema.
         </CardDescription>
       </CardHeader>
+
       <CardContent>
         {/* Info alert */}
         <div className="flex items-start gap-3 p-3 mb-4 rounded-lg bg-blue-50 border border-blue-200">

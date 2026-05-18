@@ -76,7 +76,8 @@ export default function Inspections() {
         onClick={handleExport}
         className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
       >
-        <Download className="mr-2 h-4 w-4" /> Exportar Dados
+        <Download className="mr-2 h-4 w-4" /> Inteligência de Dados
+
       </Button>
       <Button 
         variant={viewMode === "calendar" ? "default" : "outline"}
@@ -84,7 +85,8 @@ export default function Inspections() {
         className="rounded-xl h-11 px-5 font-bold border-primary/20 transition-all active:scale-95"
       >
         {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
-        {viewMode === "calendar" ? "Visualizar Lista" : "Visualizar Calendário"}
+        {viewMode === "calendar" ? "Módulo de Lista" : "Cronograma Estratégico"}
+
       </Button>
       <ScheduleInspectionDialog onSuccess={loadData} />
     </div>
@@ -113,7 +115,7 @@ export default function Inspections() {
             <BarChart className="h-4 w-4" /> Estatísticas
           </TabsTrigger>
           <TabsTrigger value="logs" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <History className="h-4 w-4" /> Logs
+            <History className="h-4 w-4" /> AuditLog
           </TabsTrigger>
         </TabsList>
 

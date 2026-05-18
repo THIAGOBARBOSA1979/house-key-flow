@@ -89,7 +89,7 @@ export const DashboardCharts = ({
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
         <CardHeader className="pb-4 border-b border-border/10">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg md:text-h4 font-black">Conformidade SLA</CardTitle>
+            <CardTitle className="text-lg md:text-h4 font-black">Conformidade Global de SLAs</CardTitle>
             <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black text-[10px]">
               {warrantyFlowService.calculateMetrics().slaComplianceRate}% META
             </Badge>
@@ -122,18 +122,18 @@ export const DashboardCharts = ({
              </svg>
              <div className="absolute inset-0 flex flex-col items-center justify-center">
                <span className="text-4xl font-black tracking-tighter text-foreground font-sans">{warrantyFlowService.calculateMetrics().slaComplianceRate}%</span>
-               <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Global</span>
+               <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Sincronização Ativa</span>
              </div>
           </div>
           <p className="text-xs font-bold text-muted-foreground mt-4 italic text-center">
-            {warrantyFlowService.calculateMetrics().onTrackCount} chamados dentro do prazo acordado.
+            {warrantyFlowService.calculateMetrics().onTrackCount} protocolos técnicos em conformidade com o cronograma.
           </p>
         </CardContent>
       </Card>
 
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
         <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-lg md:text-h4 font-black">Distribuição por Etapa</CardTitle>
+          <CardTitle className="text-lg md:text-h4 font-black">Fluxo por Ciclo Técnico</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
@@ -170,7 +170,7 @@ export const DashboardCharts = ({
 
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-lg md:text-h4 font-black">Vistorias por Mês</CardTitle>
+          <CardTitle className="text-lg md:text-h4 font-black">Entregas Técnicas Homologadas</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
@@ -215,7 +215,7 @@ export const DashboardCharts = ({
 
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-lg md:text-h4 font-black">Chamados por Categoria</CardTitle>
+          <CardTitle className="text-lg md:text-h4 font-black">Incidências por Matriz Técnica</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">

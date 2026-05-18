@@ -70,7 +70,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar templates..."
+            placeholder="Pesquisar diretrizes..."
             className="pl-8 h-11 rounded-xl"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -112,7 +112,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
 
         <Button onClick={onCreateNew} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20">
           <Plus className="mr-2 h-4 w-4" />
-          Novo Template
+          Nova Matriz Técnica
         </Button>
       </div>
 
@@ -123,8 +123,8 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
               <Settings className="w-5 h-5 animate-spin-slow" />
             </div>
             <div>
-              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote</p>
-              <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} templates selecionados</p>
+              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações de Governança</p>
+              <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} diretrizes selecionadas</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -194,7 +194,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                         onSelectTemplate(template);
                       }}
                     >
-                      Usar Template
+                      Habilitar Checklist
                     </Button>
                     
                     <Button 
@@ -261,7 +261,7 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
                   </div>
                   
                   <div className="flex gap-2">
-                    <Button size="sm" className="rounded-xl h-9 px-4 font-bold" onClick={(e) => { e.stopPropagation(); onSelectTemplate(template); }}>Usar</Button>
+                    <Button size="sm" className="rounded-xl h-9 px-4 font-bold" onClick={(e) => { e.stopPropagation(); onSelectTemplate(template); }}>Habilitar</Button>
                     <Button size="sm" variant="ghost" className="rounded-xl h-9 w-9 p-0" onClick={(e) => { e.stopPropagation(); handleDuplicateTemplate(template); }}>
                       <Copy className="h-4 w-4" />
                     </Button>

@@ -45,34 +45,38 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
   
   const handleViewDetails = () => {
     toast({
-      title: "Detalhes da vistoria",
-      description: `Vistoria ${inspection.id} • ${inspection.property}, Unidade ${inspection.unit}.`,
+      title: "Resumo da Atividade Técnica",
+      description: `Vistoria ${inspection.id} • Unidade estratégica ${inspection.unit} em ${inspection.property}.`,
     });
+
   };
 
   const handleCancelInspection = () => {
     inspectionService.updateStatus(inspection.id, "cancelled");
     toast({
-      title: "Vistoria cancelada",
-      description: `A vistoria de ${inspection.client} foi cancelada.`,
+      title: "Agendamento Descontinuado",
+      description: `O protocolo de vistoria para ${inspection.client} foi removido do cronograma ativo.`,
       variant: "destructive",
     });
+
     if (onUpdate) onUpdate();
   };
 
   const handleSendReminder = () => {
     toast({
-      title: "Lembrete enviado",
-      description: `Notificação enviada para ${inspection.client}.`,
+      title: "Protocolo de Lembrete Ativado",
+      description: `O cliente ${inspection.client} recebeu uma atualização de status via multicanal.`,
     });
+
   };
 
   const handleInspectionComplete = (data: any) => {
     inspectionService.updateStatus(inspection.id, "complete");
     toast({
-      title: "Vistoria concluída",
-      description: "O status da vistoria foi atualizado para concluído.",
+      title: "Vistoria Homologada",
+      description: "O ciclo técnico foi finalizado e os dados foram integrados ao portfólio.",
     });
+
     if (onUpdate) onUpdate();
   };
 
