@@ -83,7 +83,7 @@ export function DataView<T>({
   items,
   viewMode = 'grid',
   isLoading = false,
-  skeletonType = 'card',
+  skeletonType,
   itemsPerPage = 0,
   gridClassName,
   emptyState,
@@ -95,6 +95,7 @@ export function DataView<T>({
   columns,
   onRowClick,
 }: DataViewProps<T>) {
+
   const [currentPage, setCurrentPage] = useState(1);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
