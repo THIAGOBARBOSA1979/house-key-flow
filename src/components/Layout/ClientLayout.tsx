@@ -170,7 +170,7 @@ const MobileHeader = ({
 }: {
   onToggleSidebar: () => void;
 }) => {
-  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 md:hidden">
+  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 lg:hidden">
       <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="rounded-xl hover:bg-primary/10">
         <Menu size={24} className="text-primary" />
       </Button>
@@ -246,7 +246,7 @@ const ClientLayout = () => {
   // Check if the screen is mobile size
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 1024);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -266,7 +266,7 @@ const ClientLayout = () => {
       <MobileHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       
       {/* Sidebar for desktop and mobile */}
-      <div className={cn("fixed inset-y-0 left-0 z-fixed w-sidebar-width bg-background border-r border-border/50 transform transition-all duration-slow ease-out-sem md:translate-x-0 shadow-sem-lg", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
+      <div className={cn("fixed inset-y-0 left-0 z-fixed w-sidebar-width bg-background border-r border-border/50 transform transition-all duration-slow ease-out-sem lg:translate-x-0 shadow-sem-lg", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
         {/* Sidebar header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-border/40">
           <Link to="/client" className="flex items-center gap-3" onClick={handleLinkClick}>
@@ -278,7 +278,7 @@ const ClientLayout = () => {
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Exclusividade</span>
             </div>
           </Link>
-          <Button variant="ghost" size="icon" className="md:hidden rounded-lg" onClick={() => setSidebarOpen(false)}>
+          <Button variant="ghost" size="icon" className="lg:hidden rounded-lg" onClick={() => setSidebarOpen(false)}>
             <X size={20} />
           </Button>
         </div>
@@ -349,15 +349,15 @@ const ClientLayout = () => {
       {/* Backdrop overlay for mobile */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden animate-in fade-in duration-300" 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-300" 
           onClick={() => setSidebarOpen(false)} 
         />
       )}
       
       {/* Main content */}
-      <div className="md:ml-sidebar-width min-h-screen flex flex-col">
+      <div className="lg:ml-sidebar-width min-h-screen flex flex-col">
         {/* Desktop header - simplified without images */}
-        <header className="sticky top-0 z-30 hidden md:flex items-center justify-between h-20 px-6 lg:px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
+        <header className="sticky top-0 z-30 hidden lg:flex items-center justify-between h-20 px-6 lg:px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
           <div className="flex flex-col">
             <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
             <div className="flex items-center gap-2 mt-1">

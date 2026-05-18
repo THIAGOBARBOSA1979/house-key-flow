@@ -108,8 +108,8 @@ export function DataView<T>({
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     if (containerRef.current) {
-      const yOffset = -100;
-      const y = containerRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+      const headerOffset = 80; // Estimate header height
+      const y = containerRef.current.getBoundingClientRect().top + window.scrollY - headerOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
@@ -242,7 +242,7 @@ export function DataView<T>({
       default:
         if (renderGrid) {
           return (
-            <ResponsiveGrid columns={3} mobileCols={1} tabletCols={2} gap="layout" className={cn("animate-fade-in", gridClassName)}>
+            <ResponsiveGrid columns={3} mobileCols={1} tabletCols={2} gap="layout" className={cn("animate-fade-in w-full", gridClassName)}>
               {displayedItems.map((item, index) => (
                 <React.Fragment key={index}>
                   {renderGrid(item)}
@@ -265,7 +265,7 @@ export function DataView<T>({
       {renderContent()}
       
       {isPaginationEnabled && (
-        <div className="flex flex-col sm:flex-row items-center justify-between py-6 border-t border-border/10 gap-4 mt-8">
+        <div className="flex flex-col md:flex-row items-center justify-between py-6 border-t border-border/10 gap-4 mt-8">
           <p className="text-sm text-muted-foreground font-medium">
             Mostrando <span className="font-bold text-foreground">{(effectivePage - 1) * itemsPerPage + 1}</span> a <span className="font-bold text-foreground">{Math.min(effectivePage * itemsPerPage, totalItems)}</span> de <span className="font-bold text-foreground">{totalItems}</span> registros
           </p>

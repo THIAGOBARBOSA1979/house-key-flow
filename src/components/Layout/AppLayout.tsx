@@ -97,7 +97,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <header 
           className="border-b-border/40 bg-background/80 backdrop-blur-2xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
-          <div className="w-full flex items-center justify-between px-4 md:px-8 transition-all duration-slow max-w-[1600px] mx-auto">
+          <div className="w-full flex items-center justify-between px-4 lg:px-8 transition-all duration-slow max-w-[1600px] mx-auto">
             <div className="flex items-center gap-2 md:gap-4 flex-1">
               <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4 group cursor-default">
                 <HomeIcon size={14} className="group-hover:text-primary transition-colors" />
@@ -106,7 +106,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               </div>
 
               {isMobile ? <div className="w-10" /> : (
-                <div className="relative max-w-md w-full group hidden md:block">
+                <div className="relative max-w-md w-full group hidden lg:block">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-all" />
                   <Input
                     placeholder="Busca global... (Ctrl+K)"
@@ -199,16 +199,16 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               )}
             </div>
 
-            <div className="flex items-center gap-2 md:gap-6 shrink-0">
-              <Button variant="ghost" size="icon" className="relative h-10 w-10 md:h-11 md:w-11 rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group">
+            <div className="flex items-center gap-2 lg:gap-6 shrink-0">
+              <Button variant="ghost" size="icon" className="relative h-10 w-10 lg:h-11 lg:w-11 rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group">
                 <Bell size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-status-critical rounded-full border-2 border-background animate-pulse" />
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10 md:h-12 rounded-2xl gap-2 md:gap-3 pl-1.5 md:pl-2 pr-2 md:pr-4 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10">
-                    <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center font-black text-[10px] md:text-xs uppercase group-hover:scale-105 transition-all shrink-0">
+                  <Button variant="ghost" className="h-10 lg:h-12 rounded-2xl gap-2 lg:gap-3 pl-1.5 lg:pl-2 pr-2 lg:pr-4 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10">
+                    <div className="w-7 h-7 lg:w-9 lg:h-9 rounded-lg lg:rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center font-black text-[10px] lg:text-xs uppercase group-hover:scale-105 transition-all shrink-0">
                       {user?.name?.charAt(0) || "U"}
                     </div>
                     <div className="hidden sm:flex flex-col items-start leading-tight gap-0">
@@ -260,7 +260,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <footer 
           className="py-10 px-10 border-t border-border/20 text-center transition-all duration-slow bg-muted/5 backdrop-blur-sm"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 max-w-7xl mx-auto">
             <p className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground/30">
               A2 Gestão de Propriedades • Enterprise Suite 2026
             </p>

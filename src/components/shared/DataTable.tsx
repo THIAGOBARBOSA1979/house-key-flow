@@ -137,7 +137,7 @@ export function DataTable<T>({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-layout-gap lg:hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-layout-gap lg:hidden">
         {data.map((item, idx) => (
           <div 
             key={idx}
