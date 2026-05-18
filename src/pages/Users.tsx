@@ -76,8 +76,9 @@ const Users = () => {
 
   return (
     <PageTemplate
-      title="Gestão de Usuários"
-      description="Controle de acessos, perfis e vinculação de clientes a unidades."
+      title="Governança de Usuários"
+      description="Gerencie permissões, controle de acesso e vincule clientes às suas respectivas unidades com segurança."
+
       icon={UsersIcon}
       actions={actions}
     >

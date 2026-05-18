@@ -21,26 +21,27 @@ export default function Home() {
   const benefits = [
     {
       icon: Building2,
-      title: "Gestão Completa de Imóveis",
-      description: "Controle total sobre seu portfólio imobiliário com tecnologia avançada e interface intuitiva."
+      title: "Ecossistema de Gestão 360°",
+      description: "Controle absoluto sobre seu portfólio com inteligência de dados e uma interface de alta performance."
     },
     {
       icon: CheckCircle2,
-      title: "Vistorias Digitais Inteligentes",
-      description: "Sistema automatizado de vistorias com relatórios detalhados e acompanhamento em tempo real."
+      title: "Vistorias Técnicas de Precisão",
+      description: "Padronização total e relatórios dinâmicos que garantem a conformidade e agilidade na entrega."
     },
     {
       icon: Shield,
-      title: "Garantias e Suporte 24/7",
-      description: "Atendimento especializado para garantias com processo ágil e transparente."
+      title: "Pós-Venda e Garantias Premium",
+      description: "Fortaleça o relacionamento com seu cliente através de um suporte técnico ágil, transparente e multicanal."
     }
   ];
 
   const stats = [
-    { value: "98%", label: "Satisfação do Cliente", icon: Star },
-    { value: "2.5k+", label: "Clientes Ativos", icon: Users },
-    { value: "15+", label: "Anos de Experiência", icon: Award }
+    { value: "98%", label: "Eficiência Operacional", icon: Star },
+    { value: "5.2k+", label: "Unidades Gerenciadas", icon: Users },
+    { value: "15+", label: "Anos de Liderança", icon: Award }
   ];
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-indigo-50 dark:from-background dark:to-background">
@@ -54,7 +55,8 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-h2 font-black tracking-tighter">A2 Incorporadora</h1>
-                <p className="text-label text-brand">Excelência em Construção</p>
+                <p className="text-label text-brand font-black uppercase tracking-widest">Liderança em Construção</p>
+
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -83,31 +85,32 @@ export default function Home() {
       <section className="section-padding">
         <div className="container-responsive">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
-            <Badge variant="outline" className="bg-brand/10 text-brand border-brand/20">
-              Sistema de Gestão Imobiliária
+            <Badge variant="outline" className="bg-brand/10 text-brand border-brand/20 px-4 py-1.5 font-bold uppercase tracking-wider">
+              Plataforma de Alta Performance
             </Badge>
             
             <h2 className="text-display leading-tight">
-              A tecnologia que sua
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> incorporadora precisa</span>
+              A inteligência definitiva para a 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> gestão da sua incorporadora</span>
             </h2>
             
-            <p className="text-body-lg max-w-3xl mx-auto">
-              Plataforma completa para gestão de imóveis, vistorias digitais e atendimento ao cliente. 
-              Simplifique seus processos e ofereça uma experiência excepcional.
+            <p className="text-body-lg max-w-3xl mx-auto font-medium text-muted-foreground/80">
+              Eleve o padrão da sua operação com vistorias técnicas automatizadas, 
+              gestão de portfólio inteligente e um ecossistema focado em experiência do cliente.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link to="/login">
-                <Button size="lg" className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700">
-                  Entrar no Sistema
+                <Button size="lg" className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-brand/20">
+                  Acessar Plataforma
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline">
-                Solicitar Demonstração
+              <Button size="lg" variant="outline" className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-2">
+                Agendar Demonstração
               </Button>
             </div>
+
           </div>
         </div>
       </section>
@@ -163,12 +166,13 @@ export default function Home() {
       <section className="section-padding bg-gradient-to-r from-gray-900 to-brand dark:from-black dark:to-brand/20">
         <div className="container-responsive">
           <div className="max-w-4xl mx-auto text-center text-white space-y-8">
-            <h3 className="text-display">
-              Pronto para revolucionar sua gestão imobiliária?
+            <h3 className="text-display font-black leading-tight">
+              Pronto para escalar sua operação imobiliária?
             </h3>
-            <p className="text-body-lg text-blue-100/80 max-w-2xl mx-auto">
-              Junte-se a milhares de clientes satisfeitos e experimente a diferença de um sistema completo e intuitivo.
+            <p className="text-body-lg text-blue-100/70 max-w-2xl mx-auto font-medium">
+              Domine seus processos, reduza gargalos operacionais e ofereça a melhor experiência de entrega aos seus clientes.
             </p>
+
             <Link to="/login">
               <Button size="lg" variant="secondary">
                 Começar Agora
