@@ -1,10 +1,10 @@
 import { supabase } from '@/lib/supabase';
-import { RealtimeChannel, RealtimePostgresPayload } from '@supabase/supabase-js';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 export class SupabaseRealtime {
   static subscribeToTable<T extends { [key: string]: any }>(
     table: string,
-    callback: (payload: RealtimePostgresPayload<T>) => void,
+    callback: (payload: any) => void,
     event: 'INSERT' | 'UPDATE' | 'DELETE' | '*' = '*'
   ): RealtimeChannel {
     return supabase
