@@ -114,13 +114,13 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Taxa de Conclusão de Obras</span>
                     <span className="text-sem-body-sm font-black text-emerald-600">
-                      {properties.length > 0 ? Math.round((properties.filter(p => p.progress === 100).length / properties.length) * 100) : 0}%
+                      {financialMetrics?.averageProgress || 0}%
                     </span>
                   </div>
                   <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5 shadow-inner">
                     <div 
                       className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full transition-all duration-1000" 
-                      style={{ width: `${properties.length > 0 ? (properties.filter(p => p.progress === 100).length / properties.length) * 100 : 0}%` }}
+                      style={{ width: `${financialMetrics?.averageProgress || 0}%` }}
                     />
                   </div>
                 </div>
@@ -140,6 +140,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+
 
             </Card>
           </section>
