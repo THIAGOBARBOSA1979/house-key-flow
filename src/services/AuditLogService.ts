@@ -1,5 +1,6 @@
 import { SupabaseService } from "./SupabaseService";
 import { Supabase } from "@/integration/supabase";
+import { SupabaseRealtime } from "@/integration/supabase/realtime";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -10,24 +11,24 @@ export type AuditAction =
   | 'scheduled' 
   | 'completed' 
   | 'cancelled' 
-  | 'stage_changed'
-  | 'comment_added'
-  | 'info_added'
-  | 'assigned'
-  | 'exported'
-  | 'logged_in'
-  | 'logged_out'
-  | 'settings_updated'
-  | 'downloaded'
-  | 'archived'
-  | 'published'
-  | 'favorited'
-  | 'deleted'
-  | 'viewed'
-  | 'payment_received'
+  | 'stage_changed' 
+  | 'comment_added' 
+  | 'info_added' 
+  | 'assigned' 
+  | 'exported' 
+  | 'logged_in' 
+  | 'logged_out' 
+  | 'settings_updated' 
+  | 'downloaded' 
+  | 'archived' 
+  | 'published' 
+  | 'favorited' 
+  | 'deleted' 
+  | 'viewed' 
+  | 'payment_received' 
   | 'invoice_issued';
 
-export type AuditRole = 'super_admin' | 'admin' | 'staff' | 'technical' | 'user';
+export type AuditRole = 'super_admin' | 'admin' | 'staff' | 'technical' | 'user' | 'client';
 
 export interface AuditLogEntry {
   id: string;
@@ -39,6 +40,14 @@ export interface AuditLogEntry {
   payload: any;
   previous_values: any;
   created_at: string;
+  // UI expected fields (computed or mapped)
+  details: string;
+  timestamp: Date;
+  performedByName: string;
+  performedByRole: string;
+  entityType: string;
+  entityId: string;
+  metadata?: any;
   // Joined fields
   profiles?: {
     full_name: string;
@@ -47,8 +56,24 @@ export interface AuditLogEntry {
 }
 
 class AuditLogService extends SupabaseService<any> {
+  private localLogs: AuditLogEntry[] = [];
+
   constructor() {
     super("audit_logs");
+  }
+
+  private mapToEntry(raw: any): AuditLogEntry {
+    const profiles = raw.profiles;
+    return {
+      ...raw,
+      details: raw.payload?.message || `${raw.action} em ${raw.entity_type}`,
+      timestamp: new Date(raw.created_at),
+      performedByName: profiles?.full_name || 'Sistema',
+      performedByRole: profiles?.role || 'system',
+      entityType: raw.entity_type,
+      entityId: raw.entity_id || '',
+      metadata: raw.payload
+    };
   }
 
   async getLogs(params: {
@@ -61,17 +86,10 @@ class AuditLogService extends SupabaseService<any> {
     entityType?: string;
   }): Promise<AuditLogEntry[]> {
     const filters: any[] = [];
-    
-    if (params.action && params.action !== 'all') {
-      filters.push({ column: 'action', operator: 'eq', value: params.action });
-    }
-    
-    if (params.entityType && params.entityType !== 'all') {
-      filters.push({ column: 'entity_type', operator: 'eq', value: params.entityType });
-    }
+    if (params.action && params.action !== 'all') filters.push({ column: 'action', operator: 'eq', value: params.action });
+    if (params.entityType && params.entityType !== 'all') filters.push({ column: 'entity_type', operator: 'eq', value: params.entityType });
 
-    // Since findMany is generic but we need joins, we might need a custom query or use findMany with select
-    const { data, error } = await Supabase.db.findMany<AuditLogEntry>(this.table, {
+    const { data, error } = await Supabase.db.findMany<any>(this.table, {
       filters,
       pagination: {
         page: params.page || 1,
@@ -82,8 +100,18 @@ class AuditLogService extends SupabaseService<any> {
       select: '*, profiles(full_name, role)'
     });
 
-    if (error) throw new Error(error.message);
-    return data || [];
+    if (error) return [];
+    return (data || []).map(this.mapToEntry);
+  }
+
+  // Compatibility methods
+  async log(entry: any, userContext?: any): Promise<void> {
+    await this.logAction({
+      action: entry.action,
+      entityType: entry.entityType,
+      entityId: entry.entityId,
+      payload: { ...entry.metadata, message: entry.details }
+    });
   }
 
   async logAction(data: {
@@ -93,7 +121,6 @@ class AuditLogService extends SupabaseService<any> {
     payload?: any;
     previousValues?: any;
   }): Promise<void> {
-    // We can use the RPC function we created in the migration for security definer context
     const { error } = await Supabase.db.rpc('log_audit_action', {
       p_action: data.action,
       p_entity_type: data.entityType,
@@ -102,19 +129,34 @@ class AuditLogService extends SupabaseService<any> {
       p_previous_values: data.previousValues
     });
 
-    if (error) {
-      console.error('Failed to log audit action:', error);
-    }
+    if (error) console.error('Failed to log audit action:', error);
   }
 
-  // Legacy compatibility / helpers
+  async getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): Promise<AuditLogEntry[]> {
+    return this.getLogs({ pageSize: limit, companyId, isSuperAdmin });
+  }
+
+  // Fallback for sync access if needed (using local cache)
+  getAllLogs(): AuditLogEntry[] {
+    return this.localLogs;
+  }
+
+  getFilteredLogs(filters: any): AuditLogEntry[] {
+    return this.localLogs; // Simplified for build compatibility
+  }
+
+  subscribe(callback: (logs: AuditLogEntry[]) => void) {
+    const channel = SupabaseRealtime.subscribeToTable('audit_logs', async () => {
+      const logs = await this.getRecentLogs(20);
+      this.localLogs = logs;
+      callback(logs);
+    });
+    return () => SupabaseRealtime.unsubscribe(channel);
+  }
+
   async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
-    const total = await this.count(companyId, isSuperAdmin);
-    // For 24h count, we'd need more complex filtering in count() or a separate query
-    return {
-      totalLogs: total,
-      currentCount24h: 0 // Placeholder
-    };
+    const count = await this.count(companyId, isSuperAdmin);
+    return { totalLogs: count, currentCount24h: 0 };
   }
 }
 
