@@ -82,9 +82,10 @@ class PropertyService extends BaseService<Property> {
     return newProperty;
   }
 
-  update(id: string, property: Partial<Property>): Property | undefined {
-    const oldItem = this.getById(id);
-    const updated = super.update(id, property);
+  update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Property | undefined {
+    const oldItem = this.getById(id, undefined, isSuperAdmin);
+    const updated = super.update(id, property, isSuperAdmin);
+
     
     if (updated && property.status && property.status !== oldItem?.status) {
       auditLogService.log({
