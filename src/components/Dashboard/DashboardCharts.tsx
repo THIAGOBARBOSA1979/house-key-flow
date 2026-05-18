@@ -85,11 +85,11 @@ export const DashboardCharts = ({
   }, [financialData]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden md:col-span-1">
         <CardHeader className="pb-4 border-b border-border/10">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-h4">Conformidade SLA</CardTitle>
+            <CardTitle className="text-lg md:text-h4 font-black">Conformidade SLA</CardTitle>
             <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black text-[10px]">
               {warrantyFlowService.calculateMetrics().slaComplianceRate}% META
             </Badge>
@@ -131,9 +131,9 @@ export const DashboardCharts = ({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
+      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden md:col-span-1">
         <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-h4">Distribuição por Etapa</CardTitle>
+          <CardTitle className="text-lg md:text-h4 font-black">Distribuição por Etapa</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
@@ -170,7 +170,7 @@ export const DashboardCharts = ({
 
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-h4">Vistorias por Mês</CardTitle>
+          <CardTitle className="text-lg md:text-h4 font-black">Vistorias por Mês</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
@@ -215,7 +215,7 @@ export const DashboardCharts = ({
 
       <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
         <CardHeader className="pb-4 border-b border-border/10">
-          <CardTitle className="text-h4">Chamados por Categoria</CardTitle>
+          <CardTitle className="text-lg md:text-h4 font-black">Chamados por Categoria</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-72 w-full">
