@@ -7,12 +7,18 @@ import { DataViewMode } from '@/types/dataView';
 
 // Mock components that might be problematic in tests
 vi.mock('./SkeletonLoader', () => ({
-  SkeletonLoader: () => <div data-testid="skeleton">Loading...</div>
+  SkeletonLoader: ({ type }: { type: string }) => <div data-testid="skeleton" data-type={type}>Loading...</div>
 }));
 
 vi.mock('./EmptyState', () => ({
-  EmptyState: ({ title }: { title: string }) => <div data-testid="empty">{title}</div>
+  EmptyState: ({ title, description }: { title: string; description: string }) => (
+    <div data-testid="empty">
+      <h3 data-testid="empty-title">{title}</h3>
+      <p data-testid="empty-description">{description}</p>
+    </div>
+  )
 }));
+
 
 describe('DataView Component', () => {
   const mockItems = [
