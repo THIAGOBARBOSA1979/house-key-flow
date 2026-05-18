@@ -91,6 +91,9 @@ function DataViewComponent<T>({
   isLoading = false,
   isError = false,
   error,
+
+  isError = false,
+  error,
   skeletonType,
   itemsPerPage = 0,
   gridClassName,
@@ -118,10 +121,22 @@ function DataViewComponent<T>({
   };
 
   if (isLoading) {
-    // Determinar skeletonType automaticamente se não for passado
     const effectiveSkeletonType = skeletonType || (viewMode === 'table' ? 'table' : viewMode === 'list' ? 'list' : 'card');
     return <SkeletonLoader type={effectiveSkeletonType} count={itemsPerPage || 6} />;
   }
+
+  if (isError) {
+    return (
+      <EmptyState 
+        variant="error"
+        title={error?.title || "Ops! Algo deu errado"}
+        description={error?.message || "Não foi possível carregar os dados. Verifique sua conexão e tente novamente."}
+        actionLabel={error?.retry ? "Tentar Novamente" : undefined}
+        onAction={error?.retry}
+      />
+    );
+  }
+
 
 
   if (isError) {
