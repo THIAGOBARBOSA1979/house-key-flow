@@ -60,10 +60,13 @@ const INITIAL_INSPECTIONS: Inspection[] = [
 ];
 
 class InspectionService extends BaseService<Inspection> {
-
   constructor() {
-    super("a2_inspections", INITIAL_INSPECTIONS);
+    super({
+      storageKey: "a2_inspections",
+      auditEntityType: "inspection"
+    }, INITIAL_INSPECTIONS);
   }
+
 
 
   getTechnicians() {
