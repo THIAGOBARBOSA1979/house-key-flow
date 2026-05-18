@@ -16,7 +16,7 @@ import { PropertyStats } from "@/components/Properties/PropertyStats";
 import { PropertyFilters } from "@/components/Properties/PropertyFilters";
 import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
 import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
-import { DataViewMode } from "@/types/dataView";
+import { DataViewMode } from "@/components/shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
