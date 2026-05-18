@@ -3,7 +3,7 @@ import { safeFormat } from "@/lib/utils";
 import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play, ClipboardList } from "lucide-react";
 import { checklistService } from "@/services";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "../shared/StatusBadge";
+import { StatusBadge } from "../Shared/StatusBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,

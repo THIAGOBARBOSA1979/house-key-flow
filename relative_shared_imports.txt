@@ -1,0 +1,7 @@
+src/hooks/__tests__/useService.test.ts
+src/hooks/index.ts
+src/components/ProtectedRoute.tsx
+src/components/Inspection/InspectionItem.tsx
+src/components/Properties/PropertyCard.tsx
+src/components/Layout/PageTemplate.tsx
+src/components/Warranty/WarrantyClaim.tsx
