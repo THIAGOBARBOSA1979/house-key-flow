@@ -18,9 +18,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { inspectionService } from '@/services/InspectionService';
-import { warrantyFlowService } from '@/services/WarrantyFlowService';
-import { financialService } from '@/services/FinancialService';
+import { inspectionService, warrantyFlowService, financialService } from '@/services';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
