@@ -32,6 +32,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { companyService } from "@/services/CompanyService";
+import { AuthGuard } from "@/integration/supabase/auth-guard";
 
 
 interface SidebarProps {
@@ -59,10 +60,10 @@ const managementItems = [
 
 
 const systemItems = [
-  { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists" },
-  { to: "/admin/settings", icon: Settings, label: "Configurações" },
-  { to: "/admin/design-system", icon: Layout, label: "Design System" },
-  { to: "/admin/audit-logs", icon: Activity, label: "Logs de Auditoria" },
+  { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists", adminOnly: true },
+  { to: "/admin/settings", icon: Settings, label: "Configurações", adminOnly: true },
+  { to: "/admin/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
+  { to: "/admin/audit-logs", icon: Activity, label: "Logs de Auditoria", superAdminOnly: true },
   { to: "/admin/saas", icon: Building, label: "SaaS Admin", superAdminOnly: true },
 ];
 
@@ -81,9 +82,10 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
   };
 
 
-  // Filter items based on user role and super admin status
+  // Filter items based on user role and permissions
   const filterItems = (items: any[]) => items.filter(item => {
-    if (item.superAdminOnly && !user?.is_super_admin) return false;
+    if (item.superAdminOnly && !AuthGuard.isSuperAdmin()) return false;
+    if (item.adminOnly && !AuthGuard.isAdmin() && !AuthGuard.isSuperAdmin()) return false;
     return true;
   });
 
