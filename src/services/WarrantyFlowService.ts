@@ -148,7 +148,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     this.items = this.items.map(item => ({
       ...item,
       company_id: (item as any).company_id || "comp-1"
-    }));
+    } as WarrantyRequestFlow));
   }
 
   setDebugMode(enabled: boolean) {
