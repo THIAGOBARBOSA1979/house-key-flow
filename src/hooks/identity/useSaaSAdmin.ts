@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { companyService, Company, CompanyStatus, SubscriptionPlan, CompanySettings } from "@/services";
 import { userService } from "@/services";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const useSaaSAdmin = () => {

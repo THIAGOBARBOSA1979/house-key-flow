@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { inspectionService } from "@/services";
-import { useService } from "@/hooks/useService";
+import { useService } from "@/hooks";
 import { Inspection } from "@/types/inspection";
 
 /**

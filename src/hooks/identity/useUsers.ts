@@ -3,8 +3,8 @@ import { useAuth } from "@/contexts/AuthContext";
 
 import { userService } from "@/services";
 import { auditLogService } from "@/services";
-import { useToast } from "@/hooks/use-toast";
-import { useService } from "@/hooks/useService";
+import { useToast } from "@/hooks";
+import { useService } from "@/hooks";
 import { User, UserFiltersData, UserFormData } from "@/types/user";
 
 /**

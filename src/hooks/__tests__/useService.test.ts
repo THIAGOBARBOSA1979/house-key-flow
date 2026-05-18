@@ -2,10 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useService } from '../useService';
 import * as AuthContext from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks';
 
 // Mock dependencies
-vi.mock('@/hooks/use-toast', () => ({
+vi.mock('@/hooks', () => ({
   useToast: vi.fn(() => ({ toast: vi.fn() })),
 }));
 
