@@ -64,12 +64,13 @@ const Properties = () => {
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
-      <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(properties, 'empreendimentos_a2')}>
-        <Download className="mr-2 h-4 w-4" /> Exportar Planilha
+      <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(properties, 'portfoliotecnico_a2')}>
+        <Download className="mr-2 h-4 w-4" /> Exportar Portfólio
+
       </Button>
       <Button onClick={() => { setEditingProperty(null); setIsFormOpen(true); }} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
         <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
-        Novo Empreendimento
+        Novo Ativo Imobiliário
       </Button>
     </div>
   );
@@ -89,7 +90,7 @@ const Properties = () => {
           <div className="flex items-center gap-4">
             <div className="bg-primary text-white p-2 rounded-xl"><Settings className="w-5 h-5 animate-spin-slow" /></div>
             <div>
-              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote</p>
+              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote Operacional</p>
               <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} selecionados</p>
             </div>
           </div>
