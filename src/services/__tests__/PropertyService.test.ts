@@ -37,8 +37,8 @@ describe('PropertyService', () => {
     const propertyId = p.id!;
     const milestoneId = "m1";
     
-    // BaseService.getById(id, companyId, isSuperAdmin)
-    const updated = propertyService.updateMilestone(propertyId, milestoneId, true);
+    // Test with isSuperAdmin=true
+    const updated = propertyService.updateMilestone(propertyId, milestoneId, true, true);
     
     expect(updated).toBeDefined();
     const milestone = updated?.milestones?.find(m => m.id === milestoneId);
