@@ -42,6 +42,19 @@ export const useInspections = () => {
     };
   }, [inspections]);
 
+  const handleExport = useCallback(() => {
+    const data = inspectionService.exportData('csv');
+    const blob = new Blob([data], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `relatorio-vistorias-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }, []);
+
   return {
     inspections,
     filteredInspections,
