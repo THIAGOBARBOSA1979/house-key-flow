@@ -80,10 +80,10 @@ function DataTableComponent<T>({
   }
 
   return (
-    <div className={cn("w-full animate-fade-in", className)}>
-      <div className="hidden lg:block rounded-xl border border-border/50 shadow-sem-sm bg-card/40 backdrop-blur-sm overflow-hidden">
+    <div className={cn("w-full animate-fade-in group/table-container", className)}>
+      <div className="hidden lg:block rounded-xl border border-border/50 shadow-sem-sm bg-card/40 backdrop-blur-sm overflow-hidden relative">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-        <Table className="min-w-[800px] lg:min-w-full">
+          <Table className="min-w-[800px] lg:min-w-full">
           <TableHeader className="bg-muted/10">
             <TableRow className="hover:bg-transparent border-b-border/40">
               {columns.map((column, idx) => (
