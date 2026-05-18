@@ -35,26 +35,30 @@ class UserService extends BaseService<User> {
     });
   }
 
-  // Override create to use Supabase
-  create(item: Omit<User, "id">, companyId?: string): User {
+  // BaseService handles audit logging and basic operations.
+  // Overriding only for Supabase specific logic if needed, but BaseService handles it better now.
+  // We can remove these overrides if we trust the new BaseService implementation.
+  // However, profiles table in Supabase has different column names (full_name vs name).
+
+  async create(item: Omit<User, "id">, companyId?: string): Promise<User> {
     const newItem = super.create(item, companyId);
     
-    // Async call to Supabase in background
-    Supabase.db.create('profiles', {
-      id: newItem.id,
-      full_name: newItem.name,
-      role: newItem.role,
-      company_id: companyId || newItem.company_id,
-      status: newItem.status
-    } as any).catch(err => console.error('Failed to sync create to Supabase:', err));
+    if (this.options.shouldSyncWithSupabase) {
+      Supabase.db.create('profiles', {
+        id: newItem.id,
+        full_name: newItem.name,
+        role: newItem.role,
+        company_id: companyId || newItem.company_id,
+        status: newItem.status
+      } as any).catch(err => console.error('Failed to sync create to Supabase:', err));
+    }
 
     return newItem;
   }
 
-  // Override update to use Supabase
-  update(id: string, data: Partial<User>): User | undefined {
+  async update(id: string, data: Partial<User>): Promise<User | undefined> {
     const updated = super.update(id, data);
-    if (updated) {
+    if (updated && this.options.shouldSyncWithSupabase) {
       Supabase.db.update('profiles', id, {
         full_name: updated.name,
         role: updated.role,
@@ -65,10 +69,9 @@ class UserService extends BaseService<User> {
     return updated;
   }
 
-  // Override delete to use Supabase
-  delete(id: string): boolean {
+  async delete(id: string): Promise<boolean> {
     const success = super.delete(id);
-    if (success) {
+    if (success && this.options.shouldSyncWithSupabase) {
       Supabase.db.delete('profiles', id).catch(err => console.error('Failed to sync delete to Supabase:', err));
     }
     return success;
