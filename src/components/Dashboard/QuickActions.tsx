@@ -59,10 +59,10 @@ export const QuickActions = () => {
           <Button
             key={index}
             variant="outline"
-            className="h-auto py-6 flex flex-col gap-4 border-none bg-card/40 backdrop-blur-md shadow-sem-md hover:shadow-sem-xl hover:bg-primary/5 transition-all group active:scale-[0.97] rounded-3xl"
+            className="h-auto py-6 flex flex-col gap-4 border-none bg-card/40 backdrop-blur-md shadow-sem-md hover:shadow-sem-xl hover:bg-primary/5 transition-all group active:scale-[0.97] rounded-2xl"
             onClick={action.onClick}
           >
-            <div className={`p-4 rounded-2xl ${action.bgColor} ${action.color} group-hover:scale-110 transition-all duration-300 shadow-sem-sm group-hover:shadow-sem-md`}>
+            <div className={`p-4 rounded-xl ${action.bgColor} ${action.color} group-hover:scale-110 transition-all duration-300 shadow-sem-sm group-hover:shadow-sem-md`}>
               <action.icon size={28} strokeWidth={2.5} />
             </div>
             <div className="flex flex-col gap-1 text-center">
