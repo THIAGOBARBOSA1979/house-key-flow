@@ -136,8 +136,9 @@ export default function Checklist() {
     <div className="space-y-8 animate-fade-in">
       <PageHeader
         icon={FileText}
-        title="Gestão de Checklists"
-        description="Templates padronizados e vistorias técnicas com conformidade em tempo real."
+        title="Inteligência de Checklists"
+        description="Padronização técnica e governança em tempo real para vistorias de alta precisão."
+
       >
         <div className="flex gap-2">
            <Button variant="outline" onClick={() => exportService.exportToCSV(checklistService.getAllExecutions(), 'execucoes_checklist_a2')} className="rounded-xl h-10 px-4 font-bold border-primary/20 hover:border-primary/50">

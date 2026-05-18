@@ -12,8 +12,9 @@ export function CalendarHeader({ onChangeView }: CalendarHeaderProps) {
   return (
     <PageHeader
       icon={CalendarIcon}
-      title="Agendamentos"
-      description="Gestão de agendamentos de vistorias e atendimentos técnicos"
+      title="Cronograma Inteligente"
+      description="Gerencie agendamentos de vistorias técnicas e atendimentos com visão estratégica de campo."
+
     >
       <ScheduleInspectionDialog />
       <DropdownMenu>

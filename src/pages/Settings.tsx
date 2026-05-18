@@ -46,8 +46,9 @@ const Settings = () => {
     <div className="space-y-6 animate-fade-in pb-10">
       <PageHeader
         icon={SettingsIcon}
-        title="Configurações do Sistema"
-        description="Gerencie as regras de negócio, identidade visual e integrações da plataforma."
+        title="Configurações Estratégicas"
+        description="Defina regras de negócio, diretrizes de branding e arquitetura de integrações da plataforma."
+
       />
 
       <Tabs defaultValue="general" className="space-y-6">
