@@ -129,8 +129,9 @@ export const ScheduleInspectionForm = ({
     const newInspection = inspectionService.schedule(data as any, propertyInfo);
 
     toast({
-      title: "Vistoria agendada com sucesso",
-      description: `Agendada para ${safeFormat(data.date, "dd/MM/yyyy")} às ${data.time}`,
+      title: "Agendamento Estratégico Confirmado",
+      description: `O protocolo foi definido para ${safeFormat(data.date, "dd/MM/yyyy")} às ${data.time}`,
+
     });
     
     if (data.notifyClient && propertyInfo) {
@@ -145,14 +146,16 @@ export const ScheduleInspectionForm = ({
           actionUrl: '/client/inspections'
         },
         {
-          title: "Vistoria Agendada",
-          message: `Sua vistoria para o imóvel ${propertyInfo.property} foi agendada para ${safeFormat(data.date, "dd/MM/yyyy")} às ${data.time}.`
+          title: "Confirmação de Vistoria",
+          message: `Sua jornada de entrega no empreendimento ${propertyInfo.property} avançou. A vistoria técnica foi agendada para ${safeFormat(data.date, "dd/MM/yyyy")} às ${data.time}.`
+
         }
       );
 
       toast({
-        title: "Notificação enviada",
-        description: "O cliente foi notificado via portal e e-mail.",
+        title: "Engajamento do Cliente Ativado",
+        description: "O proprietário recebeu a confirmação via portal e e-mail institucional.",
+
       });
     }
     
@@ -360,7 +363,7 @@ export const ScheduleInspectionForm = ({
         
         <div className="flex gap-4 justify-end pt-10 border-t border-border/10 -mx-10 px-10 mt-10">
           <Button type="button" variant="outline" className="px-8 h-12 rounded-xl font-bold border-2 hover:bg-muted/50 transition-all">Descartar</Button>
-          <Button type="submit" className="font-black uppercase tracking-widest text-[11px] px-12 h-12 rounded-xl shadow-sem-lg active:scale-95 transition-all">Agendar Vistoria</Button>
+          <Button type="submit" className="font-black uppercase tracking-widest text-[11px] px-12 h-12 rounded-xl shadow-sem-lg active:scale-95 transition-all">Confirmar Agendamento</Button>
         </div>
       </form>
     </Form>
