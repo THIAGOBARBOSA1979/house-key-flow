@@ -42,8 +42,10 @@ const Dashboard = () => {
     recentTickets, 
     financialMetrics, 
     healthMetrics,
+    propertyMetrics,
     refreshData 
   } = useDashboardData();
+
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
@@ -114,13 +116,13 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Taxa de Conclusão de Obras</span>
                     <span className="text-sem-body-sm font-black text-emerald-600">
-                      {financialMetrics?.averageProgress || 0}%
+                      {propertyMetrics?.averageProgress || 0}%
                     </span>
                   </div>
                   <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5 shadow-inner">
                     <div 
                       className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full transition-all duration-1000" 
-                      style={{ width: `${financialMetrics?.averageProgress || 0}%` }}
+                      style={{ width: `${propertyMetrics?.averageProgress || 0}%` }}
                     />
                   </div>
                 </div>
@@ -140,6 +142,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+
 
 
             </Card>
