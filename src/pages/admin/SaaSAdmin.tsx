@@ -47,6 +47,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GovernanceManager } from "@/components/Admin/GovernanceManager";
+import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
+import { Shield, Key } from "lucide-react";
+
 
 export default function SaaSAdmin() {
   const { user } = useAuth();
@@ -306,11 +311,36 @@ export default function SaaSAdmin() {
         </Card>
       </div>
 
-      <DataTable 
-        columns={columns} 
-        data={companies} 
-        onRowClick={(c) => setSelectedCompany(c)}
-      />
+      <Tabs defaultValue="companies" className="space-y-6">
+        <TabsList className="bg-muted/50 p-1 rounded-xl h-12">
+          <TabsTrigger value="companies" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
+            <Building className="h-4 w-4" /> Tenants
+          </TabsTrigger>
+          <TabsTrigger value="governance" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
+            <Shield className="h-4 w-4" /> Governança
+          </TabsTrigger>
+          <TabsTrigger value="audit" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
+            <Activity className="h-4 w-4" /> Auditoria Global
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="companies" className="space-y-6">
+          <DataTable 
+            columns={columns} 
+            data={companies} 
+            onRowClick={(c) => setSelectedCompany(c)}
+          />
+        </TabsContent>
+
+        <TabsContent value="governance">
+          <GovernanceManager />
+        </TabsContent>
+
+        <TabsContent value="audit">
+          <AuditLogViewer />
+        </TabsContent>
+      </Tabs>
+
 
       <Dialog open={!!selectedCompany} onOpenChange={(open) => {
         if (!open) {
