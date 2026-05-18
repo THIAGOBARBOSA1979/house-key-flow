@@ -15,8 +15,9 @@ import {
   WarrantyProblemDetail
 } from '../../types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
-import { auditLogService } from '../core/AuditLogService';
+import { auditLogService, AuditAction } from '../core/AuditLogService';
 import { BaseService } from '../BaseService';
+
 
 // Mock warranty requests data
 const initialMockRequests: WarrantyRequestFlow[] = [
