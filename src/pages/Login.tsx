@@ -124,7 +124,7 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background overflow-x-hidden">
       {/* Header */}
       <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
         <div className="container-responsive py-4">
@@ -152,7 +152,7 @@ export default function Login() {
                   <Shield className="h-4 w-4" />
                   {activeTab === "admin" ? "Área Administrativa" : "Portal do Cliente"}
                 </div>
-                <h2 className="text-5xl font-bold text-gray-900 leading-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                   {activeTab === "admin" ? (
                     <>
                       Controle total do seu
@@ -206,7 +206,7 @@ export default function Login() {
 
             {/* Right side - Login form */}
             <div className="flex justify-center">
-              <Card className="w-full max-w-md shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
+              <Card className="w-full max-w-md shadow-2xl border-0 bg-white/80 backdrop-blur-sm mx-auto">
                 <CardHeader className="space-y-4 pb-8">
                   <div className="text-center">
                     <CardTitle className="text-h2 font-black tracking-tight text-foreground">
