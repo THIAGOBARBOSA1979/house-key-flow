@@ -70,6 +70,7 @@ export default function Inspections() {
 
   const [activeTab, setActiveTab] = useState("list");
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
+  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
@@ -159,7 +160,20 @@ export default function Inspections() {
             renderGrid={(inspection) => (
               <Card key={inspection.id} className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-0">
-                  <InspectionItem inspection={inspection} onUpdate={loadData} />
+                  <InspectionItem 
+                    inspection={inspection} 
+                    onUpdate={loadData} 
+                    onCancel={async () => {
+                      if (await confirm({
+                        title: "Cancelar Vistoria",
+                        description: `Deseja realmente cancelar a vistoria da unidade ${inspection.unit} do empreendimento ${inspection.property}?`,
+                        confirmLabel: "Cancelar Vistoria",
+                      })) {
+                        await inspectionService.updateStatus(inspection.id, "cancelled");
+                        loadData();
+                      }
+                    }}
+                  />
                 </CardContent>
               </Card>
             )}
@@ -217,6 +231,13 @@ export default function Inspections() {
           <AuditLogViewer entityType="inspection" title="Logs de Auditoria - Vistorias" />
         </TabsContent>
       </Tabs>
+
+      <ConfirmationDialog 
+        isOpen={isConfirmOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        {...confirmOptions}
+      />
     </PageTemplate>
   );
 }
