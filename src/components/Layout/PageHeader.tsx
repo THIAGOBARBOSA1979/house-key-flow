@@ -36,9 +36,10 @@ export function PageHeader({
                 <Icon className="h-5 w-5 md:h-7 md:w-7 text-primary" strokeWidth={2.5} />
               </div>
             )}
-            <h1 className="text-sem-h1 tracking-tighter font-black text-gradient leading-[1.1] text-xl sm:text-2xl md:text-3xl lg:text-4xl truncate">
+            <h1 className="text-sem-h1 tracking-tight font-black text-gradient leading-[1.1] text-xl sm:text-2xl md:text-3xl lg:text-4xl truncate">
               {title}
             </h1>
+
           </div>
           {description && (
             <p className="text-sem-body-sm md:text-sem-body-base text-muted-foreground/60 animate-in slide-in-from-left-4 duration-700 max-w-2xl font-medium leading-relaxed">
