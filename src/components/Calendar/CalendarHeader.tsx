@@ -28,7 +28,7 @@ export function CalendarHeader({ onChangeView }: CalendarHeaderProps) {
           <DropdownMenuItem 
             className="rounded-lg py-2 cursor-pointer font-medium"
             onClick={() => {
-              import("@/services/InspectionService").then(({ inspectionService }) => {
+              import("@/services").then(({ inspectionService }) => {
                 const data = inspectionService.exportData('csv');
                 const blob = new Blob([data], { type: 'text/csv' });
                 const url = window.URL.createObjectURL(blob);
@@ -44,7 +44,7 @@ export function CalendarHeader({ onChangeView }: CalendarHeaderProps) {
           <DropdownMenuItem 
             className="rounded-lg py-2 cursor-pointer font-medium"
             onClick={() => {
-              import("@/services/InspectionService").then(({ inspectionService }) => {
+              import("@/services").then(({ inspectionService }) => {
                 const data = inspectionService.exportData('json');
                 const blob = new Blob([data], { type: 'application/json' });
                 const url = window.URL.createObjectURL(blob);

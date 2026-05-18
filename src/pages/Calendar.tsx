@@ -74,14 +74,14 @@ const Calendar = () => {
   };
 
   const handleStatusChange = (id: string, newStatus: string) => {
-    import("@/services/InspectionService").then(({ inspectionService }) => {
+    import("@/services").then(({ inspectionService }) => {
       inspectionService.updateStatus(id, newStatus);
       loadAppointments(); // Refresh list
     });
   };
 
   const handleUpdateAppointment = (id: string, data: any) => {
-    import("@/services/InspectionService").then(({ inspectionService }) => {
+    import("@/services").then(({ inspectionService }) => {
       inspectionService.update(id, data);
       loadAppointments();
     });

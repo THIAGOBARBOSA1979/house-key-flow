@@ -136,7 +136,7 @@ export const ScheduleInspectionForm = ({
     
     if (data.notifyClient && propertyInfo) {
       // Integration with notification service
-      const { notificationService } = await import("@/services/NotificationService");
+      const { notificationService } = await import("@/services");
       notificationService.createNotification(
         clientId || "client-1",
         "inspection_scheduled",
