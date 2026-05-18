@@ -88,11 +88,27 @@ vi.mock('@/integration/supabase', () => ({
   }
 }));
 
+// Mock i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+    i18n: {
+      changeLanguage: () => Promise.resolve(),
+      language: 'pt-BR',
+    },
+  }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  },
+}));
+
 vi.mock('@/integration/supabase/realtime', () => ({
   SupabaseRealtime: {
     subscribeToTable: vi.fn(),
     unsubscribe: vi.fn()
   }
 }));
+
 
 
