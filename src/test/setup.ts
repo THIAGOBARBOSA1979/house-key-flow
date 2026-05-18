@@ -125,8 +125,10 @@ vi.mock('@/integrations/supabase/auth-guard', () => ({
     hasPermission: vi.fn().mockReturnValue(true),
     isAdmin: vi.fn().mockReturnValue(true),
     isSuperAdmin: vi.fn().mockReturnValue(true),
+    initialize: vi.fn(),
   }
 }));
+
 
 
 
