@@ -94,10 +94,11 @@ function DataViewComponent<T>({
     return (
       <EmptyState 
         variant="error"
-        title={error?.title || "Sincronização interrompida"}
-        description={error?.message || "Não foi possível processar sua solicitação no momento. Verifique sua conexão estratégica e tente novamente."}
+        title={error?.title || "Sincronização Interrompida"}
+        description={error?.message || "Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente."}
 
-        actionLabel={error?.retry ? "Tentar Novamente" : undefined}
+
+        actionLabel={error?.retry ? "Reiniciar Protocolo" : undefined}
         onAction={error?.retry}
       />
     );
