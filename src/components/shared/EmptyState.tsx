@@ -1,5 +1,6 @@
-
+// Optimized UI state component with standardized premium microcopy.
 import { ReactNode } from "react";
+
 import { LucideIcon, RefreshCw, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

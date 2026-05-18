@@ -1,4 +1,6 @@
+// Optimized UI state component with standardized premium microcopy.
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useState, useMemo, memo } from 'react';
 import { ChevronLeft, ChevronRight, LucideIcon, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
