@@ -15,7 +15,7 @@ interface UserStatsProps {
 
 export const UserStats = ({ stats }: UserStatsProps) => {
   return (
-    <ResponsiveGrid columns={1} sm={2} lg={3} xl={5} gap="layout">
+    <ResponsiveGrid columns={5} mobileCols={1} tabletCols={2} gap="layout">
       <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" className="rounded-3xl" />
       <StatsCard label="Ativos hoje" value={stats.active} icon={UserCheck} variant="complete" className="rounded-3xl" />
       <StatsCard label="Pendências" value={stats.inactive} icon={UserMinus} variant="critical" className="rounded-3xl" />
