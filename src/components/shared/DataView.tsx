@@ -109,7 +109,7 @@ export function DataView<T>({
     setCurrentPage(page);
     if (containerRef.current) {
       const yOffset = -100;
-      const y = containerRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const y = containerRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
