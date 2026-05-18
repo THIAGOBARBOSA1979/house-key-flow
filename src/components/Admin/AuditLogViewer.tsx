@@ -140,8 +140,9 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
           <div className="flex items-center justify-between gap-4">
             <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
               <Activity className="h-4 w-4 text-primary" />
-              {title || "Logs de Auditoria"}
+              {title || "AuditLog de Governança Digital"}
             </CardTitle>
+
             <div className="flex items-center gap-2">
               <div className="flex items-center bg-muted/20 p-1 rounded-xl border border-border/10">
                 <Button 
@@ -363,7 +364,8 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
           ) : (
             <div className="text-center py-12 bg-muted/5 rounded-2xl border border-dashed border-border/20">
               <Activity className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />
-              <p className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Nenhum log encontrado</p>
+              <p className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Nenhum evento registrado no período</p>
+
             </div>
           )}
 
