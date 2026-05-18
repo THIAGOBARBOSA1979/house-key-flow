@@ -20,7 +20,19 @@ export interface Appointment {
 }
 
 // Convert service data to Appointment format
-const mapServiceToAppointment = (ins: any): Appointment => ({
+const mapServiceToAppointment = (ins: {
+  id: string;
+  type: string;
+  property: string;
+  unit: string;
+  client: string;
+  date: Date;
+  time: string;
+  status: string;
+  technician?: string;
+  notes?: string;
+  priority?: "low" | "medium" | "high";
+}): Appointment => ({
   id: ins.id,
   title: ins.type === 'keyDelivery' ? 'Entrega de chaves' : 
          ins.type === 'technicalInspection' ? 'Vistoria técnica' : 

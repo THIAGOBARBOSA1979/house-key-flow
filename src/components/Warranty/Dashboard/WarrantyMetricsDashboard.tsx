@@ -42,7 +42,7 @@ export function WarrantyMetricsDashboard() {
 
   useEffect(() => {
     loadMetrics();
-  }, [period]);
+  }, [period, loadMetrics]);
 
   const handleExport = () => {
     toast({

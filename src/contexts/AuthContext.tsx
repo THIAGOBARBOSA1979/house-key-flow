@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextType } from '@/types/auth';
 import { User } from '@/types/user';
@@ -28,14 +28,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const isAuthenticated = !!user;
 
-  // Check for existing session on mount
-  useEffect(() => {
-    checkAuth();
-    const cleanup = securityService.initialize(() => logout());
-    return cleanup;
-  }, []);
+  const logout = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('rememberMe');
+    localStorage.removeItem('rememberClient');
+    localStorage.removeItem('rememberAdmin');
+    
+    toast({
+      title: "Logout realizado",
+      description: "Você foi desconectado com sucesso.",
+    });
+    
+    navigate('/');
+  }, [navigate, toast]);
 
-  const checkAuth = () => {
+  const checkAuth = useCallback(() => {
     try {
       const storedUser = localStorage.getItem('auth_user');
       
@@ -55,7 +63,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  // Check for existing session on mount
+  useEffect(() => {
+    checkAuth();
+    const cleanup = securityService.initialize(() => logout());
+    return cleanup;
+  }, [checkAuth, logout]);
 
   const login = async (email: string, password: string, role: 'admin' | 'client' = 'admin') => {
     setIsLoading(true);
@@ -119,21 +134,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('auth_user');
-    localStorage.removeItem('rememberMe');
-    localStorage.removeItem('rememberClient');
-    localStorage.removeItem('rememberAdmin');
-    
-    toast({
-      title: "Logout realizado",
-      description: "Você foi desconectado com sucesso.",
-    });
-    
-    navigate('/');
   };
 
   const value: AuthContextType = {
