@@ -32,6 +32,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { technicianService, type Technician } from "@/services/TechnicianService";
+import { DataView } from "@/components/shared/DataView";
+
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { cn } from "@/lib/utils";
@@ -182,8 +184,12 @@ const Technicians = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTechnicians.map((tech) => (
+      <DataView<Technician>
+        items={filteredTechnicians}
+        viewMode="grid"
+        itemsPerPage={6}
+        skeletonType="card"
+        renderGrid={(tech) => (
           <Card key={tech.id} className={cn(
             "card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md hover:shadow-sem-lg transition-all group relative",
             selectedIds.includes(tech.id) && "ring-2 ring-primary"
@@ -264,8 +270,14 @@ const Technicians = () => {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        )}
+        emptyState={{
+          title: "Nenhum técnico encontrado",
+          description: "Ajuste os filtros para encontrar o que procura.",
+          action: { label: "Limpar filtros", onClick: () => setSearchTerm("") }
+        }}
+      />
+
 
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-[550px] rounded-3xl border-none shadow-sem-xl">
