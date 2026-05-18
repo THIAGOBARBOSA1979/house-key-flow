@@ -52,8 +52,15 @@ export function useClientStage(clientId: string): UseClientStageResult {
 
   const stage = profile?.currentStage || null;
   const permissions = clientStageService.getPermissions(clientId);
-  const timeline = clientStageService.getTimeline(clientId);
   const events = clientStageService.getEvents(clientId);
+  const timeline: TimelineItem[] = events.map(event => ({
+    id: event.id,
+    title: event.title,
+    description: event.description,
+    date: event.createdAt,
+    status: 'completed' as const,
+    eventType: event.eventType
+  }));
 
   const canScheduleInspection = clientStageService.canScheduleInspection(clientId);
   const canRequestWarranty = clientStageService.canRequestWarranty(clientId);
