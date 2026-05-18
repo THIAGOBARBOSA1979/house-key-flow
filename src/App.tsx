@@ -72,7 +72,8 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <Suspense fallback={<SkeletonLoader type="page" />}>
+              <BrandThemeProvider>
+                <Suspense fallback={<SkeletonLoader type="page" />}>
                 <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
