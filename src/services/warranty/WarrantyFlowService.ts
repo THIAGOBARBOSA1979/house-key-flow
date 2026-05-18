@@ -13,10 +13,10 @@ import {
   isValidTransition,
   DEFAULT_SLA_CONFIGS,
   WarrantyProblemDetail
-} from '../types/warrantyFlow';
+} from '../../types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
-import { auditLogService } from './AuditLogService';
-import { BaseService } from './BaseService';
+import { auditLogService } from '../AuditLogService';
+import { BaseService } from '../BaseService';
 
 // Mock warranty requests data
 const initialMockRequests: WarrantyRequestFlow[] = [
