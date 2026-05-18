@@ -48,7 +48,7 @@ export function PageHeader({
         </div>
 
         {children && (
-          <div className="flex flex-wrap items-center gap-2 md:gap-4 animate-in slide-in-from-right-4 duration-700 w-full xl:w-auto">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4 animate-in slide-in-from-right-4 duration-700 w-full lg:w-auto">
             {children}
           </div>
         )}

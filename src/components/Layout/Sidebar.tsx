@@ -167,7 +167,7 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
           <Button 
             size="icon" 
             variant="ghost" 
-            className="fixed left-2 top-3 z-modal lg:hidden shadow-none bg-background/50 backdrop-blur-sm hover:bg-primary/5 text-primary border border-primary/10 rounded-xl"
+            className="fixed left-4 top-3 z-modal lg:hidden shadow-md bg-background/80 backdrop-blur-md hover:bg-primary/10 text-primary border border-primary/20 rounded-xl h-10 w-10 flex items-center justify-center transition-all active:scale-90"
           >
             <Menu size={20} />
           </Button>
