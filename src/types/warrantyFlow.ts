@@ -507,6 +507,11 @@ export function getNextValidStages(currentStage: WarrantyStage): WarrantyStage[]
   } else if (currentStage === "opened" || currentStage === "in_analysis") {
     possibleStages.push("rejected");
   }
+
+  // Global exception: Final stages can only move to in_analysis (reopening)
+  if (isFinalStage(currentStage)) {
+    return ["in_analysis"];
+  }
   
   // Normal flow: go to next stage
   const nextInOrder = STAGE_ORDER.filter(stage => 
@@ -514,6 +519,7 @@ export function getNextValidStages(currentStage: WarrantyStage): WarrantyStage[]
   );
 
   return Array.from(new Set([...possibleStages, ...nextInOrder]));
+
 }
 
 // Helper function to check if transition is valid
