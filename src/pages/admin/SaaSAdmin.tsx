@@ -15,7 +15,8 @@ import {
   CreditCard,
   Plus,
   Users as UsersIcon,
-  Users
+  Users,
+  Activity
 } from "lucide-react";
 import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
