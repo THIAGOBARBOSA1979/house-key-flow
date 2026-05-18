@@ -97,6 +97,7 @@ const Calendar = () => {
         }}
       />
 
+
       <QuickActions
         todayAppointments={todayAppointments}
         pendingAppointments={pendingAppointments}
