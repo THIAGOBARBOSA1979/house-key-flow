@@ -7,6 +7,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { securityService } from '@/services/SystemSecurityService';
 import { companyService } from '@/services/CompanyService';
 import { AuthGuard } from '@/integration/supabase/auth-guard';
+import { Supabase } from '@/integration/supabase';
+import { findMockUser } from '@/mocks/users';
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -85,49 +88,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // 1. Try Supabase Login first
+      const { data, error } = await Supabase.auth.signInWithPassword(email, password);
       
-      // Mock authentication logic
-      let mockUser: User | null = null;
-      
-      if (role === 'admin' && email === 'admin@exemplo.com' && password === '123456') {
-        mockUser = {
-          id: '1',
-          name: 'Super Admin',
-          email: 'admin@exemplo.com',
-          role: 'admin',
+      let authenticatedUser: User | null = null;
+
+      if (!error && data?.user) {
+        // Map Supabase user to our internal User type
+        authenticatedUser = {
+          id: data.user.id,
+          name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Usuário',
+          email: data.user.email || '',
+          role: (data.user.user_metadata?.role as any) || 'client',
           status: 'active',
-          is_super_admin: true
+          company_id: data.user.user_metadata?.company_id,
+          is_super_admin: data.user.user_metadata?.role === 'super_admin'
         };
-      } else if (role === 'admin' && email === 'ceo@a2.com' && password === '123456') {
-        mockUser = {
-          id: 'ceo-1',
-          name: 'João CEO',
-          email: 'ceo@a2.com',
-          role: 'admin',
-          status: 'active',
-          company_id: 'comp-1'
-        };
-      } else if (role === 'client' && email === 'cliente@exemplo.com' && password === '123456') {
-        mockUser = {
-          id: 'client-2',
-          name: 'Maria Silva',
-          email: 'cliente@exemplo.com',
-          role: 'client',
-          status: 'active',
-          company_id: 'comp-1'
-        };
+      } else {
+        // 2. Fallback to Mocks for demo/dev (if password is '123456')
+        if (password === '123456') {
+          const mock = findMockUser(email, role);
+          if (mock) authenticatedUser = mock;
+        }
       }
 
-      
-      if (!mockUser) {
-        throw new Error('Credenciais inválidas');
+      if (!authenticatedUser) {
+        throw new Error(error?.message || 'Credenciais inválidas');
       }
 
       // Check company status if user belongs to one
-      if (mockUser.company_id && !mockUser.is_super_admin) {
-        const company = companyService.getById(mockUser.company_id, undefined, true);
+      if (authenticatedUser.company_id && !authenticatedUser.is_super_admin) {
+        const company = await companyService.getById(authenticatedUser.company_id, undefined, true);
         if (company) {
           if (company.status !== 'active') {
             throw new Error(`Empresa ${company.status === 'suspended' ? 'suspensa' : 'cancelada'}. Entre em contato com o suporte.`);
@@ -135,10 +126,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           if (company.subscription_expires_at && new Date(company.subscription_expires_at) < new Date()) {
             throw new Error('Assinatura expirada. Por favor, renove seu plano.');
           }
-        } else {
-          throw new Error('Empresa não encontrada ou acesso negado.');
         }
       }
+
 
       
       setUser(mockUser);
