@@ -77,20 +77,21 @@ export const useUsers = () => {
       return;
     }
     
-    for (const userId of selectedUsers) {
-      switch (action) {
-        case "activate": await update(userId, { status: "active" }); break;
-        case "deactivate": await update(userId, { status: "inactive" }); break;
-        case "delete": await remove(userId); break;
-      }
+    switch (action) {
+      case "activate": 
+        await bulkUpdate(selectedUsers, { status: "active" }); 
+        break;
+      case "deactivate": 
+        await bulkUpdate(selectedUsers, { status: "inactive" }); 
+        break;
+      case "delete": 
+        await bulkRemove(selectedUsers); 
+        break;
     }
     
-    toast({ 
-      title: action === "delete" ? "Usuários removidos" : "Status atualizado", 
-      description: `${selectedUsers.length} usuário(s) afetados.` 
-    });
     setSelectedUsers([]);
-  }, [selectedUsers, toast, update, remove, setSelectedUsers]);
+  }, [selectedUsers, toast, bulkUpdate, bulkRemove, setSelectedUsers]);
+
 
   return {
     userList,
