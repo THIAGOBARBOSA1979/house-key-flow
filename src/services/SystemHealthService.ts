@@ -2,7 +2,7 @@
 import { auditLogService } from './AuditLogService';
 import { propertyService } from './PropertyService';
 import { inspectionService } from './InspectionService';
-import { warrantyFlowService } from './WarrantyFlowService';
+import { warrantyFlowService } from './warranty/WarrantyFlowService';
 import { notificationService } from './NotificationService';
 
 export interface SystemHealthMetrics {
