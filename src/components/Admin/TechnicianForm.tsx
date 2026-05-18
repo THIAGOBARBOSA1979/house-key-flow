@@ -31,7 +31,7 @@ const formSchema = z.object({
 
 interface TechnicianFormProps {
   initialData?: Technician | null;
-  onSubmit: (data: z.infer<typeof formSchema>) => void;
+  onSubmit: (data: any) => void;
   onCancel: () => void;
 }
 
