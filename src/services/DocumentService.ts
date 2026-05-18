@@ -12,7 +12,7 @@ export interface DocumentSignature {
   order?: number;
   ipAddress?: string;
   documentHash?: string;
-  evidence?: any;
+  evidence?: unknown;
 }
 
 export interface ApprovalHistoryEntry {
@@ -105,7 +105,7 @@ class DocumentService extends BaseService<Document> {
   getFavoriteDocuments(): Document[] { return this.items.filter(doc => doc.isFavorite); }
   getExpiringDocuments(): Document[] { return this.items.filter(d => d.expiresAt); }
 
-  searchDocuments(term: string, filters: any): Document[] {
+  searchDocuments(term: string, filters: { category?: string }): Document[] {
     return this.items.filter(doc => {
       const matchesSearch = !term || doc.title.toLowerCase().includes(term.toLowerCase());
       const matchesCategory = !filters.category || filters.category === 'all' || doc.category === filters.category;
