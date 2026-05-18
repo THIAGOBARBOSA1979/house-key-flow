@@ -5,14 +5,13 @@ import { WarrantyKanban } from "@/components/Warranty/Kanban/WarrantyKanban";
 import { WarrantyMetricsDashboard } from "@/components/Warranty/Dashboard/WarrantyMetricsDashboard";
 import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfigurationPanel";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { WarrantyDetailsDialog } from "@/components/Warranty/WarrantyDetailsDialog";
 import { useWarranty } from "@/hooks/useWarranty";
-import { TechnicalReportDialog } from "@/components/Warranty/TechnicalReportDialog";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { WarrantyTabsHeader } from "@/components/Warranty/WarrantyTabsHeader";
 import { WarrantyErrorAlert } from "@/components/Warranty/WarrantyErrorAlert";
 import { WarrantyPageActions } from "@/components/Warranty/WarrantyPageActions";
+import { WarrantyDialogsContainer } from "@/components/Warranty/WarrantyDialogsContainer";
 
 const Warranty = () => {
   const [activeTab, setActiveTab] = useState("kanban");
@@ -67,24 +66,15 @@ const Warranty = () => {
         </TabsContent>
       </Tabs>
 
-      <WarrantyDetailsDialog 
-        request={selectedRequest}
-        isOpen={!!selectedRequest}
-        onOpenChange={(open) => !open && setSelectedRequestId(null)}
+      <WarrantyDialogsContainer 
+        selectedRequest={selectedRequest}
+        setSelectedRequestId={setSelectedRequestId}
+        reportDialogOpen={reportDialogOpen}
+        setReportDialogOpen={setReportDialogOpen}
         onStatusChange={changeStatus}
         onTogglePause={togglePause}
         onAssignTech={assignTechnician}
-        onAddProblem={() => {}}
-        onGenerateReport={() => setReportDialogOpen(true)}
       />
-
-      {selectedRequest && (
-        <TechnicalReportDialog 
-          open={reportDialogOpen}
-          onOpenChange={setReportDialogOpen}
-          request={selectedRequest}
-        />
-      )}
     </PageTemplate>
   );
 };

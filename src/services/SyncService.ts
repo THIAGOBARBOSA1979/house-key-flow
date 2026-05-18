@@ -1,9 +1,18 @@
-
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { toast } from '@/components/ui/use-toast';
 
+interface TicketUpdateData {
+  id: string;
+  status: string;
+}
+
+interface NotificationData {
+  title: string;
+  message: string;
+}
+
 export class SyncService {
-  private static socket: any;
+  private static socket: Socket | null = null;
   private static retryAttempts = 3;
   private static retryDelay = 1000;
   private static isInitialized = false;
@@ -11,7 +20,6 @@ export class SyncService {
   static initialize() {
     console.log('SyncService: Inicializando...');
     
-    // Check if we have the required environment variable
     const apiUrl = import.meta.env.VITE_API_URL;
     
     if (!apiUrl) {
@@ -36,7 +44,7 @@ export class SyncService {
       console.log('SyncService: Inicializado com sucesso');
     } catch (error) {
       console.error('SyncService: Erro na inicialização:', error);
-      this.isInitialized = true; // Mark as initialized even if failed to prevent crashes
+      this.isInitialized = true;
     }
   }
 
@@ -47,18 +55,18 @@ export class SyncService {
       console.log('SyncService: Conectado ao servidor');
     });
 
-    this.socket.on('connect_error', (error: any) => {
+    this.socket.on('connect_error', (error: Error) => {
       console.log('SyncService: Erro de conexão:', error.message);
     });
 
-    this.socket.on('notification', (data: any) => {
+    this.socket.on('notification', (data: NotificationData) => {
       toast({
         title: data.title,
         description: data.message,
       });
     });
 
-    this.socket.on('ticket_update', (data: any) => {
+    this.socket.on('ticket_update', (data: TicketUpdateData) => {
       toast({
         title: "Atualização de Chamado",
         description: `O chamado #${data.id} foi atualizado para: ${data.status}`,
@@ -66,13 +74,11 @@ export class SyncService {
       window.dispatchEvent(new CustomEvent('ticket_update', { detail: data }));
     });
 
-    this.socket.on('warranty_update', (data: any) => {
-      // Dispatch warranty update event
+    this.socket.on('warranty_update', (data: unknown) => {
       window.dispatchEvent(new CustomEvent('warranty_update', { detail: data }));
     });
 
-    this.socket.on('inspection_update', (data: any) => {
-      // Dispatch inspection update event
+    this.socket.on('inspection_update', (data: unknown) => {
       window.dispatchEvent(new CustomEvent('inspection_update', { detail: data }));
     });
   }
@@ -129,3 +135,4 @@ export class SyncService {
     return this.socket?.connected ? 'connected' : 'disconnected';
   }
 }
+

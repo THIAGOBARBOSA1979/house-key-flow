@@ -9,18 +9,15 @@ import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services/ExportService";
-import { PropertyForm } from "@/components/Properties/PropertyForm";
-import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
 import { formatDate } from "@/utils/formatters";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useProperties } from "@/hooks/useProperties";
 import { Property } from "@/services/PropertyService";
 import { Button } from "@/components/ui/button";
 import { PropertyStats } from "@/components/Properties/PropertyStats";
 import { PropertyFilters } from "@/components/Properties/PropertyFilters";
 import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
+import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
 
 const Properties = () => {
   const {
@@ -218,45 +215,18 @@ const Properties = () => {
         )}
       />
 
-      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-[700px] rounded-[2rem] border-none shadow-2xl p-8 overflow-y-auto max-h-[90vh]">
-          <DialogHeader className="mb-6">
-            <DialogTitle className="text-3xl font-black tracking-tight">{editingProperty ? "Editar" : "Novo"} Empreendimento</DialogTitle>
-          </DialogHeader>
-          <PropertyForm 
-            onSubmit={(data) => {
-              editingProperty ? updateProperty(editingProperty.id!, data) : createProperty(data);
-              setIsFormOpen(false);
-            }}
-            onCancel={() => setIsFormOpen(false)}
-            initialData={editingProperty || undefined}
-          />
-        </DialogContent>
-      </Dialog>
-
-      {selectedProperty && (
-        <PropertyDetailsDialog 
-          open={!!selectedProperty} 
-          onOpenChange={(open) => !open && setSelectedProperty(null)} 
-          property={selectedProperty} 
-          onUpdate={refreshList}
-        />
-      )}
-
-      <AlertDialog open={!!propertyToDelete} onOpenChange={(open) => !open && setPropertyToDelete(null)}>
-        <AlertDialogContent className="rounded-[2rem] border-none shadow-2xl">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl font-black">Confirmar Exclusão</AlertDialogTitle>
-            <AlertDialogDescription className="font-medium">
-              Deseja realmente excluir o empreendimento <span className="font-black text-foreground">"{propertyToDelete?.name}"</span>? Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="gap-3 sm:gap-0">
-            <AlertDialogCancel className="rounded-xl font-bold">Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => propertyToDelete?.id && deleteProperty(propertyToDelete.id)} className="bg-destructive hover:bg-destructive/90 rounded-xl font-black uppercase tracking-widest text-xs">Excluir</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <PropertyDialogs 
+        isFormOpen={isFormOpen}
+        setIsFormOpen={setIsFormOpen}
+        editingProperty={editingProperty}
+        selectedProperty={selectedProperty}
+        setSelectedProperty={setSelectedProperty}
+        propertyToDelete={propertyToDelete}
+        setPropertyToDelete={setPropertyToDelete}
+        onSave={(id, data) => id ? updateProperty(id, data) : createProperty(data)}
+        onDelete={deleteProperty}
+        onRefresh={refreshList}
+      />
     </PageTemplate>
   );
 };
