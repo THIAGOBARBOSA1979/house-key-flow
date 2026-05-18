@@ -205,6 +205,7 @@ const Properties = () => {
                 )
               },
               { header: "Localização", accessorKey: "location", className: "hidden md:table-cell text-muted-foreground" },
+              { header: "Início", accessorKey: "createdAt", className: "hidden lg:table-cell text-muted-foreground", cell: (p) => formatDate(p.createdAt) },
               { 
                 header: "Progresso", 
                 accessorKey: "progress",
