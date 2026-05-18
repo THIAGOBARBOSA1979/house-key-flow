@@ -10,7 +10,7 @@ interface PropertyStatsProps {
 
 export const PropertyStats = ({ metrics }: PropertyStatsProps) => {
   return (
-    <ResponsiveGrid columns={4} gap="layout">
+    <ResponsiveGrid columns={1} sm={2} lg={4} gap="layout">
       <StatsCard 
         label="Total de Projetos" 
         value={metrics.total} 

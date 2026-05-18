@@ -50,9 +50,9 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
   const hasActiveFilters = searchTerm || roleFilter !== "all" || statusFilter !== "all" || propertyFilter !== "all" || unitFilter !== "";
 
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex flex-col md:flex-row gap-4">
+    <Card className="border-none shadow-sem-sm bg-card/40 backdrop-blur-md rounded-2xl overflow-hidden">
+      <CardContent className="p-3 md:p-4">
+        <div className="flex flex-col lg:flex-row gap-3 md:gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -109,12 +109,11 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
             />
           </div>
           
-          <Button onClick={handleFilterChange}>
+          
             <Filter className="mr-2 h-4 w-4" />
             Filtrar
           </Button>
           
-          {hasActiveFilters && (
             <Button variant="outline" onClick={clearFilters}>
               <X className="mr-2 h-4 w-4" />
               Limpar

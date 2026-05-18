@@ -31,7 +31,7 @@ export const PropertyFilters = ({
 
   return (
     <FilterBar searchPlaceholder="Buscar..." searchValue={searchTerm} onSearchChange={onSearchChange}>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 w-full sm:w-auto">
         <Select value={statusFilter} onValueChange={onStatusChange}>
           <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
             <SelectValue placeholder="Status" />
