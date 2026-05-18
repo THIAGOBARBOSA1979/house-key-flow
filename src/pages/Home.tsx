@@ -137,12 +137,13 @@ export default function Home() {
         <div className="container-responsive">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h3 className="text-h1 mb-4">
-                Por que escolher a A2 Incorporadora?
+              <h3 className="text-h1 mb-4 font-black">
+                Por que a A2 é o novo padrão do mercado?
               </h3>
-              <p className="text-body-lg max-w-2xl mx-auto">
-                Nossa plataforma oferece todas as ferramentas necessárias para uma gestão eficiente e transparente.
+              <p className="text-body-lg max-w-2xl mx-auto font-medium text-muted-foreground/70">
+                Uma suíte de ferramentas projetada para entregar transparência, segurança jurídica e eficiência em cada etapa da jornada.
               </p>
+
             </div>
 
             <div className="grid-layout">
