@@ -17,7 +17,9 @@ export type StatusType =
   | "info" 
   | "neutral"
   | "reschedule_requested"
-  | "presence_confirmed";
+  | "presence_confirmed"
+  | "on_track"
+  | "expired";
 
 interface StatusBadgeProps {
   /** The current status to display */
@@ -91,6 +93,16 @@ const statusConfig: Record<StatusType, {
     badgeClass: "badge-complete",
     defaultLabel: "Presença Confirmada",
     icon: CheckCircle2,
+  },
+  on_track: {
+    badgeClass: "badge-complete",
+    defaultLabel: "No Prazo",
+    icon: CheckCircle2,
+  },
+  expired: {
+    badgeClass: "badge-critical",
+    defaultLabel: "Excedido",
+    icon: XCircle,
   },
 };
 

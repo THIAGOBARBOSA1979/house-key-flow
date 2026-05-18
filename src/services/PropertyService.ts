@@ -52,8 +52,8 @@ const INITIAL_PROPERTIES: Property[] = [
     totalArea: 12500,
     milestones: [
       { id: "m1", title: "Fundação", targetDate: new Date(2023, 5, 10), completed: true, completedAt: new Date(2023, 5, 15) },
-      { id: "m2", title: "Estrutura", targetDate: new Date(2024, 2, 20), completed: true, completedAt: new Date(2024, 2, 25) },
-      { id: "m3", title: "Acabamento", targetDate: new Date(2025, 8, 30), completed: false }
+      { id: "m2", title: "Estrutura", targetDate: new Date(2024, 1, 20), completed: true, completedAt: new Date(2024, 1, 25) },
+      { id: "m3", title: "Acabamento", targetDate: new Date(2025, 7, 30), completed: false }
     ]
   },
   { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400 },

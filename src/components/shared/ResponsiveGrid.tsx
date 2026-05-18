@@ -30,7 +30,7 @@ export function ResponsiveGrid({
     'sm-sem': "gap-2",
     'md-sem': "gap-6",
     'lg-sem': "gap-12",
-    '4-sem': "gap-4"
+    '4-sem': "gap-4-sem"
   };
 
   const columnClasses = {

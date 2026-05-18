@@ -163,7 +163,7 @@ export const QuickLauncher = () => {
           size="icon"
         >
           <Zap className="h-6 w-6 group-hover:rotate-12 transition-transform" />
-          <span className="absolute right-full mr-4 px-3 py-1.5 bg-card text-foreground text-[10px] font-black uppercase tracking-widest rounded-lg border shadow-sem-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <span className="absolute right-full mr-4 px-3 py-1.5 bg-card text-foreground text-[10px] font-black uppercase tracking-widest rounded-2xl border shadow-sem-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             Ações Rápidas (Ctrl+Q)
           </span>
         </Button>
@@ -204,13 +204,13 @@ export const QuickLauncher = () => {
                     )}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-all">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-all">
                         <Icon className="h-6 w-6" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <p className="font-black text-foreground/90">{action.title}</p>
-                          <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest h-4 px-1 bg-muted/20 border-border/40">
+                          <Badge variant="outline" className="text-[8px] font-black uppercase tracking-widest h-4 px-1 bg-muted/20 border-border/40 rounded-2xl">
                             {action.category}
                           </Badge>
                         </div>
@@ -239,11 +239,11 @@ export const QuickLauncher = () => {
         <div className="p-6 bg-muted/5 border-t border-border/10 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <kbd className="h-6 px-1.5 rounded-md bg-muted/20 border border-border/40 flex items-center justify-center text-[10px] font-black">Esc</kbd>
+              <kbd className="h-6 px-1.5 rounded-2xl bg-muted/20 border border-border/40 flex items-center justify-center text-[10px] font-black">Esc</kbd>
               <span className="text-[10px] font-bold text-muted-foreground/60 uppercase">Sair</span>
             </div>
             <div className="flex items-center gap-2">
-              <kbd className="h-6 px-1.5 rounded-md bg-muted/20 border border-border/40 flex items-center justify-center text-[10px] font-black">↵</kbd>
+              <kbd className="h-6 px-1.5 rounded-2xl bg-muted/20 border border-border/40 flex items-center justify-center text-[10px] font-black">↵</kbd>
               <span className="text-[10px] font-bold text-muted-foreground/60 uppercase">Selecionar</span>
             </div>
           </div>

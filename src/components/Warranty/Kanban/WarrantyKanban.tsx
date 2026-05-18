@@ -1,16 +1,14 @@
-
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { 
   WarrantyStage, 
   WarrantyFilters, 
-  KanbanCardData,
   WARRANTY_STAGES,
-  STAGE_ORDER,
-  WarrantyRequestFlow
+  WarrantyRequestFlow,
+  KanbanCardData
 } from "@/types/warrantyFlow";
+import { useWarranty } from "@/hooks/useWarranty";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
 import { warrantyAutomationService } from "@/services/WarrantyAutomationService";
-import { warrantySLAService } from "@/services/WarrantySLAService";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanCard } from "./KanbanCard";
 import { KanbanFilters } from "./KanbanFilters";
@@ -57,9 +55,15 @@ interface WarrantyKanbanProps {
 
 export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
   const { toast } = useToast();
-  const [filters, setFilters] = useState<WarrantyFilters>({});
-  const [kanbanData, setKanbanData] = useState<Map<WarrantyStage, KanbanCardData[]>>(new Map());
-  const [isLoading, setIsLoading] = useState(true);
+  const { 
+    kanbanData, 
+    isLoading, 
+    filters, 
+    setFilters, 
+    refresh: loadData,
+    requests
+  } = useWarranty();
+  
   const [draggedCard, setDraggedCard] = useState<string | null>(null);
   const [draggedFromStage, setDraggedFromStage] = useState<WarrantyStage | null>(null);
   const [viewMode, setViewMode] = useState<"kanban" | "list">("kanban");
@@ -81,92 +85,20 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
   });
   const [transitionNotes, setTransitionNotes] = useState("");
 
-  // Load data
-  const loadData = () => {
-    setIsLoading(true);
-    try {
-      const data = warrantyFlowService.getKanbanData();
-      setKanbanData(data);
-    } catch (error) {
-      console.error("Error loading Kanban data:", error);
-      toast({
-        title: "Erro ao carregar dados",
-        description: "Não foi possível carregar as solicitações.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  // Filter cards
-  const filteredKanbanData = useMemo(() => {
-    const filtered = new Map<WarrantyStage, KanbanCardData[]>();
-    
-    kanbanData.forEach((cards, stage) => {
-      let filteredCards = [...cards];
-      
-      if (filters.search) {
-        const search = filters.search.toLowerCase();
-        filteredCards = filteredCards.filter(card =>
-          card.request.title.toLowerCase().includes(search) ||
-          card.request.clientName.toLowerCase().includes(search) ||
-          card.request.propertyName.toLowerCase().includes(search)
-        );
-      }
-      
-      if (filters.slaStatus) {
-        filteredCards = filteredCards.filter(card => 
-          card.slaInfo.status === filters.slaStatus
-        );
-      }
-      
-      if (filters.priority) {
-        filteredCards = filteredCards.filter(card => 
-          card.request.priority === filters.priority
-        );
-      }
-      
-      if (filters.category) {
-        filteredCards = filteredCards.filter(card => 
-          card.request.category === filters.category
-        );
-      }
-      
-      if (filters.propertyId) {
-        filteredCards = filteredCards.filter(card => 
-          card.request.propertyId === filters.propertyId
-        );
-      }
-      
-      if (filters.assignedTo) {
-        filteredCards = filteredCards.filter(card => 
-          card.request.assignedTo === filters.assignedTo
-        );
-      }
-      
-      filtered.set(stage, filteredCards);
-    });
-    
-    return filtered;
-  }, [kanbanData, filters]);
+  const filteredKanbanData = kanbanData;
 
   // Get unique values for filters
-  const allCards = Array.from(kanbanData.values()).flat();
-  const categories = [...new Set(allCards.map(c => c.request.category))];
-  const properties = [...new Set(allCards.map(c => ({ 
-    id: c.request.propertyId, 
-    name: c.request.propertyName 
+  const allCards = requests;
+  const categories = [...new Set(allCards.map(r => r.category))];
+  const properties = [...new Set(allCards.map(r => ({ 
+    id: r.propertyId, 
+    name: r.propertyName 
   })))];
   const technicians = [...new Set(allCards
-    .filter(c => c.request.assignedTo)
-    .map(c => ({ 
-      id: c.request.assignedTo!, 
-      name: c.request.assignedToName! 
+    .filter(r => r.assignedTo)
+    .map(r => ({ 
+      id: r.assignedTo!, 
+      name: r.assignedToName! 
     })))];
 
   // Check if transition requires notes

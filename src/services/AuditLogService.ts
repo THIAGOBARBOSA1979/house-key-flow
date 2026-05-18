@@ -1,6 +1,6 @@
 import { BaseService } from "./BaseService";
 
-export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial';
+export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
   | 'created' 
   | 'updated' 
