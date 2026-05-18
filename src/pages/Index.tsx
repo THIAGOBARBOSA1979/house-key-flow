@@ -69,7 +69,7 @@ const Dashboard = () => {
             className="rounded-lg h-9"
           >
             <Layers className="mr-2 h-4 w-4" />
-            Design System
+            Brand Book
           </Button>
           <Button 
             onClick={() => navigate("/admin/properties")} 
