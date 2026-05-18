@@ -44,6 +44,7 @@ export type EventType =
 // Interfaces
 export interface ClientProfile {
   id: string;
+  company_id?: string;
   name: string;
   email: string;
   phone?: string;
@@ -77,6 +78,7 @@ export interface StagePermissions {
 
 export interface ClientEvent {
   id: string;
+  company_id?: string;
   clientId: string;
   eventType: EventType;
   title: string;
@@ -92,6 +94,7 @@ export interface ClientEvent {
 
 export interface ClientNotification {
   id: string;
+  company_id?: string;
   clientId: string;
   type: NotificationType;
   title: string;
