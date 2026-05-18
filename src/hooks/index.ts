@@ -14,6 +14,7 @@ export * from './identity/useSaaSAdmin';
 // Operations Domain
 export * from './operations/useProperties';
 export * from './operations/useInspections';
+export * from './operations/useCalendar';
 export * from './operations/useClientStage';
 
 // Warranty Domain
