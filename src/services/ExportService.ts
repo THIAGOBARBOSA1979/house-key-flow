@@ -6,10 +6,10 @@ class ExportService {
   /**
    * Generates a CSV file with enhanced formatting and support for nested objects
    */
-  exportToCSV(data: Record<string, unknown>[], filename: string) {
+  exportToCSV<T extends object>(data: T[], filename: string) {
     if (!data || !data.length) return;
     
-    const flatData = data.map(item => this.flattenObject(item));
+    const flatData = data.map(item => this.flattenObject(item as unknown as Record<string, unknown>));
     const headers = Object.keys(flatData[0]);
     
     const csvRows = [
@@ -38,6 +38,7 @@ class ExportService {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, `${filename}_${format(new Date(), 'yyyy-MM-dd_HHmm')}.csv`);
   }
+
 
   private flattenObject(obj: Record<string, unknown>, prefix = ''): Record<string, unknown> {
     return Object.keys(obj).reduce((acc: Record<string, unknown>, k: string) => {
