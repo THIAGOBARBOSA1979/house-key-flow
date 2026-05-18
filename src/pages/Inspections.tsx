@@ -71,7 +71,7 @@ export default function Inspections() {
 
   const [activeTab, setActiveTab] = useState("list");
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
-  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
+  const { confirm } = useConfirm();
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
