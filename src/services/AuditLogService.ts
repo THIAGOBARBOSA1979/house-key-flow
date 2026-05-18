@@ -40,7 +40,7 @@ export interface AuditLogEntry {
   payload: any;
   previous_values: any;
   created_at: string;
-  // UI expected fields (computed or mapped)
+  // UI expected fields
   details: string;
   timestamp: Date;
   performedByName: string;
@@ -48,11 +48,6 @@ export interface AuditLogEntry {
   entityType: string;
   entityId: string;
   metadata?: any;
-  // Joined fields
-  profiles?: {
-    full_name: string;
-    role: string;
-  };
 }
 
 class AuditLogService extends SupabaseService<any> {
@@ -101,10 +96,9 @@ class AuditLogService extends SupabaseService<any> {
     });
 
     if (error) return [];
-    return (data || []).map(this.mapToEntry);
+    return (data || []).map(raw => this.mapToEntry(raw));
   }
 
-  // Compatibility methods
   async log(entry: any, userContext?: any): Promise<void> {
     await this.logAction({
       action: entry.action,
@@ -124,28 +118,23 @@ class AuditLogService extends SupabaseService<any> {
     const { error } = await Supabase.db.rpc('log_audit_action', {
       p_action: data.action,
       p_entity_type: data.entityType,
-      p_entity_id: data.entityId,
-      p_payload: data.payload,
-      p_previous_values: data.previousValues
+      p_entity_id: data.entityId || null,
+      p_payload: data.payload || null,
+      p_previous_values: data.previousValues || null
     });
 
     if (error) console.error('Failed to log audit action:', error);
   }
 
-  getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
-    // For synchronous access, we return the local cache
+  getRecentLogs(limit: number = 20): AuditLogEntry[] {
     return this.localLogs.slice(0, limit);
   }
 
-  // Add back with correct signature for backward compatibility
-  getAllLogs(companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
+  getAllLogs(): AuditLogEntry[] {
     return this.localLogs;
   }
 
-
   getFilteredLogs(filters: any): AuditLogEntry[] {
-    // This is used by AuditLogViewer, which needs to be updated to be async
-    // But for now, we return filtered cache
     return this.localLogs.filter(log => {
       if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
       if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
@@ -153,11 +142,7 @@ class AuditLogService extends SupabaseService<any> {
     });
   }
 
-    return this.localLogs; // Simplified for build compatibility
-  }
-
   subscribe(callback: (logs: AuditLogEntry[]) => void) {
-    // Fetch initial data async and then call callback
     this.getRecentLogsAsync(50).then(logs => {
       this.localLogs = logs;
       callback(logs);
@@ -171,10 +156,9 @@ class AuditLogService extends SupabaseService<any> {
     return () => SupabaseRealtime.unsubscribe(channel);
   }
 
-  async getRecentLogsAsync(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): Promise<AuditLogEntry[]> {
-    return this.getLogs({ pageSize: limit, companyId, isSuperAdmin });
+  async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
+    return this.getLogs({ pageSize: limit });
   }
-
 
   async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
     const count = await this.count(companyId, isSuperAdmin);
