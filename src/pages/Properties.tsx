@@ -9,18 +9,15 @@ import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services/ExportService";
-import { PropertyForm } from "@/components/Properties/PropertyForm";
-import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
 import { formatDate } from "@/utils/formatters";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useProperties } from "@/hooks/useProperties";
 import { Property } from "@/services/PropertyService";
 import { Button } from "@/components/ui/button";
 import { PropertyStats } from "@/components/Properties/PropertyStats";
 import { PropertyFilters } from "@/components/Properties/PropertyFilters";
 import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
+import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
 
 const Properties = () => {
   const {
