@@ -1,5 +1,4 @@
 import { BaseService } from "../BaseService";
-import { auditLogService } from "../core/AuditLogService";
 
 export interface SignatureEvidence {
   browser?: string;
@@ -22,7 +21,6 @@ export interface DocumentSignature {
   evidence?: SignatureEvidence;
 }
 
-
 export interface ApprovalHistoryEntry {
   id: string;
   status: "pending" | "approved" | "rejected";
@@ -43,6 +41,7 @@ export interface DocumentVersion {
 
 export interface Document {
   id: string;
+  company_id?: string;
   title: string;
   type: "auto" | "manual";
   category: string;
@@ -80,6 +79,7 @@ export interface Document {
 const INITIAL_DOCUMENTS: Document[] = [
   {
     id: "1",
+    company_id: "comp-1",
     title: "Contrato de Compra e Venda - Unidade 204",
     type: "auto",
     category: "contrato",
@@ -103,15 +103,34 @@ const INITIAL_DOCUMENTS: Document[] = [
 
 class DocumentService extends BaseService<Document> {
   constructor() {
-    super("a2_documents", INITIAL_DOCUMENTS);
+    super({
+      storageKey: "a2_documents",
+      auditEntityType: "document"
+    }, INITIAL_DOCUMENTS);
   }
 
-
-  getAllDocuments(): Document[] { return [...this.items]; }
-  getDocumentById(id: string): Document | undefined { return this.getById(id); }
-  getDocumentsByClient(clientName: string): Document[] { return this.items.filter(doc => doc?.associatedTo?.client === clientName); }
-  getFavoriteDocuments(): Document[] { return this.items.filter(doc => doc.isFavorite); }
-  getExpiringDocuments(): Document[] { return this.items.filter(d => d.expiresAt); }
+  // Backward compatibility aliases
+  getAllDocuments() { return this.getAll(undefined, true); }
+  getDocumentById(id: string) { return this.getById(id, undefined, true); }
+  getDocumentsByClient(clientName: string) { return this.items.filter(doc => doc?.associatedTo?.client === clientName); }
+  getFavoriteDocuments() { return this.items.filter(doc => doc.isFavorite); }
+  getExpiringDocuments() { return this.items.filter(d => d.expiresAt); }
+  getCategories() {
+    return [
+      { id: "contrato", name: "Contratos", icon: "FileText", color: "blue" },
+      { id: "manual", name: "Manuais", icon: "Book", color: "green" },
+    ];
+  }
+  getSignatureHistory(id: string) { return this.getById(id, undefined, true)?.signatures || []; }
+  createDocument(data: any) { return this.create(data); }
+  updateDocument(id: string, data: any) { return this.update(id, data, true); }
+  deleteDocument(id: string) { return this.delete(id); }
+  deleteMultipleDocuments(ids: string[]) { return this.bulkDelete(ids); }
+  shareDocument(id: string) { return `${window.location.origin}/share/doc/${id}`; }
+  restoreDocument(id: string) { return !!this.update(id, { status: "published" }, true); }
+  getFolderStructure() { return []; }
+  moveDocument(id: string, folderId: string) { return !!this.update(id, { status: "published" }, true); }
+  generateDocument(type: string, data: any) { return this.create({ title: `Novo ${type}`, type: "auto", ...data } as any); }
 
   searchDocuments(term: string, filters: { category?: string; companyId?: string; isSuperAdmin?: boolean }): Document[] {
     const allDocs = this.getAll(filters.companyId, filters.isSuperAdmin);
@@ -122,92 +141,86 @@ class DocumentService extends BaseService<Document> {
     });
   }
 
-  createDocument(data: any): Document {
-    const doc = super.create({ 
-      ...data, 
-      version: 1, 
-      approvalStatus: "pending", 
-      downloads: 0, 
-      viewCount: 0, 
-      createdAt: new Date(), 
+  create(item: Omit<Document, "id">, companyId?: string): Document {
+    const { id, ...rest } = item as any;
+    return super.create({
+      ...rest,
+      version: 1,
+      approvalStatus: "pending",
+      downloads: 0,
+      viewCount: 0,
+      createdAt: new Date(),
       updatedAt: new Date(),
-      status: data.status || "draft"
-    });
-    auditLogService.log({ entityType: 'document', entityId: doc.id, action: 'created', performedBy: 'admin-1', performedByName: 'Admin', performedByRole: 'admin', details: `Doc ${doc.title} criado` });
-    return doc;
+      status: item.status || "draft"
+    }, companyId);
   }
 
-  updateDocument(id: string, data: any) { return this.update(id, data); }
-  deleteDocument(id: string) { return this.delete(id); }
-  deleteMultipleDocuments(ids: string[]) { ids.forEach(id => this.delete(id)); return ids.length; }
-  duplicateDocument(id: string) { const doc = this.getById(id); return doc ? this.createDocument({ ...doc, id: undefined, title: `${doc.title} (Cópia)` }) : null; }
-  restoreDocument(id: string) { return !!this.update(id, { status: "published" }); }
-  
+  duplicateDocument(id: string) {
+    const doc = this.getById(id, undefined, true);
+    if (!doc) return null;
+    const { id: _, ...rest } = doc;
+    return this.create({
+      ...rest,
+      title: `${doc.title} (Cópia)`,
+      status: "draft"
+    }, doc.company_id);
+  }
+
   toggleFavorite(id: string): boolean {
-    const doc = this.getById(id);
+    const doc = this.getById(id, undefined, true);
     if (!doc) return false;
-    return !!this.update(id, { isFavorite: !doc.isFavorite });
+    return !!this.update(id, { isFavorite: !doc.isFavorite }, true);
   }
 
   logView(id: string) {
-    const doc = this.getById(id);
-    if (doc) this.update(id, { viewCount: (doc.viewCount || 0) + 1 });
+    const doc = this.getById(id, undefined, true);
+    if (doc) this.update(id, { viewCount: (doc.viewCount || 0) + 1 }, true);
   }
 
   downloadDocument(id: string) {
-    const doc = this.getById(id);
-    if (doc) this.update(id, { downloads: (doc.downloads || 0) + 1 });
+    const doc = this.getById(id, undefined, true);
+    if (doc) this.update(id, { downloads: (doc.downloads || 0) + 1 }, true);
   }
 
-  shareDocument(id: string) { return `${window.location.origin}/share/doc/${id}`; }
-  
-  getCategories() {
-    return [
-      { id: "contrato", name: "Contratos", icon: "FileText", color: "blue" },
-      { id: "manual", name: "Manuais", icon: "Book", color: "green" },
-    ];
-  }
-
-  getDocumentStats() { 
+  getDocumentStats(companyId?: string, isSuperAdmin?: boolean) { 
+    const items = this.getAll(companyId, isSuperAdmin);
     const stats = { 
-      total: this.items.length, 
-      pending: this.items.filter(d => d.approvalStatus === 'pending').length,
-      published: this.items.filter(d => d.status === 'published').length,
-      draft: this.items.filter(d => d.status === 'draft').length,
-      archived: this.items.filter(d => d.status === 'archived').length,
-      favorites: this.items.filter(d => d.isFavorite).length,
+      total: items.length, 
+      pending: items.filter(d => d.approvalStatus === 'pending').length,
+      published: items.filter(d => d.status === 'published').length,
+      draft: items.filter(d => d.status === 'draft').length,
+      archived: items.filter(d => d.status === 'archived').length,
+      favorites: items.filter(d => d.isFavorite).length,
       expiring: 0,
       byCategory: {} as Record<string, number>
     };
-    this.items.forEach(d => {
+    items.forEach(d => {
       stats.byCategory[d.category] = (stats.byCategory[d.category] || 0) + 1;
     });
     return stats;
   }
   
-  getSignatureHistory(id: string) { return this.getById(id)?.signatures || []; }
-  signDocument(id: string, signerId: string, method: string, evidence: any) { 
-    const doc = this.getById(id);
+  signDocument(id: string, signerId: string, method?: string, evidence?: any) { 
+    const doc = this.getById(id, undefined, true);
     if (!doc) return false;
     const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s);
-    return !!this.update(id, { signatures, isSigned: true });
+    return !!this.update(id, { signatures, isSigned: true }, true);
   }
+
   rejectSignature(id: string, signerId: string, reason: string) { 
-    const doc = this.getById(id);
+    const doc = this.getById(id, undefined, true);
     if (!doc) return false;
-    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: reason } : s);
-    return !!this.update(id, { signatures });
+    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: (reason as any) } : s);
+    return !!this.update(id, { signatures }, true);
   }
-  getFolderStructure() { return []; }
-  moveDocument(id: string, folderId: string) { return !!this.update(id, { status: "published" }); }
+
   addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): DocumentSignature | null { 
-    const doc = this.getById(id);
+    const doc = this.getById(id, undefined, true);
     if (!doc) return null;
     const newSigner: DocumentSignature = { ...signer, id: crypto.randomUUID(), status: "pending" };
-    this.update(id, { signatures: [...(doc.signatures || []), newSigner] });
+    this.update(id, { signatures: [...(doc.signatures || []), newSigner] }, true);
     return newSigner;
   }
-  generateDocument(type: string, data: any) { return this.createDocument({ title: `Novo ${type}`, type: "auto", ...data }); }
 }
 
 export const documentService = new DocumentService();

@@ -1,11 +1,11 @@
 import { auditLogService, AuditAction, AuditEntityType } from "./core/AuditLogService";
 import { Supabase } from "@/integrations/supabase";
 
-
 type Listener<T> = (items: T[]) => void;
 
 export interface BaseServiceOptions {
   storageKey: string;
+  supabaseTable?: string;
   auditEntityType?: AuditEntityType;
   shouldSyncWithSupabase?: boolean;
 }
@@ -37,6 +37,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   private notify() {
     this.listeners.forEach(listener => listener([...this.items]));
+  }
+
+  protected mapToSupabase(item: T): any {
+    return item;
+  }
+
+  protected mapFromSupabase(raw: any): T {
+    return raw as T;
   }
 
   protected deserializeDates(item: Record<string, unknown>): T {
@@ -127,13 +135,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.log('created', newItem.id, `Item criado em ${this.options.storageKey}`);
     
     if (this.options.shouldSyncWithSupabase) {
-      Supabase.db.create(this.options.storageKey, newItem as any)
-        .catch(err => console.error(`[BaseService] Failed to sync create to Supabase for ${this.options.storageKey}:`, err));
+      const table = this.options.supabaseTable || this.options.storageKey;
+      const data = this.mapToSupabase(newItem);
+      Supabase.db.create(table, data)
+        .catch(err => console.error(`[BaseService] Failed to sync create to Supabase for ${table}:`, err));
     }
     
     return newItem;
   }
-
 
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
@@ -149,13 +158,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     });
     
     if (this.options.shouldSyncWithSupabase) {
-      Supabase.db.update(this.options.storageKey, id, data as any)
-        .catch(err => console.error(`[BaseService] Failed to sync update to Supabase for ${this.options.storageKey}:`, err));
+      const table = this.options.supabaseTable || this.options.storageKey;
+      const syncData = this.mapToSupabase(this.items[index]);
+      Supabase.db.update(table, id, syncData)
+        .catch(err => console.error(`[BaseService] Failed to sync update to Supabase for ${table}:`, err));
     }
     
     return this.items[index];
   }
-
 
   delete(id: string): boolean {
     const initialLength = this.items.length;
@@ -165,14 +175,32 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
       this.log('deleted', id, `Item removido de ${this.options.storageKey}`);
       
       if (this.options.shouldSyncWithSupabase) {
-        Supabase.db.delete(this.options.storageKey, id)
-          .catch(err => console.error(`[BaseService] Failed to sync delete to Supabase for ${this.options.storageKey}:`, err));
+        const table = this.options.supabaseTable || this.options.storageKey;
+        Supabase.db.delete(table, id)
+          .catch(err => console.error(`[BaseService] Failed to sync delete to Supabase for ${table}:`, err));
       }
       
       return true;
     }
 
     return false;
+  }
+
+  async bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]> {
+    const results: T[] = [];
+    for (const id of ids) {
+      const updated = this.update(id, data, isSuperAdmin);
+      if (updated) results.push(updated);
+    }
+    return results;
+  }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    let count = 0;
+    for (const id of ids) {
+      if (this.delete(id)) count++;
+    }
+    return count;
   }
 
   count(companyId?: string, isSuperAdmin?: boolean): number {
@@ -184,5 +212,3 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.persist();
   }
 }
-
-

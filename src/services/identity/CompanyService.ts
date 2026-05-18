@@ -41,8 +41,12 @@ const INITIAL_COMPANIES: Company[] = [
 
 class CompanyService extends BaseService<Company> {
   constructor() {
-    super("a2_companies", INITIAL_COMPANIES);
+    super({
+      storageKey: "a2_companies",
+      auditEntityType: "system"
+    }, INITIAL_COMPANIES);
   }
+
 
   getCompanyBySlug(slug: string): Company | undefined {
     return this.items.find(c => c.slug.toLowerCase() === slug.toLowerCase());
