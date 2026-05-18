@@ -57,9 +57,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     
     const query = debouncedSearchQuery.toLowerCase();
     return {
-      properties: propertyService.getAll().filter(p => p.name.toLowerCase().includes(query)).slice(0, 3),
-      users: userService.getAll().filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)).slice(0, 3),
-      documents: documentService.searchDocuments(debouncedSearchQuery, {}).slice(0, 3)
+      properties: propertyService.getAll(user?.company_id, user?.is_super_admin).filter(p => p.name.toLowerCase().includes(query)).slice(0, 3),
+      users: userService.getAll(user?.company_id, user?.is_super_admin).filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)).slice(0, 3),
+      documents: documentService.searchDocuments(debouncedSearchQuery, { companyId: user?.company_id, isSuperAdmin: user?.is_super_admin }).slice(0, 3)
     };
   }, [debouncedSearchQuery]);
 

@@ -113,8 +113,9 @@ class DocumentService extends BaseService<Document> {
   getFavoriteDocuments(): Document[] { return this.items.filter(doc => doc.isFavorite); }
   getExpiringDocuments(): Document[] { return this.items.filter(d => d.expiresAt); }
 
-  searchDocuments(term: string, filters: { category?: string }): Document[] {
-    return this.items.filter(doc => {
+  searchDocuments(term: string, filters: { category?: string; companyId?: string; isSuperAdmin?: boolean }): Document[] {
+    const allDocs = this.getAll(filters.companyId, filters.isSuperAdmin);
+    return allDocs.filter(doc => {
       const matchesSearch = !term || doc.title.toLowerCase().includes(term.toLowerCase());
       const matchesCategory = !filters.category || filters.category === 'all' || doc.category === filters.category;
       return matchesSearch && matchesCategory;

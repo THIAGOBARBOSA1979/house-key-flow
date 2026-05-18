@@ -70,10 +70,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     if (isSuperAdmin) {
       return [...this.items];
     }
-    if (companyId) {
-      return this.items.filter(item => item.company_id === companyId);
+    
+    // Strict isolation: if not super admin, companyId is mandatory
+    if (!companyId) {
+      console.warn(`[BaseService] Attempted to getAll from ${this.storageKey} without companyId/isSuperAdmin`);
+      return [];
     }
-    return [];
+    
+    return this.items.filter(item => item.company_id === companyId);
   }
 
   getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {

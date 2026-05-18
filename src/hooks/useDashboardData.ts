@@ -22,10 +22,10 @@ export const useDashboardData = () => {
   const initialData = useMemo(() => ({
     properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
     inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-    warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
+    warrantyClaims: warrantyFlowService.getAllRequests().filter(r => user?.is_super_admin || (r as any).company_id === companyId).slice(0, 2),
     recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
-    recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
-    financialMetrics: financialService.getGlobalMetrics(),
+    recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
+    financialMetrics: financialService.getGlobalMetrics(companyId, user?.is_super_admin),
   }), [companyId, user?.is_super_admin]);
 
 
@@ -39,10 +39,10 @@ export const useDashboardData = () => {
     setData({
       properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
       inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-      warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
+      warrantyClaims: warrantyFlowService.getAllRequests().filter(r => user?.is_super_admin || (r as any).company_id === companyId).slice(0, 2),
       recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
-      recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
-      financialMetrics: financialService.getGlobalMetrics(),
+      recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
+      financialMetrics: financialService.getGlobalMetrics(companyId, user?.is_super_admin),
     });
 
 
@@ -76,10 +76,10 @@ export const useDashboardData = () => {
         setData({
           properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
           inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-          warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
+          warrantyClaims: warrantyFlowService.getAllRequests().filter(r => user?.is_super_admin || (r as any).company_id === companyId).slice(0, 2),
           recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
-          recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
-          financialMetrics: financialService.getGlobalMetrics(),
+          recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
+          financialMetrics: financialService.getGlobalMetrics(companyId, user?.is_super_admin),
         });
 
       }, 50);

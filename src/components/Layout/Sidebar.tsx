@@ -121,7 +121,7 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
       )}
 
       
-      <nav className="flex-1 overflow-y-auto py-4-sem px-3-sem space-y-2-sem">
+      <nav className="flex-1 overflow-y-auto py-4-sem px-3-sem space-y-4-sem scrollbar-none">
         <SidebarGroup 
           title="Operacional" 
           items={filterItems(operationalItems)} 

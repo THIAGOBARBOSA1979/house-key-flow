@@ -23,7 +23,7 @@ export function PageTemplate({
 }: PageTemplateProps) {
   return (
     <div className="animate-in fade-in duration-500">
-      <div className={cn("space-y-8 pb-10", className)}>
+      <div className={cn("space-y-4 md:space-y-8 pb-10 px-4 md:px-0", className)}>
         <PageHeader 
           title={title} 
           description={description}
