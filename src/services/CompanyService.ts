@@ -3,6 +3,13 @@ import { BaseService } from "./BaseService";
 export type CompanyStatus = 'active' | 'suspended' | 'cancelled';
 export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise';
 
+export interface CompanySettings {
+  display_name?: string;
+  logo_url?: string;
+  support_email?: string;
+  support_phone?: string;
+}
+
 export interface Company {
   id: string;
   name: string;
@@ -11,6 +18,7 @@ export interface Company {
   owner_id: string;
   subscription_plan: SubscriptionPlan;
   subscription_expires_at?: Date;
+  settings?: CompanySettings;
   created_at: Date;
   updated_at: Date;
 }
@@ -48,6 +56,16 @@ class CompanyService extends BaseService<Company> {
   toggleStatus(id: string, status: CompanyStatus) {
     return this.update(id, {
       status,
+      updated_at: new Date()
+    });
+  }
+
+  updateSettings(id: string, settings: Partial<CompanySettings>) {
+    const company = this.getById(id, undefined, true);
+    if (!company) return undefined;
+
+    return this.update(id, {
+      settings: { ...company.settings, ...settings },
       updated_at: new Date()
     });
   }

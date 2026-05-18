@@ -116,6 +116,10 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return false;
   }
 
+  count(companyId?: string, isSuperAdmin?: boolean): number {
+    return this.getAll(companyId, isSuperAdmin).length;
+  }
+
   clearAllData() {
     this.items = [];
     this.persist();
