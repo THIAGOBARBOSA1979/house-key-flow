@@ -17,15 +17,19 @@ export const useWarranty = () => {
   const [requests, setRequests] = useState<WarrantyRequestFlow[]>([]);
   const [filters, setFilters] = useState<WarrantyFilters>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
 
   const loadData = useCallback(() => {
     setIsLoading(true);
+    setError(null);
     try {
       const data = warrantyFlowService.getAllRequests();
       setRequests(data);
-    } catch (error) {
-      console.error("Error loading warranty data:", error);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
+      console.error("Error loading warranty data:", err);
+      setError(errorMessage);
       toast({
         title: "Erro ao carregar dados",
         description: "Não foi possível carregar as solicitações de garantia.",
@@ -78,22 +82,36 @@ export const useWarranty = () => {
     return requests.find(r => r.id === selectedRequestId) || null;
   }, [requests, selectedRequestId]);
 
-  const changeStatus = useCallback((requestId: string, newStage: WarrantyStage, notes?: string) => {
-    const result = warrantyFlowService.changeStatus(requestId, newStage, 'admin-1', false, notes);
-    if (result.success) {
-      loadData();
+  const changeStatus = useCallback(async (requestId: string, newStage: WarrantyStage, notes?: string) => {
+    setIsLoading(true);
+    try {
+      const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, 'admin-1', false, notes));
+      if (result.success) {
+        loadData();
+        toast({
+          title: "Status atualizado",
+          description: `Solicitação movida para a etapa desejada.`
+        });
+        return result;
+      } else {
+        toast({
+          title: "Erro ao atualizar",
+          description: result.error || "Não foi possível alterar o status.",
+          variant: "destructive"
+        });
+        return result;
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Erro ao atualizar status";
       toast({
-        title: "Status atualizado",
-        description: `Solicitação movida para a etapa desejada.`
-      });
-    } else {
-      toast({
-        title: "Erro ao atualizar",
-        description: result.error || "Não foi possível alterar o status.",
+        title: "Erro inesperado",
+        description: errorMessage,
         variant: "destructive"
       });
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
     }
-    return result;
   }, [loadData, toast]);
 
   const togglePause = useCallback((requestId: string, isPaused: boolean, reason: string) => {
@@ -134,6 +152,7 @@ export const useWarranty = () => {
     filteredRequests,
     kanbanData,
     isLoading,
+    error,
     filters,
     setFilters,
     selectedRequest,
