@@ -15,6 +15,8 @@ export interface AppointmentItemProps {
 }
 
 export function AppointmentItem({ appointment, onViewDetails, compact = false }: AppointmentItemProps) {
+  if (!appointment) return null;
+
   // Get appointment status badge
   const getStatusBadge = (status: string) => {
     switch (status) {
