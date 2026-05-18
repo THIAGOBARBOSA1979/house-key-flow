@@ -45,10 +45,11 @@ import {
   Tooltip as ReTooltip, 
   Legend 
 } from 'recharts';
-import { useInspections } from "@/hooks";
+import { useInspections, useConfirm } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { DataViewMode } from "@/components/Shared/DataView";
 import { inspectionService } from "@/services";
+import { ConfirmationDialog } from "@/components/Shared/ConfirmationDialog";
 
 
 
