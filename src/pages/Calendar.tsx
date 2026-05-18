@@ -52,11 +52,11 @@ const Calendar = () => {
 
       <CalendarFilters
         filterType={filters.type}
-        setFilterType={(type) => setFilters({...filters, type})}
+        setFilterType={(type) => setFilters(prev => ({ ...prev, type }))}
         filterProperty={filters.property}
-        setFilterProperty={(property) => setFilters({...filters, property})}
+        setFilterProperty={(property) => setFilters(prev => ({ ...prev, property }))}
         filterStatus={filters.status}
-        setFilterStatus={(status) => setFilters({...filters, status})}
+        setFilterStatus={(status) => setFilters(prev => ({ ...prev, status }))}
         dateFilter="all"
         setDateFilter={() => {}}
         filterSheetOpen={filterSheetOpen}
