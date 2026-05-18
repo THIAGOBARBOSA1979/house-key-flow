@@ -5,8 +5,10 @@ export interface SortConfig {
   direction: 'asc' | 'desc';
 }
 
-export function useDataTable<T>(data: T[]) {
+export function useDataTable<T>(data: T[], itemsPerPage: number = 10) {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+
 
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return data;
@@ -26,9 +28,21 @@ export function useDataTable<T>(data: T[]) {
     }));
   }, []);
 
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+  
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return sortedData.slice(startIndex, startIndex + itemsPerPage);
+  }, [sortedData, currentPage, itemsPerPage]);
+
   return {
-    sortedData,
+    sortedData: paginatedData,
+    allSortedData: sortedData,
     sortConfig,
-    handleSort
+    handleSort,
+    currentPage,
+    setCurrentPage,
+    totalPages
   };
 }
+
