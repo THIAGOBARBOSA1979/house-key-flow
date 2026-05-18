@@ -112,7 +112,7 @@ const Properties = () => {
 
       <DataView<Property>
         items={filteredProperties}
-        viewMode={viewMode === 'table' ? 'table' : viewMode}
+        viewMode={viewMode}
         itemsPerPage={6}
         renderGrid={(property) => (
           <PropertyCard 
