@@ -1,10 +1,7 @@
-import { useState, useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-
 import { userService } from "@/services";
-import { auditLogService } from "@/services";
-import { useToast } from "@/hooks";
-import { useService } from "@/hooks";
+import { useToast, useService, useDataList } from "@/hooks";
 import { User, UserFiltersData, UserFormData } from "@/types/user";
 
 /**
@@ -15,10 +12,7 @@ export const useUsers = () => {
   const { user } = useAuth();
   const companyId = user?.company_id;
 
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [filters, setFilters] = useState<UserFiltersData>({ search: "", role: "all", status: "all", property: "all", unit: "" });
-
-  const { items: userList, isLoading, create, update, remove, refresh } = useService<User>(userService, {
+  const { items: userList, isLoading, create, update, remove } = useService<User>(userService, {
     toastMessages: {
       create: "Novo usuário foi criado com sucesso.",
       update: "As informações do usuário foram atualizadas com sucesso.",
@@ -26,99 +20,55 @@ export const useUsers = () => {
     }
   });
 
-  const filteredUsers = useMemo(() => {
-    return userList.filter(user => {
-      const searchLower = filters.search.toLowerCase();
-      const matchesSearch = !filters.search || 
-        user.name.toLowerCase().includes(searchLower) ||
-        user.email.toLowerCase().includes(searchLower) ||
-        (user.phone && user.phone.includes(filters.search));
-      const matchesRole = filters.role === "all" || user.role === filters.role;
-      const matchesStatus = filters.status === "all" || user.status === filters.status;
-      const matchesProperty = filters.property === "all" || 
-        (user.propertyName && user.propertyName.toLowerCase().includes(filters.property.toLowerCase()));
-      const matchesUnit = !filters.unit || (user.unit && user.unit.includes(filters.unit));
-      return matchesSearch && matchesRole && matchesStatus && matchesProperty && matchesUnit;
-    });
-  }, [userList, filters]);
+  const filterFn = useCallback((user: User, filters: UserFiltersData) => {
+    const matchesRole = filters.role === "all" || user.role === filters.role;
+    const matchesStatus = filters.status === "all" || user.status === filters.status;
+    const matchesProperty = filters.property === "all" || 
+      (user.propertyName && user.propertyName.toLowerCase().includes(filters.property.toLowerCase()));
+    const matchesUnit = !filters.unit || (user.unit && user.unit.includes(filters.unit));
+    return matchesRole && matchesStatus && matchesProperty && matchesUnit;
+  }, []);
+
+  const {
+    filteredItems: filteredUsers,
+    filters,
+    setFilters,
+    selectedIds: selectedUsers,
+    setSelectedIds: setSelectedUsers,
+    toggleSelect: toggleSelectUser,
+    selectAll: selectAllItems,
+    searchTerm,
+    setSearchTerm,
+  } = useDataList<User>(userList, {
+    initialFilters: { role: "all", status: "all", property: "all", unit: "" },
+    filterFn
+  });
+
+  const selectAll = useCallback(() => {
+    selectAllItems(filteredUsers.map(u => u.id!));
+  }, [selectAllItems, filteredUsers]);
 
   const stats = useMemo(() => userService.getStats(companyId, user?.is_super_admin), [companyId, user?.is_super_admin]);
 
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     if (editingUserId) {
-      const updated = await update(editingUserId, userData);
-      if (updated) {
-        auditLogService.log({
-          entityType: 'user',
-          entityId: editingUserId,
-          action: 'updated',
-          performedBy: 'admin-1',
-          performedByName: 'Administrador',
-          performedByRole: 'admin',
-          details: `Dados do usuário ${userData.name} atualizados.`
-        });
-      }
+      await update(editingUserId, userData);
     } else {
-      const newUser = await create(userData);
-      if (newUser) {
-        auditLogService.log({
-          entityType: 'user',
-          entityId: newUser.id!,
-          action: 'created',
-          performedBy: 'admin-1',
-          performedByName: 'Administrador',
-          performedByRole: 'admin',
-          details: `Novo usuário ${userData.name} criado no sistema.`
-        });
-      }
+      await create(userData);
     }
   }, [create, update]);
 
   const deleteUser = useCallback(async (userId: string) => {
-    const success = await remove(userId);
-    if (success) {
-      auditLogService.log({
-        entityType: 'user',
-        entityId: userId,
-        action: 'cancelled',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Usuário removido permanentemente do sistema.`
-      });
-    }
+    await remove(userId);
   }, [remove]);
 
   const toggleUserStatus = useCallback(async (userId: string) => {
     const user = userService.getById(userId);
     if (user) {
       const newStatus = user.status === "active" ? "inactive" : "active";
-      const updated = await update(userId, { status: newStatus });
-      if (updated) {
-        auditLogService.log({
-          entityType: 'user',
-          entityId: userId,
-          action: 'updated',
-          performedBy: 'admin-1',
-          performedByName: 'Administrador',
-          performedByRole: 'admin',
-          details: `Status do usuário ${user.name} alterado para ${newStatus === 'active' ? 'Ativo' : 'Inativo'}.`
-        });
-      }
+      await update(userId, { status: newStatus });
     }
   }, [update]);
-
-  const toggleSelectUser = useCallback((userId: string) => {
-    setSelectedUsers(prev => prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]);
-  }, []);
-
-  const selectAll = useCallback(() => {
-    if (selectedUsers.length === filteredUsers.length && filteredUsers.length > 0) {
-      setSelectedUsers([]);
-    } else {
-      setSelectedUsers(filteredUsers.map(user => user.id!));
-    }
-  }, [selectedUsers.length, filteredUsers]);
 
   const bulkAction = useCallback(async (action: string) => {
     if (selectedUsers.length === 0) {
@@ -139,7 +89,7 @@ export const useUsers = () => {
       description: `${selectedUsers.length} usuário(s) afetados.` 
     });
     setSelectedUsers([]);
-  }, [selectedUsers, toast, update, remove]);
+  }, [selectedUsers, toast, update, remove, setSelectedUsers]);
 
   return {
     userList,
@@ -147,8 +97,11 @@ export const useUsers = () => {
     filteredUsers,
     selectedUsers,
     stats,
-    filters,
-    setFilters,
+    filters: { ...filters, search: searchTerm },
+    setFilters: (newFilters: any) => {
+      if (newFilters.search !== undefined) setSearchTerm(newFilters.search);
+      setFilters(newFilters);
+    },
     saveUser,
     deleteUser,
     toggleUserStatus,
