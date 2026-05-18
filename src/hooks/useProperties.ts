@@ -1,4 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+
 import { propertyService } from "@/services/PropertyService";
 import { useService } from "@/hooks/useService";
 import { Property } from "@/types/property";
@@ -7,7 +9,10 @@ import { Property } from "@/types/property";
  * Custom hook to manage properties logic.
  */
 export const useProperties = () => {
+  const { user } = useAuth();
+  const companyId = user?.company_id;
   const [searchTerm, setSearchTerm] = useState("");
+
   const [statusFilter, setStatusFilter] = useState("all");
   const [managerFilter, setManagerFilter] = useState("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -20,7 +25,7 @@ export const useProperties = () => {
     }
   });
 
-  const metrics = useMemo(() => propertyService.getMetrics(), []);
+  const metrics = useMemo(() => propertyService.getMetrics(companyId), [companyId]);
 
   const filteredProperties = useMemo(() => {
     return properties.filter(property => {

@@ -39,7 +39,9 @@ export const propertySchema = z.object({
 const INITIAL_PROPERTIES: Property[] = [
   { 
     id: "1", 
+    company_id: "comp-1",
     name: "Edifício Aurora", 
+
     location: "São Paulo, SP", 
     units: 120, 
     completedUnits: 85, 
@@ -53,8 +55,9 @@ const INITIAL_PROPERTIES: Property[] = [
       { id: "m3", title: "Acabamento", targetDate: new Date(2025, 7, 30), completed: false }
     ]
   },
-  { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400, createdAt: new Date(2022, 5, 1) },
-  { id: "3", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200, createdAt: new Date(2023, 10, 1) },
+  { id: "2", company_id: "comp-1", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400, createdAt: new Date(2022, 5, 1) },
+  { id: "3", company_id: "comp-1", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200, createdAt: new Date(2023, 10, 1) },
+
 ];
 
 class PropertyService extends BaseService<Property> {
@@ -175,15 +178,16 @@ class PropertyService extends BaseService<Property> {
     });
   }
 
-  getMetrics(): PropertyMetrics {
-    const total = this.items.length;
-    const byStatus = this.items.reduce((acc, p) => {
+  getMetrics(companyId?: string): PropertyMetrics {
+    const relevantItems = companyId ? this.items.filter(p => p.company_id === companyId) : this.items;
+    const total = relevantItems.length;
+    const byStatus = relevantItems.reduce((acc, p) => {
       acc[p.status] = (acc[p.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const totalUnits = this.items.reduce((acc, p) => acc + (p.units || 0), 0);
-    const totalCompleted = this.items.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
+    const totalUnits = relevantItems.reduce((acc, p) => acc + (p.units || 0), 0);
+    const totalCompleted = relevantItems.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
     
     return {
       total,
@@ -193,6 +197,7 @@ class PropertyService extends BaseService<Property> {
       averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
     };
   }
+
 }
 
 export const propertyService = new PropertyService();

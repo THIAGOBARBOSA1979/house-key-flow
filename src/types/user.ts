@@ -7,6 +7,8 @@ export interface User {
   email: string;
   role: UserRole;
   status: UserStatus;
+  company_id?: string;
+  is_super_admin?: boolean;
   phone?: string;
   avatar?: string;
   notes?: string;
@@ -16,6 +18,7 @@ export interface User {
   lastLogin?: Date;
   createdAt?: Date;
 }
+
 
 export interface UserFiltersData {
   search: string;

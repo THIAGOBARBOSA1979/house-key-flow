@@ -1,4 +1,6 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+
 import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
@@ -13,16 +15,19 @@ import { useToast } from "@/components/ui/use-toast";
  */
 export const useDashboardData = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const companyId = user?.company_id;
   const [loading, setLoading] = useState(false);
   
   const initialData = useMemo(() => ({
-    properties: propertyService.getAll().slice(0, 3),
-    inspections: inspectionService.getAll().slice(0, 3),
+    properties: propertyService.getAll(companyId).slice(0, 3),
+    inspections: inspectionService.getAll(companyId).slice(0, 3),
     warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
     recentActivities: auditLogService.getRecentLogs(5),
     recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
     financialMetrics: financialService.getGlobalMetrics(),
-  }), []);
+  }), [companyId]);
+
 
   const [data, setData] = useState(initialData);
 
@@ -32,13 +37,14 @@ export const useDashboardData = () => {
     
     // Explicit refresh
     setData({
-      properties: propertyService.getAll().slice(0, 3),
-      inspections: inspectionService.getAll().slice(0, 3),
+      properties: propertyService.getAll(companyId).slice(0, 3),
+      inspections: inspectionService.getAll(companyId).slice(0, 3),
       warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
       recentActivities: auditLogService.getRecentLogs(5),
       recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
       financialMetrics: financialService.getGlobalMetrics(),
     });
+
 
     auditLogService.log({
       entityType: 'system',
@@ -68,13 +74,14 @@ export const useDashboardData = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         setData({
-          properties: propertyService.getAll().slice(0, 3),
-          inspections: inspectionService.getAll().slice(0, 3),
+          properties: propertyService.getAll(companyId).slice(0, 3),
+          inspections: inspectionService.getAll(companyId).slice(0, 3),
           warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
           recentActivities: auditLogService.getRecentLogs(5),
           recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
           financialMetrics: financialService.getGlobalMetrics(),
         });
+
       }, 50);
     };
 

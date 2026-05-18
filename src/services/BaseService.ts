@@ -1,6 +1,6 @@
 type Listener<T> = (items: T[]) => void;
 
-export abstract class BaseService<T extends { id: string }> {
+export abstract class BaseService<T extends { id: string; company_id?: string }> {
   protected items: T[] = [];
   protected storageKey: string;
   private listeners: Listener<T>[] = [];
@@ -66,9 +66,13 @@ export abstract class BaseService<T extends { id: string }> {
     this.notify();
   }
 
-  getAll(): T[] {
+  getAll(companyId?: string): T[] {
+    if (companyId) {
+      return this.items.filter(item => item.company_id === companyId);
+    }
     return [...this.items];
   }
+
 
   getById(id: string): T | undefined {
     return this.items.find(item => item.id === id);

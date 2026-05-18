@@ -61,7 +61,9 @@ const systemItems = [
   { to: "/admin/settings", icon: Settings, label: "Configurações" },
   { to: "/admin/design-system", icon: Layout, label: "Design System" },
   { to: "/admin/audit-logs", icon: Activity, label: "Logs de Auditoria" },
+  { to: "/admin/saas", icon: Building, label: "SaaS Admin", superAdminOnly: true },
 ];
+
 
 
 function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) {
@@ -75,7 +77,14 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
   };
 
 
+  // Filter items based on user role and super admin status
+  const filterItems = (items: any[]) => items.filter(item => {
+    if (item.superAdminOnly && !user?.is_super_admin) return false;
+    return true;
+  });
+
   return (
+
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between h-header-height px-5 border-b border-sidebar-border">
         {!collapsed && (
@@ -115,21 +124,21 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
       <nav className="flex-1 overflow-y-auto py-4-sem px-3-sem space-y-2-sem">
         <SidebarGroup 
           title="Operacional" 
-          items={operationalItems} 
+          items={filterItems(operationalItems)} 
           defaultOpen={true}
           collapsed={collapsed}
           onItemClick={onItemClick}
         />
         <SidebarGroup 
           title="Gestão" 
-          items={managementItems}
+          items={filterItems(managementItems)}
           defaultOpen={true}
           collapsed={collapsed}
           onItemClick={onItemClick}
         />
         <SidebarGroup 
           title="Sistema" 
-          items={systemItems}
+          items={filterItems(systemItems)}
           defaultOpen={false}
           collapsed={collapsed}
           onItemClick={onItemClick}

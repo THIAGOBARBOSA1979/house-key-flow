@@ -37,6 +37,8 @@ const FinancialDashboard = lazy(() => import("./pages/admin/FinancialDashboard")
 const Announcements = lazy(() => import("./pages/admin/Announcements"));
 const Technicians = lazy(() => import("./pages/Technicians"));
 const AdminSupport = lazy(() => import("./pages/admin/Support"));
+const SaaSAdmin = lazy(() => import("./pages/admin/SaaSAdmin"));
+
 
 // Client pages and layout (Lazy loaded)
 const ClientLayout = lazy(() => import("./components/Layout/ClientLayout"));
@@ -98,7 +100,9 @@ const App = () => {
                   <Route path="announcements" element={<Announcements />} />
                   <Route path="technicians" element={<Technicians />} />
                   <Route path="support" element={<AdminSupport />} />
+                  <Route path="saas" element={<SaaSAdmin />} />
                 </Route>
+
 
                 {/* Protected Client Routes */}
                 <Route path="/client" element={<ProtectedRoute requiredRole="client"><ClientLayout /></ProtectedRoute>}>
