@@ -142,27 +142,27 @@ export default function Inspections() {
             </div>
           </FilterBar>
 
-          {viewMode === "calendar" ? (
-            <InspectionCalendar inspections={filteredInspections} />
-          ) : (
-            <DataView<Inspection>
-              items={filteredInspections}
-              itemsPerPage={6}
-              gridClassName="grid-cols-1 xl:grid-cols-2"
-              renderGrid={(inspection) => (
-                <Card key={inspection.id} className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm">
-                  <CardContent className="p-0">
-                    <InspectionItem inspection={inspection} onUpdate={loadData} />
-                  </CardContent>
-                </Card>
-              )}
-              emptyState={{
-                title: "Nenhuma vistoria encontrada",
-                description: "Ajuste os filtros para encontrar o que procura.",
-                action: { label: "Limpar filtros", onClick: clearFilters }
-              }}
-            />
-          )}
+          <DataView<Inspection>
+            items={filteredInspections}
+            viewMode={viewMode}
+            itemsPerPage={6}
+            gridClassName="grid-cols-1 xl:grid-cols-2"
+            renderGrid={(inspection) => (
+              <Card key={inspection.id} className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-0">
+                  <InspectionItem inspection={inspection} onUpdate={loadData} />
+                </CardContent>
+              </Card>
+            )}
+            renderCalendar={(inspections) => (
+              <InspectionCalendar inspections={inspections} />
+            )}
+            emptyState={{
+              title: "Nenhuma vistoria encontrada",
+              description: "Ajuste os filtros para encontrar o que procura.",
+              action: { label: "Limpar filtros", onClick: clearFilters }
+            }}
+          />
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">
