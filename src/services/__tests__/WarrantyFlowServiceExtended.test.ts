@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { warrantyFlowService } from '../WarrantyFlowService';
+import { warrantyFlowService } from '../warranty/WarrantyFlowService';
 import { WarrantyRequestFlow } from '../../types/warrantyFlow';
 
 describe('WarrantyFlowService Extended Tests', () => {

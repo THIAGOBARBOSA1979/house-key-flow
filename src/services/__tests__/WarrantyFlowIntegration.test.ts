@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { warrantyFlowService } from '../WarrantyFlowService';
+import { warrantyFlowService } from '../warranty/WarrantyFlowService';
 import { WarrantyRequestFlow, WARRANTY_STAGES } from '../../types/warrantyFlow';
 
 describe('Warranty Flow E2E Integration Tests', () => {
