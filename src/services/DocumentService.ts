@@ -1,6 +1,13 @@
 import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
 
+export interface SignatureEvidence {
+  browser?: string;
+  os?: string;
+  location?: string;
+  [key: string]: unknown;
+}
+
 export interface DocumentSignature {
   id: string;
   name: string;
@@ -12,8 +19,9 @@ export interface DocumentSignature {
   order?: number;
   ipAddress?: string;
   documentHash?: string;
-  evidence?: unknown;
+  evidence?: SignatureEvidence;
 }
+
 
 export interface ApprovalHistoryEntry {
   id: string;
