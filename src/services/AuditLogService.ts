@@ -132,27 +132,49 @@ class AuditLogService extends SupabaseService<any> {
     if (error) console.error('Failed to log audit action:', error);
   }
 
-  async getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): Promise<AuditLogEntry[]> {
-    return this.getLogs({ pageSize: limit, companyId, isSuperAdmin });
+  getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
+    // For synchronous access, we return the local cache
+    return this.localLogs.slice(0, limit);
   }
 
-  // Fallback for sync access if needed (using local cache)
-  getAllLogs(): AuditLogEntry[] {
+  // Add back with correct signature for backward compatibility
+  getAllLogs(companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
     return this.localLogs;
   }
 
+
   getFilteredLogs(filters: any): AuditLogEntry[] {
+    // This is used by AuditLogViewer, which needs to be updated to be async
+    // But for now, we return filtered cache
+    return this.localLogs.filter(log => {
+      if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
+      if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
+      return true;
+    });
+  }
+
     return this.localLogs; // Simplified for build compatibility
   }
 
   subscribe(callback: (logs: AuditLogEntry[]) => void) {
+    // Fetch initial data async and then call callback
+    this.getRecentLogsAsync(50).then(logs => {
+      this.localLogs = logs;
+      callback(logs);
+    });
+
     const channel = SupabaseRealtime.subscribeToTable('audit_logs', async () => {
-      const logs = await this.getRecentLogs(20);
+      const logs = await this.getRecentLogsAsync(50);
       this.localLogs = logs;
       callback(logs);
     });
     return () => SupabaseRealtime.unsubscribe(channel);
   }
+
+  async getRecentLogsAsync(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): Promise<AuditLogEntry[]> {
+    return this.getLogs({ pageSize: limit, companyId, isSuperAdmin });
+  }
+
 
   async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
     const count = await this.count(companyId, isSuperAdmin);
