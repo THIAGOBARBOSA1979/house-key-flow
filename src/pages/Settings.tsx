@@ -22,10 +22,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { systemSettingsService, SystemSettings } from "@/services/SystemSettingsService";
+import { companyService, CompanySettings } from "@/services/CompanyService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [settings, setSettings] = useState<SystemSettings>(systemSettingsService.getSettings());
+  const [companySettings, setCompanySettings] = useState<CompanySettings>({});
+
+  useEffect(() => {
+    if (user?.company_id) {
+      const company = companyService.getById(user.company_id, undefined, true);
+      if (company?.settings) {
+        setCompanySettings(company.settings);
+      }
+    }
+  }, [user]);
+
+  const handleSaveCompanySettings = () => {
+    if (user?.company_id) {
+      companyService.updateSettings(user.company_id, companySettings);
+      toast({
+        title: "Empresa atualizada",
+        description: "As configurações do seu tenant foram salvas."
+      });
+    }
+  };
+
 
   const handleSaveSettings = () => {
     systemSettingsService.updateSettings(settings);
