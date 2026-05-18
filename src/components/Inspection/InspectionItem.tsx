@@ -119,7 +119,7 @@ export const InspectionItem = ({ inspection, onUpdate }: InspectionItemProps) =>
         <div className="flex gap-2 items-center shrink-0 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 pt-3 md:pt-0 mt-2 md:mt-0">
           <StatusBadge status={inspection.status as any} size="sm" showIcon />
           
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center w-full md:w-auto overflow-x-auto md:overflow-visible pb-1 md:pb-0">
             {(inspection.status === "pending" || inspection.status === "progress") && (
               <Button 
                 variant="default" 

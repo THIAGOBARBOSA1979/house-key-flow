@@ -34,7 +34,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
       onClick={onClick}
       className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/40 backdrop-blur-md flex flex-col h-full cursor-pointer group rounded-lg shadow-sem-sm hover:shadow-sem-md", className)}
     >
-      <div className="h-40 bg-muted/30 relative group overflow-hidden">
+      <div className="h-48 md:h-40 bg-muted/30 relative group overflow-hidden">
         {property.imageUrl ? (
           <img 
             src={property.imageUrl} 
@@ -120,7 +120,7 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
         )}
       </CardContent>
 
-      <CardFooter className="gap-2 pt-4 border-t border-border/5 bg-muted/5">
+      <CardFooter className="flex-col sm:flex-row gap-2 pt-4 border-t border-border/5 bg-muted/5">
         <Button 
           variant="default" 
           size="sm" 
@@ -132,9 +132,10 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
         >
           Painel Geral
         </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted/50 border border-border/10">
+        <div className="flex gap-2 w-full sm:w-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted/50 border border-border/10 flex-shrink-0">
               <MoreHorizontal size={16} />
             </Button>
           </DropdownMenuTrigger>
@@ -146,7 +147,8 @@ export const PropertyCard = ({ property, onEdit, onDelete, onClick, className }:
               <Trash2 className="mr-3 h-3.5 w-3.5 opacity-70" /> Remover Registro
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+          </DropdownMenu>
+        </div>
       </CardFooter>
     </Card>
   );
