@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building, Plus, LayoutGrid, List, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download, Settings } from "lucide-react";
+import { Building, Plus, LayoutGrid, List as ListIcon, MoreHorizontal, Pencil, Trash2, PieChart, BarChart3, TrendingUp, FilterX, Download, Settings } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
@@ -22,6 +22,12 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services/ExportService";
 import { PropertyForm } from "@/components/Properties/PropertyForm";
 import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -153,7 +159,7 @@ const Properties = () => {
           <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as any)} className="hidden md:flex bg-muted/40 p-1.5 rounded-2xl shadow-inner shrink-0">
             <TabsList className="bg-transparent border-none h-9 gap-1">
               <TabsTrigger value="grid" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all"><LayoutGrid className="h-4 w-4" /></TabsTrigger>
-              <TabsTrigger value="list" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all"><List className="h-4 w-4" /></TabsTrigger>
+              <TabsTrigger value="list" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all"><ListIcon className="h-4 w-4" /></TabsTrigger>
               <TabsTrigger value="timeline" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md h-full transition-all px-3 gap-2"><BarChart3 className="h-4 w-4" /><span className="text-[10px] font-black uppercase tracking-widest">Timeline</span></TabsTrigger>
             </TabsList>
           </Tabs>
