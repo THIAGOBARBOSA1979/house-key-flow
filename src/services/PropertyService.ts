@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
+import { Property, PropertyMilestone, PropertyUnit, PropertyMetrics } from "@/types/property";
 
 export const propertyMilestoneSchema = z.object({
   id: z.string(),
@@ -10,8 +11,6 @@ export const propertyMilestoneSchema = z.object({
   completedAt: z.date().optional(),
 });
 
-export type PropertyMilestone = z.infer<typeof propertyMilestoneSchema>;
-
 export const propertyUnitSchema = z.object({
   id: z.string(),
   number: z.string(),
@@ -19,8 +18,6 @@ export const propertyUnitSchema = z.object({
   status: z.enum(["available", "sold", "delivered"]).default("available"),
   type: z.string().optional(),
 });
-
-export type PropertyUnit = z.infer<typeof propertyUnitSchema>;
 
 export const propertySchema = z.object({
   id: z.string().optional(),
@@ -38,8 +35,6 @@ export const propertySchema = z.object({
   unitsList: z.array(propertyUnitSchema).optional(),
   createdAt: z.date().optional(),
 });
-
-export type Property = z.infer<typeof propertySchema>;
 
 const INITIAL_PROPERTIES: Property[] = [
   { 
@@ -67,19 +62,6 @@ class PropertyService extends BaseService<Property> {
     super("a2_properties", INITIAL_PROPERTIES);
   }
 
-  protected loadFromStorage() {
-    super.loadFromStorage();
-    this.items = this.items.map(p => ({
-      ...p,
-      milestones: p.milestones?.map(m => ({
-        ...m,
-        targetDate: m.targetDate ? new Date(m.targetDate) : new Date(),
-        completedAt: m.completedAt ? new Date(m.completedAt) : undefined
-      })),
-      deliveryDate: p.deliveryDate ? new Date(p.deliveryDate) : undefined,
-      createdAt: p.createdAt ? new Date(p.createdAt) : undefined,
-    }));
-  }
 
   create(property: Omit<Property, "id">): Property {
     const newProperty = super.create({
