@@ -32,6 +32,7 @@ export function useService<T extends { id: string; company_id?: string }>(
 
   useEffect(() => {
     return service.subscribe((allNewItems) => {
+      // Re-apply tenant filtering in the subscription callback to ensure data isolation
       if (user?.is_super_admin) {
         setItems(allNewItems);
       } else if (companyId) {
@@ -73,6 +74,14 @@ export function useService<T extends { id: string; company_id?: string }>(
   const update = useCallback(async (id: string, data: Partial<T>) => {
     setIsLoading(true);
     try {
+      // Verify tenant ownership before update if not super admin
+      if (!user?.is_super_admin) {
+        const existing = service.getById(id, companyId, false);
+        if (!existing) {
+          throw new Error("Acesso negado ou item não encontrado.");
+        }
+      }
+      
       const updatedItem = service.update(id, data);
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
@@ -92,7 +101,12 @@ export function useService<T extends { id: string; company_id?: string }>(
   const remove = useCallback(async (id: string) => {
     setIsLoading(true);
     try {
-      const deletedItem = service.getById(id);
+      // Verify tenant ownership before delete if not super admin
+      const deletedItem = service.getById(id, companyId, user?.is_super_admin);
+      if (!deletedItem) {
+        throw new Error("Acesso negado ou item não encontrado.");
+      }
+      
       const success = service.delete(id);
       if (success) {
         if (optionsRef.current.toastMessages?.delete) {
