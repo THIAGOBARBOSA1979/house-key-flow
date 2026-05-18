@@ -18,6 +18,8 @@ import { PropertyFilters } from "@/components/Properties/PropertyFilters";
 import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
 import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
 import { PropertyTimeline } from "@/components/Properties/PropertyTimeline";
+import { PropertyBulkActions } from "@/components/Properties/PropertyBulkActions";
+
 
 import { DataViewMode } from "@/components/Shared/DataView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
