@@ -59,6 +59,9 @@ export default function SaaSAdmin() {
   const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'basic' as SubscriptionPlan });
   const [isUpdatingSub, setIsUpdatingSub] = useState(false);
   const [expiryDate, setExpiryDate] = useState<string>('');
+  const [slugError, setSlugError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
 
   const companyUsers = useMemo(() => {
     if (!selectedCompany) return [];
