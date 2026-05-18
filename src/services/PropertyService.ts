@@ -62,6 +62,13 @@ class PropertyService extends BaseService<Property> {
     super("a2_properties", INITIAL_PROPERTIES);
   }
 
+  // Re-export types for backward compatibility
+}
+
+export type { Property, PropertyMilestone, PropertyUnit, PropertyMetrics };
+export const propertyService = new PropertyService();
+
+
 
   create(property: Omit<Property, "id">): Property {
     const newProperty = super.create({
