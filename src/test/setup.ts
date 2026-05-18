@@ -37,7 +37,7 @@ vi.stubGlobal('ResizeObserver', ResizeObserverMock);
 
 import { simulator } from './supabase-simulator';
 
-// Mock Supabase to use the Simulator
+// Advanced Supabase Simulation Layer
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: vi.fn((table) => simulator.getBuilder(table)),
@@ -45,17 +45,17 @@ vi.mock('@/integrations/supabase/client', () => ({
       getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
       getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
       signInWithPassword: vi.fn().mockResolvedValue({ 
-        data: { user: { id: 'admin-1', email: 'admin@exemplo.com' }, session: { access_token: 'fake-token' } }, 
+        data: { user: { id: 'u1', email: 'test@example.com' }, session: { access_token: 'fake' } }, 
         error: null 
       }),
       signOut: vi.fn().mockResolvedValue({ error: null }),
       onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
     },
-    rpc: vi.fn((fn, params) => (simulator as any).getBuilder('rpc').rpc(fn, params))
+    rpc: vi.fn((fn, params) => simulator.getBuilder('rpc').rpc(fn, params))
   }
 }));
 
-// Mock the internal Supabase helper
+// Mock the internal Supabase helper to use the simulator
 vi.mock('@/integration/supabase', () => ({
   Supabase: {
     db: {
@@ -64,6 +64,7 @@ vi.mock('@/integration/supabase', () => ({
         if (options?.filters) {
           options.filters.forEach((f: any) => {
             if (f.operator === 'eq') builder.eq(f.column, f.value);
+            if (f.operator === 'in') builder.in(f.column, f.value);
           });
         }
         if (options?.pagination) {
@@ -71,29 +72,32 @@ vi.mock('@/integration/supabase', () => ({
           const to = from + options.pagination.pageSize - 1;
           builder.range(from, to);
         }
-        return builder.single().then(res => ({ data: [res.data], error: res.error })); // findMany returns array
+        const res = await (builder as any);
+        return { data: res.data, error: null };
+
       }),
       findOne: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).single()),
       create: vi.fn((table, data) => simulator.getBuilder(table).insert(data)),
       update: vi.fn((table, id, data) => simulator.getBuilder(table).eq('id', id).update(data)),
       delete: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).delete()),
-      rpc: vi.fn((fn, params) => (simulator as any).getBuilder('rpc').rpc(fn, params)),
+      rpc: vi.fn((fn, params) => simulator.getBuilder('rpc').rpc(fn, params)),
     },
     auth: {
       signInWithPassword: vi.fn().mockResolvedValue({ 
-        user: { id: 'admin-1', email: 'admin@exemplo.com', full_name: 'Administrador', role: 'admin' }, 
+        user: { id: 'u1', full_name: 'Simulated User', role: 'admin' }, 
         error: null 
       }),
       signOut: vi.fn().mockResolvedValue({ error: null }),
       getCurrentUser: vi.fn().mockResolvedValue({ 
-        id: 'admin-1', 
-        full_name: 'Administrador', 
+        id: 'u1', 
+        full_name: 'Simulated User', 
         role: 'admin',
-        company_id: 'comp-1'
+        company_id: 'tenant-1'
       }),
     }
   }
 }));
+
 
 
 // Mock i18next
