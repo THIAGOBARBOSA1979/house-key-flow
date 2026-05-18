@@ -2,6 +2,7 @@ import { SupabaseAuth } from './auth';
 import { SupabaseDatabase } from './database';
 import { SupabaseStorage } from './storage';
 import { SupabaseFunctions } from './functions';
+import { SupabaseRealtime } from './realtime';
 import { SupabaseErrorHandler } from './error-handler';
 
 export * from './types';
@@ -16,6 +17,7 @@ export const Supabase = {
   db: SupabaseDatabase,
   storage: SupabaseStorage,
   functions: SupabaseFunctions,
+  realtime: SupabaseRealtime,
   error: SupabaseErrorHandler,
 };
 
