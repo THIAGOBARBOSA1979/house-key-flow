@@ -62,7 +62,10 @@ const INITIAL_PROPERTIES: Property[] = [
 
 class PropertyService extends BaseService<Property> {
   constructor() {
-    super("a2_properties", INITIAL_PROPERTIES);
+    super({
+      storageKey: "a2_properties",
+      auditEntityType: "property"
+    }, INITIAL_PROPERTIES);
   }
 
   create(property: Omit<Property, "id">, companyId?: string): Property {
@@ -70,17 +73,9 @@ class PropertyService extends BaseService<Property> {
       ...property,
       createdAt: new Date(),
     }, companyId);
-    auditLogService.log({
-      entityType: 'property',
-      entityId: newProperty.id,
-      action: 'created',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Empreendimento ${newProperty.name} criado.`
-    });
     return newProperty;
   }
+
 
   update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Property | undefined {
     const oldItem = this.getById(id, undefined, isSuperAdmin);
