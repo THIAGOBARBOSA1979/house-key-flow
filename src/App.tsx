@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { BrandThemeProvider } from "@/components/shared/BrandThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
 
@@ -71,7 +72,8 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <Suspense fallback={<SkeletonLoader type="page" />}>
+              <BrandThemeProvider>
+                <Suspense fallback={<SkeletonLoader type="page" />}>
                 <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
@@ -130,7 +132,8 @@ const App = () => {
                 {/* Catch-all route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-              </Suspense>
+                </Suspense>
+              </BrandThemeProvider>
             </AuthProvider>
           </BrowserRouter>
         </GlobalErrorBoundary>
