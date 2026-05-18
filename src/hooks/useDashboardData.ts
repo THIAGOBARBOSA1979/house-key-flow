@@ -20,13 +20,13 @@ export const useDashboardData = () => {
   const [loading, setLoading] = useState(false);
   
   const initialData = useMemo(() => ({
-    properties: propertyService.getAll(companyId).slice(0, 3),
-    inspections: inspectionService.getAll(companyId).slice(0, 3),
+    properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
+    inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
     warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
-    recentActivities: auditLogService.getRecentLogs(5),
+    recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
     recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
     financialMetrics: financialService.getGlobalMetrics(),
-  }), [companyId]);
+  }), [companyId, user?.is_super_admin]);
 
 
   const [data, setData] = useState(initialData);
@@ -37,10 +37,10 @@ export const useDashboardData = () => {
     
     // Explicit refresh
     setData({
-      properties: propertyService.getAll(companyId).slice(0, 3),
-      inspections: inspectionService.getAll(companyId).slice(0, 3),
+      properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
+      inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
       warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
-      recentActivities: auditLogService.getRecentLogs(5),
+      recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
       recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
       financialMetrics: financialService.getGlobalMetrics(),
     });
@@ -74,10 +74,10 @@ export const useDashboardData = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         setData({
-          properties: propertyService.getAll(companyId).slice(0, 3),
-          inspections: inspectionService.getAll(companyId).slice(0, 3),
+          properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
+          inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
           warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
-          recentActivities: auditLogService.getRecentLogs(5),
+          recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
           recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
           financialMetrics: financialService.getGlobalMetrics(),
         });
