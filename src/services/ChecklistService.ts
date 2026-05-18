@@ -60,21 +60,42 @@ class ChecklistService extends BaseService<ChecklistTemplate> {
 
   constructor() {
     super("a2_checklist_templates", INITIAL_TEMPLATES);
+    this.loadExecutions();
+  }
+
+  private loadExecutions() {
+    if (typeof window === 'undefined') return;
     const stored = localStorage.getItem("a2_checklist_executions");
     if (stored) {
       try {
-        this.executions = JSON.parse(stored).map((e: any) => ({ ...e, date: new Date(e.date) }));
+        this.executions = JSON.parse(stored).map((e: any) => ({ 
+          ...e, 
+          date: new Date(e.date) 
+        }));
       } catch (e) {
         console.error("Error loading executions", e);
       }
     }
   }
 
-  getAllTemplates() { return [...this.items]; }
-  getTemplateById(id: string) { return this.getById(id); }
-  getAllExecutions() { return [...this.executions]; }
+  private persistExecutions() {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem("a2_checklist_executions", JSON.stringify(this.executions));
+  }
 
-  async createTemplate(data: any) { 
+  getAllTemplates() { 
+    return this.getAll(); 
+  }
+
+  getTemplateById(id: string) { 
+    return this.getById(id); 
+  }
+
+  getAllExecutions() { 
+    return [...this.executions]; 
+  }
+
+  async createTemplate(data: Omit<ChecklistTemplate, "id">) { 
     return this.create({ 
       ...data, 
       createdAt: new Date(), 
@@ -83,9 +104,11 @@ class ChecklistService extends BaseService<ChecklistTemplate> {
     }); 
   }
 
-  archiveTemplate(id: string) { return this.delete(id); }
+  archiveTemplate(id: string) { 
+    return this.delete(id); 
+  }
 
-  logExecution(templateId: string, groups: ChecklistGroup[], notes: string, name: string = "Admin", status: any = "completed") {
+  logExecution(templateId: string, groups: ChecklistGroup[], notes: string, name: string = "Admin", status: ChecklistExecutionRecord["status"] = "completed") {
     const template = this.getById(templateId);
     const record: ChecklistExecutionRecord = {
       id: crypto.randomUUID(),
@@ -99,7 +122,7 @@ class ChecklistService extends BaseService<ChecklistTemplate> {
       conformityRate: 100
     };
     this.executions.unshift(record);
-    localStorage.setItem("a2_checklist_executions", JSON.stringify(this.executions));
+    this.persistExecutions();
     return record;
   }
 }

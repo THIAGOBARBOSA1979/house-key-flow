@@ -25,4 +25,3 @@ class UserService extends BaseService<User> {
 }
 
 export const userService = new UserService();
-export type { User };
