@@ -24,6 +24,7 @@ const resources = {
         quick_launcher_title: "Centro de Comando Estratégico",
         quick_launcher_placeholder: "Defina sua próxima ação operacional...",
         no_actions: "Nenhuma diretriz de ação localizada",
+        home: "Voltar ao Início",
       },
     },
   },
@@ -48,6 +49,7 @@ const resources = {
         quick_launcher_title: "Strategic Command Center",
         quick_launcher_placeholder: "Define your next operational action...",
         no_actions: "No action guidelines located",
+        home: "Back to Home",
       },
     },
   },
@@ -65,4 +67,5 @@ i18n
   });
 
 export default i18n;
+
 
