@@ -127,12 +127,16 @@ describe('DataView Component', () => {
   });
 
   it('standardizes loading and emptyState across view modes', () => {
-    // Loading
-    const { rerender } = render(<DataView items={mockItems} isLoading={true} skeletonType="table" />);
+    // Loading - Automatic skeleton selection
+    const { rerender } = render(<DataView items={mockItems} isLoading={true} viewMode="table" />);
     expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'table');
     
-    rerender(<DataView items={mockItems} isLoading={true} skeletonType="list" />);
+    rerender(<DataView items={mockItems} isLoading={true} viewMode="list" />);
     expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'list');
+
+    rerender(<DataView items={mockItems} isLoading={true} skeletonType="page" />);
+    expect(screen.getByTestId('skeleton')).toHaveAttribute('data-type', 'page');
+
 
     // Empty State
     rerender(
