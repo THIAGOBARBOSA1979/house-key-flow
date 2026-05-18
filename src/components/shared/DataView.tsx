@@ -108,8 +108,11 @@ export function DataView<T>({
   };
 
   if (isLoading) {
-    return <SkeletonLoader type={skeletonType} count={itemsPerPage || 6} />;
+    // Determinar skeletonType automaticamente se não for passado
+    const effectiveSkeletonType = skeletonType || (viewMode === 'table' ? 'table' : viewMode === 'list' ? 'list' : 'card');
+    return <SkeletonLoader type={effectiveSkeletonType} count={itemsPerPage || 6} />;
   }
+
 
   if (items.length === 0) {
     return (
