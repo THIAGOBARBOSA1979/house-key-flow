@@ -121,6 +121,10 @@ class ClientStageService extends BaseService<ClientProfile> {
     return STAGE_PERMISSIONS[stage];
   }
 
+  getTimeline(clientId: string) {
+    return this.getEvents(clientId);
+  }
+
   canScheduleInspection(clientId: string): boolean {
     return this.getPermissions(clientId).canScheduleInspection;
   }

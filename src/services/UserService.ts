@@ -25,6 +25,11 @@ class UserService extends BaseService<User> {
     };
   }
 
+  clearAllData() {
+    this.items = [];
+    this.persist();
+  }
+
 }
 
 export const userService = new UserService();
