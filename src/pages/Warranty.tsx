@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Kanban, BarChart3, Settings, History } from "lucide-react";
+import { Kanban, BarChart3, Settings, History, Loader2, AlertCircle } from "lucide-react";
 import { WarrantyKanban } from "@/components/Warranty/Kanban/WarrantyKanban";
 import { WarrantyMetricsDashboard } from "@/components/Warranty/Dashboard/WarrantyMetricsDashboard";
 import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfigurationPanel";
@@ -9,6 +9,9 @@ import { WarrantyHeader } from "@/components/Warranty/WarrantyHeader";
 import { WarrantyDetailsDialog } from "@/components/Warranty/WarrantyDetailsDialog";
 import { useWarranty } from "@/hooks/useWarranty";
 import { TechnicalReportDialog } from "@/components/Warranty/TechnicalReportDialog";
+import { WarrantyRequestFlow } from "@/types/warrantyFlow";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 const Warranty = () => {
   const [activeTab, setActiveTab] = useState("kanban");
@@ -20,10 +23,13 @@ const Warranty = () => {
     changeStatus, 
     togglePause, 
     assignTechnician, 
-    exportData 
+    exportData,
+    isLoading,
+    error,
+    refresh
   } = useWarranty();
 
-  const handleSelectRequest = (request: any) => {
+  const handleSelectRequest = (request: WarrantyRequestFlow) => {
     setSelectedRequestId(request.id);
   };
 
@@ -31,6 +37,19 @@ const Warranty = () => {
     <div className="space-y-6">
       <WarrantyHeader onExportData={exportData} />
       
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Erro ao carregar garantias</AlertTitle>
+          <AlertDescription className="flex items-center justify-between">
+            {error}
+            <Button variant="outline" size="sm" onClick={refresh} className="ml-4">
+              Tentar novamente
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="flex w-full max-w-lg overflow-x-auto no-scrollbar bg-muted/50 p-1 rounded-xl h-auto min-h-10">
           <TabsTrigger value="kanban" className="gap-2 rounded-lg py-2">
@@ -51,7 +70,12 @@ const Warranty = () => {
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="kanban" className="space-y-4">
+        <TabsContent value="kanban" className="space-y-4 relative">
+          {isLoading && !selectedRequest && (
+            <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          )}
           <WarrantyKanban onSelectRequest={handleSelectRequest} />
         </TabsContent>
         

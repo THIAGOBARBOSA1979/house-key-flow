@@ -4,6 +4,7 @@ import { WarrantyMetrics, WARRANTY_STAGES, STAGE_ORDER, WarrantyStage } from "@/
 import { Progress } from "@/components/ui/progress";
 import { AlertTriangle, ArrowRight, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatPercentage } from "@/utils/formatters";
 
 interface BottleneckAnalysisProps {
   metrics: WarrantyMetrics;
@@ -120,7 +121,7 @@ export function BottleneckAnalysis({ metrics }: BottleneckAnalysisProps) {
                   )}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {data.count} ({data.percentage.toFixed(0)}%)
+                  {data.count} ({formatPercentage(data.percentage)})
                 </span>
               </div>
               <Progress 
