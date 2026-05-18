@@ -54,86 +54,88 @@ export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserF
       <CardContent className="p-3 md:p-4">
         <div className="flex flex-col lg:flex-row gap-3 md:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Buscar por nome, email ou telefone..."
-              className="pl-8"
+              placeholder="Nome, email ou telefone..."
+              className="pl-9 h-11 rounded-xl bg-background border-none shadow-sem-sm transition-all focus-visible:ring-primary/20"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleFilterChange()}
             />
           </div>
           
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Função" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as funções</SelectItem>
-              <SelectItem value="admin">Administrador</SelectItem>
-              <SelectItem value="manager">Gerente</SelectItem>
-              <SelectItem value="technical">Técnico</SelectItem>
-              <SelectItem value="client">Cliente</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="active">Ativos</SelectItem>
-              <SelectItem value="inactive">Inativos</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={propertyFilter} onValueChange={setPropertyFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Empreendimento" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="aurora">Edifício Aurora</SelectItem>
-              <SelectItem value="bosque">Residencial Bosque Verde</SelectItem>
-              <SelectItem value="monte">Condomínio Monte Alto</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <div className="w-[100px]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:flex gap-2 md:gap-3">
+            <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <SelectTrigger className="w-full lg:w-[150px] rounded-xl h-11 bg-background border-none shadow-sem-sm">
+                <SelectValue placeholder="Função" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-none shadow-sem-xl">
+                <SelectItem value="all">Todas as funções</SelectItem>
+                <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="manager">Gerente</SelectItem>
+                <SelectItem value="technical">Técnico</SelectItem>
+                <SelectItem value="client">Cliente</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full lg:w-[120px] rounded-xl h-11 bg-background border-none shadow-sem-sm">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-none shadow-sem-xl">
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="active">Ativos</SelectItem>
+                <SelectItem value="inactive">Inativos</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={propertyFilter} onValueChange={setPropertyFilter}>
+              <SelectTrigger className="w-full lg:w-[180px] rounded-xl h-11 bg-background border-none shadow-sem-sm">
+                <SelectValue placeholder="Empreendimento" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-none shadow-sem-xl">
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="aurora">Edifício Aurora</SelectItem>
+                <SelectItem value="bosque">Residencial Bosque Verde</SelectItem>
+                <SelectItem value="monte">Condomínio Monte Alto</SelectItem>
+              </SelectContent>
+            </Select>
+            
             <Input
               placeholder="Unidade"
+              className="w-full lg:w-[100px] rounded-xl h-11 bg-background border-none shadow-sem-sm"
               value={unitFilter}
               onChange={(e) => setUnitFilter(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleFilterChange()}
             />
           </div>
           
-          
-            <Filter className="mr-2 h-4 w-4" />
-            Filtrar
-          </Button>
-          
-            <Button variant="outline" onClick={clearFilters}>
-              <X className="mr-2 h-4 w-4" />
-              Limpar
+          <div className="flex gap-2 mt-2 lg:mt-0">
+            <Button onClick={handleFilterChange} className="flex-1 lg:flex-none h-11 rounded-xl font-bold px-6">
+              <Filter className="mr-2 h-4 w-4" />
+              Filtrar
             </Button>
-          )}
+            
+            {hasActiveFilters && (
+              <Button variant="ghost" onClick={clearFilters} className="h-11 rounded-xl text-muted-foreground hover:text-foreground">
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
         
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Users className="h-4 w-4" />
-            <span>{totalUsers} usuários encontrados</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 gap-3">
+          <div className="flex items-center gap-2 text-sem-tiny font-black uppercase tracking-widest text-muted-foreground/60">
+            <Users className="h-3 w-3" />
+            <span>{totalUsers} registros localizados</span>
           </div>
           
           {hasActiveFilters && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Filtros ativos:</span>
-              {searchTerm && <Badge variant="secondary">Busca: {searchTerm}</Badge>}
-              {roleFilter !== "all" && <Badge variant="secondary">Função: {roleFilter}</Badge>}
-              {statusFilter !== "all" && <Badge variant="secondary">Status: {statusFilter}</Badge>}
-              {propertyFilter !== "all" && <Badge variant="secondary">Empreendimento: {propertyFilter}</Badge>}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 mr-1">Filtros:</span>
+              {searchTerm && <Badge variant="secondary" className="rounded-lg text-[9px] font-black uppercase px-2 py-0.5 bg-primary/5 text-primary border-none">Busca: {searchTerm}</Badge>}
+              {roleFilter !== "all" && <Badge variant="secondary" className="rounded-lg text-[9px] font-black uppercase px-2 py-0.5 bg-primary/5 text-primary border-none">Função: {roleFilter}</Badge>}
+              {statusFilter !== "all" && <Badge variant="secondary" className="rounded-lg text-[9px] font-black uppercase px-2 py-0.5 bg-primary/5 text-primary border-none">Status: {statusFilter}</Badge>}
             </div>
           )}
         </div>
