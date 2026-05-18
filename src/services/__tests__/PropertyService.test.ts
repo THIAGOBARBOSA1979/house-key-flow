@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { propertyService } from '../PropertyService';
+import { propertyService } from '../operations/PropertyService';
 
 describe('PropertyService', () => {
   it('should calculate metrics correctly', () => {
