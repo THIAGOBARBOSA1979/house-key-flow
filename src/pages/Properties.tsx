@@ -227,16 +227,10 @@ const Properties = () => {
         onSave={(id, data) => id ? updateProperty(id, data) : createProperty(data)}
         onRefresh={refreshList}
       />
-
-      <ConfirmationDialog 
-        isOpen={isConfirmOpen}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        {...confirmOptions}
-      />
     </PageTemplate>
   );
 };
+
 
 export default Properties;
 
