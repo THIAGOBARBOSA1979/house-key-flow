@@ -23,16 +23,18 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
   const { toast } = useToast();
   const properties = propertyService.getAll();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserFormData>({
     name: "",
     email: "",
     phone: "",
     role: "client",
+    status: "active",
     propertyId: "",
     propertyName: "",
     unit: "",
     notes: "",
   });
+
 
   useEffect(() => {
     if (editingUser) {
@@ -41,6 +43,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
         email: editingUser.email || "",
         phone: editingUser.phone || "",
         role: editingUser.role || "client",
+        status: editingUser.status || "active",
         propertyId: editingUser.propertyId || "",
         propertyName: editingUser.propertyName || "",
         unit: editingUser.unit || "",
@@ -52,6 +55,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
         email: "",
         phone: "",
         role: "client",
+        status: "active",
         propertyId: "",
         propertyName: "",
         unit: "",
