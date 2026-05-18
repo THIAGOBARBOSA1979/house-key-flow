@@ -8,7 +8,7 @@ import { ChecklistItem, ChecklistTemplate, checklistService } from "@/services";
 import { Plus, FileText, Copy, Edit, Trash, Search, Star, LayoutGrid, List, Archive, Download, Settings, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { exportService } from "@/services";
 
 

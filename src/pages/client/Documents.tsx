@@ -19,13 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { documentService, Document } from "@/services";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
-import { useClientStage } from "@/hooks/useClientStage";
+import { useClientStage } from "@/hooks";
 
 interface ClientDocument extends Omit<Document, 'status'> {
   size?: string;

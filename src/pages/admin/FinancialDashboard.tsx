@@ -33,7 +33,7 @@ import {
   Legend
 } from 'recharts';
 import { formatCurrency } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 
 const FinancialDashboard = () => {
   const { toast } = useToast();

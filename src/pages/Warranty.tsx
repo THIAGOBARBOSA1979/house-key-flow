@@ -5,7 +5,7 @@ import { WarrantyKanban } from "@/components/Warranty/Kanban/WarrantyKanban";
 import { WarrantyMetricsDashboard } from "@/components/Warranty/Dashboard/WarrantyMetricsDashboard";
 import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfigurationPanel";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { useWarranty } from "@/hooks/useWarranty";
+import { useWarranty } from "@/hooks";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { WarrantyTabsHeader } from "@/components/Warranty/WarrantyTabsHeader";

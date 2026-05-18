@@ -28,7 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { useClientStage } from "@/hooks/useClientStage";
+import { useClientStage } from "@/hooks";
 import { documentService } from "@/services";
 import { financialService } from "@/services";
 import { inspectionService } from "@/services";

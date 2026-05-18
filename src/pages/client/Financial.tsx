@@ -31,7 +31,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { 
   BarChart, 
   Bar, 

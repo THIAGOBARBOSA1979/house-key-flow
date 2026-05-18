@@ -6,7 +6,7 @@ import {
   WarrantyStage,
   KanbanCardData
 } from "@/types/warrantyFlow";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { exportService } from "@/services";
 
 export const useWarranty = () => {

@@ -24,7 +24,7 @@ import { RecentTickets } from "@/components/Dashboard/RecentTickets";
 import { SystemAuditTimeline } from "@/components/Dashboard/SystemAuditTimeline";
 import { GeneralSummary } from "@/components/Dashboard/GeneralSummary";
 import { PendingDocuments } from "@/components/Dashboard/PendingDocuments";
-import { useDashboardData } from "@/hooks/useDashboardData";
+import { useDashboardData } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
 
 

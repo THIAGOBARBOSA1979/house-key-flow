@@ -9,8 +9,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { useClientStage } from "@/hooks/useClientStage";
-import { useNotifications } from "@/hooks/useNotifications";
+import { useClientStage } from "@/hooks";
+import { useNotifications } from "@/hooks";
 import { ScheduleMeetingDialog } from "@/components/ClientFlow/ScheduleMeetingDialog";
 import { QuickLauncher } from "@/components/shared/QuickLauncher";
 

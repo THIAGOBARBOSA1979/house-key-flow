@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { constructionService, type ConstructionUpdate } from "@/services";
 import { propertyService } from "@/services";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { 
   Dialog, 
   DialogContent, 

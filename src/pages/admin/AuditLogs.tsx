@@ -3,7 +3,7 @@ import { Activity, Shield, Download, Trash2, Filter, Search } from "lucide-react
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { exportService } from "@/services";
 import { auditLogService } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
