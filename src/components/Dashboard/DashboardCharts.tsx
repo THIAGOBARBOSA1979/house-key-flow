@@ -24,10 +24,15 @@ import { financialService } from '@/services/FinancialService';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
-export const DashboardCharts = () => {
-  const inspections = useMemo(() => inspectionService.getAll(), []);
-  const warranties = useMemo(() => warrantyFlowService.getAllRequests(), []);
-  const financialData = useMemo(() => financialService.getGlobalMetrics(), []);
+export const DashboardCharts = ({ 
+  inspections = [], 
+  warranties = [], 
+  financialData = financialService.getGlobalMetrics() 
+}: {
+  inspections?: any[];
+  warranties?: any[];
+  financialData?: any;
+}) => {
 
   const inspectionChartData = useMemo(() => {
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];

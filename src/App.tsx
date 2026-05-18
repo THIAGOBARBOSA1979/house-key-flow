@@ -13,6 +13,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Admin pages and layout
 import { AppLayout } from "./components/Layout/AppLayout";
@@ -59,6 +60,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <GlobalErrorBoundary>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -67,6 +69,7 @@ const App = () => {
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
               
               {/* Redirect legacy login paths */}
               <Route path="/admin/login" element={<Navigate to="/login" replace />} />
@@ -120,6 +123,7 @@ const App = () => {
             </Routes>
           </AuthProvider>
         </BrowserRouter>
+        </GlobalErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>
   );

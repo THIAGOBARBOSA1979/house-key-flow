@@ -82,7 +82,11 @@ const Dashboard = () => {
       
       <Stats />
       
-      <DashboardCharts />
+      <DashboardCharts 
+        inspections={inspections} 
+        warranties={warrantyClaims} 
+        financialData={financialMetrics} 
+      />
       
       <QuickActions />
       
