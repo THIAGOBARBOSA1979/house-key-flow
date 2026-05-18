@@ -1,13 +1,6 @@
 
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { FormDialog } from "@/components/Shared/FormDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ScheduleInspectionForm } from "./ScheduleInspectionForm";
@@ -44,35 +37,29 @@ export function ScheduleInspectionDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {triggerButton || (
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Agendar Vistoria
-          </Button>
-        )}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[750px] p-0 overflow-hidden border-none shadow-sem-xl rounded-3xl bg-background/95 backdrop-blur-2xl">
-        <DialogHeader className="px-10 pt-10 pb-8 bg-primary/5 border-b border-border/10">
-          <DialogTitle className="text-display tracking-tighter flex items-center gap-4 text-3xl md:text-4xl">
-            <Plus className="w-8 h-8 text-primary" strokeWidth={3} />
-            Configurar Nova Vistoria
-          </DialogTitle>
-          <DialogDescription className="text-sem-body-base font-medium text-muted-foreground/60 mt-2 max-w-lg">
-            Defina os parâmetros técnicos e cronograma para garantir uma entrega de excelência ao seu cliente.
-          </DialogDescription>
+    <>
+      {triggerButton ? (
+        <div onClick={() => setOpen(true)}>{triggerButton}</div>
+      ) : (
+        <Button onClick={() => setOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Agendar Vistoria
+        </Button>
+      )}
 
-        </DialogHeader>
-        
-        <div className="p-10 max-h-[75vh] overflow-y-auto custom-scrollbar">
-          <ScheduleInspectionForm 
-            onSuccess={handleSuccess} 
-            clientId={clientId}
-            propertyInfo={propertyInfo}
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
+      <FormDialog
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title="Configurar Nova Vistoria"
+        description="Defina os parâmetros técnicos e cronograma para garantir uma entrega de excelência ao seu cliente."
+        maxWidth="sm:max-w-[750px]"
+      >
+        <ScheduleInspectionForm 
+          onSuccess={handleSuccess} 
+          clientId={clientId}
+          propertyInfo={propertyInfo}
+        />
+      </FormDialog>
+    </>
   );
 }
