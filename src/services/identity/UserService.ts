@@ -5,46 +5,65 @@ import { SupabaseRealtime } from "@/integration/supabase/realtime";
 
 class UserService extends BaseService<User> {
   constructor() {
-    super("a2_users", []);
+    super({
+      storageKey: "a2_users",
+      auditEntityType: "user",
+      shouldSyncWithSupabase: true
+    }, []);
     this.initializeSupabase();
   }
 
   private async initializeSupabase() {
     const { data } = await Supabase.db.findMany<User>('profiles');
     if (data) {
-      this.items = data;
+      this.items = data.map(raw => ({
+        ...raw,
+        name: (raw as any).full_name || (raw as any).name
+      } as User));
       this.persist();
     }
 
     SupabaseRealtime.subscribeToTable('profiles', async () => {
       const { data: newData } = await Supabase.db.findMany<User>('profiles');
       if (newData) {
-        this.items = newData;
+        this.items = newData.map(raw => ({
+          ...raw,
+          name: (raw as any).full_name || (raw as any).name
+        } as User));
         this.persist();
       }
     });
   }
 
-  // Override create to use Supabase
+  // BaseService handles audit logging and basic operations.
+  // Overriding only for Supabase specific logic if needed, but BaseService handles it better now.
+  // We can remove these overrides if we trust the new BaseService implementation.
+  // However, profiles table in Supabase has different column names (full_name vs name).
+
+  // BaseService handles audit logging and basic operations.
+  // Overriding only for Supabase specific logic if needed, but BaseService handles it better now.
+  // We can remove these overrides if we trust the new BaseService implementation.
+  // However, profiles table in Supabase has different column names (full_name vs name).
+
   create(item: Omit<User, "id">, companyId?: string): User {
     const newItem = super.create(item, companyId);
     
-    // Async call to Supabase in background
-    Supabase.db.create('profiles', {
-      id: newItem.id,
-      full_name: newItem.name,
-      role: newItem.role,
-      company_id: companyId || newItem.company_id,
-      status: newItem.status
-    } as any).catch(err => console.error('Failed to sync create to Supabase:', err));
+    if (this.options.shouldSyncWithSupabase) {
+      Supabase.db.create('profiles', {
+        id: newItem.id,
+        full_name: newItem.name,
+        role: newItem.role,
+        company_id: companyId || newItem.company_id,
+        status: newItem.status
+      } as any).catch(err => console.error('Failed to sync create to Supabase:', err));
+    }
 
     return newItem;
   }
 
-  // Override update to use Supabase
-  update(id: string, data: Partial<User>): User | undefined {
-    const updated = super.update(id, data);
-    if (updated) {
+  update(id: string, data: Partial<User>, isSuperAdmin?: boolean): User | undefined {
+    const updated = super.update(id, data, isSuperAdmin);
+    if (updated && this.options.shouldSyncWithSupabase) {
       Supabase.db.update('profiles', id, {
         full_name: updated.name,
         role: updated.role,
@@ -55,14 +74,14 @@ class UserService extends BaseService<User> {
     return updated;
   }
 
-  // Override delete to use Supabase
   delete(id: string): boolean {
     const success = super.delete(id);
-    if (success) {
+    if (success && this.options.shouldSyncWithSupabase) {
       Supabase.db.delete('profiles', id).catch(err => console.error('Failed to sync delete to Supabase:', err));
     }
     return success;
   }
+
 
   getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
     const relevant = this.getAll(companyId, isSuperAdmin);

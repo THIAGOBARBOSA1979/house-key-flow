@@ -11,7 +11,7 @@ import { SkeletonLoader } from "@/components/shared/SkeletonLoader";
 import { exportService } from "@/services";
 import { useUsers } from "@/hooks";
 import { auditLogService } from "@/services";
-import { User as UserType } from "@/types/user";
+import { User as UserType, UserFiltersData } from "@/types/user";
 import { UserStats } from "@/components/Users/UserStats";
 import { UserActionBanner } from "@/components/Users/UserActionBanner";
 import { UserBulkActions } from "@/components/Users/UserBulkActions";
@@ -177,7 +177,7 @@ const Users = () => {
         emptyState={{
           title: "Nenhum usuário encontrado",
           description: "Ajuste os filtros para encontrar o que procura.",
-          action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" }) }
+          action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" } as UserFiltersData) }
         }}
       />
 

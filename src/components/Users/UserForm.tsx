@@ -1,15 +1,30 @@
 
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { propertyService } from "@/services";
 import { UserFormData, User } from "@/types/user";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const userFormSchema = z.object({
+  name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
+  email: z.string().email("Email inválido"),
+  phone: z.string().optional(),
+  role: z.string(),
+  status: z.string(),
+  propertyId: z.string().optional(),
+  propertyName: z.string().optional(),
+  unit: z.string().optional(),
+  notes: z.string().optional(),
+});
 
 interface UserFormProps {
   isOpen: boolean;
@@ -18,27 +33,27 @@ interface UserFormProps {
   editingUser?: User | null;
 }
 
-
 export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps) => {
-  const { toast } = useToast();
   const properties = propertyService.getAll();
   
-  const [formData, setFormData] = useState<UserFormData>({
-    name: "",
-    email: "",
-    phone: "",
-    role: "client",
-    status: "active",
-    propertyId: "",
-    propertyName: "",
-    unit: "",
-    notes: "",
+  const form = useForm<UserFormData>({
+    resolver: zodResolver(userFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      role: "client",
+      status: "active",
+      propertyId: "",
+      propertyName: "",
+      unit: "",
+      notes: "",
+    },
   });
-
 
   useEffect(() => {
     if (editingUser) {
-      setFormData({
+      form.reset({
         name: editingUser.name || "",
         email: editingUser.email || "",
         phone: editingUser.phone || "",
@@ -50,7 +65,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
         notes: editingUser.notes || "",
       });
     } else {
-      setFormData({
+      form.reset({
         name: "",
         email: "",
         phone: "",
@@ -62,34 +77,10 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
         notes: "",
       });
     }
-  }, [editingUser, isOpen]);
+  }, [editingUser, isOpen, form]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.email) {
-      toast({
-        title: "Erro",
-        description: "Nome e email são obrigatórios.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    onSave(formData);
-  };
-
-  const handleChange = (field: string, value: string) => {
-    if (field === "propertyId") {
-      const selectedProp = properties.find(p => p.id === value);
-      setFormData(prev => ({ 
-        ...prev, 
-        propertyId: value, 
-        propertyName: selectedProp ? selectedProp.name : "" 
-      }));
-    } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
-    }
+  const onSubmit = (data: UserFormData) => {
+    onSave(data);
   };
 
   return (
@@ -102,105 +93,152 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6 p-8 max-h-[70vh] overflow-y-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Nome completo <span className="text-destructive">*</span></Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                placeholder="Ex: João Silva"
-                required
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-8 max-h-[70vh] overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome completo <span className="text-destructive">*</span></FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex: João Silva" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email institucional <span className="text-destructive">*</span></Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                placeholder="email@exemplo.com"
-                required
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="phone">Telefone / WhatsApp</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                placeholder="(11) 99999-9999"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="role">Nível de Acesso</Label>
-              <Select value={formData.role} onValueChange={(value) => handleChange("role", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o acesso" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="manager">Gerente de Obras</SelectItem>
-                  <SelectItem value="technical">Técnico de Vistoria</SelectItem>
-                  <SelectItem value="client">Cliente / Proprietário</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          {formData.role === "client" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-dashed pt-6">
-              <div className="space-y-2">
-                <Label htmlFor="propertyId">Vincular Empreendimento</Label>
-                <Select value={formData.propertyId} onValueChange={(value) => handleChange("propertyId", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {properties.map(prop => (
-                      <SelectItem key={prop.id} value={prop.id!}>{prop.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="unit">Unidade / Apartamento</Label>
-                <Input
-                  id="unit"
-                  value={formData.unit}
-                  onChange={(e) => handleChange("unit", e.target.value)}
-                  placeholder="Ex: 102 Bloco B"
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email institucional <span className="text-destructive">*</span></FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="email@exemplo.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefone / WhatsApp</FormLabel>
+                    <FormControl>
+                      <Input placeholder="(11) 99999-9999" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nível de Acesso</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o acesso" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="admin">Administrador</SelectItem>
+                        <SelectItem value="manager">Gerente de Obras</SelectItem>
+                        <SelectItem value="technical">Técnico de Vistoria</SelectItem>
+                        <SelectItem value="client">Cliente / Proprietário</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            {form.watch("role") === "client" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-dashed pt-6">
+                <FormField
+                  control={form.control}
+                  name="propertyId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vincular Empreendimento</FormLabel>
+                      <Select 
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          const prop = properties.find(p => p.id === value);
+                          if (prop) form.setValue("propertyName", prop.name);
+                        }} 
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {properties.map(prop => (
+                            <SelectItem key={prop.id} value={prop.id!}>{prop.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unidade / Apartamento</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: 102 Bloco B" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-            </div>
-          )}
-          
-          <div className="space-y-2">
-            <Label htmlFor="notes">Observações Administrativas</Label>
-            <Textarea
-              id="notes"
-              value={formData.notes}
-              onChange={(e) => handleChange("notes", e.target.value)}
-              placeholder="Notas internas sobre o usuário..."
-              className="min-h-[100px] resize-none"
-              rows={3}
+            )}
+            
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Observações Administrativas</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Notas internas sobre o usuário..." 
+                      className="min-h-[100px] resize-none" 
+                      rows={3} 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </form>
+          </form>
+        </Form>
         
         <DialogFooter className="p-8 border-t border-border/10 bg-muted/5">
           <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>
-          <Button type="submit" onClick={handleSubmit} className="px-10 font-black uppercase tracking-widest text-xs">
+          <Button type="submit" onClick={form.handleSubmit(onSubmit)} className="px-10 font-black uppercase tracking-widest text-xs">
             {editingUser ? "Salvar Alterações" : "Criar Usuário"}
           </Button>
         </DialogFooter>
@@ -208,4 +246,5 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
     </Dialog>
   );
 };
+
 

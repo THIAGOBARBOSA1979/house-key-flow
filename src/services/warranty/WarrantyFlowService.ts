@@ -15,8 +15,9 @@ import {
   WarrantyProblemDetail
 } from '../../types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
-import { auditLogService } from '../core/AuditLogService';
+import { auditLogService, AuditAction } from '../core/AuditLogService';
 import { BaseService } from '../BaseService';
+
 
 // Mock warranty requests data
 const initialMockRequests: WarrantyRequestFlow[] = [
@@ -141,10 +142,13 @@ const initialMockRequests: WarrantyRequestFlow[] = [
 
 class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
   private debugMode = false;
-  private logs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: unknown }> = [];
+  private debugLogs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: unknown }> = [];
 
   constructor() {
-    super("a2_warranty_requests", initialMockRequests);
+    super({
+      storageKey: "a2_warranty_requests",
+      auditEntityType: "warranty"
+    }, initialMockRequests);
     this.items = this.items.map(item => ({
       ...item,
       company_id: (item as any).company_id || "comp-1"
@@ -156,16 +160,16 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
   }
 
   getLogs() {
-    return [...this.logs];
+    return [...this.debugLogs];
   }
 
   clearLogs() {
-    this.logs = [];
+    this.debugLogs = [];
   }
 
-  private log(level: 'info' | 'error', message: string, data?: unknown) {
+  private internalLog(level: 'info' | 'error', message: string, data?: unknown) {
     const entry = { timestamp: new Date(), level, message, data };
-    this.logs.push(entry);
+    this.debugLogs.push(entry);
     if (this.debugMode) {
       const consoleMethod = level === 'error' ? 'error' : 'log';
       console[consoleMethod](`[WarrantyFlowService] ${message}`, data || '');
@@ -186,7 +190,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
    * Create a new warranty request
    */
   createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
-    this.log('info', 'Creating new request', { title: data.title });
+    this.internalLog('info', 'Creating new request', { title: data.title });
     const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
     const slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === category) || DEFAULT_SLA_CONFIGS[0];
@@ -245,18 +249,15 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
       this.update(id, newRequest);
     }
 
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: id,
-      action: 'created',
+    this.log('created', id, `Solicitação de garantia criada: ${newRequest.title}`, {
       performedBy: data.clientId || 'client',
       performedByName: data.clientName || 'Cliente',
-      performedByRole: 'client',
-      details: `Solicitação de garantia criada: ${newRequest.title}`
+      performedByRole: 'client'
     });
 
     return newRequest;
   }
+
 
 
   /**
@@ -335,16 +336,16 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     performedByRole: 'admin' | 'client' = 'admin',
     userName?: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    this.log('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
+    this.internalLog('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
     const request = this.getById(requestId);
     
     if (!request) {
-      this.log('error', `Request ${requestId} not found for status change`);
+      this.internalLog('error', `Request ${requestId} not found for status change`);
       return { success: false, error: "Solicitação não encontrada" };
     }
     
     if (isFinalStage(request.currentStage) && newStatus !== 'in_analysis') {
-      this.log('error', `Cannot move finalized request ${requestId} to ${newStatus}`);
+      this.internalLog('error', `Cannot move finalized request ${requestId} to ${newStatus}`);
       return { success: false, error: "Não é possível alterar uma solicitação finalizada (exceto para reabertura em análise)" };
     }
 
@@ -373,7 +374,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     
     // Global bypass for E2E tests if necessary, but here we'll just fix the validation
     if (!isValidTransition(request.currentStage, newStatus) && newStatus !== 'in_analysis') {
-      this.log('error', `Invalid transition from ${request.currentStage} to ${newStatus}`);
+      this.internalLog('error', `Invalid transition from ${request.currentStage} to ${newStatus}`);
       return { 
         success: false, 
         error: `Transição inválida de ${WARRANTY_STAGES[request.currentStage].label} para ${WARRANTY_STAGES[newStatus].label}` 
@@ -415,23 +416,20 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
 
     this.update(requestId, updatedRequest);
     
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: requestId,
-      action: newStatus === 'opened' ? 'created' : (newStatus === 'approved' ? 'accepted' : (newStatus === 'rejected' ? 'rejected' : 'stage_changed')),
+    const auditAction: AuditAction = newStatus === 'opened' ? 'created' : (newStatus === 'approved' ? 'accepted' : (newStatus === 'rejected' ? 'rejected' : 'stage_changed'));
+    
+    this.log(auditAction, requestId, notes || `Sincronização estratégica: protocolo avançou para ${WARRANTY_STAGES[newStatus].label}`, {
+      fromStatus: request.currentStage, 
+      toStatus: newStatus,
+      technician: updatedRequest.assignedToName,
+      problemCount: updatedRequest.problems?.length || 0,
       performedBy: changedBy,
       performedByName: performedByRole === 'admin' ? 'Administrador' : (request.clientName || 'Cliente'),
-      performedByRole: performedByRole,
-      details: notes || `Sincronização estratégica: protocolo avançou para ${WARRANTY_STAGES[newStatus].label}`,
-      metadata: { 
-        fromStatus: request.currentStage, 
-        toStatus: newStatus,
-        technician: updatedRequest.assignedToName,
-        problemCount: updatedRequest.problems?.length || 0
-      }
+      performedByRole: performedByRole
     });
     
     return { success: true, request: updatedRequest };
+
   }
 
   /**

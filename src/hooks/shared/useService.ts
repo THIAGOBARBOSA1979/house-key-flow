@@ -1,7 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-
-import { BaseService } from '@/services';
 import { useToast } from '@/hooks';
 
 interface UseServiceOptions<T> {
@@ -15,41 +13,39 @@ interface UseServiceOptions<T> {
 }
 
 export function useService<T extends { id: string; company_id?: string }>(
-  service: any, // Using any for transition between BaseService and SupabaseService
+  service: any,
   options: UseServiceOptions<T> = {}
 ) {
   const { toast } = useToast();
   const { user } = useAuth();
   const companyId = user?.company_id;
+  const isSuperAdmin = !!user?.is_super_admin;
   const [items, setItems] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
 
   const fetchItems = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await service.getAll(companyId, user?.is_super_admin);
+      const data = await service.getAll(companyId, isSuperAdmin);
       setItems(data);
     } catch (error) {
       console.error('Failed to fetch items:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [service, companyId, user?.is_super_admin]);
+  }, [service, companyId, isSuperAdmin]);
 
   useEffect(() => {
     fetchItems();
   }, [fetchItems]);
 
-
-
-  // We use a ref for options to avoid re-triggering callbacks when options object changes but functions stay same
-  const optionsRef = useRef(options);
-  optionsRef.current = options;
-
   useEffect(() => {
     if (typeof service.subscribe === 'function') {
       return service.subscribe((allNewItems: T[]) => {
-        if (user?.is_super_admin) {
+        if (isSuperAdmin) {
           setItems(allNewItems);
         } else if (companyId) {
           setItems(allNewItems.filter(item => item.company_id === companyId));
@@ -58,12 +54,11 @@ export function useService<T extends { id: string; company_id?: string }>(
         }
       });
     }
-  }, [service, companyId, user?.is_super_admin]);
+  }, [service, companyId, isSuperAdmin]);
 
   const refresh = useCallback(() => {
     fetchItems();
   }, [fetchItems]);
-
 
   const create = useCallback(async (data: Omit<T, "id">) => {
     setIsLoading(true);
@@ -91,7 +86,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const update = useCallback(async (id: string, data: Partial<T>) => {
     setIsLoading(true);
     try {
-      const updatedItem = await service.update(id, data);
+      const updatedItem = await service.update(id, data, isSuperAdmin);
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
           toast({ title: "Sucesso", description: optionsRef.current.toastMessages.update });
@@ -105,7 +100,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     } finally {
       setIsLoading(false);
     }
-  }, [service, toast]);
+  }, [service, toast, isSuperAdmin]);
 
   const remove = useCallback(async (id: string) => {
     setIsLoading(true);
@@ -126,6 +121,39 @@ export function useService<T extends { id: string; company_id?: string }>(
     }
   }, [service, toast]);
 
+  const bulkUpdate = useCallback(async (ids: string[], data: Partial<T>) => {
+    setIsLoading(true);
+    try {
+      const results = [];
+      for (const id of ids) {
+        const updated = await service.update(id, data, isSuperAdmin);
+        if (updated) results.push(updated);
+      }
+      toast({ title: "Sucesso", description: `${results.length} itens atualizados.` });
+      return results;
+    } catch (error) {
+      toast({ title: "Erro", description: "Falha na atualização em massa.", variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [service, toast, isSuperAdmin]);
+
+  const bulkRemove = useCallback(async (ids: string[]) => {
+    setIsLoading(true);
+    try {
+      let count = 0;
+      for (const id of ids) {
+        const success = await service.delete(id);
+        if (success) count++;
+      }
+      toast({ title: "Sucesso", description: `${count} itens removidos.` });
+      return count;
+    } catch (error) {
+      toast({ title: "Erro", description: "Falha na remoção em massa.", variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [service, toast]);
 
   return {
     items,
@@ -134,8 +162,11 @@ export function useService<T extends { id: string; company_id?: string }>(
     create,
     update,
     remove,
-    getById: useCallback((id: string) => service.getById(id, companyId, user?.is_super_admin), [service, companyId, user?.is_super_admin])
+    bulkUpdate,
+    bulkRemove,
+    getById: useCallback((id: string) => service.getById(id, companyId, isSuperAdmin), [service, companyId, isSuperAdmin])
   };
 }
+
 
 

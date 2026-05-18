@@ -62,7 +62,10 @@ const INITIAL_PROPERTIES: Property[] = [
 
 class PropertyService extends BaseService<Property> {
   constructor() {
-    super("a2_properties", INITIAL_PROPERTIES);
+    super({
+      storageKey: "a2_properties",
+      auditEntityType: "property"
+    }, INITIAL_PROPERTIES);
   }
 
   create(property: Omit<Property, "id">, companyId?: string): Property {
@@ -70,37 +73,23 @@ class PropertyService extends BaseService<Property> {
       ...property,
       createdAt: new Date(),
     }, companyId);
-    auditLogService.log({
-      entityType: 'property',
-      entityId: newProperty.id,
-      action: 'created',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Empreendimento ${newProperty.name} criado.`
-    });
     return newProperty;
   }
+
 
   update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Property | undefined {
     const oldItem = this.getById(id, undefined, isSuperAdmin);
     const updated = super.update(id, property, isSuperAdmin);
 
-    
     if (updated && property.status && property.status !== oldItem?.status) {
-      auditLogService.log({
-        entityType: 'property',
-        entityId: id,
-        action: 'stage_changed',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Status do empreendimento ${updated.name} alterado para ${property.status}.`,
-        metadata: { oldStatus: oldItem?.status, newStatus: property.status }
+      this.log('stage_changed', id, `Status do empreendimento ${updated.name} alterado para ${property.status}.`, {
+        oldStatus: oldItem?.status,
+        newStatus: property.status
       });
     }
     return updated;
   }
+
 
   updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Property | undefined {
     const property = this.getById(propertyId, undefined, isSuperAdmin);
@@ -115,15 +104,7 @@ class PropertyService extends BaseService<Property> {
     const updated = this.update(propertyId, { milestones }, isSuperAdmin);
     
     if (updated && milestone) {
-      auditLogService.log({
-        entityType: 'property',
-        entityId: propertyId,
-        action: 'updated',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`
-      });
+      this.log('updated', propertyId, `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`);
     }
 
     return updated;
@@ -141,19 +122,12 @@ class PropertyService extends BaseService<Property> {
     const updated = this.update(propertyId, { unitsList });
 
     if (updated && unit) {
-      auditLogService.log({
-        entityType: 'property',
-        entityId: propertyId,
-        action: 'updated',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Status da unidade ${unit.number} do empreendimento ${property.name} alterado para ${status}.`
-      });
+      this.log('updated', propertyId, `Status da unidade ${unit.number} do empreendimento ${property.name} alterado para ${status}.`);
     }
 
     return updated;
   }
+
 
   batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
     const property = this.getById(propertyId);

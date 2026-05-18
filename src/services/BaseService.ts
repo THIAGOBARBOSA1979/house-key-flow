@@ -1,19 +1,30 @@
+import { auditLogService, AuditAction, AuditEntityType } from "./core/AuditLogService";
+
 type Listener<T> = (items: T[]) => void;
+
+export interface BaseServiceOptions {
+  storageKey: string;
+  auditEntityType?: AuditEntityType;
+  shouldSyncWithSupabase?: boolean;
+}
 
 export abstract class BaseService<T extends { id: string; company_id?: string }> {
   protected items: T[] = [];
-  protected storageKey: string;
+  protected options: BaseServiceOptions;
   private listeners: Listener<T>[] = [];
 
-  constructor(storageKey: string, initialData: T[] = []) {
-    this.storageKey = storageKey;
+  constructor(options: BaseServiceOptions | string, initialData: T[] = []) {
+    if (typeof options === 'string') {
+      this.options = { storageKey: options };
+    } else {
+      this.options = options;
+    }
     this.items = initialData;
     this.loadFromStorage();
   }
 
   subscribe(listener: Listener<T>) {
     this.listeners.push(listener);
-    // Return unsubscribe function immediately
     return () => {
       const index = this.listeners.indexOf(listener);
       if (index !== -1) {
@@ -44,10 +55,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return newItem as unknown as T;
   }
 
-
   protected loadFromStorage() {
     if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem(this.storageKey);
+    const stored = localStorage.getItem(this.options.storageKey);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
@@ -55,15 +65,26 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
           this.items = parsed.map(item => this.deserializeDates(item));
         }
       } catch (e) {
-        console.error(`Failed to load ${this.storageKey} from storage`, e);
+        console.error(`Failed to load ${this.options.storageKey} from storage`, e);
       }
     }
   }
 
   protected persist() {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(this.storageKey, JSON.stringify(this.items));
+    localStorage.setItem(this.options.storageKey, JSON.stringify(this.items));
     this.notify();
+  }
+
+  protected async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
+    if (this.options.auditEntityType) {
+      await auditLogService.logAction({
+        action,
+        entityType: this.options.auditEntityType,
+        entityId,
+        payload: { ...metadata, message: details }
+      });
+    }
   }
 
   getAll(companyId?: string, isSuperAdmin?: boolean): T[] {
@@ -71,9 +92,8 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
       return [...this.items];
     }
     
-    // Strict isolation: if not super admin, companyId is mandatory
     if (!companyId) {
-      console.warn(`[BaseService] Attempted to getAll from ${this.storageKey} without companyId/isSuperAdmin`);
+      console.warn(`[BaseService] Attempted to getAll from ${this.options.storageKey} without companyId/isSuperAdmin`);
       return [];
     }
     
@@ -84,17 +104,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     const item = this.items.find(item => item.id === id);
     if (isSuperAdmin) return item;
     
-    // Strict isolation for getById: if not super admin, must match companyId
     if (item && item.company_id === companyId) return item;
     
-    // Log only if not found due to isolation
     if (item && item.company_id !== companyId) {
-      console.warn(`[BaseService] Tenant Isolation: Access denied to ${this.storageKey}:${id} (owner: ${item.company_id}, requested: ${companyId})`);
+      console.warn(`[BaseService] Tenant Isolation: Access denied to ${this.options.storageKey}:${id} (owner: ${item.company_id}, requested: ${companyId})`);
     }
     
     return undefined;
   }
-
 
   create(item: Omit<T, "id">, companyId?: string): T {
     const newItem = {
@@ -104,6 +121,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     } as T;
     this.items.push(newItem);
     this.persist();
+    
+    this.log('created', newItem.id, `Item criado em ${this.options.storageKey}`);
+    
     return newItem;
   }
 
@@ -111,8 +131,15 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     const index = this.items.findIndex(item => item.id === id);
 
     if (index === -1) return undefined;
+    const oldItem = { ...this.items[index] };
     this.items[index] = { ...this.items[index], ...data };
     this.persist();
+    
+    this.log('updated', id, `Item atualizado em ${this.options.storageKey}`, {
+      changes: data,
+      previous: oldItem
+    });
+    
     return this.items[index];
   }
 
@@ -121,6 +148,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.items = this.items.filter(item => item.id !== id);
     if (this.items.length !== initialLength) {
       this.persist();
+      this.log('deleted', id, `Item removido de ${this.options.storageKey}`);
       return true;
     }
     return false;
