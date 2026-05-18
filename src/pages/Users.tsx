@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { UserFilters } from "@/components/Users/UserFilters";
 import { UserCard } from "@/components/Users/UserCard";
 import { UserDialogs } from "@/components/Users/UserDialogs";
-import { useToast } from "@/hooks";
+import { useToast, useConfirm } from "@/hooks";
 import { DataView, DataViewMode } from "@/components/shared/DataView";
-import { SkeletonLoader } from "@/components/shared/SkeletonLoader";
+import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
 import { exportService } from "@/services";
 import { useUsers } from "@/hooks";
 import { auditLogService } from "@/services";
@@ -43,6 +43,7 @@ const Users = () => {
 
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
+  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
 
   const handleOpenForm = (user: UserType | null = null) => {
     setEditingUser(user);
@@ -114,7 +115,15 @@ const Users = () => {
             isSelected={selectedUsers.includes(user.id!)}
             onSelect={toggleSelectUser}
             onEdit={handleOpenForm}
-            onDelete={deleteUser}
+            onDelete={async (id) => {
+              if (await confirm({
+                title: "Confirmar Exclusão",
+                description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
+                confirmLabel: "Excluir",
+              })) {
+                deleteUser(id);
+              }
+            }}
             onToggleStatus={toggleUserStatus}
             onResendInvite={handleResendInvite}
             onViewProfile={(u) => toast({ title: "Perfil", description: `Visualizando ${u.name}` })}
@@ -168,7 +177,15 @@ const Users = () => {
                   <DropdownMenuItem onClick={() => handleOpenForm(user)}><Pencil className="mr-2 h-4 w-4" /> Editar</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleResendInvite(user)}><Mail className="mr-2 h-4 w-4" /> Reenviar Convite</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => toggleUserStatus(user.id!)}><ShieldCheck className="mr-2 h-4 w-4" /> {user.status === 'active' ? 'Desativar' : 'Ativar'}</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive font-bold" onClick={() => deleteUser(user.id!)}><Trash2 className="mr-2 h-4 w-4" /> Excluir</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive font-bold" onClick={async () => {
+                    if (await confirm({
+                      title: "Confirmar Exclusão",
+                      description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
+                      confirmLabel: "Excluir",
+                    })) {
+                      deleteUser(user.id!);
+                    }
+                  }}><Trash2 className="mr-2 h-4 w-4" /> Excluir</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )
@@ -188,6 +205,13 @@ const Users = () => {
         setIsFormOpen={setIsUserFormOpen} 
         editingUser={editingUser} 
         onSave={(data) => saveUser(data, editingUser?.id)} 
+      />
+
+      <ConfirmationDialog 
+        isOpen={isConfirmOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        {...confirmOptions}
       />
     </PageTemplate>
   );
