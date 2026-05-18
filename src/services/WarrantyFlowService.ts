@@ -231,7 +231,14 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     const slaInfo = warrantySLAService.calculateSLADeadlineInfo(newRequest);
     newRequest.slaDeadline = slaInfo.deadline;
 
-    this.update(id, newRequest);
+    // Ensure the item is actually in the internal array since BaseService.update only works if it exists
+    const existing = this.getById(id);
+    if (!existing) {
+      this.items.push(newRequest);
+      this.persist();
+    } else {
+      this.update(id, newRequest);
+    }
 
     auditLogService.log({
       entityType: 'warranty',
