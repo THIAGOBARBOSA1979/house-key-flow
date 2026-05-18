@@ -1,5 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { 
   ClipboardCheck, 
   Calendar as CalendarIcon, 
@@ -29,14 +28,11 @@ import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspec
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { inspectionService } from "@/services/InspectionService";
+import { inspectionService, Inspection } from "@/services/InspectionService";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { DataView } from "@/components/shared/DataView";
-import { DataTable } from "@/components/shared/DataTable";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import { cn } from "@/lib/utils";
 import { 
   PieChart, 
   Pie, 
@@ -49,80 +45,34 @@ import {
   Tooltip as ReTooltip, 
   Legend 
 } from 'recharts';
-import { useToast } from "@/components/ui/use-toast";
+import { useInspections } from "@/hooks/useInspections";
+import { Button } from "@/components/ui/button";
 
+/**
+ * Refactored Inspections management page.
+ * Logic moved to useInspections hook.
+ */
 export default function Inspections() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterTechnician, setFilterTechnician] = useState("all");
-  const [filterProperty, setFilterProperty] = useState("all");
-  const [filterChecklist, setFilterChecklist] = useState("all");
+  const {
+    filteredInspections,
+    searchTerm,
+    setSearchTerm,
+    filterStatus,
+    setFilterStatus,
+    filterTechnician,
+    setFilterTechnician,
+    filterProperty,
+    setFilterProperty,
+    filterChecklist,
+    setFilterChecklist,
+    stats,
+    loadData,
+    clearFilters,
+    handleExport
+  } = useInspections();
+
   const [activeTab, setActiveTab] = useState("list");
-  const [inspections, setInspections] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
-  const { toast } = useToast();
-
-  const loadData = () => {
-    setInspections(inspectionService.getAll());
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const filteredInspections = useMemo(() => {
-    return inspections.filter(inspection => {
-      const matchesSearch = 
-        inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inspection.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inspection.unit.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = filterStatus === "all" || inspection.status === filterStatus;
-      const matchesTech = filterTechnician === "all" || inspection.technician === filterTechnician;
-      const matchesProperty = filterProperty === "all" || inspection.property === filterProperty;
-      const matchesChecklist = filterChecklist === "all" || inspection.checklistId === filterChecklist;
-      
-      return matchesSearch && matchesStatus && matchesTech && matchesProperty && matchesChecklist;
-    });
-  }, [inspections, searchTerm, filterStatus, filterTechnician, filterProperty, filterChecklist]);
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setFilterStatus("all");
-    setFilterTechnician("all");
-    setFilterProperty("all");
-    setFilterChecklist("all");
-  };
-
-  const handleExport = () => {
-    const data = inspectionService.exportData('csv');
-    const blob = new Blob([data], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `relatorio-vistorias-${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-    
-    toast({
-      title: "Relatório gerado",
-      description: "O arquivo CSV foi baixado com sucesso.",
-    });
-  };
-
-  const stats = useMemo(() => {
-    return {
-      pending: inspections.filter(i => i.status === "pending").length,
-      completed: inspections.filter(i => i.status === "complete").length,
-      delayed: inspections.filter(i => {
-        const date = new Date(i.date || i.scheduledDate);
-        return i.status === "pending" && date < new Date();
-      }).length
-    };
-  }, [inspections]);
-
 
   return (
     <div className="space-y-8 pb-10 animate-fade-in">
@@ -152,62 +102,30 @@ export default function Inspections() {
       </PageHeader>
 
       <ResponsiveGrid columns={3} gap="layout">
-        <StatsCard 
-          label="Vistorias Pendentes" 
-          value={stats.pending} 
-          icon={Clock} 
-          variant="pending"
-          description="Aguardando atendimento"
-          className="rounded-3xl"
-        />
-        <StatsCard 
-          label="Vistorias Concluídas" 
-          value={stats.completed} 
-          icon={CheckCircle2} 
-          variant="complete"
-          description="Total de unidades entregues"
-          className="rounded-3xl"
-        />
-        <StatsCard 
-          label="Atrasadas / Urgentes" 
-          value={stats.delayed} 
-          icon={AlertCircle} 
-          variant="critical"
-          description="Fora do prazo acordado"
-          className="rounded-3xl"
-        />
+        <StatsCard label="Vistorias Pendentes" value={stats.pending} icon={Clock} variant="pending" description="Aguardando atendimento" className="rounded-3xl" />
+        <StatsCard label="Vistorias Concluídas" value={stats.completed} icon={CheckCircle2} variant="complete" description="Total de unidades entregues" className="rounded-3xl" />
+        <StatsCard label="Atrasadas / Urgentes" value={stats.delayed} icon={AlertCircle} variant="critical" description="Fora do prazo acordado" className="rounded-3xl" />
       </ResponsiveGrid>
-
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="flex w-full max-w-lg overflow-x-auto no-scrollbar bg-muted/50 p-1 rounded-xl h-auto min-h-10">
           <TabsTrigger value="list" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <ClipboardCheck className="h-4 w-4" />
-            Vistorias
+            <ClipboardCheck className="h-4 w-4" /> Vistorias
           </TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <BarChart className="h-4 w-4" />
-            Estatísticas
+            <BarChart className="h-4 w-4" /> Estatísticas
           </TabsTrigger>
           <TabsTrigger value="logs" className="gap-2 rounded-lg py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <History className="h-4 w-4" />
-            Logs
+            <History className="h-4 w-4" /> Logs
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="list" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <FilterBar
-            searchPlaceholder="Buscar por cliente, imóvel ou unidade..."
-            searchValue={searchTerm}
-            onSearchChange={setSearchTerm}
-          >
+          <FilterBar searchPlaceholder="Buscar..." searchValue={searchTerm} onSearchChange={setSearchTerm}>
             <div className="flex flex-wrap gap-2 w-full lg:w-auto">
               <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger className="w-full sm:w-[160px] rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-3 w-3 text-muted-foreground" />
-                    <SelectValue placeholder="Status" />
-                  </div>
+                  <div className="flex items-center gap-2"><Filter className="h-3 w-3 text-muted-foreground" /><SelectValue placeholder="Status" /></div>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos os status</SelectItem>
@@ -220,10 +138,7 @@ export default function Inspections() {
 
               <Select value={filterProperty} onValueChange={setFilterProperty}>
                 <SelectTrigger className="w-full sm:w-[180px] rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Building className="h-3 w-3 text-muted-foreground" />
-                    <SelectValue placeholder="Empreendimento" />
-                  </div>
+                  <div className="flex items-center gap-2"><Building className="h-3 w-3 text-muted-foreground" /><SelectValue placeholder="Empreendimento" /></div>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos os imóveis</SelectItem>
@@ -232,50 +147,18 @@ export default function Inspections() {
                   <SelectItem value="Condomínio Monte Azul">Condomínio Monte Azul</SelectItem>
                 </SelectContent>
               </Select>
-
-              <Select value={filterTechnician} onValueChange={setFilterTechnician}>
-                <SelectTrigger className="w-full sm:w-[180px] rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-3 w-3 text-muted-foreground" />
-                    <SelectValue placeholder="Técnico" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os técnicos</SelectItem>
-                  <SelectItem value="Carlos Andrade">Carlos Andrade</SelectItem>
-                  <SelectItem value="Luiza Mendes">Luiza Mendes</SelectItem>
-                  <SelectItem value="Roberto Santos">Roberto Santos</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={filterChecklist} onValueChange={setFilterChecklist}>
-                <SelectTrigger className="w-full sm:w-[180px] rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <ClipboardList className="h-3 w-3 text-muted-foreground" />
-                    <SelectValue placeholder="Checklist" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os checklists</SelectItem>
-                  <SelectItem value="checklist1">Entrega de Apartamento</SelectItem>
-                  <SelectItem value="checklist2">Verificação Hidráulica</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </FilterBar>
 
           {viewMode === "calendar" ? (
             <InspectionCalendar inspections={filteredInspections} />
           ) : (
-            <DataView
+            <DataView<Inspection>
               items={filteredInspections}
               itemsPerPage={6}
               gridClassName="grid-cols-1 xl:grid-cols-2"
               renderGrid={(inspection) => (
-                <Card 
-                  key={inspection.id} 
-                  className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm"
-                >
+                <Card key={inspection.id} className="card-standard overflow-hidden card-hover-effect border-none bg-card/50 backdrop-blur-sm">
                   <CardContent className="p-0">
                     <InspectionItem inspection={inspection} onUpdate={loadData} />
                   </CardContent>
@@ -283,86 +166,45 @@ export default function Inspections() {
               )}
               emptyState={{
                 title: "Nenhuma vistoria encontrada",
-                description: "Nenhum resultado corresponde aos filtros aplicados no momento.",
-                action: {
-                  label: "Limpar filtros",
-                  onClick: clearFilters
-                }
+                description: "Ajuste os filtros para encontrar o que procura.",
+                action: { label: "Limpar filtros", onClick: clearFilters }
               }}
             />
           )}
         </TabsContent>
 
-
         <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-h4">Distribuição por Status</CardTitle>
-                <CardDescription>Resumo atual do pipeline de vistorias</CardDescription>
-              </CardHeader>
+              <CardHeader><CardTitle className="text-h4">Distribuição por Status</CardTitle></CardHeader>
               <CardContent className="h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={Object.entries(inspectionService.getStatsByStatus()).map(([name, value]) => ({ name, value }))}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
+                      cx="50%" cy="50%" outerRadius={100} dataKey="value"
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
-                      {Object.entries(inspectionService.getStatsByStatus()).map((entry, index) => (
+                      {Object.entries(inspectionService.getStatsByStatus()).map((_, index) => (
                         <Cell key={`cell-${index}`} fill={['#F59E0B', '#3B82F6', '#10B981', '#EF4444'][index % 4]} />
                       ))}
                     </Pie>
-                    <Legend verticalAlign="bottom" height={36}/>
-                    <ReTooltip />
+                    <Legend verticalAlign="bottom" height={36}/><ReTooltip />
                   </PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
 
             <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-h4">Vistorias por Técnico</CardTitle>
-                <CardDescription>Carga de trabalho por profissional</CardDescription>
-              </CardHeader>
+              <CardHeader><CardTitle className="text-h4">Vistorias por Técnico</CardTitle></CardHeader>
               <CardContent className="h-[350px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <ReBarChart
                     data={Object.entries(inspectionService.getStatsByTechnician()).map(([name, value]) => ({ name, value }))}
-                    layout="vertical"
-                    margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                    layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
                   >
-                    <XAxis type="number" hide />
-                    <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} />
-                    <ReTooltip />
+                    <XAxis type="number" hide /><YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 12 }} /><ReTooltip />
                     <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={20} />
-                  </ReBarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card className="card-standard lg:col-span-2 border-none bg-card/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-h4">Tipos de Vistoria</CardTitle>
-                <CardDescription>Distribuição por modalidade de serviço</CardDescription>
-              </CardHeader>
-              <CardContent className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ReBarChart
-                    data={Object.entries(inspectionService.getStatsByType()).map(([name, value]) => ({ 
-                      name: name === 'keyDelivery' ? 'Entrega de Chaves' : name === 'technicalInspection' ? 'Vistoria Técnica' : 'Pós-Obra', 
-                      value 
-                    }))}
-                  >
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <ReTooltip />
-                    <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={40} />
                   </ReBarChart>
                 </ResponsiveContainer>
               </CardContent>

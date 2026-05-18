@@ -2,15 +2,15 @@ import { BaseService } from "./BaseService";
 
 export interface ChecklistItem {
   id: string;
-  name: string;
-  completed: boolean;
+  name?: string;
+  completed?: boolean;
   notes?: string;
   description?: string;
   required?: boolean;
   severity?: "low" | "medium" | "high" | "critical";
-  status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na";
+  status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na" | "nonconform";
   evidence?: any[];
-  conformity?: "conform" | "non_conform" | "not_applicable" | "pending";
+  conformity?: "conform" | "non_conform" | "not_applicable" | "pending" | "nonconform";
 }
 
 export interface ChecklistGroup {
