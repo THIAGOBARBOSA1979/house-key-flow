@@ -1,11 +1,11 @@
-
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { ReactNode } from 'react';
+import { UserRole } from '@/types/user';
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  requiredRole?: 'admin' | 'client';
+  requiredRole?: UserRole;
   redirectTo?: string;
 }
 
@@ -33,9 +33,15 @@ export const ProtectedRoute = ({
 
   // Authenticated but wrong role
   if (user && user.role !== requiredRole) {
-    const correctPath = user.role === 'admin' ? '/admin' : '/client';
-    return <Navigate to={correctPath} replace />;
+    // Basic role check
+    if (requiredRole === 'admin' && user.role !== 'admin' && user.role !== 'manager' && user.role !== 'staff') {
+       return <Navigate to="/client" replace />;
+    }
+    if (requiredRole === 'client' && user.role !== 'client') {
+       return <Navigate to="/admin" replace />;
+    }
   }
 
   return <>{children}</>;
 };
+

@@ -1,9 +1,10 @@
+import { UserRole } from "./user";
 
 export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'client';
+  role: UserRole;
   avatar?: string;
 }
 
@@ -14,7 +15,8 @@ export interface AuthState {
 }
 
 export interface AuthContextType extends AuthState {
-  login: (email: string, password: string, role?: 'admin' | 'client') => Promise<void>;
+  login: (email: string, password: string, role?: UserRole) => Promise<void>;
   logout: () => void;
   checkAuth: () => void;
 }
+
