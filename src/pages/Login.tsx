@@ -428,9 +428,14 @@ export default function Login() {
                         </p>
                         <div className="font-mono text-xs bg-white/80 p-3 rounded-lg border border-amber-200">
                           <div className="text-amber-700">
-                            {activeTab === "admin" ? (
+                            {activeTab === "master" ? (
                               <>
-                                <strong>Email:</strong> admin@exemplo.com<br />
+                                <strong>Super Admin:</strong> admin@exemplo.com<br />
+                                <strong>Senha:</strong> 123456
+                              </>
+                            ) : activeTab === "admin" ? (
+                              <>
+                                <strong>Admin A2:</strong> ceo@a2.com<br />
                                 <strong>Senha:</strong> 123456
                               </>
                             ) : (
@@ -439,6 +444,7 @@ export default function Login() {
                                 <strong>Senha:</strong> 123456
                               </>
                             )}
+
                           </div>
                         </div>
                       </div>
