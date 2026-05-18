@@ -35,14 +35,14 @@ describe('Service Logic Regression', () => {
       location: 'Loc A', 
       units: 10, 
       completedUnits: 5, 
-      status: 'active' 
+      status: 'progress' 
     }, 'comp-1');
     propertyService.create({ 
       name: 'Project B', 
       location: 'Loc B', 
       units: 20, 
       completedUnits: 10, 
-      status: 'active' 
+      status: 'progress' 
     }, 'comp-2');
     
     const comp1Properties = propertyService.getAll('comp-1', false);
@@ -59,8 +59,9 @@ describe('Service Logic Regression', () => {
       location: 'Loc C', 
       units: 30, 
       completedUnits: 0, 
-      status: 'planning' 
+      status: 'pending' 
     }, 'comp-1');
+
 
     
     expect(spy).toHaveBeenCalledWith(expect.objectContaining({
