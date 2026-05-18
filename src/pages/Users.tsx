@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Users as UsersIcon, Plus, UserCheck, UserCog, UserMinus, Download, Upload, Settings, Trash2 } from "lucide-react";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,6 @@ import { exportService } from "@/services/ExportService";
 import { useUsers } from "@/hooks/useUsers";
 import { auditLogService } from "@/services/AuditLogService";
 import { User as UserType } from "@/services/UserService";
-import { formatDate } from "@/utils/formatters";
 
 const Users = () => {
   const { toast } = useToast();
@@ -55,24 +54,25 @@ const Users = () => {
     });
   };
 
-  return (
-    <div className="space-y-8 pb-10">
-      <PageHeader 
-        icon={UsersIcon} 
-        title="Gestão de Usuários" 
-        description="Controle de acessos, perfis e vinculação de clientes a unidades."
-      >
-        <div className="flex flex-wrap items-center gap-3">
-          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95">
-            <Upload className="mr-2 h-4 w-4" /> Importar
-          </Button>
-          <Button onClick={() => handleOpenForm()} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
-            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
-            Novo Usuário
-          </Button>
-        </div>
-      </PageHeader>
+  const actions = (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95">
+        <Upload className="mr-2 h-4 w-4" /> Importar
+      </Button>
+      <Button onClick={() => handleOpenForm()} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
+        <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+        Novo Usuário
+      </Button>
+    </div>
+  );
 
+  return (
+    <PageTemplate
+      title="Gestão de Usuários"
+      description="Controle de acessos, perfis e vinculação de clientes a unidades."
+      icon={UsersIcon}
+      actions={actions}
+    >
       <ResponsiveGrid columns="auto" gap="layout">
         <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" className="rounded-3xl" />
         <StatsCard label="Ativos hoje" value={stats.active} icon={UserCheck} variant="complete" className="rounded-3xl" />
@@ -165,8 +165,9 @@ const Users = () => {
           editingUser={editingUser}
         />
       )}
-    </div>
+    </PageTemplate>
   );
 };
 
 export default Users;
+

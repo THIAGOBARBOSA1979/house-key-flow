@@ -132,21 +132,34 @@ export function KanbanCard({
       )}
 
       {/* SLA and assignment - enhanced touch target */}
-      <div className="flex items-center justify-between mt-2 pt-2 border-t min-h-[40px]">
-        <SLABadge 
-          status={slaInfo.status} 
-          hoursRemaining={slaInfo.hoursRemaining} 
-        />
-        
-        {request.assignedToName ? (
-          <Avatar className="h-6 w-6">
-            <AvatarFallback className="text-xs bg-primary/10 text-primary">
-              {request.assignedToName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-            </AvatarFallback>
-          </Avatar>
-        ) : (
-          <span className="text-xs text-muted-foreground italic">Não atribuído</span>
-        )}
+      <div className="flex flex-col gap-2 mt-2 pt-2 border-t">
+        <div className="flex items-center justify-between min-h-[40px]">
+          <div className="flex flex-col gap-1">
+            <SLABadge 
+              status={slaInfo.status} 
+              hoursRemaining={slaInfo.hoursRemaining} 
+            />
+            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+              <Clock className="h-3 w-3" />
+              <span>{slaInfo.percentageRemaining.toFixed(0)}% do tempo restante</span>
+            </div>
+          </div>
+          
+          {request.assignedToName ? (
+            <div className="flex flex-col items-end gap-1">
+              <Avatar className="h-6 w-6">
+                <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                  {request.assignedToName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-[10px] text-muted-foreground truncate max-w-[80px]">
+                {request.assignedToName}
+              </span>
+            </div>
+          ) : (
+            <span className="text-xs text-muted-foreground italic">Não atribuído</span>
+          )}
+        </div>
       </div>
       
       {/* Inspection info if applicable */}
