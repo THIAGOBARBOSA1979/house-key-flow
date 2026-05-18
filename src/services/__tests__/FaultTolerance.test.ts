@@ -1,50 +1,33 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { simulator } from '../../test/supabase-simulator';
-import { warrantyFlowService } from '../warranty/WarrantyFlowService';
 
 describe('Fault Tolerance: Supabase Outage Simulation', () => {
   beforeEach(() => {
-    (warrantyFlowService as any).items = [];
     simulator.setOptions({ failRate: 0, latency: 0 });
+    vi.clearAllMocks();
   });
 
-  it('should handle intermittent API failures gracefully', async () => {
-    // Enable 50% failure rate
-    simulator.setOptions({ failRate: 0.5 });
+  it('should handle simulated failures when using Supabase client directly', async () => {
+    simulator.setOptions({ failRate: 1.0 }); // 100% failure
+    const { Supabase } = await import('@/integration/supabase');
     
-    // We try multiple times. Since it's random, we might get failures.
-    // In a real scenario, the service should catch and handle.
-    // Currently, BaseService methods are mostly synchronous but internal sync to Supabase is async.
-    
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
-    warrantyFlowService.createRequest({
-      title: 'Failure Test',
-      category: 'Estrutural',
-      clientId: 'c1',
-      clientName: 'C1',
-      propertyId: 'p1',
-      propertyName: 'P1',
-      unitNumber: '101'
-    });
-
-    // Wait for the async background sync to Supabase
-    await new Promise(r => setTimeout(r, 100));
-
-    // If failRate triggered, console.error should have been called by the catch block in the service
-    // This validates that the system doesn't crash on background failure.
-    // In production, we'd check for retry logic or user-facing error toast.
+    try {
+      await Supabase.db.findOne('profiles', 'u1');
+      expect(true).toBe(false); // Should not reach here
+    } catch (error: any) {
+      expect(error.message).toBe('Simulated Network Error');
+    }
   });
 
   it('should test loading states via simulated latency', async () => {
-    simulator.setOptions({ latency: 100 });
+    simulator.setOptions({ latency: 150 });
     const start = Date.now();
     
-    // Force a findOne which is awaited
     const { Supabase } = await import('@/integration/supabase');
     await Supabase.db.findOne('profiles', 'u1');
     
     const duration = Date.now() - start;
-    expect(duration).toBeGreaterThanOrEqual(100);
+    expect(duration).toBeGreaterThanOrEqual(150);
   });
 });
+
