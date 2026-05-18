@@ -13,9 +13,10 @@ import {
   isValidTransition,
   DEFAULT_SLA_CONFIGS,
   WarrantyProblemDetail
-} from '@/types/warrantyFlow';
+} from '../types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService } from './AuditLogService';
+import { BaseService } from './BaseService';
 
 // Mock warranty requests data
 const initialMockRequests: WarrantyRequestFlow[] = [
@@ -138,17 +139,20 @@ const initialMockRequests: WarrantyRequestFlow[] = [
   }
 ];
 
-class WarrantyFlowService {
-  private requests: Map<string, WarrantyRequestFlow> = new Map();
-  private storageKey = "a2_warranty_requests";
-
+class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
   constructor() {
+    super("a2_warranty_requests", initialMockRequests);
+  }
+
+  protected loadFromStorage() {
+    if (typeof window === 'undefined') return;
+    
     const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        parsed.forEach((req: any) => {
-          this.requests.set(req.id, {
+        if (Array.isArray(parsed)) {
+          this.items = parsed.map((req: any) => ({
             ...req,
             stageStartedAt: new Date(req.stageStartedAt),
             createdAt: new Date(req.createdAt),
@@ -156,23 +160,20 @@ class WarrantyFlowService {
             slaDeadline: req.slaDeadline ? new Date(req.slaDeadline) : undefined,
             inspectionDate: req.inspectionDate ? new Date(req.inspectionDate) : undefined,
             history: req.history.map((h: any) => ({ ...h, changedAt: new Date(h.changedAt) }))
-          });
-        });
+          }));
+        }
       } catch (e) {
-        console.error("Failed to load warranty requests", e);
+        console.error(`Failed to load ${this.storageKey} from storage`, e);
       }
-    }
-
-    if (this.requests.size === 0) {
-      initialMockRequests.forEach(request => {
-        this.requests.set(request.id, request);
-      });
-      this.persist();
     }
   }
 
-  private persist() {
-    localStorage.setItem(this.storageKey, JSON.stringify(Array.from(this.requests.values())));
+  getAllRequests(): WarrantyRequestFlow[] {
+    return this.getAll();
+  }
+
+  getRequest(requestId: string): WarrantyRequestFlow | undefined {
+    return this.getById(requestId);
   }
 
 
@@ -229,8 +230,7 @@ class WarrantyFlowService {
     const slaInfo = warrantySLAService.calculateSLADeadlineInfo(newRequest);
     newRequest.slaDeadline = slaInfo.deadline;
 
-    this.requests.set(id, newRequest);
-    this.persist();
+    this.update(id, newRequest);
 
     auditLogService.log({
       entityType: 'warranty',
@@ -245,19 +245,6 @@ class WarrantyFlowService {
     return newRequest;
   }
 
-  /**
-   * Get all warranty requests
-   */
-  getAllRequests(): WarrantyRequestFlow[] {
-    return Array.from(this.requests.values());
-  }
-
-  /**
-   * Get request by ID
-   */
-  getRequest(requestId: string): WarrantyRequestFlow | undefined {
-    return this.requests.get(requestId);
-  }
 
   /**
    * Get requests for a specific client
@@ -335,7 +322,7 @@ class WarrantyFlowService {
     performedByRole: 'admin' | 'client' = 'admin',
     userName?: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
@@ -407,8 +394,7 @@ class WarrantyFlowService {
       // For now, we'll keep it manual but prepare the structure
     }
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
     
     auditLogService.log({
       entityType: 'warranty',
@@ -439,7 +425,7 @@ class WarrantyFlowService {
     changedBy: string,
     performedByRole: 'admin' | 'client' = 'admin'
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -463,8 +449,7 @@ class WarrantyFlowService {
       ]
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     auditLogService.log({
       entityType: 'warranty',
@@ -488,7 +473,7 @@ class WarrantyFlowService {
     data: { estimatedCost?: number; actualCost?: number; materials?: any[] },
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -497,8 +482,7 @@ class WarrantyFlowService {
       updatedAt: new Date()
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
     
     auditLogService.log({
       entityType: 'warranty',
@@ -522,7 +506,7 @@ class WarrantyFlowService {
     technicianName: string,
     assignedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -532,8 +516,7 @@ class WarrantyFlowService {
       updatedAt: new Date()
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     auditLogService.log({
       entityType: 'warranty',
@@ -559,7 +542,7 @@ class WarrantyFlowService {
     technicianName: string,
     scheduledBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const statusResult = this.changeStatus(
@@ -581,8 +564,7 @@ class WarrantyFlowService {
       assignedToName: technicianName
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     return { success: true, request: updatedRequest };
   }
@@ -603,8 +585,7 @@ class WarrantyFlowService {
       inspectionNotes: notes
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
     return { success: true, request: updatedRequest };
   }
 
@@ -625,8 +606,7 @@ class WarrantyFlowService {
       approvalNotes: notes
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
     return { success: true, request: updatedRequest };
   }
 
@@ -646,8 +626,7 @@ class WarrantyFlowService {
       rejectionReason: reason
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
     return { success: true, request: updatedRequest };
   }
 
@@ -668,8 +647,7 @@ class WarrantyFlowService {
       executionNotes: notes
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
     return { success: true, request: updatedRequest };
   }
 
@@ -697,8 +675,7 @@ class WarrantyFlowService {
       completionNotes: notes
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
     return { success: true, request: updatedRequest };
   }
 
@@ -710,7 +687,7 @@ class WarrantyFlowService {
     problemData: Partial<WarrantyProblemDetail>,
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newProblem: WarrantyProblemDetail = {
@@ -732,8 +709,7 @@ class WarrantyFlowService {
       updatedAt: new Date()
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     auditLogService.log({
       entityType: 'warranty',
@@ -756,7 +732,7 @@ class WarrantyFlowService {
     problemId: string,
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
     const problemIndex = request.problems.findIndex(p => p.id === problemId);
@@ -779,8 +755,7 @@ class WarrantyFlowService {
       updatedAt: new Date()
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     auditLogService.log({
       entityType: 'warranty',
@@ -804,7 +779,7 @@ class WarrantyFlowService {
     material: { name: string; quantity: number; unit: string; cost?: number },
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const materials = request.materials || [];
@@ -817,8 +792,7 @@ class WarrantyFlowService {
       updatedAt: new Date()
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     auditLogService.log({
       entityType: 'warranty',
@@ -842,7 +816,7 @@ class WarrantyFlowService {
     data: Partial<WarrantyProblemDetail>,
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
     const problems = request.problems.map(p => 
@@ -855,8 +829,7 @@ class WarrantyFlowService {
       updatedAt: new Date()
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     return { success: true, request: updatedRequest };
   }
@@ -866,7 +839,7 @@ class WarrantyFlowService {
    * Get timeline for a request (for client view)
    */
   getRequestTimeline(requestId: string): WarrantyStatusHistory[] {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return [];
     
     return [...request.history].sort((a, b) => 
@@ -1023,7 +996,7 @@ class WarrantyFlowService {
     authorName: string,
     text: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newUpdate = {
@@ -1039,8 +1012,7 @@ class WarrantyFlowService {
       updatedAt: new Date()
     };
 
-    this.requests.set(requestId, updatedRequest);
-    this.persist();
+    this.update(requestId, updatedRequest);
 
     auditLogService.log({
       entityType: 'warranty',
@@ -1059,7 +1031,7 @@ class WarrantyFlowService {
    * Cancel a request
    */
   cancelRequest(requestId: string, clientId: string): boolean {
-    const request = this.requests.get(requestId);
+    const request = this.getById(requestId);
     if (request && request.clientId === clientId) {
       this.changeStatus(requestId, 'rejected' as any, clientId, false, "Solicitação cancelada pelo cliente");
       return true;
