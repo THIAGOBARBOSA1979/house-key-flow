@@ -81,21 +81,15 @@ class PropertyService extends BaseService<Property> {
     const oldItem = this.getById(id, undefined, isSuperAdmin);
     const updated = super.update(id, property, isSuperAdmin);
 
-    
     if (updated && property.status && property.status !== oldItem?.status) {
-      auditLogService.log({
-        entityType: 'property',
-        entityId: id,
-        action: 'stage_changed',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Status do empreendimento ${updated.name} alterado para ${property.status}.`,
-        metadata: { oldStatus: oldItem?.status, newStatus: property.status }
+      this.log('stage_changed', id, `Status do empreendimento ${updated.name} alterado para ${property.status}.`, {
+        oldStatus: oldItem?.status,
+        newStatus: property.status
       });
     }
     return updated;
   }
+
 
   updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Property | undefined {
     const property = this.getById(propertyId, undefined, isSuperAdmin);
