@@ -1,26 +1,19 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
-import { inspectionService, Inspection } from "@/services/InspectionService";
-import { useToast } from "@/components/ui/use-toast";
+import { useState, useMemo, useCallback } from "react";
+import { inspectionService } from "@/services/InspectionService";
+import { useService } from "@/hooks/useService";
+import { Inspection } from "@/types/inspection";
 
 /**
  * Custom hook to manage inspections logic.
  */
 export const useInspections = () => {
-  const { toast } = useToast();
-  const [inspections, setInspections] = useState<Inspection[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterTechnician, setFilterTechnician] = useState("all");
   const [filterProperty, setFilterProperty] = useState("all");
   const [filterChecklist, setFilterChecklist] = useState("all");
 
-  const loadData = useCallback(() => {
-    setInspections(inspectionService.getAll());
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const { items: inspections, refresh: loadData } = useService<Inspection>(inspectionService);
 
   const filteredInspections = useMemo(() => {
     return inspections.filter(inspection => {
@@ -69,12 +62,7 @@ export const useInspections = () => {
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-    
-    toast({
-      title: "Relatório gerado",
-      description: "O arquivo CSV foi baixado com sucesso.",
-    });
-  }, [toast]);
+  }, []);
 
   return {
     inspections,
