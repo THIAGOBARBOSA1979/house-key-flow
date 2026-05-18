@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Mail, Phone, MoreVertical, Eye, Edit, Share2, UserMinus, UserCheck, Trash2, User as UserIcon, UserCog } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,7 +28,7 @@ const roleConfig = {
   client: { label: "Cliente", badge: "bg-gray-100 text-gray-800 border-gray-200", icon: UserIcon },
 };
 
-export const UserCard = ({
+export const UserCard = memo(({
   user,
   isSelected,
   onSelect,
@@ -115,4 +116,4 @@ export const UserCard = ({
       </CardContent>
     </Card>
   );
-};
+});

@@ -12,7 +12,7 @@ export const useProperties = () => {
   const [managerFilter, setManagerFilter] = useState("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const { items: properties, create: createProperty, update: updateProperty, remove: deleteProperty, refresh: refreshList } = useService<Property>(propertyService, {
+  const { items: properties, isLoading, create: createProperty, update: updateProperty, remove: deleteProperty, refresh: refreshList } = useService<Property>(propertyService, {
     toastMessages: {
       create: "Empreendimento criado com sucesso.",
       update: "Empreendimento atualizado com sucesso.",
@@ -53,6 +53,7 @@ export const useProperties = () => {
 
   return {
     properties,
+    isLoading,
     filteredProperties,
     searchTerm,
     setSearchTerm,

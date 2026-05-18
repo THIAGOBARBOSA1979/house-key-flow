@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
+import { SkeletonLoader } from "@/components/shared/SkeletonLoader";
 import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -25,6 +26,7 @@ import { cn } from "@/lib/utils";
 const Properties = () => {
   const {
     properties,
+    isLoading,
     filteredProperties,
     searchTerm,
     setSearchTerm,
@@ -109,9 +111,12 @@ const Properties = () => {
       >
         <PropertyViewTabs viewMode={viewMode} onViewModeChange={(m) => setViewMode(m as DataViewMode)} />
       </PropertyFilters>
-
-      <DataView<Property>
-        items={filteredProperties}
+      
+      {isLoading ? (
+        <SkeletonLoader type="card" count={6} />
+      ) : (
+        <DataView<Property>
+          items={filteredProperties}
         viewMode={viewMode}
         itemsPerPage={6}
         renderGrid={(property) => (
@@ -217,6 +222,7 @@ const Properties = () => {
           </div>
         )}
       />
+      )}
 
       <PropertyDialogs 
         isFormOpen={isFormOpen}
