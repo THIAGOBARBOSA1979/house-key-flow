@@ -129,8 +129,8 @@ const ClientArea = () => {
 
       <DataView
         items={filteredClients}
-        viewMode="list"
-        renderList={(items) => (
+        viewMode="table"
+        renderTable={(items) => (
           <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
             <ScrollArea className="w-full">
               <Table>

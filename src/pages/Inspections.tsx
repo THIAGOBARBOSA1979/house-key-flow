@@ -63,7 +63,7 @@ export default function Inspections() {
   } = useInspections();
 
   const [activeTab, setActiveTab] = useState("list");
-  const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
+  const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
@@ -76,7 +76,7 @@ export default function Inspections() {
       </Button>
       <Button 
         variant={viewMode === "calendar" ? "default" : "outline"}
-        onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+        onClick={() => setViewMode(viewMode === "grid" ? "calendar" : "grid")}
         className="rounded-xl h-11 px-5 font-bold border-primary/20 transition-all active:scale-95"
       >
         {viewMode === "calendar" ? <LayoutGrid className="mr-2 h-4 w-4" /> : <CalendarIcon className="mr-2 h-4 w-4" />}
