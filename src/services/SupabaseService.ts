@@ -29,8 +29,8 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     return data || [];
   }
 
-  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | null> {
-    const { data, error } = await Supabase.db.findOne<T>(this.table, id);
+  async getById(id: string, companyId?: string, isSuperAdmin?: boolean, idColumn: string = 'id'): Promise<T | null> {
+    const { data, error } = await Supabase.db.findOne<T>(this.table, id, idColumn);
 
     if (error) return null;
     if (!data) return null;
@@ -58,8 +58,8 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     return data;
   }
 
-  async update(id: string, data: Partial<T>): Promise<T> {
-    const { data: updated, error } = await Supabase.db.update<T>(this.table, id, data);
+  async update(id: string, data: Partial<T>, idColumn: string = 'id'): Promise<T> {
+    const { data: updated, error } = await Supabase.db.update<T>(this.table, id, data, idColumn);
 
     if (error) {
       throw new Error(error.message);
@@ -69,8 +69,8 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     return updated;
   }
 
-  async delete(id: string): Promise<boolean> {
-    const { error } = await Supabase.db.delete(this.table, id);
+  async delete(id: string, idColumn: string = 'id'): Promise<boolean> {
+    const { error } = await Supabase.db.delete(this.table, id, idColumn);
     return !error;
   }
 

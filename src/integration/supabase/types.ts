@@ -23,3 +23,14 @@ export interface FilterParams {
   operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'like' | 'ilike' | 'is' | 'in';
   value: any;
 }
+
+export interface UploadOptions {
+  bucket: string;
+  path: string;
+  file: File | Blob;
+  maxSizeInBytes?: number;
+  allowedTypes?: string[];
+  onProgress?: (progress: number) => void;
+  upsert?: boolean;
+}
+

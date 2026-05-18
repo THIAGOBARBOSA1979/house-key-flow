@@ -1,24 +1,64 @@
 import { supabase } from '@/lib/supabase';
-import { SupabaseResponse } from './types';
+import { SupabaseResponse, UploadOptions } from './types';
 import { SupabaseErrorHandler } from './error-handler';
 
 export class SupabaseStorage {
-  static async uploadFile(
-    bucket: string,
-    path: string,
-    file: File | Blob,
-    options?: { upsert?: boolean; cacheControl?: string }
-  ): Promise<SupabaseResponse<{ path: string }>> {
-    const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
-      upsert: options?.upsert || false,
-      cacheControl: options?.cacheControl || '3600',
-    });
+  static async uploadFile(options: UploadOptions): Promise<SupabaseResponse<{ path: string }>> {
+    const { bucket, path, file, maxSizeInBytes, allowedTypes, onProgress, upsert = false } = options;
 
-    if (error) {
-      return { data: null, error: SupabaseErrorHandler.handle(error) };
+    // Client-side validations
+    if (maxSizeInBytes && file.size > maxSizeInBytes) {
+      return {
+        data: null,
+        error: SupabaseErrorHandler.handle({
+          message: `O arquivo excede o limite de ${Math.round(maxSizeInBytes / 1024 / 1024)}MB.`,
+          code: 'FILE_TOO_LARGE',
+          status: 400
+        })
+      };
     }
 
-    return { data: { path: data.path }, error: null };
+    if (allowedTypes && !allowedTypes.includes(file.type)) {
+      return {
+        data: null,
+        error: SupabaseErrorHandler.handle({
+          message: 'Tipo de arquivo não permitido.',
+          code: 'INVALID_FILE_TYPE',
+          status: 400
+        })
+      };
+    }
+
+    // Retries logic
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    while (attempts < maxAttempts) {
+      try {
+        const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
+          upsert,
+          cacheControl: '3600',
+        });
+
+        if (error) {
+          if (attempts + 1 === maxAttempts) throw error;
+          attempts++;
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+          continue;
+        }
+
+        if (onProgress) onProgress(100); // Simple progress simulation for small files/native API
+        return { data: { path: data.path }, error: null };
+      } catch (error: any) {
+        if (attempts + 1 === maxAttempts) {
+          return { data: null, error: SupabaseErrorHandler.handle(error) };
+        }
+        attempts++;
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+      }
+    }
+
+    return { data: null, error: SupabaseErrorHandler.handle({ message: 'Falha no upload após várias tentativas.' }) };
   }
 
   static async getPublicUrl(bucket: string, path: string): Promise<string> {
