@@ -54,7 +54,7 @@ export const QuickActions = () => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-h2">Ações Rápidas</h2>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4-sem md:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4-sem md:gap-6">
         {actions.map((action, index) => (
           <Button
             key={index}

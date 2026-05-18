@@ -28,7 +28,7 @@ export function PageHeader({
         </div>
       )}
       
-      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 py-2 px-1">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 py-2 px-1">
         <div className="space-y-3 max-w-full xl:max-w-2xl">
           <div className="flex items-center gap-3 md:gap-5">
             {Icon && (

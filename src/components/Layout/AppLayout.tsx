@@ -95,7 +95,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       )}>
         {/* Header - Top bar */}
         <header 
-          className="border-b-border/40 bg-background/80 backdrop-blur-2xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full"
+          className="border-b-border/40 bg-background/80 backdrop-blur-2xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
           <div className="w-full flex items-center justify-between px-4 md:px-8 transition-all duration-slow max-w-[1600px] mx-auto">
             <div className="flex items-center gap-2 md:gap-4 flex-1">
