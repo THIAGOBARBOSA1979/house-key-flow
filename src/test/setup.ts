@@ -94,9 +94,13 @@ vi.mock('@/integrations/supabase', () => ({
         role: 'admin',
         company_id: 'tenant-1'
       }),
+    },
+    realtime: {
+      subscribeToTable: vi.fn(() => ({ unsubscribe: vi.fn() })),
     }
   }
 }));
+
 
 
 
