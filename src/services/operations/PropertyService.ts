@@ -101,8 +101,9 @@ class PropertyService extends BaseService<Property> {
     return updated;
   }
 
-  updateMilestone(propertyId: string, milestoneId: string, completed: boolean): Property | undefined {
-    const property = this.getById(propertyId);
+  updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Property | undefined {
+    const property = this.getById(propertyId, undefined, isSuperAdmin);
+
     if (!property || !property.milestones) return undefined;
 
     const milestone = property.milestones.find(m => m.id === milestoneId);
