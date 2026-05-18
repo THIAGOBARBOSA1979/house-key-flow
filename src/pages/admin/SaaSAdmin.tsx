@@ -141,6 +141,7 @@ export default function SaaSAdmin() {
 
   const startEditing = () => {
     if (!selectedCompany) return;
+    setSlugError(null);
     setEditData({
       name: selectedCompany.name,
       slug: selectedCompany.slug,
@@ -151,23 +152,43 @@ export default function SaaSAdmin() {
   };
 
   const handleSaveEdit = () => {
-    if (!selectedCompany || !editData.name) return;
+    if (!selectedCompany || !editData.name || !editData.slug) {
+      toast({ title: "Erro", description: "Campos obrigatórios faltando.", variant: "destructive" });
+      return;
+    }
+
+    const normalizedSlug = editData.slug.toLowerCase().trim().replace(/\s+/g, '-');
     
-    companyService.update(selectedCompany.id, {
-      name: editData.name,
-      slug: editData.slug,
-      subscription_plan: editData.subscription_plan,
-      settings: editData.settings as CompanySettings,
-      updated_at: new Date()
-    });
-    
-    const updated = companyService.getById(selectedCompany.id, undefined, true);
-    if (updated) setSelectedCompany(updated);
-    
-    setCompanies(companyService.getAll(undefined, true));
-    setIsEditing(false);
-    toast({ title: "Tenant Atualizado", description: "As informações da empresa foram salvas." });
+    if (!companyService.isSlugAvailable(normalizedSlug, selectedCompany.id)) {
+      setSlugError("Este slug já está em uso por outro tenant.");
+      toast({ title: "Erro de Validação", description: "O slug informado já existe.", variant: "destructive" });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      companyService.update(selectedCompany.id, {
+        name: editData.name,
+        slug: normalizedSlug,
+        subscription_plan: editData.subscription_plan,
+        settings: editData.settings as CompanySettings,
+        updated_at: new Date()
+      });
+      
+      const updated = companyService.getById(selectedCompany.id, undefined, true);
+      if (updated) setSelectedCompany(updated);
+      
+      setCompanies(companyService.getAll(undefined, true));
+      setIsEditing(false);
+      setSlugError(null);
+      toast({ title: "Tenant Atualizado", description: "As informações da empresa foram salvas." });
+    } catch (error) {
+      toast({ title: "Erro", description: "Falha ao salvar alterações.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
   };
+
 
   const handleDeleteCompany = (id: string) => {
     if (confirm("Deseja realmente excluir permanentemente este tenant? Todos os dados serão perdidos.")) {
