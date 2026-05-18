@@ -13,21 +13,6 @@ import {
   isValidTransition,
   DEFAULT_SLA_CONFIGS,
   WarrantyProblemDetail
-import {
-  WarrantyStage,
-  WarrantyRequestFlow,
-  WarrantyStatusHistory,
-  SLADeadlineInfo,
-  KanbanCardData,
-  WarrantyMetrics,
-  WarrantyFilters,
-  WARRANTY_STAGES,
-  STAGE_ORDER,
-  FINAL_STAGES,
-  isFinalStage,
-  isValidTransition,
-  DEFAULT_SLA_CONFIGS,
-  WarrantyProblemDetail
 } from '../types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService } from './AuditLogService';
