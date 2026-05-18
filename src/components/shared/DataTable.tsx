@@ -79,7 +79,7 @@ export function DataTable<T>({
 
   return (
     <div className={cn("w-full animate-fade-in", className)}>
-      <div className="hidden md:block rounded-xl border border-border/50 shadow-sem-sm bg-card/40 backdrop-blur-sm overflow-hidden">
+      <div className="hidden lg:block rounded-xl border border-border/50 shadow-sem-sm bg-card/40 backdrop-blur-sm overflow-hidden">
         <div className="overflow-x-auto">
         <Table>
           <TableHeader className="bg-muted/10">
@@ -137,7 +137,7 @@ export function DataTable<T>({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-layout-gap md:hidden">
+      <div className="grid grid-cols-1 gap-layout-gap lg:hidden">
         {data.map((item, idx) => (
           <div 
             key={idx}

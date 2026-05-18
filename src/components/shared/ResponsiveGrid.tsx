@@ -36,11 +36,11 @@ export function ResponsiveGrid({
   const columnClasses = {
     1: "lg:grid-cols-1",
     2: "lg:grid-cols-2",
-    3: "lg:grid-cols-3",
-    4: "lg:grid-cols-4",
-    5: "lg:grid-cols-5",
-    6: "lg:grid-cols-6",
-    'auto': "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+    3: "xl:grid-cols-3 lg:grid-cols-2", // Modified for better laptop view
+    4: "xl:grid-cols-4 lg:grid-cols-2", // Modified for better laptop view
+    5: "xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2",
+    6: "xl:grid-cols-6 lg:grid-cols-3 md:grid-cols-2",
+    'auto': "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
     '2-wide': "md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
   };
 
