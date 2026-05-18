@@ -206,16 +206,10 @@ const Users = () => {
         editingUser={editingUser} 
         onSave={(data) => saveUser(data, editingUser?.id)} 
       />
-
-      <ConfirmationDialog 
-        isOpen={isConfirmOpen}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        {...confirmOptions}
-      />
     </PageTemplate>
   );
 };
+
 
 export default Users;
 
