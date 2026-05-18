@@ -41,12 +41,12 @@ export class SupabaseDatabase {
   }
 
   static async create<T>(table: string, data: Partial<T>): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table).insert(data).select().single();
+    const result = await supabase.from(table).insert(data as any).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async update<T>(table: string, id: string, data: Partial<T>, idColumn: string = 'id'): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table).update(data).eq(idColumn, id).select().single();
+    const result = await supabase.from(table).update(data as any).eq(idColumn, id).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
