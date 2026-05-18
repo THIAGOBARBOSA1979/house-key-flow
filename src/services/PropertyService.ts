@@ -178,15 +178,16 @@ class PropertyService extends BaseService<Property> {
     });
   }
 
-  getMetrics(): PropertyMetrics {
-    const total = this.items.length;
-    const byStatus = this.items.reduce((acc, p) => {
+  getMetrics(companyId?: string): PropertyMetrics {
+    const relevantItems = companyId ? this.items.filter(p => p.company_id === companyId) : this.items;
+    const total = relevantItems.length;
+    const byStatus = relevantItems.reduce((acc, p) => {
       acc[p.status] = (acc[p.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const totalUnits = this.items.reduce((acc, p) => acc + (p.units || 0), 0);
-    const totalCompleted = this.items.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
+    const totalUnits = relevantItems.reduce((acc, p) => acc + (p.units || 0), 0);
+    const totalCompleted = relevantItems.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
     
     return {
       total,
@@ -196,6 +197,7 @@ class PropertyService extends BaseService<Property> {
       averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
     };
   }
+
 }
 
 export const propertyService = new PropertyService();
