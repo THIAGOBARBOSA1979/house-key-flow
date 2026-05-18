@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { 
   FileText, FolderPlus, Clock, CheckCircle2, 
   Plus, FileUp, Download, Archive, Trash2,
@@ -58,14 +58,14 @@ const AdminDocuments = () => {
   
   const categories = documentService.getCategories();
 
-  useEffect(() => {
-    refreshDocuments();
-  }, [searchTerm, activeFilters]);
-
-  const refreshDocuments = () => {
+  const refreshDocuments = useCallback(() => {
     const docs = documentService.searchDocuments(searchTerm, activeFilters);
     setDocuments(docs);
-  };
+  }, [searchTerm, activeFilters]);
+
+  useEffect(() => {
+    refreshDocuments();
+  }, [refreshDocuments]);
 
   const handleDelete = (id: string) => {
     documentService.deleteDocument(id);
