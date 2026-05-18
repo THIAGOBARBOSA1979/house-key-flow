@@ -35,6 +35,9 @@ const Users = () => {
     toggleSelectUser,
     bulkAction
   } = useUsers();
+  
+  const [viewMode, setViewMode] = useState<DataViewMode>("grid");
+
 
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
