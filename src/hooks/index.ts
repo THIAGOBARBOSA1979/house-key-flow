@@ -4,7 +4,7 @@ export * from './Shared/use-mobile';
 export * from './Shared/useDataTable';
 export * from './Shared/useDataList';
 export * from './Shared/useService';
-export * from './Shared/utils/useDebounce';
+export * from './Shared/Utils/useDebounce';
 export * from './ui/useConfirm';
 
 // Identity Domain
