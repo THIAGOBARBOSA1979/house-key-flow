@@ -23,12 +23,11 @@ export const UserDialogs = ({
       description={editingUser ? "Atualize as permissões e dados cadastrais." : "Configure o perfil e nível de acesso do novo integrante."}
     >
       <UserForm 
-        isOpen={isFormOpen} 
-        onClose={() => setIsFormOpen(false)} 
         onSave={(data) => {
           onSave(data);
           setIsFormOpen(false);
         }}
+        onCancel={() => setIsFormOpen(false)}
         editingUser={editingUser}
       />
     </FormDialog>
