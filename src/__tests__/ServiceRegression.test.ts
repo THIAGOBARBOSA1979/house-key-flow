@@ -7,8 +7,11 @@ import { Supabase } from '@/integrations/supabase';
 describe('Service Logic Regression', () => {
   beforeEach(() => {
     localStorage.clear();
+    userService.clearAllData();
+    propertyService.clearAllData();
     vi.clearAllMocks();
   });
+
 
   it('UserService should map Supabase profiles (full_name) to name correctly', async () => {
     // Mock Supabase findMany to return profiles with full_name
