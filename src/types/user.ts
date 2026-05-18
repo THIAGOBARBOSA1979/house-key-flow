@@ -2,7 +2,7 @@ export type UserRole = 'admin' | 'staff' | 'manager' | 'client' | 'technical';
 export type UserStatus = 'active' | 'inactive';
 
 export interface User {
-  id?: string;
+  id: string;
   name: string;
   email: string;
   role: UserRole;
@@ -17,7 +17,6 @@ export interface User {
   createdAt?: Date;
 }
 
-
 export interface UserStats {
   total: number;
   active: number;
@@ -25,3 +24,4 @@ export interface UserStats {
   clients: number;
   staff: number;
 }
+

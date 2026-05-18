@@ -1,21 +1,14 @@
-import { UserRole } from "./user";
-
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  avatar?: string;
-}
+import { User } from "./user";
 
 export interface AuthState {
-  user: AuthUser | null;
+  user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
 export interface AuthContextType extends AuthState {
-  login: (email: string, password: string, role?: UserRole) => Promise<void>;
+  login: (email: string, password: string, role?: User['role']) => Promise<void>;
   logout: () => void;
   checkAuth: () => void;
 }
+
