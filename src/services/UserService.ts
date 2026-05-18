@@ -1,35 +1,69 @@
 import { SupabaseService } from "./SupabaseService";
 import { User, UserStats } from "@/types/user";
 import { Supabase } from "@/integration/supabase";
+import { SupabaseRealtime } from "@/integration/supabase/realtime";
 
 class UserService extends SupabaseService<User> {
+  public items: User[] = [];
+
   constructor() {
-    super("profiles"); // In Supabase, users are linked to profiles
+    super("profiles");
+    this.initialize();
   }
 
-  async getStats(companyId?: string, isSuperAdmin?: boolean): Promise<UserStats> {
-    const filters: any[] = [];
-    if (!isSuperAdmin && companyId) {
-      filters.push({ column: 'company_id', operator: 'eq', value: companyId });
-    }
+  private async initialize() {
+    this.getUsersAsync().then(users => {
+      this.items = users;
+    });
 
-    const { data: total } = await Supabase.db.count(this.table, filters);
-    const { data: active } = await Supabase.db.count(this.table, [...filters, { column: 'status', operator: 'eq', value: 'active' }]);
-    const { data: inactive } = await Supabase.db.count(this.table, [...filters, { column: 'status', operator: 'eq', value: 'inactive' }]);
-    const { data: clients } = await Supabase.db.count(this.table, [...filters, { column: 'role', operator: 'eq', value: 'client' }]);
+    SupabaseRealtime.subscribeToTable('profiles', async () => {
+      this.items = await this.getUsersAsync();
+    });
+  }
 
+  async getUsersAsync(companyId?: string, isSuperAdmin?: boolean): Promise<User[]> {
+    return this.getAll(companyId, isSuperAdmin);
+  }
+
+  // Synchronous compatibility methods
+  getAll(companyId?: string, isSuperAdmin?: boolean): User[] {
+    if (isSuperAdmin) return this.items;
+    if (!companyId) return [];
+    return this.items.filter(u => u.company_id === companyId);
+  }
+
+  getByIdSync(id: string): User | undefined {
+    return this.items.find(u => u.id === id);
+  }
+
+  count(companyId?: string, isSuperAdmin?: boolean): number {
+    return this.getAll(companyId, isSuperAdmin).length;
+  }
+
+  getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
+    const relevant = this.getAll(companyId, isSuperAdmin);
+    const clients = relevant.filter(u => u.role === 'client').length;
     return {
-      total: total || 0,
-      active: active || 0,
-      inactive: inactive || 0,
-      clients: clients || 0,
-      staff: (total || 0) - (clients || 0),
+      total: relevant.length,
+      active: relevant.filter(u => u.status === 'active').length,
+      inactive: relevant.filter(u => u.status === 'inactive').length,
+      clients,
+      staff: relevant.length - clients,
     };
   }
 
+  // Dummy methods for BaseService compatibility
+  subscribe(callback: (items: User[]) => void) {
+    const channel = SupabaseRealtime.subscribeToTable('profiles', async () => {
+      const users = await this.getUsersAsync();
+      this.items = users;
+      callback(users);
+    });
+    return () => SupabaseRealtime.unsubscribe(channel);
+  }
+
   async clearAllData() {
-    // In Supabase we don't clear all data easily for security reasons
-    console.warn('clearAllData not implemented for Supabase UserService');
+    this.items = [];
   }
 }
 
