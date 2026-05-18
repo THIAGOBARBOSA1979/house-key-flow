@@ -495,18 +495,25 @@ export function getNextValidStages(currentStage: WarrantyStage): WarrantyStage[]
   const currentOrder = WARRANTY_STAGES[currentStage].order;
   
   if (isFinalStage(currentStage)) {
-    return [];
+    return ["in_analysis"]; // Allow reopening for review
   }
-  
+
+  // Admin can always move to rejected/canceled from initial stages
+  const possibleStages: WarrantyStage[] = [];
+
   // Special case: after inspection_completed, can go to approved or rejected
   if (currentStage === "inspection_completed") {
-    return ["approved", "rejected"];
+    possibleStages.push("approved", "rejected");
+  } else if (currentStage === "opened" || currentStage === "in_analysis") {
+    possibleStages.push("rejected");
   }
   
   // Normal flow: go to next stage
-  return STAGE_ORDER.filter(stage => 
+  const nextInOrder = STAGE_ORDER.filter(stage => 
     WARRANTY_STAGES[stage].order === currentOrder + 1
   );
+
+  return Array.from(new Set([...possibleStages, ...nextInOrder]));
 }
 
 // Helper function to check if transition is valid
