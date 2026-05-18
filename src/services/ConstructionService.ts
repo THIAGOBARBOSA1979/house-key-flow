@@ -1,8 +1,8 @@
-
 import { BaseService } from "./BaseService";
 
 export interface ConstructionUpdate {
   id: string;
+  company_id?: string;
   date: Date;
   title: string;
   description: string;
@@ -15,101 +15,69 @@ export interface ConstructionUpdate {
   readBy?: string[]; // user IDs
 }
 
-class ConstructionService {
-  private updates: ConstructionUpdate[] = [
-    {
-      id: 'news-1',
-      date: new Date(),
-      title: 'Novo Plantão de Vendas Disponível',
-      description: 'Convidamos todos os futuros moradores para conhecerem nosso novo espaço decorado e tirar dúvidas sobre personalização.',
-      type: 'news',
-      isGlobal: true,
-      status: 'published'
-    },
-    {
-      id: '2',
-      date: new Date(2024, 1, 15),
-      title: 'Conclusão da Alvenaria',
-      description: 'Todas as paredes internas e externas foram finalizadas com sucesso.',
-      type: 'milestone',
-      imageUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=800&q=80',
-      progressItems: [
-        { label: 'Estrutura', percentage: 100 },
-        { label: 'Alvenaria', percentage: 100 },
-        { label: 'Instalações', percentage: 70 },
-        { label: 'Acabamento', percentage: 0 }
-      ],
-      status: 'published'
-    },
-    {
-      id: '3',
-      date: new Date(2024, 0, 5),
-      title: 'Fotos da Fachada',
-      description: 'Confira a evolução da pintura externa e colocação de vidros.',
-      type: 'photo',
-      imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
-      status: 'published'
-    }
-  ];
+const INITIAL_UPDATES: ConstructionUpdate[] = [
+  {
+    id: 'news-1',
+    date: new Date(),
+    title: 'Novo Plantão de Vendas Disponível',
+    description: 'Convidamos todos os futuros moradores para conhecerem nosso novo espaço decorado e tirar dúvidas sobre personalização.',
+    type: 'news',
+    isGlobal: true,
+    status: 'published'
+  },
+  {
+    id: '2',
+    date: new Date(2024, 1, 15),
+    title: 'Conclusão da Alvenaria',
+    description: 'Todas as paredes internas e externas foram finalizadas com sucesso.',
+    type: 'milestone',
+    imageUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=800&q=80',
+    progressItems: [
+      { label: 'Estrutura', percentage: 100 },
+      { label: 'Alvenaria', percentage: 100 },
+      { label: 'Instalações', percentage: 70 },
+      { label: 'Acabamento', percentage: 0 }
+    ],
+    status: 'published'
+  },
+  {
+    id: '3',
+    date: new Date(2024, 0, 5),
+    title: 'Fotos da Fachada',
+    description: 'Confira a evolução da pintura externa e colocação de vidros.',
+    type: 'photo',
+    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+    status: 'published'
+  }
+];
 
-  private storageKey = "a2_construction_updates";
-
+class ConstructionService extends BaseService<ConstructionUpdate> {
   constructor() {
-    this.loadFromStorage();
+    super("a2_construction_updates", INITIAL_UPDATES);
   }
 
-  private loadFromStorage() {
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        this.updates = parsed.map((u: any) => ({
-          ...u,
-          date: new Date(u.date)
-        }));
-      } catch (e) {
-        console.error("Failed to load construction updates", e);
-      }
-    }
+  getUpdates(companyId?: string, isSuperAdmin?: boolean): ConstructionUpdate[] {
+    return [...this.getAll(companyId, isSuperAdmin)].sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
-  private persist() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.updates));
+  getUpdatesByProperty(propertyId: string, companyId?: string, isSuperAdmin?: boolean): ConstructionUpdate[] {
+    return this.getAll(companyId, isSuperAdmin).filter(u => u.isGlobal || u.propertyId === propertyId);
   }
 
-  getUpdates(): ConstructionUpdate[] {
-    return [...this.updates].sort((a, b) => b.date.getTime() - a.date.getTime());
-  }
-
-  getUpdatesByProperty(propertyId: string): ConstructionUpdate[] {
-    return this.updates.filter(u => u.isGlobal || u.propertyId === propertyId);
-  }
-
-  createUpdate(data: Omit<ConstructionUpdate, 'id'>) {
-    const newUpdate = {
+  createUpdate(data: Omit<ConstructionUpdate, 'id'>, companyId?: string) {
+    return this.create({
       ...data,
-      id: crypto.randomUUID(),
       date: data.date || new Date(),
       status: data.status || 'published'
-    };
-    this.updates.push(newUpdate);
-    this.persist();
-    return newUpdate;
+    }, companyId);
   }
 
   updateUpdate(id: string, data: Partial<ConstructionUpdate>) {
-    const index = this.updates.findIndex(u => u.id === id);
-    if (index !== -1) {
-      this.updates[index] = { ...this.updates[index], ...data };
-      this.persist();
-      return this.updates[index];
-    }
-    return null;
+    return this.update(id, data);
   }
 
   deleteUpdate(id: string) {
-    this.updates = this.updates.filter(u => u.id !== id);
-    this.persist();
+    return this.delete(id);
   }
 
   getLatestProgress(propertyId?: string, companyId?: string, isSuperAdmin?: boolean) {
