@@ -1,4 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+
 import { userService } from "@/services/UserService";
 import { auditLogService } from "@/services/AuditLogService";
 import { useToast } from "@/hooks/use-toast";
@@ -10,6 +12,9 @@ import { User, UserFiltersData, UserFormData } from "@/types/user";
  */
 export const useUsers = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const companyId = user?.company_id;
+
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filters, setFilters] = useState<UserFiltersData>({ search: "", role: "all", status: "all", property: "all", unit: "" });
 
@@ -37,7 +42,7 @@ export const useUsers = () => {
     });
   }, [userList, filters]);
 
-  const stats = useMemo(() => userService.getStats(), []);
+  const stats = useMemo(() => userService.getStats(companyId), [companyId]);
 
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     if (editingUserId) {
