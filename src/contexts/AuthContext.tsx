@@ -1,7 +1,8 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContextType, AuthUser as User } from '@/types/auth';
+import { AuthContextType } from '@/types/auth';
+import { User } from '@/types/user';
 import { useToast } from '@/components/ui/use-toast';
 import { securityService } from '@/services/SystemSecurityService';
 
@@ -71,14 +72,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           id: '1',
           name: 'Administrador',
           email: 'admin@exemplo.com',
-          role: 'admin'
+          role: 'admin',
+          status: 'active'
         };
       } else if (role === 'client' && email === 'cliente@exemplo.com' && password === '123456') {
         mockUser = {
           id: 'client-2',
           name: 'João Silva',
           email: 'cliente@exemplo.com',
-          role: 'client'
+          role: 'client',
+          status: 'active'
         };
       }
       
