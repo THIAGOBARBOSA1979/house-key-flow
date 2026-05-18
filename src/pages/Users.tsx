@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users as UsersIcon, Plus, User, UserCheck, UserCog, UserMinus, Download, Upload, Settings } from "lucide-react";
+import { Users as UsersIcon, Plus, UserCheck, UserCog, UserMinus, Download, Upload, Settings, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { exportService } from "@/services/ExportService";
 import { useUsers } from "@/hooks/useUsers";
 import { auditLogService } from "@/services/AuditLogService";
+import { User as UserType } from "@/services/UserService";
 
 /**
  * Refactored Users management page.
@@ -36,14 +37,14 @@ const Users = () => {
   } = useUsers();
 
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<any>(null);
+  const [editingUser, setEditingUser] = useState<UserType | null>(null);
 
-  const handleOpenForm = (user = null) => {
+  const handleOpenForm = (user: UserType | null = null) => {
     setEditingUser(user);
     setIsUserFormOpen(true);
   };
 
-  const handleResendInvite = (user: any) => {
+  const handleResendInvite = (user: UserType) => {
     toast({ title: "Convite enviado", description: `Convite enviado via WhatsApp para ${user.name}.` });
     auditLogService.log({
       entityType: 'user',
@@ -78,7 +79,7 @@ const Users = () => {
         <StatsCard label="Total de Usuários" value={stats.total} icon={UsersIcon} variant="brand" className="rounded-3xl" />
         <StatsCard label="Ativos hoje" value={stats.active} icon={UserCheck} variant="complete" className="rounded-3xl" />
         <StatsCard label="Pendências" value={stats.inactive} icon={UserMinus} variant="critical" className="rounded-3xl" />
-        <StatsCard label="Total Clientes" value={stats.clients} icon={User} variant="progress" className="rounded-3xl" />
+        <StatsCard label="Total Clientes" value={stats.clients} icon={UserCog} variant="progress" className="rounded-3xl" />
         <StatsCard label="Equipe Interna" value={stats.staff} icon={UserCog} variant="default" className="rounded-3xl" />
       </ResponsiveGrid>
 
@@ -132,7 +133,7 @@ const Users = () => {
 
       <UserFilters onFilterChange={setFilters} totalUsers={filteredUsers.length} activeFilters={filters} />
 
-      <DataView
+      <DataView<UserType>
         items={filteredUsers}
         viewMode="grid"
         renderGrid={(items) => (
@@ -163,11 +164,11 @@ const Users = () => {
         <UserForm 
           isOpen={isUserFormOpen} 
           onClose={() => setIsUserFormOpen(false)} 
-          onSubmit={(data) => {
+          onSave={(data) => {
             saveUser(data, editingUser?.id);
             setIsUserFormOpen(false);
           }}
-          initialData={editingUser}
+          editingUser={editingUser}
         />
       )}
     </div>
