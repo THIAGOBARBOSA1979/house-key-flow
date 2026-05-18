@@ -17,7 +17,7 @@ export const SystemAuditTimeline = ({ activities }: SystemAuditTimelineProps) =>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
           <History className="text-primary h-5 w-5 md:h-6 md:w-6" />
-          Auditoria do Sistema
+          Fluxo de Governança Digital
         </h2>
         <Button 
           variant="ghost" 
@@ -55,7 +55,7 @@ export const SystemAuditTimeline = ({ activities }: SystemAuditTimelineProps) =>
             ))}
             {activities.length === 0 && (
               <div className="p-10 text-center">
-                <p className="text-sm font-bold text-muted-foreground/50 uppercase tracking-widest">Nenhuma atividade recente</p>
+                <p className="text-sm font-bold text-muted-foreground/50 uppercase tracking-widest">Sem interações registradas no ciclo atual</p>
               </div>
             )}
           </div>
