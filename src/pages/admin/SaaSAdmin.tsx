@@ -346,10 +346,15 @@ export default function SaaSAdmin() {
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Slug (ID Único)</Label>
                   <Input 
                     value={editData.slug || ''} 
-                    onChange={e => setEditData({...editData, slug: e.target.value})}
-                    className="h-11 rounded-xl"
+                    onChange={e => {
+                      setEditData({...editData, slug: e.target.value});
+                      setSlugError(null);
+                    }}
+                    className={`h-11 rounded-xl ${slugError ? 'border-red-500 shadow-[0_0_0_1px_rgba(239,68,68,0.2)]' : ''}`}
                   />
+                  {slugError && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{slugError}</p>}
                 </div>
+
                 <div className="space-y-2">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Plano de Assinatura</Label>
                   <Select 
