@@ -335,16 +335,16 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     performedByRole: 'admin' | 'client' = 'admin',
     userName?: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    this.log('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
+    this.internalLog('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
     const request = this.getById(requestId);
     
     if (!request) {
-      this.log('error', `Request ${requestId} not found for status change`);
+      this.internalLog('error', `Request ${requestId} not found for status change`);
       return { success: false, error: "Solicitação não encontrada" };
     }
     
     if (isFinalStage(request.currentStage) && newStatus !== 'in_analysis') {
-      this.log('error', `Cannot move finalized request ${requestId} to ${newStatus}`);
+      this.internalLog('error', `Cannot move finalized request ${requestId} to ${newStatus}`);
       return { success: false, error: "Não é possível alterar uma solicitação finalizada (exceto para reabertura em análise)" };
     }
 
@@ -373,7 +373,7 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     
     // Global bypass for E2E tests if necessary, but here we'll just fix the validation
     if (!isValidTransition(request.currentStage, newStatus) && newStatus !== 'in_analysis') {
-      this.log('error', `Invalid transition from ${request.currentStage} to ${newStatus}`);
+      this.internalLog('error', `Invalid transition from ${request.currentStage} to ${newStatus}`);
       return { 
         success: false, 
         error: `Transição inválida de ${WARRANTY_STAGES[request.currentStage].label} para ${WARRANTY_STAGES[newStatus].label}` 
@@ -415,23 +415,20 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
 
     this.update(requestId, updatedRequest);
     
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: requestId,
-      action: newStatus === 'opened' ? 'created' : (newStatus === 'approved' ? 'accepted' : (newStatus === 'rejected' ? 'rejected' : 'stage_changed')),
+    const auditAction: AuditAction = newStatus === 'opened' ? 'created' : (newStatus === 'approved' ? 'accepted' : (newStatus === 'rejected' ? 'rejected' : 'stage_changed'));
+    
+    this.log(auditAction, requestId, notes || `Sincronização estratégica: protocolo avançou para ${WARRANTY_STAGES[newStatus].label}`, {
+      fromStatus: request.currentStage, 
+      toStatus: newStatus,
+      technician: updatedRequest.assignedToName,
+      problemCount: updatedRequest.problems?.length || 0,
       performedBy: changedBy,
       performedByName: performedByRole === 'admin' ? 'Administrador' : (request.clientName || 'Cliente'),
-      performedByRole: performedByRole,
-      details: notes || `Sincronização estratégica: protocolo avançou para ${WARRANTY_STAGES[newStatus].label}`,
-      metadata: { 
-        fromStatus: request.currentStage, 
-        toStatus: newStatus,
-        technician: updatedRequest.assignedToName,
-        problemCount: updatedRequest.problems?.length || 0
-      }
+      performedByRole: performedByRole
     });
     
     return { success: true, request: updatedRequest };
+
   }
 
   /**
