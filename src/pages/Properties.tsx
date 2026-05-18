@@ -52,7 +52,7 @@ const Properties = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
+  const { confirm } = useConfirm();
 
   const managers = useMemo(() => 
     Array.from(new Set(properties.map(p => p.manager).filter(Boolean))) as string[],
