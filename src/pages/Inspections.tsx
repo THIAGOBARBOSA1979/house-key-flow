@@ -23,10 +23,9 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { inspectionService } from "@/services/InspectionService";
 import { Inspection } from "@/types/inspection";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 import { StatsCard } from "@/components/shared/StatsCard";
@@ -46,6 +45,8 @@ import {
 } from 'recharts';
 import { useInspections } from "@/hooks/useInspections";
 import { Button } from "@/components/ui/button";
+import { DataViewMode } from "@/types/dataView";
+
 
 export default function Inspections() {
   const {
@@ -63,7 +64,7 @@ export default function Inspections() {
   } = useInspections();
 
   const [activeTab, setActiveTab] = useState("list");
-  const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
+  const [viewMode, setViewMode] = useState<DataViewMode>("grid");
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
