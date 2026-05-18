@@ -29,9 +29,9 @@ export const DashboardCharts = ({
   warranties = [], 
   financialData = financialService.getGlobalMetrics() 
 }: {
-  inspections?: any[];
-  warranties?: any[];
-  financialData?: any;
+  inspections?: Array<{ date: Date | string }>;
+  warranties?: Array<{ category: string }>;
+  financialData?: { revenueByMonth: Array<{ month: string; value: number }> };
 }) => {
 
   const inspectionChartData = useMemo(() => {

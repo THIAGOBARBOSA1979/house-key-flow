@@ -122,7 +122,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       // Redirect based on role
       const redirectTo = role === 'admin' ? '/admin' : '/client';
-      navigate(redirectTo);
+      if (window.location.pathname !== redirectTo) {
+        navigate(redirectTo);
+      }
       
     } catch (error) {
       toast({

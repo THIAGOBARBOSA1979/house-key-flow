@@ -30,11 +30,19 @@ interface UploadDocumentDialogProps {
 export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocumentDialogProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormattedData] = useState({
+  const [formData, setFormattedData] = useState<{
+    title: string;
+    category: string;
+    description: string;
+    priority: "low" | "medium" | "high";
+    client: string;
+    property: string;
+    expiresAt: string;
+  }>({
     title: "",
-    category: "outros" as any,
+    category: "outros",
     description: "",
-    priority: "medium" as any,
+    priority: "medium",
     client: "",
     property: "",
     expiresAt: ""

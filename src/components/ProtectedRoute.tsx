@@ -35,10 +35,10 @@ export const ProtectedRoute = ({
   if (user && user.role !== requiredRole) {
     // Basic role check
     if (requiredRole === 'admin' && user.role !== 'admin' && user.role !== 'manager' && user.role !== 'staff') {
-       return <Navigate to="/client" replace />;
+       if (location.pathname !== '/client') return <Navigate to="/client" replace />;
     }
     if (requiredRole === 'client' && user.role !== 'client') {
-       return <Navigate to="/admin" replace />;
+       if (location.pathname !== '/admin') return <Navigate to="/admin" replace />;
     }
   }
 
