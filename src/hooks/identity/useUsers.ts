@@ -20,7 +20,6 @@ export const useUsers = () => {
     }
   });
 
-
   const filterFn = useCallback((user: User, filters: UserFiltersData) => {
     const matchesRole = filters.role === "all" || user.role === filters.role;
     const matchesStatus = filters.status === "all" || user.status === filters.status;
@@ -46,10 +45,10 @@ export const useUsers = () => {
   });
 
   const selectAll = useCallback(() => {
-    selectAllItems(filteredUsers.map(u => u.id!));
+    selectAllItems(filteredUsers.map(u => u.id));
   }, [selectAllItems, filteredUsers]);
 
-  const stats = useMemo(() => userService.getStats(companyId, user?.is_super_admin), [companyId, user?.is_super_admin]);
+  const stats = useMemo(() => userService.getStats(companyId, user?.is_super_admin), [companyId, user?.is_super_admin, userList]);
 
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     if (editingUserId) {
@@ -64,12 +63,12 @@ export const useUsers = () => {
   }, [remove]);
 
   const toggleUserStatus = useCallback(async (userId: string) => {
-    const user = userService.getById(userId);
+    const user = userList.find(u => u.id === userId);
     if (user) {
       const newStatus = user.status === "active" ? "inactive" : "active";
       await update(userId, { status: newStatus });
     }
-  }, [update]);
+  }, [update, userList]);
 
   const bulkAction = useCallback(async (action: string) => {
     if (selectedUsers.length === 0) {
@@ -118,3 +117,4 @@ export const useUsers = () => {
     bulkAction
   };
 };
+
