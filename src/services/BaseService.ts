@@ -41,6 +41,15 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.listeners.forEach(listener => listener([...this.items]));
   }
 
+  protected mapToSupabase(item: T): any {
+    return item;
+  }
+
+  protected mapFromSupabase(raw: any): T {
+    return raw as T;
+  }
+
+
   protected deserializeDates(item: Record<string, unknown>): T {
     const newItem = { ...item };
     Object.keys(newItem).forEach(key => {
