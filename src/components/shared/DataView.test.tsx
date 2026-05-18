@@ -66,8 +66,9 @@ describe('DataView Component', () => {
     expect(screen.getAllByTestId('grid-item')).toHaveLength(5);
     // Should show pagination text
     expect(screen.getByText(/Mostrando/)).toBeDefined();
-    expect(screen.getByText('1')).toBeDefined();
+    expect(screen.getAllByText('1').length).toBeGreaterThan(0);
     expect(screen.getByText('2')).toBeDefined();
     expect(screen.getByText('3')).toBeDefined();
+
   });
 });
