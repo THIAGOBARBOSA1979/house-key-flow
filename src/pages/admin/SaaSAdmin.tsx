@@ -88,22 +88,43 @@ export default function SaaSAdmin() {
   };
 
   const handleAddCompany = () => {
-    if (!newCompany.name || !newCompany.slug) return;
+    setSlugError(null);
+    if (!newCompany.name || !newCompany.slug) {
+      toast({ title: "Erro", description: "Nome e Slug são obrigatórios.", variant: "destructive" });
+      return;
+    }
+
+    const normalizedSlug = newCompany.slug.toLowerCase().trim().replace(/\s+/g, '-');
     
-    companyService.create({
-      name: newCompany.name,
-      slug: newCompany.slug,
-      status: 'active',
-      owner_id: 'pending',
-      subscription_plan: newCompany.plan,
-      created_at: new Date(),
-      updated_at: new Date()
-    });
+    if (!companyService.isSlugAvailable(normalizedSlug)) {
+      setSlugError("Este slug já está em uso por outro tenant.");
+      toast({ title: "Erro de Validação", description: "O slug informado já existe.", variant: "destructive" });
+      return;
+    }
     
-    setCompanies(companyService.getAll(undefined, true));
-    setIsAddOpen(false);
-    toast({ title: "Empresa cadastrada", description: "O novo tenant foi criado com sucesso." });
+    setIsSaving(true);
+    try {
+      companyService.create({
+        name: newCompany.name,
+        slug: normalizedSlug,
+        status: 'active',
+        owner_id: 'pending',
+        subscription_plan: newCompany.plan,
+        created_at: new Date(),
+        updated_at: new Date()
+      });
+      
+      setCompanies(companyService.getAll(undefined, true));
+      setIsAddOpen(false);
+      setNewCompany({ name: '', slug: '', plan: 'basic' });
+      toast({ title: "Empresa cadastrada", description: "O novo tenant foi criado com sucesso." });
+    } catch (error) {
+      toast({ title: "Erro", description: "Falha ao criar empresa.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
   };
+
 
   const handleUpdateSubscription = () => {
     if (!selectedCompany || !expiryDate) return;
