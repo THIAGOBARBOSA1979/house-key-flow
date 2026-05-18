@@ -5,7 +5,7 @@ export * from './Shared/useDataTable';
 export * from './Shared/useDataList';
 export * from './Shared/useService';
 export * from './Shared/Utils/useDebounce';
-export * from './ui/useConfirm';
+export { useConfirm } from '@/contexts/ConfirmContext';
 
 // Identity Domain
 export * from './identity/useUsers';

@@ -49,7 +49,7 @@ import { useInspections, useConfirm } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { DataViewMode } from "@/components/Shared/DataView";
 import { inspectionService } from "@/services";
-import { ConfirmationDialog } from "@/components/Shared/ConfirmationDialog";
+
 
 
 
@@ -71,7 +71,7 @@ export default function Inspections() {
 
   const [activeTab, setActiveTab] = useState("list");
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
-  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
+  const { confirm } = useConfirm();
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
@@ -232,13 +232,7 @@ export default function Inspections() {
           <AuditLogViewer entityType="inspection" title="Logs de Auditoria - Vistorias" />
         </TabsContent>
       </Tabs>
-
-      <ConfirmationDialog 
-        isOpen={isConfirmOpen}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        {...confirmOptions}
-      />
     </PageTemplate>
   );
 }
+
