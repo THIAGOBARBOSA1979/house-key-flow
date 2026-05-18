@@ -14,44 +14,8 @@ import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
 import { lazy, Suspense } from "react";
 import { SkeletonLoader } from "./components/shared/SkeletonLoader";
 
-// Public pages (Lazy loaded)
-const Home = lazy(() => import("./pages/Home"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const Login = lazy(() => import("./pages/Login"));
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+import * as Pages from "./routes/pages";
 
-// Admin pages and layout (Lazy loaded)
-const AppLayout = lazy(() => import("./components/Layout/AppLayout").then(module => ({ default: module.AppLayout })));
-const AdminDocuments = lazy(() => import("./pages/admin/Documents"));
-const DesignSystem = lazy(() => import("./pages/admin/DesignSystem"));
-const Index = lazy(() => import("./pages/Index"));
-const Properties = lazy(() => import("./pages/Properties"));
-const Inspections = lazy(() => import("./pages/Inspections"));
-const Warranty = lazy(() => import("./pages/Warranty"));
-const Calendar = lazy(() => import("./pages/Calendar"));
-const Users = lazy(() => import("./pages/Users"));
-const ClientArea = lazy(() => import("./pages/ClientArea"));
-const Checklist = lazy(() => import("./pages/Checklist"));
-const Settings = lazy(() => import("./pages/Settings"));
-const AuditLogs = lazy(() => import("./pages/admin/AuditLogs"));
-const FinancialDashboard = lazy(() => import("./pages/admin/FinancialDashboard"));
-const Announcements = lazy(() => import("./pages/admin/Announcements"));
-const Technicians = lazy(() => import("./pages/Technicians"));
-const AdminSupport = lazy(() => import("./pages/admin/Support"));
-const SaaSAdmin = lazy(() => import("./pages/admin/SaaSAdmin"));
-
-
-// Client pages and layout (Lazy loaded)
-const ClientLayout = lazy(() => import("./components/Layout/ClientLayout"));
-const ClientDashboard = lazy(() => import("./pages/client/Dashboard"));
-const ClientDocuments = lazy(() => import("./pages/client/Documents"));
-const ClientInspections = lazy(() => import("./pages/client/Inspections"));
-const ClientWarranty = lazy(() => import("./pages/client/Warranty"));
-const ClientProperties = lazy(() => import("./pages/client/Properties"));
-const ClientNotifications = lazy(() => import("./pages/client/Notifications"));
-const ClientProfile = lazy(() => import("./pages/client/Profile"));
-const ClientFinancial = lazy(() => import("./pages/client/Financial"));
-const ClientSupport = lazy(() => import("./pages/client/Support"));
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
