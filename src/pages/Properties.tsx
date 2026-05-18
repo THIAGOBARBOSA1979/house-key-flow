@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
+import { SkeletonLoader } from "@/components/shared/SkeletonLoader";
 import { DataView } from "@/components/shared/DataView";
 import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";

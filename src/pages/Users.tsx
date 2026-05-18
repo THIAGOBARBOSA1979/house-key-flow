@@ -7,6 +7,7 @@ import { UserCard } from "@/components/Users/UserCard";
 import { UserDialogs } from "@/components/Users/UserDialogs";
 import { useToast } from "@/hooks/use-toast";
 import { DataView, DataViewMode } from "@/components/shared/DataView";
+import { SkeletonLoader } from "@/components/shared/SkeletonLoader";
 import { exportService } from "@/services/ExportService";
 import { useUsers } from "@/hooks/useUsers";
 import { auditLogService } from "@/services/AuditLogService";
