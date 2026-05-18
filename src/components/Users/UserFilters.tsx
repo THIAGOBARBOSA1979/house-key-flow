@@ -5,13 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, X, UserCheck, UserX, Building, Users } from "lucide-react";
+import { Search, Filter, X, Users } from "lucide-react";
+import { UserFiltersData } from "@/types/user";
 
 interface UserFiltersProps {
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (filters: UserFiltersData) => void;
   totalUsers: number;
-  activeFilters: any;
+  activeFilters: UserFiltersData;
 }
+
 
 export const UserFilters = ({ onFilterChange, totalUsers, activeFilters }: UserFiltersProps) => {
   const [searchTerm, setSearchTerm] = useState(activeFilters.search || "");

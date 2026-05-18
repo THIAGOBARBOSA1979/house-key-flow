@@ -9,13 +9,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { propertyService } from "@/services/PropertyService";
+import { UserFormData, User } from "@/types/user";
 
 interface UserFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (userData: any) => void;
-  editingUser?: any;
+  onSave: (userData: UserFormData) => void;
+  editingUser?: User | null;
 }
+
 
 export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps) => {
   const { toast } = useToast();
