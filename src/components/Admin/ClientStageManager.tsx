@@ -126,15 +126,16 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
         <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
             <History className="h-4 w-4 text-primary" />
-            Gerenciamento de Etapas
+            Evolução da Jornada do Proprietário
           </div>
+
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Current Stage */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Etapa Atual:</span>
+            <span className="text-sm font-medium text-muted-foreground">Posicionamento Atual:</span>
             <StageIndicator currentStage={profile.currentStage} />
           </div>
           <p className="text-sm text-muted-foreground">
@@ -150,7 +151,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
 
         {/* Release Actions */}
         <div className="space-y-3">
-          <span className="text-sm font-medium">Ações de Liberação:</span>
+          <span className="text-sm font-medium text-muted-foreground">Ações de Habilitação Estratégica:</span>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Button
               variant="outline"
@@ -186,7 +187,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
 
         {/* Stage History */}
         <div className="space-y-3">
-          <span className="text-sm font-medium">Histórico de Alterações:</span>
+          <span className="text-sm font-medium text-muted-foreground">AuditLog da Jornada:</span>
           <div className="space-y-2">
             {profile.stageHistory.slice().reverse().map((change) => (
               <div 
@@ -226,7 +227,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
             <DialogTitle className="text-xl font-black tracking-tight flex items-center gap-2">
               <Unlock className="h-5 w-5 text-primary" />
-              Liberar {releaseType === 'inspection' ? 'Vistoria' : 'Garantia'}
+              Habilitar {releaseType === 'inspection' ? 'Protocolo de Vistoria' : 'Módulo de Garantias'}
             </DialogTitle>
             <DialogDescription className="text-sm font-medium">
               {releaseType === 'inspection' 
@@ -271,7 +272,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
               onClick={handleConfirmRelease}
               disabled={isLoading}
             >
-              {isLoading ? 'Liberando...' : 'Confirmar Liberação'}
+              {isLoading ? 'Habilitando...' : 'Confirmar Habilitação'}
             </Button>
           </DialogFooter>
         </DialogContent>
