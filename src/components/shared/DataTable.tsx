@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useMemo, useState } from 'react';
+
 import { 
   Table, 
   TableBody, 
@@ -124,7 +126,8 @@ export function DataTable<T>({
                   >
                     {column.cell 
                       ? column.cell(item) 
-                      : (item[column.accessorKey as keyof T] as unknown as React.ReactNode)}
+                      : (item ? (item[column.accessorKey as keyof T] as unknown as React.ReactNode) : null)}
+
                   </TableCell>
                 ))}
               </TableRow>
@@ -159,7 +162,7 @@ export function DataTable<T>({
                 <div className="text-sem-body-sm font-medium text-right text-foreground/90">
                   {column.cell 
                     ? column.cell(item) 
-                    : (item[column.accessorKey as keyof T] as unknown as React.ReactNode)}
+                    : (item ? (item[column.accessorKey as keyof T] as unknown as React.ReactNode) : null)}
                 </div>
               </div>
             ))}
