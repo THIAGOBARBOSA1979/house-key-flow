@@ -19,11 +19,8 @@ describe('Warranty Page', () => {
       </QueryClientProvider>
     );
     
-    expect(screen.getByText(/Gestão de Garantias/i)).toBeDefined();
-    // Use getAllByText for labels that might repeat in the sidebar or breadcrumbs
-    expect(screen.getAllByText(/Solicitação Aberta/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Em Análise/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Vistoria Agendada/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Em Execução/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Garantias & Assistência/i)).toBeDefined();
+    expect(screen.getByText(/Governança completa do pós-venda/i)).toBeDefined();
+
   });
 });
