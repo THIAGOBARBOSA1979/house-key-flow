@@ -1,115 +1,78 @@
-
-import { z } from "zod";
+import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
 
-export const propertyMilestoneSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  targetDate: z.date(),
-  completed: z.boolean().default(false),
-  completedAt: z.date().optional(),
-});
+export interface PropertyMilestone {
+  id: string;
+  title: string;
+  targetDate: Date;
+  completed: boolean;
+  completedAt?: Date;
+}
 
-export type PropertyMilestone = z.infer<typeof propertyMilestoneSchema>;
+export interface PropertyUnit {
+  id: string;
+  number: string;
+  floor?: string;
+  status: "available" | "sold" | "delivered";
+  type?: string;
+}
 
-export const propertyUnitSchema = z.object({
-  id: z.string(),
-  number: z.string(),
-  floor: z.string().optional(),
-  status: z.enum(["available", "sold", "delivered"]).default("available"),
-  type: z.string().optional(), // e.g. "Standard", "Penthouse"
-});
+export interface Property {
+  id: string;
+  name: string;
+  location: string;
+  units: number;
+  completedUnits: number;
+  status: "pending" | "progress" | "complete";
+  imageUrl?: string;
+  description?: string;
+  totalArea?: number;
+  deliveryDate?: Date;
+  manager?: string;
+  milestones?: PropertyMilestone[];
+  unitsList?: PropertyUnit[];
+}
 
-export type PropertyUnit = z.infer<typeof propertyUnitSchema>;
+const INITIAL_PROPERTIES: Property[] = [
+  { 
+    id: "1", 
+    name: "Edifício Aurora", 
+    location: "São Paulo, SP", 
+    units: 120, 
+    completedUnits: 85, 
+    status: "progress", 
+    manager: "Carlos Andrade", 
+    totalArea: 12500,
+    milestones: [
+      { id: "m1", title: "Fundação", targetDate: new Date(2023, 5, 10), completed: true, completedAt: new Date(2023, 5, 15) },
+      { id: "m2", title: "Estrutura", targetDate: new Date(2024, 2, 20), completed: true, completedAt: new Date(2024, 2, 25) },
+      { id: "m3", title: "Acabamento", targetDate: new Date(2025, 8, 30), completed: false }
+    ]
+  },
+  { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400 },
+  { id: "3", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200 },
+];
 
-export const propertySchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-  location: z.string().min(5, "A localização deve ter pelo menos 5 caracteres"),
-  units: z.number().min(1, "O número de unidades deve ser pelo menos 1"),
-  completedUnits: z.number().min(0).default(0),
-  status: z.enum(["pending", "progress", "complete"]).default("pending"),
-  imageUrl: z.string().optional(),
-  description: z.string().optional(),
-  totalArea: z.number().optional(),
-  deliveryDate: z.date().optional(),
-  manager: z.string().optional(),
-  milestones: z.array(propertyMilestoneSchema).optional(),
-  unitsList: z.array(propertyUnitSchema).optional(),
-});
-
-export type Property = z.infer<typeof propertySchema>;
-
-class PropertyService {
-  private properties: Property[] = [
-    { 
-      id: "1", 
-      name: "Edifício Aurora", 
-      location: "São Paulo, SP", 
-      units: 120, 
-      completedUnits: 85, 
-      status: "progress", 
-      manager: "Carlos Andrade", 
-      totalArea: 12500,
-      milestones: [
-        { id: "m1", title: "Fundação", targetDate: new Date(2023, 5, 10), completed: true, completedAt: new Date(2023, 5, 15) },
-        { id: "m2", title: "Estrutura", targetDate: new Date(2024, 2, 20), completed: true, completedAt: new Date(2024, 2, 25) },
-        { id: "m3", title: "Acabamento", targetDate: new Date(2025, 8, 30), completed: false }
-      ]
-    },
-    { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400 },
-    { id: "3", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200 },
-    { id: "4", name: "Residencial Parque das Flores", location: "Curitiba, PR", units: 60, completedUnits: 60, status: "complete", manager: "Carlos Andrade", totalArea: 6800 },
-    { id: "5", name: "Condomínio Vista Mar", location: "Salvador, BA", units: 40, completedUnits: 35, status: "progress", manager: "Juliana Costa", totalArea: 4100 },
-    { id: "6", name: "Edifício Horizonte", location: "Brasília, DF", units: 80, completedUnits: 0, status: "pending", manager: "Roberto Santos", totalArea: 9200 },
-  ];
-
-  private storageKey = "a2_properties";
-
+class PropertyService extends BaseService<Property> {
   constructor() {
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          this.properties = parsed.map((p: any) => ({
-            ...p,
-            milestones: Array.isArray(p.milestones) 
-              ? p.milestones.map((m: any) => ({ 
-                  ...m, 
-                  targetDate: m.targetDate ? new Date(m.targetDate) : new Date(), 
-                  completedAt: m.completedAt ? new Date(m.completedAt) : undefined 
-                }))
-              : [],
-            deliveryDate: p.deliveryDate ? new Date(p.deliveryDate) : undefined,
-            unitsList: Array.isArray(p.unitsList) ? p.unitsList : []
-          }));
-        }
-      } catch (e) {
-        console.error("Erro ao carregar empreendimentos do armazenamento:", e);
-      }
-    }
+    super("a2_properties", INITIAL_PROPERTIES);
   }
 
-  private persist() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.properties));
-  }
-
-  getAll(): Property[] {
-    return [...this.properties];
-  }
-
-  getById(id: string): Property | undefined {
-    return this.properties.find(p => p.id === id);
+  protected loadFromStorage() {
+    super.loadFromStorage();
+    this.items = this.items.map(p => ({
+      ...p,
+      milestones: p.milestones?.map(m => ({
+        ...m,
+        targetDate: m.targetDate ? new Date(m.targetDate) : new Date(),
+        completedAt: m.completedAt ? new Date(m.completedAt) : undefined
+      })),
+      deliveryDate: p.deliveryDate ? new Date(p.deliveryDate) : undefined,
+    }));
   }
 
   create(property: Omit<Property, "id">): Property {
-    const newProperty = {
-      ...property,
-      id: crypto.randomUUID(),
-    };
-    this.properties.push(newProperty);
-    this.persist();
+    const newProperty = super.create(property);
     auditLogService.log({
       entityType: 'property',
       entityId: newProperty.id,
@@ -122,92 +85,11 @@ class PropertyService {
     return newProperty;
   }
 
-  batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
-    const property = this.getById(propertyId);
-    if (!property) return null;
-
-    const newUnits: PropertyUnit[] = [];
-    for (let f = floorStart; f <= floorEnd; f++) {
-      for (let u = 1; u <= unitsPerFloor; u++) {
-        const unitNumber = `${prefix}${f}${u.toString().padStart(2, '0')}`;
-        newUnits.push({
-          id: crypto.randomUUID(),
-          number: unitNumber,
-          floor: f.toString(),
-          status: "available",
-          type: "Standard"
-        });
-      }
-    }
-
-    const unitsList = [...(property.unitsList || []), ...newUnits];
-    return this.update(propertyId, { 
-      unitsList,
-      units: unitsList.length 
-    });
-  }
-
-  updateMilestone(propertyId: string, milestoneId: string, completed: boolean): Property | undefined {
-    const property = this.getById(propertyId);
-    if (!property || !property.milestones) return undefined;
-
-    const milestone = property.milestones.find(m => m.id === milestoneId);
-    const milestones = property.milestones.map(m => 
-      m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
-    );
-
-    const updated = this.update(propertyId, { milestones });
-    
-    if (updated && milestone) {
-      auditLogService.log({
-        entityType: 'property',
-        entityId: propertyId,
-        action: 'updated',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`
-      });
-    }
-
-    return updated;
-  }
-
-  updateUnitStatus(propertyId: string, unitId: string, status: PropertyUnit['status']): Property | undefined {
-    const property = this.getById(propertyId);
-    if (!property || !property.unitsList) return undefined;
-
-    const unit = property.unitsList.find(u => u.id === unitId);
-    const unitsList = property.unitsList.map(u => 
-      u.id === unitId ? { ...u, status } : u
-    );
-
-    const updated = this.update(propertyId, { unitsList });
-
-    if (updated && unit) {
-      auditLogService.log({
-        entityType: 'property',
-        entityId: propertyId,
-        action: 'updated',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Status da unidade ${unit.number} do empreendimento ${property.name} alterado para ${status}.`
-      });
-    }
-
-    return updated;
-  }
-
   update(id: string, property: Partial<Property>): Property | undefined {
-    const index = this.properties.findIndex(p => p.id === id);
-    if (index === -1) return undefined;
-
-    const oldStatus = this.properties[index].status;
-    this.properties[index] = { ...this.properties[index], ...property };
-    this.persist();
-
-    if (property.status && property.status !== oldStatus) {
+    const oldItem = this.getById(id);
+    const updated = super.update(id, property);
+    
+    if (updated && property.status && property.status !== oldItem?.status) {
       auditLogService.log({
         entityType: 'property',
         entityId: id,
@@ -215,49 +97,20 @@ class PropertyService {
         performedBy: 'admin-1',
         performedByName: 'Administrador',
         performedByRole: 'admin',
-        details: `Status do empreendimento ${this.properties[index].name} alterado para ${property.status}.`,
-        metadata: { oldStatus, newStatus: property.status }
+        details: `Status do empreendimento ${updated.name} alterado para ${property.status}.`,
+        metadata: { oldStatus: oldItem?.status, newStatus: property.status }
       });
     }
-
-    return this.properties[index];
+    return updated;
   }
 
-  delete(id: string): boolean {
-    const property = this.getById(id);
-    const initialLength = this.properties.length;
-    this.properties = this.properties.filter(p => p.id !== id);
-    if (this.properties.length !== initialLength) {
-      this.persist();
-      
-      if (property) {
-        auditLogService.log({
-          entityType: 'property',
-          entityId: id,
-          action: 'deleted',
-          performedBy: 'admin-1',
-          performedByName: 'Administrador',
-          performedByRole: 'admin',
-          details: `Empreendimento ${property.name} removido do sistema.`
-        });
-      }
-      return true;
-    }
-    return false;
-  }
   getMetrics() {
-    const total = this.properties.length;
-    const byStatus = this.properties.reduce((acc, p) => {
-      acc[p.status] = (acc[p.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const totalUnits = this.properties.reduce((acc, p) => acc + (p.units || 0), 0);
-    const totalCompleted = this.properties.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
+    const total = this.items.length;
+    const totalUnits = this.items.reduce((acc, p) => acc + (p.units || 0), 0);
+    const totalCompleted = this.items.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
     
     return {
       total,
-      byStatus,
       totalUnits,
       totalCompleted,
       averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0

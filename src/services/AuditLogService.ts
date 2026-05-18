@@ -56,12 +56,6 @@ const INITIAL_LOGS: AuditLogEntry[] = [
     performedByRole: 'admin', timestamp: new Date(Date.now() - 28 * 86400000),
     details: 'Vistoria agendada para 15/05/2025 às 10:00.'
   },
-  {
-    id: crypto.randomUUID(), entityType: 'warranty', entityId: 'w-1',
-    action: 'created', performedBy: 'client-1', performedByName: 'João Silva',
-    performedByRole: 'client', timestamp: new Date(Date.now() - 10 * 86400000),
-    details: 'Solicitação de garantia criada: Infiltração no banheiro.'
-  },
 ];
 
 class AuditLogService extends BaseService<AuditLogEntry> {
@@ -71,12 +65,16 @@ class AuditLogService extends BaseService<AuditLogEntry> {
 
   protected loadFromStorage() {
     super.loadFromStorage();
-    // Ensure timestamps are Date objects
     this.items = this.items.map(l => ({ 
       ...l, 
       timestamp: l.timestamp instanceof Date ? l.timestamp : new Date(l.timestamp) 
     }));
   }
+
+  getAllLogs(): AuditLogEntry[] {
+    return [...this.items].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
 
   log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole }): AuditLogEntry {
     const newEntry: AuditLogEntry = {
