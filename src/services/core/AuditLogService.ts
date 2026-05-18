@@ -39,7 +39,6 @@ export interface AuditLogEntry {
   payload: any;
   previous_values: any;
   created_at: string;
-  // UI expected fields
   details: string;
   timestamp: Date;
   performedByName: string;
@@ -147,12 +146,12 @@ class AuditLogService extends SupabaseService<any> {
       callback(logs);
     });
 
-    const channel = SupabaseRealtime.subscribeToTable('audit_logs', async () => {
+    const channel = Supabase.realtime.subscribeToTable('audit_logs', async () => {
       const logs = await this.getRecentLogsAsync(50);
       this.localLogs = logs;
       callback(logs);
     });
-    return () => SupabaseRealtime.unsubscribe(channel);
+    return () => channel.unsubscribe();
   }
 
   async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
@@ -160,8 +159,8 @@ class AuditLogService extends SupabaseService<any> {
   }
 
   async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
-    const count = await this.count(companyId, isSuperAdmin);
-    return { totalLogs: count, currentCount24h: 0 };
+    const { data, error } = await Supabase.db.rpc('count_table_rows', { p_table: 'audit_logs', p_company_id: companyId });
+    return { totalLogs: data || 0, currentCount24h: 0 };
   }
 }
 

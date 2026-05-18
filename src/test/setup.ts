@@ -116,9 +116,11 @@ vi.mock('react-i18next', () => ({
 }));
 
 vi.mock('@/integrations/supabase/realtime', () => ({
-  SupabaseRealtime: {
-    subscribeToTable: vi.fn(),
-    unsubscribe: vi.fn()
+  AuthGuard: {
+    hasRole: vi.fn().mockReturnValue(true),
+    hasPermission: vi.fn().mockReturnValue(true),
+    isAdmin: vi.fn().mockReturnValue(true),
+    isSuperAdmin: vi.fn().mockReturnValue(true),
   }
 }));
 
