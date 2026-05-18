@@ -61,7 +61,9 @@ const systemItems = [
   { to: "/admin/settings", icon: Settings, label: "Configurações" },
   { to: "/admin/design-system", icon: Layout, label: "Design System" },
   { to: "/admin/audit-logs", icon: Activity, label: "Logs de Auditoria" },
+  { to: "/admin/saas", icon: Building, label: "SaaS Admin", superAdminOnly: true },
 ];
+
 
 
 function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) {
