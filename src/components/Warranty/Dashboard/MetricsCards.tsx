@@ -11,6 +11,7 @@ import {
   Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatPercentage } from "@/utils/formatters";
 
 interface MetricsCardsProps {
   metrics: WarrantyMetrics;
@@ -45,7 +46,7 @@ export function MetricsCards({ metrics }: MetricsCardsProps) {
     },
     {
       title: "SLA Cumprido",
-      value: `${metrics.slaComplianceRate}%`,
+      value: formatPercentage(metrics.slaComplianceRate),
       subtitle: `${metrics.onTrackCount} no prazo`,
       icon: Target,
       color: "text-emerald-600",
