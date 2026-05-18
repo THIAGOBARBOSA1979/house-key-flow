@@ -22,6 +22,8 @@ export interface StagePermissions {
   canConfirmPresence: boolean;
   canRequestWarranty: boolean;
   canViewFinancial: boolean;
+  canStartInspection: boolean;
+  canViewWarrantyHistory: boolean;
 }
 
 export interface ClientProfile {
@@ -61,7 +63,7 @@ class ClientStageService extends BaseService<ClientProfile> {
   getAllProfiles() { return [...this.items]; }
   getClientProfile(id: string) { return this.getById(id); }
   
-  advanceStage(id: string, stage: any, changedBy?: string, performedByRole?: string, notes?: string) {
+  advanceStage(id: string, stage: any, changedBy: string = "system", automatic: boolean = false, notes: string = "") {
     const result = this.update(id, { currentStage: stage });
     return result ? { ...result, success: true } : { success: false, error: "Profile not found" };
   }
@@ -91,7 +93,9 @@ class ClientStageService extends BaseService<ClientProfile> {
       canScheduleInspection: true,
       canConfirmPresence: true,
       canRequestWarranty: true,
-      canViewFinancial: true
+      canViewFinancial: true,
+      canStartInspection: true,
+      canViewWarrantyHistory: true
     }; 
   }
   
