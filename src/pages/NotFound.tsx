@@ -20,10 +20,11 @@ const NotFound = () => {
           </div>
         </div>
         <div className="space-y-2">
-          <h1 className="text-sem-h2 font-black tracking-tight text-foreground">Página não encontrada</h1>
+          <h1 className="text-sem-h2 font-black tracking-tight text-foreground">Coordenada não localizada</h1>
           <p className="text-sem-body-base text-muted-foreground font-medium">
-            Desculpe, a página que você está procurando não existe ou foi movida.
+            O endereço que você tentou acessar não faz parte do nosso mapa digital ou foi realocado.
           </p>
+
         </div>
         <div className="pt-4">
           <a 
