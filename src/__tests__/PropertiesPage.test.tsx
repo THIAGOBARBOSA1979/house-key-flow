@@ -20,11 +20,12 @@ describe('Properties Page', () => {
     );
     
     // Multiple "Empreendimentos" text found, we can use getAllByText
-    const titles = screen.getAllByText(/Empreendimentos/i);
+    const titles = screen.getAllByText(/Portfólio/i);
     expect(titles.length).toBeGreaterThan(0);
     
-    expect(screen.getByText(/Novo Empreendimento/i)).toBeDefined();
-    expect(screen.getByText(/Total de Projetos/i)).toBeDefined();
+    expect(screen.getByText(/Ativo Imobiliário/i)).toBeDefined();
+    expect(screen.getByText(/Eficiência Operacional/i)).toBeDefined();
+
   });
 });
 
