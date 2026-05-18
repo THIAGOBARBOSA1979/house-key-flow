@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
 import { warrantyFlowService } from "@/services/WarrantyFlowService";
@@ -22,6 +22,37 @@ export const useDashboardData = () => {
     recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
     financialMetrics: financialService.getGlobalMetrics(),
   });
+
+  const refreshData = useCallback(async () => {
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Explicit refresh
+    setData({
+      properties: propertyService.getAll().slice(0, 3),
+      inspections: inspectionService.getAll().slice(0, 3),
+      warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
+      recentActivities: auditLogService.getRecentLogs(5),
+      recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
+      financialMetrics: financialService.getGlobalMetrics(),
+    });
+
+    auditLogService.log({
+      entityType: 'system',
+      entityId: 'dashboard',
+      action: 'updated',
+      performedBy: 'admin-1',
+      performedByName: 'Administrador',
+      performedByRole: 'admin',
+      details: 'Dashboard sincronizado manualmente.'
+    });
+    
+    toast({ 
+      title: "Dados atualizados", 
+      description: "O dashboard foi sincronizado com os dados mais recentes." 
+    });
+    setLoading(false);
+  }, [toast]);
   
   const [healthMetrics, setHealthMetrics] = useState<SystemHealthMetrics>(systemHealthService.getHealthMetrics());
 
@@ -53,36 +84,6 @@ export const useDashboardData = () => {
     };
   }, []);
 
-  const refreshData = async () => {
-    setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Explicit refresh
-    setData({
-      properties: propertyService.getAll().slice(0, 3),
-      inspections: inspectionService.getAll().slice(0, 3),
-      warrantyClaims: warrantyFlowService.getAllRequests().slice(0, 2),
-      recentActivities: auditLogService.getRecentLogs(5),
-      recentTickets: supportService.getAllTickets().filter(t => t.status !== 'closed').slice(0, 3),
-      financialMetrics: financialService.getGlobalMetrics(),
-    });
-
-    auditLogService.log({
-      entityType: 'system',
-      entityId: 'dashboard',
-      action: 'updated',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: 'Dashboard sincronizado manualmente.'
-    });
-    
-    toast({ 
-      title: "Dados atualizados", 
-      description: "O dashboard foi sincronizado com os dados mais recentes." 
-    });
-    setLoading(false);
-  };
 
   return {
     loading,

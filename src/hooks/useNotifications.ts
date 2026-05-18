@@ -29,6 +29,7 @@ export function useNotifications(clientId: string): UseNotificationsResult {
 
   useEffect(() => {
     loadNotifications();
+    return notificationService.subscribe(loadNotifications);
   }, [loadNotifications]);
 
   const unreadNotifications = notifications.filter(n => !n.read);
