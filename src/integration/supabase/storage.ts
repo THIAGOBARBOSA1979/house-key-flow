@@ -1,10 +1,36 @@
 import { supabase } from '@/lib/supabase';
 import { SupabaseResponse, UploadOptions } from './types';
 import { SupabaseErrorHandler } from './error-handler';
+import { SupabaseAuth } from './auth';
 
 export class SupabaseStorage {
+  private static async validatePath(path: string): Promise<boolean> {
+    const user = await SupabaseAuth.getCurrentUser();
+    if (!user) return false;
+
+    const companyId = user.user_metadata?.company_id;
+    const isSuperAdmin = user.user_metadata?.role === 'super_admin';
+
+    if (isSuperAdmin) return true;
+    if (!companyId) return false;
+
+    // Ensure the path starts with company_id/ to enforce tenant isolation in storage
+    return path.startsWith(`${companyId}/`);
+  }
+
   static async uploadFile(options: UploadOptions): Promise<SupabaseResponse<{ path: string }>> {
     const { bucket, path, file, maxSizeInBytes, allowedTypes, onProgress, upsert = false } = options;
+
+    if (!(await this.validatePath(path))) {
+      return {
+        data: null,
+        error: SupabaseErrorHandler.handle({
+          message: 'Acesso negado: Isolamento de tenant violado no Storage.',
+          code: 'TENANT_VIOLATION',
+          status: 403
+        })
+      };
+    }
 
     // Client-side validations
     if (maxSizeInBytes && file.size > maxSizeInBytes) {
@@ -67,6 +93,17 @@ export class SupabaseStorage {
   }
 
   static async downloadFile(bucket: string, path: string): Promise<SupabaseResponse<Blob>> {
+    if (!(await this.validatePath(path))) {
+      return {
+        data: null,
+        error: SupabaseErrorHandler.handle({
+          message: 'Acesso negado ao arquivo.',
+          code: 'TENANT_VIOLATION',
+          status: 403
+        })
+      };
+    }
+
     const { data, error } = await supabase.storage.from(bucket).download(path);
     if (error) {
       return { data: null, error: SupabaseErrorHandler.handle(error) };
@@ -75,6 +112,17 @@ export class SupabaseStorage {
   }
 
   static async deleteFile(bucket: string, path: string): Promise<SupabaseResponse<void>> {
+    if (!(await this.validatePath(path))) {
+      return {
+        data: null,
+        error: SupabaseErrorHandler.handle({
+          message: 'Acesso negado para exclusão.',
+          code: 'TENANT_VIOLATION',
+          status: 403
+        })
+      };
+    }
+
     const { error } = await supabase.storage.from(bucket).remove([path]);
     if (error) {
       return { data: null, error: SupabaseErrorHandler.handle(error) };
