@@ -177,7 +177,7 @@ const Users = () => {
         emptyState={{
           title: "Nenhum usuário encontrado",
           description: "Ajuste os filtros para encontrar o que procura.",
-          action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" }) }
+          action: { label: "Limpar filtros", onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" } as UserFiltersData) }
         }}
       />
 
