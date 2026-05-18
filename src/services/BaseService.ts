@@ -66,11 +66,12 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.notify();
   }
 
-  async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
+  getAll(companyId?: string, isSuperAdmin?: boolean): T[] {
     if (isSuperAdmin) {
       return [...this.items];
     }
     
+    // Strict isolation: if not super admin, companyId is mandatory
     if (!companyId) {
       console.warn(`[BaseService] Attempted to getAll from ${this.storageKey} without companyId/isSuperAdmin`);
       return [];
@@ -79,14 +80,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return this.items.filter(item => item.company_id === companyId);
   }
 
-  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
+  getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {
     const item = this.items.find(item => item.id === id);
     if (isSuperAdmin) return item;
     if (item && item.company_id === companyId) return item;
     return undefined;
   }
 
-  async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
+  create(item: Omit<T, "id">, companyId?: string): T {
     const newItem = {
       ...item,
       id: (item as any).id || crypto.randomUUID(),
@@ -97,7 +98,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return newItem;
   }
 
-  async update(id: string, data: Partial<T>): Promise<T | undefined> {
+  update(id: string, data: Partial<T>): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
     if (index === -1) return undefined;
     this.items[index] = { ...this.items[index], ...data };
@@ -105,7 +106,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return this.items[index];
   }
 
-  async delete(id: string): Promise<boolean> {
+  delete(id: string): boolean {
     const initialLength = this.items.length;
     this.items = this.items.filter(item => item.id !== id);
     if (this.items.length !== initialLength) {
@@ -115,9 +116,8 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return false;
   }
 
-  async count(companyId?: string, isSuperAdmin?: boolean): Promise<number> {
-    const items = await this.getAll(companyId, isSuperAdmin);
-    return items.length;
+  count(companyId?: string, isSuperAdmin?: boolean): number {
+    return this.getAll(companyId, isSuperAdmin).length;
   }
 
   clearAllData() {
