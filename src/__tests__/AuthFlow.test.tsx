@@ -5,6 +5,10 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from '../components/ui/toaster';
 
+
+
+
+
 // Helper component to test useAuth hook
 const AuthTestComponent = () => {
   const { user, login, logout, isAuthenticated, isLoading } = useAuth();

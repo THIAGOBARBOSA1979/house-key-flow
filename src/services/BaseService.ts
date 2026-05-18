@@ -1,4 +1,6 @@
 import { auditLogService, AuditAction, AuditEntityType } from "./core/AuditLogService";
+import { Supabase } from "@/integrations/supabase";
+
 
 type Listener<T> = (items: T[]) => void;
 
@@ -124,8 +126,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     
     this.log('created', newItem.id, `Item criado em ${this.options.storageKey}`);
     
+    if (this.options.shouldSyncWithSupabase) {
+      Supabase.db.create(this.options.storageKey, newItem as any)
+        .catch(err => console.error(`[BaseService] Failed to sync create to Supabase for ${this.options.storageKey}:`, err));
+    }
+    
     return newItem;
   }
+
 
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
@@ -140,8 +148,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
       previous: oldItem
     });
     
+    if (this.options.shouldSyncWithSupabase) {
+      Supabase.db.update(this.options.storageKey, id, data as any)
+        .catch(err => console.error(`[BaseService] Failed to sync update to Supabase for ${this.options.storageKey}:`, err));
+    }
+    
     return this.items[index];
   }
+
 
   delete(id: string): boolean {
     const initialLength = this.items.length;
@@ -149,8 +163,15 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     if (this.items.length !== initialLength) {
       this.persist();
       this.log('deleted', id, `Item removido de ${this.options.storageKey}`);
+      
+      if (this.options.shouldSyncWithSupabase) {
+        Supabase.db.delete(this.options.storageKey, id)
+          .catch(err => console.error(`[BaseService] Failed to sync delete to Supabase for ${this.options.storageKey}:`, err));
+      }
+      
       return true;
     }
+
     return false;
   }
 

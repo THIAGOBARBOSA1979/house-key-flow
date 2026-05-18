@@ -94,9 +94,13 @@ vi.mock('@/integrations/supabase', () => ({
         role: 'admin',
         company_id: 'tenant-1'
       }),
+    },
+    realtime: {
+      subscribeToTable: vi.fn(() => ({ unsubscribe: vi.fn() })),
     }
   }
 }));
+
 
 
 
@@ -121,8 +125,10 @@ vi.mock('@/integrations/supabase/auth-guard', () => ({
     hasPermission: vi.fn().mockReturnValue(true),
     isAdmin: vi.fn().mockReturnValue(true),
     isSuperAdmin: vi.fn().mockReturnValue(true),
+    initialize: vi.fn(),
   }
 }));
+
 
 
 
