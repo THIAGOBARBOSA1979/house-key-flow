@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,9 +59,7 @@ export default function ClientDocuments() {
   const [isSignatureOpen, setIsSignatureOpen] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => { loadClientDocuments(); }, []);
-
-  const loadClientDocuments = () => {
+  const loadClientDocuments = useCallback(() => {
     const clientName = user?.name || "João Silva";
     const clientDocs = documentService.getDocumentsByClient(clientName);
     setDocuments(clientDocs.map(doc => ({
@@ -71,7 +69,11 @@ export default function ClientDocuments() {
       status: doc.status === "published" ? "disponivel" : "processando" as any,
       description: doc.type === "auto" ? "Gerado automaticamente" : "Manual"
     })));
-  };
+  }, [user?.name]);
+
+  useEffect(() => {
+    loadClientDocuments();
+  }, [loadClientDocuments]);
 
   const filteredDocuments = documents.filter(doc => {
     if (search && !doc.title.toLowerCase().includes(search.toLowerCase())) return false;
