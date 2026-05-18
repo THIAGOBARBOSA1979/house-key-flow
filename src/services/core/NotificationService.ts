@@ -135,20 +135,9 @@ export class NotificationService extends BaseService<ClientNotification> {
   }
 
   formatRelativeTime(date: Date): string {
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInMinutes < 1) return 'Agora';
-    if (diffInMinutes < 60) return `Há ${diffInMinutes} min`;
-    if (diffInHours < 24) return `Há ${diffInHours}h`;
-    if (diffInDays === 1) return 'Ontem';
-    if (diffInDays < 7) return `Há ${diffInDays} dias`;
-    
-    return date.toLocaleDateString('pt-BR');
+    return formatRelativeTime(date);
   }
 }
+
 
 export const notificationService = new NotificationService();
