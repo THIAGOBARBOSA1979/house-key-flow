@@ -132,7 +132,8 @@ const App = () => {
                 {/* Catch-all route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-              </Suspense>
+                </Suspense>
+              </BrandThemeProvider>
             </AuthProvider>
           </BrowserRouter>
         </GlobalErrorBoundary>
