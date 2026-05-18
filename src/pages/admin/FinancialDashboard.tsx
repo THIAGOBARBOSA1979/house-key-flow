@@ -289,9 +289,10 @@ const FinancialDashboard = () => {
               cell: (item) => (
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary">
-                    {item.client.charAt(0)}
+                    {item?.client?.charAt(0) || '?'}
                   </div>
-                  <span className="font-bold">{item.client}</span>
+                  <span className="font-bold">{item?.client || 'N/A'}</span>
+
                 </div>
               )
             },

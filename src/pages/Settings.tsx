@@ -219,29 +219,32 @@ const Settings = () => {
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">E-mail</Label>
                       <Switch 
-                        checked={settings.notifications.client.email} 
+                        checked={settings?.notifications?.client?.email || false} 
                         onCheckedChange={v => setSettings(p => ({
                           ...p, notifications: { ...p.notifications, client: { ...p.notifications.client, email: v }}
                         }))}
                       />
+
                     </div>
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">WhatsApp / SMS</Label>
                       <Switch 
-                        checked={settings.notifications.client.sms} 
+                        checked={settings?.notifications?.client?.sms || false} 
                         onCheckedChange={v => setSettings(p => ({
                           ...p, notifications: { ...p.notifications, client: { ...p.notifications.client, sms: v }}
                         }))}
                       />
+
                     </div>
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">Push Notifications</Label>
                       <Switch 
-                        checked={settings.notifications.client.push} 
+                        checked={settings?.notifications?.client?.push || false} 
                         onCheckedChange={v => setSettings(p => ({
                           ...p, notifications: { ...p.notifications, client: { ...p.notifications.client, push: v }}
                         }))}
                       />
+
                     </div>
                   </div>
                 </div>
@@ -252,20 +255,22 @@ const Settings = () => {
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">E-mail Interno</Label>
                       <Switch 
-                        checked={settings.notifications.team.email} 
+                        checked={settings?.notifications?.team?.email || false} 
                         onCheckedChange={v => setSettings(p => ({
                           ...p, notifications: { ...p.notifications, team: { ...p.notifications.team, email: v }}
                         }))}
                       />
+
                     </div>
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">Sistema (Dashboard)</Label>
                       <Switch 
-                        checked={settings.notifications.team.system} 
+                        checked={settings?.notifications?.team?.system || false} 
                         onCheckedChange={v => setSettings(p => ({
                           ...p, notifications: { ...p.notifications, team: { ...p.notifications.team, system: v }}
                         }))}
                       />
+
                     </div>
                   </div>
                 </div>
