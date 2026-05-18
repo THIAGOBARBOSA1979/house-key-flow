@@ -232,13 +232,7 @@ export default function Inspections() {
           <AuditLogViewer entityType="inspection" title="Logs de Auditoria - Vistorias" />
         </TabsContent>
       </Tabs>
-
-      <ConfirmationDialog 
-        isOpen={isConfirmOpen}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        {...confirmOptions}
-      />
     </PageTemplate>
   );
 }
+
