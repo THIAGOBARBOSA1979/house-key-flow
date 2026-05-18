@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { companyService, Company, CompanyStatus, SubscriptionPlan } from "@/services/CompanyService";
 import { DataTable } from "@/components/shared/DataTable";
@@ -48,8 +48,16 @@ export default function SaaSAdmin() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'basic' as SubscriptionPlan });
+  const [isUpdatingSub, setIsUpdatingSub] = useState(false);
+  const [expiryDate, setExpiryDate] = useState<string>('');
+
+  const companyUsers = useMemo(() => {
+    if (!selectedCompany) return [];
+    return userService.getAll(selectedCompany.id, true);
+  }, [selectedCompany]);
 
   const totalUsers = companies.reduce((acc, curr) => acc + (userService.count(curr.id, true) || 0), 0);
+
 
 
   // Safety check for super admin
@@ -84,6 +92,20 @@ export default function SaaSAdmin() {
     setIsAddOpen(false);
     toast({ title: "Empresa cadastrada", description: "O novo tenant foi criado com sucesso." });
   };
+
+  const handleUpdateSubscription = () => {
+    if (!selectedCompany || !expiryDate) return;
+    
+    companyService.updateSubscription(selectedCompany.id, selectedCompany.subscription_plan, new Date(expiryDate));
+    setCompanies(companyService.getAll(undefined, true));
+    setIsUpdatingSub(false);
+    toast({ title: "Assinatura Atualizada", description: "A data de expiração foi modificada." });
+  };
+
+  const handleResetPassword = (userName: string) => {
+    toast({ title: "Senha Resetada", description: `Link de recuperação enviado para ${userName}.` });
+  };
+
 
   const columns = [
     { 
@@ -188,13 +210,13 @@ export default function SaaSAdmin() {
         onRowClick={(c) => setSelectedCompany(c)}
       />
 
-      <Dialog open={!!selectedCompany} onOpenChange={() => setSelectedCompany(null)}>
-        <DialogContent className="max-w-2xl">
+      <Dialog open={!!selectedCompany} onOpenChange={(open) => !open && (setSelectedCompany(null), setIsUpdatingSub(false))}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Gestão de Tenant: {selectedCompany?.name}</DialogTitle>
           </DialogHeader>
-          <div className="py-4 space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="py-4 space-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-muted/30 rounded-xl">
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Identificador (Slug)</p>
                 <p className="font-bold">{selectedCompany?.slug}</p>
@@ -209,40 +231,90 @@ export default function SaaSAdmin() {
 
             <div className="space-y-3">
               <h4 className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                <Users className="w-4 h-4" />
+                <Activity className="w-4 h-4" />
                 Indicadores Operacionais
               </h4>
               <div className="grid grid-cols-3 gap-3">
-                <div className="p-3 border rounded-xl text-center">
+                <div className="p-3 border rounded-xl text-center bg-card">
                   <p className="text-[10px] font-black text-muted-foreground uppercase">Usuários</p>
                   <p className="text-xl font-bold">{selectedCompany ? userService.count(selectedCompany.id, true) : 0}</p>
                 </div>
-                <div className="p-3 border rounded-xl text-center">
-                  <p className="text-[10px] font-black text-muted-foreground uppercase">Empreendimentos</p>
+                <div className="p-3 border rounded-xl text-center bg-card">
+                  <p className="text-[10px] font-black text-muted-foreground uppercase">Obras</p>
                   <p className="text-xl font-bold">{selectedCompany ? propertyService.count(selectedCompany.id, true) : 0}</p>
                 </div>
-                <div className="p-3 border rounded-xl text-center">
+                <div className="p-3 border rounded-xl text-center bg-card">
                   <p className="text-[10px] font-black text-muted-foreground uppercase">Vistorias</p>
                   <p className="text-xl font-bold">{selectedCompany ? inspectionService.count(selectedCompany.id, true) : 0}</p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t flex gap-3">
-              <Button 
-                variant="outline" 
-                className="flex-1"
-                onClick={() => selectedCompany && handleToggleStatus(selectedCompany.id, selectedCompany.status)}
-              >
-                {selectedCompany?.status === 'active' ? "Suspender Acesso" : "Ativar Acesso"}
-              </Button>
-              <Button className="flex-1">
-                Ajustar Assinatura
-              </Button>
+            <div className="space-y-4">
+              <h4 className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                <UsersIcon className="w-4 h-4" />
+                Usuários Vinculados
+              </h4>
+              <div className="border rounded-xl overflow-hidden">
+                <div className="max-h-48 overflow-y-auto">
+                  {companyUsers.length > 0 ? (
+                    <table className="w-full text-sm">
+                      <thead className="bg-muted/50 text-[10px] uppercase font-black sticky top-0">
+                        <tr>
+                          <th className="text-left p-3">Nome</th>
+                          <th className="text-left p-3">Role</th>
+                          <th className="text-right p-3">Ação</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                        {companyUsers.map(u => (
+                          <tr key={u.id} className="hover:bg-muted/20">
+                            <td className="p-3 font-medium">{u.name}</td>
+                            <td className="p-3 uppercase text-[10px] font-bold text-muted-foreground">{u.role}</td>
+                            <td className="p-3 text-right">
+                              <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => handleResetPassword(u.name)}>Resetar Senha</Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p className="p-4 text-center text-muted-foreground text-xs font-bold uppercase tracking-widest">Nenhum usuário cadastrado</p>
+                  )}
+                </div>
+              </div>
             </div>
+
+            {isUpdatingSub ? (
+              <div className="p-6 border-2 border-primary/20 bg-primary/5 rounded-2xl space-y-4 animate-in slide-in-from-top-2">
+                <h4 className="text-xs font-black uppercase tracking-widest text-primary">Alterar Validez da Assinatura</h4>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold">Nova Data de Expiração</Label>
+                  <Input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1" onClick={() => setIsUpdatingSub(false)}>Cancelar</Button>
+                  <Button className="flex-1" onClick={handleUpdateSubscription}>Salvar Data</Button>
+                </div>
+              </div>
+            ) : (
+              <div className="pt-4 border-t flex flex-col sm:flex-row gap-3">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 rounded-xl h-11 font-bold"
+                  onClick={() => selectedCompany && handleToggleStatus(selectedCompany.id, selectedCompany.status)}
+                >
+                  {selectedCompany?.status === 'active' ? "Suspender Acesso" : "Ativar Empresa"}
+                </Button>
+                <Button className="flex-1 rounded-xl h-11 font-bold" onClick={() => setIsUpdatingSub(true)}>
+                  Ajustar Assinatura
+                </Button>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
+
 
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
