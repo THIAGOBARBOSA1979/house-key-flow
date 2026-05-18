@@ -42,7 +42,15 @@ const Settings = () => {
 
   const handleSaveCompanySettings = () => {
     if (user?.company_id) {
-      companyService.updateSettings(user.company_id, companySettings);
+      // Also update branding in company settings if we are in tenant mode
+      const updatedSettings = {
+        ...companySettings,
+        primary_color: settings.branding.primaryColor,
+        is_dark_mode_forced: settings.branding.darkMode,
+        logo_url: companySettings.logo_url // Placeholder for actual upload
+      };
+      
+      companyService.updateSettings(user.company_id, updatedSettings);
       toast({
         title: "Empresa atualizada",
         description: "As configurações do seu tenant foram salvas."
