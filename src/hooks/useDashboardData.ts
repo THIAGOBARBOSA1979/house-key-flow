@@ -26,7 +26,9 @@ export const useDashboardData = () => {
     recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
     recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
     financialMetrics: financialService.getGlobalMetrics(companyId, user?.is_super_admin),
+    propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
   }), [companyId, user?.is_super_admin]);
+
 
 
   const [data, setData] = useState(initialData);
@@ -43,7 +45,9 @@ export const useDashboardData = () => {
       recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
       recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
       financialMetrics: financialService.getGlobalMetrics(companyId, user?.is_super_admin),
+      propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
     });
+
 
 
     auditLogService.log({
@@ -80,7 +84,9 @@ export const useDashboardData = () => {
           recentActivities: auditLogService.getRecentLogs(5, companyId, user?.is_super_admin),
           recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
           financialMetrics: financialService.getGlobalMetrics(companyId, user?.is_super_admin),
+          propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
         });
+
 
       }, 50);
     };
