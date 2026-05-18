@@ -112,11 +112,11 @@ const Properties = () => {
         <PropertyViewTabs viewMode={viewMode} onViewModeChange={(m) => setViewMode(m as DataViewMode)} />
       </PropertyFilters>
       
-      {isLoading ? (
-        <SkeletonLoader type="card" count={6} />
-      ) : (
-        <DataView<Property>
-          items={filteredProperties}
+      <DataView<Property>
+        items={filteredProperties}
+        isLoading={isLoading}
+        skeletonType="card"
+
         viewMode={viewMode}
         itemsPerPage={6}
         renderGrid={(property) => (
@@ -222,7 +222,7 @@ const Properties = () => {
           </div>
         )}
       />
-      )}
+
 
       <PropertyDialogs 
         isFormOpen={isFormOpen}

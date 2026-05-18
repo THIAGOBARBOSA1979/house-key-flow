@@ -83,18 +83,29 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
     );
   }
 
+  if (type === 'page') {
+    return (
+      <div className={cn("space-y-10-sem animate-in fade-in duration-500", className)}>
+        <div className="space-y-4-sem">
+          <Skeleton className="h-14 w-1/4 rounded-2xl" />
+          <Skeleton className="h-7 w-1/2 rounded-xl" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
+          <Skeleton className="h-36 rounded-2xl" />
+          <Skeleton className="h-36 rounded-2xl" />
+          <Skeleton className="h-36 rounded-2xl" />
+        </div>
+        <Skeleton className="h-[500px] rounded-3xl w-full" />
+      </div>
+    );
+  }
+
   return (
-    <div className={cn("space-y-10-sem animate-in fade-in duration-500", className)}>
-      <div className="space-y-4-sem">
-        <Skeleton className="h-14 w-1/4 rounded-2xl" />
-        <Skeleton className="h-7 w-1/2 rounded-xl" />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
-        <Skeleton className="h-36 rounded-2xl" />
-        <Skeleton className="h-36 rounded-2xl" />
-        <Skeleton className="h-36 rounded-2xl" />
-      </div>
-      <Skeleton className="h-[500px] rounded-3xl w-full" />
+    <div className={cn("grid gap-4", className)}>
+      {Array.from({ length: count }).map((_, i) => (
+        <Skeleton key={i} className="h-20 w-full rounded-xl" />
+      ))}
     </div>
   );
 }
+
