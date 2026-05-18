@@ -53,7 +53,7 @@ export interface Document {
   fileName?: string;
   fileSize?: string;
   tags?: string[];
-  isFavorite?: boolean;
+  isSigned?: boolean;
   template?: string;
   signatures?: DocumentSignature[];
   versionHistory?: DocumentVersion[];
@@ -81,7 +81,7 @@ const INITIAL_DOCUMENTS: Document[] = [
     downloads: 5,
     viewCount: 45,
     status: "published",
-    isFavorite: true,
+    isSigned: false,
     version: 1,
     approvalStatus: "approved",
     template: "Contrato de exemplo",
@@ -149,7 +149,7 @@ class DocumentService extends BaseService<Document> {
 
   logView(id: string) {
     const doc = this.getById(id);
-    if (doc) this.update(id, { viewCount: (doc.viewCount || 0) + 1 });
+    if (doc) this.update(id, { viewCount: (doc.viewCount || 0) + 1, isSigned: true });
   }
 
   downloadDocument(id: string) {
