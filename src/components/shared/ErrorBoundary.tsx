@@ -1,19 +1,22 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { AlertCircle, RotateCcw, Home } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface Props {
+interface Props extends WithTranslation {
   children: ReactNode;
   fallback?: ReactNode;
 }
+
 
 interface State {
   hasError: boolean;
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryComponent extends Component<Props, State> {
   public state: State = {
     hasError: false,
     error: null
@@ -39,6 +42,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
+      const { t } = this.props;
+
       if (this.props.fallback) {
         return this.props.fallback;
       }
@@ -53,13 +58,13 @@ export class ErrorBoundary extends Component<Props, State> {
                 <AlertCircle className="w-10 h-10 text-destructive" />
               </div>
               <CardTitle className="text-3xl font-black tracking-tight text-foreground">
-                Sincronização Interrompida
+                {t('common.error_title', 'Sincronização Interrompida')}
               </CardTitle>
 
             </CardHeader>
             <CardContent className="text-center px-10 pb-6">
               <p className="text-muted-foreground font-bold leading-relaxed">
-                Detectamos uma instabilidade no protocolo de carregamento. Nossa equipe de governança técnica já foi notificada para normalizar o acesso.
+                {t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
               </p>
 
               
