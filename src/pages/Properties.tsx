@@ -1,13 +1,11 @@
 import { useState, useMemo } from "react";
-import { Building, Plus, Trash2, Download, Settings, MoreHorizontal, Pencil } from "lucide-react";
+import { Building, Plus, Trash2, MoreHorizontal, Pencil } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { DataView } from "@/components/Shared/DataView";
 import { DataTable } from "@/components/Shared/DataTable";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
-
 import { exportService } from "@/services";
 import { formatDate } from "@/utils/formatters";
 import { useProperties, useConfirm } from "@/hooks";
@@ -19,13 +17,14 @@ import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
 import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
 import { PropertyTimeline } from "@/components/Properties/PropertyTimeline";
 import { PropertyBulkActions } from "@/components/Properties/PropertyBulkActions";
-
-
 import { DataViewMode } from "@/components/Shared/DataView";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-
-
 
 const Properties = () => {
   const {
@@ -68,11 +67,17 @@ const Properties = () => {
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
-      <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95" onClick={() => exportService.exportToCSV(properties, 'portfoliotecnico_a2')}>
-        <Download className="mr-2 h-4 w-4" /> Exportar Portfólio
-
-      </Button>
-      <Button onClick={() => { setEditingProperty(null); setIsFormOpen(true); }} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
+      <PropertyBulkActions 
+        selectedCount={selectedIds.length} 
+        onBulkAction={(action) => {
+          if (action === "delete") bulkDelete();
+        }}
+        onExport={() => exportService.exportToCSV(properties, 'portfoliotecnico_a2')}
+      />
+      <Button 
+        onClick={() => { setEditingProperty(null); setIsFormOpen(true); }} 
+        className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95"
+      >
         <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
         Novo Ativo Imobiliário
       </Button>
@@ -83,27 +88,10 @@ const Properties = () => {
     <PageTemplate
       title="Inteligência de Portfólio"
       description="Gerencie seu ecossistema de empreendimentos com foco em progresso físico e eficiência operacional."
-
       icon={Building}
       actions={actions}
     >
       <PropertyStats metrics={metrics} />
-
-      {selectedIds.length > 0 && (
-        <Card className="p-4 bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="bg-primary text-white p-2 rounded-xl"><Settings className="w-5 h-5 animate-spin-slow" /></div>
-            <div>
-              <p className="text-sm font-black text-primary uppercase tracking-widest leading-none">Ações em Lote Operacional</p>
-              <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} selecionados</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={() => setSelectedIds([])}>Cancelar</Button>
-             <Button variant="destructive" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={bulkDelete}><Trash2 className="w-4 h-4" /> Excluir permanentemente</Button>
-          </div>
-        </Card>
-      )}
 
       <PropertyFilters 
         searchTerm={searchTerm}
@@ -122,7 +110,6 @@ const Properties = () => {
         items={filteredProperties}
         isLoading={isLoading}
         skeletonType="card"
-
         viewMode={viewMode}
         itemsPerPage={6}
         renderGrid={(property) => (
@@ -132,13 +119,13 @@ const Properties = () => {
             onClick={() => setSelectedProperty(property)}
             onEdit={() => handleOpenEdit(property)}
             onDelete={async () => {
-              if (await confirm({
+              const result = await confirm({
                 title: "Confirmar Exclusão",
                 description: `Deseja realmente excluir o empreendimento "${property.name}"? Esta ação não pode ser desfeita.`,
                 confirmLabel: "Excluir",
-              })) {
-                deleteProperty(property.id!);
-              }
+                variant: "destructive"
+              });
+              if (result) deleteProperty(property.id!);
             }}
           />
         )}
@@ -176,7 +163,13 @@ const Properties = () => {
                   return (
                     <div className="flex items-center gap-3 min-w-[120px]">
                       <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
-                        <div className={cn("h-full transition-all duration-700", p.status === 'complete' ? "bg-status-complete" : "bg-primary")} style={{ width: `${percentage}%` }} />
+                        <div 
+                          className={cn(
+                            "h-full transition-all duration-700", 
+                            p.status === 'complete' ? "bg-status-complete" : "bg-primary"
+                          )} 
+                          style={{ width: `${percentage}%` }} 
+                        />
                       </div>
                       <span className="text-sem-tiny font-black text-foreground">{percentage}%</span>
                     </div>
@@ -196,16 +189,23 @@ const Properties = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-40 shadow-sem-lg">
-                      <DropdownMenuItem onClick={() => handleOpenEdit(p)} className="cursor-pointer"><Pencil className="mr-2 h-4 w-4" /> Editar</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive font-bold" onClick={async () => {
-                        if (await confirm({
-                          title: "Confirmar Exclusão",
-                          description: `Deseja realmente excluir o empreendimento "${p.name}"? Esta ação não pode ser desfeita.`,
-                          confirmLabel: "Excluir",
-                        })) {
-                          deleteProperty(p.id!);
-                        }
-                      }}><Trash2 className="mr-2 h-4 w-4" /> Excluir</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleOpenEdit(p)} className="cursor-pointer">
+                        <Pencil className="mr-2 h-4 w-4" /> Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className="text-destructive font-bold" 
+                        onClick={async () => {
+                          const result = await confirm({
+                            title: "Confirmar Exclusão",
+                            description: `Deseja realmente excluir o empreendimento "${p.name}"? Esta ação não pode ser desfeita.`,
+                            confirmLabel: "Excluir",
+                            variant: "destructive"
+                          });
+                          if (result) deleteProperty(p.id!);
+                        }}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Excluir
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )
@@ -216,9 +216,7 @@ const Properties = () => {
           />
         )}
         renderTimeline={(items) => <PropertyTimeline items={items as Property[]} />}
-
       />
-
 
       <PropertyDialogs 
         isFormOpen={isFormOpen}
@@ -233,7 +231,4 @@ const Properties = () => {
   );
 };
 
-
 export default Properties;
-
-
