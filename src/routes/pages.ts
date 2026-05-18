@@ -1,0 +1,42 @@
+import { lazy } from "react";
+import { Navigate } from "react-router-dom";
+
+// Layouts
+export const AppLayout = lazy(() => import("@/components/Layout/AppLayout").then(module => ({ default: module.AppLayout })));
+export const ClientLayout = lazy(() => import("@/components/Layout/ClientLayout"));
+
+// Public Pages
+export const Home = lazy(() => import("@/pages/Home"));
+export const Login = lazy(() => import("@/pages/Login"));
+export const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+export const NotFound = lazy(() => import("@/pages/NotFound"));
+
+// Admin Pages
+export const AdminIndex = lazy(() => import("@/pages/Index"));
+export const Properties = lazy(() => import("@/pages/Properties"));
+export const Inspections = lazy(() => import("@/pages/Inspections"));
+export const Warranty = lazy(() => import("@/pages/Warranty"));
+export const AdminDocuments = lazy(() => import("@/pages/admin/Documents"));
+export const Calendar = lazy(() => import("@/pages/Calendar"));
+export const Users = lazy(() => import("@/pages/Users"));
+export const ClientArea = lazy(() => import("@/pages/ClientArea"));
+export const Checklist = lazy(() => import("@/pages/Checklist"));
+export const Settings = lazy(() => import("@/pages/Settings"));
+export const DesignSystem = lazy(() => import("@/pages/admin/DesignSystem"));
+export const AuditLogs = lazy(() => import("@/pages/admin/AuditLogs"));
+export const FinancialDashboard = lazy(() => import("@/pages/admin/FinancialDashboard"));
+export const Announcements = lazy(() => import("@/pages/admin/Announcements"));
+export const Technicians = lazy(() => import("@/pages/Technicians"));
+export const AdminSupport = lazy(() => import("@/pages/admin/Support"));
+export const SaaSAdmin = lazy(() => import("@/pages/admin/SaaSAdmin"));
+
+// Client Pages
+export const ClientDashboard = lazy(() => import("@/pages/client/Dashboard"));
+export const ClientDocuments = lazy(() => import("@/pages/client/Documents"));
+export const ClientInspections = lazy(() => import("@/pages/client/Inspections"));
+export const ClientWarranty = lazy(() => import("@/pages/client/Warranty"));
+export const ClientProperties = lazy(() => import("@/pages/client/Properties"));
+export const ClientNotifications = lazy(() => import("@/pages/client/Notifications"));
+export const ClientProfile = lazy(() => import("@/pages/client/Profile"));
+export const ClientFinancial = lazy(() => import("@/pages/client/Financial"));
+export const ClientSupport = lazy(() => import("@/pages/client/Support"));
