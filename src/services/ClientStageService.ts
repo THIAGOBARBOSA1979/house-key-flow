@@ -33,15 +33,21 @@ class ClientStageService extends BaseService<ClientProfile> {
     this.items = this.items.map(item => ({
       ...item,
       createdAt: new Date(item.createdAt),
-      stageHistory: item.stageHistory.map(h => ({ ...h, changedAt: new Date(h.changedAt) }))
+      stageHistory: Array.isArray(item.stageHistory) 
+        ? item.stageHistory.map(h => ({ ...h, changedAt: new Date(h.changedAt) }))
+        : []
     }));
     
     const storedEvents = localStorage.getItem("a2_client_events");
     if (storedEvents) {
-      this.events = JSON.parse(storedEvents).map((e: any) => ({
-        ...e,
-        createdAt: new Date(e.createdAt)
-      }));
+      try {
+        this.events = JSON.parse(storedEvents).map((e: any) => ({
+          ...e,
+          createdAt: new Date(e.createdAt)
+        }));
+      } catch (e) {
+        console.error("Error loading events", e);
+      }
     }
   }
 
@@ -57,7 +63,7 @@ class ClientStageService extends BaseService<ClientProfile> {
     return this.getById(id);
   }
 
-  advanceStage(id: string, stage: ClientStage, changedBy: string = "system", automatic: boolean = false, notes: string = "") {
+  advanceStage(id: string, stage: ClientStage, notes: string = "", changedBy: string = "system", automatic: boolean = false) {
     const profile = this.getById(id);
     if (!profile) return { success: false, error: "Cliente não encontrado" };
 
@@ -73,14 +79,15 @@ class ClientStageService extends BaseService<ClientProfile> {
 
     const updated = this.update(id, {
       currentStage: stage,
-      stageHistory: [...profile.stageHistory, stageChange]
+      stageHistory: [...(profile.stageHistory || []), stageChange]
     });
 
     if (updated) {
-      this.addEvent(id, {
-        eventType: 'stage_changed',
+      this.addEvent({
+        clientId: id,
+        eventType: 'stage_changed' as any, // This is not in EventType but used in history/UI sometimes
         title: 'Mudança de Etapa',
-        description: `Cliente movido para a etapa: ${stage}`,
+        description: notes || `Cliente movido para a etapa: ${stage}`,
         metadata: { performedBy: changedBy, isAutomatic: automatic }
       });
       return { ...updated, success: true };
@@ -89,11 +96,10 @@ class ClientStageService extends BaseService<ClientProfile> {
     return { success: false, error: "Falha ao atualizar perfil" };
   }
 
-  addEvent(clientId: string, event: Omit<ClientEvent, "id" | "clientId" | "createdAt">) {
+  addEvent(event: Omit<ClientEvent, "id" | "createdAt">) {
     const newEvent: ClientEvent = {
       ...event,
       id: crypto.randomUUID(),
-      clientId,
       createdAt: new Date()
     } as ClientEvent;
     this.events.unshift(newEvent);
@@ -112,7 +118,6 @@ class ClientStageService extends BaseService<ClientProfile> {
   }
 
   getTimeline(clientId: string) {
-    // This could return a list of stages and their status for this client
     return []; 
   }
 
@@ -127,7 +132,6 @@ class ClientStageService extends BaseService<ClientProfile> {
   isStageReached(clientId: string, stage: ClientStage): boolean {
     const profile = this.getById(clientId);
     if (!profile) return false;
-    // Simple check based on stage order could be implemented here
     return profile.currentStage === stage;
   }
 }

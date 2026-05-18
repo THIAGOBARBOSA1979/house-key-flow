@@ -8,9 +8,9 @@ export interface ChecklistItem {
   description?: string;
   required?: boolean;
   severity?: "low" | "medium" | "high" | "critical";
-  status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na";
+  status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na" | "nonconform";
   evidence?: any[];
-  conformity?: "conform" | "non_conform" | "not_applicable" | "pending";
+  conformity?: "conform" | "non_conform" | "not_applicable" | "pending" | "nonconform";
 }
 
 export interface ChecklistGroup {
