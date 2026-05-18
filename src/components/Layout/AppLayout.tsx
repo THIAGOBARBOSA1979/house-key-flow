@@ -109,7 +109,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-all" />
                   <Input
                     placeholder="Busca global... (Ctrl+K)"
-                    className="pl-11 h-11 bg-muted/20 border-none rounded-xl font-bold placeholder:font-medium transition-all focus-visible:ring-primary/20 w-full"
+                    className="pl-11 h-11 bg-muted/20 border-none rounded-2xl font-bold placeholder:font-medium transition-all focus-visible:ring-primary/20 w-full"
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchTerm(e.target.value);
@@ -136,7 +136,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                                     <button 
                                       key={p.id}
                                       onClick={() => { navigate('/admin/properties'); setIsSearchOpen(false); }}
-                                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 group transition-all"
+                                      className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-primary/5 group transition-all"
                                     >
                                       <span className="font-bold text-sm text-foreground/80 group-hover:text-primary">{p.name}</span>
                                       <ChevronRight size={14} className="text-muted-foreground/40 group-hover:translate-x-1 transition-all" />
@@ -153,7 +153,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                                     <button 
                                       key={u.id}
                                       onClick={() => { navigate('/admin/users'); setIsSearchOpen(false); }}
-                                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 group transition-all"
+                                      className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-primary/5 group transition-all"
                                     >
                                       <div className="text-left">
                                         <p className="font-bold text-sm text-foreground/80 group-hover:text-primary">{u.name}</p>
@@ -173,7 +173,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                                     <button 
                                       key={d.id}
                                       onClick={() => { navigate('/admin/documents'); setIsSearchOpen(false); }}
-                                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 group transition-all"
+                                      className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-primary/5 group transition-all"
                                     >
                                       <span className="font-bold text-sm text-foreground/80 group-hover:text-primary">{d.title}</span>
                                       <ChevronRight size={14} className="text-muted-foreground/40 group-hover:translate-x-1 transition-all" />
@@ -199,14 +199,14 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             </div>
 
             <div className="flex items-center gap-2 md:gap-6 shrink-0">
-              <Button variant="ghost" size="icon" className="relative h-10 w-10 md:h-11 md:w-11 rounded-xl md:rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group">
+              <Button variant="ghost" size="icon" className="relative h-10 w-10 md:h-11 md:w-11 rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group">
                 <Bell size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-status-critical rounded-full border-2 border-background animate-pulse" />
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10 md:h-12 rounded-xl md:rounded-2xl gap-2 md:gap-3 pl-1.5 md:pl-2 pr-2 md:pr-4 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10">
+                  <Button variant="ghost" className="h-10 md:h-12 rounded-2xl gap-2 md:gap-3 pl-1.5 md:pl-2 pr-2 md:pr-4 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10">
                     <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center font-black text-[10px] md:text-xs uppercase group-hover:scale-105 transition-all shrink-0">
                       {user?.name?.charAt(0) || "U"}
                     </div>
@@ -224,19 +224,19 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="mx-2 bg-border/40" />
-                  <DropdownMenuItem className="py-3 px-4 rounded-xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all">
+                  <DropdownMenuItem className="py-3 px-4 rounded-2xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all">
                     <User className="mr-3 h-4 w-4 opacity-50" />
                     <span className="text-sem-body-sm">Perfil do Sistema</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    className="py-3 px-4 rounded-xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all"
+                    className="py-3 px-4 rounded-2xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all"
                     onClick={() => setIsShortcutsOpen(true)}
                   >
                     <Keyboard className="mr-3 h-4 w-4 opacity-50" />
                     <span className="text-sem-body-sm">Atalhos do Teclado</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="mx-2 bg-border/40" />
-                  <DropdownMenuItem onClick={logout} className="py-3 px-4 rounded-xl font-black text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer transition-all">
+                  <DropdownMenuItem onClick={logout} className="py-3 px-4 rounded-2xl font-black text-destructive focus:text-destructive focus:bg-destructive/5 cursor-pointer transition-all">
                     <LogOut className="mr-3 h-4 w-4 opacity-50" />
                     <span className="text-sem-body-sm uppercase tracking-widest">Sair com segurança</span>
                   </DropdownMenuItem>
@@ -290,7 +290,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             ].map(shortcut => (
               <div key={shortcut.key} className="flex items-center justify-between">
                 <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{shortcut.desc}</span>
-                <Badge variant="outline" className="h-8 px-3 rounded-lg font-black bg-muted/20 border-border/50">{shortcut.key}</Badge>
+                <Badge variant="outline" className="h-8 px-3 rounded-2xl font-black bg-muted/20 border-border/50">{shortcut.key}</Badge>
               </div>
             ))}
           </div>
