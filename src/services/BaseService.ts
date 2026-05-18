@@ -126,8 +126,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     
     this.log('created', newItem.id, `Item criado em ${this.options.storageKey}`);
     
+    if (this.options.shouldSyncWithSupabase) {
+      Supabase.db.create(this.options.storageKey, newItem as any)
+        .catch(err => console.error(`[BaseService] Failed to sync create to Supabase for ${this.options.storageKey}:`, err));
+    }
+    
     return newItem;
   }
+
 
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
