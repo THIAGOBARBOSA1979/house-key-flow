@@ -1,35 +1,36 @@
-import { BaseService } from "./BaseService";
-import { User } from "@/types/user";
+import { SupabaseService } from "./SupabaseService";
+import { User, UserStats } from "@/types/user";
+import { Supabase } from "@/integration/supabase";
 
-const INITIAL_USERS: User[] = [
-  { id: "1", company_id: "comp-1", name: "João Silva", email: "joao@exemplo.com", role: "admin", status: "active", createdAt: new Date(2023, 10, 5) },
-  { id: "2", company_id: "comp-1", name: "Maria Oliveira", email: "maria@exemplo.com", role: "manager", status: "active", createdAt: new Date(2023, 11, 10) },
-  { id: "3", company_id: "comp-1", name: "Pedro Santos", email: "pedro@exemplo.com", role: "client", status: "active", propertyName: "Edifício Aurora", unit: "101", createdAt: new Date(2024, 0, 15) },
-  { id: "4", company_id: "comp-1", name: "Ana Costa", email: "ana@exemplo.com", role: "staff", status: "inactive", createdAt: new Date(2024, 1, 20) },
-
-];
-
-class UserService extends BaseService<User> {
+class UserService extends SupabaseService<User> {
   constructor() {
-    super("a2_users", INITIAL_USERS);
+    super("profiles"); // In Supabase, users are linked to profiles
   }
 
-  getStats(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
+  async getStats(companyId?: string, isSuperAdmin?: boolean): Promise<UserStats> {
+    const filters: any[] = [];
+    if (!isSuperAdmin && companyId) {
+      filters.push({ column: 'company_id', operator: 'eq', value: companyId });
+    }
+
+    const { data: total } = await Supabase.db.count(this.table, filters);
+    const { data: active } = await Supabase.db.count(this.table, [...filters, { column: 'status', operator: 'eq', value: 'active' }]);
+    const { data: inactive } = await Supabase.db.count(this.table, [...filters, { column: 'status', operator: 'eq', value: 'inactive' }]);
+    const { data: clients } = await Supabase.db.count(this.table, [...filters, { column: 'role', operator: 'eq', value: 'client' }]);
+
     return {
-      total: relevantItems.length,
-      active: relevantItems.filter(u => u.status === "active").length,
-      inactive: relevantItems.filter(u => u.status === "inactive").length,
-      clients: relevantItems.filter(u => u.role === "client").length,
-      staff: relevantItems.filter(u => u.role !== "client").length,
+      total: total || 0,
+      active: active || 0,
+      inactive: inactive || 0,
+      clients: clients || 0,
+      staff: (total || 0) - (clients || 0),
     };
   }
 
-  clearAllData() {
-    this.items = [];
-    this.persist();
+  async clearAllData() {
+    // In Supabase we don't clear all data easily for security reasons
+    console.warn('clearAllData not implemented for Supabase UserService');
   }
-
 }
 
 export const userService = new UserService();
