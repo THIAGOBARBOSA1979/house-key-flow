@@ -12,6 +12,10 @@ export * from './operations/PropertyService';
 export * from './operations/InspectionService';
 export * from './operations/TechnicianService';
 export * from './operations/ConstructionService';
+export * from './operations/ClientStageService';
+export * from './operations/DocumentService';
+export * from './operations/ChecklistService';
+export * from './operations/FinancialService';
 
 // Warranty Domain
 export * from './warranty/WarrantyFlowService';
@@ -24,14 +28,8 @@ export * from './core/AuditLogService';
 export * from './core/NotificationService';
 export * from './core/ExportService';
 export * from './core/SyncService';
+export * from './core/SystemHealthService';
+export * from './core/EventAutomationService';
 
 // External Domain
 export * from './external/GoogleDriveService';
-
-// Others
-export * from './ClientStageService';
-export * from './DocumentService';
-export * from './EventAutomationService';
-export * from './FinancialService';
-export * from './SystemHealthService';
-export * from './ChecklistService';
