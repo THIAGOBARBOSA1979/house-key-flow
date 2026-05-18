@@ -43,7 +43,7 @@ const Users = () => {
 
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
-  const { confirm, isOpen: isConfirmOpen, handleConfirm, handleCancel, options: confirmOptions } = useConfirm();
+  const { confirm } = useConfirm();
 
   const handleOpenForm = (user: UserType | null = null) => {
     setEditingUser(user);
