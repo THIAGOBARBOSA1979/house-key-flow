@@ -1,6 +1,6 @@
 import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
-import { technicianService } from "./TechnicianService";
+import { technicianService, Technician } from "./TechnicianService";
 
 export interface Inspection {
   id: string;
@@ -21,13 +21,6 @@ export interface Inspection {
   firstContactAt?: Date;
 }
 
-export interface Technician {
-  id: string;
-  name: string;
-  specialty: string;
-  contact: string;
-  active: boolean;
-}
 
 const INITIAL_INSPECTIONS: Inspection[] = [
   { 
