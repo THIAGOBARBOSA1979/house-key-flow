@@ -6,7 +6,7 @@ import {
   WarrantyRequest,
   WarrantyProblemData
 } from "@/types/warranty";
-import { warrantyFlowService } from "./WarrantyFlowService";
+import { warrantyFlowService } from "../warranty/WarrantyFlowService";
 import { clientStageService } from "../ClientStageService";
 
 // Mock data for warranty items
