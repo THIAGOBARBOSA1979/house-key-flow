@@ -1,20 +1,25 @@
 import { useState, useMemo, useCallback } from "react";
-import { userService, User } from "@/services/UserService";
+import { userService } from "@/services/UserService";
 import { auditLogService } from "@/services/AuditLogService";
 import { useToast } from "@/hooks/use-toast";
+import { useService } from "@/hooks/useService";
+import { User } from "@/types/user";
 
 /**
  * Custom hook to manage users logic.
  */
 export const useUsers = () => {
   const { toast } = useToast();
-  const [userList, setUserList] = useState<User[]>(userService.getAll());
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [filters, setFilters] = useState({ search: "", role: "all", status: "all", property: "all", unit: "" });
 
-  const refreshList = useCallback(() => {
-    setUserList(userService.getAll());
-  }, []);
+  const { items: userList, create, update, remove, refresh } = useService<User>(userService, {
+    toastMessages: {
+      create: "Novo usuário foi criado com sucesso.",
+      update: "As informações do usuário foram atualizadas com sucesso.",
+      delete: "O usuário foi removido do sistema."
+    }
+  });
 
   const filteredUsers = useMemo(() => {
     return userList.filter(user => {
@@ -32,76 +37,71 @@ export const useUsers = () => {
     });
   }, [userList, filters]);
 
-  const stats = useMemo(() => ({
-    total: userList.length,
-    active: userList.filter(u => u.status === "active").length,
-    inactive: userList.filter(u => u.status === "inactive").length,
-    clients: userList.filter(u => u.role === "client").length,
-    staff: userList.filter(u => u.role !== "client").length,
-  }), [userList]);
+  const stats = useMemo(() => userService.getStats(), [userList]);
 
-  const saveUser = useCallback((userData: any, editingUserId?: string) => {
+  const saveUser = useCallback(async (userData: any, editingUserId?: string) => {
     if (editingUserId) {
-      userService.update(editingUserId, userData);
-      auditLogService.log({
-        entityType: 'user',
-        entityId: editingUserId,
-        action: 'updated',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Dados do usuário ${userData.name} atualizados.`
-      });
-      toast({ title: "Usuário atualizado", description: "As informações do usuário foram atualizadas com sucesso." });
+      const updated = await update(editingUserId, userData);
+      if (updated) {
+        auditLogService.log({
+          entityType: 'user',
+          entityId: editingUserId,
+          action: 'updated',
+          performedBy: 'admin-1',
+          performedByName: 'Administrador',
+          performedByRole: 'admin',
+          details: `Dados do usuário ${userData.name} atualizados.`
+        });
+      }
     } else {
-      const newUser = userService.create(userData);
-      auditLogService.log({
-        entityType: 'user',
-        entityId: newUser.id!,
-        action: 'created',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Novo usuário ${userData.name} criado no sistema.`
-      });
-      toast({ title: "Usuário criado", description: "Novo usuário foi criado com sucesso." });
+      const newUser = await create(userData);
+      if (newUser) {
+        auditLogService.log({
+          entityType: 'user',
+          entityId: newUser.id!,
+          action: 'created',
+          performedBy: 'admin-1',
+          performedByName: 'Administrador',
+          performedByRole: 'admin',
+          details: `Novo usuário ${userData.name} criado no sistema.`
+        });
+      }
     }
-    refreshList();
-  }, [toast, refreshList]);
+  }, [create, update]);
 
-  const deleteUser = useCallback((userId: string) => {
-    userService.delete(userId);
-    auditLogService.log({
-      entityType: 'user',
-      entityId: userId,
-      action: 'cancelled',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Usuário removido permanentemente do sistema.`
-    });
-    refreshList();
-    toast({ title: "Usuário removido", description: "O usuário foi removido do sistema.", variant: "destructive" }); 
-  }, [toast, refreshList]);
-
-  const toggleUserStatus = useCallback((userId: string) => {
-    const user = userService.getById(userId);
-    if (user) {
-      const newStatus = user.status === "active" ? "inactive" : "active";
-      userService.update(userId, { status: newStatus });
+  const deleteUser = useCallback(async (userId: string) => {
+    const success = await remove(userId);
+    if (success) {
       auditLogService.log({
         entityType: 'user',
         entityId: userId,
-        action: 'updated',
+        action: 'cancelled',
         performedBy: 'admin-1',
         performedByName: 'Administrador',
         performedByRole: 'admin',
-        details: `Status do usuário ${user.name} alterado para ${newStatus === 'active' ? 'Ativo' : 'Inativo'}.`
+        details: `Usuário removido permanentemente do sistema.`
       });
-      refreshList();
-      toast({ title: "Status atualizado", description: "O status do usuário foi alterado." }); 
     }
-  }, [toast, refreshList]);
+  }, [remove]);
+
+  const toggleUserStatus = useCallback(async (userId: string) => {
+    const user = userService.getById(userId);
+    if (user) {
+      const newStatus = user.status === "active" ? "inactive" : "active";
+      const updated = await update(userId, { status: newStatus });
+      if (updated) {
+        auditLogService.log({
+          entityType: 'user',
+          entityId: userId,
+          action: 'updated',
+          performedBy: 'admin-1',
+          performedByName: 'Administrador',
+          performedByRole: 'admin',
+          details: `Status do usuário ${user.name} alterado para ${newStatus === 'active' ? 'Ativo' : 'Inativo'}.`
+        });
+      }
+    }
+  }, [update]);
 
   const toggleSelectUser = useCallback((userId: string) => {
     setSelectedUsers(prev => prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]);
@@ -115,27 +115,26 @@ export const useUsers = () => {
     }
   }, [selectedUsers.length, filteredUsers]);
 
-  const bulkAction = useCallback((action: string) => {
+  const bulkAction = useCallback(async (action: string) => {
     if (selectedUsers.length === 0) {
       toast({ title: "Nenhum usuário selecionado", description: "Selecione pelo menos um usuário.", variant: "destructive" });
       return;
     }
     
-    selectedUsers.forEach(userId => {
+    for (const userId of selectedUsers) {
       switch (action) {
-        case "activate": userService.update(userId, { status: "active" }); break;
-        case "deactivate": userService.update(userId, { status: "inactive" }); break;
-        case "delete": userService.delete(userId); break;
+        case "activate": await update(userId, { status: "active" }); break;
+        case "deactivate": await update(userId, { status: "inactive" }); break;
+        case "delete": await remove(userId); break;
       }
-    });
+    }
     
-    refreshList();
     toast({ 
       title: action === "delete" ? "Usuários removidos" : "Status atualizado", 
       description: `${selectedUsers.length} usuário(s) afetados.` 
     });
     setSelectedUsers([]);
-  }, [selectedUsers, toast, refreshList]);
+  }, [selectedUsers, toast, update, remove]);
 
   return {
     userList,
