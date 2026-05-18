@@ -16,7 +16,7 @@ export const CriticalWarranties = ({ claims }: CriticalWarrantiesProps) => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-h2 flex items-center gap-2">
           <ShieldCheck size={24} className="text-status-critical" />
-          Garantias Urgentes
+          Protocolos Prioritários
         </h2>
       </div>
       <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-slow">
@@ -41,7 +41,7 @@ export const CriticalWarranties = ({ claims }: CriticalWarrantiesProps) => {
           ))
         ) : (
           <div className="text-center py-8 bg-muted/10 rounded-2xl border border-dashed">
-            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Sem garantias críticas</p>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Eficiência Máxima: Portfólio sem ocorrências críticas</p>
           </div>
         )}
       </div>
@@ -50,7 +50,7 @@ export const CriticalWarranties = ({ claims }: CriticalWarrantiesProps) => {
         className="w-full text-[10px] font-black uppercase tracking-widest rounded-xl h-12 border-dashed border-primary/20 hover:border-primary/50 hover:bg-primary/5 mt-4 transition-all" 
         onClick={() => navigate("/admin/warranty")}
       >
-        Gerenciar Fluxo de Assistência
+        Governança de Assistência Técnica
       </Button>
     </section>
   );
