@@ -115,6 +115,45 @@ export default function SaaSAdmin() {
     toast({ title: "Senha Resetada", description: `Link de recuperação enviado para ${userName}.` });
   };
 
+  const startEditing = () => {
+    if (!selectedCompany) return;
+    setEditData({
+      name: selectedCompany.name,
+      slug: selectedCompany.slug,
+      subscription_plan: selectedCompany.subscription_plan,
+      settings: { ...selectedCompany.settings }
+    });
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (!selectedCompany || !editData.name) return;
+    
+    companyService.update(selectedCompany.id, {
+      name: editData.name,
+      slug: editData.slug,
+      subscription_plan: editData.subscription_plan,
+      settings: editData.settings as CompanySettings,
+      updated_at: new Date()
+    });
+    
+    const updated = companyService.getById(selectedCompany.id, undefined, true);
+    if (updated) setSelectedCompany(updated);
+    
+    setCompanies(companyService.getAll(undefined, true));
+    setIsEditing(false);
+    toast({ title: "Tenant Atualizado", description: "As informações da empresa foram salvas." });
+  };
+
+  const handleDeleteCompany = (id: string) => {
+    if (confirm("Deseja realmente excluir permanentemente este tenant? Todos os dados serão perdidos.")) {
+      companyService.delete(id);
+      setCompanies(companyService.getAll(undefined, true));
+      setSelectedCompany(null);
+      toast({ title: "Empresa excluída", variant: "destructive" });
+    }
+  };
+
 
   const columns = [
     { 
