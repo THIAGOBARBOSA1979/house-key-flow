@@ -5,6 +5,12 @@ export interface ChecklistItem {
   name: string;
   completed: boolean;
   notes?: string;
+  description?: string;
+  required?: boolean;
+  severity?: "low" | "medium" | "high";
+  status?: "pending" | "conform" | "non_conform" | "not_applicable";
+  evidence?: string[];
+  conformity?: "conform" | "non_conform" | "not_applicable";
 }
 
 export interface ChecklistGroup {
@@ -19,6 +25,9 @@ export interface ChecklistTemplate {
   description: string;
   category: string;
   groups: ChecklistGroup[];
+  createdAt?: Date;
+  lastUpdated?: Date;
+  version?: number;
 }
 
 export interface ChecklistExecutionRecord {
@@ -34,7 +43,16 @@ export interface ChecklistExecutionRecord {
 }
 
 const INITIAL_TEMPLATES: ChecklistTemplate[] = [
-  { id: "1", title: "Entrega de Chaves", description: "Verificação final", category: "vistoria", groups: [] }
+  { 
+    id: "1", 
+    title: "Entrega de Chaves", 
+    description: "Verificação final", 
+    category: "vistoria", 
+    groups: [],
+    createdAt: new Date(),
+    lastUpdated: new Date(),
+    version: 1
+  }
 ];
 
 class ChecklistService extends BaseService<ChecklistTemplate> {
@@ -47,9 +65,19 @@ class ChecklistService extends BaseService<ChecklistTemplate> {
   }
 
   getAllTemplates() { return [...this.items]; }
+  getTemplateById(id: string) { return this.getById(id); }
   getAllExecutions() { return [...this.executions]; }
 
-  async createTemplate(data: any) { return this.create(data); }
+  async createTemplate(data: any) { 
+    return this.create({ 
+      ...data, 
+      createdAt: new Date(), 
+      lastUpdated: new Date(), 
+      version: 1 
+    }); 
+  }
+
+  archiveTemplate(id: string) { return this.delete(id); }
 
   logExecution(templateId: string, groups: ChecklistGroup[], notes: string, name: string = "Admin", status: any = "completed") {
     const template = this.getById(templateId);
