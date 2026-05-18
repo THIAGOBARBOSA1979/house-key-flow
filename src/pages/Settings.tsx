@@ -255,20 +255,22 @@ const Settings = () => {
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">E-mail Interno</Label>
                       <Switch 
-                        checked={settings.notifications.team.email} 
+                        checked={settings?.notifications?.team?.email || false} 
                         onCheckedChange={v => setSettings(p => ({
                           ...p, notifications: { ...p.notifications, team: { ...p.notifications.team, email: v }}
                         }))}
                       />
+
                     </div>
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">Sistema (Dashboard)</Label>
                       <Switch 
-                        checked={settings.notifications.team.system} 
+                        checked={settings?.notifications?.team?.system || false} 
                         onCheckedChange={v => setSettings(p => ({
                           ...p, notifications: { ...p.notifications, team: { ...p.notifications.team, system: v }}
                         }))}
                       />
+
                     </div>
                   </div>
                 </div>
