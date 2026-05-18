@@ -1,4 +1,4 @@
-
+import { BaseService } from "./BaseService";
 import { 
   ClientNotification, 
   NotificationType, 
@@ -6,102 +6,40 @@ import {
   NotificationSettings
 } from '@/types/clientFlow';
 
-// Mock notifications
-const mockNotifications: ClientNotification[] = [
-  {
-    id: 'notif-1',
-    clientId: 'client-1',
-    type: 'inspection_scheduled',
-    title: 'Vistoria de pré-entrega agendada',
-    message: 'Sua vistoria foi agendada para 15/05/2025 às 10:00',
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    read: false,
-    urgent: true,
-    metadata: {
-      relatedEntityId: 'insp-1',
-      relatedEntityType: 'inspection',
-      actionUrl: '/client/inspections'
-    }
-  },
-  {
-    id: 'notif-2',
-    clientId: 'client-1',
-    type: 'inspection_enabled',
-    title: 'Vistoria Liberada!',
-    message: 'Você já pode agendar sua vistoria de pré-entrega.',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-    read: true,
-    urgent: true,
-    metadata: {
-      relatedEntityType: 'stage',
-      actionUrl: '/client/inspections'
-    }
-  },
-  {
-    id: 'notif-3',
-    clientId: 'client-1',
-    type: 'stage_changed',
-    title: 'Bem-vindo ao Portal',
-    message: 'Seu cadastro foi realizado com sucesso. Em breve sua vistoria será liberada.',
-    createdAt: new Date(2024, 10, 20),
-    read: true,
-    urgent: false,
-    metadata: {
-      relatedEntityType: 'stage'
-    }
-  }
-];
-
-class NotificationService {
-  private notifications: Map<string, ClientNotification[]> = new Map();
+class NotificationService extends BaseService<ClientNotification> {
   private settings: Map<string, NotificationSettings> = new Map();
-  private storageKey = "a2_notifications";
   private settingsKey = "a2_notification_settings";
 
   constructor() {
-    this.loadFromStorage();
+    super("a2_notifications", []);
+    this.loadSettings();
     
     // Initialize with mock data if empty
-    if (this.notifications.size === 0) {
+    if (this.items.length === 0) {
       const defaultSettings: NotificationSettings = {
         email: { inspections: true, warranty: true, updates: true, reminders: true },
         sms: { inspections: true, warranty: true, updates: true, reminders: true }
       };
       this.settings.set('client-1', defaultSettings);
       this.settings.set('2', defaultSettings);
-      this.notifications.set('2', [
-        {
-          id: crypto.randomUUID(),
-          clientId: '2',
-          type: 'stage_changed',
-          title: 'Bem-vindo ao Portal',
-          message: 'Seu acesso foi liberado com sucesso!',
-          createdAt: new Date(),
-          read: false,
-          urgent: false,
-          metadata: { relatedEntityType: 'stage' }
-        }
-      ]);
-      this.persist();
+      
+      this.create({
+        clientId: '2',
+        type: 'stage_changed',
+        title: 'Bem-vindo ao Portal',
+        message: 'Seu acesso foi liberado com sucesso!',
+        createdAt: new Date(),
+        read: false,
+        urgent: false,
+        metadata: { relatedEntityType: 'stage' }
+      } as any);
+      
+      this.persistSettings();
     }
   }
 
-  private loadFromStorage() {
-    const storedNotifs = localStorage.getItem(this.storageKey);
-    if (storedNotifs) {
-      try {
-        const parsed = JSON.parse(storedNotifs);
-        Object.entries(parsed).forEach(([clientId, notifs]: [string, any]) => {
-          this.notifications.set(clientId, notifs.map((n: any) => ({
-            ...n,
-            createdAt: new Date(n.createdAt)
-          })));
-        });
-      } catch (e) {
-        console.error("Failed to load notifications", e);
-      }
-    }
-
+  private loadSettings() {
+    if (typeof window === 'undefined') return;
     const storedSettings = localStorage.getItem(this.settingsKey);
     if (storedSettings) {
       try {
@@ -115,15 +53,12 @@ class NotificationService {
     }
   }
 
-  private persist() {
-    const notifsObj = Object.fromEntries(this.notifications.entries());
-    localStorage.setItem(this.storageKey, JSON.stringify(notifsObj));
-    
+  private persistSettings() {
+    if (typeof window === 'undefined') return;
     const settingsObj = Object.fromEntries(this.settings.entries());
     localStorage.setItem(this.settingsKey, JSON.stringify(settingsObj));
   }
 
-  // Create notification
   createNotification(
     clientId: string, 
     type: NotificationType,
@@ -132,8 +67,7 @@ class NotificationService {
   ): ClientNotification {
     const template = NOTIFICATION_TEMPLATES[type];
     
-    const notification: ClientNotification = {
-      id: crypto.randomUUID(),
+    return this.create({
       clientId,
       type,
       title: customMessage?.title || template.title,
@@ -142,92 +76,62 @@ class NotificationService {
       read: false,
       urgent: template.urgent,
       metadata
-    };
-
-    const clientNotifications = this.notifications.get(clientId) || [];
-    clientNotifications.unshift(notification); 
-    this.notifications.set(clientId, clientNotifications);
-    this.persist();
-
-    console.log('[NotificationService] Notification created:', notification);
-
-    return notification;
+    } as any);
   }
 
-  // Get all notifications for a client
   getNotifications(clientId: string): ClientNotification[] {
-    return this.notifications.get(clientId) || [];
+    return this.items.filter(n => n.clientId === clientId);
   }
 
-  // Get unread notifications
   getUnreadNotifications(clientId: string): ClientNotification[] {
-    const notifications = this.notifications.get(clientId) || [];
-    return notifications.filter(n => !n.read);
+    return this.getNotifications(clientId).filter(n => !n.read);
   }
 
-  // Get urgent notifications
   getUrgentNotifications(clientId: string): ClientNotification[] {
-    const notifications = this.notifications.get(clientId) || [];
-    return notifications.filter(n => n.urgent && !n.read);
+    return this.getNotifications(clientId).filter(n => n.urgent && !n.read);
   }
 
-  // Get unread count
   getUnreadCount(clientId: string): number {
     return this.getUnreadNotifications(clientId).length;
   }
 
-  // Mark notification as read
   markAsRead(notificationId: string): boolean {
-    for (const [clientId, notifications] of this.notifications.entries()) {
-      const notification = notifications.find(n => n.id === notificationId);
-      if (notification) {
-        notification.read = true;
-        this.notifications.set(clientId, notifications);
-        this.persist();
-        return true;
-      }
-    }
-    return false;
+    const updated = this.update(notificationId, { read: true } as any);
+    return !!updated;
   }
 
-  // Mark all notifications as read
   markAllAsRead(clientId: string): void {
-    const notifications = this.notifications.get(clientId) || [];
-    notifications.forEach(n => n.read = true);
-    this.notifications.set(clientId, notifications);
-    this.persist();
+    const clientNotifs = this.getNotifications(clientId);
+    clientNotifs.forEach(n => {
+      if (!n.read) this.update(n.id!, { read: true } as any);
+    });
   }
 
-  // Delete notification
   deleteNotification(notificationId: string): boolean {
-    for (const [clientId, notifications] of this.notifications.entries()) {
-      const index = notifications.findIndex(n => n.id === notificationId);
-      if (index !== -1) {
-        notifications.splice(index, 1);
-        this.notifications.set(clientId, notifications);
-        this.persist();
-        return true;
-      }
-    }
-    return false;
+    return this.delete(notificationId);
   }
 
-  // Get notifications by type
-  getNotificationsByType(clientId: string, type: NotificationType): ClientNotification[] {
-    const notifications = this.notifications.get(clientId) || [];
-    return notifications.filter(n => n.type === type);
-  }
-
-  // Get recent notifications (last 7 days)
   getRecentNotifications(clientId: string, days: number = 7): ClientNotification[] {
-    const notifications = this.notifications.get(clientId) || [];
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
-    
-    return notifications.filter(n => n.createdAt >= cutoffDate);
+    return this.getNotifications(clientId).filter(n => n.createdAt >= cutoffDate);
   }
 
-  // Format relative time
+  getSettings(clientId: string): NotificationSettings {
+    const settings = this.settings.get(clientId);
+    if (settings) return settings;
+    
+    return {
+      email: { inspections: true, warranty: true, updates: true, reminders: true },
+      sms: { inspections: true, warranty: true, updates: true, reminders: true }
+    };
+  }
+
+  updateSettings(clientId: string, newSettings: NotificationSettings): void {
+    this.settings.set(clientId, newSettings);
+    this.persistSettings();
+  }
+
   formatRelativeTime(date: Date): string {
     const now = new Date();
     const diffInMs = now.getTime() - date.getTime();
@@ -243,23 +147,7 @@ class NotificationService {
     
     return date.toLocaleDateString('pt-BR');
   }
-
-  // Settings methods
-  getSettings(clientId: string): NotificationSettings {
-    const settings = this.settings.get(clientId);
-    if (settings) return settings;
-    
-    return {
-      email: { inspections: true, warranty: true, updates: true, reminders: true },
-      sms: { inspections: true, warranty: true, updates: true, reminders: true }
-    };
-  }
-
-  updateSettings(clientId: string, newSettings: NotificationSettings): void {
-    this.settings.set(clientId, newSettings);
-    this.persist();
-    console.log('[NotificationService] Settings updated for', clientId, newSettings);
-  }
 }
 
 export const notificationService = new NotificationService();
+
