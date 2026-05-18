@@ -5,6 +5,8 @@ import { AuthContextType } from '@/types/auth';
 import { User } from '@/types/user';
 import { useToast } from '@/components/ui/use-toast';
 import { securityService } from '@/services/SystemSecurityService';
+import { companyService } from '@/services/CompanyService';
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -85,24 +87,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (role === 'admin' && email === 'admin@exemplo.com' && password === '123456') {
         mockUser = {
           id: '1',
-          name: 'Administrador',
+          name: 'Super Admin',
           email: 'admin@exemplo.com',
           role: 'admin',
-          status: 'active'
+          status: 'active',
+          is_super_admin: true
+        };
+      } else if (role === 'admin' && email === 'ceo@a2.com' && password === '123456') {
+        mockUser = {
+          id: 'ceo-1',
+          name: 'João CEO',
+          email: 'ceo@a2.com',
+          role: 'admin',
+          status: 'active',
+          company_id: 'comp-1'
         };
       } else if (role === 'client' && email === 'cliente@exemplo.com' && password === '123456') {
         mockUser = {
           id: 'client-2',
-          name: 'João Silva',
+          name: 'Maria Silva',
           email: 'cliente@exemplo.com',
           role: 'client',
-          status: 'active'
+          status: 'active',
+          company_id: 'comp-1'
         };
       }
+
       
       if (!mockUser) {
         throw new Error('Credenciais inválidas');
       }
+
+      // Check company status if user belongs to one
+      if (mockUser.company_id) {
+        const company = companyService.getById(mockUser.company_id);
+        if (company) {
+          if (company.status !== 'active') {
+            throw new Error(`Empresa ${company.status === 'suspended' ? 'suspensa' : 'cancelada'}. Entre em contato com o suporte.`);
+          }
+          if (company.subscription_expires_at && new Date(company.subscription_expires_at) < new Date()) {
+            throw new Error('Assinatura expirada. Por favor, renove seu plano.');
+          }
+        }
+      }
+
       
       setUser(mockUser);
       
