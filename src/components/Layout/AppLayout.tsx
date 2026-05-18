@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { propertyService } from "@/services";
@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { QuickLauncher } from "@/components/shared/QuickLauncher";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "@/hooks";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AppLayoutProps {

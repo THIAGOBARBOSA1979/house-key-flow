@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { inspectionService } from "@/services";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 
 const formSchema = z.object({
   date: z.date({

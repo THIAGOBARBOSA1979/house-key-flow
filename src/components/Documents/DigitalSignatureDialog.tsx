@@ -20,7 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock, History, PenTool, Mail, Smartphone, ShieldCheck, MapPin, Fingerprint, Scan, AlertCircle, RotateCw } from "lucide-react";
 import { documentService, DocumentSignature } from "@/services";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";

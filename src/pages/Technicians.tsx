@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { technicianService, type Technician } from "@/services";
 import { DataView } from "@/components/shared/DataView";
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { memo } from 'react';
-import { useDataTable } from "@/hooks/useDataTable";
+import { useDataTable } from "@/hooks";
 
 import { 
   Table, 

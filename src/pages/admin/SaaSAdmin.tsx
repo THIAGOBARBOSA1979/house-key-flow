@@ -32,7 +32,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Navigate } from "react-router-dom";
 
-import { useSaaSAdmin } from "@/hooks/useSaaSAdmin";
+import { useSaaSAdmin } from "@/hooks";
 import { SaaSStats } from "@/components/Admin/SaaS/SaaSStats";
 import { AddCompanyDialog } from "@/components/Admin/SaaS/AddCompanyDialog";
 import { CompanyDetailsDialog } from "@/components/Admin/SaaS/CompanyDetailsDialog";

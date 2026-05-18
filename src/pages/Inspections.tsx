@@ -45,7 +45,7 @@ import {
   Tooltip as ReTooltip, 
   Legend 
 } from 'recharts';
-import { useInspections } from "@/hooks/useInspections";
+import { useInspections } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { DataViewMode } from "@/components/shared/DataView";
 import { inspectionService } from "@/services";

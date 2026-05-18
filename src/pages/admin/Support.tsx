@@ -29,7 +29,7 @@ import {
 import { supportService, SupportTicket, TicketMessage } from "@/services";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";

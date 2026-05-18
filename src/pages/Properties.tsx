@@ -10,7 +10,7 @@ import { DataTable } from "@/components/shared/DataTable";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services";
 import { formatDate } from "@/utils/formatters";
-import { useProperties } from "@/hooks/useProperties";
+import { useProperties } from "@/hooks";
 import { Property } from "@/services";
 import { Button } from "@/components/ui/button";
 import { PropertyStats } from "@/components/Properties/PropertyStats";

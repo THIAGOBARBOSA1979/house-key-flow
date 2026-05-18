@@ -17,9 +17,9 @@ import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspec
 import { RescheduleInspectionDialog } from "@/components/Inspection/RescheduleInspectionDialog";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { documentService } from "@/services";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
-import { useClientStage } from "@/hooks/useClientStage";
+import { useClientStage } from "@/hooks";
 import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptance";
 import { useAuth } from "@/contexts/AuthContext";
 import { inspectionService, Inspection } from "@/services";

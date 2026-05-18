@@ -31,7 +31,7 @@ import {
   warrantyFlowService 
 } from "@/services";
 import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
-import { useClientStage } from "@/hooks/useClientStage";
+import { useClientStage } from "@/hooks";
 import { WarrantyRequestTimeline, WarrantyRequestList } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
 import { useAuth } from "@/contexts/AuthContext";
 import { SatisfactionSurvey } from "@/components/Warranty/SatisfactionSurvey";

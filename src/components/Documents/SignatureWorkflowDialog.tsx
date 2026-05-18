@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { documentService, DocumentSignature } from "@/services";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { UserPlus, Trash2, Mail, Smartphone, ShieldCheck, ListOrdered, Scan, Fingerprint } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 export const ReferralCard = ({ className }: { className?: string }) => {

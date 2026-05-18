@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { Check, X, Upload, Camera, AlertCircle, ArrowLeft, ClipboardList, CheckCircle2 } from "lucide-react";
 import { checklistService, ChecklistTemplate, ChecklistGroup, ChecklistItem } from "@/services";
 import { inspectionService } from "@/services";

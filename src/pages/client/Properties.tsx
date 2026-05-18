@@ -28,8 +28,8 @@ import {
   Download
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useClientStage } from "@/hooks/useClientStage";
-import { useToast } from "@/hooks/use-toast";
+import { useClientStage } from "@/hooks";
+import { useToast } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { propertyService, Property } from "@/services";
 import { StatsCard } from "@/components/shared/StatsCard";

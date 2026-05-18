@@ -13,7 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { InspectionAcceptanceStatus } from "@/types/clientFlow";
 
 interface InspectionAcceptanceProps {

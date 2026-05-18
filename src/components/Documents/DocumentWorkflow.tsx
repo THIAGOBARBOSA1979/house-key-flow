@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, XCircle, Clock, User, MessageSquare } from "lucide-react";
 import { Document, documentService, ApprovalHistoryEntry } from "@/services";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 interface DocumentWorkflowProps {
