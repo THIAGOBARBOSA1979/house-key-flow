@@ -205,7 +205,7 @@ const AdminDocuments = () => {
                   </Button>
                 </div>
 
-                {viewMode === "list" ? (
+                {viewMode === "table" ? (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
