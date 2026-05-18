@@ -245,19 +245,6 @@ class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
     return newRequest;
   }
 
-  /**
-   * Get all warranty requests
-   */
-  getAllRequests(): WarrantyRequestFlow[] {
-    return this.getAll();
-  }
-
-  /**
-   * Get request by ID
-   */
-  getRequest(requestId: string): WarrantyRequestFlow | undefined {
-    return this.getById(requestId);
-  }
 
   /**
    * Get requests for a specific client
