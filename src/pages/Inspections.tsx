@@ -10,9 +10,7 @@ import {
   LayoutGrid, 
   Filter, 
   Download,
-  Users,
-  Building,
-  ClipboardList
+  Building
 } from "lucide-react";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageHeader } from "@/components/Layout/PageHeader";
@@ -25,7 +23,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { inspectionService, Inspection } from "@/services/InspectionService";
@@ -48,10 +46,6 @@ import {
 import { useInspections } from "@/hooks/useInspections";
 import { Button } from "@/components/ui/button";
 
-/**
- * Refactored Inspections management page.
- * Logic moved to useInspections hook.
- */
 export default function Inspections() {
   const {
     filteredInspections,
@@ -59,12 +53,8 @@ export default function Inspections() {
     setSearchTerm,
     filterStatus,
     setFilterStatus,
-    filterTechnician,
-    setFilterTechnician,
     filterProperty,
     setFilterProperty,
-    filterChecklist,
-    setFilterChecklist,
     stats,
     loadData,
     clearFilters,
