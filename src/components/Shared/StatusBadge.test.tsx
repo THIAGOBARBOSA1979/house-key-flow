@@ -1,6 +1,6 @@
 
 import { render, screen } from '@testing-library/react';
-import { StatusBadge } from '@/components/shared/StatusBadge';
+import { StatusBadge } from '@/components/Shared/StatusBadge';
 import { describe, it, expect } from 'vitest';
 
 describe('Design System: StatusBadge Component', () => {

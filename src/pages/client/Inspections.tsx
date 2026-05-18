@@ -5,11 +5,11 @@ import {
   FileText, Lock, Info, TrendingUp, AlertTriangle, Activity, 
   History, ArrowRight, ChevronRight, MessageSquare, ShieldCheck, PenTool
 } from "lucide-react";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { safeFormat } from "@/lib/utils";
 import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
@@ -23,7 +23,7 @@ import { useClientStage } from "@/hooks";
 import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptance";
 import { useAuth } from "@/contexts/AuthContext";
 import { inspectionService, Inspection } from "@/services";
-import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
+import { ClientTimeline, TimelineStep } from "@/components/Client/ClientTimeline";
 import { cn } from "@/lib/utils";
 
 export default function ClientInspections() {

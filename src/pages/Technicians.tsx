@@ -32,10 +32,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks";
 import { technicianService, type Technician } from "@/services";
-import { DataView } from "@/components/shared/DataView";
+import { DataView } from "@/components/Shared/DataView";
 
-import { StatsCard } from "@/components/shared/StatsCard";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { cn } from "@/lib/utils";
 import { exportService } from "@/services";
 import {

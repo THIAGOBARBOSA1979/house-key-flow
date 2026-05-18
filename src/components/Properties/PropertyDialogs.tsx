@@ -1,7 +1,7 @@
 import { Property } from "@/types/property";
 import { PropertyForm } from "./PropertyForm";
 import { PropertyDetailsDialog } from "./PropertyDetailsDialog";
-import { FormDialog } from "@/components/shared/FormDialog";
+import { FormDialog } from "@/components/Shared/FormDialog";
 
 interface PropertyDialogsProps {
   isFormOpen: boolean;

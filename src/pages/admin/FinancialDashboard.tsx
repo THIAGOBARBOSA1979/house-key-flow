@@ -3,10 +3,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-import { DataTable } from "@/components/shared/DataTable";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { DataTable } from "@/components/Shared/DataTable";
+import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { 
   DollarSign, 
   TrendingUp, 

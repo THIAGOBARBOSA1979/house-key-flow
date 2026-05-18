@@ -29,7 +29,7 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { QuickLauncher } from "@/components/shared/QuickLauncher";
+import { QuickLauncher } from "@/components/Shared/QuickLauncher";
 import { useDebounce } from "@/hooks";
 import { motion, AnimatePresence } from "framer-motion";
 

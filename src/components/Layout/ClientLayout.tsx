@@ -12,7 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks";
 import { useNotifications } from "@/hooks";
 import { ScheduleMeetingDialog } from "@/components/ClientFlow/ScheduleMeetingDialog";
-import { QuickLauncher } from "@/components/shared/QuickLauncher";
+import { QuickLauncher } from "@/components/Shared/QuickLauncher";
 
 const ClientNavLink = ({
   to,

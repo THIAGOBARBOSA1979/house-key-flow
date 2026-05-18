@@ -30,9 +30,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
 import { Inspection } from "@/types/inspection";
 import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
-import { StatsCard } from "@/components/shared/StatsCard";
-import { DataView } from "@/components/shared/DataView";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { StatsCard } from "@/components/Shared/StatsCard";
+import { DataView } from "@/components/Shared/DataView";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { 
   PieChart, 
   Pie, 
@@ -47,7 +47,7 @@ import {
 } from 'recharts';
 import { useInspections } from "@/hooks";
 import { Button } from "@/components/ui/button";
-import { DataViewMode } from "@/components/shared/DataView";
+import { DataViewMode } from "@/components/Shared/DataView";
 import { inspectionService } from "@/services";
 
 

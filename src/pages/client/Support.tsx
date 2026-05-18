@@ -38,9 +38,9 @@ import {
 } from "@/components/ui/select";
 import { supportService, SupportTicket, TicketPriority, TicketCategory } from "@/services";
 import { useMemo, useEffect } from "react";
-import { StatusBadge } from "@/components/shared/StatusBadge";
+import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { useAuth } from "@/contexts/AuthContext";
-import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 
 const Support = () => {
   const { toast } = useToast();
