@@ -218,7 +218,16 @@ export default function SaaSAdmin() {
             <DropdownMenuItem onClick={() => handleToggleStatus(c.id, c.status)}>
               {c.status === 'active' ? "Suspender Acesso" : "Ativar Empresa"}
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Excluir Permanente</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              setSelectedCompany(c);
+              startEditing();
+            }}>
+              Editar Configurações
+            </DropdownMenuItem>
+            <Separator className="my-1" />
+            <DropdownMenuItem className="text-destructive" onClick={() => handleDeleteCompany(c.id)}>
+              <Trash2 className="w-4 h-4 mr-2" /> Excluir Permanente
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
