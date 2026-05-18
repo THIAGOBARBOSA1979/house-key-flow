@@ -4,6 +4,7 @@ import { companyService, Company, CompanyStatus, SubscriptionPlan } from "@/serv
 import { DataTable } from "@/components/shared/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { 
   Building, 
   MoreHorizontal, 
@@ -13,7 +14,8 @@ import {
   Calendar,
   CreditCard,
   Plus,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Users
 } from "lucide-react";
 import { propertyService } from "@/services/PropertyService";
 import { inspectionService } from "@/services/InspectionService";
