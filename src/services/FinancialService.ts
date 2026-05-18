@@ -29,15 +29,9 @@ class FinancialService extends BaseService<Installment> {
     super("a2_financial_data", INITIAL_INSTALLMENTS);
   }
 
-  protected loadFromStorage() {
-    super.loadFromStorage();
-    this.items = this.items.map(i => ({
-      ...i,
-      dueDate: new Date(i.dueDate)
-    }));
+  getInstallmentsByClient(clientId: string): Installment[] { 
+    return this.items; 
   }
-
-  getInstallmentsByClient(clientId: string): Installment[] { return this.items; }
 
   getFinancialSummary(clientId: string): FinancialSummary {
     const installments = this.items;

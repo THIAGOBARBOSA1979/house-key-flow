@@ -9,28 +9,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { propertyService } from "@/services/PropertyService";
+import { UserFormData, User } from "@/types/user";
 
 interface UserFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (userData: any) => void;
-  editingUser?: any;
+  onSave: (userData: UserFormData) => void;
+  editingUser?: User | null;
 }
+
 
 export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps) => {
   const { toast } = useToast();
   const properties = propertyService.getAll();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<UserFormData>({
     name: "",
     email: "",
     phone: "",
     role: "client",
+    status: "active",
     propertyId: "",
     propertyName: "",
     unit: "",
     notes: "",
   });
+
 
   useEffect(() => {
     if (editingUser) {
@@ -39,6 +43,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
         email: editingUser.email || "",
         phone: editingUser.phone || "",
         role: editingUser.role || "client",
+        status: editingUser.status || "active",
         propertyId: editingUser.propertyId || "",
         propertyName: editingUser.propertyName || "",
         unit: editingUser.unit || "",
@@ -50,6 +55,7 @@ export const UserForm = ({ isOpen, onClose, onSave, editingUser }: UserFormProps
         email: "",
         phone: "",
         role: "client",
+        status: "active",
         propertyId: "",
         propertyName: "",
         unit: "",

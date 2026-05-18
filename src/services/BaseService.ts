@@ -22,7 +22,7 @@ export abstract class BaseService<T extends { id?: string }> {
     this.listeners.forEach(listener => listener([...this.items]));
   }
 
-  protected deserializeDates(item: any): T {
+  protected deserializeDates(item: Record<string, unknown>): T {
     const newItem = { ...item };
     Object.keys(newItem).forEach(key => {
       const value = newItem[key];
@@ -31,21 +31,22 @@ export abstract class BaseService<T extends { id?: string }> {
         if (!isNaN(date.getTime())) newItem[key] = date;
       } else if (value && typeof value === 'object') {
         if (Array.isArray(value)) {
-          newItem[key] = value.map(v => typeof v === 'object' ? this.deserializeDates(v) : v);
+          newItem[key] = value.map(v => (v && typeof v === 'object') ? this.deserializeDates(v as Record<string, unknown>) : v);
         } else if (Object.getPrototypeOf(value) === Object.prototype) {
-          newItem[key] = this.deserializeDates(value);
+          newItem[key] = this.deserializeDates(value as Record<string, unknown>);
         }
       }
     });
-    return newItem as T;
+    return newItem as unknown as T;
   }
+
 
   protected loadFromStorage() {
     if (typeof window === 'undefined') return;
     const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
+        const parsed = JSON.parse(stored) as Record<string, unknown>[];
         if (Array.isArray(parsed) && parsed.length > 0) {
           this.items = parsed.map(item => this.deserializeDates(item));
         }

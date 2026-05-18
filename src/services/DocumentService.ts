@@ -1,6 +1,13 @@
 import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
 
+export interface SignatureEvidence {
+  browser?: string;
+  os?: string;
+  location?: string;
+  [key: string]: unknown;
+}
+
 export interface DocumentSignature {
   id: string;
   name: string;
@@ -12,8 +19,9 @@ export interface DocumentSignature {
   order?: number;
   ipAddress?: string;
   documentHash?: string;
-  evidence?: any;
+  evidence?: SignatureEvidence;
 }
+
 
 export interface ApprovalHistoryEntry {
   id: string;
@@ -105,7 +113,7 @@ class DocumentService extends BaseService<Document> {
   getFavoriteDocuments(): Document[] { return this.items.filter(doc => doc.isFavorite); }
   getExpiringDocuments(): Document[] { return this.items.filter(d => d.expiresAt); }
 
-  searchDocuments(term: string, filters: any): Document[] {
+  searchDocuments(term: string, filters: { category?: string }): Document[] {
     return this.items.filter(doc => {
       const matchesSearch = !term || doc.title.toLowerCase().includes(term.toLowerCase());
       const matchesCategory = !filters.category || filters.category === 'all' || doc.category === filters.category;

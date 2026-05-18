@@ -61,7 +61,7 @@ class InspectionService extends BaseService<Inspection> {
     return this.technicians.find(t => t.id === id);
   }
 
-  schedule(data: any, propertyInfo?: any): Inspection {
+  schedule(data: { date: Date; time: string; inspectionType: string; technician: string; checklist?: string; notes?: string; requestId?: string; priority?: Inspection["priority"] }, propertyInfo?: { property: string; unit: string; client: string }): Inspection {
     const newInspection = super.create({
       property: propertyInfo?.property || "Empreendimento Exemplo",
       unit: propertyInfo?.unit || "101",
@@ -76,7 +76,8 @@ class InspectionService extends BaseService<Inspection> {
       requestId: data.requestId,
       priority: data.priority || "medium",
       createdAt: new Date()
-    } as any);
+    } as Omit<Inspection, "id">);
+
 
     auditLogService.log({
       entityType: 'inspection',

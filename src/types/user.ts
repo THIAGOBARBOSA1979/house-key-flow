@@ -17,6 +17,18 @@ export interface User {
   createdAt?: Date;
 }
 
+export interface UserFiltersData {
+  search: string;
+  role: string;
+  status: string;
+  property: string;
+  unit: string;
+}
+
+export interface UserFormData extends Omit<User, 'id' | 'createdAt' | 'lastLogin'> {
+  propertyId?: string;
+}
+
 export interface UserStats {
   total: number;
   active: number;
@@ -24,4 +36,5 @@ export interface UserStats {
   clients: number;
   staff: number;
 }
+
 
