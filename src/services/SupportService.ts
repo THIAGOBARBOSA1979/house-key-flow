@@ -1,6 +1,9 @@
 import { BaseService } from "./BaseService";
 import { auditLogService } from "./AuditLogService";
 
+export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
+export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
+
 export interface TicketMessage {
   id: string;
   senderId: string;
@@ -16,8 +19,8 @@ export interface SupportTicket {
   clientId: string;
   subject: string;
   status: 'pending' | 'in_progress' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  category: 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
+  priority: TicketPriority;
+  category: TicketCategory;
   messages: TicketMessage[];
   createdAt: Date;
   updatedAt: Date;
