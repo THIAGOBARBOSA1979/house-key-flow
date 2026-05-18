@@ -7,7 +7,7 @@ import {
 } from '@/types/warrantyFlow';
 import { warrantyFlowService } from './WarrantyFlowService';
 import { warrantySLAService } from './WarrantySLAService';
-import { notificationService } from './NotificationService';
+import { notificationService } from '../NotificationService';
 import { NotificationType } from '@/types/clientFlow';
 
 /**
