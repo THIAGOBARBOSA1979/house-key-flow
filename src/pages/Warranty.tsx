@@ -5,13 +5,14 @@ import { WarrantyKanban } from "@/components/Warranty/Kanban/WarrantyKanban";
 import { WarrantyMetricsDashboard } from "@/components/Warranty/Dashboard/WarrantyMetricsDashboard";
 import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfigurationPanel";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { WarrantyHeader } from "@/components/Warranty/WarrantyHeader";
 import { WarrantyDetailsDialog } from "@/components/Warranty/WarrantyDetailsDialog";
 import { useWarranty } from "@/hooks/useWarranty";
 import { TechnicalReportDialog } from "@/components/Warranty/TechnicalReportDialog";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { PageTemplate } from "@/components/Layout/PageTemplate";
+import { Download } from "lucide-react";
 
 const Warranty = () => {
   const [activeTab, setActiveTab] = useState("kanban");
@@ -33,10 +34,18 @@ const Warranty = () => {
     setSelectedRequestId(request.id);
   };
 
+  const actions = (
+    <Button variant="outline" size="sm" onClick={exportData} className="h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all active:scale-95">
+      <Download className="mr-2 h-4 w-4" /> Exportar Dados
+    </Button>
+  );
+
   return (
-    <div className="space-y-6">
-      <WarrantyHeader onExportData={exportData} />
-      
+    <PageTemplate
+      title="Gestão de Garantias"
+      description="Fluxo completo de assistência técnica, controle de SLA e métricas de desempenho."
+      actions={actions}
+    >
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
@@ -110,8 +119,9 @@ const Warranty = () => {
           request={selectedRequest}
         />
       )}
-    </div>
+    </PageTemplate>
   );
 };
 
 export default Warranty;
+
