@@ -7,7 +7,7 @@ import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { DataView } from "@/components/Shared/DataView";
 import { DataTable } from "@/components/Shared/DataTable";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
-import { ConfirmationDialog } from "@/components/Shared/ConfirmationDialog";
+
 import { exportService } from "@/services";
 import { formatDate } from "@/utils/formatters";
 import { useProperties, useConfirm } from "@/hooks";
