@@ -15,8 +15,8 @@ export const ActiveProperties = ({ properties }: ActivePropertiesProps) => {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-h2 flex items-center gap-2">
-          <Building size={24} className="text-primary" />
+        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
+          <Building className="text-primary h-5 w-5 md:h-6 md:w-6" />
           Empreendimentos Ativos
         </h2>
         <Button 
@@ -29,7 +29,7 @@ export const ActiveProperties = ({ properties }: ActivePropertiesProps) => {
           <ChevronRight size={16} />
         </Button>
       </div>
-      <ResponsiveGrid columns={2} mobileCols={1} tabletCols={2} gap="layout">
+      <ResponsiveGrid columns={2} mobileCols={1} tabletCols={2} gap="layout" className="animate-in fade-in slide-in-from-left-4 duration-slow">
         {properties.map((property) => (
           <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
         ))}

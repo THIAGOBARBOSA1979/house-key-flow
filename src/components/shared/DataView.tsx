@@ -242,7 +242,7 @@ export function DataView<T>({
       default:
         if (renderGrid) {
           return (
-            <ResponsiveGrid columns={3} gap="layout" className={cn("animate-fade-in", gridClassName)}>
+            <ResponsiveGrid columns={3} mobileCols={1} tabletCols={2} gap="layout" className={cn("animate-fade-in", gridClassName)}>
               {displayedItems.map((item, index) => (
                 <React.Fragment key={index}>
                   {renderGrid(item)}

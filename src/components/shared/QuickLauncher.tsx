@@ -169,16 +169,16 @@ export const QuickLauncher = () => {
         </Button>
       </DialogTrigger>
       <DialogContent className="w-[95vw] sm:max-w-[600px] p-0 overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
-        <DialogHeader className="p-8 border-b border-border/10 bg-primary/5">
-          <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
-            <Zap className="text-primary h-6 w-6" />
+        <DialogHeader className="p-6 md:p-8 border-b border-border/10 bg-primary/5">
+          <DialogTitle className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-3">
+            <Zap className="text-primary h-5 w-5 md:h-6 md:w-6" />
             Central de Ações
           </DialogTitle>
-          <div className="relative mt-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <div className="relative mt-4 md:mt-6">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
             <Input 
               placeholder="O que você deseja fazer hoje?" 
-              className="pl-12 h-14 bg-background border-none rounded-2xl font-bold text-lg shadow-sem-sm"
+              className="pl-10 md:pl-12 h-12 md:h-14 bg-background border-none rounded-2xl font-bold text-base md:text-lg shadow-sem-sm"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               autoFocus
@@ -203,9 +203,9 @@ export const QuickLauncher = () => {
                         : "hover:bg-primary/5 border-transparent hover:border-primary/10"
                     )}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-all">
-                        <Icon className="h-6 w-6" />
+                    <div className="flex items-center gap-3 md:gap-4">
+                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-all shrink-0">
+                        <Icon className="h-5 w-5 md:h-6 md:w-6" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -236,7 +236,7 @@ export const QuickLauncher = () => {
             )}
           </div>
         </div>
-        <div className="p-6 bg-muted/5 border-t border-border/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-4 md:p-6 bg-muted/5 border-t border-border/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <kbd className="h-6 px-1.5 rounded-2xl bg-muted/20 border border-border/40 flex items-center justify-center text-[10px] font-black">Esc</kbd>

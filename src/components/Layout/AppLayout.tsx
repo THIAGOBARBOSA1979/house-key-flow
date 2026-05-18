@@ -91,7 +91,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       <div className={cn(
         "min-h-screen flex flex-col transition-all duration-slow ease-out-sem",
         !isMobile && sidebarWidthClass,
-        isMobile && "pt-16" // Space for mobile menu trigger if needed
+        isMobile && "pt-0 md:pt-16" // Adjusted for consistent mobile behavior
       )}>
         {/* Header - Top bar */}
         <header 

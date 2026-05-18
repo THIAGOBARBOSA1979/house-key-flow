@@ -15,8 +15,8 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-h2 flex items-center gap-2">
-          <ClipboardCheck size={24} className="text-primary" />
+        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
+          <ClipboardCheck className="text-primary h-5 w-5 md:h-6 md:w-6" />
           Vistorias Agendadas
         </h2>
         <Button 
