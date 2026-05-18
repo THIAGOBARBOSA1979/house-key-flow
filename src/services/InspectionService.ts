@@ -52,15 +52,6 @@ class InspectionService extends BaseService<Inspection> {
     super("a2_inspections", INITIAL_INSPECTIONS);
   }
 
-  protected loadFromStorage() {
-    super.loadFromStorage();
-    this.items = this.items.map(i => ({
-      ...i,
-      date: new Date(i.date),
-      createdAt: i.createdAt ? new Date(i.createdAt) : undefined,
-      firstContactAt: i.firstContactAt ? new Date(i.firstContactAt) : undefined
-    }));
-  }
 
   getTechnicians() {
     return [...this.technicians];

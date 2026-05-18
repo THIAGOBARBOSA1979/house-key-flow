@@ -63,28 +63,10 @@ class AuditLogService extends BaseService<AuditLogEntry> {
     super("a2_audit_logs", INITIAL_LOGS);
   }
 
-  protected loadFromStorage() {
-    if (typeof window === 'undefined') return;
-    
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          this.items = parsed.map(l => ({ 
-            ...l, 
-            timestamp: new Date(l.timestamp) 
-          }));
-        }
-      } catch (e) {
-        console.error(`Failed to load ${this.storageKey} from storage`, e);
-      }
-    }
-  }
-
   getAllLogs(): AuditLogEntry[] {
     return [...this.items].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
+
 
   log(entry: NewAuditLogEntry, userContext?: { id: string, name: string, role: AuditRole }): AuditLogEntry {
     const newEntry: AuditLogEntry = {
