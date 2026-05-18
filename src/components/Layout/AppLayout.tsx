@@ -18,7 +18,9 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { propertyService } from "@/services/PropertyService";
 import { userService } from "@/services/UserService";
+import { companyService } from "@/services/CompanyService";
 import { documentService } from "@/services/DocumentService";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Dialog, 
@@ -47,7 +49,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
+  const company = useMemo(() => {
+    return user?.company_id ? companyService.getById(user.company_id, undefined, true) : null;
+  }, [user]);
+
   const sidebarWidthClass = sidebarCollapsed ? "md:pl-sidebar-collapsed-width" : "md:pl-sidebar-width";
+
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
@@ -217,8 +224,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                     </div>
                     <div className="hidden sm:flex flex-col items-start leading-tight gap-0">
                       <span className="text-sem-label font-black truncate max-w-[100px] lg:max-w-[140px] tracking-tight">{user?.name}</span>
-                      <span className="text-[8px] md:text-[9px] text-muted-foreground/40 uppercase font-black tracking-widest">Master Admin</span>
+                      <span className="text-[8px] md:text-[9px] text-muted-foreground/40 uppercase font-black tracking-widest">
+                        {user?.is_super_admin ? "SaaS Master Admin" : (company?.settings?.display_name || company?.name || "Administrador")}
+                      </span>
                     </div>
+
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-64 p-2 mt-4 animate-in zoom-in-95 slide-in-from-top-2 duration-slow shadow-sem-xl rounded-2xl border-none">
