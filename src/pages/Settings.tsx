@@ -22,10 +22,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { systemSettingsService, SystemSettings } from "@/services/SystemSettingsService";
+import { companyService, CompanySettings } from "@/services/CompanyService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [settings, setSettings] = useState<SystemSettings>(systemSettingsService.getSettings());
+  const [companySettings, setCompanySettings] = useState<CompanySettings>({});
+
+  useEffect(() => {
+    if (user?.company_id) {
+      const company = companyService.getById(user.company_id, undefined, true);
+      if (company?.settings) {
+        setCompanySettings(company.settings);
+      }
+    }
+  }, [user]);
+
+  const handleSaveCompanySettings = () => {
+    if (user?.company_id) {
+      companyService.updateSettings(user.company_id, companySettings);
+      toast({
+        title: "Empresa atualizada",
+        description: "As configurações do seu tenant foram salvas."
+      });
+    }
+  };
+
 
   const handleSaveSettings = () => {
     systemSettingsService.updateSettings(settings);
@@ -55,7 +79,9 @@ const Settings = () => {
         <div className="overflow-x-auto pb-2">
           <TabsList className="bg-muted/50 p-1 h-auto inline-flex min-w-full lg:min-w-0">
             <TabsTrigger value="general" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Building size={14} /> Geral</TabsTrigger>
-            <TabsTrigger value="company" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Layers size={14} /> Empresa (SaaS)</TabsTrigger>
+            {user?.role === 'admin' && !user?.is_super_admin && (
+              <TabsTrigger value="company" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Layers size={14} /> Empresa (SaaS)</TabsTrigger>
+            )}
             <TabsTrigger value="branding" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><FileText size={14} /> Branding</TabsTrigger>
             <TabsTrigger value="notifications" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><Bell size={14} /> Notificações</TabsTrigger>
             <TabsTrigger value="warranty" className="rounded-lg px-4 py-2 text-xs font-bold gap-2"><ShieldCheck size={14} /> Garantias</TabsTrigger>
@@ -127,6 +153,42 @@ const Settings = () => {
             </CardFooter>
           </Card>
         </TabsContent>
+        {user?.role === 'admin' && !user?.is_super_admin && (
+        <TabsContent value="company" className="space-y-6 focus-visible:outline-none">
+          <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle>Configurações do Tenant</CardTitle>
+              <CardDescription>Personalize o nome de exibição e informações de suporte da sua incorporadora no SaaS.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome de Exibição Público</Label>
+                  <Input 
+                    placeholder="Ex: Incorporadora Alpha Sul" 
+                    value={companySettings.display_name || ''}
+                    onChange={e => setCompanySettings({...companySettings, display_name: e.target.value})}
+                    className="h-11 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">E-mail de Suporte ao Cliente</Label>
+                  <Input 
+                    placeholder="suporte@alpha.com.br" 
+                    value={companySettings.support_email || ''}
+                    onChange={e => setCompanySettings({...companySettings, support_email: e.target.value})}
+                    className="h-11 rounded-xl"
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-end gap-3 pt-6 border-t border-border/10 bg-muted/5">
+              <Button onClick={handleSaveCompanySettings} className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md">Salvar Empresa</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        )}
+
 
         <TabsContent value="branding" className="space-y-6 focus-visible:outline-none">
           <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">

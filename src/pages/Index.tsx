@@ -42,8 +42,10 @@ const Dashboard = () => {
     recentTickets, 
     financialMetrics, 
     healthMetrics,
+    propertyMetrics,
     refreshData 
   } = useDashboardData();
+
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
@@ -112,24 +114,37 @@ const Dashboard = () => {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Obras no prazo</span>
-                    <span className="text-sem-body-sm font-black text-emerald-600">100%</span>
+                    <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Taxa de Conclusão de Obras</span>
+                    <span className="text-sem-body-sm font-black text-emerald-600">
+                      {propertyMetrics?.averageProgress || 0}%
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5 shadow-inner">
-                    <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 w-full rounded-full transition-all duration-1000" />
+                    <div 
+                      className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full transition-all duration-1000" 
+                      style={{ width: `${propertyMetrics?.averageProgress || 0}%` }}
+                    />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Vistorias aprovadas</span>
-                    <span className="text-sem-body-sm font-black text-primary">92%</span>
+                    <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Vistorias Homologadas</span>
+                    <span className="text-sem-body-sm font-black text-primary">
+                      {inspections.length > 0 ? Math.round((inspections.filter(i => i.status === 'completed').length / inspections.length) * 100) : 0}%
+                    </span>
                   </div>
                   <div className="h-2 w-full bg-muted/40 rounded-full overflow-hidden border border-border/5 shadow-inner">
-                    <div className="h-full bg-gradient-to-r from-blue-400 to-primary w-[92%] rounded-full transition-all duration-1000" />
+                    <div 
+                      className="h-full bg-gradient-to-r from-blue-400 to-primary rounded-full transition-all duration-1000" 
+                      style={{ width: `${inspections.length > 0 ? (inspections.filter(i => i.status === 'completed').length / inspections.length) * 100 : 0}%` }}
+                    />
                   </div>
                 </div>
               </div>
+
+
+
             </Card>
           </section>
 

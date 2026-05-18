@@ -31,6 +31,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { companyService } from "@/services/CompanyService";
+
 
 interface SidebarProps {
   className?: string;
@@ -70,6 +72,8 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { logout, user } = useAuth();
+  const company = user?.company_id ? companyService.getById(user.company_id, undefined, true) : null;
+
 
   const toggleLanguage = () => {
     const nextLng = i18n.language === 'pt' ? 'en' : 'pt';
@@ -89,12 +93,19 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
       <div className="flex items-center justify-between h-header-height px-5 border-b border-sidebar-border">
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center shadow-sem-md">
-               <Building className="text-sidebar-primary-foreground h-5 w-5" />
+            <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center shadow-sem-md overflow-hidden">
+               {company?.settings?.logo_url ? (
+                 <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />
+               ) : (
+                 <Building className="text-sidebar-primary-foreground h-5 w-5" />
+               )}
             </div>
-            <h1 className="text-h4 font-black text-sidebar-foreground tracking-tighter">A2 GESTÃO</h1>
+            <h1 className="text-h4 font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[120px]">
+              {company?.settings?.display_name || company?.name || "A2 GESTÃO"}
+            </h1>
           </div>
         )}
+
         {onToggleCollapse && (
           <Button 
             variant="ghost" 
