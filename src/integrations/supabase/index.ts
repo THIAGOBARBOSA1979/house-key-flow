@@ -1,4 +1,4 @@
-import { supabase } from './client';
+import { supabase } from './Client';
 import { Database } from './types';
 import { User, Session, AuthChangeEvent, AuthResponse } from '@supabase/supabase-js';
 
