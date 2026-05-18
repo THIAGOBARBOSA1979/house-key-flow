@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'staff' | 'manager' | 'client';
+export type UserRole = 'admin' | 'staff' | 'manager' | 'client' | 'technical';
 export type UserStatus = 'active' | 'inactive';
 
 export interface User {
@@ -8,12 +8,15 @@ export interface User {
   role: UserRole;
   status: UserStatus;
   phone?: string;
+  avatar?: string;
+  notes?: string;
   propertyId?: string;
   propertyName?: string;
   unit?: string;
   lastLogin?: Date;
   createdAt?: Date;
 }
+
 
 export interface UserStats {
   total: number;
