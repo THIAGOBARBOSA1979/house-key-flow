@@ -103,8 +103,10 @@ const App = () => {
                 <Route path="*" element={<Pages.NotFound />} />
               </Routes>
                 </Suspense>
-              </BrandThemeProvider>
+                </BrandThemeProvider>
+              </ConfirmProvider>
             </AuthProvider>
+
           </BrowserRouter>
         </GlobalErrorBoundary>
       </TooltipProvider>
