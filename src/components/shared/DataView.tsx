@@ -7,7 +7,7 @@ import { SkeletonLoader } from "./SkeletonLoader";
 
 interface DataViewProps<T> {
   items: T[];
-  renderGrid?: (items: T[]) => React.ReactNode;
+  renderGrid?: (item: T) => React.ReactNode;
   renderList?: (items: T[]) => React.ReactNode;
   renderTimeline?: (items: T[]) => React.ReactNode;
   viewMode?: 'grid' | 'list' | 'timeline';
