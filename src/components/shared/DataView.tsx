@@ -43,12 +43,42 @@ export interface DataViewProps<T> {
  * with built-in support for pagination, loading states, and empty states.
  * 
  * @example
+ * // Grid View (Default)
  * <DataView
  *   items={properties}
  *   viewMode="grid"
  *   renderGrid={(item) => <PropertyCard item={item} />}
  * />
+ * 
+ * @example
+ * // Table View with columns
+ * <DataView
+ *   items={users}
+ *   viewMode="table"
+ *   columns={[
+ *     { header: "Nome", accessorKey: "name" },
+ *     { header: "Email", accessorKey: "email" }
+ *   ]}
+ * />
+ * 
+ * @example
+ * // Timeline View (Chronological)
+ * <DataView
+ *   items={events}
+ *   viewMode="timeline"
+ *   // Uses fallback if renderTimeline is not provided, 
+ *   // looking for .date and .title properties
+ * />
+ * 
+ * @example
+ * // Calendar View
+ * <DataView
+ *   items={inspections}
+ *   viewMode="calendar"
+ *   renderCalendar={(items) => <MyCalendarComponent data={items} />}
+ * />
  */
+
 export function DataView<T>({
   items,
   viewMode = 'grid',
