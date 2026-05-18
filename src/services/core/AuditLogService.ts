@@ -1,6 +1,5 @@
 import { SupabaseService } from "../SupabaseService";
-import { Supabase } from "@/integration/supabase";
-import { SupabaseRealtime } from "@/integration/supabase/realtime";
+import { Supabase } from "@/integrations/supabase";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 

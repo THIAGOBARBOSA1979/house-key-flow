@@ -1,7 +1,6 @@
 import { BaseService } from "../BaseService";
 import { User, UserStats } from "@/types/user";
-import { Supabase } from "@/integration/supabase";
-import { SupabaseRealtime } from "@/integration/supabase/realtime";
+import { Supabase } from "@/integrations/supabase";
 
 class UserService extends BaseService<User> {
   constructor() {
