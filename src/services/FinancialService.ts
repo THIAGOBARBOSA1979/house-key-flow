@@ -37,6 +37,8 @@ class FinancialService extends BaseService<Installment> {
     }));
   }
 
+  getInstallmentsByClient(clientId: string): Installment[] { return this.items; }
+
   getFinancialSummary(clientId: string): FinancialSummary {
     const installments = this.items;
     const totalValue = installments.reduce((acc, curr) => acc + curr.value, 0);

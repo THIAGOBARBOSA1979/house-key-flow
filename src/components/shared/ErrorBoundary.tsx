@@ -1,10 +1,11 @@
-
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { AlertCircle, RefreshCw, Home } from "lucide-react";
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { AlertCircle, RotateCcw, Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -23,53 +24,71 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+    console.error('Uncaught error:', error, errorInfo);
   }
+
+  private handleReset = () => {
+    this.setState({ hasError: false, error: null });
+    window.location.reload();
+  };
+
+  private handleGoHome = () => {
+    this.setState({ hasError: false, error: null });
+    window.location.href = '/';
+  };
 
   public render() {
     if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
+      const isDev = import.meta.env.MODE === 'development';
+
       return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-6 text-center">
-          <div className="max-w-md w-full space-y-8 animate-in fade-in zoom-in-95 duration-500">
-            <div className="flex justify-center">
-              <div className="p-4 bg-destructive/10 rounded-full">
-                <AlertCircle className="w-12 h-12 text-destructive" />
+        <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+          <Card className="w-full max-w-lg border-none shadow-sem-xl rounded-[2.5rem] overflow-hidden bg-card/80 backdrop-blur-xl animate-in zoom-in-95 duration-500">
+            <CardHeader className="text-center pt-10">
+              <div className="mx-auto w-20 h-20 bg-destructive/10 rounded-3xl flex items-center justify-center mb-6 animate-pulse">
+                <AlertCircle className="w-10 h-10 text-destructive" />
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <h1 className="text-3xl font-black tracking-tight text-foreground">Algo deu errado</h1>
-              <p className="text-muted-foreground font-medium">
-                Ocorreu um erro inesperado ao processar esta página. Nossa equipe técnica já foi notificada.
+              <CardTitle className="text-3xl font-black tracking-tight text-foreground">
+                Algo não correu bem
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-center px-10 pb-6">
+              <p className="text-muted-foreground font-bold leading-relaxed">
+                Ocorreu um erro inesperado na aplicação. Nossa equipe técnica já foi notificada.
               </p>
-            </div>
-
-            {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="p-4 bg-muted rounded-xl text-left overflow-auto max-h-40 text-xs font-mono border border-border/50">
-                {this.state.error.toString()}
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+              
+              {isDev && this.state.error && (
+                <div className="mt-6 p-4 bg-muted rounded-2xl text-left overflow-auto max-h-40">
+                  <p className="text-xs font-mono font-bold text-destructive mb-2 uppercase tracking-widest">Debug Info (Dev Only):</p>
+                  <code className="text-[10px] font-mono leading-tight block">
+                    {this.state.error.toString()}
+                  </code>
+                </div>
+              )}
+            </CardContent>
+            <CardFooter className="flex flex-col sm:flex-row gap-4 px-10 pb-10">
               <Button 
-                onClick={() => window.location.reload()} 
-                className="rounded-xl h-12 px-6 font-bold gap-2"
+                onClick={this.handleReset}
+                variant="default"
+                className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 shadow-lg shadow-primary/20"
               >
-                <RefreshCw className="w-4 h-4" /> Tentar Novamente
+                <RotateCcw className="w-4 h-4" />
+                Recarregar Sistema
               </Button>
               <Button 
-                variant="outline" 
-                onClick={() => window.location.href = '/'} 
-                className="rounded-xl h-12 px-6 font-bold gap-2"
+                onClick={this.handleGoHome}
+                variant="outline"
+                className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 border-border/40"
               >
-                <Home className="w-4 h-4" /> Voltar ao Início
+                <Home className="w-4 h-4" />
+                Voltar ao Início
               </Button>
-            </div>
-            
-            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest pt-8 opacity-40">
-              Sistema de Gestão A2 • ID de Erro: {Math.random().toString(36).substr(2, 9).toUpperCase()}
-            </p>
-          </div>
+            </CardFooter>
+          </Card>
         </div>
       );
     }
