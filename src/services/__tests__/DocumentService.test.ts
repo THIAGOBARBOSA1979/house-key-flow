@@ -1,6 +1,6 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { documentService } from '../DocumentService';
+import { documentService } from '../operations/DocumentService';
 
 describe('DocumentService - Digital Signature Flow', () => {
   beforeEach(() => {

@@ -16,6 +16,7 @@ export * from './operations/ClientStageService';
 export * from './operations/DocumentService';
 export * from './operations/ChecklistService';
 export * from './operations/FinancialService';
+export * from './operations/SupportService';
 
 // Warranty Domain
 export * from './warranty/WarrantyFlowService';

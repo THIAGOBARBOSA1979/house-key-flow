@@ -1,9 +1,10 @@
+import { 
+  auditLogService, 
+  propertyService, 
+  inspectionService, 
+  warrantyFlowService 
+} from '@/services';
 
-import { auditLogService } from '../core/AuditLogService';
-import { propertyService } from '@/services';
-import { inspectionService } from '@/services';
-import { warrantyFlowService } from './warranty/WarrantyFlowService';
-import { notificationService } from '@/services';
 
 export interface SystemHealthMetrics {
   status: 'healthy' | 'warning' | 'critical';
