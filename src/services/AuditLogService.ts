@@ -63,8 +63,9 @@ class AuditLogService extends BaseService<AuditLogEntry> {
     super("a2_audit_logs", INITIAL_LOGS);
   }
 
-  getAllLogs(): AuditLogEntry[] {
-    return [...this.items].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  getAllLogs(companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
+    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter(l => l.company_id === companyId) : []);
+    return [...relevantItems].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
 
@@ -85,8 +86,9 @@ class AuditLogService extends BaseService<AuditLogEntry> {
     return newEntry;
   }
 
-  getRecentLogs(limit: number = 20): AuditLogEntry[] {
-    return this.items.slice(0, limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  getRecentLogs(limit: number = 20, companyId?: string, isSuperAdmin?: boolean): AuditLogEntry[] {
+    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter(l => l.company_id === companyId) : []);
+    return relevantItems.slice(0, limit).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
   getFilteredLogs(filters: {
@@ -97,8 +99,11 @@ class AuditLogService extends BaseService<AuditLogEntry> {
     entityId?: string;
     dateFrom?: Date;
     dateTo?: Date;
+    companyId?: string;
+    isSuperAdmin?: boolean;
   }): AuditLogEntry[] {
-    return this.items.filter(log => {
+    const baseItems = filters.isSuperAdmin ? this.items : (filters.companyId ? this.items.filter(l => l.company_id === filters.companyId) : []);
+    return baseItems.filter(log => {
       const matchesSearch = !filters.searchTerm || 
         (log.details?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
         (log.performedByName?.toLowerCase() || "").includes(filters.searchTerm.toLowerCase()) ||
@@ -115,13 +120,14 @@ class AuditLogService extends BaseService<AuditLogEntry> {
     }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
-  getAuditStats() {
+  getAuditStats(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = isSuperAdmin ? this.items : (companyId ? this.items.filter(l => l.company_id === companyId) : []);
     const now = new Date();
     const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const currentCount = this.items.filter(l => l.timestamp >= last24h).length;
+    const currentCount = relevantItems.filter(l => l.timestamp >= last24h).length;
 
     return {
-      totalLogs: this.items.length,
+      totalLogs: relevantItems.length,
       currentCount24h: currentCount
     };
   }
