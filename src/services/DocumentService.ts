@@ -109,7 +109,7 @@ class DocumentService extends BaseService<Document> {
 
   getAllDocuments(): Document[] { return [...this.items]; }
   getDocumentById(id: string): Document | undefined { return this.getById(id); }
-  getDocumentsByClient(clientName: string): Document[] { return this.items.filter(doc => doc.associatedTo.client === clientName); }
+  getDocumentsByClient(clientName: string): Document[] { return this.items.filter(doc => doc?.associatedTo?.client === clientName); }
   getFavoriteDocuments(): Document[] { return this.items.filter(doc => doc.isFavorite); }
   getExpiringDocuments(): Document[] { return this.items.filter(d => d.expiresAt); }
 
