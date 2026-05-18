@@ -15,10 +15,15 @@ import { ResponsiveGrid } from "./ResponsiveGrid";
 export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
 
 export interface DataViewProps<T> {
-
   items: T[];
   viewMode?: DataViewMode;
   isLoading?: boolean;
+  isError?: boolean;
+  error?: {
+    title?: string;
+    message?: string;
+    retry?: () => void;
+  };
   skeletonType?: 'card' | 'table' | 'page' | 'list';
   itemsPerPage?: number;
   gridClassName?: string;
@@ -47,51 +52,12 @@ export interface DataViewProps<T> {
  * 
  * A standardized component to display data in different formats (grid, table, list, etc.)
  * with built-in support for pagination, loading states, and empty states.
- * 
- * @example
- * // Grid View (Default)
- * <DataView
- *   items={properties}
- *   viewMode="grid"
- *   renderGrid={(item) => <PropertyCard item={item} />}
- * />
- * 
- * @example
- * // Table View with columns
- * <DataView
- *   items={users}
- *   viewMode="table"
- *   columns={[
- *     { header: "Nome", accessorKey: "name" },
- *     { header: "Email", accessorKey: "email" }
- *   ]}
- * />
- * 
- * @example
- * // Timeline View (Chronological)
- * <DataView
- *   items={events}
- *   viewMode="timeline"
- *   // Uses fallback if renderTimeline is not provided, 
- *   // looking for .date and .title properties
- * />
- * 
- * @example
- * // Calendar View
- * <DataView
- *   items={inspections}
- *   viewMode="calendar"
- *   renderCalendar={(items) => <MyCalendarComponent data={items} />}
- * />
  */
 
 function DataViewComponent<T>({
   items,
   viewMode = 'grid',
   isLoading = false,
-  isError = false,
-  error,
-
   isError = false,
   error,
   skeletonType,
@@ -106,7 +72,6 @@ function DataViewComponent<T>({
   columns,
   onRowClick,
 }: DataViewProps<T>) {
-
 
   const [currentPage, setCurrentPage] = useState(1);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -137,20 +102,6 @@ function DataViewComponent<T>({
     );
   }
 
-
-
-  if (isError) {
-    return (
-      <EmptyState 
-        variant="error"
-        title={error?.title || "Ops! Algo deu errado"}
-        description={error?.message || "Não foi possível carregar os dados. Verifique sua conexão e tente novamente."}
-        actionLabel={error?.retry ? "Tentar Novamente" : undefined}
-        onAction={error?.retry}
-      />
-    );
-  }
-
   if (items.length === 0) {
     return (
       <EmptyState 
@@ -161,7 +112,6 @@ function DataViewComponent<T>({
       />
     );
   }
-
 
   const totalItems = items.length;
   const isPaginationEnabled = itemsPerPage > 0 && totalItems > itemsPerPage;
@@ -191,7 +141,6 @@ function DataViewComponent<T>({
                     <div>
                       <p className="font-bold text-sm">{(item as any)?.name || (item as any)?.title || (item as any)?.id || 'Sem nome'}</p>
                       <p className="text-xs text-muted-foreground">{(item as any)?.description || (item as any)?.location || ''}</p>
-
                     </div>
                   </div>
                 )}
@@ -218,7 +167,6 @@ function DataViewComponent<T>({
                   <div className="mt-2 p-4 card-standard">
                     <p className="font-bold">{(item as any)?.name || (item as any)?.title || 'Sem título'}</p>
                     <p className="text-sm text-muted-foreground">{(item as any)?.description || (item as any)?.notes || ''}</p>
-
                   </div>
                 </div>
               </div>
@@ -240,7 +188,6 @@ function DataViewComponent<T>({
             </div>
           );
         }
-        // Very basic fallback table if no columns
         return (
           <div className="animate-fade-in border rounded-xl overflow-hidden">
              <table className="w-full text-sm text-left">
@@ -252,7 +199,6 @@ function DataViewComponent<T>({
                    <tr key={i} className="border-t hover:bg-muted/30 transition-colors">
                      <td className="p-4 font-bold">{(item as any)?.name || (item as any)?.title || (item as any)?.id || 'N/A'}</td>
                      <td className="p-4 text-muted-foreground">{(item as any)?.description || (item as any)?.email || ''}</td>
-
                    </tr>
                  ))}
                </tbody>
@@ -313,7 +259,6 @@ function DataViewComponent<T>({
             </Button>
             
             <div className="flex items-center gap-1">
-              {/* Pagination numbers logic - showing current, first, last and neighbors */}
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(p => p === 1 || p === totalPages || Math.abs(p - effectivePage) <= 1)
                 .map((page, index, array) => (
