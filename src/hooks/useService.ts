@@ -22,7 +22,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const { toast } = useToast();
   const { user } = useAuth();
   const companyId = user?.company_id;
-  const [items, setItems] = useState<T[]>(() => service.getAll(companyId));
+  const [items, setItems] = useState<T[]>(() => service.getAll(companyId, user?.is_super_admin));
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -32,28 +32,30 @@ export function useService<T extends { id: string; company_id?: string }>(
 
   useEffect(() => {
     return service.subscribe((allNewItems) => {
-      if (companyId) {
+      if (user?.is_super_admin) {
+        setItems(allNewItems);
+      } else if (companyId) {
         setItems(allNewItems.filter(item => item.company_id === companyId));
       } else {
-        setItems(allNewItems);
+        setItems([]);
       }
     });
-  }, [service, companyId]);
+  }, [service, companyId, user?.is_super_admin]);
 
   const refresh = useCallback(() => {
-    setItems(service.getAll(companyId));
-  }, [service, companyId]);
+    setItems(service.getAll(companyId, user?.is_super_admin));
+  }, [service, companyId, user?.is_super_admin]);
 
   const create = useCallback(async (data: Omit<T, "id">) => {
     setIsLoading(true);
     try {
-      // Auto-assign company_id on creation
+      // Auto-assign company_id on creation if not a super admin or if not provided
       const dataWithTenant = {
         ...data,
-        company_id: companyId
+        company_id: (data as any).company_id || companyId
       } as Omit<T, "id">;
 
-      const newItem = service.create(dataWithTenant);
+      const newItem = service.create(dataWithTenant, dataWithTenant.company_id);
 
       if (optionsRef.current.toastMessages?.create) {
         toast({ title: "Sucesso", description: optionsRef.current.toastMessages.create });
@@ -114,7 +116,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     create,
     update,
     remove,
-    getById: useCallback((id: string) => service.getById(id), [service])
+    getById: useCallback((id: string) => service.getById(id, companyId, user?.is_super_admin), [service, companyId, user?.is_super_admin])
   };
 }
 

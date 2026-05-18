@@ -65,11 +65,11 @@ class PropertyService extends BaseService<Property> {
     super("a2_properties", INITIAL_PROPERTIES);
   }
 
-  create(property: Omit<Property, "id">): Property {
+  create(property: Omit<Property, "id">, companyId?: string): Property {
     const newProperty = super.create({
       ...property,
       createdAt: new Date(),
-    });
+    }, companyId);
     auditLogService.log({
       entityType: 'property',
       entityId: newProperty.id,
