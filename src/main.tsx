@@ -1,7 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './lib/i18n'
 import App from './App.tsx'
 import './index.css'
+
 import { SyncService } from './services/SyncService.ts'
 import { ErrorBoundary } from './components/shared/ErrorBoundary.tsx'
 
