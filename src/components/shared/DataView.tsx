@@ -157,8 +157,9 @@ export function DataView<T>({
                       <LayoutGrid size={20} />
                     </div>
                     <div>
-                      <p className="font-bold text-sm">{(item as any).name || (item as any).title || (item as any).id}</p>
-                      <p className="text-xs text-muted-foreground">{(item as any).description || (item as any).location}</p>
+                      <p className="font-bold text-sm">{(item as any)?.name || (item as any)?.title || (item as any)?.id || 'Sem nome'}</p>
+                      <p className="text-xs text-muted-foreground">{(item as any)?.description || (item as any)?.location || ''}</p>
+
                     </div>
                   </div>
                 )}
@@ -180,11 +181,12 @@ export function DataView<T>({
                 </div>
                 <div className="pb-8 flex-1">
                   <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">
-                    {(item as any).date ? new Date((item as any).date).toLocaleDateString('pt-BR') : 'Sem data'}
+                    {(item as any)?.date ? new Date((item as any).date).toLocaleDateString('pt-BR') : 'Sem data'}
                   </p>
                   <div className="mt-2 p-4 card-standard">
-                    <p className="font-bold">{(item as any).name || (item as any).title}</p>
-                    <p className="text-sm text-muted-foreground">{(item as any).description || (item as any).notes}</p>
+                    <p className="font-bold">{(item as any)?.name || (item as any)?.title || 'Sem título'}</p>
+                    <p className="text-sm text-muted-foreground">{(item as any)?.description || (item as any)?.notes || ''}</p>
+
                   </div>
                 </div>
               </div>
@@ -216,8 +218,9 @@ export function DataView<T>({
                <tbody>
                  {displayedItems.map((item, i) => (
                    <tr key={i} className="border-t hover:bg-muted/30 transition-colors">
-                     <td className="p-4 font-bold">{(item as any).name || (item as any).title || (item as any).id}</td>
-                     <td className="p-4 text-muted-foreground">{(item as any).description || (item as any).email}</td>
+                     <td className="p-4 font-bold">{(item as any)?.name || (item as any)?.title || (item as any)?.id || 'N/A'}</td>
+                     <td className="p-4 text-muted-foreground">{(item as any)?.description || (item as any)?.email || ''}</td>
+
                    </tr>
                  ))}
                </tbody>
