@@ -108,7 +108,8 @@ const ClientArea = () => {
         </Button>
         <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
           <Key className="mr-2 h-4 w-4" />
-          Gerar Credenciais
+          Habilitar Acessos
+
         </Button>
         <Button onClick={() => setNewClientDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
@@ -197,7 +198,7 @@ const ClientArea = () => {
                     <History className="mr-2 h-4 w-4 text-muted-foreground" /> Sincronizar
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setCredentialsDialogOpen(true)} className="py-2.5 font-medium cursor-pointer">
-                    <Key className="mr-2 h-4 w-4 text-muted-foreground" /> Credenciais
+                    <Key className="mr-2 h-4 w-4 text-muted-foreground" /> Governança de Acesso
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -342,8 +343,9 @@ const ClientArea = () => {
       <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>
         <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
-            <DialogTitle className="text-2xl font-black tracking-tight">Cadastrar Novo Cliente</DialogTitle>
-            <DialogDescription className="text-sm font-medium">Preencha os campos abaixo para cadastrar um novo cliente no sistema.</DialogDescription>
+            <DialogTitle className="text-2xl font-black tracking-tight">Integração de Novo Proprietário</DialogTitle>
+            <DialogDescription className="text-sm font-medium">Inicie a jornada digital do cliente inserindo os dados fundamentais para governança.</DialogDescription>
+
           </DialogHeader>
           <div className="p-8 max-h-[70vh] overflow-y-auto">
             <NewClientForm onSubmit={handleNewClientSubmit} onCancel={() => setNewClientDialogOpen(false)} />
@@ -354,8 +356,9 @@ const ClientArea = () => {
       <Dialog open={isCredentialsDialogOpen} onOpenChange={setCredentialsDialogOpen}>
         <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
-            <DialogTitle className="text-2xl font-black tracking-tight">Gerar Credenciais</DialogTitle>
-            <DialogDescription className="text-sm font-medium">Configure as credenciais de acesso para o portal do cliente.</DialogDescription>
+            <DialogTitle className="text-2xl font-black tracking-tight">Habilitação de Acessos Corporativos</DialogTitle>
+            <DialogDescription className="text-sm font-medium">Configure os parâmetros de segurança e libere o ecossistema digital para o cliente.</DialogDescription>
+
           </DialogHeader>
           <div className="p-8 max-h-[70vh] overflow-y-auto">
             <GenerateCredentialsForm onSubmit={handleCredentialsSubmit} onCancel={() => setCredentialsDialogOpen(false)} />
