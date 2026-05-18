@@ -36,6 +36,7 @@ export const propertySchema = z.object({
   manager: z.string().optional(),
   milestones: z.array(propertyMilestoneSchema).optional(),
   unitsList: z.array(propertyUnitSchema).optional(),
+  createdAt: z.date().optional(),
 });
 
 export type Property = z.infer<typeof propertySchema>;
@@ -50,14 +51,15 @@ const INITIAL_PROPERTIES: Property[] = [
     status: "progress", 
     manager: "Carlos Andrade", 
     totalArea: 12500,
+    createdAt: new Date(2023, 0, 1),
     milestones: [
       { id: "m1", title: "Fundação", targetDate: new Date(2023, 5, 10), completed: true, completedAt: new Date(2023, 5, 15) },
       { id: "m2", title: "Estrutura", targetDate: new Date(2024, 1, 20), completed: true, completedAt: new Date(2024, 1, 25) },
       { id: "m3", title: "Acabamento", targetDate: new Date(2025, 7, 30), completed: false }
     ]
   },
-  { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400 },
-  { id: "3", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200 },
+  { id: "2", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400, createdAt: new Date(2022, 5, 1) },
+  { id: "3", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200, createdAt: new Date(2023, 10, 1) },
 ];
 
 class PropertyService extends BaseService<Property> {
@@ -75,11 +77,15 @@ class PropertyService extends BaseService<Property> {
         completedAt: m.completedAt ? new Date(m.completedAt) : undefined
       })),
       deliveryDate: p.deliveryDate ? new Date(p.deliveryDate) : undefined,
+      createdAt: p.createdAt ? new Date(p.createdAt) : undefined,
     }));
   }
 
   create(property: Omit<Property, "id">): Property {
-    const newProperty = super.create(property);
+    const newProperty = super.create({
+      ...property,
+      createdAt: new Date(),
+    });
     auditLogService.log({
       entityType: 'property',
       entityId: newProperty.id,

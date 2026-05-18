@@ -22,6 +22,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services/ExportService";
 import { PropertyForm } from "@/components/Properties/PropertyForm";
 import { PropertyDetailsDialog } from "@/components/Properties/PropertyDetailsDialog";
+import { formatDate } from "@/utils/formatters";
 import {
   Dialog,
   DialogContent,
@@ -204,11 +205,12 @@ const Properties = () => {
                 )
               },
               { header: "Localização", accessorKey: "location", className: "hidden md:table-cell text-muted-foreground" },
+              { header: "Início", accessorKey: "createdAt", className: "hidden lg:table-cell text-muted-foreground", cell: (p) => formatDate(p.createdAt) },
               { 
                 header: "Progresso", 
-                accessorKey: "progress",
+                accessorKey: "completedUnits",
                 cell: (p) => {
-                  const percentage = Math.round((p.completedUnits / p.units) * 100);
+                  const percentage = p.units ? Math.round((p.completedUnits / p.units) * 100) : 0;
                   return (
                     <div className="flex items-center gap-3 min-w-[120px]">
                       <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
