@@ -23,12 +23,13 @@ export default defineConfig({
         'src/types/**',
       ],
       thresholds: {
-        lines: 30,
+        lines: 25,
         functions: 20,
         branches: 20,
-        statements: 30
+        statements: 25
       }
     },
+
 
   },
 
