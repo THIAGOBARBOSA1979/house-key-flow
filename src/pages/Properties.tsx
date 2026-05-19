@@ -18,12 +18,7 @@ import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
 import { PropertyTimeline } from "@/components/Properties/PropertyTimeline";
 import { PropertyBulkActions } from "@/components/Properties/PropertyBulkActions";
 import { DataViewMode } from "@/components/Shared/DataView";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+import { EntityActionMenu } from "@/components/Shared/EntityActionMenu";
 import { cn } from "@/lib/utils";
 
 const Properties = () => {
@@ -182,32 +177,19 @@ const Properties = () => {
                 accessorKey: "id",
                 className: "text-right",
                 cell: (p) => (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => { e.stopPropagation(); }}>
-                      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40 shadow-sem-lg">
-                      <DropdownMenuItem onClick={() => handleOpenEdit(p)} className="cursor-pointer">
-                        <Pencil className="mr-2 h-4 w-4" /> Editar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        className="text-destructive font-bold" 
-                        onClick={async () => {
-                          const result = await confirm({
-                            title: "Confirmar Exclusão",
-                            description: `Deseja realmente excluir o empreendimento "${p.name}"? Esta ação não pode ser desfeita.`,
-                            confirmLabel: "Excluir",
-                            variant: "destructive"
-                          });
-                          if (result) deleteProperty(p.id!);
-                        }}
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" /> Excluir
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <EntityActionMenu 
+                    onEdit={() => handleOpenEdit(p)}
+                    onDelete={async () => {
+                      const result = await confirm({
+                        title: "Confirmar Exclusão",
+                        description: `Deseja realmente excluir o empreendimento "${p.name}"? Esta ação não pode ser desfeita.`,
+                        confirmLabel: "Excluir",
+                        variant: "destructive"
+                      });
+                      if (result) deleteProperty(p.id!);
+                    }}
+                    onView={() => setSelectedProperty(p)}
+                  />
                 )
               }
             ]}

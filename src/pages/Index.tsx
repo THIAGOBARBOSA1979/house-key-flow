@@ -98,7 +98,7 @@ const Dashboard = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
         <div className="lg:col-span-7 xl:col-span-8 space-y-8">
-          <ActiveProperties properties={properties} />
+          <ActiveProperties />
           <ScheduledInspections inspections={inspections} />
         </div>
 
@@ -116,7 +116,7 @@ const Dashboard = () => {
           </div>
 
 
-          <CriticalWarranties claims={warrantyClaims} />
+          <CriticalWarranties />
           <RecentTickets tickets={recentTickets} />
           <SystemAuditTimeline activities={recentActivities} />
         </div>

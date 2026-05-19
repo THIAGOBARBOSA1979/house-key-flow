@@ -13,7 +13,7 @@ export interface BaseServiceOptions {
 export abstract class BaseService<T extends { id: string; company_id?: string }> {
   protected items: T[] = [];
   protected options: BaseServiceOptions;
-  private listeners: Listener<T>[] = [];
+  protected listeners: Listener<T>[] = [];
 
   constructor(options: BaseServiceOptions | string, initialData: T[] = []) {
     if (typeof options === 'string') {

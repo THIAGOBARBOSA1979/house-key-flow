@@ -2,14 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
-import { WarrantyRequestFlow } from "@/types/warrantyFlow";
+import { useWarranty } from "@/hooks";
 
-interface CriticalWarrantiesProps {
-  claims: WarrantyRequestFlow[];
-}
-
-export const CriticalWarranties = ({ claims }: CriticalWarrantiesProps) => {
+export const CriticalWarranties = () => {
   const navigate = useNavigate();
+  const { requests: claims } = useWarranty();
+  const criticalClaims = claims
+    .filter(c => c.priority === 'high' || c.priority === 'critical')
+    .slice(0, 3);
 
   return (
     <section>
@@ -20,8 +20,8 @@ export const CriticalWarranties = ({ claims }: CriticalWarrantiesProps) => {
         </h2>
       </div>
       <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-slow">
-        {claims.length > 0 ? (
-          claims.map((claim) => (
+        {criticalClaims.length > 0 ? (
+          criticalClaims.map((claim) => (
             <div 
               key={claim.id} 
               className="card-standard p-5 interactive-active border-none bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-status-critical/30 rounded-2xl shadow-sem-sm transition-all" 

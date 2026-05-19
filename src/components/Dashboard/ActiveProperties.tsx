@@ -3,14 +3,12 @@ import { ChevronRight, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
-import { Property } from "@/services";
+import { useProperties } from "@/hooks";
 
-interface ActivePropertiesProps {
-  properties: Property[];
-}
-
-export const ActiveProperties = ({ properties }: ActivePropertiesProps) => {
+export const ActiveProperties = () => {
   const navigate = useNavigate();
+  const { properties } = useProperties();
+  const activeProperties = properties.filter(p => p.status === 'progress').slice(0, 4);
 
   return (
     <section>
@@ -30,7 +28,7 @@ export const ActiveProperties = ({ properties }: ActivePropertiesProps) => {
         </Button>
       </div>
       <ResponsiveGrid columns={2} mobileCols={1} tabletCols={2} gap="layout" className="animate-in fade-in slide-in-from-left-4 duration-slow">
-        {properties.map((property) => (
+        {activeProperties.map((property) => (
           <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
         ))}
 
