@@ -9,22 +9,19 @@ import { Property } from "@/types/property";
 export const usePropertyQueries = () => {
   const queryClient = useQueryClient();
 
-  const useAllProperties = () => {
+  const useAllProperties = (companyId?: string, isSuperAdmin?: boolean) => {
     return useQuery({
-      queryKey: ["properties"],
+      queryKey: ["properties", companyId, isSuperAdmin],
       queryFn: async () => {
-        // In a real scenario, this would be a fetch to Supabase/API
-        // For now, we simulate async fetch from local service
-        await new Promise(resolve => setTimeout(resolve, 500));
-        return propertyService.getAll();
+        return propertyService.getAll(companyId, isSuperAdmin);
       },
     });
   };
 
-  const useCreateProperty = () => {
+  const useCreateProperty = (companyId?: string) => {
     return useMutation({
       mutationFn: async (data: Omit<Property, "id">) => {
-        const newItem = propertyService.create(data);
+        const newItem = propertyService.create(data, companyId);
         return newItem;
       },
       onSuccess: () => {
