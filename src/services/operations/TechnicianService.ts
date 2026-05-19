@@ -1,5 +1,5 @@
-import { BaseService } from "../BaseService";
-import { auditLogService } from '../core/AuditLogService';
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
 export interface Technician {
   id: string;
@@ -53,9 +53,21 @@ const INITIAL_TECHNICIANS: Technician[] = [
   }
 ];
 
-class TechnicianService extends BaseService<Technician> {
+class TechnicianService extends SupabaseBaseService<Technician> {
   constructor() {
-    super("a2_technicians", INITIAL_TECHNICIANS);
+    super({
+      storageKey: "a2_technicians",
+      supabaseTable: "technicians" as any,
+      auditEntityType: "user",
+      shouldSyncWithSupabase: true
+    }, INITIAL_TECHNICIANS);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('technicians', async () => {
+      await this.sync();
+    });
   }
 
   create(technician: Omit<Technician, "id" | "joinedAt" | "completedJobs" | "activeJobs" | "rating">): Technician {

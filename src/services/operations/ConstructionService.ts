@@ -1,4 +1,5 @@
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
 export interface ConstructionUpdate {
   id: string;
@@ -51,9 +52,21 @@ const INITIAL_UPDATES: ConstructionUpdate[] = [
   }
 ];
 
-class ConstructionService extends BaseService<ConstructionUpdate> {
+class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
   constructor() {
-    super("a2_construction_updates", INITIAL_UPDATES);
+    super({
+      storageKey: "a2_construction_updates",
+      supabaseTable: "construction_updates" as any,
+      auditEntityType: "property",
+      shouldSyncWithSupabase: true
+    }, INITIAL_UPDATES);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('construction_updates', async () => {
+      await this.sync();
+    });
   }
 
   getUpdates(companyId?: string, isSuperAdmin?: boolean): ConstructionUpdate[] {

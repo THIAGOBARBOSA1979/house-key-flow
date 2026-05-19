@@ -1,4 +1,5 @@
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
 export interface SignatureEvidence {
   browser?: string;
@@ -101,12 +102,21 @@ const INITIAL_DOCUMENTS: Document[] = [
   },
 ];
 
-class DocumentService extends BaseService<Document> {
+class DocumentService extends SupabaseBaseService<Document> {
   constructor() {
     super({
       storageKey: "a2_documents",
-      auditEntityType: "document"
+      supabaseTable: "documents" as any,
+      auditEntityType: "document",
+      shouldSyncWithSupabase: true
     }, INITIAL_DOCUMENTS);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('documents', async () => {
+      await this.sync();
+    });
   }
 
   // Backward compatibility aliases
