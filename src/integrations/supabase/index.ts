@@ -116,14 +116,13 @@ export class SupabaseDatabase {
       select?: string;
     }
   ): Promise<SupabaseResponse<T[]>> {
-    const tableTyped = table as any;
-    let query = (supabase.from(tableTyped) as any).select(params?.select || '*');
+    let query = (supabase.from(table as any) as any).select(params?.select || '*');
 
     if (params?.filters) {
       params.filters.forEach(filter => {
         const op = filter.operator as any;
-        if (typeof query[op] === 'function') {
-          query = query[op](filter.column, filter.value);
+        if (typeof (query as any)[op] === 'function') {
+          query = (query as any)[op](filter.column, filter.value);
         }
       });
     }
@@ -148,8 +147,7 @@ export class SupabaseDatabase {
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).select('*').eq(idColumn as any, id).single();
+    const result = await (supabase.from(table as any) as any).select('*').eq(idColumn as any, id).single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -157,8 +155,7 @@ export class SupabaseDatabase {
     table: keyof Database['public']['Tables'], 
     data: any
   ): Promise<SupabaseResponse<T>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).insert(data).select().single();
+    const result = await (supabase.from(table as any) as any).insert(data).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -168,8 +165,7 @@ export class SupabaseDatabase {
     data: any, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).update(data).eq(idColumn as any, id).select().single();
+    const result = await (supabase.from(table as any) as any).update(data).eq(idColumn as any, id).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -178,8 +174,7 @@ export class SupabaseDatabase {
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<void>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).delete().eq(idColumn as any, id);
+    const result = await (supabase.from(table as any) as any).delete().eq(idColumn as any, id);
     return SupabaseErrorHandler.wrap(Promise.resolve({ data: null, error: result.error }));
   }
 
@@ -195,14 +190,13 @@ export class SupabaseDatabase {
     table: keyof Database['public']['Tables'], 
     filters?: FilterParams[]
   ): Promise<SupabaseResponse<number>> {
-    const tableTyped = table as any;
-    let query = (supabase.from(tableTyped) as any).select('*', { count: 'exact', head: true });
+    let query = (supabase.from(table as any) as any).select('*', { count: 'exact', head: true });
 
     if (filters) {
       filters.forEach(filter => {
         const op = filter.operator as any;
-        if (typeof query[op] === 'function') {
-          query = query[op](filter.column, filter.value);
+        if (typeof (query as any)[op] === 'function') {
+          query = (query as any)[op](filter.column, filter.value);
         }
       });
     }
