@@ -174,7 +174,9 @@ export class SupabaseDatabase {
   }
 
   static async rpc<T>(name: string, params?: any): Promise<SupabaseResponse<T>> {
+    // @ts-ignore
     const result = await supabase.rpc(name, params);
+
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
   

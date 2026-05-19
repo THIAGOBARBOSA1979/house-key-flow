@@ -1,11 +1,12 @@
 import { Supabase, FilterParams, PaginationParams } from '@/integrations/supabase';
 import { BaseService, BaseServiceOptions } from './BaseService';
-import { Database } from '@/integrations/supabase/types';
+
 
 export abstract class SupabaseBaseService<T extends { id: string; company_id?: string }> extends BaseService<T> {
-  protected supabaseTable: keyof Database['public']['Tables'];
+  protected supabaseTable: string;
 
-  constructor(options: BaseServiceOptions & { supabaseTable: keyof Database['public']['Tables'] }, initialData: T[] = []) {
+  constructor(options: BaseServiceOptions & { supabaseTable: string }, initialData: T[] = []) {
+
     super(options, initialData);
     this.supabaseTable = options.supabaseTable;
   }
