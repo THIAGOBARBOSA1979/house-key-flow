@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { SupabaseBaseService } from "../SupabaseBaseService";
-import { auditLogService } from "../core/AuditLogService";
-import { technicianService, Technician } from "../operations/TechnicianService";
+import { Supabase } from "@/integrations/supabase";
+import { technicianService } from "../operations/TechnicianService";
 
 export const inspectionSchema = z.object({
   inspectionType: z.string({
@@ -67,6 +67,13 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       auditEntityType: "inspection",
       shouldSyncWithSupabase: true
     }, INITIAL_INSPECTIONS);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('inspections', async () => {
+      await this.sync();
+    });
   }
 
 
