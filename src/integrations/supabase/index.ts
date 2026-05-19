@@ -147,7 +147,7 @@ export class SupabaseDatabase {
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table).select('*').eq(idColumn as any, id).single();
+    const result = await (supabase.from(table as any) as any).select('*').eq(idColumn as any, id).single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 

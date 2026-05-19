@@ -1,9 +1,10 @@
 import { Supabase, FilterParams, PaginationParams } from '@/integrations/supabase';
+import { Database } from '@/integrations/supabase/types';
 
 export abstract class SupabaseService<T extends { id: string; company_id?: string }> {
-  protected table: string;
+  protected table: keyof Database['public']['Tables'];
 
-  constructor(table: string) {
+  constructor(table: keyof Database['public']['Tables']) {
     this.table = table;
   }
 
