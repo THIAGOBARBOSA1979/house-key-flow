@@ -1,5 +1,4 @@
 import { Supabase, FilterParams } from '@/integrations/supabase';
-
 import { BaseService, BaseServiceOptions } from './BaseService';
 
 export abstract class SupabaseBaseService<T extends { id: string; company_id?: string }> extends BaseService<T> {
@@ -33,27 +32,45 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     return this.items;
   }
 
-  create(item: Omit<T, "id">, companyId?: string): T {
-    const newItem = super.create(item, companyId);
+  async createRemote(item: T): Promise<T | undefined> {
+    if (!this.options.shouldSyncWithSupabase) return item;
     
-    if (this.options.shouldSyncWithSupabase) {
-      const data = this.mapToSupabase(newItem);
-      Supabase.db.create(this.supabaseTable, data)
-        .catch(err => console.error(`[SupabaseBaseService] Failed to sync create to Supabase for ${this.supabaseTable}:`, err));
+    const data = this.mapToSupabase(item);
+    const { data: created, error } = await Supabase.db.create<T>(this.supabaseTable, data);
+    
+    if (error) {
+      console.error(`[SupabaseBaseService] Failed to sync create to Supabase for ${this.supabaseTable}:`, error);
+      return undefined;
     }
     
+    return created || undefined;
+  }
+
+  create(item: Omit<T, "id">, companyId?: string): T {
+    const newItem = super.create(item, companyId);
+    this.createRemote(newItem);
     return newItem;
+  }
+
+  async updateRemote(id: string, data: Partial<T>): Promise<T | undefined> {
+    if (!this.options.shouldSyncWithSupabase) return undefined;
+    
+    const syncData = this.mapToSupabase(data as any);
+    const { data: updated, error } = await Supabase.db.update<T>(this.supabaseTable, id, syncData);
+    
+    if (error) {
+      console.error(`[SupabaseBaseService] Failed to sync update to Supabase for ${this.supabaseTable}:`, error);
+      return undefined;
+    }
+    
+    return updated || undefined;
   }
 
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const updated = super.update(id, data, isSuperAdmin);
-    
-    if (updated && this.options.shouldSyncWithSupabase) {
-      const syncData = this.mapToSupabase(updated);
-      Supabase.db.update(this.supabaseTable, id, syncData)
-        .catch(err => console.error(`[SupabaseBaseService] Failed to sync update to Supabase for ${this.supabaseTable}:`, err));
+    if (updated) {
+      this.updateRemote(id, data);
     }
-    
     return updated;
   }
 
