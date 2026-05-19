@@ -920,7 +920,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
     
     // Volume metrics
-    const openRequests = allRequests.filter(r => !FINAL_STAGES.includes(r.currentStage));
+    const openRequests = allRequests.filter(r => !(FINAL_STAGES as unknown as string[]).includes(r.currentStage));
     const completedThisMonth = allRequests.filter(r => 
       r.currentStage === "completed" && r.completionDate && r.completionDate >= monthAgo
     );
@@ -948,7 +948,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     let bottleneckStage: WarrantyStage | null = null;
     let maxCount = 0;
     Object.entries(stageDistribution).forEach(([stage, count]) => {
-      if (!FINAL_STAGES.includes(stage as WarrantyStage) && count > maxCount) {
+      if (!(FINAL_STAGES as unknown as string[]).includes(stage as WarrantyStage) && count > maxCount) {
         maxCount = count;
         bottleneckStage = stage as WarrantyStage;
       }
