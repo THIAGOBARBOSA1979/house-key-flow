@@ -155,7 +155,7 @@ class AuditLogService extends BaseService<any> {
     this.listeners.push(callback);
     return () => {
       channel.unsubscribe();
-      this.listeners = this.listeners.filter(l => l !== callback);
+      this.listeners = this.listeners.filter(l => l !== callback) as any;
     };
   }
 

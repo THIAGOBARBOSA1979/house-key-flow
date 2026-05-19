@@ -26,11 +26,11 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
   subscribe(listener: Listener<T>) {
-    this.listeners.push(listener);
+    (this.listeners as Listener<T>[]).push(listener);
     return () => {
-      const index = this.listeners.indexOf(listener);
+      const index = (this.listeners as Listener<T>[]).indexOf(listener);
       if (index !== -1) {
-        this.listeners.splice(index, 1);
+        (this.listeners as Listener<T>[]).splice(index, 1);
       }
     };
   }

@@ -1,9 +1,7 @@
-import { 
-  auditLogService, 
-  propertyService, 
-  inspectionService, 
-  warrantyFlowService 
-} from '@/services';
+import { auditLogService } from './AuditLogService';
+import { propertyService } from '../operations/PropertyService';
+import { inspectionService } from '../operations/InspectionService';
+import { warrantyFlowService } from '../warranty/WarrantyFlowService';
 
 
 export interface SystemHealthMetrics {
