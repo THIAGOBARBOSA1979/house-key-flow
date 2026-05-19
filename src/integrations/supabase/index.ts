@@ -109,14 +109,14 @@ export class SupabaseAuth {
 
 export class SupabaseDatabase {
   static async findMany<T>(
-    table: keyof Database['public']['Tables'],
+    table: string,
     params?: {
       filters?: FilterParams[];
       pagination?: PaginationParams;
       select?: string;
     }
   ): Promise<SupabaseResponse<T[]>> {
-    let query = supabase.from(table).select(params?.select || '*') as any;
+    let query = supabase.from(table as any).select(params?.select || '*') as any;
 
     if (params?.filters) {
       params.filters.forEach(filter => {
@@ -143,48 +143,48 @@ export class SupabaseDatabase {
   }
 
   static async findOne<T>(
-    table: keyof Database['public']['Tables'], 
+    table: string, 
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table).select('*').eq(idColumn as any, id).single();
+    const result = await supabase.from(table as any).select('*').eq(idColumn as any, id).single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async create<T>(
-    table: keyof Database['public']['Tables'], 
+    table: string, 
     data: any
   ): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table).insert(data).select().single();
+    const result = await supabase.from(table as any).insert(data).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async update<T>(
-    table: keyof Database['public']['Tables'], 
+    table: string, 
     id: string, 
     data: any, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table).update(data).eq(idColumn as any, id).select().single();
+    const result = await supabase.from(table as any).update(data).eq(idColumn as any, id).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async delete(
-    table: keyof Database['public']['Tables'], 
+    table: string, 
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<void>> {
-    const result = await supabase.from(table).delete().eq(idColumn as any, id);
+    const result = await supabase.from(table as any).delete().eq(idColumn as any, id);
     return SupabaseErrorHandler.wrap(Promise.resolve({ data: null, error: result.error }));
   }
 
-  static async rpc<T>(name: keyof Database['public']['Functions'], params?: any): Promise<SupabaseResponse<T>> {
+  static async rpc<T>(name: string, params?: any): Promise<SupabaseResponse<T>> {
     const result = await supabase.rpc(name as any, params);
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
   
-  static async count(table: keyof Database['public']['Tables'], filters?: FilterParams[]): Promise<SupabaseResponse<number>> {
-    let query = supabase.from(table).select('*', { count: 'exact', head: true }) as any;
+  static async count(table: string, filters?: FilterParams[]): Promise<SupabaseResponse<number>> {
+    let query = supabase.from(table as any).select('*', { count: 'exact', head: true }) as any;
 
     if (filters) {
       filters.forEach(filter => {
