@@ -2,8 +2,7 @@ import { SupabaseBaseService } from "../SupabaseBaseService";
 import { User, UserStats } from "@/types/user";
 import { Supabase } from "@/integrations/supabase";
 
-
-class UserService extends BaseService<User> {
+class UserService extends SupabaseBaseService<User> {
   constructor() {
     super({
       storageKey: "a2_users",
@@ -11,22 +10,12 @@ class UserService extends BaseService<User> {
       auditEntityType: "user",
       shouldSyncWithSupabase: true
     }, []);
-    this.initializeSupabase();
+    this.initializeRealtime();
   }
 
-  private async initializeSupabase() {
-    const { data } = await Supabase.db.findMany<User>('profiles');
-    if (data) {
-      this.items = data.map(raw => this.mapFromSupabase(raw));
-      this.persist();
-    }
-
+  private async initializeRealtime() {
     Supabase.realtime.subscribeToTable('profiles', async () => {
-      const { data: newData } = await Supabase.db.findMany<User>('profiles');
-      if (newData) {
-        this.items = newData.map(raw => this.mapFromSupabase(raw));
-        this.persist();
-      }
+      await this.sync();
     });
   }
 
@@ -51,9 +40,6 @@ class UserService extends BaseService<User> {
       company_id: raw.company_id
     } as User;
   }
-
-  // BaseService handles audit logging and basic operations.
-  // We only override getStats as it's domain specific.
 
   getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
     const relevant = this.getAll(companyId, isSuperAdmin);
