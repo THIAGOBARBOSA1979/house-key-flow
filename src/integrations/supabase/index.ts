@@ -116,7 +116,8 @@ export class SupabaseDatabase {
       select?: string;
     }
   ): Promise<SupabaseResponse<T[]>> {
-    let query = supabase.from(table as any).select(params?.select || '*') as any;
+    const tableTyped = table as any;
+    let query = supabase.from(tableTyped).select(params?.select || '*') as any;
 
     if (params?.filters) {
       params.filters.forEach(filter => {
@@ -147,7 +148,8 @@ export class SupabaseDatabase {
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table as any).select('*').eq(idColumn as any, id).single();
+    const tableTyped = table as any;
+    const result = await supabase.from(tableTyped).select('*').eq(idColumn as any, id).single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -155,7 +157,8 @@ export class SupabaseDatabase {
     table: string, 
     data: any
   ): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table as any).insert(data).select().single();
+    const tableTyped = table as any;
+    const result = await supabase.from(tableTyped).insert(data).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -165,7 +168,8 @@ export class SupabaseDatabase {
     data: any, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const result = await supabase.from(table as any).update(data).eq(idColumn as any, id).select().single();
+    const tableTyped = table as any;
+    const result = await supabase.from(tableTyped).update(data).eq(idColumn as any, id).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -174,17 +178,20 @@ export class SupabaseDatabase {
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<void>> {
-    const result = await supabase.from(table as any).delete().eq(idColumn as any, id);
+    const tableTyped = table as any;
+    const result = await supabase.from(tableTyped).delete().eq(idColumn as any, id);
     return SupabaseErrorHandler.wrap(Promise.resolve({ data: null, error: result.error }));
   }
 
   static async rpc<T>(name: string, params?: any): Promise<SupabaseResponse<T>> {
-    const result = await supabase.rpc(name as any, params);
+    const nameTyped = name as any;
+    const result = await supabase.rpc(nameTyped, params);
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
   
   static async count(table: string, filters?: FilterParams[]): Promise<SupabaseResponse<number>> {
-    let query = supabase.from(table as any).select('*', { count: 'exact', head: true }) as any;
+    const tableTyped = table as any;
+    let query = supabase.from(tableTyped).select('*', { count: 'exact', head: true }) as any;
 
     if (filters) {
       filters.forEach(filter => {
