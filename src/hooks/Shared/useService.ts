@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks';
+import { BaseService } from '@/services/BaseService';
 
 interface UseServiceOptions<T> {
   onSuccess?: (item: T, action: 'create' | 'update' | 'delete') => void;
@@ -13,7 +14,7 @@ interface UseServiceOptions<T> {
 }
 
 export function useService<T extends { id: string; company_id?: string }>(
-  service: any,
+  service: BaseService<T>,
   options: UseServiceOptions<T> = {}
 ) {
   const { toast } = useToast();
