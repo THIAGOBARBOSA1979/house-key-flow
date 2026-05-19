@@ -109,21 +109,20 @@ export class SupabaseAuth {
 
 export class SupabaseDatabase {
   static async findMany<T>(
-    table: string,
+    table: keyof Database['public']['Tables'],
     params?: {
       filters?: FilterParams[];
       pagination?: PaginationParams;
       select?: string;
     }
   ): Promise<SupabaseResponse<T[]>> {
-    const tableTyped = table as any;
-    let query = (supabase.from(tableTyped) as any).select(params?.select || '*');
+    let query = supabase.from(table).select(params?.select || '*');
 
     if (params?.filters) {
       params.filters.forEach(filter => {
         const op = filter.operator as any;
-        if (typeof query[op] === 'function') {
-          query = query[op](filter.column, filter.value);
+        if (typeof (query as any)[op] === 'function') {
+          query = (query as any)[op](filter.column, filter.value);
         }
       });
     }
@@ -144,60 +143,60 @@ export class SupabaseDatabase {
   }
 
   static async findOne<T>(
-    table: string, 
+    table: keyof Database['public']['Tables'], 
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).select('*').eq(idColumn as any, id).single();
+    const result = await supabase.from(table).select('*').eq(idColumn as any, id).single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async create<T>(
-    table: string, 
+    table: keyof Database['public']['Tables'], 
     data: any
   ): Promise<SupabaseResponse<T>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).insert(data).select().single();
+    const result = await supabase.from(table).insert(data).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async update<T>(
-    table: string, 
+    table: keyof Database['public']['Tables'], 
     id: string, 
     data: any, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).update(data).eq(idColumn as any, id).select().single();
+    const result = await supabase.from(table).update(data).eq(idColumn as any, id).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async delete(
-    table: string, 
+    table: keyof Database['public']['Tables'], 
     id: string, 
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<void>> {
-    const tableTyped = table as any;
-    const result = await (supabase.from(tableTyped) as any).delete().eq(idColumn as any, id);
+    const result = await supabase.from(table).delete().eq(idColumn as any, id);
     return SupabaseErrorHandler.wrap(Promise.resolve({ data: null, error: result.error }));
   }
 
-  static async rpc<T>(name: string, params?: any): Promise<SupabaseResponse<T>> {
-    const nameTyped = name as any;
-    const result = await supabase.rpc(nameTyped, params);
+  static async rpc<T>(
+    name: keyof Database['public']['Functions'], 
+    params?: any
+  ): Promise<SupabaseResponse<T>> {
+    const result = await supabase.rpc(name as any, params);
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
   
-  static async count(table: string, filters?: FilterParams[]): Promise<SupabaseResponse<number>> {
-    const tableTyped = table as any;
-    let query = (supabase.from(tableTyped) as any).select('*', { count: 'exact', head: true });
+  static async count(
+    table: keyof Database['public']['Tables'], 
+    filters?: FilterParams[]
+  ): Promise<SupabaseResponse<number>> {
+    let query = supabase.from(table).select('*', { count: 'exact', head: true });
 
     if (filters) {
       filters.forEach(filter => {
         const op = filter.operator as any;
-        if (typeof query[op] === 'function') {
-          query = query[op](filter.column, filter.value);
+        if (typeof (query as any)[op] === 'function') {
+          query = (query as any)[op](filter.column, filter.value);
         }
       });
     }
