@@ -1,5 +1,6 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
+import { auditLogService } from "../core/AuditLogService";
 
 export interface Technician {
   id: string;
