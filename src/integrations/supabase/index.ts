@@ -117,7 +117,7 @@ export class SupabaseDatabase {
     }
   ): Promise<SupabaseResponse<T[]>> {
     const tableTyped = table as any;
-    let query = supabase.from(tableTyped).select(params?.select || '*') as any;
+    let query = (supabase.from(tableTyped) as any).select(params?.select || '*');
 
     if (params?.filters) {
       params.filters.forEach(filter => {
@@ -149,7 +149,7 @@ export class SupabaseDatabase {
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
     const tableTyped = table as any;
-    const result = await supabase.from(tableTyped).select('*').eq(idColumn as any, id).single();
+    const result = await (supabase.from(tableTyped) as any).select('*').eq(idColumn as any, id).single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -158,7 +158,7 @@ export class SupabaseDatabase {
     data: any
   ): Promise<SupabaseResponse<T>> {
     const tableTyped = table as any;
-    const result = await supabase.from(tableTyped).insert(data).select().single();
+    const result = await (supabase.from(tableTyped) as any).insert(data).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -169,7 +169,7 @@ export class SupabaseDatabase {
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<T>> {
     const tableTyped = table as any;
-    const result = await supabase.from(tableTyped).update(data).eq(idColumn as any, id).select().single();
+    const result = await (supabase.from(tableTyped) as any).update(data).eq(idColumn as any, id).select().single();
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
@@ -179,7 +179,7 @@ export class SupabaseDatabase {
     idColumn: string = 'id'
   ): Promise<SupabaseResponse<void>> {
     const tableTyped = table as any;
-    const result = await supabase.from(tableTyped).delete().eq(idColumn as any, id);
+    const result = await (supabase.from(tableTyped) as any).delete().eq(idColumn as any, id);
     return SupabaseErrorHandler.wrap(Promise.resolve({ data: null, error: result.error }));
   }
 
@@ -191,7 +191,7 @@ export class SupabaseDatabase {
   
   static async count(table: string, filters?: FilterParams[]): Promise<SupabaseResponse<number>> {
     const tableTyped = table as any;
-    let query = supabase.from(tableTyped).select('*', { count: 'exact', head: true }) as any;
+    let query = (supabase.from(tableTyped) as any).select('*', { count: 'exact', head: true });
 
     if (filters) {
       filters.forEach(filter => {
