@@ -14,7 +14,7 @@ interface UseServiceOptions<T> {
 }
 
 export function useService<T extends { id: string; company_id?: string }>(
-  service: BaseService<T>,
+  service: any,
   options: UseServiceOptions<T> = {}
 ) {
   const { toast } = useToast();
