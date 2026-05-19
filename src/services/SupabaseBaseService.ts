@@ -1,12 +1,11 @@
-import { Supabase, FilterParams, PaginationParams } from '@/integrations/supabase';
+import { Supabase, FilterParams } from '@/integrations/supabase';
+import { Database } from '@/integrations/supabase/types';
 import { BaseService, BaseServiceOptions } from './BaseService';
 
-
 export abstract class SupabaseBaseService<T extends { id: string; company_id?: string }> extends BaseService<T> {
-  protected supabaseTable: string;
+  protected supabaseTable: keyof Database['public']['Tables'];
 
-  constructor(options: BaseServiceOptions & { supabaseTable: string }, initialData: T[] = []) {
-
+  constructor(options: BaseServiceOptions & { supabaseTable: keyof Database['public']['Tables'] }, initialData: T[] = []) {
     super(options, initialData);
     this.supabaseTable = options.supabaseTable;
   }
@@ -25,7 +24,7 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     }
 
     if (data) {
-      const deserialized = data.map(item => this.deserializeDates(item as any));
+      const deserialized = data.map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
       this.items = deserialized;
       this.persist();
       return this.items;
