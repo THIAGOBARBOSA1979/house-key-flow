@@ -1,5 +1,6 @@
 import { SupabaseService } from "../SupabaseService";
 import { Supabase, FilterParams } from "@/integrations/supabase";
+import { BaseService } from "../BaseService";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -48,11 +49,11 @@ export interface AuditLogEntry {
   metadata?: any;
 }
 
-class AuditLogService extends SupabaseService<any> {
-  private localLogs: AuditLogEntry[] = [];
+class AuditLogService extends BaseService<any> {
+  
 
   constructor() {
-    super("audit_logs");
+    super("audit_logs", []);
   }
 
   private mapToEntry(raw: any): AuditLogEntry {
@@ -125,15 +126,15 @@ class AuditLogService extends SupabaseService<any> {
   }
 
   getRecentLogs(limit: number = 20): AuditLogEntry[] {
-    return this.localLogs.slice(0, limit);
+    return this.items.slice(0, limit);
   }
 
   getAllLogs(): AuditLogEntry[] {
-    return this.localLogs;
+    return this.items;
   }
 
   getFilteredLogs(filters: any): AuditLogEntry[] {
-    return this.localLogs.filter(log => {
+    return this.items.filter(log => {
       if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
       if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
       return true;
@@ -142,16 +143,21 @@ class AuditLogService extends SupabaseService<any> {
 
   subscribe(callback: (logs: AuditLogEntry[]) => void) {
     this.getRecentLogsAsync(50).then(logs => {
-      this.localLogs = logs;
+      this.items = logs;
       callback(logs);
     });
 
     const channel = Supabase.realtime.subscribeToTable('audit_logs', async () => {
       const logs = await this.getRecentLogsAsync(50);
-      this.localLogs = logs;
+      this.items = logs;
       callback(logs);
     });
-    return () => channel.unsubscribe();
+    
+    this.listeners.push(callback);
+    return () => {
+      channel.unsubscribe();
+      this.listeners = this.listeners.filter(l => l !== callback);
+    };
   }
 
   async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
