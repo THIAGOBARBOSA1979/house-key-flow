@@ -9,7 +9,6 @@ export const ActiveProperties = () => {
   const navigate = useNavigate();
   const { properties } = useProperties();
   const activeProperties = properties.filter(p => p.status === 'progress').slice(0, 4);
-  const navigate = useNavigate();
 
   return (
     <section>

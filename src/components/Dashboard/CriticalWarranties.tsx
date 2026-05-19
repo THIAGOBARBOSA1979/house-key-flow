@@ -10,7 +10,6 @@ export const CriticalWarranties = () => {
   const criticalClaims = claims
     .filter(c => c.priority === 'high' || c.priority === 'critical')
     .slice(0, 3);
-  const navigate = useNavigate();
 
   return (
     <section>
