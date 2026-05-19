@@ -16,7 +16,8 @@ import {
 } from '../../types/warrantyFlow';
 import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService, AuditAction } from '../core/AuditLogService';
-import { BaseService } from '../BaseService';
+import { SupabaseBaseService } from '../SupabaseBaseService';
+import { Supabase } from '@/integrations/supabase';
 
 
 // Mock warranty requests data
@@ -140,19 +141,30 @@ const initialMockRequests: WarrantyRequestFlow[] = [
   }
 ];
 
-class WarrantyFlowService extends BaseService<WarrantyRequestFlow> {
+class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   private debugMode = false;
   private debugLogs: Array<{ timestamp: Date; level: 'info' | 'error'; message: string; data?: unknown }> = [];
 
   constructor() {
     super({
       storageKey: "a2_warranty_requests",
-      auditEntityType: "warranty"
+      supabaseTable: "warranty_requests" as any, // Standardizing table names later if needed
+      auditEntityType: "warranty",
+      shouldSyncWithSupabase: true
     }, initialMockRequests);
+    
     this.items = this.items.map(item => ({
       ...item,
       company_id: (item as any).company_id || "comp-1"
     } as WarrantyRequestFlow));
+    
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('warranty_requests', async () => {
+      await this.sync();
+    });
   }
 
   setDebugMode(enabled: boolean) {
