@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks';
+import { BaseService } from '@/services/BaseService';
 
 interface UseServiceOptions<T> {
   onSuccess?: (item: T, action: 'create' | 'update' | 'delete') => void;

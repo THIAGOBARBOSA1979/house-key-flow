@@ -71,7 +71,7 @@ class InspectionService extends SupabaseBaseService<Inspection> {
   }
 
   private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('inspections', async () => {
+    Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
       await this.sync();
     });
   }
