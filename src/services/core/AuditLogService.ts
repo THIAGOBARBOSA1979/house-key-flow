@@ -1,4 +1,3 @@
-import { SupabaseService } from "../SupabaseService";
 import { Supabase, FilterParams } from "@/integrations/supabase";
 import { BaseService } from "../BaseService";
 
@@ -53,7 +52,7 @@ class AuditLogService extends BaseService<any> {
   
 
   constructor() {
-    super("audit_logs", []);
+    super({ storageKey: "audit_logs", shouldSyncWithSupabase: false }, []);
   }
 
   private mapToEntry(raw: any): AuditLogEntry {
@@ -153,10 +152,10 @@ class AuditLogService extends BaseService<any> {
       callback(logs);
     });
     
-    this.listeners.push(callback);
+    (this.listeners as any).push(callback);
     return () => {
       channel.unsubscribe();
-      this.listeners = this.listeners.filter(l => l !== callback);
+      this.listeners = this.listeners.filter(l => l !== callback) as any;
     };
   }
 

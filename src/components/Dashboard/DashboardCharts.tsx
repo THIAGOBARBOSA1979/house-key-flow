@@ -139,7 +139,7 @@ export const DashboardCharts = ({
               <BarChart 
                 layout="vertical"
                 data={Object.entries(warrantyFlowService.calculateMetrics().stageDistribution)
-                  .filter(([_, value]) => value > 0)
+                  .filter(([_, value]) => (value as number) > 0)
                   .map(([key, value]) => ({ 
                     name: key === 'in_analysis' ? 'Análise' : key === 'inspection_scheduled' ? 'Vistoria' : key === 'in_execution' ? 'Execução' : key, 
                     total: value 

@@ -1,4 +1,4 @@
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
 
 export type CompanyStatus = 'active' | 'suspended' | 'cancelled';
 export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise';
@@ -39,14 +39,15 @@ const INITIAL_COMPANIES: Company[] = [
   }
 ];
 
-class CompanyService extends BaseService<Company> {
+class CompanyService extends SupabaseBaseService<Company> {
   constructor() {
     super({
       storageKey: "a2_companies",
-      auditEntityType: "system"
+      supabaseTable: "companies",
+      auditEntityType: "system",
+      shouldSyncWithSupabase: true
     }, INITIAL_COMPANIES);
   }
-
 
   getCompanyBySlug(slug: string): Company | undefined {
     return this.items.find(c => c.slug.toLowerCase() === slug.toLowerCase());
@@ -57,7 +58,6 @@ class CompanyService extends BaseService<Company> {
     if (!slugLower) return false;
     return !this.items.some(c => c.slug.toLowerCase() === slugLower && c.id !== excludeId);
   }
-
 
   updateSubscription(id: string, plan: SubscriptionPlan, expiresAt?: Date) {
     return this.update(id, {

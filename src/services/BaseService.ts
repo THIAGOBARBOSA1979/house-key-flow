@@ -26,11 +26,11 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
   subscribe(listener: Listener<T>) {
-    this.listeners.push(listener);
+    (this.listeners as Listener<T>[]).push(listener);
     return () => {
-      const index = this.listeners.indexOf(listener);
+      const index = (this.listeners as Listener<T>[]).indexOf(listener);
       if (index !== -1) {
-        this.listeners.splice(index, 1);
+        (this.listeners as Listener<T>[]).splice(index, 1);
       }
     };
   }
@@ -124,18 +124,17 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
   create(item: Omit<T, "id">, companyId?: string): T {
+    const id = (item as any).id || crypto.randomUUID();
     const newItem = {
       ...item,
-      id: (item as any).id || crypto.randomUUID(),
+      id,
       company_id: companyId || (item as any).company_id
     } as T;
+    
     this.items.push(newItem);
     this.persist();
     
-    this.log('created', newItem.id, `Item criado em ${this.options.storageKey}`);
-    
-    // Persistence logic handled by subclasses or local storage
-
+    this.log('created', id, `Registro criado em ${this.options.storageKey}`);
     
     return newItem;
   }
@@ -144,17 +143,15 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     const index = this.items.findIndex(item => item.id === id);
 
     if (index === -1) return undefined;
+    
     const oldItem = { ...this.items[index] };
     this.items[index] = { ...this.items[index], ...data };
     this.persist();
     
-    this.log('updated', id, `Item atualizado em ${this.options.storageKey}`, {
+    this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, {
       changes: data,
       previous: oldItem
     });
-    
-    // Persistence logic handled by subclasses or local storage
-
     
     return this.items[index];
   }
@@ -162,13 +159,10 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   delete(id: string): boolean {
     const initialLength = this.items.length;
     this.items = this.items.filter(item => item.id !== id);
+    
     if (this.items.length !== initialLength) {
       this.persist();
-      this.log('deleted', id, `Item removido de ${this.options.storageKey}`);
-      
-      // Persistence logic handled by subclasses or local storage
-
-      
+      this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
       return true;
     }
 

@@ -69,6 +69,7 @@ class SystemSettingsService {
   private storageKey = "a2_system_settings";
 
   constructor() {
+    if (typeof window === 'undefined') return;
     const stored = localStorage.getItem(this.storageKey);
     if (stored) {
       try {

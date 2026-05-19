@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SupabaseBaseService } from "../SupabaseBaseService";
-
+import { Supabase } from "@/integrations/supabase";
 import { Property, PropertyMilestone, PropertyUnit, PropertyMetrics } from "@/types/property";
 
 export const propertyMilestoneSchema = z.object({
@@ -66,6 +66,13 @@ class PropertyService extends SupabaseBaseService<Property> {
       auditEntityType: "property",
       shouldSyncWithSupabase: true
     }, INITIAL_PROPERTIES);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('properties', async () => {
+      await this.sync();
+    });
   }
 
 

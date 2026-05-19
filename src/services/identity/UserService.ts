@@ -21,13 +21,13 @@ class UserService extends SupabaseBaseService<User> {
 
   protected mapToSupabase(user: User): any {
     return {
-      id: user.id,
       full_name: user.name,
       role: user.role,
       company_id: user.company_id,
       status: user.status
     };
   }
+
 
   protected mapFromSupabase(raw: any): User {
     return {

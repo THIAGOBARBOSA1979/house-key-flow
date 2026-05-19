@@ -1,4 +1,5 @@
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 import { auditLogService } from "../core/AuditLogService";
 
 export interface Installment {
@@ -24,9 +25,21 @@ const INITIAL_INSTALLMENTS: Installment[] = [
   { id: 'inst-3', number: 3, dueDate: new Date(2024, 6, 15), value: 2500, status: 'pending', type: 'monthly' },
 ];
 
-class FinancialService extends BaseService<Installment> {
+class FinancialService extends SupabaseBaseService<Installment> {
   constructor() {
-    super("a2_financial_data", INITIAL_INSTALLMENTS);
+    super({
+      storageKey: "a2_financial_data",
+      supabaseTable: "installments" as any,
+      auditEntityType: "financial",
+      shouldSyncWithSupabase: true
+    }, INITIAL_INSTALLMENTS);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('installments', async () => {
+      await this.sync();
+    });
   }
 
   getInstallmentsByClient(clientId: string, companyId?: string, isSuperAdmin?: boolean): Installment[] { 

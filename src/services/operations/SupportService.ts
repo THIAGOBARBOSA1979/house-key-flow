@@ -1,5 +1,5 @@
-import { BaseService } from "../BaseService";
-import { auditLogService } from "../core/AuditLogService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
@@ -49,9 +49,21 @@ const INITIAL_TICKETS: SupportTicket[] = [
   }
 ];
 
-export class SupportService extends BaseService<SupportTicket> {
+export class SupportService extends SupabaseBaseService<SupportTicket> {
   constructor() {
-    super("a2_support_tickets", INITIAL_TICKETS);
+    super({
+      storageKey: "a2_support_tickets",
+      supabaseTable: "support_tickets" as any,
+      auditEntityType: "system",
+      shouldSyncWithSupabase: true
+    }, INITIAL_TICKETS);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('support_tickets', async () => {
+      await this.sync();
+    });
   }
 
   protected loadFromStorage() {

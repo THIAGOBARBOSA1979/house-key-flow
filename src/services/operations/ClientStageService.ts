@@ -1,19 +1,24 @@
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 import { 
   ClientProfile, 
   ClientStage, 
   StageChange, 
   ClientEvent, 
-  EventType, 
   StagePermissions,
   STAGE_PERMISSIONS
 } from "@/types/clientFlow";
 
-class ClientStageService extends BaseService<ClientProfile> {
+class ClientStageService extends SupabaseBaseService<ClientProfile> {
   private events: ClientEvent[] = [];
 
   constructor() {
-    super("a2_client_profiles", [
+    super({
+      storageKey: "a2_client_profiles",
+      supabaseTable: "client_profiles" as any,
+      auditEntityType: "user",
+      shouldSyncWithSupabase: true
+    }, [
       { 
         id: "client-1", 
         company_id: "comp-1",
@@ -27,6 +32,13 @@ class ClientStageService extends BaseService<ClientProfile> {
         stageHistory: []
       }
     ]);
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('client_profiles', async () => {
+      await this.sync();
+    });
   }
 
   protected loadFromStorage() {

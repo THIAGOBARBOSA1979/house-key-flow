@@ -1,4 +1,5 @@
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
 export interface ChecklistItem {
   id: string;
@@ -55,12 +56,24 @@ const INITIAL_TEMPLATES: ChecklistTemplate[] = [
   }
 ];
 
-class ChecklistService extends BaseService<ChecklistTemplate> {
+class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
   private executions: ChecklistExecutionRecord[] = [];
 
   constructor() {
-    super("a2_checklist_templates", INITIAL_TEMPLATES);
+    super({
+      storageKey: "a2_checklist_templates",
+      supabaseTable: "checklist_templates" as any,
+      auditEntityType: "checklist",
+      shouldSyncWithSupabase: true
+    }, INITIAL_TEMPLATES);
     this.loadExecutions();
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('checklist_templates', async () => {
+      await this.sync();
+    });
   }
 
   private loadExecutions() {

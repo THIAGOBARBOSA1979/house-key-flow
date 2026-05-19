@@ -13,7 +13,7 @@ export class NotificationService extends BaseService<ClientNotification> {
   private settingsKey = "a2_notification_settings";
 
   constructor() {
-    super("a2_notifications", []);
+    super({ storageKey: "a2_notifications", shouldSyncWithSupabase: false }, []);
     this.loadSettings();
     
     // Initialize with mock data if empty
