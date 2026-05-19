@@ -11,6 +11,8 @@ export function useDataList<T extends { id: string }>(
   items: T[],
   options: UseDataListOptions<T> = {}
 ) {
+  const { itemsPerPage = 0 } = options;
+
   const [filters, setFilters] = useState<Record<string, any>>(options.initialFilters || {});
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,12 +47,13 @@ export function useDataList<T extends { id: string }>(
   }, [items, filters, searchTerm, options]);
 
   const paginatedItems = useMemo(() => {
-    if (!options.itemsPerPage) return filteredItems;
-    const start = (currentPage - 1) * options.itemsPerPage;
-    return filteredItems.slice(start, start + options.itemsPerPage);
-  }, [filteredItems, currentPage, options.itemsPerPage]);
+    if (!itemsPerPage) return filteredItems;
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(start, start + itemsPerPage);
+  }, [filteredItems, currentPage, itemsPerPage]);
 
-  const totalPages = options.itemsPerPage ? Math.ceil(filteredItems.length / options.itemsPerPage) : 1;
+
+  const totalPages = itemsPerPage ? Math.ceil(filteredItems.length / itemsPerPage) : 1;
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds(prev =>
