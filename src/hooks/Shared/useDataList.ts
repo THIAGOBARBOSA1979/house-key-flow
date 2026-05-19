@@ -4,6 +4,7 @@ export interface UseDataListOptions<T> {
   initialFilters?: Record<string, any>;
   filterFn?: (item: T, filters: any) => boolean;
   sortFn?: (a: T, b: T) => number;
+  itemsPerPage?: number;
 }
 
 export function useDataList<T extends { id: string }>(
@@ -13,6 +14,8 @@ export function useDataList<T extends { id: string }>(
   const [filters, setFilters] = useState<Record<string, any>>(options.initialFilters || {});
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredItems = useMemo(() => {
     let result = [...items];
@@ -41,6 +44,14 @@ export function useDataList<T extends { id: string }>(
     return result;
   }, [items, filters, searchTerm, options]);
 
+  const paginatedItems = useMemo(() => {
+    if (!options.itemsPerPage) return filteredItems;
+    const start = (currentPage - 1) * options.itemsPerPage;
+    return filteredItems.slice(start, start + options.itemsPerPage);
+  }, [filteredItems, currentPage, options.itemsPerPage]);
+
+  const totalPages = options.itemsPerPage ? Math.ceil(filteredItems.length / options.itemsPerPage) : 1;
+
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
@@ -62,6 +73,10 @@ export function useDataList<T extends { id: string }>(
 
   return {
     filteredItems,
+    paginatedItems,
+    currentPage,
+    setCurrentPage,
+    totalPages,
     filters,
     setFilters,
     selectedIds,
