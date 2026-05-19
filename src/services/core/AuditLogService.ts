@@ -83,7 +83,7 @@ class AuditLogService extends BaseService<any> {
     if (params.action && params.action !== 'all') filters.push({ column: 'action', operator: 'eq', value: params.action });
     if (params.entityType && params.entityType !== 'all') filters.push({ column: 'entity_type', operator: 'eq', value: params.entityType });
 
-    const { data, error } = await Supabase.db.findMany<any>(this.table, {
+    const { data, error } = await Supabase.db.findMany<any>(this.options.storageKey, {
       filters,
       pagination: {
         page: params.page || 1,

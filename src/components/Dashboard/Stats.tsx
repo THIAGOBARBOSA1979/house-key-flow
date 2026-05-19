@@ -1,9 +1,8 @@
-
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Building, ShieldCheck, ClipboardCheck, Activity } from "lucide-react";
 import { StatsCard } from "@/components/Shared/StatsCard";
-import { propertyService, inspectionService, warrantyFlowService } from "@/services";
+import { useProperties, useInspections, useWarranty } from "@/hooks";
 
 interface StatItem {
   title: string;
@@ -15,9 +14,9 @@ interface StatItem {
 }
 
 export const Stats = ({ className }: { className?: string }) => {
-  const properties = useMemo(() => propertyService.getAll(), []);
-  const inspections = useMemo(() => inspectionService.getAll(), []);
-  const warranties = useMemo(() => warrantyFlowService.getAllRequests(), []);
+  const { properties } = useProperties();
+  const { inspections } = useInspections();
+  const { requests: warranties } = useWarranty();
 
   const stats: StatItem[] = useMemo(() => [
     {
