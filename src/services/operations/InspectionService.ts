@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
 import { auditLogService } from "../core/AuditLogService";
 import { technicianService, Technician } from "../operations/TechnicianService";
 
@@ -59,13 +59,16 @@ const INITIAL_INSPECTIONS: Inspection[] = [
   },
 ];
 
-class InspectionService extends BaseService<Inspection> {
+class InspectionService extends SupabaseBaseService<Inspection> {
   constructor() {
     super({
       storageKey: "a2_inspections",
-      auditEntityType: "inspection"
+      supabaseTable: "inspections",
+      auditEntityType: "inspection",
+      shouldSyncWithSupabase: true
     }, INITIAL_INSPECTIONS);
   }
+
 
 
 
@@ -109,15 +112,8 @@ class InspectionService extends BaseService<Inspection> {
     } as Omit<Inspection, "id">);
 
 
-    auditLogService.log({
-      entityType: 'inspection',
-      entityId: newInspection.id,
-      action: 'scheduled',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`
-    });
+    this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`);
+
 
     return newInspection;
   }
@@ -126,16 +122,11 @@ class InspectionService extends BaseService<Inspection> {
     const oldItem = this.getById(id);
     const updated = super.update(id, { status });
     if (updated) {
-      auditLogService.log({
-        entityType: 'inspection',
-        entityId: id,
-        action: 'stage_changed',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: details || `Status da vistoria alterado de ${oldItem?.status} para ${status}.`,
-        metadata: { oldStatus: oldItem?.status, newStatus: status }
+      this.log('stage_changed', id, details || `Status da vistoria alterado de ${oldItem?.status} para ${status}.`, {
+        oldStatus: oldItem?.status,
+        newStatus: status
       });
+
     }
     return updated;
   }

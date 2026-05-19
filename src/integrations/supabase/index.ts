@@ -110,6 +110,7 @@ export class SupabaseAuth {
 export class SupabaseDatabase {
   static async findMany<T>(
     table: string,
+
     params?: {
       filters?: FilterParams[];
       pagination?: PaginationParams;
@@ -119,10 +120,13 @@ export class SupabaseDatabase {
     // @ts-ignore
     let query = supabase.from(table).select(params?.select || '*');
 
+
     if (params?.filters) {
       params.filters.forEach(filter => {
-        // @ts-ignore
-        query = query[filter.operator](filter.column, filter.value);
+        const op = filter.operator as any;
+        if (typeof (query as any)[op] === 'function') {
+          query = (query as any)[op](filter.column, filter.value);
+        }
       });
     }
 
@@ -143,31 +147,36 @@ export class SupabaseDatabase {
 
   static async findOne<T>(table: string, id: string, idColumn: string = 'id'): Promise<SupabaseResponse<T>> {
     // @ts-ignore
-    const result = await supabase.from(table).select('*').eq(idColumn, id).single();
+    const result = await supabase.from(table).select('*').eq(idColumn as any, id).single();
+
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async create<T>(table: string, data: Partial<T>): Promise<SupabaseResponse<T>> {
     // @ts-ignore
     const result = await supabase.from(table).insert(data as any).select().single();
+
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async update<T>(table: string, id: string, data: Partial<T>, idColumn: string = 'id'): Promise<SupabaseResponse<T>> {
     // @ts-ignore
-    const result = await supabase.from(table).update(data as any).eq(idColumn, id).select().single();
+    const result = await supabase.from(table).update(data as any).eq(idColumn as any, id).select().single();
+
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
 
   static async delete(table: string, id: string, idColumn: string = 'id'): Promise<SupabaseResponse<void>> {
     // @ts-ignore
-    const result = await supabase.from(table).delete().eq(idColumn, id);
+    const result = await supabase.from(table).delete().eq(idColumn as any, id);
+
     return SupabaseErrorHandler.wrap(Promise.resolve({ data: null, error: result.error }));
   }
 
   static async rpc<T>(name: string, params?: any): Promise<SupabaseResponse<T>> {
     // @ts-ignore
     const result = await supabase.rpc(name, params);
+
     return SupabaseErrorHandler.wrap(Promise.resolve(result as any));
   }
   
@@ -175,10 +184,13 @@ export class SupabaseDatabase {
     // @ts-ignore
     let query = supabase.from(table).select('*', { count: 'exact', head: true });
 
+
     if (filters) {
       filters.forEach(filter => {
-        // @ts-ignore
-        query = query[filter.operator](filter.column, filter.value);
+        const op = filter.operator as any;
+        if (typeof (query as any)[op] === 'function') {
+          query = (query as any)[op](filter.column, filter.value);
+        }
       });
     }
 

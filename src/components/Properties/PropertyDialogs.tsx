@@ -1,7 +1,7 @@
 import { Property } from "@/types/property";
 import { PropertyForm } from "./PropertyForm";
 import { PropertyDetailsDialog } from "./PropertyDetailsDialog";
-import { FormDialog } from "@/components/Shared/FormDialog";
+import { EntityDialogs } from "@/components/Shared/EntityDialogs";
 
 interface PropertyDialogsProps {
   isFormOpen: boolean;
@@ -23,13 +23,14 @@ export const PropertyDialogs = ({
   onRefresh
 }: PropertyDialogsProps) => {
   return (
-    <>
-      <FormDialog
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        title={`${editingProperty ? "Editar" : "Novo"} Empreendimento`}
-        maxWidth="sm:max-w-[700px]"
-      >
+    <EntityDialogs
+      entityName="Empreendimento"
+      isFormOpen={isFormOpen}
+      setIsFormOpen={setIsFormOpen}
+      editingEntity={editingProperty}
+      selectedEntity={selectedProperty}
+      setSelectedEntity={setSelectedProperty}
+      formComponent={
         <PropertyForm 
           onSubmit={(data) => {
             onSave(editingProperty?.id, data);
@@ -38,16 +39,17 @@ export const PropertyDialogs = ({
           onCancel={() => setIsFormOpen(false)}
           initialData={editingProperty || undefined}
         />
-      </FormDialog>
-
-      {selectedProperty && (
-        <PropertyDetailsDialog 
-          open={!!selectedProperty} 
-          onOpenChange={(open) => !open && setSelectedProperty(null)} 
-          property={selectedProperty} 
-          onUpdate={onRefresh}
-        />
-      )}
-    </>
+      }
+      detailsComponent={
+        selectedProperty && (
+          <PropertyDetailsDialog 
+            open={!!selectedProperty} 
+            onOpenChange={(open) => !open && setSelectedProperty(null)} 
+            property={selectedProperty} 
+            onUpdate={onRefresh}
+          />
+        )
+      }
+    />
   );
 };

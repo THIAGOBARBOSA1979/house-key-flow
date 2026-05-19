@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+
 import { Property, PropertyMilestone, PropertyUnit, PropertyMetrics } from "@/types/property";
 
 export const propertyMilestoneSchema = z.object({
@@ -57,13 +58,16 @@ const INITIAL_PROPERTIES: Property[] = [
   { id: "3", company_id: "comp-1", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200, createdAt: new Date(2023, 10, 1) },
 ];
 
-class PropertyService extends BaseService<Property> {
+class PropertyService extends SupabaseBaseService<Property> {
   constructor() {
     super({
       storageKey: "a2_properties",
-      auditEntityType: "property"
+      supabaseTable: "properties",
+      auditEntityType: "property",
+      shouldSyncWithSupabase: true
     }, INITIAL_PROPERTIES);
   }
+
 
   create(property: Omit<Property, "id">, companyId?: string): Property {
     return super.create({

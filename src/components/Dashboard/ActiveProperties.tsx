@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { DataView } from "@/components/Shared/DataView";
 import { PropertyCard } from "@/components/Properties/PropertyCard";
 import { useProperties } from "@/hooks";
+
 
 export const ActiveProperties = () => {
   const navigate = useNavigate();
@@ -27,12 +28,15 @@ export const ActiveProperties = () => {
           <ChevronRight size={16} />
         </Button>
       </div>
-      <ResponsiveGrid columns={2} mobileCols={1} tabletCols={2} gap="layout" className="animate-in fade-in slide-in-from-left-4 duration-slow">
-        {activeProperties.map((property) => (
+      <DataView
+        items={activeProperties}
+        viewMode="grid"
+        gridClassName="animate-in fade-in slide-in-from-left-4 duration-slow"
+        renderGrid={(property) => (
           <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
-        ))}
+        )}
+      />
 
-      </ResponsiveGrid>
     </section>
   );
 };
