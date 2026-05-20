@@ -44,6 +44,7 @@ export type EventType =
 // Interfaces
 export interface ClientProfile {
   id: string;
+  userId?: string;
   company_id?: string;
   name: string;
   email: string;
@@ -52,6 +53,8 @@ export interface ClientProfile {
   propertyId: string;
   propertyName: string;
   unitNumber: string;
+  block?: string;
+  floor?: string;
   createdAt: Date;
   stageHistory: StageChange[];
 }

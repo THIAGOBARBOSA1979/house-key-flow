@@ -20,8 +20,8 @@ import { TechnicalSheet } from "@/components/Dashboard/Client/TechnicalSheet";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const clientId = user?.id || "client-1";
-  const { stage, isLoading: stageLoading } = useClientStage(clientId);
+  const userId = user?.id || "client-1";
+  const { profile, stage, isLoading: stageLoading } = useClientStage(userId);
   
   const {
     isLoading,
@@ -29,15 +29,15 @@ const Dashboard = () => {
     allDocs,
     allInspections,
     warrantyRequests
-  } = useClientDashboardData(clientId, user?.name);
+  } = useClientDashboardData(profile?.id || userId, user?.name);
   
-  const userInfo = {
+  const userInfo = useMemo(() => ({
     name: user?.name?.split(' ')[0] || "Cliente",
-    property: "Residencial Aurora",
-    unit: "204",
+    property: profile?.propertyName || "Seu Empreendimento",
+    unit: profile?.unitNumber || "N/A",
     deliveryDate: new Date(2025, 11, 15),
     contractDate: new Date(2023, 5, 10),
-  };
+  }), [user, profile]);
 
   const unreadCount = 3;
 

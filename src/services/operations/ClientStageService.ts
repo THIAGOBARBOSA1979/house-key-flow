@@ -21,7 +21,8 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
       shouldSyncWithSupabase: false
     }, [
       { 
-        id: "client-1", 
+        id: "profile-1", 
+        userId: "client-1",
         company_id: "comp-1",
         name: "João Silva", 
         email: "joao@email.com", 
@@ -29,6 +30,19 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
         propertyId: "1",
         unitNumber: "204", 
         currentStage: "inspection_enabled",
+        createdAt: new Date(),
+        stageHistory: []
+      },
+      { 
+        id: "profile-2", 
+        userId: "client-1",
+        company_id: "comp-1",
+        name: "João Silva", 
+        email: "joao@email.com", 
+        propertyName: "Residencial Bosque Verde", 
+        propertyId: "2",
+        unitNumber: "102", 
+        currentStage: "warranty_enabled",
         createdAt: new Date(),
         stageHistory: []
       }
@@ -57,6 +71,10 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
 
   getAllProfiles(companyId?: string, isSuperAdmin?: boolean): ClientProfile[] {
     return [...this.getAll(companyId, isSuperAdmin)];
+  }
+
+  getProfilesByUserId(userId: string): ClientProfile[] {
+    return this.items.filter(p => p.userId === userId || p.id === userId);
   }
 
   getClientProfile(id: string, companyId?: string, isSuperAdmin?: boolean): ClientProfile | undefined {

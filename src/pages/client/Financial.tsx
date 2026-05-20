@@ -1,8 +1,8 @@
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, DollarSign } from "lucide-react";
-import { financialService } from "@/services";
+import { financialService, Installment } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMemo } from "react";
 import { useToast } from "@/hooks";
 
 import { FinancialOverview } from "@/components/Client/Financial/FinancialOverview";
@@ -17,8 +17,17 @@ const Financial = () => {
   const { toast } = useToast();
   const clientId = user?.id || "client-1";
 
-  const summary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
-  const installments = useMemo(() => financialService.getInstallmentsByClient(clientId), [clientId]);
+  const [installments, setInstallments] = useState<Installment[]>([]);
+  
+  const loadData = useCallback(() => {
+    setInstallments(financialService.getInstallmentsByClient(clientId));
+  }, [clientId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const summary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId, installments]);
 
   const historyData = useMemo(() => {
     return installments
@@ -29,6 +38,14 @@ const Financial = () => {
         value: i.value
       }));
   }, [installments]);
+
+  const handlePay = (id: string) => {
+    const success = financialService.processPayment(id);
+    if (success) {
+      toast({ title: "Pagamento recebido", description: "Sua parcela foi liquidada com sucesso no sistema." });
+      loadData();
+    }
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -84,7 +101,7 @@ const Financial = () => {
         </div>
       </div>
 
-      <InstallmentsTable installments={installments} formatCurrency={formatCurrency} />
+      <InstallmentsTable installments={installments} formatCurrency={formatCurrency} onPay={handlePay} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
         <AntecipationSimulator formatCurrency={formatCurrency} />

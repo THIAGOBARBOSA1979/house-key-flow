@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { safeFormat } from "@/lib/utils";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
+import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
 import { documentService } from "@/services";
 import { useToast } from "@/hooks";
 import { useClientStage } from "@/hooks";
@@ -31,6 +32,7 @@ export default function ClientInspections() {
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [inspections, setInspections] = useState<any[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isSignatureOpen, setIsSignatureOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
 
   const loadInspections = () => {
@@ -55,6 +57,10 @@ export default function ClientInspections() {
     }
   };
 
+  const handleOpenSignature = () => {
+    setIsSignatureOpen(true);
+  };
+
   const timelineItems: TimelineItem[] = [
     { id: '1', title: 'Agendamento Confirmado', date: inspection?.scheduledDate, status: 'completed', eventType: 'inspection_scheduled' },
     { id: '2', title: 'Realização da Vistoria', status: inspection?.status === 'complete' ? 'completed' : 'current', eventType: 'inspection_completed' },
@@ -63,6 +69,12 @@ export default function ClientInspections() {
 
   return (
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 animate-in fade-in duration-slow">
+      <DigitalSignatureDialog
+        isOpen={isSignatureOpen}
+        onClose={() => setIsSignatureOpen(false)}
+        documentId={selectedInspection || "insp-1"}
+        documentTitle={`Relatório de Vistoria - ${inspection?.unit || ''}`}
+      />
       <DocumentPreviewDialog 
         isOpen={isPreviewOpen} 
         onClose={() => setIsPreviewOpen(false)} 
@@ -212,7 +224,12 @@ export default function ClientInspections() {
                         <p className="text-xs text-muted-foreground font-medium">Formalize o recebimento do laudo técnico com segurança digital.</p>
                       </div>
                     </div>
-                    <Button className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-11 shadow-lg shadow-primary/20">Assinar Agora</Button>
+                    <Button 
+                      className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-11 shadow-lg shadow-primary/20"
+                      onClick={handleOpenSignature}
+                    >
+                      Assinar Agora
+                    </Button>
                   </div>
                 )}
               </CardContent>

@@ -13,6 +13,13 @@ import { useClientStage } from "@/hooks";
 import { useNotifications } from "@/hooks";
 import { ScheduleMeetingDialog } from "@/components/ClientFlow/ScheduleMeetingDialog";
 import { QuickLauncher } from "@/components/Shared/QuickLauncher";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 const ClientNavLink = ({
   to,
@@ -200,7 +207,7 @@ const ClientLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const clientId = user?.id || "client-1";
-  const { profile } = useClientStage(clientId);
+  const { profile, allProfiles, selectedProfileId, setSelectedProfileId } = useClientStage(clientId);
   const { unreadCount, notifications, markAllAsRead } = useNotifications(clientId);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -299,6 +306,29 @@ const ClientLayout = () => {
               </p>
             </div>
           </Link>
+          
+          {allProfiles.length > 1 && (
+            <div className="mt-4 px-4">
+              <div className="flex flex-col gap-2 bg-muted/30 p-4 rounded-2xl border border-border/10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Building size={12} className="text-primary" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Selecionar Unidade</span>
+                </div>
+                <Select value={selectedProfileId || ""} onValueChange={setSelectedProfileId}>
+                  <SelectTrigger className="h-10 border-none bg-background shadow-none font-bold text-xs w-full focus:ring-0 rounded-xl">
+                    <SelectValue placeholder="Trocar Unidade" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-2xl">
+                    {allProfiles.map(p => (
+                      <SelectItem key={p.id} value={p.id} className="rounded-lg font-bold text-xs">
+                        {p.propertyName} - {p.unitNumber}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
         </div>
         <div className="px-6 py-2">
            <div className="h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
@@ -358,12 +388,32 @@ const ClientLayout = () => {
       <div className="lg:ml-sidebar-width min-h-screen flex flex-col">
         {/* Desktop header - simplified without images */}
         <header className="sticky top-0 z-30 hidden lg:flex items-center justify-between h-20 px-6 lg:px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
-          <div className="flex flex-col">
-            <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <span className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Portal do Cliente A2</span>
+          <div className="flex items-center gap-8">
+            <div className="flex flex-col">
+              <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Portal do Cliente A2</span>
+              </div>
             </div>
+
+            {allProfiles.length > 1 && (
+              <div className="flex items-center gap-2 bg-muted/40 p-1.5 rounded-2xl border border-border/50">
+                <Building size={14} className="ml-2 text-primary" />
+                <Select value={selectedProfileId || ""} onValueChange={setSelectedProfileId}>
+                  <SelectTrigger className="h-8 border-none bg-transparent shadow-none font-bold text-xs min-w-[200px] focus:ring-0">
+                    <SelectValue placeholder="Selecionar Unidade" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-2xl">
+                    {allProfiles.map(p => (
+                      <SelectItem key={p.id} value={p.id} className="rounded-lg font-bold text-xs">
+                        {p.propertyName} - {p.unitNumber}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           
           <div className="flex items-center gap-6">
