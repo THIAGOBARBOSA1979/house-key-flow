@@ -125,7 +125,7 @@ export default function Inspections() {
         <TabsContent value="list" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <FilterBar searchPlaceholder="Buscar..." searchValue={searchTerm} onSearchChange={setSearchTerm}>
             <div className="flex flex-wrap gap-2 w-full lg:w-auto">
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <Select value={filters.status} onValueChange={(val) => setFilters(prev => ({ ...prev, status: val }))}>
                 <SelectTrigger className="w-full sm:w-[160px] rounded-lg">
                   <div className="flex items-center gap-2"><Filter className="h-3 w-3 text-muted-foreground" /><SelectValue placeholder="Status" /></div>
                 </SelectTrigger>
@@ -138,7 +138,7 @@ export default function Inspections() {
                 </SelectContent>
               </Select>
 
-              <Select value={filterProperty} onValueChange={setFilterProperty}>
+              <Select value={filters.property} onValueChange={(val) => setFilters(prev => ({ ...prev, property: val }))}>
                 <SelectTrigger className="w-full sm:w-[180px] rounded-lg">
                   <div className="flex items-center gap-2"><Building className="h-3 w-3 text-muted-foreground" /><SelectValue placeholder="Empreendimento" /></div>
                 </SelectTrigger>
@@ -149,6 +149,7 @@ export default function Inspections() {
                   <SelectItem value="Condomínio Monte Azul">Condomínio Monte Azul</SelectItem>
                 </SelectContent>
               </Select>
+
             </div>
           </FilterBar>
 
