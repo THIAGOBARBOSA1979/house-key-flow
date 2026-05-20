@@ -8,10 +8,9 @@ import { Button } from "@/components/ui/button";
 import { User as UserIcon, UserCheck, Plus, Download, Key } from "lucide-react";
 import { UserForm } from "@/components/Users/UserForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
-import { UserService } from "@/services/identity/UserService";
-import { InspectionService } from "@/services/operations/InspectionService";
+import { userService } from "@/services/identity/UserService";
+import { inspectionService } from "@/services/operations/InspectionService";
 import { useToast } from "@/hooks/Shared/use-toast";
-import { ClientDetailsSheet } from "@/components/Client/ClientDetailsSheet";
 import { User as UserProfile } from "@/types/user";
 
 const ClientArea = () => {
@@ -21,8 +20,6 @@ const ClientArea = () => {
   const [loading, setLoading] = useState(true);
   const [isNewClientDialogOpen, setNewClientDialogOpen] = useState(false);
   const [isCredentialsDialogOpen, setCredentialsDialogOpen] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<UserProfile | null>(null);
-  const [isDetailsSheetOpen, setDetailsSheetOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -32,7 +29,7 @@ const ClientArea = () => {
   const loadClients = async () => {
     setLoading(true);
     try {
-      const { data, error } = await UserService.getAllProfiles();
+      const { data, error } = await (userService as any).getAllProfiles();
       if (error) throw error;
       setAllProfiles(data || []);
     } catch (error: any) {
@@ -48,7 +45,7 @@ const ClientArea = () => {
 
   const handleCreateClient = async (data: any) => {
     try {
-      const { error } = await UserService.createProfile(data);
+      const { error } = await (userService as any).createProfile(data);
       if (error) throw error;
       
       toast({
@@ -72,33 +69,6 @@ const ClientArea = () => {
       description: "As credenciais de acesso foram enviadas para o email do cliente.",
     });
     setCredentialsDialogOpen(false);
-  };
-
-  const handleUpdateStatus = async (userId: string) => {
-    toast({
-      title: "Status atualizado",
-      description: "O estágio da jornada do cliente foi atualizado.",
-    });
-    loadClients();
-  };
-
-  const handleViewClientDetails = (client: UserProfile) => {
-    setSelectedClient(client);
-    setDetailsSheetOpen(true);
-  };
-
-  const handleViewInspectionDetails = (inspectionId: string) => {
-    toast({
-      title: "Visualizar vistoria",
-      description: `Abrindo detalhes da vistoria ${inspectionId}`,
-    });
-  };
-
-  const handleViewWarrantyDetails = (warrantyId: string) => {
-    toast({
-      title: "Visualizar garantia",
-      description: `Abrindo detalhes da garantia ${warrantyId}`,
-    });
   };
 
   const filteredClients = allProfiles.filter(client => 
@@ -143,13 +113,11 @@ const ClientArea = () => {
       <DataView
         items={filteredClients}
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
         isLoading={loading}
         renderItem={(client) => (
           <div 
             key={client.id} 
             className="card-standard p-6 cursor-pointer interactive-hover"
-            onClick={() => handleViewClientDetails(client)}
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -175,17 +143,6 @@ const ClientArea = () => {
           </div>
         )}
       />
-
-      {selectedClient && (
-        <ClientDetailsSheet
-          isOpen={isDetailsSheetOpen}
-          onClose={() => setDetailsSheetOpen(false)}
-          client={selectedClient as any}
-          onViewInspectionDetails={handleViewInspectionDetails}
-          onViewWarrantyDetails={handleViewWarrantyDetails}
-          onStageUpdate={() => handleUpdateStatus(selectedClient.id)}
-        />
-      )}
 
       {/* Dialogs */}
       <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>
