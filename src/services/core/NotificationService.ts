@@ -9,7 +9,7 @@ import {
 } from '@/types/clientFlow';
 
 export class NotificationService extends BaseService<ClientNotification> {
-  private settings: Map<string, NotificationSettings> = new Map();
+  private settingsMap: Map<string, NotificationSettings> = new Map();
   private settingsKey = "a2_notification_settings";
 
   constructor() {
