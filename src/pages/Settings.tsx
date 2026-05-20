@@ -14,6 +14,8 @@ import { GeneralTab } from "@/components/Settings/GeneralTab";
 import { CompanyTab } from "@/components/Settings/CompanyTab";
 import { BrandingTab } from "@/components/Settings/BrandingTab";
 import { NotificationsTab } from "@/components/Settings/NotificationsTab";
+import { SecurityTab } from "@/components/Settings/SecurityTab";
+import { WarrantyTab } from "@/components/Settings/WarrantyTab";
 
 const Settings = () => {
   const {
