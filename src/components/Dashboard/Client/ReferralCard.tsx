@@ -9,12 +9,12 @@ export const ReferralCard = () => (
        <div className="p-3 bg-white/20 rounded-2xl w-fit mb-4">
          <Gift className="h-6 w-6 text-white" />
        </div>
-       <CardTitle className="text-2xl font-black leading-tight">Indique um Amigo</CardTitle>
-       <CardDescription className="text-emerald-100 font-medium">Ganhe descontos exclusivos na sua parcela por cada indicação.</CardDescription>
+       <CardTitle className="text-2xl font-black leading-tight">Indicação Técnica</CardTitle>
+       <CardDescription className="text-emerald-100 font-medium">Indique novos parceiros e ajude a fortalecer nossa rede de excelência.</CardDescription>
     </CardHeader>
     <CardContent>
       <Button className="w-full bg-white text-emerald-600 hover:bg-white/90 rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 shadow-lg">
-        Conhecer Programa
+        Indicar Agora
       </Button>
     </CardContent>
   </Card>
