@@ -1,19 +1,18 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Users as UsersIcon, Plus, Upload, MoreHorizontal, Pencil, Trash2, ShieldCheck, Mail } from "lucide-react";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { Button } from "@/components/ui/button";
-import { UserFilters } from "@/components/Users/UserFilters";
-import { UserCard } from "@/components/Users/UserCard";
-import { UserDialogs } from "@/components/Users/UserDialogs";
+import { UserFilters } from "@/components/identity/UserFilters";
+import { UserCard } from "@/components/identity/UserCard";
+import { UserDialogs } from "@/components/identity/UserDialogs";
 import { useToast, useConfirm } from "@/hooks";
 import { DataView, DataViewMode } from "@/components/Shared/DataView";
 import { exportService } from "@/services";
 import { useUsers } from "@/hooks";
-import { auditLogService } from "@/services";
 import { User as UserType, UserFiltersData } from "@/types/user";
-import { UserStats } from "@/components/Users/UserStats";
-import { UserActionBanner } from "@/components/Users/UserActionBanner";
-import { UserBulkActions } from "@/components/Users/UserBulkActions";
+import { UserStats } from "@/components/identity/UserStats";
+import { UserActionBanner } from "@/components/identity/UserActionBanner";
+import { UserBulkActions } from "@/components/identity/UserBulkActions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { 
@@ -23,8 +22,13 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 
+/**
+ * User Governance Page (Refactored in Wave 4)
+ * Centralizes user management, permissions, and company linking.
+ */
 const Users = () => {
   const { toast } = useToast();
+  const { confirm } = useConfirm();
   const {
     userList,
     filteredUsers,
@@ -37,31 +41,31 @@ const Users = () => {
     deleteUser,
     toggleUserStatus,
     toggleSelectUser,
-    bulkAction
+    handleBulkAction,
+    handleResendInvite
   } = useUsers();
   
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
-  const { confirm } = useConfirm();
 
-  const handleOpenForm = (user: UserType | null = null) => {
+  const handleOpenForm = useCallback((user: UserType | null = null) => {
     setEditingUser(user);
     setIsUserFormOpen(true);
-  };
+  }, []);
 
-  const handleResendInvite = (user: UserType) => {
-    toast({ title: "Convite enviado", description: `Convite enviado via WhatsApp para ${user.name}.` });
-    auditLogService.log({
-      entityType: 'user',
-      entityId: user.id!,
-      action: 'info_added',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Convite de acesso enviado via WhatsApp para ${user.name}.`
+  const handleDeleteUser = useCallback(async (user: UserType) => {
+    const result = await confirm({
+      title: "Confirmar Exclusão",
+      description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
+      confirmLabel: "Excluir",
+      variant: "destructive"
     });
-  };
+    
+    if (result && user.id) {
+      deleteUser(user.id);
+    }
+  }, [confirm, deleteUser]);
 
   const actions = (
     <div className="flex flex-wrap items-center gap-3">
@@ -78,7 +82,7 @@ const Users = () => {
   return (
     <PageTemplate
       title="Governança de Usuários"
-      description="Gerencie permissões, controle de acesso e vincule clientes às suas respectivas unidades com segurança."
+      description="Gerencie permissões, controle de acesso e vincule clientes às suas unidades com segurança."
       icon={UsersIcon}
       actions={actions}
     >
@@ -87,7 +91,7 @@ const Users = () => {
       <UserActionBanner stats={stats}>
         <UserBulkActions 
           selectedCount={selectedUsers.length} 
-          onBulkAction={bulkAction} 
+          onBulkAction={handleBulkAction} 
           onExport={() => exportService.exportToCSV(userList, 'governancausuarios_a2')} 
         />
       </UserActionBanner>
@@ -117,15 +121,7 @@ const Users = () => {
             isSelected={selectedUsers.includes(user.id!)}
             onSelect={toggleSelectUser}
             onEdit={handleOpenForm}
-            onDelete={async (id) => {
-              const result = await confirm({
-                title: "Confirmar Exclusão",
-                description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
-                confirmLabel: "Excluir",
-                variant: "destructive"
-              });
-              if (result) deleteUser(id);
-            }}
+            onDelete={() => handleDeleteUser(user)}
             onToggleStatus={toggleUserStatus}
             onResendInvite={handleResendInvite}
             onViewProfile={(u) => toast({ title: "Perfil", description: `Visualizando ${u.name}` })}
@@ -181,15 +177,7 @@ const Users = () => {
                   <DropdownMenuItem onClick={() => toggleUserStatus(user.id!)}><ShieldCheck className="mr-2 h-4 w-4" /> {user.status === 'active' ? 'Desativar' : 'Ativar'}</DropdownMenuItem>
                   <DropdownMenuItem 
                     className="text-destructive font-bold" 
-                    onClick={async () => {
-                      const result = await confirm({
-                        title: "Confirmar Exclusão",
-                        description: `Deseja realmente excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`,
-                        confirmLabel: "Excluir",
-                        variant: "destructive"
-                      });
-                      if (result) deleteUser(user.id!);
-                    }}
+                    onClick={() => handleDeleteUser(user)}
                   >
                     <Trash2 className="mr-2 h-4 w-4" /> Excluir
                   </DropdownMenuItem>

@@ -1,6 +1,7 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { User, UserStats } from "@/types/user";
 import { Supabase } from "@/integrations/supabase";
+import { Tables } from "@/integrations/supabase/types";
 
 class UserService extends SupabaseBaseService<User> {
   constructor() {
@@ -19,30 +20,35 @@ class UserService extends SupabaseBaseService<User> {
     });
   }
 
-  protected mapToSupabase(user: User): any {
+  protected mapToSupabase(user: Partial<User>): Partial<Tables<'profiles'>> {
+    const mapped: any = {};
+    if (user.name) mapped.full_name = user.name;
+    if (user.role) mapped.role = user.role;
+    if (user.company_id) mapped.company_id = user.company_id;
+    if (user.avatar) mapped.avatar_url = user.avatar;
+    return mapped;
+  }
+
+  protected mapFromSupabase(raw: Tables<'profiles'> & { email?: string }): User {
     return {
-      full_name: user.name,
-      role: user.role,
-      company_id: user.company_id,
-      status: user.status
+      id: raw.id,
+      name: raw.full_name || "Sem Nome",
+      email: raw.email || "",
+      role: (raw.role as User['role']) || "client",
+      status: "active", // Default status as 'profiles' table doesn't have it yet
+      company_id: raw.company_id || undefined,
+      avatar: raw.avatar_url || undefined,
+      createdAt: raw.created_at ? new Date(raw.created_at) : undefined
     };
   }
 
-  protected mapFromSupabase(raw: any): User {
-    return {
-      ...raw,
-      id: raw.id,
-      name: raw.full_name || raw.name,
-      email: raw.email || '',
-      role: raw.role,
-      status: raw.status || 'active',
-      company_id: raw.company_id
-    } as User;
-  }
-
-  getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
+  /**
+   * Extends the base getAll to include specific logic if needed
+   */
+  public getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
     const relevant = this.getAll(companyId, isSuperAdmin);
     const clients = relevant.filter(u => u.role === 'client').length;
+    
     return {
       total: relevant.length,
       active: relevant.filter(u => u.status === 'active').length,
@@ -50,6 +56,15 @@ class UserService extends SupabaseBaseService<User> {
       clients,
       staff: relevant.length - clients,
     };
+  }
+
+  /**
+   * Mock method for sending invitations
+   */
+  public async sendInvitation(user: User): Promise<boolean> {
+    console.log(`Sending invitation to ${user.email || user.name}`);
+    // In a real scenario, this would call an Edge Function
+    return true;
   }
 }
 
