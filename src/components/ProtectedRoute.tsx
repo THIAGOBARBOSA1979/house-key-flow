@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
   requiredRole?: Role | Role[];
 }
 
+
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
   requiredRole 
