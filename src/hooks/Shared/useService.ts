@@ -14,7 +14,7 @@ interface UseServiceOptions<T> {
 }
 
 export function useService<T extends { id: string; company_id?: string }>(
-  service: any,
+  service: BaseService<T>,
   options: UseServiceOptions<T> = {}
 ) {
   const { toast } = useToast();
@@ -30,10 +30,14 @@ export function useService<T extends { id: string; company_id?: string }>(
   const fetchItems = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await service.getAll(companyId, isSuperAdmin);
+      // If the service has a sync method (SupabaseBaseService), use it
+      if ('sync' in service && typeof (service as any).sync === 'function') {
+        await (service as any).sync(companyId, isSuperAdmin);
+      }
+      const data = service.getAll(companyId, isSuperAdmin);
       setItems(data);
     } catch (error) {
-      console.error('Failed to fetch items:', error);
+      console.error(`[useService] Failed to fetch items for ${service.constructor.name}:`, error);
     } finally {
       setIsLoading(false);
     }
@@ -44,17 +48,15 @@ export function useService<T extends { id: string; company_id?: string }>(
   }, [fetchItems]);
 
   useEffect(() => {
-    if (typeof service.subscribe === 'function') {
-      return service.subscribe((allNewItems: T[]) => {
-        if (isSuperAdmin) {
-          setItems(allNewItems);
-        } else if (companyId) {
-          setItems(allNewItems.filter(item => item.company_id === companyId));
-        } else {
-          setItems([]);
-        }
-      });
-    }
+    return service.subscribe((allNewItems: T[]) => {
+      if (isSuperAdmin) {
+        setItems(allNewItems);
+      } else if (companyId) {
+        setItems(allNewItems.filter(item => item.company_id === companyId));
+      } else {
+        setItems([]);
+      }
+    });
   }, [service, companyId, isSuperAdmin]);
 
   const refresh = useCallback(() => {
@@ -64,13 +66,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const create = useCallback(async (data: Omit<T, "id">) => {
     setIsLoading(true);
     try {
-      const dataWithTenant = {
-        ...data,
-        company_id: (data as any).company_id || companyId
-      } as Omit<T, "id">;
-
-      const newItem = await service.create(dataWithTenant, dataWithTenant.company_id);
-
+      const newItem = service.create(data, companyId);
       if (optionsRef.current.toastMessages?.create) {
         toast({ title: "Sucesso", description: optionsRef.current.toastMessages.create });
       }
@@ -87,7 +83,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const update = useCallback(async (id: string, data: Partial<T>) => {
     setIsLoading(true);
     try {
-      const updatedItem = await service.update(id, data, isSuperAdmin);
+      const updatedItem = service.update(id, data, isSuperAdmin);
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
           toast({ title: "Sucesso", description: optionsRef.current.toastMessages.update });
@@ -106,7 +102,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const remove = useCallback(async (id: string) => {
     setIsLoading(true);
     try {
-      const success = await service.delete(id);
+      const success = service.delete(id);
       if (success) {
         if (optionsRef.current.toastMessages?.delete) {
           toast({ title: "Sucesso", description: optionsRef.current.toastMessages.delete });
@@ -125,11 +121,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const bulkUpdate = useCallback(async (ids: string[], data: Partial<T>) => {
     setIsLoading(true);
     try {
-      const results = [];
-      for (const id of ids) {
-        const updated = await service.update(id, data, isSuperAdmin);
-        if (updated) results.push(updated);
-      }
+      const results = await service.bulkUpdate(ids, data, isSuperAdmin);
       toast({ title: "Sucesso", description: `${results.length} itens atualizados.` });
       return results;
     } catch (error) {
@@ -142,11 +134,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const bulkRemove = useCallback(async (ids: string[]) => {
     setIsLoading(true);
     try {
-      let count = 0;
-      for (const id of ids) {
-        const success = await service.delete(id);
-        if (success) count++;
-      }
+      const count = await service.bulkDelete(ids);
       toast({ title: "Sucesso", description: `${count} itens removidos.` });
       return count;
     } catch (error) {
@@ -168,6 +156,3 @@ export function useService<T extends { id: string; company_id?: string }>(
     getById: useCallback((id: string) => service.getById(id, companyId, isSuperAdmin), [service, companyId, isSuperAdmin])
   };
 }
-
-
-
