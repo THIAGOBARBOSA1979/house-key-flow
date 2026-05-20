@@ -132,9 +132,9 @@ const FinancialDashboard = () => {
                 <CardTitle className="text-xl font-black tracking-tight">Evolução de Recebimentos</CardTitle>
                 <p className="text-sm text-muted-foreground font-medium">Faturamento mensal consolidado (R$)</p>
               </div>
-              <div className="flex items-center gap-2 bg-muted/30 p-1 rounded-xl">
-                <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest bg-background shadow-sm">6 Meses</Button>
-                <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest text-muted-foreground">1 Ano</Button>
+              <div className="flex items-center gap-2 bg-muted/40 p-1.5 rounded-2xl border border-border/5">
+                <Button variant="ghost" size="sm" className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-background shadow-sm hover:bg-background/80">6 Meses</Button>
+                <Button variant="ghost" size="sm" className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">1 Ano</Button>
               </div>
             </div>
           </CardHeader>
@@ -164,11 +164,14 @@ const FinancialDashboard = () => {
                   />
                   <Tooltip 
                     contentStyle={{ 
-                      borderRadius: '16px', 
+                      borderRadius: '24px', 
                       border: 'none', 
-                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
-                      padding: '12px'
+                      boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+                      padding: '16px',
+                      background: 'rgba(255, 255, 255, 0.9)',
+                      backdropFilter: 'blur(8px)'
                     }} 
+                    formatter={(value: number) => [formatCurrency(value), "Faturamento"]}
                   />
                   <Area 
                     type="monotone" 
