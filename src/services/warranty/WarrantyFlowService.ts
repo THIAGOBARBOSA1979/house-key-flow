@@ -863,7 +863,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
    * Get timeline for a request (for client view)
    */
   getRequestTimeline(requestId: string): WarrantyStatusHistory[] {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return [];
     
     return [...request.history].sort((a, b) => 
