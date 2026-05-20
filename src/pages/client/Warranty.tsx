@@ -11,6 +11,7 @@ import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
 import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
+import { cn } from "@/lib/utils";
 
 import { useWarrantyClaims } from "@/hooks/warranty/useWarrantyClaims";
 import { WarrantyGuide } from "@/components/Warranty/Client/WarrantyGuide";
