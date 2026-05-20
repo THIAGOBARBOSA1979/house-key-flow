@@ -94,10 +94,11 @@ export default function Inspections() {
           <InspectionFilters 
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
-            filters={filters}
+            filters={filters as any}
             onFilterChange={handleFilterChange}
             properties={properties}
           />
+
 
           <DataView<Inspection>
             items={filteredInspections}
