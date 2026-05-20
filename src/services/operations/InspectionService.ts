@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
-import { technicianService } from "../operations/TechnicianService";
+import { technicianService } from "@/services/operations/TechnicianService";
+import { Database } from "@/integrations/supabase/types";
 
 export const inspectionSchema = z.object({
   inspectionType: z.string({
@@ -43,10 +44,10 @@ export interface Inspection {
   firstContactAt?: Date;
 }
 
-
 const INITIAL_INSPECTIONS: Inspection[] = [
   { 
     id: crypto.randomUUID(), 
+    company_id: 'comp-1',
     property: "Edifício Aurora", 
     unit: "101", 
     client: "João Silva", 
@@ -54,7 +55,7 @@ const INITIAL_INSPECTIONS: Inspection[] = [
     time: "09:00",
     status: "pending",
     type: "technicalInspection",
-    technician: "1",
+    technician: "tech-1",
     createdAt: new Date(Date.now() - 86400000 * 2)
   },
 ];
@@ -75,9 +76,6 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       await this.sync();
     });
   }
-
-
-
 
   getTechnicians() {
     return technicianService.getAll().map(t => ({
@@ -101,7 +99,16 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     };
   }
 
-  schedule(data: { date: Date; time: string; inspectionType: string; technician: string; checklist?: string; notes?: string; requestId?: string; priority?: Inspection["priority"] }, propertyInfo?: { property: string; unit: string; client: string }): Inspection {
+  schedule(data: { 
+    date: Date; 
+    time: string; 
+    inspectionType: string; 
+    technician: string; 
+    checklist?: string; 
+    notes?: string; 
+    requestId?: string; 
+    priority?: Inspection["priority"] 
+  }, propertyInfo?: { property: string; unit: string; client: string }): Inspection {
     const newInspection = super.create({
       property: propertyInfo?.property || "Empreendimento Exemplo",
       unit: propertyInfo?.unit || "101",
@@ -116,12 +123,9 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       requestId: data.requestId,
       priority: data.priority || "medium",
       createdAt: new Date()
-    } as Omit<Inspection, "id">);
-
+    }, (propertyInfo as any)?.companyId);
 
     this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`);
-
-
     return newInspection;
   }
 
@@ -133,7 +137,6 @@ class InspectionService extends SupabaseBaseService<Inspection> {
         oldStatus: oldItem?.status,
         newStatus: status
       });
-
     }
     return updated;
   }
@@ -153,7 +156,6 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       return acc;
     }, {} as Record<string, number>);
   }
-
 
   getStatsByTechnician(companyId?: string, isSuperAdmin?: boolean) {
     const relevantItems = this.getAll(companyId, isSuperAdmin);
@@ -199,24 +201,6 @@ class InspectionService extends SupabaseBaseService<Inspection> {
   exportData(format: 'json' | 'csv' = 'json') {
     return format === 'json' ? JSON.stringify(this.items) : "";
   }
-
-  getReport(id: string) {
-    const inspection = this.getById(id);
-    return inspection ? { inspection, generatedAt: new Date() } : null;
-  }
-
-  signAcceptance(id: string, clientId: string, signatureData: any) {
-    return this.updateStatus(id, "accepted", "Cliente assinou aceite digital");
-  }
-
-  confirmPresence(id: string, clientId: string) {
-    return this.updateStatus(id, "presence_confirmed", "Cliente confirmou presença");
-  }
-
-  requestReschedule(id: string, clientId: string, newDate: Date, newTime: string, reason: string) {
-    return this.update(id, { date: newDate, time: newTime, status: "reschedule_requested" });
-  }
-
 }
 
 export const inspectionService = new InspectionService();

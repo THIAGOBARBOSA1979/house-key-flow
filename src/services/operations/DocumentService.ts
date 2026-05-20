@@ -1,5 +1,6 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
+import { Database } from "@/integrations/supabase/types";
 
 export interface SignatureEvidence {
   browser?: string;
@@ -106,17 +107,10 @@ class DocumentService extends SupabaseBaseService<Document> {
   constructor() {
     super({
       storageKey: "a2_documents",
-      supabaseTable: "documents" as any,
+      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table
       auditEntityType: "document",
-      shouldSyncWithSupabase: true
+      shouldSyncWithSupabase: false
     }, INITIAL_DOCUMENTS);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('documents', async () => {
-      await this.sync();
-    });
   }
 
   // Backward compatibility aliases
@@ -152,9 +146,8 @@ class DocumentService extends SupabaseBaseService<Document> {
   }
 
   create(item: Omit<Document, "id">, companyId?: string): Document {
-    const { id, ...rest } = item as any;
     return super.create({
-      ...rest,
+      ...item,
       version: 1,
       approvalStatus: "pending",
       downloads: 0,
