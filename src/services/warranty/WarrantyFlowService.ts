@@ -756,7 +756,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     problemId: string,
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
     const problemIndex = request.problems.findIndex(p => p.id === problemId);
