@@ -18,6 +18,8 @@ export type StatusType =
   | "confirmed" 
   | "cancelled" 
   | "in_progress" 
+  | "waiting_client" 
+  | "scheduled" 
   | "resolved" 
   | "rejected" 
   | "overdue" 

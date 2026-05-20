@@ -127,7 +127,7 @@ const AdminSupport = () => {
                 />
               </div>
               <div className="flex gap-2">
-                {['all', 'pending', 'in_progress', 'closed'].map((status) => (
+                {['all', 'pending', 'in_progress', 'waiting_client', 'closed'].map((status) => (
                   <Button
                     key={status}
                     variant={statusFilter === status ? "default" : "outline"}
@@ -137,7 +137,8 @@ const AdminSupport = () => {
                   >
                     {status === 'all' ? 'Todos' : 
                      status === 'pending' ? 'Pendentes' : 
-                     status === 'in_progress' ? 'Em Aberto' : 'Fechados'}
+                     status === 'in_progress' ? 'Atendimento' : 
+                     status === 'waiting_client' ? 'Aguardando Cliente' : 'Fechados'}
                   </Button>
                 ))}
               </div>
@@ -157,15 +158,15 @@ const AdminSupport = () => {
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">#{ticket.id.substring(0, 8)}</span>
                     <StatusBadge 
-                      status={ticket.status === 'closed' ? 'complete' : (ticket.status === 'in_progress' ? 'progress' : 'pending')} 
+                      status={ticket.status === 'closed' ? 'complete' : (ticket.status === 'in_progress' ? 'progress' : (ticket.status === 'waiting_client' ? 'scheduled' : 'pending'))} 
                       size="sm"
-                      label={ticket.status === 'closed' ? 'Fechado' : (ticket.status === 'in_progress' ? 'Atendimento' : 'Pendente')}
+                      label={ticket.status === 'closed' ? 'Fechado' : (ticket.status === 'in_progress' ? 'Atendimento' : (ticket.status === 'waiting_client' ? 'Aguardando' : 'Pendente'))}
                     />
                   </div>
                   <h4 className="text-sm font-bold text-foreground leading-tight group-hover:text-primary transition-colors mb-2 line-clamp-1">{ticket.subject}</h4>
                   <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-medium">
                     <User className="h-3 w-3" />
-                    <span>{ticket.messages[0]?.senderName}</span>
+                    <span>{ticket.clientName}</span>
                     <span className="mx-1">•</span>
                     <Clock className="h-3 w-3" />
                     <span>{ticket.updatedAt.toLocaleDateString('pt-BR')}</span>
@@ -194,9 +195,16 @@ const AdminSupport = () => {
                     </div>
                     <div>
                       <CardTitle className="text-lg font-black tracking-tight">{selectedTicket.subject}</CardTitle>
-                      <CardDescription className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[9px] font-black uppercase">{selectedTicket.category}</Badge>
-                        <span className="text-xs font-medium">Cliente: {selectedTicket.messages[0]?.senderName}</span>
+                      <CardDescription className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="text-[9px] font-black uppercase">{selectedTicket.category}</Badge>
+                          <span className="text-xs font-medium">Cliente: {selectedTicket.clientName}</span>
+                        </div>
+                        {selectedTicket.propertyName && (
+                          <span className="text-[10px] text-muted-foreground">
+                            {selectedTicket.propertyName} • Unidade {selectedTicket.unitNumber}
+                          </span>
+                        )}
                       </CardDescription>
                     </div>
                   </div>
@@ -205,11 +213,11 @@ const AdminSupport = () => {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="rounded-xl text-xs font-bold text-status-critical border-status-critical/20 hover:bg-status-critical/5"
+                        className="rounded-xl text-xs font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50"
                         onClick={() => handleCloseTicket(selectedTicket.id)}
                       >
                         <CheckCircle2 className="mr-2 h-4 w-4" />
-                        Fechar Ticket
+                        Encerrar Chamado
                       </Button>
                     )}
                     <DropdownMenu>

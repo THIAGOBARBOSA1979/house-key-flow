@@ -92,6 +92,16 @@ const statusConfig: Partial<Record<StatusType, {
     defaultLabel: "Excedido",
     icon: XCircle,
   },
+  waiting_client: {
+    badgeClass: "badge-pending",
+    defaultLabel: "Aguardando Cliente",
+    icon: Clock,
+  },
+  scheduled: {
+    badgeClass: "badge-info",
+    defaultLabel: "Agendado",
+    icon: Clock,
+  },
 };
 
 /**
