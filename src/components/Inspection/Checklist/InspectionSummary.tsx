@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { ChecklistItem } from "@/services";
 
 interface InspectionSummaryProps {
@@ -48,11 +49,16 @@ export const InspectionSummary = ({
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-background/80 backdrop-blur-sm p-4 rounded-xl border shadow-sm">
-              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Itens Conformes</p>
-              <p className="text-3xl font-bold text-green-600">{conformCount}</p>
+              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Taxa de Conformidade</p>
+              <p className={cn(
+                "text-3xl font-bold",
+                (conformCount / (totalItems || 1)) > 0.9 ? "text-emerald-600" : "text-amber-600"
+              )}>
+                {Math.round((conformCount / (totalItems || 1)) * 100)}%
+              </p>
             </div>
             <div className="bg-background/80 backdrop-blur-sm p-4 rounded-xl border shadow-sm">
-              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Não Conformes</p>
+              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Não Conformidades</p>
               <p className="text-3xl font-bold text-red-600">{nonConformItems.length}</p>
             </div>
           </div>

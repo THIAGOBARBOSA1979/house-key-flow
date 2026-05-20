@@ -42,6 +42,13 @@ export interface Inspection {
   priority?: "low" | "medium" | "high";
   createdAt?: Date;
   firstContactAt?: Date;
+  // Novos campos ABNT
+  technicalStandards?: string[]; // Ex: ["ABNT NBR 15575", "ABNT NBR 5674"]
+  conformityScore?: number;
+  nonConformitiesFound?: number;
+  reportUrl?: string;
+  weatherConditions?: string; // Importante para vistorias externas
+  equipmentUsed?: string[];
 }
 
 const INITIAL_INSPECTIONS: Inspection[] = [
@@ -205,12 +212,22 @@ class InspectionService extends SupabaseBaseService<Inspection> {
   }
 
   getTechnicalConformityScore(companyId?: string, isSuperAdmin?: boolean) {
-    const items = this.getAll(companyId, isSuperAdmin).filter(i => i.status === 'complete');
-    if (items.length === 0) return 100; // Default if none completed
+    const items = this.getAll(companyId, isSuperAdmin).filter(i => i.status === 'complete' && (i as any).conformityScore !== undefined);
+    if (items.length === 0) return 100;
     
-    // Simple logic: if a completion detail mentions non-conformities, reduce score
-    // In a real system, we'd check the linked checklist items
-    return 96; // Hardcoded for now but ready for real data logic
+    const totalScore = items.reduce((acc, curr) => acc + ((curr as any).conformityScore || 0), 0);
+    return Math.round(totalScore / items.length);
+  }
+
+  getConformityTrend(companyId?: string, isSuperAdmin?: boolean) {
+    // Retorna mock de tendência para o gráfico
+    return [
+      { month: 'Jan', score: 94 },
+      { month: 'Fev', score: 95 },
+      { month: 'Mar', score: 92 },
+      { month: 'Abr', score: 96 },
+      { month: 'Mai', score: 98 },
+    ];
   }
 
 

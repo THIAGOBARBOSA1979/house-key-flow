@@ -39,7 +39,14 @@ export const ChecklistItemCard = ({ item, onConformityChange, onNotesChange }: C
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
           <div className="space-y-1">
             <span className="font-bold text-sm leading-tight text-foreground/90">{item.name || item.description}</span>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black opacity-60">Requisito Técnico ABNT</p>
+            <p className="text-[10px] text-primary uppercase tracking-widest font-black opacity-80">
+              {item.abntReference || "Requisito Técnico ABNT"}
+            </p>
+            {item.inspectionMethod && (
+              <p className="text-[9px] text-muted-foreground italic">
+                Método: {item.inspectionMethod}
+              </p>
+            )}
           </div>
           <div className="flex gap-2 shrink-0">
             <Button
