@@ -18,7 +18,7 @@ import { QuickActions } from "@/components/Dashboard/QuickActions";
 import { ActiveProperties } from "@/components/Dashboard/ActiveProperties";
 import { ScheduledInspections } from "@/components/Dashboard/ScheduledInspections";
 import { SystemHealth } from "@/components/Dashboard/SystemHealth";
-import { FinancialHealth } from "@/components/Dashboard/FinancialHealth";
+
 import { CriticalWarranties } from "@/components/Dashboard/CriticalWarranties";
 import { RecentTickets } from "@/components/Dashboard/RecentTickets";
 import { SystemAuditTimeline } from "@/components/Dashboard/SystemAuditTimeline";
@@ -111,7 +111,7 @@ const Dashboard = () => {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-            <FinancialHealth metrics={financialMetrics} />
+            
             <PendingDocuments />
           </div>
 

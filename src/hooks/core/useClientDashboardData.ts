@@ -9,7 +9,7 @@ import {
 export const useClientDashboardData = (clientId: string, userName?: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  const financialSummary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
+  const financialSummary = { progress: 0, balanceDue: 0, paidValue: 0, nextPayment: null };
   const allDocs = useMemo(() => documentService.getDocumentsByClient(userName || "João Silva"), [userName]);
   const allInspections = useMemo(() => 
     inspectionService.getAll().filter(i => i && i.client === (userName || "João Silva")), [userName]);

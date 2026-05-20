@@ -46,7 +46,7 @@ const operationalItems = [
   { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias" },
   { to: "/admin/warranty", icon: ShieldCheck, label: "Garantias" },
   { to: "/admin/support", icon: MessageSquare, label: "Suporte" },
-  { to: "/admin/financial", icon: DollarSign, label: "Financeiro" },
+  
 ];
 
 const managementItems = [

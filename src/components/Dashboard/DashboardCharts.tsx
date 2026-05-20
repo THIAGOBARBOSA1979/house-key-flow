@@ -18,14 +18,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { inspectionService, warrantyFlowService, financialService } from '@/services';
+import { inspectionService, warrantyFlowService } from '@/services';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export const DashboardCharts = ({ 
   inspections = [], 
   warranties = [], 
-  financialData = financialService.getGlobalMetrics() 
+  financialData = { revenueByMonth: [] } 
 }: {
   inspections?: Array<{ date: Date | string }>;
   warranties?: Array<{ category: string }>;

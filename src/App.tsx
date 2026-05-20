@@ -66,7 +66,7 @@ const App = () => {
                   <Route path="settings" element={<Pages.Settings />} />
                   <Route path="design-system" element={<Pages.DesignSystem />} />
                   <Route path="audit-logs" element={<Pages.AuditLogs />} />
-                  <Route path="financial" element={<Pages.FinancialDashboard />} />
+                  
                   <Route path="announcements" element={<Pages.Announcements />} />
                   <Route path="technicians" element={<Pages.Technicians />} />
                   <Route path="support" element={<Pages.AdminSupport />} />
@@ -84,7 +84,7 @@ const App = () => {
                   <Route path="properties" element={<Pages.ClientProperties />} />
                   <Route path="notifications" element={<Pages.ClientNotifications />} />
                   <Route path="profile" element={<Pages.ClientProfile />} />
-                  <Route path="financial" element={<Pages.ClientFinancial />} />
+                  
                   <Route path="support" element={<Pages.ClientSupport />} />
                 </Route>
 
