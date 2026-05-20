@@ -24,7 +24,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
               <Switch 
                 checked={settings?.notifications?.client?.email || false} 
                 onCheckedChange={v => setSettings(p => ({
-                  ...p, notifications: { ...p.notifications, client: { ...p.notifications.client, email: v }}
+                  ...p, 
+                  notifications: { 
+                    ...p.notifications, 
+                    client: { ...(p.notifications?.client || {}), email: v } 
+                  }
                 }))}
               />
             </div>
@@ -33,7 +37,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
               <Switch 
                 checked={settings?.notifications?.client?.sms || false} 
                 onCheckedChange={v => setSettings(p => ({
-                  ...p, notifications: { ...p.notifications, client: { ...p.notifications.client, sms: v }}
+                  ...p, 
+                  notifications: { 
+                    ...p.notifications, 
+                    client: { ...(p.notifications?.client || {}), sms: v } 
+                  }
                 }))}
               />
             </div>
@@ -42,7 +50,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
               <Switch 
                 checked={settings?.notifications?.client?.push || false} 
                 onCheckedChange={v => setSettings(p => ({
-                  ...p, notifications: { ...p.notifications, client: { ...p.notifications.client, push: v }}
+                  ...p, 
+                  notifications: { 
+                    ...p.notifications, 
+                    client: { ...(p.notifications?.client || {}), push: v } 
+                  }
                 }))}
               />
             </div>
@@ -57,7 +69,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
               <Switch 
                 checked={settings?.notifications?.team?.email || false} 
                 onCheckedChange={v => setSettings(p => ({
-                  ...p, notifications: { ...p.notifications, team: { ...p.notifications.team, email: v }}
+                  ...p, 
+                  notifications: { 
+                    ...p.notifications, 
+                    team: { ...(p.notifications?.team || {}), email: v } 
+                  }
                 }))}
               />
             </div>
@@ -66,7 +82,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
               <Switch 
                 checked={settings?.notifications?.team?.system || false} 
                 onCheckedChange={v => setSettings(p => ({
-                  ...p, notifications: { ...p.notifications, team: { ...p.notifications.team, system: v }}
+                  ...p, 
+                  notifications: { 
+                    ...p.notifications, 
+                    team: { ...(p.notifications?.team || {}), system: v } 
+                  }
                 }))}
               />
             </div>
