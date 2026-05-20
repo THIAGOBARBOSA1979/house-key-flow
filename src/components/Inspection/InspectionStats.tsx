@@ -1,42 +1,53 @@
 
-import { Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { CheckCircle, Clock, AlertTriangle, TrendingUp } from "lucide-react";
 import { StatsCard } from "@/components/Shared/StatsCard";
 import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 
 interface InspectionStatsProps {
   stats: {
+    total: number;
     pending: number;
-    completed: number;
+    complete: number;
+    cancelled: number;
     delayed: number;
   };
 }
 
 export const InspectionStats = ({ stats }: InspectionStatsProps) => {
+  const complianceRate = stats.total > stats.cancelled 
+    ? Math.round((stats.complete / (stats.total - stats.cancelled)) * 100) 
+    : 100;
+
   return (
-    <ResponsiveGrid columns={3} gap="layout">
-      <StatsCard 
-        label="Vistorias Pendentes" 
-        value={stats.pending} 
-        icon={Clock} 
-        variant="pending" 
-        description="Aguardando atendimento" 
-        className="rounded-3xl" 
+    <ResponsiveGrid columns={4} gap="layout">
+      <StatsCard
+        label="Vistorias em Aberto"
+        value={stats.pending}
+        icon={Clock}
+        variant="progress"
+        className="rounded-3xl border-none shadow-sem-sm bg-amber-500/5"
       />
-      <StatsCard 
-        label="Vistorias Concluídas" 
-        value={stats.completed} 
-        icon={CheckCircle2} 
-        variant="complete" 
-        description="Total de unidades entregues" 
-        className="rounded-3xl" 
+      <StatsCard
+        label="Vistorias Finalizadas"
+        value={stats.complete}
+        icon={CheckCircle}
+        variant="complete"
+        className="rounded-3xl border-none shadow-sem-sm bg-emerald-500/5"
       />
-      <StatsCard 
-        label="Atrasadas / Urgentes" 
-        value={stats.delayed} 
-        icon={AlertCircle} 
-        variant="critical" 
-        description="Fora do prazo acordado" 
-        className="rounded-3xl" 
+      <StatsCard
+        label="Índice de Conformidade"
+        value={`${complianceRate}%`}
+        icon={TrendingUp}
+        variant="brand"
+        className="rounded-3xl border-none shadow-sem-sm bg-primary/5"
+        description="Adesão técnica ABNT"
+      />
+      <StatsCard
+        label="Atrasadas / Pendentes"
+        value={stats.delayed}
+        icon={AlertTriangle}
+        variant="default"
+        className={stats.delayed > 0 ? "rounded-3xl border-none shadow-sem-sm bg-red-500/5 text-red-600" : "rounded-3xl border-none shadow-sem-sm bg-muted/20 opacity-60"}
       />
     </ResponsiveGrid>
   );

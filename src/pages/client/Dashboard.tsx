@@ -97,14 +97,15 @@ const Dashboard = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
           <h1 className="text-4xl font-black tracking-tighter text-foreground leading-tight">
-            Bem-vindo, {userInfo.name}! 👋
+            Bem-vindo ao Portal Técnico, {userInfo.name}! 👋
           </h1>
           <div className="flex items-center gap-2 mt-1.5">
              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
              <p className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest">
-               Sua jornada com a A2 Incorporadora
+               Gestão de Ativos e Conformidade Técnica (ABNT)
              </p>
           </div>
+
         </div>
         <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
           <StageIndicator currentStage={stage || 'lead'} showDescription variant="badge" />

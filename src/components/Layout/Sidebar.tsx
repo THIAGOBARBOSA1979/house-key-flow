@@ -41,12 +41,11 @@ interface SidebarProps {
 }
 
 const operationalItems = [
-  { to: "/admin", icon: Home, label: "Dashboard", end: true },
-  { to: "/admin/calendar", icon: Calendar, label: "Agendamentos" },
-  { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias" },
-  { to: "/admin/warranty", icon: ShieldCheck, label: "Garantias" },
-  { to: "/admin/support", icon: MessageSquare, label: "Suporte" },
-  
+  { to: "/admin", icon: Home, label: "Painel Estratégico", end: true },
+  { to: "/admin/calendar", icon: Calendar, label: "Cronograma Técnico" },
+  { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas" },
+  { to: "/admin/warranty", icon: ShieldCheck, label: "Assistência Técnica" },
+  { to: "/admin/support", icon: MessageSquare, label: "Suporte Técnico" },
 ];
 
 const managementItems = [

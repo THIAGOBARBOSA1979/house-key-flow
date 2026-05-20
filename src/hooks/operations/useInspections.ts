@@ -49,14 +49,16 @@ export const useInspections = () => {
     const today = new Date();
     return {
       total: inspections.length,
-      pending: inspections.filter(i => i.status === "pending").length,
-      completed: inspections.filter(i => i.status === "complete").length,
+      pending: inspections.filter(i => i.status === "pending" || i.status === "confirmed").length,
+      complete: inspections.filter(i => i.status === "complete").length,
+      cancelled: inspections.filter(i => i.status === "cancelled").length,
       delayed: inspections.filter(i => {
         const date = new Date(i.date);
-        return i.status === "pending" && date < today;
+        return (i.status === "pending" || i.status === "confirmed") && date < today;
       }).length
     };
   }, [inspections]);
+
 
   const analyticsStats = useMemo(() => {
     const statusRaw = inspectionService.getStatsByStatus(user?.company_id, user?.is_super_admin);
