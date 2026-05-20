@@ -177,17 +177,17 @@ const MobileHeader = ({
 }: {
   onToggleSidebar: () => void;
 }) => {
-  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 lg:hidden">
-      <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="rounded-xl hover:bg-primary/10">
-        <Menu size={24} className="text-primary" />
+  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 lg:hidden shadow-sm">
+      <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="rounded-xl hover:bg-primary/10 transition-colors">
+        <Menu size={26} className="text-primary" strokeWidth={2.5} />
       </Button>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/20">
+        <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/30 rotate-3 transition-all">
           A2
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-black tracking-tight leading-none">Portal do Cliente</span>
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">A2 Gestão</span>
+          <span className="text-base font-black tracking-tighter leading-none">Portal A2</span>
+          <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1">Ecossistema</span>
         </div>
       </div>
       <div className="w-10"></div>
