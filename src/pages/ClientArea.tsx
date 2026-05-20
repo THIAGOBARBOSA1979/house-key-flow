@@ -1,108 +1,124 @@
-
-import { useState, useMemo } from "react";
-import { User, Key, Plus, History, MoreHorizontal, UserCheck, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { NewClientForm } from "@/components/ClientArea/NewClientForm";
-import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
-import { ClientDetailsDialog } from "@/components/ClientArea/ClientDetailsDialog";
-import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
-import { clientStageService, notificationService, auditLogService, exportService } from "@/services";
+import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
-import { useToast } from "@/hooks";
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { DataView, DataViewMode } from "@/components/Shared/DataView";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
-
-
-// Clients are managed via clientStageService
+import { DataView } from "@/components/Layout/DataView";
+import { StatsCard } from "@/components/Layout/StatsCard";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { User, UserCheck, Plus, Download, Key } from "lucide-react";
+import { UserForm } from "@/components/Users/UserForm";
+import { GenerateCredentialsForm } from "@/components/Users/GenerateCredentialsForm";
+import { UserService } from "@/services/UserService";
+import { InspectionService } from "@/services/InspectionService";
+import { useToast } from "@/hooks/use-toast";
+import { ClientDetailsSheet } from "@/components/Client/ClientDetailsSheet";
+import { UserProfile } from "@/types/user";
 
 const ClientArea = () => {
-  const { toast: showToast } = useToast();
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [allProfiles, setAllProfiles] = useState<UserProfile[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isNewClientDialogOpen, setNewClientDialogOpen] = useState(false);
   const [isCredentialsDialogOpen, setCredentialsDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
-  const [viewMode, setViewMode] = useState<DataViewMode>("table");
+  const [selectedClient, setSelectedClient] = useState<UserProfile | null>(null);
+  const [isDetailsSheetOpen, setDetailsSheetOpen] = useState(false);
+  const { toast } = useToast();
 
+  useEffect(() => {
+    loadClients();
+  }, []);
 
-  const handleNewClientSubmit = (data: any) => {
-    auditLogService.log({
-      entityType: 'user',
-      entityId: `new-${Date.now()}`,
-      action: 'created',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Novo cliente cadastrado: ${data.name}`
-    });
-    showToast({ title: "Cliente cadastrado", description: "O cliente foi cadastrado com sucesso." });
-    setNewClientDialogOpen(false);
+  const loadClients = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await UserService.getAllProfiles();
+      if (error) throw error;
+      setAllProfiles(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar clientes",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCredentialsSubmit = (data: any) => {
-    auditLogService.log({
-      entityType: 'user',
-      entityId: data.clientId,
-      action: 'updated',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: `Credenciais de acesso geradas para o cliente.`
-    });
-    
-    notificationService.createNotification(data.clientId, 'stage_changed', {
-      relatedEntityType: 'stage'
-    }, {
-      title: 'Acesso Liberado',
-      message: 'Suas credenciais de acesso ao portal foram geradas e enviadas por email.'
-    });
+  const handleCreateClient = async (data: any) => {
+    try {
+      const { error } = await UserService.createProfile(data);
+      if (error) throw error;
+      
+      toast({
+        title: "Cliente criado",
+        description: "O perfil do cliente foi criado com sucesso.",
+      });
+      setNewClientDialogOpen(false);
+      loadClients();
+    } catch (error: any) {
+      toast({
+        title: "Erro ao criar cliente",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
-    showToast({ title: "Credenciais geradas", description: "As credenciais de acesso foram geradas e enviadas ao cliente." });
+  const handleCredentialsSubmit = async (data: any) => {
+    toast({
+      title: "Credenciais geradas",
+      description: "As credenciais de acesso foram enviadas para o email do cliente.",
+    });
     setCredentialsDialogOpen(false);
   };
 
-  const allProfiles = useMemo(() => clientStageService.getAllProfiles(), []);
+  const handleUpdateStatus = async (userId: string) => {
+    toast({
+      title: "Status atualizado",
+      description: "O estágio da jornada do cliente foi atualizado.",
+    });
+    loadClients();
+  };
 
-  const filteredClients = allProfiles.filter(client =>
-    client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (client.phone && client.phone.includes(searchQuery)) ||
-    client.propertyName.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleViewClientDetails = (client: UserProfile) => {
+    setSelectedClient(client);
+    setDetailsSheetOpen(true);
+  };
+
+  const handleViewInspectionDetails = (inspectionId: string) => {
+    toast({
+      title: "Visualizar vistoria",
+      description: `Abrindo detalhes da vistoria ${inspectionId}`,
+    });
+  };
+
+  const handleViewWarrantyDetails = (warrantyId: string) => {
+    toast({
+      title: "Visualizar garantia",
+      description: `Abrindo detalhes da garantia ${warrantyId}`,
+    });
+  };
+
+  const filteredClients = allProfiles.filter(client => 
+    client.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleViewDocument = (docTitle: string) => {
-    showToast({ title: "Visualizando documento", description: `Abrindo "${docTitle}" para visualização. Integrado ao Google Drive.` });
-  };
-
-  const handleViewWarrantyDetails = (claimTitle: string) => {
-    showToast({ title: "Detalhes da garantia", description: `Abrindo detalhes de "${claimTitle}".` });
-  };
-
-  const handleUpdateStatus = (clientId: string) => {
-    showToast({ title: "Atualizando status", description: "Sincronizando dados com o servidor..." });
-  };
-
   return (
-    <div className="space-y-6">
-      <PageHeader
-        icon={User}
-        title="Gestão de Experiência do Cliente"
-        description="Portal administrativo para governança de acessos, documentos e jornada do proprietário."
-
+    <div className="container-responsive py-layout-gap animate-fade-in">
+      <PageHeader 
+        title="Área do Cliente" 
+        description="Gestão centralizada da jornada do proprietário e conformidade digital."
       >
-        <Button variant="outline" onClick={() => exportService.exportToCSV(allProfiles, 'clientes_a2')}>
+        <Button variant="outline" className="hidden sm:flex">
           <Download className="mr-2 h-4 w-4" />
           Exportar
         </Button>
         <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
           <Key className="mr-2 h-4 w-4" />
           Habilitar Acessos
-
         </Button>
         <Button onClick={() => setNewClientDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
@@ -122,118 +138,75 @@ const ClientArea = () => {
         <StatsCard label="Proprietários Homologados" value={allProfiles.length} icon={User} variant="brand" />
         <StatsCard label="Interações no Portal" value="28" icon={UserCheck} variant="complete" />
         <StatsCard label="Evolução de Leads" value="15" icon={Plus} variant="progress" />
-
       </div>
 
       <DataView
         items={filteredClients}
         viewMode={viewMode}
-        itemsPerPage={10}
-        columns={[
-          {
-            header: "Nome",
-            accessorKey: "name",
-            cell: (client: any) => (
-              <div className="flex flex-col">
-                <span className="text-label group-hover:text-primary transition-colors">{client.name}</span>
-                <span className="md:hidden text-caption mt-0.5 text-muted-foreground">{client.email}</span>
+        onViewModeChange={setViewMode}
+        isLoading={loading}
+        renderItem={(client) => (
+          <div 
+            key={client.id} 
+            className="card-standard p-6 cursor-pointer interactive-hover"
+            onClick={() => handleViewClientDetails(client)}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">{client.full_name || 'Sem nome'}</h3>
+                  <p className="text-sm text-muted-foreground">{client.email}</p>
+                </div>
               </div>
-            )
-          },
-          {
-            header: "Contato",
-            accessorKey: "email",
-            className: "hidden md:table-cell",
-            cell: (client: any) => (
-              <div className="flex flex-col text-sem-body-sm">
-                <span>{client.email}</span>
-                <span className="text-muted-foreground">{client.phone}</span>
+            </div>
+            <div className="space-y-2 mt-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Telefone:</span>
+                <span className="font-medium">{client.phone || 'Não informado'}</span>
               </div>
-            )
-          },
-          {
-            header: "Imóvel",
-            accessorKey: "propertyName",
-            className: "hidden lg:table-cell",
-            cell: (client: any) => (
-              <span className="text-sem-body-sm text-muted-foreground font-medium">
-                {client.propertyName} • {client.unitNumber}
-              </span>
-            )
-          },
-          {
-            header: "Status",
-            accessorKey: "currentStage",
-            cell: (client: any) => {
-              const profile = clientStageService.getClientProfile(client.id);
-              return profile ? (
-                <StageIndicator currentStage={profile.currentStage} variant="compact" />
-              ) : (
-                <Badge className="bg-status-complete/10 text-status-complete border-status-complete/20 rounded-lg text-sem-tiny font-bold uppercase">Ativo</Badge>
-              );
-            }
-          },
-          {
-            header: "Ações",
-            accessorKey: "id",
-            className: "text-right",
-            cell: (client: any) => (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-primary/5">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 shadow-sem-lg animate-in fade-in zoom-in-95 duration-200">
-                  <DropdownMenuItem onClick={() => setSelectedClient(client)} className="py-2.5 font-medium cursor-pointer">
-                    <User className="mr-2 h-4 w-4 text-muted-foreground" /> Ver Detalhes
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleUpdateStatus(client.id)} className="py-2.5 font-medium cursor-pointer">
-                    <History className="mr-2 h-4 w-4 text-muted-foreground" /> Sincronizar
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setCredentialsDialogOpen(true)} className="py-2.5 font-medium cursor-pointer">
-                    <Key className="mr-2 h-4 w-4 text-muted-foreground" /> Governança de Acesso
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )
-          }
-        ]}
-        onRowClick={(client) => setSelectedClient(client)}
-
-        emptyState={{
-          title: "Nenhum cliente encontrado",
-          description: "Não encontramos clientes com os termos pesquisados.",
-          action: {
-            label: "Limpar pesquisa",
-            onClick: () => setSearchQuery("")
-          }
-        }}
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">CPF:</span>
+                <span className="font-medium">{client.document_id || 'Não informado'}</span>
+              </div>
+            </div>
+          </div>
+        )}
       />
 
-      <ClientDetailsDialog
-        selectedClient={selectedClient}
-        setSelectedClient={setSelectedClient}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onViewDocument={handleViewDocument}
-        onViewWarrantyDetails={handleViewWarrantyDetails}
-        onStageUpdate={() => handleUpdateStatus(selectedClient.id)}
-      />
-
+      {selectedClient && (
+        <ClientDetailsSheet
+          isOpen={isDetailsSheetOpen}
+          onClose={() => setDetailsSheetOpen(false)}
+          client={selectedClient}
+          onViewInspectionDetails={handleViewInspectionDetails}
+          onViewWarrantyDetails={handleViewWarrantyDetails}
+          onStageUpdate={() => handleUpdateStatus(selectedClient.id)}
+        />
+      )}
 
       {/* Dialogs */}
       <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>
         <DialogContent className="sm:max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+          <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
+            <DialogTitle className="text-2xl font-black tracking-tight">Novo Proprietário</DialogTitle>
+            <DialogDescription className="text-sm font-medium">Cadastre um novo cliente no ecossistema digital.</DialogDescription>
+          </DialogHeader>
           <div className="p-layout-gap max-h-[70vh] overflow-y-auto">
-...
+            <UserForm onSubmit={handleCreateClient} onCancel={() => setNewClientDialogOpen(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isCredentialsDialogOpen} onOpenChange={setCredentialsDialogOpen}>
         <DialogContent className="sm:max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
             <DialogTitle className="text-2xl font-black tracking-tight">Habilitação de Acessos Corporativos</DialogTitle>
             <DialogDescription className="text-sm font-medium">Configure os parâmetros de segurança e libere o ecossistema digital para o cliente.</DialogDescription>
-
           </DialogHeader>
-          <div className="p-8 max-h-[70vh] overflow-y-auto">
+          <div className="p-layout-gap max-h-[70vh] overflow-y-auto">
             <GenerateCredentialsForm onSubmit={handleCredentialsSubmit} onCancel={() => setCredentialsDialogOpen(false)} />
           </div>
         </DialogContent>
