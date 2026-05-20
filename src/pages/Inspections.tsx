@@ -59,15 +59,14 @@ export default function Inspections() {
     filteredInspections,
     searchTerm,
     setSearchTerm,
-    filterStatus,
-    setFilterStatus,
-    filterProperty,
-    setFilterProperty,
+    filters,
+    setFilters,
     stats,
     loadData,
     clearFilters,
     handleExport
   } = useInspections();
+
 
   const [activeTab, setActiveTab] = useState("list");
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
