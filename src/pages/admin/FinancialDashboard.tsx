@@ -124,7 +124,8 @@ const FinancialDashboard = () => {
       </ResponsiveGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
+        <Card className="lg:col-span-2 rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden group">
+          <div className="h-2 w-full bg-gradient-to-r from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <CardHeader className="p-8 pb-0">
             <div className="flex items-center justify-between">
               <div>

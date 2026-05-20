@@ -45,10 +45,10 @@ const AuditLogs = () => {
       </PageHeader>
 
 
-      <div className="grid grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 gap-8 animate-in slide-in-from-bottom-4 duration-700">
         <AuditLogViewer 
-          title="Rastreabilidade Global" 
-          className="rounded-[2rem] shadow-sem-lg border-none bg-card/40 backdrop-blur-md overflow-hidden" 
+          title="Rastreabilidade Global Estratégica" 
+          className="rounded-[2.5rem] shadow-sem-xl border-none bg-card/40 backdrop-blur-md overflow-hidden" 
         />
       </div>
 
