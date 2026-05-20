@@ -11,7 +11,7 @@ interface InstallmentsTableProps {
   onPay?: (id: string) => void;
 }
 
-export const InstallmentsTable = ({ installments, formatCurrency }: InstallmentsTableProps) => {
+export const InstallmentsTable = ({ installments, formatCurrency, onPay }: InstallmentsTableProps) => {
   const getStatusInfo = (status: Installment['status']) => {
     switch (status) {
       case 'paid': return { label: 'Pago', status: 'complete' as const };
