@@ -152,19 +152,38 @@ export default function ClientDocuments() {
 
         <TabsContent value="all" className="space-y-layout-gap pt-2">
           <ResponsiveGrid columns={4} gap="layout">
-            <StatsCard label="Total" value={stats.total} icon={FileText} variant="brand" />
-            <StatsCard label="Disponíveis" value={stats.disponivel} icon={CheckCircle} variant="complete" />
-            <StatsCard label="Processando" value={stats.processando} icon={Clock} variant="pending" />
-            <StatsCard label="Favoritos" value={stats.favorites} icon={Star} variant="brand" />
+            <StatsCard label="Total" value={stats.total} icon={FileText} variant="brand" className="rounded-[2rem] border-none shadow-sem-sm" />
+            <StatsCard label="Disponíveis" value={stats.disponivel} icon={CheckCircle} variant="complete" className="rounded-[2rem] border-none shadow-sem-sm" />
+            <StatsCard label="Processando" value={stats.processando} icon={Clock} variant="pending" className="rounded-[2rem] border-none shadow-sem-sm" />
+            <StatsCard label="Favoritos" value={stats.favorites} icon={Star} variant="brand" className="rounded-[2rem] border-none shadow-sem-sm" />
           </ResponsiveGrid>
 
-          <Card>
-            <CardContent className="p-4">
+          <Card className="rounded-3xl border-none shadow-md overflow-hidden">
+            <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-4">
-                <Input placeholder="Buscar..." className="flex-1" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="relative flex-1 group">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <Input 
+                    placeholder="Buscar por título ou descrição..." 
+                    className="pl-10 h-10 rounded-xl border-2 focus-visible:ring-primary/20 transition-all" 
+                    value={search} 
+                    onChange={(e) => setSearch(e.target.value)} 
+                  />
+                </div>
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[180px]"><SelectValue placeholder="Categoria" /></SelectTrigger>
-                  <SelectContent><SelectItem value="all">Todas</SelectItem></SelectContent>
+                  <SelectTrigger className="w-full md:w-[220px] h-10 rounded-xl border-2">
+                    <div className="flex items-center gap-2">
+                      <Filter size={14} className="text-muted-foreground" />
+                      <SelectValue placeholder="Categoria Estratégica" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-xl">
+                    <SelectItem value="all">Todas as Categorias</SelectItem>
+                    <SelectItem value="contrato">Contratos & Aditivos</SelectItem>
+                    <SelectItem value="planta">Plantas & Projetos</SelectItem>
+                    <SelectItem value="manual">Manuais Técnicos</SelectItem>
+                    <SelectItem value="financeiro">Comprovantes Financeiros</SelectItem>
+                  </SelectContent>
                 </Select>
               </div>
             </CardContent>
@@ -172,29 +191,50 @@ export default function ClientDocuments() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="group border h-full rounded-2xl shadow-sm flex flex-col">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <FileText className="h-6 w-6 text-primary" />
+              <Card key={doc.id} className="group border-none h-full rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col overflow-hidden bg-card/50 backdrop-blur-sm">
+                <div className="h-2 w-full bg-gradient-to-r from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <CardHeader className="p-8">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                      <FileText className="h-7 w-7" />
+                    </div>
                     <StatusBadge 
                       status={(doc as any).isSigned ? "complete" : (doc.status === "disponivel" ? "complete" : "progress")} 
                       label={(doc as any).isSigned ? "Assinado" : getStatusLabel(doc.status)}
+                      size="sm"
                     />
                   </div>
-                  <CardTitle className="text-base font-black mt-2">{doc.title}</CardTitle>
+                  <CardTitle className="text-lg font-black tracking-tight leading-tight group-hover:text-primary transition-colors">{doc.title}</CardTitle>
+                  <CardDescription className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-1">{doc.category || "Documentação Geral"}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-xs text-muted-foreground">{doc.description}</p>
+                <CardContent className="px-8 pb-8 flex-1">
+                  <p className="text-sm text-muted-foreground font-medium line-clamp-3 leading-relaxed">{doc.description}</p>
+                  
+                  <div className="flex items-center gap-4 mt-6 p-3 bg-muted/30 rounded-xl border border-border/5">
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-black uppercase text-muted-foreground/60 tracking-wider">Tamanho</span>
+                      <span className="text-xs font-black">{doc.fileSize || "1.2 MB"}</span>
+                    </div>
+                    <Separator orientation="vertical" className="h-8 opacity-50" />
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-black uppercase text-muted-foreground/60 tracking-wider">Formato</span>
+                      <span className="text-xs font-black">PDF</span>
+                    </div>
+                  </div>
                 </CardContent>
-                <div className="p-5 pt-0 space-y-3">
+                <div className="p-8 pt-0 space-y-3">
                   <div className="grid grid-cols-2 gap-3">
-                    <Button variant="outline" size="sm" className="rounded-xl" onClick={() => handlePreview(doc)}>Preview</Button>
-                    <Button size="sm" className="rounded-xl" onClick={() => handleDownload(doc)}>Baixar</Button>
+                    <Button variant="outline" size="sm" className="rounded-xl font-bold h-10 border-2" onClick={() => handlePreview(doc)}>
+                      <Eye className="h-4 w-4 mr-2" /> Preview
+                    </Button>
+                    <Button size="sm" className="rounded-xl font-black uppercase tracking-widest text-[10px] h-10 shadow-lg shadow-primary/20" onClick={() => handleDownload(doc)}>
+                      <Download className="h-4 w-4 mr-2" /> Baixar
+                    </Button>
                   </div>
                   {doc.category === 'contrato' && (
-                    <Button variant="secondary" className="w-full rounded-xl" onClick={() => handleOpenSignature(doc)}>
+                    <Button variant="secondary" className="w-full rounded-xl font-black uppercase tracking-widest text-[10px] h-11 border-2 border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary transition-all" onClick={() => handleOpenSignature(doc)}>
                       {(doc as any).isSigned ? <ShieldCheck className="h-4 w-4 mr-2" /> : <PenTool className="h-4 w-4 mr-2" />}
-                      {(doc as any).isSigned ? "Assinado" : "Assinar"}
+                      {(doc as any).isSigned ? "Protocolo Assinado" : "Assinar Documento"}
                     </Button>
                   )}
                 </div>

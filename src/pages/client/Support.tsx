@@ -120,23 +120,24 @@ const Support = () => {
       </div>
 
       {/* Hero Section / Knowledge Base Search */}
-      <Card className="bg-gradient-to-br from-primary via-primary to-indigo-700 text-primary-foreground overflow-hidden relative border-none shadow-xl rounded-3xl">
-        <div className="absolute right-[-5%] top-[-10%] opacity-10">
-          <BookOpen size={200} />
+      <Card className="bg-gradient-to-br from-primary via-primary to-indigo-700 text-primary-foreground overflow-hidden relative border-none shadow-xl rounded-[2.5rem]">
+        <div className="absolute right-[-5%] top-[-10%] opacity-10 pointer-events-none">
+          <BookOpen size={250} />
         </div>
-        <CardContent className="p-layout-gap md:p-12 relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-black mb-6 tracking-tight">Olá! Como podemos ajudar você hoje?</h2>
+        <CardContent className="p-layout-gap md:p-16 relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
+          <Badge className="bg-white/20 hover:bg-white/30 text-white border-none font-black uppercase tracking-[0.2em] text-[9px] px-4 py-1.5 rounded-full mb-6 backdrop-blur-md">Base de Conhecimento A2</Badge>
+          <h2 className="text-3xl md:text-4xl font-black mb-8 tracking-tighter leading-tight">Olá! Como podemos ajudar <br className="hidden md:block" /> você hoje?</h2>
           <div className="w-full relative group">
             <Input 
-              className="h-14 bg-white/15 border-white/20 text-white placeholder:text-white/60 rounded-2xl pl-12 pr-4 text-lg focus:bg-white focus:text-foreground transition-all duration-300 shadow-lg"
-              placeholder="Pesquisar em nossa base de conhecimento..."
+              className="h-16 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-2xl pl-14 pr-4 text-lg focus:bg-white focus:text-foreground transition-all duration-500 shadow-2xl focus:ring-4 focus:ring-white/10"
+              placeholder="Pesquisar em nossa base estratégica..."
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 group-focus-within:text-primary h-5 w-5 transition-colors" />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-primary h-6 w-6 transition-colors" />
           </div>
-          <div className="flex flex-wrap justify-center gap-2 mt-6">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/50 mr-2">Buscas comuns:</span>
-            {['Vistorias', 'Garantias', 'Boletos', 'Prazos'].map(tag => (
-              <span key={tag} className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 cursor-pointer transition-colors border border-white/10">
+          <div className="flex flex-wrap justify-center gap-2 mt-8">
+            <span className="text-[10px] font-black uppercase tracking-widest text-white/40 mr-2 self-center">Buscas comuns:</span>
+            {['Vistorias', 'Garantias', 'Boletos', 'Prazos', 'Contratos'].map(tag => (
+              <span key={tag} className="text-[9px] font-black uppercase tracking-widest px-4 py-2 bg-white/5 hover:bg-white/15 rounded-full cursor-pointer transition-all border border-white/10 backdrop-blur-sm active:scale-95">
                 {tag}
               </span>
             ))}
@@ -150,19 +151,19 @@ const Support = () => {
         {contactMethods.map((method, idx) => {
           const Icon = method.icon;
           return (
-            <Card key={idx} className="hover:shadow-xl transition-all duration-300 group border-none bg-white rounded-3xl">
-              <CardContent className="p-8 text-center space-y-4">
-                <div className={`mx-auto w-16 h-16 ${method.bg} ${method.color} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm`}>
-                  <Icon size={28} />
+            <Card key={idx} className="hover:shadow-2xl transition-all duration-500 group border-none bg-card/40 backdrop-blur-md rounded-[2.5rem] overflow-hidden">
+              <CardContent className="p-10 text-center space-y-6">
+                <div className={`mx-auto w-20 h-20 ${method.bg} ${method.color} rounded-3xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm border border-white/20`}>
+                  <Icon size={32} strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h3 className="font-black text-lg tracking-tight">{method.title}</h3>
-                  <p className="text-sm font-black text-primary mt-1">{method.detail}</p>
-                  <p className="text-xs text-muted-foreground mt-2 font-medium">{method.description}</p>
+                  <h3 className="font-black text-xl tracking-tight leading-tight">{method.title}</h3>
+                  <p className="text-sm font-black text-primary mt-1.5 tracking-tight">{method.detail}</p>
+                  <p className="text-[10px] text-muted-foreground mt-3 font-black uppercase tracking-widest opacity-60 leading-relaxed">{method.description}</p>
                 </div>
-                <Button variant="outline" className="w-full rounded-2xl text-[10px] font-black uppercase tracking-widest h-12 border-muted-foreground/20 group-hover:border-primary group-hover:text-primary transition-all">
+                <Button variant="outline" className="w-full rounded-2xl text-[10px] font-black uppercase tracking-widest h-12 border-2 border-primary/10 group-hover:border-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
                   {method.action}
-                  <ChevronRight size={14} className="ml-1" />
+                  <ChevronRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </CardContent>
             </Card>
@@ -172,16 +173,17 @@ const Support = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
         {/* Support Ticket Form */}
-        <Card className="shadow-lg border-none bg-white">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl font-black tracking-tight">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Send className="h-5 w-5 text-primary" />
+        <Card className="shadow-2xl border-none bg-card/60 backdrop-blur-md rounded-[2.5rem] overflow-hidden group">
+          <div className="h-2 w-full bg-gradient-to-r from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <CardHeader className="p-10 pb-6">
+            <CardTitle className="flex items-center gap-4 text-2xl font-black tracking-tight">
+              <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 transition-transform">
+                <Send className="h-6 w-6" />
               </div>
-              Abrir um Chamado
+              Protocolo de Suporte
             </CardTitle>
-            <CardDescription className="font-medium">
-              Não encontrou o que precisava? Envie sua solicitação detalhada.
+            <CardDescription className="font-bold text-muted-foreground/80 mt-2">
+              Não encontrou o que precisava? Envie sua solicitação detalhada e rastreie o atendimento.
             </CardDescription>
           </CardHeader>
           <CardContent>
