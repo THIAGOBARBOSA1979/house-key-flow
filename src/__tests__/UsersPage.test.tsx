@@ -4,6 +4,7 @@ import Users from '../pages/Users';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../contexts/AuthContext';
+import { ConfirmProvider } from '../contexts/ConfirmContext';
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ describe('Users Page', () => {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <AuthProvider>
-            <Users />
+            <ConfirmProvider>
+              <Users />
+            </ConfirmProvider>
           </AuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
