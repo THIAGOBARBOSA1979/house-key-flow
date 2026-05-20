@@ -38,8 +38,8 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
-              <ConfirmProvider>
-                <BrandThemeProvider>
+              <BrandThemeProvider>
+                <ConfirmProvider>
 
                 <Suspense fallback={<SkeletonLoader type="page" />}>
                 <Routes>
@@ -103,8 +103,8 @@ const App = () => {
                 <Route path="*" element={<Pages.NotFound />} />
               </Routes>
                 </Suspense>
-                </BrandThemeProvider>
-              </ConfirmProvider>
+                </ConfirmProvider>
+              </BrandThemeProvider>
             </AuthProvider>
 
           </BrowserRouter>
