@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { SkeletonLoader } from '@/components/Shared/SkeletonLoader';
-import { Role } from '@/integrations/supabase/auth-guard';
+import { Role } from '@/types';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

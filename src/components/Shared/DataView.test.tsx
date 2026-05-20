@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DataView } from './DataView';
 import React from 'react';
-import { DataViewMode } from './DataView';
+import { DataViewMode } from "@/types";
 
 // Mock react-i18next
 vi.mock('react-i18next', () => ({

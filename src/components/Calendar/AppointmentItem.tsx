@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, MapPin, User, Check, X, FileCheck, CalendarClock, Users, AlertCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { Appointment } from "./AppointmentData";
+import { Appointment } from "@/types";
 
 export interface AppointmentItemProps {
   appointment: Appointment;

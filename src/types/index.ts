@@ -5,3 +5,5 @@ export * from './inspection';
 export * from './warranty';
 export * from './warrantyFlow';
 export * from './clientFlow';
+export * from './appointment';
+export * from './shared';

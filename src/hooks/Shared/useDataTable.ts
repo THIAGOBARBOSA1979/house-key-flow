@@ -1,9 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-
-export interface SortConfig {
-  key: string | null;
-  direction: 'asc' | 'desc';
-}
+import { SortConfig } from "@/types";
 
 export function useDataTable<T>(data: T[], itemsPerPage: number = 10) {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
@@ -13,36 +9,42 @@ export function useDataTable<T>(data: T[], itemsPerPage: number = 10) {
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return data;
     return [...data].sort((a: any, b: any) => {
-      const aVal = a[sortConfig.key!];
-      const bVal = b[sortConfig.key!];
-      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      const aValue = a[sortConfig.key!];
+      const bValue = b[sortConfig.key!];
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
     });
   }, [data, sortConfig]);
 
-  const handleSort = useCallback((key: string) => {
-    setSortConfig(current => ({
-      key,
-      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
-    }));
-  }, []);
-
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-  
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return sortedData.slice(startIndex, startIndex + itemsPerPage);
   }, [sortedData, currentPage, itemsPerPage]);
 
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const requestSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const setPage = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return {
-    sortedData: paginatedData,
-    allSortedData: sortedData,
-    sortConfig,
-    handleSort,
+    sortedData,
+    paginatedData,
     currentPage,
-    setCurrentPage,
-    totalPages
+    totalPages,
+    sortConfig,
+    requestSort,
+    handleSort: requestSort,
+    setPage,
   };
 }
-

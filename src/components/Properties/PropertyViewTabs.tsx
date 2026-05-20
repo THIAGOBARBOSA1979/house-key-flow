@@ -1,6 +1,6 @@
 import { LayoutGrid, Table as TableIcon, BarChart3 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DataViewMode } from "@/components/Shared/DataView";
+import { DataViewMode } from "@/types";
 
 interface PropertyViewTabsProps {
   viewMode: DataViewMode;

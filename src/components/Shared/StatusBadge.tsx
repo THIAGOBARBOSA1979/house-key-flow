@@ -6,20 +6,7 @@ import { Clock, Loader2, CheckCircle2, AlertTriangle, Info, XCircle } from "luci
 /**
  * Status Types supported by the Design System
  */
-export type StatusType = 
-  | "pending" 
-  | "progress" 
-  | "complete" 
-  | "critical" 
-  | "success" 
-  | "warning" 
-  | "error" 
-  | "info" 
-  | "neutral"
-  | "reschedule_requested"
-  | "presence_confirmed"
-  | "on_track"
-  | "expired";
+import { StatusType } from "@/types";
 
 interface StatusBadgeProps {
   /** The current status to display */
@@ -34,11 +21,11 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const statusConfig: Record<StatusType, { 
+const statusConfig: Partial<Record<StatusType, { 
   badgeClass: string; 
   defaultLabel: string;
   icon: typeof Clock;
-}> = {
+}>> = {
   pending: {
     badgeClass: "badge-pending",
     defaultLabel: "Pendente",
