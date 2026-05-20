@@ -2,6 +2,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { userService } from '@/services/identity/UserService';
 import { propertyService } from '@/services/operations/PropertyService';
+import { auditLogService } from '@/services/core/AuditLogService';
 import { Supabase } from '@/integrations/supabase';
 
 describe('Service Logic Regression', () => {
@@ -54,9 +55,7 @@ describe('Service Logic Regression', () => {
   });
 
   it('Services should trigger audit logs through BaseService', async () => {
-    const { auditLogService } = await import('@/services/core/AuditLogService');
-    // The actual method in BaseService calls auditLogService.logAction
-    const spy = vi.spyOn(auditLogService, 'logAction').mockResolvedValue(true as any);
+    const spy = vi.spyOn(auditLogService, 'logAction').mockImplementation(() => Promise.resolve(true as any));
     
     propertyService.create({ 
       name: 'New Project', 
@@ -65,6 +64,9 @@ describe('Service Logic Regression', () => {
       completedUnits: 0, 
       status: 'pending' 
     }, 'comp-1');
+
+    // Wait a bit for the async log call
+    await new Promise(resolve => setTimeout(resolve, 50));
 
 
     
