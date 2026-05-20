@@ -45,15 +45,19 @@ export function ClientTimeline({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <History className="h-5 w-5" />
-          {title}
-        </CardTitle>
-        <CardDescription>{description}</CardDescription>
+    <Card className="border-none shadow-sem-lg rounded-[2.5rem] overflow-hidden bg-white/60 backdrop-blur-md">
+      <CardHeader className="p-8 border-b border-border/5">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-primary/10 rounded-2xl text-primary shadow-inner">
+            <History className="h-6 w-6" />
+          </div>
+          <div>
+            <CardTitle className="text-xl font-black tracking-tight">{title}</CardTitle>
+            <CardDescription className="font-bold text-muted-foreground/80">{description}</CardDescription>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-8">
         <div className="space-y-0">
           {timeline.map((item, index) => (
             <TimelineItemComponent 
