@@ -100,7 +100,17 @@ class AuditLogService extends BaseService<any> {
     return (data || []).map(raw => this.mapToEntry(raw));
   }
 
+  async log(entry: any, userContext?: any): Promise<void> {
+    await this.logAction({
+      action: entry.action,
+      entityType: entry.entityType,
+      entityId: entry.entityId,
+      payload: { ...entry.metadata, message: entry.details }
+    });
+  }
+
   async logAction(data: {
+
     action: AuditAction;
     entityType: AuditEntityType;
     entityId?: string;
