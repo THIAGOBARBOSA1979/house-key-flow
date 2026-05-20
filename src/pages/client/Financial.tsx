@@ -17,8 +17,17 @@ const Financial = () => {
   const { toast } = useToast();
   const clientId = user?.id || "client-1";
 
-  const summary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
-  const installments = useMemo(() => financialService.getInstallmentsByClient(clientId), [clientId]);
+  const [installments, setInstallments] = useState<Installment[]>([]);
+  
+  const loadData = useCallback(() => {
+    setInstallments(financialService.getInstallmentsByClient(clientId));
+  }, [clientId]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const summary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId, installments]);
 
   const historyData = useMemo(() => {
     return installments
