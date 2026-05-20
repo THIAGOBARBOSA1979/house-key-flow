@@ -17,39 +17,41 @@ export const Stats = ({ className }: { className?: string }) => {
   const { properties } = useProperties();
   const { inspections } = useInspections();
   const { requests: warranties } = useWarranty();
+  const { technicalConformity } = useDashboardData();
 
   const stats: StatItem[] = useMemo(() => [
     {
-      title: "Portfólio",
+      title: "Portfólio Técnico",
       value: properties.length,
       icon: Building,
-      description: `${properties.filter(p => p.status === 'progress').length} em execução`,
+      description: `${properties.filter(p => p.status === 'progress').length} ativos em execução`,
       variant: "brand",
     },
     {
-      title: "Entregas Técnicas",
+      title: "Vistorias & Entregas",
       value: inspections.length,
       icon: ClipboardCheck,
-      description: `${inspections.filter(i => i.status === 'pending').length} pendentes`,
+      description: `${inspections.filter(i => i.status === 'pending' || i.status === 'confirmed').length} em cronograma`,
       variant: "complete",
-      trend: { value: "12%", isPositive: true }
+      trend: { value: "8%", isPositive: true }
     },
     {
-      title: "Garantias",
+      title: "Garantia & Assistência",
       value: warranties.length,
       icon: ShieldCheck,
-      description: `${warranties.filter(w => w.currentStage !== 'completed' && w.currentStage !== 'rejected').length} abertas`,
+      description: `${warranties.filter(w => w.currentStage !== 'completed' && w.currentStage !== 'rejected').length} incidentes ativos`,
       variant: "progress",
     },
     {
-      title: "Saúde Operacional",
-      value: "96%",
+      title: "Conformidade ABNT",
+      value: `${technicalConformity}%`,
       icon: Activity,
-      description: "SLA de conformidade",
+      description: "SLA de integridade técnica",
       variant: "pending",
-      trend: { value: "3%", isPositive: true }
+      trend: { value: "2.4%", isPositive: true }
     },
-  ], [properties, inspections, warranties]);
+  ], [properties, inspections, warranties, technicalConformity]);
+
 
   return (
     <div className={cn(
