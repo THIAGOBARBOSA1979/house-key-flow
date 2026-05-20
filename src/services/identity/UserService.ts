@@ -58,6 +58,46 @@ class UserService extends SupabaseBaseService<User> {
     };
   }
 
+  public async createProfile(data: any): Promise<{ data?: User, error?: any }> {
+    try {
+      const newUser = this.create({
+        ...data,
+        status: data.status || 'active',
+        createdAt: new Date()
+      }, data.company_id);
+
+      // If it's a client, also initialize their journey stage
+      if (newUser.role === 'client') {
+        const { clientStageService } = await import("@/services/operations/ClientStageService");
+        clientStageService.create({
+          id: newUser.id,
+          company_id: newUser.company_id,
+          name: newUser.name,
+          email: newUser.email,
+          phone: newUser.phone,
+          propertyId: data.propertyId || "",
+          propertyName: data.propertyName || "",
+          unitNumber: data.unit || "",
+          currentStage: 'registered',
+          createdAt: new Date(),
+          stageHistory: [{
+            id: crypto.randomUUID(),
+            fromStage: null,
+            toStage: 'registered',
+            changedAt: new Date(),
+            reason: 'Cadastro inicial homologado',
+            changedBy: 'Sistema',
+            isAutomatic: true
+          }]
+        });
+      }
+
+      return { data: newUser };
+    } catch (error) {
+      return { error };
+    }
+  }
+
   /**
    * Mock method for sending invitations
    */
