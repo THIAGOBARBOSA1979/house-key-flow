@@ -122,6 +122,21 @@ export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionIte
               </div>
             )}
           </div>
+          {(inspection as any).conformityScore !== undefined && (
+            <div className="mt-2 flex items-center gap-2">
+              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className={cn(
+                    "h-full transition-all duration-1000",
+                    (inspection as any).conformityScore >= 90 ? "bg-emerald-500" : 
+                    (inspection as any).conformityScore >= 70 ? "bg-amber-500" : "bg-red-500"
+                  )}
+                  style={{ width: `${(inspection as any).conformityScore}%` }}
+                />
+              </div>
+              <span className="text-[10px] font-black text-muted-foreground">{(inspection as any).conformityScore}% NBR</span>
+            </div>
+          )}
         </div>
         
         <div className="flex gap-2 items-center shrink-0 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 pt-3 lg:pt-0 mt-2 lg:mt-0">

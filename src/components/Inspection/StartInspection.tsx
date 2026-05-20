@@ -136,9 +136,17 @@ export const StartInspection = ({
     setTimeout(() => {
       const nonConformCount = nonConformItems.length;
       const inspection = inspectionService.getAll().find(i => i.id === inspectionId);
-      const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}.`;
+      const totalCount = totalItems || 1;
+      const conformityScore = Math.round(((totalCount - nonConformCount) / totalCount) * 100);
       
-      inspectionService.updateStatus(inspectionId, "complete", completionDetails);
+      const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}. Score de Conformidade: ${conformityScore}%.`;
+      
+      inspectionService.update(inspectionId, { 
+        status: "complete", 
+        notes: (inspection?.notes || "") + "\n" + completionDetails,
+        conformityScore,
+        nonConformitiesFound: nonConformCount
+      });
 
       const doc = documentService.createDocument({
         title: `Relatório de Vistoria - ${inspection?.property || 'Unidade'}`,

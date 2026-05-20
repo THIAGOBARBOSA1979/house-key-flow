@@ -13,6 +13,8 @@ export interface ChecklistItem {
   status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na" | "nonconform";
   evidence?: any[];
   conformity?: "conform" | "non_conform" | "not_applicable" | "pending" | "nonconform";
+  abntReference?: string; // Ex: NBR 15575-3:2013
+  inspectionMethod?: string; // Visual, Percussão, etc.
 }
 
 export interface ChecklistGroup {

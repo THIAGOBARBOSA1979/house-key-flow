@@ -42,6 +42,13 @@ export interface Inspection {
   priority?: "low" | "medium" | "high";
   createdAt?: Date;
   firstContactAt?: Date;
+  // Novos campos ABNT
+  technicalStandards?: string[]; // Ex: ["ABNT NBR 15575", "ABNT NBR 5674"]
+  conformityScore?: number;
+  nonConformitiesFound?: number;
+  reportUrl?: string;
+  weatherConditions?: string; // Importante para vistorias externas
+  equipmentUsed?: string[];
 }
 
 const INITIAL_INSPECTIONS: Inspection[] = [
