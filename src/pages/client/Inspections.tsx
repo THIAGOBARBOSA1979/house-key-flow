@@ -69,6 +69,12 @@ export default function ClientInspections() {
 
   return (
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 animate-in fade-in duration-slow">
+      <DigitalSignatureDialog
+        isOpen={isSignatureOpen}
+        onClose={() => setIsSignatureOpen(false)}
+        documentId={selectedInspection || "insp-1"}
+        documentTitle={`Relatório de Vistoria - ${inspection?.unit || ''}`}
+      />
       <DocumentPreviewDialog 
         isOpen={isPreviewOpen} 
         onClose={() => setIsPreviewOpen(false)} 
