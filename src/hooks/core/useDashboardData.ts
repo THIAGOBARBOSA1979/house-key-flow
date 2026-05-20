@@ -29,7 +29,9 @@ export const useDashboardData = () => {
 
     recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
     propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
+    technicalConformity: inspectionService.getTechnicalConformityScore(companyId, user?.is_super_admin),
   }), [companyId, user?.is_super_admin]);
+
 
 
 
@@ -48,7 +50,9 @@ export const useDashboardData = () => {
 
       recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
       propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
+      technicalConformity: inspectionService.getTechnicalConformityScore(companyId, user?.is_super_admin),
     });
+
 
 
 
@@ -87,7 +91,9 @@ export const useDashboardData = () => {
           recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
           
           propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
+          technicalConformity: inspectionService.getTechnicalConformityScore(companyId, user?.is_super_admin),
         });
+
 
 
       }, 50);

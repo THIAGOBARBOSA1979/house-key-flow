@@ -32,11 +32,12 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
       <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-slow">
         {inspections.length > 0 ? (
           inspections.map((inspection) => (
-            <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md card-hover-effect rounded-2xl shadow-sem-sm hover:shadow-sem-md transition-all">
+            <Card key={inspection.id} className="card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md card-hover-effect rounded-2xl shadow-sem-sm hover:shadow-sem-md transition-all border-l-4 border-l-primary">
               <CardContent className="p-0">
                 <InspectionItem inspection={inspection as any} onUpdate={() => navigate("/admin/inspections")} />
               </CardContent>
             </Card>
+
           ))
 
         ) : (

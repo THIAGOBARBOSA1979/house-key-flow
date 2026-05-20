@@ -86,8 +86,9 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         
         <div className="space-y-2 pt-1">
           <div className="flex justify-between items-center text-[10px] font-black tracking-tighter">
-            <span className="text-muted-foreground uppercase opacity-70">ENTREGA DE UNIDADES</span>
-            <span className="text-primary">{completionPercentage}%</span>
+            <span className="text-muted-foreground uppercase opacity-70">ENTREGA TÉCNICA (ABNT)</span>
+            <span className="text-primary font-black">{completionPercentage}%</span>
+
           </div>
           <div className="w-full h-1.5 bg-muted/40 rounded-full overflow-hidden border border-border/5">
             <div 
@@ -103,8 +104,9 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         {totalMilestones > 0 && (
           <div className="space-y-2 pt-2">
             <div className="flex justify-between items-center text-[10px] font-black tracking-tighter">
-              <span className="text-muted-foreground uppercase opacity-70">CRONOGRAMA DE OBRA</span>
-              <span className="text-emerald-500">{completedMilestones}/{totalMilestones} ETAPAS</span>
+              <span className="text-muted-foreground uppercase opacity-70">EVOLUÇÃO FÍSICA ESTRUTURAL</span>
+              <span className="text-emerald-500 font-black">{completedMilestones}/{totalMilestones} ETAPAS</span>
+
             </div>
             <div className="flex gap-1">
               {property.milestones?.map((m) => (

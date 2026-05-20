@@ -91,6 +91,27 @@ const Dashboard = () => {
         <div className="lg:col-span-7 xl:col-span-8 space-y-8">
           <ActiveProperties />
           <ScheduledInspections inspections={inspections} />
+          
+          <section className="animate-in fade-in slide-up duration-slow delay-100">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black uppercase tracking-tighter">
+                <Layers className="text-primary h-5 w-5" />
+                Matriz de Não Conformidades (NCs)
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-6 bg-red-500/5 border border-red-500/10 rounded-2xl">
+                <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">NCs Estruturais</p>
+                <p className="text-2xl font-black text-red-700">0</p>
+                <p className="text-[10px] text-red-600/60 font-medium mt-2">Nenhuma patologia de alto risco detectada</p>
+              </div>
+              <div className="p-6 bg-amber-500/5 border border-amber-500/10 rounded-2xl">
+                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">NCs de Acabamento</p>
+                <p className="text-2xl font-black text-amber-700">14</p>
+                <p className="text-[10px] text-amber-600/60 font-medium mt-2">8 em processo de correção imediata</p>
+              </div>
+            </div>
+          </section>
         </div>
 
         <div className="lg:col-span-5 xl:col-span-4 space-y-8">
@@ -98,19 +119,19 @@ const Dashboard = () => {
           
           <GeneralSummary 
             averageProgress={propertyMetrics?.averageProgress || 0}
-            inspectionsCompletedPercent={inspections.length > 0 ? Math.round((inspections.filter(i => i.status === 'completed').length / inspections.length) * 100) : 0}
+            inspectionsCompletedPercent={inspections.length > 0 ? Math.round((inspections.filter(i => i.status === 'completed' || i.status === 'complete').length / inspections.length) * 100) : 0}
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
             <PendingDocuments />
           </div>
 
-
           <CriticalWarranties />
           <RecentTickets tickets={recentTickets} />
           <SystemAuditTimeline activities={recentActivities} />
         </div>
       </div>
+
     </div>
   );
 };

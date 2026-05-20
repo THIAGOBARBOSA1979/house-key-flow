@@ -14,9 +14,9 @@ export const CriticalWarranties = () => {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-h2 flex items-center gap-2">
-          <ShieldCheck size={24} className="text-status-critical" />
-          Protocolos Prioritários
+        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
+          <ShieldCheck className="text-status-critical h-5 w-5 md:h-6 md:w-6" />
+          Patologias Críticas
         </h2>
       </div>
       <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-slow">
@@ -30,18 +30,18 @@ export const CriticalWarranties = () => {
               <div className="flex justify-between items-start mb-3">
                 <StatusBadge 
                   status={claim.priority === 'high' || claim.priority === 'critical' ? 'critical' : 'warning'} 
-                  label={claim.priority === 'high' ? 'Alta Prioridade' : claim.priority === 'critical' ? 'CRÍTICA' : 'Média'}
+                  label={claim.priority === 'high' ? 'URGENTE' : claim.priority === 'critical' ? 'EMERGÊNCIA' : 'Média'}
                   size="sm"
                 />
-                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/30 px-2 py-0.5 rounded-lg">{claim.id}</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/30 px-2 py-0.5 rounded-lg">ID: {claim.id.slice(0, 6)}</span>
               </div>
               <h4 className="text-label group-hover:text-status-critical transition-colors font-black leading-tight">{claim.title}</h4>
-              <p className="text-[11px] text-muted-foreground mt-2 font-bold uppercase tracking-tighter">{claim.propertyName} • UN. {claim.unitNumber}</p>
+              <p className="text-[11px] text-muted-foreground mt-2 font-bold uppercase tracking-tighter italic">{claim.propertyName} • UN. {claim.unitNumber}</p>
             </div>
           ))
         ) : (
           <div className="text-center py-8 bg-muted/10 rounded-2xl border border-dashed">
-            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Eficiência Máxima: Portfólio sem ocorrências críticas</p>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Governança OK: Nenhuma patologia crítica</p>
           </div>
         )}
       </div>
@@ -50,8 +50,9 @@ export const CriticalWarranties = () => {
         className="w-full text-[10px] font-black uppercase tracking-widest rounded-xl h-12 border-dashed border-primary/20 hover:border-primary/50 hover:bg-primary/5 mt-4 transition-all" 
         onClick={() => navigate("/admin/warranty")}
       >
-        Governança de Assistência Técnica
+        Matriz de Assistência Técnica
       </Button>
+
     </section>
   );
 };
