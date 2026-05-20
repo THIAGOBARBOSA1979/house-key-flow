@@ -217,9 +217,24 @@ class InspectionService extends SupabaseBaseService<Inspection> {
   }
 
   exportData(format: 'json' | 'csv' = 'json') {
-
-    return format === 'json' ? JSON.stringify(this.items) : "";
+    if (format === 'json') return JSON.stringify(this.items, null, 2);
+    
+    const headers = ["ID", "Propriedade", "Unidade", "Cliente", "Data", "Horário", "Status", "Tipo", "Técnico"];
+    const rows = this.items.map(i => [
+      i.id,
+      i.property,
+      i.unit,
+      i.client,
+      i.date.toLocaleDateString(),
+      i.time,
+      i.status,
+      i.type,
+      this.getTechnicianById(i.technician)?.name || "N/A"
+    ]);
+    
+    return [headers, ...rows].map(row => row.join(",")).join("\n");
   }
+
 }
 
 export const inspectionService = new InspectionService();
