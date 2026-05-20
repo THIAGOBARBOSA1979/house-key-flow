@@ -31,6 +31,7 @@ export default function ClientInspections() {
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [inspections, setInspections] = useState<any[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isSignatureOpen, setIsSignatureOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
 
   const loadInspections = () => {
