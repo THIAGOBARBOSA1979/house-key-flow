@@ -1,12 +1,15 @@
+
 import { useState, useMemo, useCallback } from "react";
-import { inspectionService } from "@/services";
+import { inspectionService, propertyService } from "@/services";
 import { useService, useDataList } from "@/hooks";
 import { Inspection } from "@/types/inspection";
+import { useAuth } from "@/contexts/AuthContext";
 
 /**
  * Custom hook to manage inspections logic.
  */
 export const useInspections = () => {
+  const { user } = useAuth();
   const { 
     items: inspections, 
     isLoading, 
@@ -16,11 +19,11 @@ export const useInspections = () => {
     remove: deleteInspection
   } = useService<Inspection>(inspectionService);
 
-  const filterFn = useCallback((inspection: Inspection, currentFilters: any) => {
-    const matchesStatus = currentFilters.status === "all" || inspection.status === currentFilters.status;
-    const matchesTech = currentFilters.technician === "all" || inspection.technician === currentFilters.technician;
-    const matchesProperty = currentFilters.property === "all" || inspection.property === currentFilters.property;
-    const matchesChecklist = currentFilters.checklist === "all" || inspection.checklistId === currentFilters.checklist;
+  const filterFn = useCallback((inspection: Inspection, currentFilters: any, searchTerm: string) => {
+    const matchesStatus = !currentFilters.status || currentFilters.status === "all" || inspection.status === currentFilters.status;
+    const matchesTech = !currentFilters.technician || currentFilters.technician === "all" || inspection.technician === currentFilters.technician;
+    const matchesProperty = !currentFilters.property || currentFilters.property === "all" || inspection.property === currentFilters.property;
+    const matchesChecklist = !currentFilters.checklist || currentFilters.checklist === "all" || inspection.checklistId === currentFilters.checklist;
     
     const matchesSearch = !searchTerm || 
       inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -39,7 +42,7 @@ export const useInspections = () => {
     clearFilters
   } = useDataList<Inspection>(inspections, {
     initialFilters: { status: "all", technician: "all", property: "all", checklist: "all" },
-    filterFn
+    filterFn: (item, filters) => filterFn(item, filters, searchTerm)
   });
 
   const stats = useMemo(() => {
@@ -55,6 +58,23 @@ export const useInspections = () => {
     };
   }, [inspections]);
 
+  const analyticsStats = useMemo(() => {
+    const statusRaw = inspectionService.getStatsByStatus(user?.company_id, user?.is_super_admin);
+    const techRaw = inspectionService.getStatsByTechnician(user?.company_id, user?.is_super_admin);
+
+    return {
+      status: Object.entries(statusRaw).map(([name, value]) => ({ 
+        name: name === 'pending' ? 'Pendente' : name === 'complete' ? 'Concluído' : name === 'progress' ? 'Em andamento' : name, 
+        value 
+      })),
+      technician: Object.entries(techRaw).map(([name, value]) => ({ name, value }))
+    };
+  }, [inspections, user]);
+
+  const properties = useMemo(() => {
+    return Array.from(new Set(inspections.map(i => i.property)));
+  }, [inspections]);
+
   const handleExport = useCallback(() => {
     const data = inspectionService.exportData('csv');
     const blob = new Blob([data], { type: 'text/csv' });
@@ -68,6 +88,12 @@ export const useInspections = () => {
     document.body.removeChild(a);
   }, []);
 
+  const updateStatus = useCallback(async (id: string, status: string) => {
+    const success = await inspectionService.updateStatus(id, status);
+    if (success) loadData();
+    return success;
+  }, [loadData]);
+
   return {
     inspections,
     filteredInspections,
@@ -76,13 +102,15 @@ export const useInspections = () => {
     filters,
     setFilters,
     stats,
+    analyticsStats,
+    properties,
     isLoading,
     loadData,
     clearFilters,
     handleExport,
     createInspection,
     updateInspection,
-    deleteInspection
+    deleteInspection,
+    updateStatus
   };
 };
-

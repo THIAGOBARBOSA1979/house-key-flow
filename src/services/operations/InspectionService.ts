@@ -108,7 +108,7 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     notes?: string; 
     requestId?: string; 
     priority?: Inspection["priority"] 
-  }, propertyInfo?: { property: string; unit: string; client: string }): Inspection {
+  }, propertyInfo?: { property: string; unit: string; client: string; companyId?: string }): Inspection {
     const newInspection = super.create({
       property: propertyInfo?.property || "Empreendimento Exemplo",
       unit: propertyInfo?.unit || "101",
@@ -123,11 +123,12 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       requestId: data.requestId,
       priority: data.priority || "medium",
       createdAt: new Date()
-    }, (propertyInfo as any)?.companyId);
+    }, propertyInfo?.companyId);
 
     this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`);
     return newInspection;
   }
+
 
   updateStatus(id: string, status: string, details?: string) {
     const oldItem = this.getById(id);
@@ -216,9 +217,24 @@ class InspectionService extends SupabaseBaseService<Inspection> {
   }
 
   exportData(format: 'json' | 'csv' = 'json') {
-
-    return format === 'json' ? JSON.stringify(this.items) : "";
+    if (format === 'json') return JSON.stringify(this.items, null, 2);
+    
+    const headers = ["ID", "Propriedade", "Unidade", "Cliente", "Data", "Horário", "Status", "Tipo", "Técnico"];
+    const rows = this.items.map(i => [
+      i.id,
+      i.property,
+      i.unit,
+      i.client,
+      i.date.toLocaleDateString(),
+      i.time,
+      i.status,
+      i.type,
+      this.getTechnicianById(i.technician)?.name || "N/A"
+    ]);
+    
+    return [headers, ...rows].map(row => row.join(",")).join("\n");
   }
+
 }
 
 export const inspectionService = new InspectionService();
