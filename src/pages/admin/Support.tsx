@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useEffect } from "react";
 import { 
   MessageSquare, 
@@ -113,7 +112,7 @@ const AdminSupport = () => {
         </Button>
       </PageHeader>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-250px)] min-h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap h-[calc(100vh-var(--space-20)-var(--space-10)*4)] min-h-[600px]">
         {/* Ticket List Section */}
         <Card className="lg:col-span-4 overflow-hidden border-none shadow-sem-lg rounded-[2rem] flex flex-col">
           <CardHeader className="p-6 border-b">
@@ -238,7 +237,7 @@ const AdminSupport = () => {
                     <div 
                       key={message.id} 
                       className={cn(
-                        "flex flex-col max-w-[80%] space-y-2",
+                        "flex flex-col max-w-[85%] space-y-2-sem",
                         message.role === 'admin' ? "ml-auto items-end" : "items-start"
                       )}
                     >

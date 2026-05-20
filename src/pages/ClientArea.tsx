@@ -146,24 +146,24 @@ const ClientArea = () => {
 
       {/* Dialogs */}
       <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>
-        <DialogContent className="sm:max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+        <DialogContent className="max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-sem-xl">
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
             <DialogTitle className="text-2xl font-black tracking-tight">Novo Proprietário</DialogTitle>
             <DialogDescription className="text-sm font-medium">Cadastre um novo cliente no ecossistema digital.</DialogDescription>
           </DialogHeader>
-          <div className="p-layout-gap max-h-[70vh] overflow-y-auto">
+          <div className="p-layout-gap max-h-[70vh] overflow-y-auto overflow-x-hidden">
             <UserForm onSave={handleCreateClient} onCancel={() => setNewClientDialogOpen(false)} />
           </div>
         </DialogContent>
       </Dialog>
 
       <Dialog open={isCredentialsDialogOpen} onOpenChange={setCredentialsDialogOpen}>
-        <DialogContent className="sm:max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+        <DialogContent className="max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-sem-xl">
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
             <DialogTitle className="text-2xl font-black tracking-tight">Habilitação de Acessos Corporativos</DialogTitle>
             <DialogDescription className="text-sm font-medium">Configure os parâmetros de segurança e libere o ecossistema digital para o cliente.</DialogDescription>
           </DialogHeader>
-          <div className="p-layout-gap max-h-[70vh] overflow-y-auto">
+          <div className="p-layout-gap max-h-[70vh] overflow-y-auto overflow-x-hidden">
             <GenerateCredentialsForm onSubmit={handleCredentialsSubmit} onCancel={() => setCredentialsDialogOpen(false)} />
           </div>
         </DialogContent>
