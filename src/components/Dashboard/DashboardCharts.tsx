@@ -24,12 +24,10 @@ const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export const DashboardCharts = ({ 
   inspections = [], 
-  warranties = [], 
-  financialData = { revenueByMonth: [] } 
+  warranties = []
 }: {
   inspections?: Array<{ date: Date | string }>;
   warranties?: Array<{ category: string }>;
-  financialData?: { revenueByMonth: Array<{ month: string; value: number }> };
 }) => {
 
   const inspectionChartData = useMemo(() => {
