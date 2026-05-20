@@ -114,7 +114,7 @@ export default function ClientDocuments() {
   };
 
   return (
-    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-700">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {selectedDoc && (
         <DigitalSignatureDialog
           isOpen={isSignatureOpen}
@@ -129,15 +129,15 @@ export default function ClientDocuments() {
         generatedContent={previewContent}
         document={selectedDoc as any}
       />
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
-            <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
-              <FileText className="h-8 w-8" />
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter flex items-center gap-4 text-foreground leading-tight">
+            <div className="p-3 bg-primary/10 rounded-2xl shadow-inner border border-primary/20 text-primary">
+              <FileText className="h-8 w-8" strokeWidth={3} />
             </div>
-            Meus Documentos
+            Meus Documentos & Contratos
           </h1>
-          <p className="text-muted-foreground mt-2 font-medium">Acesse e assine seus documentos.</p>
+          <p className="text-muted-foreground mt-2 font-bold text-sm">Gerenciamento seguro de contratos, plantas e manuais técnicos da unidade.</p>
         </div>
       </div>
 

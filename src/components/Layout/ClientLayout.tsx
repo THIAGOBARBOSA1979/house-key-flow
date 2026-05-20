@@ -177,17 +177,17 @@ const MobileHeader = ({
 }: {
   onToggleSidebar: () => void;
 }) => {
-  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 lg:hidden">
-      <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="rounded-xl hover:bg-primary/10">
-        <Menu size={24} className="text-primary" />
+  return <div className="flex items-center justify-between h-20 px-6 border-b bg-background/80 backdrop-blur-xl sticky top-0 z-40 lg:hidden shadow-sm">
+      <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="rounded-xl hover:bg-primary/10 transition-colors">
+        <Menu size={26} className="text-primary" strokeWidth={2.5} />
       </Button>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/20">
+        <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-lg shadow-primary/30 rotate-3 transition-all">
           A2
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-black tracking-tight leading-none">Portal do Cliente</span>
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">A2 Gestão</span>
+          <span className="text-base font-black tracking-tighter leading-none">Portal A2</span>
+          <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1">Ecossistema</span>
         </div>
       </div>
       <div className="w-10"></div>
@@ -354,12 +354,12 @@ const ClientLayout = () => {
               <ClientNavLink to="/client/support" icon={HelpCircle} onClick={handleLinkClick}>Central de Ajuda</ClientNavLink>
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start" onClick={handleLinkClick}>
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Falar com suporte
+                  <Button variant="ghost" className="w-full justify-start rounded-2xl h-12 text-sm font-bold text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all px-4" onClick={handleLinkClick}>
+                    <MessageSquare className="mr-3 h-5 w-5 opacity-60 group-hover:opacity-100" />
+                    Chat Estratégico
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-0">
+                <SheetContent side="right" className="p-0 sm:max-w-md border-none shadow-2xl">
                   <ChatSupportPanel />
                 </SheetContent>
               </Sheet>
@@ -369,10 +369,14 @@ const ClientLayout = () => {
         </nav>
         
         {/* User controls */}
-        <div className="p-4 border-t">
-          <Button variant="outline" className="w-full" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
+        <div className="p-4 border-t border-border/40 bg-muted/10">
+          <Button 
+            variant="ghost" 
+            className="w-full rounded-xl h-12 justify-start px-4 text-destructive hover:bg-destructive/5 hover:text-destructive font-bold transition-all" 
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-3 h-5 w-5" />
+            Finalizar Sessão
           </Button>
         </div>
       </div>

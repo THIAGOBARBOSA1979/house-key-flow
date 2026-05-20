@@ -92,55 +92,69 @@ export function TimelineItemComponent({ item, isLast = false }: TimelineItemProp
   const EventIcon = getEventIcon(item.eventType);
 
   return (
-    <div className="relative flex gap-4">
+    <div className="relative flex gap-6 group/item">
       {/* Vertical line */}
       {!isLast && (
         <div 
           className={cn(
-            "absolute left-[17px] top-10 w-0.5 h-[calc(100%-8px)]",
+            "absolute left-[17px] top-10 bottom-0 w-[2px] transition-all duration-700 opacity-20",
             styles.line
           )} 
         />
       )}
       
       {/* Status indicator */}
-      <div className="relative z-10 flex-shrink-0">
+      <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center mt-1">
         <div 
           className={cn(
-            "w-9 h-9 rounded-full flex items-center justify-center border-2",
-            styles.dot
+            "w-9 h-9 rounded-xl flex items-center justify-center border-2 transition-all duration-500 group-hover/item:scale-110",
+            styles.dot,
+            item.status === 'current' && 'animate-pulse ring-2 ring-primary/20 ring-offset-2'
           )}
         >
-          {getStatusIcon(item.status)}
+          <EventIcon className={cn("h-5 w-5", styles.text)} strokeWidth={2.5} />
         </div>
       </div>
       
       {/* Content */}
-      <div className={cn(
-        "flex-1 pb-6 pt-1"
-      )}>
+      <div className="flex flex-col pb-10 flex-1">
         <div className={cn(
-          "p-4 rounded-xl border shadow-sem-sm hover:shadow-sem-md transition-all duration-normal",
-          styles.container
+          "p-6 rounded-[1.5rem] border-none shadow-sem-sm hover:shadow-sem-lg transition-all duration-500",
+          item.status === 'current' ? 'bg-white' : 'bg-muted/20'
         )}>
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <EventIcon className={cn("h-4 w-4", styles.text)} />
-              <h4 className={cn("font-medium", styles.text)}>
-                {item.title}
-              </h4>
-            </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+            <h4 className={cn(
+              "text-sm font-black uppercase tracking-widest",
+              styles.text
+            )}>
+              {item.title}
+            </h4>
             {item.date && (
-              <span className={cn("text-xs flex items-center gap-1", styles.description)}>
-                <Calendar className="h-3 w-3" />
+              <span className={cn(
+                "text-[10px] font-black uppercase tracking-tighter px-3 py-1 rounded-full",
+                styles.container,
+                styles.text
+              )}>
                 {item.date.toLocaleDateString('pt-BR')}
               </span>
             )}
           </div>
           {item.description && (
-            <p className={cn("text-sm mt-1", styles.description)}>
+            <p className={cn(
+              "text-xs leading-relaxed font-medium transition-colors duration-300",
+              item.status === "pending" ? "text-muted-foreground/40" : "text-muted-foreground"
+            )}>
               {item.description}
             </p>
+          )}
+          
+          {item.status === 'current' && (
+            <div className="mt-4 flex items-center gap-2">
+               <div className="h-1 flex-1 bg-primary/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary w-1/3 animate-[progress-pulse_2s_infinite]" />
+               </div>
+               <span className="text-[9px] font-black text-primary uppercase animate-pulse">Em análise</span>
+            </div>
           )}
         </div>
       </div>

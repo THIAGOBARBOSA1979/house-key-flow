@@ -92,30 +92,30 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header with Stage Indicator */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-black tracking-tighter text-foreground leading-tight">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground leading-tight">
             Bem-vindo ao Portal Técnico, {userInfo.name}! 👋
           </h1>
           <div className="flex items-center gap-2 mt-1.5">
              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-             <p className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest">
+             <p className="text-muted-foreground font-bold uppercase text-[9px] tracking-widest">
                Gestão de Ativos e Conformidade Técnica (ABNT)
              </p>
           </div>
 
         </div>
-        <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
           <StageIndicator currentStage={stage || 'lead'} showDescription variant="badge" />
 
-          <div className="hidden md:block h-12 w-px bg-border/40 mx-2" />
-          <Card className="bg-primary/5 px-6 py-3 rounded-2xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-colors group cursor-pointer">
-            <span className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] mb-1.5 block">Status Geral</span>
+          <div className="hidden md:block h-10 w-px bg-border/40 mx-1" />
+          <Card className="bg-primary/5 px-5 py-2.5 rounded-2xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-all hover:scale-105 active:scale-95 group cursor-pointer">
+            <span className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] mb-1 block">Status Geral</span>
             <div className="flex items-center gap-3">
-               <span className="text-2xl font-black text-primary leading-none tracking-tighter">{Math.round(contractProgress)}%</span>
-               <TrendingUp size={18} className="text-primary group-hover:translate-y-[-2px] transition-transform" />
+               <span className="text-xl font-black text-primary leading-none tracking-tighter">{Math.round(contractProgress)}%</span>
+               <TrendingUp size={16} className="text-primary group-hover:translate-y-[-2px] transition-transform" />
             </div>
           </Card>
         </div>
@@ -123,34 +123,37 @@ const Dashboard = () => {
 
 
       {/* Property Info Card */}
-      <ResponsiveGrid columns={3} gap="layout">
-        <PropertyInfoCard 
-          property={userInfo.property}
-          unit={userInfo.unit}
-          daysToDelivery={daysToDelivery}
-          contractProgress={contractProgress}
-          deliveryDate={userInfo.deliveryDate}
-          contractDate={userInfo.contractDate}
-        />
-
-        <ReferralCard />
-      </ResponsiveGrid>
-      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-        <div className="lg:col-span-2 space-y-8">
-          <Card className="border-none shadow-xl rounded-[2rem] overflow-hidden bg-white">
+        <div className="lg:col-span-2">
+          <PropertyInfoCard 
+            property={userInfo.property}
+            unit={userInfo.unit}
+            daysToDelivery={daysToDelivery}
+            contractProgress={contractProgress}
+            deliveryDate={userInfo.deliveryDate}
+            contractDate={userInfo.contractDate}
+          />
+        </div>
+        <div className="lg:col-span-1">
+          <ReferralCard />
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
+        <div className="lg:col-span-8 space-y-8">
+          <Card className="border-none shadow-sem-lg rounded-[2.5rem] overflow-hidden bg-white/60 backdrop-blur-md">
             <CardHeader className="p-8 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-xl">
-                  <Activity className="h-5 w-5 text-primary" />
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-primary/10 rounded-2xl text-primary shadow-inner">
+                  <Activity className="h-6 w-6" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-black tracking-tight">Sua Jornada</CardTitle>
-                  <CardDescription className="font-medium">Acompanhe cada etapa do processo do seu imóvel</CardDescription>
+                  <CardTitle className="text-2xl font-black tracking-tight">Sua Jornada Digital</CardTitle>
+                  <CardDescription className="font-bold text-muted-foreground/80">Acompanhe a evolução estratégica do seu imóvel</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-8 pt-4">
+            <CardContent className="p-8 pt-8">
               <ClientTimeline steps={timeline} />
             </CardContent>
           </Card>
@@ -158,7 +161,7 @@ const Dashboard = () => {
           <ConstructionFeed updates={constructionUpdates} />
         </div>
         
-        <div className="space-y-8">
+        <div className="lg:col-span-4 space-y-8">
           <TechnicalSheet />
         </div>
       </div>

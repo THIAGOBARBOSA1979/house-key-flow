@@ -47,17 +47,17 @@ export default function ClientLogin() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background">
-      <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
-        <div className="container-responsive py-4">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-background">
+      <header className="border-b bg-white/80 backdrop-blur-xl sticky top-0 z-sticky shadow-sm">
+        <div className="container-responsive py-5">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
+            <Link to="/" className="flex items-center gap-4 group">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary via-primary to-indigo-700 flex items-center justify-center text-primary-foreground font-black text-2xl shadow-xl group-hover:scale-105 transition-transform duration-500">
                 A2
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">A2 Incorporadora</h1>
-                <p className="text-sm text-brand font-medium">Portal do Cliente</p>
+                <h1 className="text-2xl font-black text-foreground tracking-tighter leading-none">A2 Incorporadora</h1>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mt-1">Portal Estratégico do Cliente</p>
               </div>
             </Link>
             <div className="flex items-center gap-4">
@@ -79,20 +79,20 @@ export default function ClientLogin() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container-responsive py-12 md:py-20">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                  Portal Exclusivo para Clientes
+          <div className="grid lg:grid-cols-12 gap-16 items-center">
+            <div className="lg:col-span-7 space-y-12">
+              <div className="space-y-6">
+                <Badge className="bg-primary/10 text-primary border-none font-black uppercase tracking-[0.25em] text-[10px] px-6 py-2 rounded-full backdrop-blur-md">
+                  Ecossistema Exclusivo para Proprietários
                 </Badge>
-                <h2 className="text-5xl font-bold text-gray-900 leading-tight">
-                  Sua casa, nosso
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> compromisso</span>
+                <h2 className="text-5xl md:text-7xl font-black text-foreground leading-[0.95] tracking-tighter">
+                  Sua unidade, nosso <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-600">compromisso técnico.</span>
                 </h2>
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Acesse sua área exclusiva e tenha controle total sobre seu imóvel, vistorias e garantias de forma simples e intuitiva.
+                <p className="text-xl text-muted-foreground font-medium max-w-xl leading-relaxed">
+                  Acesse o hub estratégico da sua unidade. Controle total sobre vistorias, laudos ABNT e assistência técnica em um só lugar.
                 </p>
               </div>
 
@@ -148,8 +148,9 @@ export default function ClientLogin() {
               </div>
             </div>
 
-            <div className="flex justify-center">
-              <Card className="w-full max-w-md shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
+            <div className="lg:col-span-5 flex justify-center">
+              <Card className="w-full max-w-md shadow-2xl border-none bg-white rounded-[3rem] overflow-hidden">
+                <div className="h-3 w-full bg-gradient-to-r from-primary to-indigo-600" />
                 <CardHeader className="space-y-4 pb-8">
                   <div className="text-center">
                     <CardTitle className="text-3xl font-bold text-gray-900">Bem-vindo de volta</CardTitle>

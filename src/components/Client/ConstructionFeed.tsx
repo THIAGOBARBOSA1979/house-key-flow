@@ -30,9 +30,9 @@ export function ConstructionFeed({ updates }: ConstructionFeedProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {updates.map((update) => (
-          <Card key={update.id} className="overflow-hidden border-none shadow-lg group hover:translate-y-[-4px] transition-all duration-500 rounded-3xl bg-white">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap- layout-gap">
+        {updates.length > 0 ? updates.map((update) => (
+          <Card key={update.id} className="overflow-hidden border-none shadow-sem-lg group hover:translate-y-[-6px] transition-all duration-700 rounded-[2.5rem] bg-white">
             <div className="aspect-video relative overflow-hidden">
               <img 
                 src={update.imageUrl || "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=800&q=80"} 
@@ -64,7 +64,12 @@ export function ConstructionFeed({ updates }: ConstructionFeedProps) {
               </p>
             </CardContent>
           </Card>
-        ))}
+        )) : (
+          <div className="col-span-full p-20 text-center bg-muted/20 rounded-[2.5rem] border-2 border-dashed">
+            <HardHat size={48} className="mx-auto text-muted-foreground/20 mb-4" />
+            <p className="text-sm font-black text-muted-foreground uppercase tracking-widest">Nenhuma atualização postada ainda</p>
+          </div>
+        )}
       </div>
     </div>
   );

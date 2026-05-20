@@ -68,7 +68,7 @@ export default function ClientInspections() {
   ];
 
   return (
-    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       <DigitalSignatureDialog
         isOpen={isSignatureOpen}
         onClose={() => setIsSignatureOpen(false)}
@@ -84,13 +84,13 @@ export default function ClientInspections() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black tracking-tight text-primary flex items-center gap-3">
-            <div className="p-2.5 bg-primary/10 rounded-2xl shadow-sm border border-primary/20">
-              <ClipboardCheck className="h-7 w-7" />
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-4 leading-tight">
+            <div className="p-3 bg-primary/10 rounded-2xl shadow-inner border border-primary/20 text-primary">
+              <ClipboardCheck className="h-8 w-8" strokeWidth={3} />
             </div>
-            Vistorias Técnicas
+            Vistorias Técnicas & Entrega
           </h1>
-          <p className="text-muted-foreground font-medium">Acompanhe seus agendamentos, laudos e status de aprovação da sua unidade.</p>
+          <p className="text-muted-foreground font-bold text-sm">Acompanhe seus agendamentos, laudos ABNT e o status de homologação da sua unidade.</p>
         </div>
         {(stage !== 'inspection_enabled' && stage !== 'warranty_enabled') && (
           <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 animate-in slide-in-from-right-4">
@@ -132,12 +132,12 @@ export default function ClientInspections() {
 
       </ResponsiveGrid>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
+        <div className="lg:col-span-4 space-y-layout-gap">
           <ClientTimeline 
             timeline={timelineItems} 
-            title="Evolução da Vistoria"
-            description="Progresso técnico da sua entrega"
+            title="Evolução Técnica"
+            description="Progresso da entrega da unidade"
           />
           
           <Card className="rounded-[2rem] border-none shadow-xl bg-gradient-to-br from-primary/5 to-transparent">
@@ -159,77 +159,89 @@ export default function ClientInspections() {
           </Card>
         </div>
 
-        <div className="lg:col-span-2 space-y-layout-gap">
+        <div className="lg:col-span-8 space-y-layout-gap">
           {inspection ? (
-            <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden group bg-card/50 backdrop-blur-sm">
-              <div className="h-24 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent w-full" />
-              <CardHeader className="relative -mt-12 px-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="p-4 bg-background rounded-2xl shadow-xl border border-border/50 text-primary group-hover:scale-110 transition-transform">
-                      <ClipboardCheck className="h-8 w-8" />
+            <Card className="rounded-[3rem] border-none shadow-sem-lg overflow-hidden group bg-white/70 backdrop-blur-md">
+              <div className="h-32 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent w-full relative">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
+              </div>
+              <CardHeader className="relative -mt-16 px-8 sm:px-10 pb-4">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+                  <div className="flex items-center gap-6">
+                    <div className="p-5 bg-white rounded-[2rem] shadow-sem-lg border border-border/50 text-primary group-hover:scale-110 transition-transform duration-500">
+                      <ClipboardCheck className="h-10 w-10" strokeWidth={2.5} />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <StatusBadge 
                           status={inspection.status === 'complete' ? 'complete' : (inspection.status === 'confirmed' ? 'progress' : 'pending')} 
-                          label={inspection.status === 'complete' ? 'Concluída' : (inspection.status === 'confirmed' ? 'Confirmada' : 'Aguardando')}
+                          label={inspection.status === 'complete' ? 'Protocolo Concluído' : (inspection.status === 'confirmed' ? 'Visita Confirmada' : 'Aguardando')}
                         />
-                        <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest bg-muted border-none">{inspection.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Unidade'}</Badge>
+                        <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border-primary/10 h-6 px-3">{inspection.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica ABNT'}</Badge>
                       </div>
-                      <CardTitle className="text-2xl font-black tracking-tight">{inspection.title} - {inspection.unit}</CardTitle>
-                      <CardDescription className="font-bold flex items-center gap-1.5 mt-1">
-                        <MapPin size={14} className="text-primary" /> {inspection.property}
+                      <CardTitle className="text-3xl font-black tracking-tight leading-tight">{inspection.title} <span className="text-primary">•</span> {inspection.unit}</CardTitle>
+                      <CardDescription className="font-bold flex items-center gap-2 mt-2 text-muted-foreground/80">
+                        <MapPin size={16} className="text-primary" /> {inspection.property}
                       </CardDescription>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Data Agendada</p>
-                    <p className="text-xl font-black text-foreground">{safeFormat(inspection.scheduledDate, "dd/MM/yyyy")}</p>
-                    <p className="text-sm font-bold text-primary">{inspection.time}</p>
+                  <div className="bg-primary text-white p-6 rounded-[2rem] shadow-xl shadow-primary/20 min-w-[160px] text-center transform group-hover:translate-y-[-5px] transition-transform duration-500">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">Agenda Técnica</p>
+                    <p className="text-2xl font-black tracking-tighter">{safeFormat(inspection.scheduledDate, "dd/MM/yyyy")}</p>
+                    <div className="flex items-center justify-center gap-1.5 mt-1 bg-white/20 rounded-full py-1">
+                       <Clock size={12} strokeWidth={3} />
+                       <p className="text-xs font-black">{inspection.time}</p>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="px-8 pb-8 pt-6">
-                <Separator className="mb-8 opacity-50" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
-                  <div className="space-y-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Responsáveis</h4>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center font-black text-xs text-muted-foreground">TP</div>
+              <CardContent className="px-8 sm:px-10 pb-10 pt-6">
+                <Separator className="mb-10 opacity-40" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                  <div className="space-y-6">
+                    <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 border-l-4 border-primary pl-3">Equipe Técnica</h4>
+                    <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/5 group/tech">
+                      <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center font-black text-lg text-primary shadow-sm border border-border/50 group-hover/tech:scale-105 transition-transform duration-500">
+                        {inspection.technician?.split(' ').map((n: string) => n[0]).join('') || "A2"}
+                      </div>
                       <div>
-                        <p className="text-sm font-black">Técnico Responsável</p>
-                        <p className="text-[10px] font-bold text-muted-foreground uppercase">{inspection.technician || "Engenheiro A2"}</p>
+                        <p className="text-base font-black text-foreground/90">{inspection.technician || "Engenheiro A2"}</p>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">Responsável pela Homologação</p>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ações Estratégicas</h4>
-                    <div className="flex flex-wrap gap-2">
-                      <Button variant="outline" size="sm" className="rounded-xl font-bold h-9 gap-2" onClick={handleViewPdf}>
-                        <FileText size={14} className="text-primary" /> Ver Laudo Técnico
+                  <div className="space-y-6">
+                    <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 border-l-4 border-emerald-500 pl-3">Ações de Conformidade</h4>
+                    <div className="flex flex-wrap gap-3">
+                      <Button variant="outline" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 border-2 border-primary/10 hover:border-primary hover:bg-primary/5 transition-all shadow-sm" onClick={handleViewPdf}>
+                        <FileText size={16} className="text-primary mr-2" strokeWidth={2.5} /> Laudo Técnico PDF
                       </Button>
-                      <Button variant="ghost" size="sm" className="rounded-xl font-bold h-9 gap-2 text-primary hover:bg-primary/5">
-                        <MessageSquare size={14} /> Falar com Suporte
+                      <Button variant="ghost" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20">
+                        <MessageSquare size={16} className="mr-2" strokeWidth={2.5} /> Consultar Suporte
                       </Button>
                     </div>
                   </div>
                 </div>
 
                 {inspection.status === 'complete' && !inspection.signed && (
-                  <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in zoom-in-95">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-primary/10 rounded-xl text-primary"><PenTool size={24} /></div>
+                  <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-emerald-500/5 border-2 border-primary/20 rounded-[2.5rem] p-8 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-700 shadow-xl shadow-primary/5 relative overflow-hidden group/sign">
+                    <div className="absolute right-[-2%] top-[-10%] opacity-5 pointer-events-none group-hover/sign:rotate-12 transition-transform duration-1000">
+                      <PenTool size={120} />
+                    </div>
+                    <div className="flex items-center gap-6 relative z-10">
+                      <div className="p-5 bg-primary text-white rounded-[1.5rem] shadow-xl shadow-primary/30 group-hover/sign:scale-110 group-hover/sign:rotate-3 transition-all duration-500">
+                         <PenTool size={32} strokeWidth={2.5} />
+                      </div>
                       <div>
-                        <h5 className="text-sm font-black">Assinatura do Termo Pendente</h5>
-                        <p className="text-xs text-muted-foreground font-medium">Formalize o recebimento do laudo técnico com segurança digital.</p>
+                        <h5 className="text-xl font-black tracking-tight text-foreground">Assinatura do Termo Pendente</h5>
+                        <p className="text-sm text-muted-foreground font-bold leading-relaxed mt-1">Formalize o recebimento do laudo técnico com validade jurídica e segurança digital.</p>
                       </div>
                     </div>
                     <Button 
-                      className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-11 shadow-lg shadow-primary/20"
+                      className="rounded-2xl font-black uppercase tracking-widest text-[11px] px-12 h-14 shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all w-full lg:w-auto relative z-10"
                       onClick={handleOpenSignature}
                     >
-                      Assinar Agora
+                      Assinar Protocolo Digital
                     </Button>
                   </div>
                 )}
