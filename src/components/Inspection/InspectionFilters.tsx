@@ -15,7 +15,9 @@ interface InspectionFiltersProps {
   filters: {
     status: string;
     property: string;
+    [key: string]: any;
   };
+
   onFilterChange: (key: string, value: string) => void;
   properties?: string[];
 }
