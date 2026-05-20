@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { PlusCircle, ListTodo, Settings2 } from "lucide-react";
-import { WarrantyProblem, PriorityLevel } from "./types";
+import { WarrantyProblem, PriorityLevel } from "@/types";
 import { WarrantyProblemDetail } from "./WarrantyProblemDetail";
 import { v4 as uuidv4 } from "uuid";
 

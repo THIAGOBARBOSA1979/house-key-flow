@@ -42,7 +42,7 @@ import {
   Plus, 
   X 
 } from "lucide-react";
-import { PriorityLevel, ProblemStatus, WarrantyProblem, WarrantyAction } from "./types";
+import { PriorityLevel, ProblemStatus, WarrantyProblem, WarrantyAction } from "@/types";
 import { cn } from "@/lib/utils";
 
 const priorityConfig = {
