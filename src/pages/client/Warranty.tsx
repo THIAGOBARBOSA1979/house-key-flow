@@ -358,7 +358,7 @@ const ClientWarranty = () => {
                 Nova Solicitação
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-screen-md max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-dialog-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {requestStep === "select_item" 
