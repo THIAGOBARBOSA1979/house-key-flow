@@ -1,74 +1,26 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
   Building2, 
   Shield, 
   CheckCircle2, 
   Phone, 
   MapPin, 
   Clock,
-  ArrowRight,
   Star,
   Users,
-  Award
+  Award,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Digite um email válido",
-  }),
-  password: z.string().min(6, {
-    message: "A senha deve ter pelo menos 6 caracteres",
-  }),
-});
+import { useAuthForm } from "@/hooks/identity/useAuthForm";
+import { LoginForm } from "@/components/Auth/LoginForm";
 
 export default function ClientLogin() {
-  const { login, isLoading } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      if (rememberMe) {
-        localStorage.setItem("rememberClient", "true");
-      }
-      
-      await login(values.email, values.password, 'client');
-    } catch (error) {
-      // Error handling is done in the AuthContext
-      console.error("Login error:", error);
-    }
-  };
+  const authForm = useAuthForm("client");
 
   const benefits = [
     {
@@ -96,7 +48,6 @@ export default function ClientLogin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background">
-      {/* Enhanced Header */}
       <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
         <div className="container-responsive py-4">
           <div className="flex items-center justify-between">
@@ -131,7 +82,6 @@ export default function ClientLogin() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left side - Enhanced Information */}
             <div className="space-y-8">
               <div className="space-y-4">
                 <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
@@ -146,7 +96,6 @@ export default function ClientLogin() {
                 </p>
               </div>
 
-              {/* Stats */}
               <div className="grid grid-cols-3 gap-6">
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center">
@@ -159,7 +108,6 @@ export default function ClientLogin() {
                 ))}
               </div>
 
-              {/* Benefits */}
               <div className="space-y-6">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/50 transition-colors">
@@ -174,7 +122,6 @@ export default function ClientLogin() {
                 ))}
               </div>
 
-              {/* Enhanced Help Section */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white">
@@ -201,7 +148,6 @@ export default function ClientLogin() {
               </div>
             </div>
 
-            {/* Right side - Enhanced Login form */}
             <div className="flex justify-center">
               <Card className="w-full max-w-md shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="space-y-4 pb-8">
@@ -213,97 +159,12 @@ export default function ClientLogin() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-base font-medium">Email</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                <Input 
-                                  placeholder="seu@email.com" 
-                                  className="pl-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
-                                  {...field} 
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-base font-medium">Senha</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                <Input 
-                                  type={showPassword ? "text" : "password"} 
-                                  className="pl-11 pr-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
-                                  placeholder="••••••••"
-                                  {...field} 
-                                />
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="absolute right-1 top-1 h-10 w-10 text-gray-400 hover:text-gray-600"
-                                  onClick={() => setShowPassword(!showPassword)}
-                                >
-                                  {showPassword ? (
-                                    <EyeOff className="h-5 w-5" />
-                                  ) : (
-                                    <Eye className="h-5 w-5" />
-                                  )}
-                                </Button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="flex items-center justify-between text-sm">
-                        <label className="flex items-center space-x-3 cursor-pointer">
-                          <input 
-                            type="checkbox" 
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                          />
-                          <span className="text-gray-700 font-medium">Lembrar de mim</span>
-                        </label>
-                        <Link to="/client/forgot-password" className="text-blue-600 hover:text-blue-800 font-medium hover:underline">
-                          Esqueci minha senha
-                        </Link>
-                      </div>
-
-                      <Button 
-                        type="submit" 
-                        className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200" 
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                            Entrando...
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            Entrar no Portal
-                            <ArrowRight className="h-4 w-4" />
-                          </div>
-                        )}
-                      </Button>
-                    </form>
-                  </Form>
+                  <LoginForm 
+                    {...authForm}
+                    onSubmit={authForm.handleLogin}
+                    forgotPasswordLink="/client/forgot-password"
+                    submitButtonText="Entrar no Portal"
+                  />
 
                   <div className="space-y-4">
                     <Separator className="bg-gray-200" />
@@ -329,7 +190,6 @@ export default function ClientLogin() {
         </div>
       </div>
 
-      {/* Enhanced Footer */}
       <footer className="bg-gradient-to-r from-gray-900 to-blue-900 text-white py-12 mt-16">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 mb-8">

@@ -1,13 +1,15 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { SkeletonLoader } from './Shared/SkeletonLoader';
+import { SkeletonLoader } from '@/components/Shared/SkeletonLoader';
 import { Role } from '@/integrations/supabase/auth-guard';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: Role | Role[];
 }
+
+
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
