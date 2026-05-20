@@ -63,13 +63,17 @@ export const useInspections = () => {
   const analyticsStats = useMemo(() => {
     const statusRaw = inspectionService.getStatsByStatus(user?.company_id, user?.is_super_admin);
     const techRaw = inspectionService.getStatsByTechnician(user?.company_id, user?.is_super_admin);
+    const conformityScore = inspectionService.getTechnicalConformityScore(user?.company_id, user?.is_super_admin);
+    const trend = inspectionService.getConformityTrend(user?.company_id, user?.is_super_admin);
 
     return {
       status: Object.entries(statusRaw).map(([name, value]) => ({ 
         name: name === 'pending' ? 'Pendente' : name === 'complete' ? 'Concluído' : name === 'progress' ? 'Em andamento' : name, 
         value 
       })),
-      technician: Object.entries(techRaw).map(([name, value]) => ({ name, value }))
+      technician: Object.entries(techRaw).map(([name, value]) => ({ name, value })),
+      conformityScore,
+      trend
     };
   }, [inspections, user]);
 

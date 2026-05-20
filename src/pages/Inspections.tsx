@@ -141,6 +141,8 @@ export default function Inspections() {
           <InspectionAnalytics 
             statusStats={analyticsStats.status}
             technicianStats={analyticsStats.technician}
+            conformityScore={analyticsStats.conformityScore}
+            trend={analyticsStats.trend}
           />
         </TabsContent>
 
