@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { clientStageService } from "@/services/operations/ClientStageService";
 import { useAuth } from "@/contexts/AuthContext";
 import { ClientProfile, ClientEvent, ClientStage } from "@/types/clientFlow";
