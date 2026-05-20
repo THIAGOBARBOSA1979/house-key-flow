@@ -23,13 +23,12 @@ export const useAnnouncements = () => {
   }, [refreshUpdates]);
 
   const createAnnouncement = useCallback((data: Omit<ConstructionUpdate, 'id' | 'date' | 'readBy'>) => {
-    const newUpdate = constructionService.createUpdate({
+    constructionService.createUpdate({
       ...data,
       date: new Date(),
     });
     refreshUpdates();
     toast({ title: "Sucesso", description: "Novo comunicado publicado." });
-    return newUpdate;
   }, [refreshUpdates, toast]);
 
   const updateAnnouncement = useCallback((id: string, data: Partial<ConstructionUpdate>) => {
