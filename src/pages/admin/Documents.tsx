@@ -26,7 +26,7 @@ import { UploadDocumentDialog } from "@/components/Documents/UploadDocumentDialo
 import { DocumentVersionHistory } from "@/components/Documents/DocumentVersionHistory";
 import { SignatureWorkflowDialog } from "@/components/Documents/SignatureWorkflowDialog";
 import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
-import { DataViewMode } from "@/components/Shared/DataView";
+import { DataViewMode } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

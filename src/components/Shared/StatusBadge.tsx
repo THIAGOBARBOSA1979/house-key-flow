@@ -21,11 +21,11 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const statusConfig: Record<StatusType, { 
+const statusConfig: Partial<Record<StatusType, { 
   badgeClass: string; 
   defaultLabel: string;
   icon: typeof Clock;
-}> = {
+}>> = {
   pending: {
     badgeClass: "badge-pending",
     defaultLabel: "Pendente",

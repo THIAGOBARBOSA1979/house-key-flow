@@ -44,6 +44,7 @@ export function useDataTable<T>(data: T[], itemsPerPage: number = 10) {
     totalPages,
     sortConfig,
     requestSort,
+    handleSort: requestSort,
     setPage,
   };
 }
