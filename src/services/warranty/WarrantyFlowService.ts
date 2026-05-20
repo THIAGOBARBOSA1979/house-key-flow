@@ -273,8 +273,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get requests for a specific client
    */
-  getClientRequests(clientId: string): WarrantyRequestFlow[] {
-    return this.getAllRequests().filter(r => r.clientId === clientId);
+  getClientRequests(clientId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.clientId === clientId);
   }
 
   /**
