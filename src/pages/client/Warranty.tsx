@@ -83,32 +83,32 @@ const ClientWarranty = () => {
   }
 
   return (
-    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-3">
-            <div className="p-2.5 bg-primary/10 rounded-2xl">
-              <ShieldCheck className="h-6 w-6 text-primary" strokeWidth={3} />
+            <div className="p-2.5 bg-primary/10 rounded-2xl shadow-inner">
+              <ShieldCheck className="h-7 w-7 text-primary" strokeWidth={3} />
             </div>
-            Assistência Técnica
-            {!canRequestWarranty && <Lock className="h-5 w-5 text-muted-foreground ml-2" />}
+            Assistência Técnica & Garantias
+            {!canRequestWarranty && <Lock className="h-5 w-5 text-muted-foreground/40 ml-2" />}
           </h1>
-          <p className="text-muted-foreground font-medium">
+          <p className="text-muted-foreground font-bold text-sm">
             {canRequestWarranty 
-              ? "Gerencie suas garantias, acompanhe visitas técnicas e visualize laudos."
-              : "As garantias serão liberadas automaticamente após a aprovação da vistoria final."
+              ? "Governança técnica: solicite reparos, acompanhe visitas e visualize laudos ABNT."
+              : "As garantias serão liberadas automaticamente após a aprovação da vistoria final de chaves."
             }
           </p>
         </div>
         
         {canRequestWarranty ? (
-          <Button onClick={() => setIsDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Solicitação
+          <Button onClick={() => setIsDialogOpen(true)} className="rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 transition-all active:scale-95">
+            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+            Abrir Chamado Técnico
           </Button>
         ) : (
           <GatedButton isAllowed={false} tooltipMessage="Garantias serão liberadas após aprovação da vistoria">
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
             Nova Solicitação
           </GatedButton>
         )}
@@ -159,38 +159,45 @@ const ClientWarranty = () => {
           />
         </ResponsiveGrid>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-          <div className="space-y-layout-gap">
-            <Card className="shadow-sm border-primary/10">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-xl font-bold flex items-center gap-2">
-                  Minhas Solicitações
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
+          <div className="lg:col-span-4 space-y-layout-gap">
+            <Card className="shadow-sem-lg border-none bg-white/60 backdrop-blur-md rounded-[2rem] overflow-hidden">
+              <CardHeader className="pb-4 p-8 border-b border-border/5">
+                <CardTitle className="text-xl font-black tracking-tight flex items-center gap-3">
+                   <Activity className="h-5 w-5 text-primary" />
+                   Minhas Solicitações
                 </CardTitle>
-                <CardDescription>Histórico de chamados de garantia</CardDescription>
+                <CardDescription className="font-bold">Histórico de protocolos técnicos</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-3 p-6">
                 {claims.length > 0 ? (
                   claims.map(c => (
                     <div 
                       key={c.id} 
                       onClick={() => setSelectedClaimId(c.id)}
                       className={cn(
-                        "p-4 rounded-xl border cursor-pointer transition-all",
-                        selectedClaimId === c.id ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:bg-muted/30"
+                        "p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 relative group",
+                        selectedClaimId === c.id 
+                          ? "border-primary bg-primary/5 shadow-md scale-[1.02]" 
+                          : "border-transparent bg-muted/20 hover:bg-muted/40"
                       )}
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-sm font-bold truncate">{c.title}</span>
+                      <div className="flex justify-between items-start mb-3">
+                        <span className="text-sm font-black truncate text-foreground/80 group-hover:text-primary transition-colors">{c.title}</span>
                       </div>
-                      <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase font-black">
-                        <span>#{c.id.slice(0, 8)}</span>
+                      <div className="flex justify-between items-center text-[9px] text-muted-foreground uppercase font-black tracking-widest opacity-60">
+                        <span className="bg-muted px-2 py-0.5 rounded-md">#{c.id.slice(0, 8)}</span>
                         <span>{new Date(c.createdAt).toLocaleDateString()}</span>
                       </div>
+                      {selectedClaimId === c.id && (
+                        <div className="absolute left-[-2px] top-1/2 -translate-y-1/2 w-1.5 h-12 bg-primary rounded-full" />
+                      )}
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-10 text-muted-foreground">
-                    Nenhuma solicitação encontrada.
+                  <div className="text-center py-16 opacity-40">
+                    <ShieldCheck size={48} className="mx-auto mb-4" />
+                    <p className="text-[10px] font-black uppercase tracking-widest">Nenhum protocolo ativo</p>
                   </div>
                 )}
               </CardContent>
@@ -198,17 +205,17 @@ const ClientWarranty = () => {
             <WarrantyGuide />
           </div>
 
-          <div className="lg:col-span-2 space-y-layout-gap">
+          <div className="lg:col-span-8 space-y-layout-gap">
             {selectedClaim ? (
-              <div className="space-y-layout-gap">
+              <div className="space-y-layout-gap animate-in fade-in slide-in-from-bottom-4 duration-slow">
                 <WarrantyStatus status={selectedClaim.status || 'pending'} />
                 <WarrantyRequestTimeline request={selectedClaim} />
               </div>
             ) : (
-              <Card className="h-full flex flex-col items-center justify-center p-12 text-center border-dashed">
-                <ShieldCheck className="h-16 w-16 text-muted-foreground/20 mb-4" />
-                <h3 className="text-xl font-bold text-muted-foreground">Selecione uma solicitação</h3>
-                <p className="text-muted-foreground max-w-xs mx-auto mt-2">Escolha uma solicitação na lista ao lado para ver os detalhes e acompanhamento.</p>
+              <Card className="h-full min-h-[400px] flex flex-col items-center justify-center p-12 text-center border-dashed border-2 border-muted-foreground/10 bg-muted/5 rounded-[3rem]">
+                <ShieldCheck className="h-20 w-20 text-muted-foreground/10 mb-6" />
+                <h3 className="text-2xl font-black text-muted-foreground/60 tracking-tight">Selecione um Protocolo</h3>
+                <p className="text-muted-foreground/40 max-w-xs mx-auto mt-2 font-bold text-sm">Escolha uma solicitação na lista lateral para realizar o acompanhamento técnico em tempo real.</p>
               </Card>
             )}
           </div>
