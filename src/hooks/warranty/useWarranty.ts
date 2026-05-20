@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { warrantyFlowService, exportService } from "@/services";
 import { 
   WarrantyRequestFlow, 
