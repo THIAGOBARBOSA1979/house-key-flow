@@ -21,6 +21,7 @@ import { DocumentAnalytics } from "@/components/Documents/DocumentAnalytics";
 import { DocumentsDashboard } from "@/components/Documents/DocumentsDashboard";
 import { FolderManager } from "@/components/Documents/FolderManager";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { DocumentWorkflow } from "@/components/Documents/DocumentWorkflow";
 import { UploadDocumentDialog } from "@/components/Documents/UploadDocumentDialog";
 import { DocumentVersionHistory } from "@/components/Documents/DocumentVersionHistory";
@@ -33,6 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+
 
 
 

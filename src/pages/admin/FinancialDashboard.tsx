@@ -16,7 +16,8 @@ import {
   Calendar as CalendarIcon,
   PieChart,
   Wallet,
-  LineChart as LineChartIcon
+  LineChart as LineChartIcon,
+  RotateCw
 } from "lucide-react";
 import { financialService } from "@/services";
 import { exportService } from "@/services";
@@ -38,25 +39,36 @@ import { useToast } from "@/hooks";
 const FinancialDashboard = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const [isExporting, setIsExporting] = useState(false);
   const metrics = useMemo(() => financialService.getGlobalMetrics(user?.company_id, user?.is_super_admin), [user]);
   const transactions = useMemo(() => financialService.getRecentTransactions(user?.company_id, user?.is_super_admin), [user]);
   
   // Projection data (mock for demonstration)
   const projectionData = useMemo(() => {
+    const historical = metrics.revenueByMonth.map(m => ({ ...m, isProjection: false }));
+    const lastHistorical = historical[historical.length - 1];
+    
     return [
-      ...metrics.revenueByMonth.map(m => ({ ...m, isProjection: false })),
-      { month: 'Jul', value: 720000, isProjection: true },
-      { month: 'Ago', value: 780000, isProjection: true },
-      { month: 'Set', value: 850000, isProjection: true },
+      ...historical,
+      { month: 'Jul', value: (lastHistorical?.value || 600000) * 1.1, isProjection: true },
+      { month: 'Ago', value: (lastHistorical?.value || 600000) * 1.2, isProjection: true },
+      { month: 'Set', value: (lastHistorical?.value || 600000) * 1.3, isProjection: true },
     ];
   }, [metrics]);
 
-  const handleExport = () => {
-    exportService.exportToCSV(transactions, "relatorio_financeiro_transacoes");
-    toast({
-      title: "Exportação iniciada",
-      description: "O arquivo CSV com as transações recentes está sendo gerado.",
-    });
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      // Simulate processing
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      exportService.exportToCSV(transactions, "relatorio_financeiro_transacoes");
+      toast({
+        title: "Exportação concluída",
+        description: "O arquivo CSV com as transações recentes foi gerado.",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -67,8 +79,9 @@ const FinancialDashboard = () => {
         description="Visão global de recebíveis, fluxo de caixa e inadimplência."
       >
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-xl h-11 border-primary/20 hover:bg-primary/5 transition-all" onClick={handleExport}>
-            <Download className="mr-2 h-4 w-4" /> Exportar Dados
+          <Button variant="outline" className="rounded-xl h-11 border-primary/20 hover:bg-primary/5 transition-all" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? <RotateCw className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />} 
+            Exportar Dados
           </Button>
           <Button className="rounded-xl h-11 shadow-lg shadow-primary/20 font-bold">
             <Filter className="mr-2 h-4 w-4" /> Filtros Avançados
@@ -111,16 +124,17 @@ const FinancialDashboard = () => {
       </ResponsiveGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
+        <Card className="lg:col-span-2 rounded-[2rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden group">
+          <div className="h-2 w-full bg-gradient-to-r from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <CardHeader className="p-8 pb-0">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-xl font-black tracking-tight">Evolução de Recebimentos</CardTitle>
                 <p className="text-sm text-muted-foreground font-medium">Faturamento mensal consolidado (R$)</p>
               </div>
-              <div className="flex items-center gap-2 bg-muted/30 p-1 rounded-xl">
-                <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest bg-background shadow-sm">6 Meses</Button>
-                <Button variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-black uppercase tracking-widest text-muted-foreground">1 Ano</Button>
+              <div className="flex items-center gap-2 bg-muted/40 p-1.5 rounded-2xl border border-border/5">
+                <Button variant="ghost" size="sm" className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-background shadow-sm hover:bg-background/80">6 Meses</Button>
+                <Button variant="ghost" size="sm" className="h-9 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">1 Ano</Button>
               </div>
             </div>
           </CardHeader>
@@ -150,11 +164,14 @@ const FinancialDashboard = () => {
                   />
                   <Tooltip 
                     contentStyle={{ 
-                      borderRadius: '16px', 
+                      borderRadius: '24px', 
                       border: 'none', 
-                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
-                      padding: '12px'
+                      boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+                      padding: '16px',
+                      background: 'rgba(255, 255, 255, 0.9)',
+                      backdropFilter: 'blur(8px)'
                     }} 
+                    formatter={(value: number) => [formatCurrency(value), "Faturamento"]}
                   />
                   <Area 
                     type="monotone" 
