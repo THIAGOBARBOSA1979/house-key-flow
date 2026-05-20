@@ -76,7 +76,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     return true;
   }, [clientId, toast]);
 
-  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(), []);
+  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(companyId, isSuperAdmin), [companyId, isSuperAdmin]);
 
   return {
     claims,
