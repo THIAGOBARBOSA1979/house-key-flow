@@ -16,7 +16,7 @@ import { ResponsiveGrid } from "./ResponsiveGrid";
  * Common view modes for data display components.
  * Use this type instead of string literals for viewMode props.
  */
-export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
+import { DataViewMode } from "@/types";
 
 export interface DataViewProps<T> {
   items: T[];

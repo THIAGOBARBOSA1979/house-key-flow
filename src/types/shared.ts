@@ -16,7 +16,13 @@ export type StatusType =
   | "critical" 
   | "low" 
   | "medium" 
-  | "high";
+  | "high"
+  | "progress"
+  | "complete"
+  | "success"
+  | "warning"
+  | "error"
+  | "info";
 
 export interface SortConfig {
   field: string;
