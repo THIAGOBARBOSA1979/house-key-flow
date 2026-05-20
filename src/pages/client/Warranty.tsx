@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Plus, Lock, CheckCircle, TrendingUp } from "lucide-react";
+import { ShieldCheck, Plus, Lock, CheckCircle, TrendingUp, Activity } from "lucide-react";
 import { StatsCard } from "@/components/Shared/StatsCard";
 import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
