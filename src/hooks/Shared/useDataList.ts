@@ -20,11 +20,12 @@ export function useDataList<T extends { id: string }>(
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredItems = useMemo(() => {
-    let result = [...items];
+    let result = [...items].filter(Boolean);
 
     if (searchTerm) {
       const lowerSearch = searchTerm.toLowerCase();
       result = result.filter((item: any) => {
+        if (!item) return false;
         // Generic search across common fields
         return (
           item.name?.toLowerCase().includes(lowerSearch) ||
@@ -36,7 +37,7 @@ export function useDataList<T extends { id: string }>(
     }
 
     if (options.filterFn) {
-      result = result.filter(item => options.filterFn!(item, filters));
+      result = result.filter(item => item && options.filterFn!(item, filters));
     }
 
     if (options.sortFn) {

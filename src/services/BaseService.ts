@@ -63,7 +63,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
       try {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          this.items = parsed.map(item => this.deserializeDates(item));
+          this.items = parsed
+            .filter(item => item !== null && item !== undefined)
+            .map(item => this.deserializeDates(item));
         }
       } catch (e) {
         console.error(`Failed to load ${this.options.storageKey} from storage`, e);

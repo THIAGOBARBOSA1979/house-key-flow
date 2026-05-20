@@ -38,7 +38,7 @@ export default function ClientInspections() {
   const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
 
   const loadInspections = () => {
-    const raw = inspectionService.getAll().filter(i => i.client === (user?.name || "João Silva"));
+    const raw = inspectionService.getAll().filter(i => i && i.client === (user?.name || "João Silva"));
     setInspections(raw.map(i => ({ ...i, title: i.type === 'keyDelivery' ? 'Entrega' : 'Vistoria', scheduledDate: i.date })));
     if (raw.length > 0 && !selectedInspection) setSelectedInspection(raw[0].id);
   };

@@ -12,7 +12,7 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
   const financialSummary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
   const allDocs = useMemo(() => documentService.getDocumentsByClient(userName || "João Silva"), [userName]);
   const allInspections = useMemo(() => 
-    inspectionService.getAll().filter(i => i.client === (userName || "João Silva")), [userName]);
+    inspectionService.getAll().filter(i => i && i.client === (userName || "João Silva")), [userName]);
   const upcomingInspections = useMemo(() => allInspections.filter(i => i.status !== 'complete'), [allInspections]);
   const warrantyRequests = useMemo(() => 
     warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId), [clientId]);
