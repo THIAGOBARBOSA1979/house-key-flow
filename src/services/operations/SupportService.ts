@@ -2,8 +2,8 @@ import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
 import { Database } from "@/integrations/supabase/types";
 
-export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
-export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
+export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent' | 'blocker';
+export type TicketCategory = 'technical' | 'administrative' | 'warranty' | 'inspection' | 'legal' | 'safety' | 'other';
 
 export interface TicketMessage {
   id: string;
@@ -19,11 +19,17 @@ export interface SupportTicket {
   id: string;
   company_id?: string;
   clientId: string;
+  clientName: string;
+  propertyId?: string;
+  propertyName?: string;
+  unitNumber?: string;
   subject: string;
-  status: 'pending' | 'in_progress' | 'closed';
+  status: 'pending' | 'in_progress' | 'waiting_client' | 'closed';
   priority: TicketPriority;
   category: TicketCategory;
   messages: TicketMessage[];
+  slaDeadline?: Date;
+  slaStatus?: 'on_track' | 'expired';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,17 +39,19 @@ const INITIAL_TICKETS: SupportTicket[] = [
     id: crypto.randomUUID(),
     company_id: 'comp-1',
     clientId: 'client-1',
-    subject: 'Dúvida sobre boleto',
+    clientName: 'João Silva',
+    propertyName: 'Edifício Aurora',
+    unitNumber: '101',
     status: 'closed',
     priority: 'medium',
-    category: 'financial',
+    category: 'technical',
     messages: [
       {
         id: crypto.randomUUID(),
         senderId: 'client-1',
         senderName: 'João Silva',
         role: 'client',
-        text: 'Não recebi o boleto deste mês por e-mail.',
+        text: 'Gostaria de saber quando será a próxima revisão do condomínio.',
         createdAt: new Date(2024, 3, 15)
       },
     ],
@@ -66,9 +74,17 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   getTicketById(id: string) { return this.getById(id); }
   getTicketsByClient(clientId: string) { return this.items.filter(t => t.clientId === clientId); }
 
-  createTicket(clientId: string, clientName: string, data: any): SupportTicket {
+  createTicket(clientId: string, clientName: string, data: any, context?: { propertyId?: string, propertyName?: string, unitNumber?: string }): SupportTicket {
+    const createdAt = new Date();
+    // Default 24h SLA for initial response
+    const slaDeadline = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000);
+
     return super.create({
       clientId,
+      clientName,
+      propertyId: context?.propertyId,
+      propertyName: context?.propertyName,
+      unitNumber: context?.unitNumber,
       subject: data.subject,
       status: 'pending',
       priority: data.priority || 'medium',
@@ -81,8 +97,10 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
         text: data.message, 
         createdAt: new Date() 
       }],
-      createdAt: new Date(),
-      updatedAt: new Date()
+      slaDeadline,
+      slaStatus: 'on_track',
+      createdAt,
+      updatedAt: createdAt
     } as any);
   }
 
@@ -101,7 +119,12 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
       text, 
       createdAt: new Date() 
     }];
-    return this.update(id, { messages, updatedAt: new Date() });
+    const newStatus = role === 'admin' ? 'waiting_client' : 'in_progress';
+    return this.update(id, { 
+      messages, 
+      status: newStatus,
+      updatedAt: new Date() 
+    });
   }
 }
 
