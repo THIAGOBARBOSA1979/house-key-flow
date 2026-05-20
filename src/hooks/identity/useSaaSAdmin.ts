@@ -21,14 +21,17 @@ export const useSaaSAdmin = () => {
   const companyUsers = useMemo(() => {
     if (!selectedCompany) return [];
     return userService.getAll(selectedCompany.id, true);
-  }, [selectedCompany]);
+  }, [selectedCompany, companies]); // Re-calculate when companies list updates
 
   const totalUsers = useMemo(() => 
-    companies.reduce((acc, curr) => acc + (userService.count(curr.id, true) || 0), 0)
+    companies.reduce((acc, curr) => {
+      const count = userService.count(curr.id, true);
+      return acc + (count || 0);
+    }, 0)
   , [companies]);
 
   const refreshCompanies = useCallback(() => {
-    setCompanies(companyService.getAll(undefined, true));
+    setCompanies([...companyService.getAll(undefined, true)]);
   }, []);
 
   const handleToggleStatus = useCallback((id: string, currentStatus: CompanyStatus) => {
