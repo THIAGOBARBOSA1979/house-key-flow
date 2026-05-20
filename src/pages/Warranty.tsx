@@ -35,11 +35,11 @@ const Warranty = () => {
 
   return (
     <PageTemplate
-      title="Ecossistema de Garantias & Assistência"
-      description="Governança completa do pós-venda: controle de SLAs, fluxos de assistência e inteligência operacional."
-
+      title="Engenharia de Diagnóstico & Assistência"
+      description="Governança técnica do pós-venda: controle de SLAs, fluxos de assistência e conformidade com normas ABNT."
       actions={<WarrantyPageActions onExport={exportData} />}
     >
+
       {/* Error alert removed as error state is now handled globally in useService or not exposed */}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">

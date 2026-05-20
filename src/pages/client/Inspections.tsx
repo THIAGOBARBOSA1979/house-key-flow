@@ -123,12 +123,13 @@ export default function ClientInspections() {
           className="rounded-[2rem] border-none shadow-sem-sm"
         />
         <StatsCard 
-          label="SLA de Retorno" 
+          label="SLA de Análise Técnica" 
           value="48h" 
           icon={Clock} 
           variant="default" 
           className="rounded-[2rem] border-none shadow-sem-sm"
         />
+
       </ResponsiveGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
