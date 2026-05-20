@@ -4,12 +4,15 @@ import { warrantyFlowService, warrantyValidationService, eventAutomationService 
 import { WarrantyItem } from "@/types/warranty";
 
 export const useWarrantyClaims = (clientId: string, userName?: string) => {
+  const { user } = useAuth();
   const { toast } = useToast();
+  const companyId = user?.company_id;
+  const isSuperAdmin = !!user?.is_super_admin;
   
   const allClaims = useMemo(() => 
-    warrantyFlowService.getClientRequests(clientId).sort((a, b) => 
+    warrantyFlowService.getClientRequests(clientId, companyId, isSuperAdmin).sort((a, b) => 
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    ), [clientId]);
+    ), [clientId, companyId, isSuperAdmin]);
     
   const [claims, setClaims] = useState<any[]>(allClaims);
 
