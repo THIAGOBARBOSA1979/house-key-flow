@@ -18,10 +18,10 @@ import {
   Layout,
   LogOut,
   Activity,
-  DollarSign,
   Megaphone,
   Wrench,
-  MessageSquare
+  MessageSquare,
+  FileSearch
 } from "lucide-react";
 
 
@@ -63,7 +63,7 @@ const systemItems = [
   { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists", adminOnly: true },
   { to: "/admin/settings", icon: Settings, label: "Configurações", adminOnly: true },
   { to: "/admin/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
-  { to: "/admin/audit-logs", icon: Activity, label: "Logs de Auditoria", superAdminOnly: true },
+  { to: "/admin/audit-logs", icon: FileSearch, label: "Auditoria Técnica", superAdminOnly: true },
   { to: "/admin/saas", icon: Building, label: "SaaS Admin", superAdminOnly: true },
 ];
 

@@ -116,10 +116,10 @@ export const SystemHealth = () => {
           </div>
 
           <div className="pt-4 mt-auto">
-             <div className="p-4 bg-amber-500/5 rounded-2xl border border-amber-500/10 flex items-start gap-3">
-               <AlertTriangle className="text-amber-600 mt-0.5" size={16} />
-               <p className="text-[11px] font-medium text-amber-800 leading-relaxed">
-                 O uso de CPU teve um pico de 85% durante o processamento de relatórios financeiros às 04:00 AM.
+             <div className="p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 flex items-start gap-3">
+               <CheckCircle2 className="text-emerald-600 mt-0.5" size={16} />
+               <p className="text-[11px] font-medium text-emerald-800 leading-relaxed">
+                 Todos os módulos técnicos (Garantias e Vistorias) estão operando dentro dos SLAs de performance ABNT.
                </p>
              </div>
           </div>
