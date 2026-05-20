@@ -11,14 +11,24 @@ import { useToast, useService, useDataList } from "@/hooks";
 export const useWarranty = () => {
   const { toast } = useToast();
   
-  const { items: requests, isLoading: isServiceLoading } = useService<WarrantyRequestFlow>(warrantyFlowService);
+  const { items: requests, isLoading: isServiceLoading, refresh: refreshList } = useService<WarrantyRequestFlow>(warrantyFlowService);
 
-  const filterFn = useCallback((request: WarrantyRequestFlow, filters: any) => {
-    if (filters.propertyId && request.propertyId !== filters.propertyId) return false;
-    if (filters.category && request.category !== filters.category) return false;
-    if (filters.priority && request.priority !== filters.priority) return false;
-    if (filters.slaStatus && request.slaStatus !== filters.slaStatus) return false;
-    if (filters.isPaused !== undefined && request.isPaused !== filters.isPaused) return false;
+  const filterFn = useCallback((request: WarrantyRequestFlow, currentFilters: any) => {
+    if (currentFilters.propertyId && currentFilters.propertyId !== "all" && request.propertyId !== currentFilters.propertyId) return false;
+    if (currentFilters.category && currentFilters.category !== "all" && request.category !== currentFilters.category) return false;
+    if (currentFilters.priority && currentFilters.priority !== "all" && request.priority !== currentFilters.priority) return false;
+    if (currentFilters.slaStatus && currentFilters.slaStatus !== "all" && request.slaStatus !== currentFilters.slaStatus) return false;
+    if (currentFilters.isPaused !== undefined && request.isPaused !== currentFilters.isPaused) return false;
+    
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      return (
+        request.title.toLowerCase().includes(term) ||
+        request.clientName?.toLowerCase().includes(term) ||
+        request.id.toLowerCase().includes(term)
+      );
+    }
+    
     return true;
   }, []);
 
@@ -30,6 +40,7 @@ export const useWarranty = () => {
     setSearchTerm,
     clearFilters
   } = useDataList<WarrantyRequestFlow>(requests, {
+    initialFilters: { propertyId: "all", category: "all", priority: "all", slaStatus: "all" },
     filterFn
   });
 
@@ -66,6 +77,7 @@ export const useWarranty = () => {
       const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, "admin-1", false, notes));
       if (result.success) {
         toast({ title: "Status atualizado", description: `Solicitação movida para ${newStage}.` });
+        refreshList();
         return result;
       } else {
         toast({ title: "Erro ao atualizar", description: result.error || "Não foi possível alterar o status.", variant: "destructive" });
@@ -76,39 +88,42 @@ export const useWarranty = () => {
       toast({ title: "Erro inesperado", description: errorMessage, variant: "destructive" });
       return { success: false, error: errorMessage };
     }
-  }, [toast]);
+  }, [toast, refreshList]);
 
   const togglePause = useCallback((requestId: string, isPaused: boolean, reason: string) => {
     const result = warrantyFlowService.togglePause(requestId, isPaused, reason, "admin-1");
     if (result.success) {
       toast({ title: isPaused ? "SLA Pausado" : "SLA Retomado", description: isPaused ? `Motivo: ${reason}` : "O cronômetro do SLA foi retomado." });
+      refreshList();
     }
     return result;
-  }, [toast]);
+  }, [toast, refreshList]);
 
   const assignTechnician = useCallback((requestId: string, techId: string, techName: string) => {
     const result = warrantyFlowService.assignTechnician(requestId, techId, techName, "admin-1");
     if (result.success) {
       toast({ title: "Técnico atribuído", description: `O profissional ${techName} agora é o responsável.` });
+      refreshList();
     }
     return result;
-  }, [toast]);
+  }, [toast, refreshList]);
 
   const exportData = useCallback(() => {
-    exportService.exportToCSV(requests, "garantias_a2");
+    exportService.exportToCSV(filteredRequests, "garantias_a2");
     toast({ title: "Exportação concluída", description: "O arquivo CSV foi baixado com sucesso." });
-  }, [requests, toast]);
+  }, [filteredRequests, toast]);
+
+  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(), [requests]);
 
   return {
     requests,
     filteredRequests,
     kanbanData,
     isLoading: isServiceLoading,
-    filters: { ...filters, search: searchTerm },
-    setFilters: (newFilters: Partial<WarrantyFilters>) => {
-      if (newFilters.search !== undefined) setSearchTerm(newFilters.search);
-      setFilters(prev => ({ ...prev, ...newFilters }));
-    },
+    filters,
+    setFilters,
+    searchTerm,
+    setSearchTerm,
     selectedRequest,
     setSelectedRequestId,
     changeStatus,
@@ -116,6 +131,8 @@ export const useWarranty = () => {
     assignTechnician,
     exportData,
     clearFilters,
-    refresh: () => {} 
+    refresh: refreshList,
+    metrics
   };
 };
+
