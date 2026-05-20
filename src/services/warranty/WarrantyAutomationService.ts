@@ -252,7 +252,8 @@ class WarrantyAutomationService {
       toStage,
       movedBy,
       false, // Not automatic
-      `Movido via Kanban de ${fromStage} para ${toStage}`
+      `Movido via Kanban de ${fromStage} para ${toStage}`,
+      'admin'
     );
 
     if (result.success && result.request) {
