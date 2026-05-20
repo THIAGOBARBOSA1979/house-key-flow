@@ -68,7 +68,7 @@ export default function ClientInspections() {
   ];
 
   return (
-    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       <DigitalSignatureDialog
         isOpen={isSignatureOpen}
         onClose={() => setIsSignatureOpen(false)}
@@ -84,13 +84,13 @@ export default function ClientInspections() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black tracking-tight text-primary flex items-center gap-3">
-            <div className="p-2.5 bg-primary/10 rounded-2xl shadow-sm border border-primary/20">
-              <ClipboardCheck className="h-7 w-7" />
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-4 leading-tight">
+            <div className="p-3 bg-primary/10 rounded-2xl shadow-inner border border-primary/20 text-primary">
+              <ClipboardCheck className="h-8 w-8" strokeWidth={3} />
             </div>
-            Vistorias Técnicas
+            Vistorias Técnicas & Entrega
           </h1>
-          <p className="text-muted-foreground font-medium">Acompanhe seus agendamentos, laudos e status de aprovação da sua unidade.</p>
+          <p className="text-muted-foreground font-bold text-sm">Acompanhe seus agendamentos, laudos ABNT e o status de homologação da sua unidade.</p>
         </div>
         {(stage !== 'inspection_enabled' && stage !== 'warranty_enabled') && (
           <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 animate-in slide-in-from-right-4">
@@ -132,12 +132,12 @@ export default function ClientInspections() {
 
       </ResponsiveGrid>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
+        <div className="lg:col-span-4 space-y-layout-gap">
           <ClientTimeline 
             timeline={timelineItems} 
-            title="Evolução da Vistoria"
-            description="Progresso técnico da sua entrega"
+            title="Evolução Técnica"
+            description="Progresso da entrega da unidade"
           />
           
           <Card className="rounded-[2rem] border-none shadow-xl bg-gradient-to-br from-primary/5 to-transparent">
@@ -159,7 +159,7 @@ export default function ClientInspections() {
           </Card>
         </div>
 
-        <div className="lg:col-span-2 space-y-layout-gap">
+        <div className="lg:col-span-8 space-y-layout-gap">
           {inspection ? (
             <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden group bg-card/50 backdrop-blur-sm">
               <div className="h-24 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent w-full" />
