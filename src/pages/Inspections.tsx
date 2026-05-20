@@ -5,8 +5,10 @@ import {
   Calendar as CalendarIcon, 
   History, 
   Download,
-  LayoutGrid
+  LayoutGrid,
+  BarChart
 } from "lucide-react";
+
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
