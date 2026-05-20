@@ -452,7 +452,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     changedBy: string,
     performedByRole: 'admin' | 'client' = 'admin'
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
