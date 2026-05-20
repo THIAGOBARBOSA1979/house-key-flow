@@ -75,11 +75,21 @@ export const InstallmentsTable = ({ installments, formatCurrency, onPay }: Insta
                     <td className="py-5 px-8 text-center">
                       <StatusBadge status={statusInfo.status} label={statusInfo.label} size="sm" />
                     </td>
-                    <td className="py-5 px-8 text-right">
+                    <td className="py-5 px-8 text-right flex justify-end gap-2">
                       {item.status !== 'paid' ? (
-                        <Button variant="ghost" size="sm" className="h-10 px-4 gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 rounded-xl transition-all active:scale-95">
-                          <Download className="h-4 w-4" /> Boleto
-                        </Button>
+                        <>
+                          <Button variant="ghost" size="sm" className="h-10 px-4 gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 rounded-xl transition-all active:scale-95">
+                            <Download className="h-4 w-4" /> Boleto
+                          </Button>
+                          <Button 
+                            variant="default" 
+                            size="sm" 
+                            onClick={() => onPay?.(item.id)}
+                            className="h-10 px-6 gap-2 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 rounded-xl transition-all active:scale-95"
+                          >
+                            Pagar
+                          </Button>
+                        </>
                       ) : (
                         <Button variant="ghost" size="sm" className="h-10 px-4 gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all active:scale-95">
                           <CheckCircle2 className="h-4 w-4" /> Recibo
