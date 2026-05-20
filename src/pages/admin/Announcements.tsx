@@ -52,8 +52,6 @@ const Announcements = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-
-const Announcements = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
