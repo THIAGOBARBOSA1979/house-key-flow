@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { Company } from "@/services";
 import { DataTable } from "@/components/Shared/DataTable";
@@ -162,7 +162,7 @@ export default function SaaSAdmin() {
       description="Painel de controle multi-tenant para governança de empresas e assinaturas."
       icon={Building}
       actions={
-        <Button onClick={() => setIsAddOpen(true)} className="rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[11px] shadow-lg">
+        <Button onClick={() => setIsAddOpen(true)} className="rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
           <Plus className="w-4 h-4 mr-2" strokeWidth={3} />
           Cadastrar Empresa
         </Button>
