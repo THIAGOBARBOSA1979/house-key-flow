@@ -6,7 +6,7 @@ import { Calendar as CalendarIcon, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { AppointmentItem } from "./AppointmentItem";
-import { Appointment } from "./AppointmentData";
+import { Appointment } from "@/types";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 import { Button } from "@/components/ui/button";
 

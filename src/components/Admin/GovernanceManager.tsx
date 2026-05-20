@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Shield, Lock, CheckCircle2, XCircle } from "lucide-react";
 import { Supabase } from "@/integrations/supabase";
-import { Role } from "@/integrations/supabase/auth-guard";
+import { Role } from "@/types";
 
 export const GovernanceManager = () => {
   const [dbRoles, setDbRoles] = useState<any[]>([]);

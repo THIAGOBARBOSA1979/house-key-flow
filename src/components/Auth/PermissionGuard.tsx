@@ -1,5 +1,6 @@
 import React from 'react';
-import { AuthGuard, Permission } from '@/integrations/supabase/auth-guard';
+import { AuthGuard } from '@/integrations/supabase/auth-guard';
+import { Permission } from '@/types';
 
 interface PermissionGuardProps {
   permission: Permission;
