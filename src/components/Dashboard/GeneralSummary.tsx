@@ -14,17 +14,17 @@ export const GeneralSummary: React.FC<GeneralSummaryProps> = ({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-h2 flex items-center gap-2 text-foreground/90">
-          <Activity size={24} className="text-primary" />
-          Resumo Geral
+        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
+          <Activity className="text-primary h-5 w-5 md:h-6 md:w-6" />
+          Indicadores Técnicos
         </h2>
       </div>
-      <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden p-6 rounded-3xl shadow-sem-md">
+      <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden p-6 rounded-3xl shadow-sem-md border border-primary/5">
         <div className="space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Taxa de Conclusão de Obras</span>
-              <span className="text-sem-body-sm font-black text-emerald-600">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Evolução Física Global</span>
+              <span className="text-xs font-black text-emerald-600">
                 {averageProgress || 0}%
               </span>
             </div>
@@ -38,8 +38,8 @@ export const GeneralSummary: React.FC<GeneralSummaryProps> = ({
           
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sem-body-sm font-black uppercase tracking-widest text-muted-foreground/60">Vistorias Homologadas</span>
-              <span className="text-sem-body-sm font-black text-primary">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Vistorias Homologadas (ABNT)</span>
+              <span className="text-xs font-black text-primary">
                 {inspectionsCompletedPercent || 0}%
               </span>
             </div>
@@ -50,8 +50,15 @@ export const GeneralSummary: React.FC<GeneralSummaryProps> = ({
               />
             </div>
           </div>
+
+          <div className="pt-2 border-t border-border/10">
+            <p className="text-[9px] font-bold text-muted-foreground/40 uppercase tracking-tighter italic">
+              * Dados sincronizados com a Matriz de Qualidade A2
+            </p>
+          </div>
         </div>
       </Card>
+
     </section>
   );
 };
