@@ -36,7 +36,9 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
       }
 
       if (data) {
-        this.items = data.map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
+        this.items = data
+          .filter(item => item !== null && item !== undefined)
+          .map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
         this.persist();
       }
       
