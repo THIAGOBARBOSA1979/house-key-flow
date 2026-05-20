@@ -9,7 +9,7 @@ import {
 } from '@/types/clientFlow';
 
 export class NotificationService extends BaseService<ClientNotification> {
-  private settings: Map<string, NotificationSettings> = new Map();
+  private settingsMap: Map<string, NotificationSettings> = new Map();
   private settingsKey = "a2_notification_settings";
 
   constructor() {
@@ -22,8 +22,8 @@ export class NotificationService extends BaseService<ClientNotification> {
         email: { inspections: true, warranty: true, updates: true, reminders: true },
         sms: { inspections: true, warranty: true, updates: true, reminders: true }
       };
-      this.settings.set('client-1', defaultSettings);
-      this.settings.set('2', defaultSettings);
+      this.settingsMap.set('client-1', defaultSettings);
+      this.settingsMap.set('2', defaultSettings);
       
       this.create({
         clientId: '2',
@@ -47,7 +47,7 @@ export class NotificationService extends BaseService<ClientNotification> {
       try {
         const parsed = JSON.parse(storedSettings);
         Object.entries(parsed).forEach(([clientId, settings]: [string, any]) => {
-          this.settings.set(clientId, settings);
+          this.settingsMap.set(clientId, settings);
         });
       } catch (e) {
         console.error("Failed to load notification settings", e);
@@ -57,7 +57,7 @@ export class NotificationService extends BaseService<ClientNotification> {
 
   private persistSettings() {
     if (typeof window === 'undefined') return;
-    const settingsObj = Object.fromEntries(this.settings.entries());
+    const settingsObj = Object.fromEntries(this.settingsMap.entries());
     localStorage.setItem(this.settingsKey, JSON.stringify(settingsObj));
   }
 
@@ -120,7 +120,7 @@ export class NotificationService extends BaseService<ClientNotification> {
   }
 
   getSettings(clientId: string): NotificationSettings {
-    const settings = this.settings.get(clientId);
+    const settings = this.settingsMap.get(clientId);
     if (settings) return settings;
     
     return {
@@ -130,7 +130,7 @@ export class NotificationService extends BaseService<ClientNotification> {
   }
 
   updateSettings(clientId: string, newSettings: NotificationSettings): void {
-    this.settings.set(clientId, newSettings);
+    this.settingsMap.set(clientId, newSettings);
     this.persistSettings();
   }
 
@@ -138,6 +138,7 @@ export class NotificationService extends BaseService<ClientNotification> {
     return formatRelativeTime(date);
   }
 }
+
 
 
 export const notificationService = new NotificationService();

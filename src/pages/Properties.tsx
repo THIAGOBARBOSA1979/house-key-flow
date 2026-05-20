@@ -28,10 +28,8 @@ const Properties = () => {
     filteredProperties,
     searchTerm,
     setSearchTerm,
-    statusFilter,
-    setStatusFilter,
-    managerFilter,
-    setManagerFilter,
+    filters,
+    setFilters,
     selectedIds,
     setSelectedIds,
     metrics,
@@ -43,6 +41,7 @@ const Properties = () => {
     toggleSelect,
     refreshList
   } = useProperties();
+
 
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -91,10 +90,11 @@ const Properties = () => {
       <PropertyFilters 
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
-        managerFilter={managerFilter}
-        onManagerChange={setManagerFilter}
+        statusFilter={filters.status}
+        onStatusChange={(val) => setFilters(prev => ({ ...prev, status: val }))}
+        managerFilter={filters.manager}
+        onManagerChange={(val) => setFilters(prev => ({ ...prev, manager: val }))}
+
         managers={managers}
         onClearFilters={clearFilters}
       >

@@ -7,15 +7,27 @@ import { Inspection } from "@/types/inspection";
  * Custom hook to manage inspections logic.
  */
 export const useInspections = () => {
-  const { items: inspections, isLoading, refresh: loadData } = useService<Inspection>(inspectionService);
+  const { 
+    items: inspections, 
+    isLoading, 
+    refresh: loadData,
+    create: createInspection,
+    update: updateInspection,
+    remove: deleteInspection
+  } = useService<Inspection>(inspectionService);
 
-  const filterFn = useCallback((inspection: Inspection, filters: any) => {
-    const matchesStatus = filters.status === "all" || inspection.status === filters.status;
-    const matchesTech = filters.technician === "all" || inspection.technician === filters.technician;
-    const matchesProperty = filters.property === "all" || inspection.property === filters.property;
-    const matchesChecklist = filters.checklist === "all" || inspection.checklistId === filters.checklist;
+  const filterFn = useCallback((inspection: Inspection, currentFilters: any) => {
+    const matchesStatus = currentFilters.status === "all" || inspection.status === currentFilters.status;
+    const matchesTech = currentFilters.technician === "all" || inspection.technician === currentFilters.technician;
+    const matchesProperty = currentFilters.property === "all" || inspection.property === currentFilters.property;
+    const matchesChecklist = currentFilters.checklist === "all" || inspection.checklistId === currentFilters.checklist;
     
-    return matchesStatus && matchesTech && matchesProperty && matchesChecklist;
+    const matchesSearch = !searchTerm || 
+      inspection.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      inspection.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      inspection.unit.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesStatus && matchesTech && matchesProperty && matchesChecklist && matchesSearch;
   }, []);
 
   const {
@@ -33,6 +45,7 @@ export const useInspections = () => {
   const stats = useMemo(() => {
     const today = new Date();
     return {
+      total: inspections.length,
       pending: inspections.filter(i => i.status === "pending").length,
       completed: inspections.filter(i => i.status === "complete").length,
       delayed: inspections.filter(i => {
@@ -60,18 +73,16 @@ export const useInspections = () => {
     filteredInspections,
     searchTerm,
     setSearchTerm,
-    filterStatus: filters.status,
-    setFilterStatus: (val: string) => setFilters(prev => ({ ...prev, status: val })),
-    filterTechnician: filters.technician,
-    setFilterTechnician: (val: string) => setFilters(prev => ({ ...prev, technician: val })),
-    filterProperty: filters.property,
-    setFilterProperty: (val: string) => setFilters(prev => ({ ...prev, property: val })),
-    filterChecklist: filters.checklist,
-    setFilterChecklist: (val: string) => setFilters(prev => ({ ...prev, checklist: val })),
+    filters,
+    setFilters,
     stats,
     isLoading,
     loadData,
     clearFilters,
-    handleExport
+    handleExport,
+    createInspection,
+    updateInspection,
+    deleteInspection
   };
 };
+

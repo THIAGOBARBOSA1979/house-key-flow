@@ -36,14 +36,25 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     const newItem = { ...item };
     for (const key in newItem) {
       const value = newItem[key];
+      // ISO Date pattern: 2026-05-20T...
       if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
-        newItem[key] = new Date(value);
-      } else if (value && typeof value === 'object') {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          newItem[key] = date;
+        }
+      } else if (value && typeof value === 'object' && !(value instanceof Date)) {
         newItem[key] = this.deserializeDates(value);
       }
     }
     return newItem;
   }
+
+  protected handleError(error: any, context: string): never {
+    const message = error?.message || "An unexpected error occurred";
+    console.error(`[BaseService:${this.options.storageKey}] ${context}:`, error);
+    throw new Error(`${context}: ${message}`);
+  }
+
 
   protected loadFromStorage() {
     if (typeof window === 'undefined') return;

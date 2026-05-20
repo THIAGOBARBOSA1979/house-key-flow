@@ -11,7 +11,14 @@ export const useProperties = () => {
   const { user } = useAuth();
   const companyId = user?.company_id;
 
-  const { items: properties, isLoading, create: createProperty, update: updateProperty, remove: deleteProperty, refresh: refreshList } = useService<Property>(propertyService, {
+  const { 
+    items: properties, 
+    isLoading, 
+    create: createProperty, 
+    update: updateProperty, 
+    remove: deleteProperty, 
+    refresh: refreshList 
+  } = useService<Property>(propertyService, {
     toastMessages: {
       create: "Empreendimento criado com sucesso.",
       update: "Empreendimento atualizado com sucesso.",
@@ -19,10 +26,14 @@ export const useProperties = () => {
     }
   });
 
-  const filterFn = useCallback((property: Property, filters: any) => {
-    const matchesStatus = filters.status === "all" || property.status === filters.status;
-    const matchesManager = filters.manager === "all" || property.manager === filters.manager;
-    return matchesStatus && matchesManager;
+  const filterFn = useCallback((property: Property, currentFilters: any) => {
+    const matchesStatus = currentFilters.status === "all" || property.status === currentFilters.status;
+    const matchesManager = currentFilters.manager === "all" || property.manager === currentFilters.manager;
+    const matchesSearch = !searchTerm || 
+      property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.location.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesStatus && matchesManager && matchesSearch;
   }, []);
 
   const {
@@ -40,14 +51,22 @@ export const useProperties = () => {
     filterFn
   });
 
-  const metrics = useMemo(() => propertyService.getMetrics(companyId, user?.is_super_admin), [companyId, user?.is_super_admin, properties]);
+  const metrics = useMemo(() => 
+    propertyService.getMetrics(companyId, user?.is_super_admin), 
+    [companyId, user?.is_super_admin, properties]
+  );
 
   const bulkDelete = useCallback(async () => {
-    for (const id of selectedIds) {
-      await deleteProperty(id);
+    try {
+      const results = await propertyService.bulkDelete(selectedIds);
+      if (results > 0) {
+        refreshList();
+        setSelectedIds([]);
+      }
+    } catch (err) {
+      console.error("Bulk delete failed", err);
     }
-    setSelectedIds([]);
-  }, [selectedIds, deleteProperty, setSelectedIds]);
+  }, [selectedIds, refreshList, setSelectedIds]);
 
   return {
     properties,
@@ -55,10 +74,8 @@ export const useProperties = () => {
     filteredProperties,
     searchTerm,
     setSearchTerm,
-    statusFilter: filters.status,
-    setStatusFilter: (status: string) => setFilters(prev => ({ ...prev, status })),
-    managerFilter: filters.manager,
-    setManagerFilter: (manager: string) => setFilters(prev => ({ ...prev, manager })),
+    filters,
+    setFilters,
     selectedIds,
     setSelectedIds,
     metrics,
@@ -71,4 +88,5 @@ export const useProperties = () => {
     refreshList
   };
 };
+
 

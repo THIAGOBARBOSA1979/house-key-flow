@@ -107,10 +107,11 @@ class DocumentService extends SupabaseBaseService<Document> {
   constructor() {
     super({
       storageKey: "a2_documents",
-      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table
+      supabaseTable: "documents" as any, // Plan to create this table later if needed
       auditEntityType: "document",
       shouldSyncWithSupabase: false
     }, INITIAL_DOCUMENTS);
+
   }
 
   // Backward compatibility aliases
