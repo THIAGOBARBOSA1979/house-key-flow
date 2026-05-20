@@ -347,7 +347,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     userName?: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     this.internalLog('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     
     if (!request) {
       this.internalLog('error', `Request ${requestId} not found for status change`);
