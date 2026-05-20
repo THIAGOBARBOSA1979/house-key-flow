@@ -884,7 +884,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     kanbanData.set("rejected", []);
     
     // Populate with requests
-    this.getAllRequests().forEach(request => {
+    this.getAllRequests(companyId, isSuperAdmin).forEach(request => {
       const slaInfo = warrantySLAService.calculateSLADeadlineInfo(request);
       const cardData: KanbanCardData = {
         id: request.id,
