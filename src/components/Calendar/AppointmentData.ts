@@ -1,23 +1,6 @@
-
 import { inspectionService } from "@/services";
+import { Appointment, AppointmentType, AppointmentStatus } from "@/types";
 
-export type AppointmentType = "inspection" | "warranty" | "delivery" | "technical_visit";
-export type AppointmentStatus = "pending" | "confirmed" | "completed" | "cancelled" | "rescheduled";
-
-export interface Appointment {
-  id: string;
-  title: string;
-  property: string;
-  unit: string;
-  client: string;
-  date: Date;
-  type: AppointmentType;
-  status: AppointmentStatus;
-  technician?: string;
-  notes?: string;
-  checklist?: string;
-  priority?: "low" | "medium" | "high";
-}
 
 // Convert service data to Appointment format
 const mapServiceToAppointment = (ins: {

@@ -1,15 +1,6 @@
 import { Supabase } from './index';
+import { Role, Permission } from '@/types/auth';
 
-export type Role = 'super_admin' | 'admin' | 'manager' | 'staff' | 'technical' | 'user';
-
-export type Permission = 
-  | 'view_dashboard'
-  | 'manage_users'
-  | 'manage_properties'
-  | 'manage_inspections'
-  | 'manage_warranty'
-  | 'view_reports'
-  | 'system_settings';
 
 export const AuthGuard = {
   // Simple check for now, can be expanded with real Supabase RBAC
