@@ -24,7 +24,7 @@ export const Checklist = lazy(() => import("@/pages/Checklist"));
 export const Settings = lazy(() => import("@/pages/Settings"));
 export const DesignSystem = lazy(() => import("@/pages/admin/DesignSystem"));
 export const AuditLogs = lazy(() => import("@/pages/admin/AuditLogs"));
-export const FinancialDashboard = lazy(() => import("@/pages/admin/FinancialDashboard"));
+
 export const Announcements = lazy(() => import("@/pages/admin/Announcements"));
 export const Technicians = lazy(() => import("@/pages/Technicians"));
 export const AdminSupport = lazy(() => import("@/pages/admin/Support"));
@@ -38,5 +38,5 @@ export const ClientWarranty = lazy(() => import("@/pages/client/Warranty"));
 export const ClientProperties = lazy(() => import("@/pages/client/Properties"));
 export const ClientNotifications = lazy(() => import("@/pages/client/Notifications"));
 export const ClientProfile = lazy(() => import("@/pages/client/Profile"));
-export const ClientFinancial = lazy(() => import("@/pages/client/Financial"));
+
 export const ClientSupport = lazy(() => import("@/pages/client/Support"));

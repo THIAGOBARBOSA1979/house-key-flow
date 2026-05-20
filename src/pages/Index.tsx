@@ -3,22 +3,16 @@ import {
   Home, 
   RefreshCw, 
   Layers, 
-  Plus, 
-  Activity, 
-  FileText,
-  Clock,
-  ChevronRight
+  Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/Layout/PageHeader";
-import { Card } from "@/components/ui/card";
 import { Stats } from "@/components/Dashboard/Stats";
 import { DashboardCharts } from "@/components/Dashboard/DashboardCharts";
 import { QuickActions } from "@/components/Dashboard/QuickActions";
 import { ActiveProperties } from "@/components/Dashboard/ActiveProperties";
 import { ScheduledInspections } from "@/components/Dashboard/ScheduledInspections";
 import { SystemHealth } from "@/components/Dashboard/SystemHealth";
-import { FinancialHealth } from "@/components/Dashboard/FinancialHealth";
 import { CriticalWarranties } from "@/components/Dashboard/CriticalWarranties";
 import { RecentTickets } from "@/components/Dashboard/RecentTickets";
 import { SystemAuditTimeline } from "@/components/Dashboard/SystemAuditTimeline";
@@ -38,12 +32,10 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { 
     loading, 
-    properties, 
     inspections, 
     warrantyClaims, 
     recentActivities, 
     recentTickets, 
-    financialMetrics, 
     healthMetrics,
     propertyMetrics,
     refreshData 
@@ -91,7 +83,6 @@ const Dashboard = () => {
       <DashboardCharts 
         inspections={inspections} 
         warranties={warrantyClaims} 
-        financialData={financialMetrics} 
       />
       
       <QuickActions />
@@ -111,7 +102,6 @@ const Dashboard = () => {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-            <FinancialHealth metrics={financialMetrics} />
             <PendingDocuments />
           </div>
 

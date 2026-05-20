@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
 import { 
-  financialService, 
   documentService, 
   inspectionService, 
   warrantyFlowService 
@@ -9,7 +8,7 @@ import {
 export const useClientDashboardData = (clientId: string, userName?: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  const financialSummary = useMemo(() => financialService.getFinancialSummary(clientId), [clientId]);
+  
   const allDocs = useMemo(() => documentService.getDocumentsByClient(userName || "João Silva"), [userName]);
   const allInspections = useMemo(() => 
     inspectionService.getAll().filter(i => i && i.client === (userName || "João Silva")), [userName]);
@@ -24,7 +23,7 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
 
   return {
     isLoading,
-    financialSummary,
+    
     allDocs,
     allInspections,
     upcomingInspections,

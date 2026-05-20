@@ -18,18 +18,16 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { inspectionService, warrantyFlowService, financialService } from '@/services';
+import { inspectionService, warrantyFlowService } from '@/services';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export const DashboardCharts = ({ 
   inspections = [], 
-  warranties = [], 
-  financialData = financialService.getGlobalMetrics() 
+  warranties = []
 }: {
   inspections?: Array<{ date: Date | string }>;
   warranties?: Array<{ category: string }>;
-  financialData?: { revenueByMonth: Array<{ month: string; value: number }> };
 }) => {
 
   const inspectionChartData = useMemo(() => {
@@ -75,12 +73,6 @@ export const DashboardCharts = ({
     return data;
   }, [warranties]);
 
-  const revenueData = useMemo(() => {
-    return financialData.revenueByMonth.map(item => ({
-      name: item.month,
-      valor: item.value
-    }));
-  }, [financialData]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
