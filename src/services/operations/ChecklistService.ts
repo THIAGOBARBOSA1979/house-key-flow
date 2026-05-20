@@ -107,6 +107,11 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
     }); 
   }
 
+  archiveTemplate(id: string) { 
+    return this.delete(id); 
+  }
+
+
   logExecution(templateId: string, groups: ChecklistGroup[], notes: string, name: string = "Admin", status: ChecklistExecutionRecord["status"] = "completed") {
     const template = this.getById(templateId);
     const record: ChecklistExecutionRecord = {

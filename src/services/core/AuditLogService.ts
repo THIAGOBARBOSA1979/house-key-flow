@@ -100,7 +100,7 @@ class AuditLogService extends BaseService<any> {
     return (data || []).map(raw => this.mapToEntry(raw));
   }
 
-  async log(entry: any, userContext?: any): Promise<void> {
+  async log(entry: any): Promise<void> {
     await this.logAction({
       action: entry.action,
       entityType: entry.entityType,
@@ -110,7 +110,6 @@ class AuditLogService extends BaseService<any> {
   }
 
   async logAction(data: {
-
     action: AuditAction;
     entityType: AuditEntityType;
     entityId?: string;
@@ -127,6 +126,22 @@ class AuditLogService extends BaseService<any> {
     });
 
     if (error) console.error('Failed to log audit action:', error);
+  }
+
+  getRecentLogs(limit: number = 20): AuditLogEntry[] {
+    return this.items.slice(0, limit);
+  }
+
+  getAllLogs(): AuditLogEntry[] {
+    return this.items;
+  }
+
+  getFilteredLogs(filters: any): AuditLogEntry[] {
+    return this.items.filter(log => {
+      if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
+      if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
+      return true;
+    });
   }
 
   subscribe(callback: (logs: AuditLogEntry[]) => void) {
