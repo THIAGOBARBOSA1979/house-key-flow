@@ -4,6 +4,7 @@ import Properties from '../pages/Properties';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../contexts/AuthContext';
+import { ConfirmProvider } from '../contexts/ConfirmContext';
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ describe('Properties Page', () => {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <AuthProvider>
-            <Properties />
+            <ConfirmProvider>
+              <Properties />
+            </ConfirmProvider>
           </AuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
