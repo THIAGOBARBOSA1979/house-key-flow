@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { warrantyFlowService, warrantyValidationService, eventAutomationService } from "@/services";
 import { WarrantyItem } from "@/types/warranty";
