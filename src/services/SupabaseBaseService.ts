@@ -1,14 +1,25 @@
 import { Supabase, FilterParams } from '@/integrations/supabase';
 import { BaseService, BaseServiceOptions } from './BaseService';
-
 import { Database } from '@/integrations/supabase/types';
+
+export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
+  supabaseTable: keyof Database['public']['Tables'];
+}
 
 export abstract class SupabaseBaseService<T extends { id: string; company_id?: string }> extends BaseService<T> {
   protected supabaseTable: keyof Database['public']['Tables'];
 
-  constructor(options: BaseServiceOptions & { supabaseTable: keyof Database['public']['Tables'] }, initialData: T[] = []) {
+  constructor(options: SupabaseBaseServiceOptions, initialData: T[] = []) {
     super(options, initialData);
     this.supabaseTable = options.supabaseTable;
+  }
+
+  protected mapToSupabase(item: any): any {
+    return item;
+  }
+
+  protected mapFromSupabase(raw: any): T {
+    return raw as T;
   }
 
   async sync(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
@@ -25,65 +36,37 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     }
 
     if (data) {
-      const deserialized = data.map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
-      this.items = deserialized;
+      this.items = data.map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
       this.persist();
-      return this.items;
     }
     
     return this.items;
   }
 
-  async createRemote(item: T): Promise<T | undefined> {
-    if (!this.options.shouldSyncWithSupabase) return item;
-    
-    const data = this.mapToSupabase(item);
-    const { data: created, error } = await Supabase.db.create<T>(this.supabaseTable, data);
-    
-    if (error) {
-      console.error(`[SupabaseBaseService] Failed to sync create to Supabase for ${this.supabaseTable}:`, error);
-      return undefined;
-    }
-    
-    return created || undefined;
-  }
-
   create(item: Omit<T, "id">, companyId?: string): T {
     const newItem = super.create(item, companyId);
-    this.createRemote(newItem);
-    return newItem;
-  }
-
-  async updateRemote(id: string, data: Partial<T>): Promise<T | undefined> {
-    if (!this.options.shouldSyncWithSupabase) return undefined;
-    
-    const syncData = this.mapToSupabase(data as any);
-    const { data: updated, error } = await Supabase.db.update<T>(this.supabaseTable, id, syncData);
-    
-    if (error) {
-      console.error(`[SupabaseBaseService] Failed to sync update to Supabase for ${this.supabaseTable}:`, error);
-      return undefined;
+    if (this.options.shouldSyncWithSupabase) {
+      Supabase.db.create<T>(this.supabaseTable, this.mapToSupabase(newItem))
+        .catch(err => console.error(`[SupabaseBaseService] Sync create failed:`, err));
     }
-    
-    return updated || undefined;
+    return newItem;
   }
 
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const updated = super.update(id, data, isSuperAdmin);
-    if (updated) {
-      this.updateRemote(id, data);
+    if (updated && this.options.shouldSyncWithSupabase) {
+      Supabase.db.update<T>(this.supabaseTable, id, this.mapToSupabase(data))
+        .catch(err => console.error(`[SupabaseBaseService] Sync update failed:`, err));
     }
     return updated;
   }
 
   delete(id: string): boolean {
     const success = super.delete(id);
-    
     if (success && this.options.shouldSyncWithSupabase) {
       Supabase.db.delete(this.supabaseTable, id)
-        .catch(err => console.error(`[SupabaseBaseService] Failed to sync delete to Supabase for ${this.supabaseTable}:`, err));
+        .catch(err => console.error(`[SupabaseBaseService] Sync delete failed:`, err));
     }
-    
     return success;
   }
 }

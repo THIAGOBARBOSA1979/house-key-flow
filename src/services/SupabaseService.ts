@@ -1,4 +1,4 @@
-import { Supabase, FilterParams, PaginationParams } from '@/integrations/supabase';
+import { Supabase, FilterParams, PaginationParams, SupabaseResponse } from '@/integrations/supabase';
 import { Database } from '@/integrations/supabase/types';
 
 export abstract class SupabaseService<T extends { id: string; company_id?: string }> {
@@ -8,14 +8,19 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     this.table = table;
   }
 
-  async getAll(companyId?: string, isSuperAdmin?: boolean, options?: { filters?: FilterParams[]; pagination?: PaginationParams }): Promise<T[]> {
+  async getAll(
+    companyId?: string, 
+    isSuperAdmin?: boolean, 
+    options?: { filters?: FilterParams[]; pagination?: PaginationParams }
+  ): Promise<T[]> {
     const filters: FilterParams[] = options?.filters || [];
     
-    if (!isSuperAdmin && companyId) {
+    if (!isSuperAdmin) {
+      if (!companyId) {
+        console.warn(`[SupabaseService] getAll called without companyId for table ${this.table}`);
+        return [];
+      }
       filters.push({ column: 'company_id', operator: 'eq', value: companyId });
-    } else if (!isSuperAdmin && !companyId) {
-      console.warn(`[SupabaseService] getAll called without companyId for table ${this.table}`);
-      return [];
     }
 
     const { data, error } = await Supabase.db.findMany<T>(this.table, {
@@ -33,10 +38,10 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
   async getById(id: string, companyId?: string, isSuperAdmin?: boolean, idColumn: string = 'id'): Promise<T | null> {
     const { data, error } = await Supabase.db.findOne<T>(this.table, id, idColumn);
 
-    if (error) return null;
-    if (!data) return null;
+    if (error || !data) return null;
 
     if (!isSuperAdmin && data.company_id !== companyId) {
+      console.warn(`[SupabaseService] Tenant Isolation: Access denied to ${this.table}:${id}`);
       return null;
     }
 
@@ -49,24 +54,20 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
       company_id: companyId || (item as any).company_id
     };
 
-    const { data, error } = await Supabase.db.create<T>(this.table, dataToInsert as any);
+    const { data, error } = await Supabase.db.create<T>(this.table, dataToInsert);
 
-    if (error) {
-      throw new Error(error.message);
+    if (error || !data) {
+      throw new Error(error?.message || 'Failed to create item');
     }
-
-    if (!data) throw new Error('Failed to create item');
     return data;
   }
 
   async update(id: string, data: Partial<T>, idColumn: string = 'id'): Promise<T> {
     const { data: updated, error } = await Supabase.db.update<T>(this.table, id, data, idColumn);
 
-    if (error) {
-      throw new Error(error.message);
+    if (error || !updated) {
+      throw new Error(error?.message || 'Failed to update item');
     }
-
-    if (!updated) throw new Error('Failed to update item');
     return updated;
   }
 
@@ -82,7 +83,6 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     }
     
     const { data, error } = await Supabase.db.count(this.table, filters);
-    if (error) return 0;
-    return data || 0;
+    return error ? 0 : (data || 0);
   }
 }
