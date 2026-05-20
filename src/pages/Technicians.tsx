@@ -29,8 +29,8 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks";
-import { technicianService, type Technician } from "@/services";
+import { useToast, useTechnicians } from "@/hooks";
+import { type Technician } from "@/services";
 import { DataView } from "@/components/Shared/DataView";
 
 import { StatsCard } from "@/components/Shared/StatsCard";
