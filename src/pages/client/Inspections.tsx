@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { safeFormat } from "@/lib/utils";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
+import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
 import { documentService } from "@/services";
 import { useToast } from "@/hooks";
 import { useClientStage } from "@/hooks";
