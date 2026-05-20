@@ -198,7 +198,25 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     return { avgDeliveryTime: "2.4d", avgFirstContact: "4.2h" };
   }
 
+  getReport(id: string) {
+    const inspection = this.getById(id);
+    return inspection ? { inspection, generatedAt: new Date() } : null;
+  }
+
+  signAcceptance(id: string, clientId: string, signatureData: any) {
+    return this.updateStatus(id, "accepted", "Cliente assinou aceite digital");
+  }
+
+  confirmPresence(id: string, clientId: string) {
+    return this.updateStatus(id, "presence_confirmed", "Cliente confirmou presença");
+  }
+
+  requestReschedule(id: string, clientId: string, newDate: Date, newTime: string, reason: string) {
+    return this.update(id, { date: newDate, time: newTime, status: "reschedule_requested" });
+  }
+
   exportData(format: 'json' | 'csv' = 'json') {
+
     return format === 'json' ? JSON.stringify(this.items) : "";
   }
 }
