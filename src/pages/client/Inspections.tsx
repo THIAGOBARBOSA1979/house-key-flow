@@ -57,6 +57,10 @@ export default function ClientInspections() {
     }
   };
 
+  const handleOpenSignature = () => {
+    setIsSignatureOpen(true);
+  };
+
   const timelineItems: TimelineItem[] = [
     { id: '1', title: 'Agendamento Confirmado', date: inspection?.scheduledDate, status: 'completed', eventType: 'inspection_scheduled' },
     { id: '2', title: 'Realização da Vistoria', status: inspection?.status === 'complete' ? 'completed' : 'current', eventType: 'inspection_completed' },
