@@ -105,16 +105,18 @@ const Support = () => {
   ];
 
   return (
-    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <LifeBuoy className="h-8 w-8 text-primary" />
-            Central de Ajuda
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-3 leading-tight">
+            <div className="p-2.5 bg-primary/10 rounded-2xl shadow-inner">
+              <LifeBuoy className="h-7 w-7 text-primary" strokeWidth={3} />
+            </div>
+            Central de Ajuda & Suporte
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Encontre respostas rápidas ou fale com nossa equipe especializada.
+          <p className="text-muted-foreground font-bold mt-2 text-sm">
+            Encontre soluções estratégicas ou fale com nossa engenharia de pós-venda.
           </p>
         </div>
       </div>
