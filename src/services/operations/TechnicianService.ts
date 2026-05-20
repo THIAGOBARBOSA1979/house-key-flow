@@ -15,6 +15,8 @@ export interface Technician {
   completedJobs: number;
   activeJobs: number;
   joinedAt: Date;
+  experienceLevel?: 'junior' | 'mid' | 'senior';
+  notes?: string;
 }
 
 const INITIAL_TECHNICIANS: Technician[] = [
@@ -29,7 +31,9 @@ const INITIAL_TECHNICIANS: Technician[] = [
     rating: 4.8,
     completedJobs: 124,
     activeJobs: 3,
-    joinedAt: new Date(2023, 1, 15)
+    joinedAt: new Date(2023, 1, 15),
+    experienceLevel: 'senior',
+    notes: "Especialista em detecção de vazamentos e estrutural."
   },
   {
     id: "tech-2",
@@ -42,7 +46,9 @@ const INITIAL_TECHNICIANS: Technician[] = [
     rating: 4.9,
     completedJobs: 89,
     activeJobs: 1,
-    joinedAt: new Date(2023, 5, 20)
+    joinedAt: new Date(2023, 5, 20),
+    experienceLevel: 'mid',
+    notes: "Focado em automação residencial e instalações elétricas complexas."
   },
   {
     id: "tech-3",
@@ -55,7 +61,9 @@ const INITIAL_TECHNICIANS: Technician[] = [
     rating: 4.7,
     completedJobs: 56,
     activeJobs: 4,
-    joinedAt: new Date(2024, 0, 10)
+    joinedAt: new Date(2024, 0, 10),
+    experienceLevel: 'junior',
+    notes: "Agilidade em acabamentos finos e decorações em gesso."
   }
 ];
 

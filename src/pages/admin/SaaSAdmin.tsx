@@ -15,7 +15,8 @@ import {
   Plus,
   Activity,
   Trash2,
-  Shield
+  Shield,
+  RefreshCw
 } from "lucide-react";
 import { 
   DropdownMenu, 
@@ -38,6 +39,7 @@ import { AddCompanyDialog } from "@/components/Admin/SaaS/AddCompanyDialog";
 import { CompanyDetailsDialog } from "@/components/Admin/SaaS/CompanyDetailsDialog";
 import { GovernanceManager } from "@/components/Admin/GovernanceManager";
 import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
+import { SystemHealth } from "@/components/Admin/SaaS/SystemHealth";
 
 import { propertyService } from "@/services";
 import { inspectionService } from "@/services";
@@ -185,6 +187,9 @@ export default function SaaSAdmin() {
           <TabsTrigger value="audit" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
             <Activity className="h-4 w-4" /> Auditoria Global
           </TabsTrigger>
+          <TabsTrigger value="health" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
+            <RefreshCw className="h-4 w-4" /> Saúde do Sistema
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="companies" className="space-y-6">
@@ -201,6 +206,10 @@ export default function SaaSAdmin() {
 
         <TabsContent value="audit">
           <AuditLogViewer />
+        </TabsContent>
+
+        <TabsContent value="health">
+          <SystemHealth />
         </TabsContent>
       </Tabs>
 

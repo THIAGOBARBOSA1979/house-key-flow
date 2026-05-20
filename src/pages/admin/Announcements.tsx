@@ -8,25 +8,22 @@ import {
   Megaphone, 
   Plus, 
   Search, 
-  MoreHorizontal, 
   Trash2, 
   Edit, 
   Globe, 
   Building,
-  Calendar,
   Eye,
   Send,
-  Bell
+  Bell,
+  Calendar as CalendarIcon
 } from "lucide-react";
-import { constructionService, type ConstructionUpdate } from "@/services";
-import { propertyService } from "@/services";
-import { useToast } from "@/hooks";
+import { type ConstructionUpdate } from "@/services";
+import { useAnnouncements } from "@/hooks";
 import { 
   Dialog, 
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
-  DialogTrigger,
   DialogFooter
 } from "@/components/ui/dialog";
 import {
@@ -40,16 +37,21 @@ import { DataTable } from "@/components/Shared/DataTable";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
+import { DataView } from "@/components/Shared/DataView";
 
 const Announcements = () => {
-  const { toast } = useToast();
+  const { 
+    updates, 
+    isLoading, 
+    properties, 
+    createAnnouncement, 
+    updateAnnouncement, 
+    deleteAnnouncement 
+  } = useAnnouncements();
+  
   const [searchTerm, setSearchTerm] = useState("");
-  const [updates, setUpdates] = useState<ConstructionUpdate[]>(constructionService.getUpdates());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  
-  const properties = useMemo(() => propertyService.getAll(), []);
-  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -86,54 +88,39 @@ const Announcements = () => {
       description: update.description,
       type: update.type,
       isGlobal: update.isGlobal || false,
-      propertyId: "all", // In a real app we'd have the property ID
+      propertyId: "all", 
       status: update.status || 'published'
     });
     setIsDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
-    constructionService.deleteUpdate(id);
-    setUpdates(constructionService.getUpdates());
-    toast({
-      title: "Comunicado removido",
-      description: "O comunicado foi excluído permanentemente.",
-      variant: "destructive"
-    });
+    deleteAnnouncement(id);
   };
 
   const handleSubmit = () => {
     if (!formData.title || !formData.description) {
-      toast({
-        title: "Erro",
-        description: "Por favor, preencha o título e a descrição.",
-        variant: "destructive"
-      });
       return;
     }
 
     if (editingId) {
-      constructionService.updateUpdate(editingId, {
+      updateAnnouncement(editingId, {
         title: formData.title,
         description: formData.description,
         type: formData.type,
         isGlobal: formData.isGlobal,
         status: formData.status
       });
-      toast({ title: "Sucesso", description: "Comunicado atualizado com sucesso." });
     } else {
-      constructionService.createUpdate({
+      createAnnouncement({
         title: formData.title,
         description: formData.description,
         type: formData.type,
         isGlobal: formData.isGlobal,
-        status: formData.status,
-        date: new Date()
+        status: formData.status
       });
-      toast({ title: "Sucesso", description: "Novo comunicado publicado." });
     }
 
-    setUpdates(constructionService.getUpdates());
     setIsDialogOpen(false);
   };
 
@@ -179,7 +166,11 @@ const Announcements = () => {
             />
           </div>
 
-          <DataTable
+          <DataView<ConstructionUpdate>
+            items={filteredUpdates}
+            isLoading={isLoading}
+            viewMode="table"
+            itemsPerPage={10}
             columns={[
               { 
                 header: "Data", 
@@ -261,7 +252,6 @@ const Announcements = () => {
                 )
               }
             ]}
-            data={filteredUpdates}
           />
         </div>
       </div>

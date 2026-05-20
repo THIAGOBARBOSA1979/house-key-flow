@@ -29,8 +29,8 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks";
-import { technicianService, type Technician } from "@/services";
+import { useToast, useTechnicians } from "@/hooks";
+import { type Technician } from "@/services";
 import { DataView } from "@/components/Shared/DataView";
 
 import { StatsCard } from "@/components/Shared/StatsCard";
@@ -48,15 +48,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 const Technicians = () => {
   const { toast } = useToast();
+  const {
+    technicians,
+    isLoading,
+    selectedIds,
+    stats,
+    saveTechnician,
+    deleteTechnician,
+    toggleTechnicianStatus,
+    handleBulkDelete,
+    toggleSelect,
+    clearSelection,
+    exportData
+  } = useTechnicians();
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [technicians, setTechnicians] = useState<Technician[]>(technicianService.getAll());
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTech, setEditingTech] = useState<Technician | null>(null);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const refreshList = () => {
-    setTechnicians(technicianService.getAll());
-  };
 
   const filteredTechnicians = useMemo(() => {
     return technicians.filter(tech => {
@@ -67,22 +75,8 @@ const Technicians = () => {
     });
   }, [technicians, searchTerm]);
 
-  const stats = useMemo(() => ({
-    total: technicians.length,
-    active: technicians.filter(t => t.status === "active").length,
-    avgRating: (technicians.reduce((acc, t) => acc + t.rating, 0) / technicians.length || 0).toFixed(1),
-    totalJobs: technicians.reduce((acc, t) => acc + t.completedJobs, 0),
-  }), [technicians]);
-
   const handleSave = (data: any) => {
-    if (editingTech) {
-      technicianService.update(editingTech.id, data);
-      toast({ title: "Técnico atualizado", description: "As informações foram salvas com sucesso." });
-    } else {
-      technicianService.create(data);
-      toast({ title: "Técnico cadastrado", description: "O novo técnico já pode ser alocado para vistorias." });
-    }
-    refreshList();
+    saveTechnician(data, editingTech?.id);
     setIsFormOpen(false);
     setEditingTech(null);
   };
@@ -93,30 +87,19 @@ const Technicians = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (technicianService.delete(id)) {
-      refreshList();
-      toast({ title: "Técnico removido", description: "O cadastro foi excluído com sucesso.", variant: "destructive" });
-    }
+    deleteTechnician(id);
   };
 
   const toggleStatus = (tech: Technician) => {
-    const newStatus = tech.status === 'active' ? 'inactive' : 'active';
-    technicianService.update(tech.id, { status: newStatus });
-    refreshList();
-    toast({ title: "Status atualizado", description: `O técnico agora está ${newStatus === 'active' ? 'ativo' : 'inativo'}.` });
+    toggleTechnicianStatus(tech.id);
   };
 
-  const handleBulkDelete = () => {
-    selectedIds.forEach(id => technicianService.delete(id));
-    refreshList();
-    setSelectedIds([]);
-    toast({ title: "Ação concluída", description: `${selectedIds.length} técnicos foram removidos.`, variant: "destructive" });
+  const handleBulkDeleteAction = () => {
+    handleBulkDelete();
   };
 
   const handleSelect = (id: string) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-    );
+    toggleSelect(id);
   };
 
   return (
@@ -127,7 +110,7 @@ const Technicians = () => {
         description="Gerenciamento de prestadores de serviço, especialidades e avaliações de desempenho."
       >
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={() => exportService.exportToCSV(technicians, 'tecnicos_a2')}>
+          <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={exportData}>
             <Download className="mr-2 h-4 w-4" /> Exportar
           </Button>
           <Button onClick={() => { setEditingTech(null); setIsFormOpen(true); }} className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all">
@@ -156,10 +139,10 @@ const Technicians = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={() => setSelectedIds([])}>
+             <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={clearSelection}>
                Cancelar
              </Button>
-             <Button variant="destructive" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={handleBulkDelete}>
+             <Button variant="destructive" size="sm" className="rounded-xl h-10 px-4 font-bold gap-2" onClick={handleBulkDeleteAction}>
                <Trash2 className="w-4 h-4" /> Excluir permanentemente
              </Button>
           </div>
@@ -185,6 +168,7 @@ const Technicians = () => {
 
       <DataView<Technician>
         items={filteredTechnicians}
+        isLoading={isLoading}
         viewMode="grid"
         itemsPerPage={6}
         skeletonType="card"

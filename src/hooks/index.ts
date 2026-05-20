@@ -10,6 +10,8 @@ export { useConfirm } from '@/contexts/ConfirmContext';
 // Identity Domain
 export * from './identity/useUsers';
 export * from './identity/useSaaSAdmin';
+export * from './admin/useAnnouncements';
+export * from './admin/useTechnicians';
 
 // Operations Domain
 export * from './operations/useProperties';
