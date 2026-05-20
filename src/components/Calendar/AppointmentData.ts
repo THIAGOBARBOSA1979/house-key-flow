@@ -101,7 +101,9 @@ export const getUnifiedAppointments = (): Appointment[] => {
      // But for now let's just use what's in the service
   }
   
-  return serviceInspections.map(mapServiceToAppointment);
+  return serviceInspections
+    .filter(Boolean)
+    .map(mapServiceToAppointment);
 };
 
 // For backward compatibility while we refactor components
