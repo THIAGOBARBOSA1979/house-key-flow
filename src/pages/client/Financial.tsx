@@ -39,6 +39,14 @@ const Financial = () => {
       }));
   }, [installments]);
 
+  const handlePay = (id: string) => {
+    const success = financialService.processPayment(id);
+    if (success) {
+      toast({ title: "Pagamento recebido", description: "Sua parcela foi liquidada com sucesso no sistema." });
+      loadData();
+    }
+  };
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   };
