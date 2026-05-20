@@ -1,13 +1,14 @@
 import { StatsCard } from "@/components/Shared/StatsCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DollarSign } from "luc-react";
 import { 
-  DollarSign, 
   Tooltip, 
   ResponsiveContainer,
   Cell,
   PieChart,
   Pie
 } from 'recharts';
+
 
 interface FinancialOverviewProps {
   balanceDue: number;
