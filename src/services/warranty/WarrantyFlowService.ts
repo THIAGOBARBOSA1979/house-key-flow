@@ -874,7 +874,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get Kanban card data for all active requests
    */
-  getKanbanData(): Map<WarrantyStage, KanbanCardData[]> {
+  getKanbanData(companyId?: string, isSuperAdmin?: boolean): Map<WarrantyStage, KanbanCardData[]> {
     const kanbanData = new Map<WarrantyStage, KanbanCardData[]>();
     
     // Initialize all stages
