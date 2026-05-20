@@ -280,8 +280,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get requests by stage
    */
-  getRequestsByStage(stage: WarrantyStage): WarrantyRequestFlow[] {
-    return this.getAllRequests().filter(r => r.currentStage === stage);
+  getRequestsByStage(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.currentStage === stage);
   }
 
   /**
