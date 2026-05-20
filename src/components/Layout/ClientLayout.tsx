@@ -354,12 +354,12 @@ const ClientLayout = () => {
               <ClientNavLink to="/client/support" icon={HelpCircle} onClick={handleLinkClick}>Central de Ajuda</ClientNavLink>
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start" onClick={handleLinkClick}>
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Falar com suporte
+                  <Button variant="ghost" className="w-full justify-start rounded-2xl h-12 text-sm font-bold text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all px-4" onClick={handleLinkClick}>
+                    <MessageSquare className="mr-3 h-5 w-5 opacity-60 group-hover:opacity-100" />
+                    Chat Estratégico
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="p-0">
+                <SheetContent side="right" className="p-0 sm:max-w-md border-none shadow-2xl">
                   <ChatSupportPanel />
                 </SheetContent>
               </Sheet>
@@ -369,10 +369,14 @@ const ClientLayout = () => {
         </nav>
         
         {/* User controls */}
-        <div className="p-4 border-t">
-          <Button variant="outline" className="w-full" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
+        <div className="p-4 border-t border-border/40 bg-muted/10">
+          <Button 
+            variant="ghost" 
+            className="w-full rounded-xl h-12 justify-start px-4 text-destructive hover:bg-destructive/5 hover:text-destructive font-bold transition-all" 
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-3 h-5 w-5" />
+            Finalizar Sessão
           </Button>
         </div>
       </div>
