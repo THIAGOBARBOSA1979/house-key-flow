@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Building, ShieldCheck, ClipboardCheck, Activity } from "lucide-react";
 import { StatsCard } from "@/components/Shared/StatsCard";
-import { useProperties, useInspections, useWarranty } from "@/hooks";
+import { useProperties, useInspections, useWarranty, useDashboardData } from "@/hooks";
 
 interface StatItem {
   title: string;
