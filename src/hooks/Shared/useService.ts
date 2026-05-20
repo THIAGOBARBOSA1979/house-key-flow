@@ -1,9 +1,8 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks';
-import { BaseService } from '@/services/BaseService';
 
-interface UseServiceOptions<T> {
+export interface UseServiceOptions<T> {
   onSuccess?: (item: T, action: 'create' | 'update' | 'delete') => void;
   onError?: (error: unknown) => void;
   toastMessages?: {
@@ -28,7 +27,6 @@ export function useService<T extends { id: string; company_id?: string }>(
   service: IService<T>,
   options: UseServiceOptions<T> = {}
 ) {
-
   const { toast } = useToast();
   const { user } = useAuth();
   const companyId = user?.company_id;
@@ -42,14 +40,13 @@ export function useService<T extends { id: string; company_id?: string }>(
   const fetchItems = useCallback(async () => {
     setIsLoading(true);
     try {
-      // If the service has a sync method (SupabaseBaseService), use it
       if ('sync' in service && typeof (service as any).sync === 'function') {
         await (service as any).sync(companyId, isSuperAdmin);
       }
-      const data = service.getAll(companyId, isSuperAdmin);
+      const data = await service.getAll(companyId, isSuperAdmin);
       setItems(data);
     } catch (error) {
-      console.error(`[useService] Failed to fetch items for ${service.constructor.name}:`, error);
+      console.error(`[useService] Failed to fetch items:`, error);
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +75,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const create = useCallback(async (data: Omit<T, "id">) => {
     setIsLoading(true);
     try {
-      const newItem = service.create(data, companyId);
+      const newItem = await service.create(data, companyId);
       if (optionsRef.current.toastMessages?.create) {
         toast({ title: "Sucesso", description: optionsRef.current.toastMessages.create });
       }
@@ -95,7 +92,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const update = useCallback(async (id: string, data: Partial<T>) => {
     setIsLoading(true);
     try {
-      const updatedItem = service.update(id, data, isSuperAdmin);
+      const updatedItem = await service.update(id, data, isSuperAdmin);
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
           toast({ title: "Sucesso", description: optionsRef.current.toastMessages.update });
@@ -114,7 +111,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const remove = useCallback(async (id: string) => {
     setIsLoading(true);
     try {
-      const success = service.delete(id);
+      const success = await service.delete(id);
       if (success) {
         if (optionsRef.current.toastMessages?.delete) {
           toast({ title: "Sucesso", description: optionsRef.current.toastMessages.delete });
@@ -165,6 +162,6 @@ export function useService<T extends { id: string; company_id?: string }>(
     remove,
     bulkUpdate,
     bulkRemove,
-    getById: useCallback((id: string) => service.getById(id, companyId, isSuperAdmin), [service, companyId, isSuperAdmin])
+    getById: useCallback(async (id: string) => await service.getById(id, companyId, isSuperAdmin), [service, companyId, isSuperAdmin])
   };
 }
