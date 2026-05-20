@@ -9,7 +9,10 @@ import {
 import { useToast, useService, useDataList } from "@/hooks";
 
 export const useWarranty = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
+  const companyId = user?.company_id;
+  const isSuperAdmin = !!user?.is_super_admin;
   
   const { items: requests, isLoading: isServiceLoading, refresh: refreshList } = useService<WarrantyRequestFlow>(warrantyFlowService);
 
