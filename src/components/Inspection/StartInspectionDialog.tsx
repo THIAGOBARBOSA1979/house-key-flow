@@ -33,7 +33,7 @@ export function StartInspectionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-screen-md max-h-[95vh] overflow-y-auto p-0 sm:rounded-2xl border-none shadow-2xl">
+      <DialogContent className="max-w-dialog-lg max-h-[95vh] overflow-y-auto p-0 sm:rounded-2xl border-none shadow-2xl">
         <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b p-4 sm:p-6">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-1">

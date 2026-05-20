@@ -124,7 +124,7 @@ const Support = () => {
         <div className="absolute right-[-5%] top-[-10%] opacity-10">
           <BookOpen size={200} />
         </div>
-        <CardContent className="p-8 md:p-12 relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
+        <CardContent className="p-layout-gap md:p-12 relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-black mb-6 tracking-tight">Olá! Como podemos ajudar você hoje?</h2>
           <div className="w-full relative group">
             <Input 

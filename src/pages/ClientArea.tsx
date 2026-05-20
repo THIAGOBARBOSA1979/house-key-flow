@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
-import { DataView } from "@/components/Layout/DataView";
-import { StatsCard } from "@/components/Layout/StatsCard";
+import { DataView } from "@/components/Shared/DataView";
+import { StatsCard } from "@/components/Shared/StatsCard";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User, UserCheck, Plus, Download, Key } from "lucide-react";
+import { User as UserIcon, UserCheck, Plus, Download, Key } from "lucide-react";
 import { UserForm } from "@/components/Users/UserForm";
-import { GenerateCredentialsForm } from "@/components/Users/GenerateCredentialsForm";
-import { UserService } from "@/services/UserService";
-import { InspectionService } from "@/services/InspectionService";
-import { useToast } from "@/hooks/use-toast";
+import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
+import { UserService } from "@/services/identity/UserService";
+import { InspectionService } from "@/services/operations/InspectionService";
+import { useToast } from "@/hooks/Shared/use-toast";
 import { ClientDetailsSheet } from "@/components/Client/ClientDetailsSheet";
-import { UserProfile } from "@/types/user";
+import { User as UserProfile } from "@/types/user";
 
 const ClientArea = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -102,7 +102,7 @@ const ClientArea = () => {
   };
 
   const filteredClients = allProfiles.filter(client => 
-    client.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     client.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -135,7 +135,7 @@ const ClientArea = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <StatsCard label="Proprietários Homologados" value={allProfiles.length} icon={User} variant="brand" />
+        <StatsCard label="Proprietários Homologados" value={allProfiles.length} icon={UserIcon} variant="brand" />
         <StatsCard label="Interações no Portal" value="28" icon={UserCheck} variant="complete" />
         <StatsCard label="Evolução de Leads" value="15" icon={Plus} variant="progress" />
       </div>
@@ -154,10 +154,10 @@ const ClientArea = () => {
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="text-primary" />
+                  <UserIcon className="text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg">{client.full_name || 'Sem nome'}</h3>
+                  <h3 className="font-bold text-lg">{client.name || 'Sem nome'}</h3>
                   <p className="text-sm text-muted-foreground">{client.email}</p>
                 </div>
               </div>
@@ -168,8 +168,8 @@ const ClientArea = () => {
                 <span className="font-medium">{client.phone || 'Não informado'}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">CPF:</span>
-                <span className="font-medium">{client.document_id || 'Não informado'}</span>
+                <span className="text-muted-foreground">Cargo:</span>
+                <span className="font-medium capitalize">{client.role}</span>
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ const ClientArea = () => {
         <ClientDetailsSheet
           isOpen={isDetailsSheetOpen}
           onClose={() => setDetailsSheetOpen(false)}
-          client={selectedClient}
+          client={selectedClient as any}
           onViewInspectionDetails={handleViewInspectionDetails}
           onViewWarrantyDetails={handleViewWarrantyDetails}
           onStageUpdate={() => handleUpdateStatus(selectedClient.id)}
@@ -195,7 +195,7 @@ const ClientArea = () => {
             <DialogDescription className="text-sm font-medium">Cadastre um novo cliente no ecossistema digital.</DialogDescription>
           </DialogHeader>
           <div className="p-layout-gap max-h-[70vh] overflow-y-auto">
-            <UserForm onSubmit={handleCreateClient} onCancel={() => setNewClientDialogOpen(false)} />
+            <UserForm onSave={handleCreateClient} onCancel={() => setNewClientDialogOpen(false)} />
           </div>
         </DialogContent>
       </Dialog>
