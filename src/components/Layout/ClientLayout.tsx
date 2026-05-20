@@ -358,12 +358,32 @@ const ClientLayout = () => {
       <div className="lg:ml-sidebar-width min-h-screen flex flex-col">
         {/* Desktop header - simplified without images */}
         <header className="sticky top-0 z-30 hidden lg:flex items-center justify-between h-20 px-6 lg:px-10 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-sem-sm">
-          <div className="flex flex-col">
-            <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <span className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Portal do Cliente A2</span>
+          <div className="flex items-center gap-8">
+            <div className="flex flex-col">
+              <h1 className="text-xl font-black tracking-tight text-foreground/90">Área Exclusiva</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">Portal do Cliente A2</span>
+              </div>
             </div>
+
+            {allProfiles.length > 1 && (
+              <div className="flex items-center gap-2 bg-muted/40 p-1.5 rounded-2xl border border-border/50">
+                <Building size={14} className="ml-2 text-primary" />
+                <Select value={selectedProfileId || ""} onValueChange={setSelectedProfileId}>
+                  <SelectTrigger className="h-8 border-none bg-transparent shadow-none font-bold text-xs min-w-[200px] focus:ring-0">
+                    <SelectValue placeholder="Selecionar Unidade" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-2xl">
+                    {allProfiles.map(p => (
+                      <SelectItem key={p.id} value={p.id} className="rounded-lg font-bold text-xs">
+                        {p.propertyName} - {p.unitNumber}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           
           <div className="flex items-center gap-6">
