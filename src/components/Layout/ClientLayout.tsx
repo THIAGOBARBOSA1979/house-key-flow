@@ -13,6 +13,13 @@ import { useClientStage } from "@/hooks";
 import { useNotifications } from "@/hooks";
 import { ScheduleMeetingDialog } from "@/components/ClientFlow/ScheduleMeetingDialog";
 import { QuickLauncher } from "@/components/Shared/QuickLauncher";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 const ClientNavLink = ({
   to,
