@@ -73,6 +73,10 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
     return [...this.getAll(companyId, isSuperAdmin)];
   }
 
+  getProfilesByUserId(userId: string): ClientProfile[] {
+    return this.items.filter(p => p.userId === userId || p.id === userId);
+  }
+
   getClientProfile(id: string, companyId?: string, isSuperAdmin?: boolean): ClientProfile | undefined {
     return this.getById(id, companyId, isSuperAdmin);
   }
