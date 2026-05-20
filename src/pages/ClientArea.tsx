@@ -6,7 +6,7 @@ import { StatsCard } from "@/components/Shared/StatsCard";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { User as UserIcon, UserCheck, Plus, Download, Key } from "lucide-react";
-import { UserForm } from "@/components/Users/UserForm";
+import { UserForm } from "@/components/identity/UserForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
 import { userService } from "@/services/identity/UserService";
 import { useToast } from "@/hooks/Shared/use-toast";
