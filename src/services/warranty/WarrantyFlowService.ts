@@ -287,8 +287,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get requests filtered
    */
-  getFilteredRequests(filters: WarrantyFilters): WarrantyRequestFlow[] {
-    let requests = this.getAllRequests();
+  getFilteredRequests(filters: WarrantyFilters, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    let requests = this.getAllRequests(companyId, isSuperAdmin);
     
     if (filters.search) {
       const search = filters.search.toLowerCase();
