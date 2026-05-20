@@ -224,7 +224,12 @@ export default function ClientInspections() {
                         <p className="text-xs text-muted-foreground font-medium">Formalize o recebimento do laudo técnico com segurança digital.</p>
                       </div>
                     </div>
-                    <Button className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-11 shadow-lg shadow-primary/20">Assinar Agora</Button>
+                    <Button 
+                      className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-11 shadow-lg shadow-primary/20"
+                      onClick={handleOpenSignature}
+                    >
+                      Assinar Agora
+                    </Button>
                   </div>
                 )}
               </CardContent>
