@@ -1,17 +1,8 @@
-
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "react-router-dom";
 import { 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
   Building2, 
   Shield, 
-  ArrowRight,
   Users,
   Settings,
   BarChart3,
@@ -19,67 +10,15 @@ import {
   Star,
   Award
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/contexts/AuthContext";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Digite um email válido",
-  }),
-  password: z.string().min(6, {
-    message: "A senha deve ter pelo menos 6 caracteres",
-  }),
-});
+import { useAuthForm } from "@/hooks/identity/useAuthForm";
+import { LoginForm } from "@/components/Auth/LoginForm";
 
 export default function Login() {
-  const navigate = useNavigate();
-  const { login, isLoading } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [activeTab, setActiveTab] = useState("client");
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      if (rememberMe) {
-        localStorage.setItem("rememberMe", "true");
-        localStorage.setItem(
-          activeTab === "master" ? "rememberMaster" : (activeTab === "admin" ? "rememberAdmin" : "rememberClient"), 
-          "true"
-        );
-      } else {
-        localStorage.removeItem("rememberMe");
-        localStorage.removeItem("rememberAdmin");
-        localStorage.removeItem("rememberClient");
-        localStorage.removeItem("rememberMaster");
-      }
-
-      const role = activeTab === 'master' ? 'admin' : (activeTab as 'admin' | 'client');
-      await login(values.email, values.password, role);
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
-
+  const authForm = useAuthForm(activeTab);
 
   const adminFeatures = [
     {
@@ -122,7 +61,6 @@ export default function Login() {
     }
   ];
 
-
   const stats = [
     { value: "98%", label: "Satisfação", icon: Star },
     { value: "2.5k+", label: "Clientes Ativos", icon: Users },
@@ -131,7 +69,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background overflow-x-hidden">
-      {/* Header */}
       <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
         <div className="container-responsive py-4">
           <div className="flex items-center justify-center">
@@ -151,7 +88,6 @@ export default function Login() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            {/* Left side - Dynamic Information */}
             <div className="space-y-8">
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-medium">
@@ -177,10 +113,8 @@ export default function Login() {
                     : "Acesse seu ecossistema exclusivo e gerencie seu imóvel, vistorias e garantias com o padrão A2 de excelência."
                   }
                 </p>
-
               </div>
 
-              {/* Stats for client */}
               {activeTab === "client" && (
                 <div className="grid grid-cols-3 gap-6">
                   {stats.map((stat, index) => (
@@ -195,7 +129,6 @@ export default function Login() {
                 </div>
               )}
 
-              {/* Features/Benefits */}
               <div className="space-y-6">
                 {(activeTab === "admin" ? adminFeatures : clientBenefits).map((item, index) => (
                   <div key={index} className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/50 transition-colors">
@@ -211,7 +144,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Right side - Login form */}
             <div className="flex justify-center">
               <Card className="w-full max-w-md shadow-2xl border-0 bg-white/80 backdrop-blur-sm mx-auto">
                 <CardHeader className="space-y-4 pb-8">
@@ -228,7 +160,6 @@ export default function Login() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* Tabs for switching between admin and client */}
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-3">
                       <TabsTrigger value="client">Portal do Cliente</TabsTrigger>
@@ -236,284 +167,35 @@ export default function Login() {
                       <TabsTrigger value="master">SaaS Master</TabsTrigger>
                     </TabsList>
 
-                    
                     <TabsContent value="client" className="mt-6">
-                      <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base font-medium">Email</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                    <Input 
-                                      placeholder="seu@email.com" 
-                                      className="pl-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
-                                      {...field} 
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base font-medium">Senha</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                    <Input 
-                                      type={showPassword ? "text" : "password"} 
-                                      className="pl-11 pr-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
-                                      placeholder="••••••••"
-                                      {...field} 
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      className="absolute right-1 top-1 h-10 w-10 text-gray-400 hover:text-gray-600"
-                                      onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                                    </Button>
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <div className="flex items-center justify-between text-sm">
-                            <label className="flex items-center space-x-3 cursor-pointer">
-                              <input 
-                                type="checkbox" 
-                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                              />
-                              <span className="text-gray-700 font-medium">Lembrar de mim</span>
-                            </label>
-                            <Link to="/forgot-password" className="text-blue-600 hover:text-blue-800 font-medium hover:underline">
-                              Esqueci minha senha
-                            </Link>
-                          </div>
-
-                          <Button 
-                            type="submit" 
-                            className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200" 
-                            disabled={isLoading}
-                          >
-                            {isLoading ? (
-                              <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                                Entrando...
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2">
-                                Entrar no Portal
-                                <ArrowRight className="h-4 w-4" />
-                              </div>
-                            )}
-                          </Button>
-                        </form>
-                      </Form>
+                      <LoginForm 
+                        {...authForm} 
+                        onSubmit={authForm.handleLogin}
+                        forgotPasswordLink="/forgot-password"
+                        submitButtonText="Entrar no Portal"
+                      />
                     </TabsContent>
 
                     <TabsContent value="admin" className="mt-6">
-                      <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base font-medium">Email</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                    <Input 
-                                      placeholder="admin@exemplo.com" 
-                                      className="pl-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
-                                      {...field} 
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base font-medium">Senha</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                    <Input 
-                                      type={showPassword ? "text" : "password"} 
-                                      className="pl-11 pr-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
-                                      placeholder="••••••••"
-                                      {...field} 
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      className="absolute right-1 top-1 h-10 w-10 text-gray-400 hover:text-gray-600"
-                                      onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                                    </Button>
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <div className="flex items-center justify-between text-sm">
-                            <label className="flex items-center space-x-3 cursor-pointer">
-                              <input 
-                                type="checkbox" 
-                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                              />
-                              <span className="text-gray-700 font-medium">Lembrar de mim</span>
-                            </label>
-                            <Link to="/forgot-password" className="text-blue-600 hover:text-blue-800 font-medium hover:underline">
-                              Esqueci minha senha
-                            </Link>
-                          </div>
-
-                          <Button 
-                            type="submit" 
-                            className="w-full h-12 text-base font-semibold bg-gradient-to-r from-slate-600 to-blue-600 hover:from-slate-700 hover:to-blue-700 transition-all duration-200" 
-                            disabled={isLoading}
-                          >
-                            {isLoading ? (
-                              <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                                Entrando...
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2">
-                                Acessar Painel
-                                <ArrowRight className="h-4 w-4" />
-                              </div>
-                            )}
-                          </Button>
-                        </form>
-                      </Form>
+                      <LoginForm 
+                        {...authForm} 
+                        onSubmit={authForm.handleLogin}
+                        forgotPasswordLink="/forgot-password"
+                        submitButtonText="Entrar como Admin"
+                        emailPlaceholder="admin@exemplo.com"
+                      />
                     </TabsContent>
+
                     <TabsContent value="master" className="mt-6">
-                      <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base font-medium">Email Master</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Shield className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                    <Input 
-                                      placeholder="master@exemplo.com" 
-                                      className="pl-11 h-12 text-base border-gray-200 focus:border-brand focus:ring-brand" 
-                                      {...field} 
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base font-medium">Senha Master</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                    <Input 
-                                      type={showPassword ? "text" : "password"} 
-                                      className="pl-11 pr-11 h-12 text-base border-gray-200 focus:border-brand focus:ring-brand" 
-                                      placeholder="••••••••"
-                                      {...field} 
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon"
-                                      className="absolute right-1 top-1 h-10 w-10 text-gray-400 hover:text-gray-600"
-                                      onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                                    </Button>
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <Button 
-                            type="submit" 
-                            className="w-full h-12 text-base font-semibold bg-gradient-to-r from-brand to-indigo-700 hover:from-brand/90 hover:to-indigo-800 transition-all duration-200" 
-                            disabled={isLoading}
-                          >
-                            {isLoading ? "Autenticando..." : "Entrar no SaaS Master"}
-                          </Button>
-                        </form>
-                      </Form>
+                      <LoginForm 
+                        {...authForm} 
+                        onSubmit={authForm.handleLogin}
+                        forgotPasswordLink="/forgot-password"
+                        submitButtonText="Acesso Master"
+                        emailPlaceholder="master@a2incorporadora.com"
+                      />
                     </TabsContent>
                   </Tabs>
-
-
-                  <div className="space-y-4">
-                    <Separator className="bg-gray-200" />
-                    
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-200">
-                      <div className="text-center">
-                        <p className="text-amber-800 font-medium text-sm mb-2">
-                          🔐 Credenciais para demonstração:
-                        </p>
-                        <div className="font-mono text-xs bg-white/80 p-3 rounded-lg border border-amber-200">
-                          <div className="text-amber-700">
-                            {activeTab === "master" ? (
-                              <>
-                                <strong>Super Admin:</strong> admin@exemplo.com<br />
-                                <strong>Senha:</strong> 123456
-                              </>
-                            ) : activeTab === "admin" ? (
-                              <>
-                                <strong>Admin A2:</strong> ceo@a2.com<br />
-                                <strong>Senha:</strong> 123456
-                              </>
-                            ) : (
-                              <>
-                                <strong>Email:</strong> cliente@exemplo.com<br />
-                                <strong>Senha:</strong> 123456
-                              </>
-                            )}
-
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </div>
