@@ -108,38 +108,42 @@ const ClientArea = () => {
             items={filteredClients}
             viewMode="list"
             isLoading={isLoading}
-            renderList={(client) => (
-              <div 
-                key={client.id} 
-                onClick={() => setSelectedClientId(client.id)}
-                className={cn(
-                  "flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all border border-transparent mb-2",
-                  selectedClientId === client.id 
-                    ? "bg-primary/10 border-primary/20 shadow-sem-sm" 
-                    : "hover:bg-muted/50 border-border/5"
-                )}
-              >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-                    selectedClientId === client.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                  )}>
-                    <UserIcon size={18} />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="font-bold text-sm truncate">{client.name}</h4>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <Badge variant="outline" className="text-[9px] h-4 uppercase tracking-tighter px-1">
-                        {STAGE_CONFIG[client.currentStage].label}
-                      </Badge>
-                      <span className="text-[10px] text-muted-foreground truncate">{client.unitNumber} • {client.propertyName}</span>
+            renderList={(items) => (
+              <div className="space-y-2">
+                {items.map((client) => (
+                  <div 
+                    key={client.id} 
+                    onClick={() => setSelectedClientId(client.id)}
+                    className={cn(
+                      "flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all border border-transparent mb-2",
+                      selectedClientId === client.id 
+                        ? "bg-primary/10 border-primary/20 shadow-sem-sm" 
+                        : "hover:bg-muted/50 border-border/5"
+                    )}
+                  >
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className={cn(
+                        "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
+                        selectedClientId === client.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                      )}>
+                        <UserIcon size={18} />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-sm truncate">{client.name}</h4>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <Badge variant="outline" className="text-[9px] h-4 uppercase tracking-tighter px-1">
+                            {STAGE_CONFIG[client.currentStage].label}
+                          </Badge>
+                          <span className="text-[10px] text-muted-foreground truncate">{client.unitNumber} • {client.propertyName}</span>
+                        </div>
+                      </div>
                     </div>
+                    <ChevronRight size={16} className={cn(
+                      "text-muted-foreground/30 transition-transform",
+                      selectedClientId === client.id && "translate-x-1 text-primary"
+                    )} />
                   </div>
-                </div>
-                <ChevronRight size={16} className={cn(
-                  "text-muted-foreground/30 transition-transform",
-                  selectedClientId === client.id && "translate-x-1 text-primary"
-                )} />
+                ))}
               </div>
             )}
           />
