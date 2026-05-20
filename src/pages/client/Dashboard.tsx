@@ -37,10 +37,8 @@ const Dashboard = () => {
     contractDate: new Date(2023, 5, 10),
   }), [user, profile]);
 
-  const unreadCount = 3;
-
   const timeline: TimelineStep[] = [
-    { id: '1', title: 'Compra do Imóvel', description: 'Contrato assinado e primeira parcela paga.', date: '10/06/2023', status: 'completed' },
+    { id: '1', title: 'Compra do Imóvel', description: 'Contrato assinado.', date: '10/06/2023', status: 'completed' },
     { id: '2', title: 'Obras em Andamento', description: 'Acompanhe a evolução estrutural do seu empreendimento.', date: 'Em curso', status: 'completed' },
     { id: '3', title: 'Vistoria Técnica', description: 'Verificação detalhada da sua unidade finalizada.', status: stage === 'inspection_enabled' ? 'current' : (stage === 'warranty_enabled' ? 'completed' : 'pending') },
     { id: '4', title: 'Entrega das Chaves', description: 'O momento mais esperado! Recebimento das chaves.', status: stage === 'warranty_enabled' ? 'completed' : 'pending' },
