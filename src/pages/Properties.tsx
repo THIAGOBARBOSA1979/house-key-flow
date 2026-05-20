@@ -28,10 +28,8 @@ const Properties = () => {
     filteredProperties,
     searchTerm,
     setSearchTerm,
-    statusFilter,
-    setStatusFilter,
-    managerFilter,
-    setManagerFilter,
+    filters,
+    setFilters,
     selectedIds,
     setSelectedIds,
     metrics,
@@ -43,6 +41,7 @@ const Properties = () => {
     toggleSelect,
     refreshList
   } = useProperties();
+
 
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isFormOpen, setIsFormOpen] = useState(false);
