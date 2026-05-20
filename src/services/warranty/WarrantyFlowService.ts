@@ -911,8 +911,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Calculate metrics
    */
-  calculateMetrics(): WarrantyMetrics {
-    const allRequests = this.getAllRequests();
+  calculateMetrics(companyId?: string, isSuperAdmin?: boolean): WarrantyMetrics {
+    const allRequests = this.getAllRequests(companyId, isSuperAdmin);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
