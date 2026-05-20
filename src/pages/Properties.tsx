@@ -90,10 +90,11 @@ const Properties = () => {
       <PropertyFilters 
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
-        managerFilter={managerFilter}
-        onManagerChange={setManagerFilter}
+        statusFilter={filters.status}
+        onStatusChange={(val) => setFilters(prev => ({ ...prev, status: val }))}
+        managerFilter={filters.manager}
+        onManagerChange={(val) => setFilters(prev => ({ ...prev, manager: val }))}
+
         managers={managers}
         onClearFilters={clearFilters}
       >
