@@ -1,5 +1,6 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
+import { Database } from "@/integrations/supabase/types";
 
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketCategory = 'financial' | 'technical' | 'administrative' | 'warranty' | 'other';
@@ -16,6 +17,7 @@ export interface TicketMessage {
 
 export interface SupportTicket {
   id: string;
+  company_id?: string;
   clientId: string;
   subject: string;
   status: 'pending' | 'in_progress' | 'closed';
@@ -29,6 +31,7 @@ export interface SupportTicket {
 const INITIAL_TICKETS: SupportTicket[] = [
   {
     id: crypto.randomUUID(),
+    company_id: 'comp-1',
     clientId: 'client-1',
     subject: 'Dúvida sobre boleto',
     status: 'closed',
@@ -53,27 +56,10 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   constructor() {
     super({
       storageKey: "a2_support_tickets",
-      supabaseTable: "support_tickets" as any,
+      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table for now if it doesn't exist
       auditEntityType: "system",
-      shouldSyncWithSupabase: true
+      shouldSyncWithSupabase: false
     }, INITIAL_TICKETS);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('support_tickets', async () => {
-      await this.sync();
-    });
-  }
-
-  protected loadFromStorage() {
-    super.loadFromStorage();
-    this.items = this.items.map(t => ({
-      ...t,
-      createdAt: new Date(t.createdAt),
-      updatedAt: new Date(t.updatedAt),
-      messages: t.messages.map(m => ({ ...m, createdAt: new Date(m.createdAt) }))
-    }));
   }
 
   getAllTickets() { return [...this.items]; }
@@ -81,17 +67,23 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   getTicketsByClient(clientId: string) { return this.items.filter(t => t.clientId === clientId); }
 
   createTicket(clientId: string, clientName: string, data: any): SupportTicket {
-    const newTicket = super.create({
+    return super.create({
       clientId,
       subject: data.subject,
       status: 'pending',
       priority: data.priority || 'medium',
       category: data.category || 'other',
-      messages: [{ id: crypto.randomUUID(), senderId: clientId, senderName: clientName, role: 'client', text: data.message, createdAt: new Date() }],
+      messages: [{ 
+        id: crypto.randomUUID(), 
+        senderId: clientId, 
+        senderName: clientName, 
+        role: 'client', 
+        text: data.message, 
+        createdAt: new Date() 
+      }],
       createdAt: new Date(),
       updatedAt: new Date()
     } as any);
-    return newTicket;
   }
 
   updateTicketStatus(id: string, status: SupportTicket['status']) {
@@ -101,7 +93,14 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   addMessageToTicket(id: string, senderId: string, senderName: string, role: 'admin' | 'client', text: string) {
     const ticket = this.getById(id);
     if (!ticket) return null;
-    const messages = [...ticket.messages, { id: crypto.randomUUID(), senderId, senderName, role, text, createdAt: new Date() }];
+    const messages = [...ticket.messages, { 
+      id: crypto.randomUUID(), 
+      senderId, 
+      senderName, 
+      role, 
+      text, 
+      createdAt: new Date() 
+    }];
     return this.update(id, { messages, updatedAt: new Date() });
   }
 }
