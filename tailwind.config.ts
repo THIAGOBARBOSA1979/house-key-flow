@@ -148,13 +148,20 @@ export default {
 				'dialog-lg': 'var(--dialog-lg)',
 				'dialog-xl': 'var(--dialog-xl)',
 				'dialog-full': 'var(--dialog-full)',
+				'content-padding': 'var(--content-padding)',
 			},
 			maxWidth: {
+				'container': 'var(--container-max-width)',
 				'dialog-sm': 'var(--dialog-sm)',
 				'dialog-md': 'var(--dialog-md)',
 				'dialog-lg': 'var(--dialog-lg)',
 				'dialog-xl': 'var(--dialog-xl)',
 				'dialog-full': 'var(--dialog-full)',
+			},
+			height: {
+				'dialog-sm': 'var(--dialog-sm)',
+				'dialog-md': 'var(--dialog-md)',
+				'dialog-lg': 'var(--dialog-lg)',
 			},
 			minHeight: {
 				'input-base': 'var(--input-height-base)',
