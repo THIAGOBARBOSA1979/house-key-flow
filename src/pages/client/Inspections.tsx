@@ -195,27 +195,29 @@ export default function ClientInspections() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="px-8 pb-8 pt-6">
-                <Separator className="mb-8 opacity-50" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
-                  <div className="space-y-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Responsáveis</h4>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center font-black text-xs text-muted-foreground">TP</div>
+              <CardContent className="px-8 sm:px-10 pb-10 pt-6">
+                <Separator className="mb-10 opacity-40" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                  <div className="space-y-6">
+                    <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 border-l-4 border-primary pl-3">Equipe Técnica</h4>
+                    <div className="flex items-center gap-4 p-4 bg-muted/20 rounded-2xl border border-border/5 group/tech">
+                      <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center font-black text-lg text-primary shadow-sm border border-border/50 group-hover/tech:scale-105 transition-transform duration-500">
+                        {inspection.technician?.split(' ').map((n: string) => n[0]).join('') || "A2"}
+                      </div>
                       <div>
-                        <p className="text-sm font-black">Técnico Responsável</p>
-                        <p className="text-[10px] font-bold text-muted-foreground uppercase">{inspection.technician || "Engenheiro A2"}</p>
+                        <p className="text-base font-black text-foreground/90">{inspection.technician || "Engenheiro A2"}</p>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">Responsável pela Homologação</p>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Ações Estratégicas</h4>
-                    <div className="flex flex-wrap gap-2">
-                      <Button variant="outline" size="sm" className="rounded-xl font-bold h-9 gap-2" onClick={handleViewPdf}>
-                        <FileText size={14} className="text-primary" /> Ver Laudo Técnico
+                  <div className="space-y-6">
+                    <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 border-l-4 border-emerald-500 pl-3">Ações de Conformidade</h4>
+                    <div className="flex flex-wrap gap-3">
+                      <Button variant="outline" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 border-2 border-primary/10 hover:border-primary hover:bg-primary/5 transition-all shadow-sm" onClick={handleViewPdf}>
+                        <FileText size={16} className="text-primary mr-2" strokeWidth={2.5} /> Laudo Técnico PDF
                       </Button>
-                      <Button variant="ghost" size="sm" className="rounded-xl font-bold h-9 gap-2 text-primary hover:bg-primary/5">
-                        <MessageSquare size={14} /> Falar com Suporte
+                      <Button variant="ghost" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20">
+                        <MessageSquare size={16} className="mr-2" strokeWidth={2.5} /> Consultar Suporte
                       </Button>
                     </div>
                   </div>
