@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { technicianService, type Technician, exportService } from "@/services";
-import { useToast } from "@/hooks";
+import { useToast } from "../Shared/use-toast";
 
 export const useTechnicians = () => {
   const { toast } = useToast();

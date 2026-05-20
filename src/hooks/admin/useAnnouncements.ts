@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { constructionService, type ConstructionUpdate, propertyService } from "@/services";
-import { useToast } from "@/hooks";
+import { useToast } from "../Shared/use-toast";
 
 export const useAnnouncements = () => {
   const { toast } = useToast();
