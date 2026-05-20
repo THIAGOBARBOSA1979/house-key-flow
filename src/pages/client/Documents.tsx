@@ -152,19 +152,38 @@ export default function ClientDocuments() {
 
         <TabsContent value="all" className="space-y-layout-gap pt-2">
           <ResponsiveGrid columns={4} gap="layout">
-            <StatsCard label="Total" value={stats.total} icon={FileText} variant="brand" />
-            <StatsCard label="Disponíveis" value={stats.disponivel} icon={CheckCircle} variant="complete" />
-            <StatsCard label="Processando" value={stats.processando} icon={Clock} variant="pending" />
-            <StatsCard label="Favoritos" value={stats.favorites} icon={Star} variant="brand" />
+            <StatsCard label="Total" value={stats.total} icon={FileText} variant="brand" className="rounded-[2rem] border-none shadow-sem-sm" />
+            <StatsCard label="Disponíveis" value={stats.disponivel} icon={CheckCircle} variant="complete" className="rounded-[2rem] border-none shadow-sem-sm" />
+            <StatsCard label="Processando" value={stats.processando} icon={Clock} variant="pending" className="rounded-[2rem] border-none shadow-sem-sm" />
+            <StatsCard label="Favoritos" value={stats.favorites} icon={Star} variant="brand" className="rounded-[2rem] border-none shadow-sem-sm" />
           </ResponsiveGrid>
 
-          <Card>
-            <CardContent className="p-4">
+          <Card className="rounded-3xl border-none shadow-md overflow-hidden">
+            <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-4">
-                <Input placeholder="Buscar..." className="flex-1" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <div className="relative flex-1 group">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <Input 
+                    placeholder="Buscar por título ou descrição..." 
+                    className="pl-10 h-10 rounded-xl border-2 focus-visible:ring-primary/20 transition-all" 
+                    value={search} 
+                    onChange={(e) => setSearch(e.target.value)} 
+                  />
+                </div>
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[180px]"><SelectValue placeholder="Categoria" /></SelectTrigger>
-                  <SelectContent><SelectItem value="all">Todas</SelectItem></SelectContent>
+                  <SelectTrigger className="w-full md:w-[220px] h-10 rounded-xl border-2">
+                    <div className="flex items-center gap-2">
+                      <Filter size={14} className="text-muted-foreground" />
+                      <SelectValue placeholder="Categoria Estratégica" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-xl">
+                    <SelectItem value="all">Todas as Categorias</SelectItem>
+                    <SelectItem value="contrato">Contratos & Aditivos</SelectItem>
+                    <SelectItem value="planta">Plantas & Projetos</SelectItem>
+                    <SelectItem value="manual">Manuais Técnicos</SelectItem>
+                    <SelectItem value="financeiro">Comprovantes Financeiros</SelectItem>
+                  </SelectContent>
                 </Select>
               </div>
             </CardContent>
