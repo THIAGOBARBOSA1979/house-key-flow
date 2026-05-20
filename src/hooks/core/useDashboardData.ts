@@ -7,7 +7,6 @@ import {
   warrantyFlowService, 
   auditLogService, 
   supportService, 
-  financialService, 
   systemHealthService 
 } from "@/services";
 import { SystemHealthMetrics } from "@/services";
