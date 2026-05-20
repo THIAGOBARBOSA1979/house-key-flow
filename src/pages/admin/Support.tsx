@@ -112,9 +112,9 @@ const AdminSupport = () => {
         </Button>
       </PageHeader>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap h-[calc(100vh-var(--space-20)-var(--space-10)*4)] min-h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap lg:h-[calc(100vh-var(--space-20)-var(--space-10)*4)] min-h-[600px] h-auto">
         {/* Ticket List Section */}
-        <Card className="lg:col-span-4 overflow-hidden border-none shadow-sem-lg rounded-[2rem] flex flex-col">
+        <Card className="lg:col-span-4 overflow-hidden border-none shadow-sem-lg rounded-[2rem] flex flex-col h-[600px] lg:h-full">
           <CardHeader className="p-6 border-b">
             <div className="space-y-4">
               <div className="relative">
@@ -183,7 +183,7 @@ const AdminSupport = () => {
         </Card>
 
         {/* Conversation Section */}
-        <Card className="lg:col-span-8 overflow-hidden border-none shadow-sem-lg rounded-[2rem] flex flex-col bg-card/50 backdrop-blur-sm">
+        <Card className="lg:col-span-8 overflow-hidden border-none shadow-sem-lg rounded-[2rem] flex flex-col bg-card/50 backdrop-blur-sm h-[600px] lg:h-full">
           {selectedTicket ? (
             <>
               <CardHeader className="p-6 border-b bg-card">
