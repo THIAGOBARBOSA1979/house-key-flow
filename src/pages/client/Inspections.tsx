@@ -161,32 +161,37 @@ export default function ClientInspections() {
 
         <div className="lg:col-span-8 space-y-layout-gap">
           {inspection ? (
-            <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden group bg-card/50 backdrop-blur-sm">
-              <div className="h-24 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent w-full" />
-              <CardHeader className="relative -mt-12 px-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="p-4 bg-background rounded-2xl shadow-xl border border-border/50 text-primary group-hover:scale-110 transition-transform">
-                      <ClipboardCheck className="h-8 w-8" />
+            <Card className="rounded-[3rem] border-none shadow-sem-lg overflow-hidden group bg-white/70 backdrop-blur-md">
+              <div className="h-32 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent w-full relative">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
+              </div>
+              <CardHeader className="relative -mt-16 px-8 sm:px-10 pb-4">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+                  <div className="flex items-center gap-6">
+                    <div className="p-5 bg-white rounded-[2rem] shadow-sem-lg border border-border/50 text-primary group-hover:scale-110 transition-transform duration-500">
+                      <ClipboardCheck className="h-10 w-10" strokeWidth={2.5} />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <StatusBadge 
                           status={inspection.status === 'complete' ? 'complete' : (inspection.status === 'confirmed' ? 'progress' : 'pending')} 
-                          label={inspection.status === 'complete' ? 'Concluída' : (inspection.status === 'confirmed' ? 'Confirmada' : 'Aguardando')}
+                          label={inspection.status === 'complete' ? 'Protocolo Concluído' : (inspection.status === 'confirmed' ? 'Visita Confirmada' : 'Aguardando')}
                         />
-                        <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest bg-muted border-none">{inspection.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria de Unidade'}</Badge>
+                        <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border-primary/10 h-6 px-3">{inspection.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica ABNT'}</Badge>
                       </div>
-                      <CardTitle className="text-2xl font-black tracking-tight">{inspection.title} - {inspection.unit}</CardTitle>
-                      <CardDescription className="font-bold flex items-center gap-1.5 mt-1">
-                        <MapPin size={14} className="text-primary" /> {inspection.property}
+                      <CardTitle className="text-3xl font-black tracking-tight leading-tight">{inspection.title} <span className="text-primary">•</span> {inspection.unit}</CardTitle>
+                      <CardDescription className="font-bold flex items-center gap-2 mt-2 text-muted-foreground/80">
+                        <MapPin size={16} className="text-primary" /> {inspection.property}
                       </CardDescription>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Data Agendada</p>
-                    <p className="text-xl font-black text-foreground">{safeFormat(inspection.scheduledDate, "dd/MM/yyyy")}</p>
-                    <p className="text-sm font-bold text-primary">{inspection.time}</p>
+                  <div className="bg-primary text-white p-6 rounded-[2rem] shadow-xl shadow-primary/20 min-w-[160px] text-center transform group-hover:translate-y-[-5px] transition-transform duration-500">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">Agenda Técnica</p>
+                    <p className="text-2xl font-black tracking-tighter">{safeFormat(inspection.scheduledDate, "dd/MM/yyyy")}</p>
+                    <div className="flex items-center justify-center gap-1.5 mt-1 bg-white/20 rounded-full py-1">
+                       <Clock size={12} strokeWidth={3} />
+                       <p className="text-xs font-black">{inspection.time}</p>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
