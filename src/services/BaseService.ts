@@ -1,4 +1,4 @@
-import { auditLogService, AuditAction, AuditEntityType } from "@/services/core/AuditLogService";
+import { type AuditAction, type AuditEntityType } from "@/services/core/AuditLogService";
 
 type Listener<T> = (items: T[]) => void;
 
@@ -81,6 +81,8 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   public async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
     if (this.options.auditEntityType) {
+      // Use dynamic import or a deferred reference to avoid circular dependency
+      const { auditLogService } = await import("@/services/core/AuditLogService");
       await auditLogService.logAction({
         action,
         entityType: this.options.auditEntityType,
