@@ -137,11 +137,34 @@ class AuditLogService extends BaseService<any> {
   }
 
   getFilteredLogs(filters: any): AuditLogEntry[] {
-    return this.items.filter(log => {
-      if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
-      if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
-      return true;
-    });
+    return this.items
+      .filter(log => {
+        if (!log) return false;
+        
+        if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
+        if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
+        
+        if (filters.searchTerm) {
+          const s = filters.searchTerm.toLowerCase();
+          const matches = 
+            log.details?.toLowerCase().includes(s) ||
+            log.performedByName?.toLowerCase().includes(s) ||
+            log.entityId?.toLowerCase().includes(s);
+          if (!matches) return false;
+        }
+
+        if (filters.dateFrom && new Date(log.timestamp) < new Date(filters.dateFrom)) return false;
+        if (filters.dateTo) {
+          const end = new Date(filters.dateTo);
+          end.setHours(23, 59, 59, 999);
+          if (new Date(log.timestamp) > end) return false;
+        }
+
+        if (filters.role && filters.role !== 'all' && log.performedByRole !== filters.role) return false;
+
+        return true;
+      })
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }
 
   subscribe(callback: (logs: AuditLogEntry[]) => void) {
