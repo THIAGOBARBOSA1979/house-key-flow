@@ -1,8 +1,8 @@
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, DollarSign } from "lucide-react";
-import { financialService } from "@/services";
+import { financialService, Installment } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMemo } from "react";
 import { useToast } from "@/hooks";
 
 import { FinancialOverview } from "@/components/Client/Financial/FinancialOverview";
