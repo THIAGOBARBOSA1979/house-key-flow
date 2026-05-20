@@ -183,6 +183,7 @@ export const InspectionAnalytics = ({ statusStats, technicianStats, conformitySc
           </ResponsiveContainer>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
