@@ -32,5 +32,3 @@ export * from './core/SyncService';
 export * from './core/SystemHealthService';
 export * from './core/EventAutomationService';
 
-// External Domain
-export * from './external/GoogleDriveService';
