@@ -122,24 +122,24 @@ const Support = () => {
       </div>
 
       {/* Hero Section / Knowledge Base Search */}
-      <Card className="bg-gradient-to-br from-primary via-primary to-indigo-700 text-primary-foreground overflow-hidden relative border-none shadow-xl rounded-[2.5rem]">
-        <div className="absolute right-[-5%] top-[-10%] opacity-10 pointer-events-none">
-          <BookOpen size={250} />
+      <Card className="bg-gradient-to-br from-primary via-primary/95 to-indigo-800 text-primary-foreground overflow-hidden relative border-none shadow-2xl rounded-[3rem]">
+        <div className="absolute right-[-2%] top-[-10%] opacity-10 pointer-events-none rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+          <BookOpen size={350} />
         </div>
-        <CardContent className="p-layout-gap md:p-16 relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
-          <Badge className="bg-white/20 hover:bg-white/30 text-white border-none font-black uppercase tracking-[0.2em] text-[9px] px-4 py-1.5 rounded-full mb-6 backdrop-blur-md">Base de Conhecimento A2</Badge>
-          <h2 className="text-3xl md:text-4xl font-black mb-8 tracking-tighter leading-tight">Olá! Como podemos ajudar <br className="hidden md:block" /> você hoje?</h2>
+        <CardContent className="p-10 md:p-20 relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
+          <Badge className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-black uppercase tracking-[0.25em] text-[10px] px-5 py-2 rounded-full mb-8 backdrop-blur-xl shadow-lg">Base de Conhecimento Estratégica</Badge>
+          <h2 className="text-3xl md:text-5xl font-black mb-10 tracking-tighter leading-[1.1] scale-in-center">Como podemos acelerar <br className="hidden md:block" /> sua solução hoje?</h2>
           <div className="w-full relative group">
             <Input 
-              className="h-16 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-2xl pl-14 pr-4 text-lg focus:bg-white focus:text-foreground transition-all duration-500 shadow-2xl focus:ring-4 focus:ring-white/10"
-              placeholder="Pesquisar em nossa base estratégica..."
+              className="h-16 md:h-20 bg-white/15 border-white/10 text-white placeholder:text-white/40 rounded-3xl pl-16 pr-6 text-xl focus:bg-white focus:text-foreground transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.2)] focus:ring-8 focus:ring-white/5 border-2 focus:border-white"
+              placeholder="Digite sua dúvida técnica ou financeira..."
             />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-primary h-6 w-6 transition-colors" />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-primary h-7 w-7 transition-all duration-300" strokeWidth={3} />
           </div>
-          <div className="flex flex-wrap justify-center gap-2 mt-8">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/40 mr-2 self-center">Buscas comuns:</span>
-            {['Vistorias', 'Garantias', 'Boletos', 'Prazos', 'Contratos'].map(tag => (
-              <span key={tag} className="text-[9px] font-black uppercase tracking-widest px-4 py-2 bg-white/5 hover:bg-white/15 rounded-full cursor-pointer transition-all border border-white/10 backdrop-blur-sm active:scale-95">
+          <div className="flex flex-wrap justify-center gap-3 mt-10">
+            <span className="text-[11px] font-black uppercase tracking-widest text-white/50 mr-2 self-center">Filtros inteligentes:</span>
+            {['Vistorias ABNT', 'Garantias Técnicas', 'Segunda Via', 'Prazos de Obra', 'Contratos'].map(tag => (
+              <span key={tag} className="text-[10px] font-black uppercase tracking-widest px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-2xl cursor-pointer transition-all border border-white/5 backdrop-blur-md active:scale-95 hover:border-white/20 shadow-sm">
                 {tag}
               </span>
             ))}
