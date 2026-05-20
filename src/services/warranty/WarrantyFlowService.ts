@@ -187,13 +187,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     }
   }
 
-  getAllRequests(): WarrantyRequestFlow[] {
-    return this.getAll();
+  getAllRequests(companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAll(companyId, isSuperAdmin);
   }
 
-
-  getRequest(requestId: string): WarrantyRequestFlow | undefined {
-    return this.getById(requestId);
+  getRequest(requestId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow | undefined {
+    return this.getById(requestId, companyId, isSuperAdmin);
   }
 
 
@@ -274,22 +273,22 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get requests for a specific client
    */
-  getClientRequests(clientId: string): WarrantyRequestFlow[] {
-    return this.getAllRequests().filter(r => r.clientId === clientId);
+  getClientRequests(clientId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.clientId === clientId);
   }
 
   /**
    * Get requests by stage
    */
-  getRequestsByStage(stage: WarrantyStage): WarrantyRequestFlow[] {
-    return this.getAllRequests().filter(r => r.currentStage === stage);
+  getRequestsByStage(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.currentStage === stage);
   }
 
   /**
    * Get requests filtered
    */
-  getFilteredRequests(filters: WarrantyFilters): WarrantyRequestFlow[] {
-    let requests = this.getAllRequests();
+  getFilteredRequests(filters: WarrantyFilters, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    let requests = this.getAllRequests(companyId, isSuperAdmin);
     
     if (filters.search) {
       const search = filters.search.toLowerCase();
@@ -348,7 +347,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     userName?: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     this.internalLog('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     
     if (!request) {
       this.internalLog('error', `Request ${requestId} not found for status change`);
@@ -453,7 +452,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     changedBy: string,
     performedByRole: 'admin' | 'client' = 'admin'
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -498,7 +497,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     data: { estimatedCost?: number; actualCost?: number; materials?: WarrantyRequestFlow["materials"] },
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -531,7 +530,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     technicianName: string,
     assignedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -567,7 +566,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     technicianName: string,
     scheduledBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const statusResult = this.changeStatus(
@@ -712,7 +711,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     problemData: Partial<WarrantyProblemDetail>,
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newProblem: WarrantyProblemDetail = {
@@ -757,7 +756,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     problemId: string,
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
     const problemIndex = request.problems.findIndex(p => p.id === problemId);
@@ -804,7 +803,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     material: { name: string; quantity: number; unit: string; cost?: number },
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const materials = request.materials || [];
@@ -841,7 +840,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     data: Partial<WarrantyProblemDetail>,
     changedBy: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
     const problems = request.problems.map(p => 
@@ -864,7 +863,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
    * Get timeline for a request (for client view)
    */
   getRequestTimeline(requestId: string): WarrantyStatusHistory[] {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return [];
     
     return [...request.history].sort((a, b) => 
@@ -875,7 +874,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get Kanban card data for all active requests
    */
-  getKanbanData(): Map<WarrantyStage, KanbanCardData[]> {
+  getKanbanData(companyId?: string, isSuperAdmin?: boolean): Map<WarrantyStage, KanbanCardData[]> {
     const kanbanData = new Map<WarrantyStage, KanbanCardData[]>();
     
     // Initialize all stages
@@ -885,7 +884,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     kanbanData.set("rejected", []);
     
     // Populate with requests
-    this.getAllRequests().forEach(request => {
+    this.getAllRequests(companyId, isSuperAdmin).forEach(request => {
       const slaInfo = warrantySLAService.calculateSLADeadlineInfo(request);
       const cardData: KanbanCardData = {
         id: request.id,
@@ -912,8 +911,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Calculate metrics
    */
-  calculateMetrics(): WarrantyMetrics {
-    const allRequests = this.getAllRequests();
+  calculateMetrics(companyId?: string, isSuperAdmin?: boolean): WarrantyMetrics {
+    const allRequests = this.getAllRequests(companyId, isSuperAdmin);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -1021,7 +1020,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     authorName: string,
     text: string
   ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId);
+    const request = this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newUpdate = {

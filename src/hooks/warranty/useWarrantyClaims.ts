@@ -1,15 +1,19 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { warrantyFlowService, warrantyValidationService, eventAutomationService } from "@/services";
 import { WarrantyItem } from "@/types/warranty";
 
 export const useWarrantyClaims = (clientId: string, userName?: string) => {
+  const { user } = useAuth();
   const { toast } = useToast();
+  const companyId = user?.company_id;
+  const isSuperAdmin = !!user?.is_super_admin;
   
   const allClaims = useMemo(() => 
-    warrantyFlowService.getClientRequests(clientId).sort((a, b) => 
+    warrantyFlowService.getClientRequests(clientId, companyId, isSuperAdmin).sort((a, b) => 
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    ), [clientId]);
+    ), [clientId, companyId, isSuperAdmin]);
     
   const [claims, setClaims] = useState<any[]>(allClaims);
 
@@ -72,7 +76,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     return true;
   }, [clientId, toast]);
 
-  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(), []);
+  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(companyId, isSuperAdmin), [companyId, isSuperAdmin]);
 
   return {
     claims,

@@ -1,4 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { warrantyFlowService, exportService } from "@/services";
 import { 
   WarrantyRequestFlow, 
@@ -9,7 +10,10 @@ import {
 import { useToast, useService, useDataList } from "@/hooks";
 
 export const useWarranty = () => {
+  const { user } = useAuth();
   const { toast } = useToast();
+  const companyId = user?.company_id;
+  const isSuperAdmin = !!user?.is_super_admin;
   
   const { items: requests, isLoading: isServiceLoading, refresh: refreshList } = useService<WarrantyRequestFlow>(warrantyFlowService);
 
@@ -113,7 +117,7 @@ export const useWarranty = () => {
     toast({ title: "Exportação concluída", description: "O arquivo CSV foi baixado com sucesso." });
   }, [filteredRequests, toast]);
 
-  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(), [requests]);
+  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(companyId, isSuperAdmin), [requests, companyId, isSuperAdmin]);
 
   return {
     requests,
