@@ -42,9 +42,15 @@ export const PropertyInfoCard = ({
             </div>
           </div>
         </div>
-        <Badge variant="default" className="bg-primary text-primary-foreground border-none font-black uppercase tracking-tighter text-[11px] px-4 py-2 shadow-lg shadow-primary/20 animate-pulse rounded-full">
+        <Badge variant="default" className="bg-primary text-primary-foreground border-none font-black uppercase tracking-tighter text-[11px] px-4 py-2 shadow-lg shadow-primary/20 animate-pulse rounded-full hidden sm:flex">
           {daysToDelivery > 0 ? `${daysToDelivery} dias para entrega` : "Imóvel Entregue"}
         </Badge>
+        {daysToDelivery > 0 && (
+          <div className="w-full sm:hidden mt-4 p-3 bg-primary/10 rounded-xl border border-primary/20 flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary">Dias para entrega</span>
+            <span className="text-sm font-black text-primary">{daysToDelivery}</span>
+          </div>
+        )}
       </div>
     </CardHeader>
     <CardContent className="pt-2">
