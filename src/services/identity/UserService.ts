@@ -21,12 +21,12 @@ class UserService extends SupabaseBaseService<User> {
   }
 
   protected mapToSupabase(user: Partial<User>): Partial<Tables<'profiles'>> {
-    return {
-      full_name: user.name,
-      role: user.role,
-      company_id: user.company_id,
-      avatar_url: user.avatar
-    };
+    const mapped: any = {};
+    if (user.name) mapped.full_name = user.name;
+    if (user.role) mapped.role = user.role;
+    if (user.company_id) mapped.company_id = user.company_id;
+    if (user.avatar) mapped.avatar_url = user.avatar;
+    return mapped;
   }
 
   protected mapFromSupabase(raw: Tables<'profiles'> & { email?: string }): User {
@@ -38,8 +38,7 @@ class UserService extends SupabaseBaseService<User> {
       status: "active", // Default status as 'profiles' table doesn't have it yet
       company_id: raw.company_id || undefined,
       avatar: raw.avatar_url || undefined,
-      created_at: raw.created_at,
-      updated_at: raw.updated_at
+      createdAt: raw.created_at ? new Date(raw.created_at) : undefined
     };
   }
 
