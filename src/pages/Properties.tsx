@@ -17,7 +17,7 @@ import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
 import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
 import { PropertyTimeline } from "@/components/Properties/PropertyTimeline";
 import { PropertyBulkActions } from "@/components/Properties/PropertyBulkActions";
-import { DataViewMode } from "@/components/Shared/DataView";
+import { DataViewMode } from "@/types";
 import { EntityActionMenu } from "@/components/Shared/EntityActionMenu";
 import { cn } from "@/lib/utils";
 

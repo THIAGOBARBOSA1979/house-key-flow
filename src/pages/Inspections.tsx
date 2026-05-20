@@ -20,7 +20,7 @@ import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
 import { DataView } from "@/components/Shared/DataView";
 import { useInspections, useConfirm } from "@/hooks";
 import { Button } from "@/components/ui/button";
-import { DataViewMode } from "@/components/Shared/DataView";
+import { DataViewMode } from "@/types";
 import { InspectionStats } from "@/components/Inspection/InspectionStats";
 import { InspectionFilters } from "@/components/Inspection/InspectionFilters";
 import { InspectionAnalytics } from "@/components/Inspection/InspectionAnalytics";
