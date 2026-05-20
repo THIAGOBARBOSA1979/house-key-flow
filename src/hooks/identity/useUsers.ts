@@ -5,28 +5,44 @@ import { useToast, useService, useDataList } from "@/hooks";
 import { User, UserFiltersData, UserFormData } from "@/types/user";
 
 /**
- * Custom hook to manage users logic.
+ * Advanced hook for user management logic (Onda 4 Refactor)
  */
 export const useUsers = () => {
   const { toast } = useToast();
-  const { user } = useAuth();
-  const companyId = user?.company_id;
+  const { user: currentUser } = useAuth();
+  const companyId = currentUser?.company_id;
 
-  const { items: userList, isLoading, create, update, remove, bulkUpdate, bulkRemove } = useService<User>(userService, {
+  const { 
+    items: userList, 
+    isLoading, 
+    create, 
+    update, 
+    remove, 
+    bulkUpdate, 
+    bulkRemove 
+  } = useService<User>(userService, {
     toastMessages: {
-      create: "Novo usuário foi criado com sucesso.",
-      update: "As informações do usuário foram atualizadas com sucesso.",
-      delete: "O usuário foi removido do sistema."
+      create: "Novo usuário criado com sucesso.",
+      update: "Usuário atualizado com sucesso.",
+      delete: "Usuário removido com sucesso."
     }
   });
 
   const filterFn = useCallback((user: User, filters: UserFiltersData) => {
     const matchesRole = filters.role === "all" || user.role === filters.role;
     const matchesStatus = filters.status === "all" || user.status === filters.status;
+    
+    const searchLower = filters.search?.toLowerCase() || "";
+    const matchesSearch = !searchLower || 
+      user.name.toLowerCase().includes(searchLower) || 
+      user.email?.toLowerCase().includes(searchLower);
+
     const matchesProperty = filters.property === "all" || 
       (user.propertyName && user.propertyName.toLowerCase().includes(filters.property.toLowerCase()));
+    
     const matchesUnit = !filters.unit || (user.unit && user.unit.includes(filters.unit));
-    return matchesRole && matchesStatus && matchesProperty && matchesUnit;
+    
+    return matchesRole && matchesStatus && matchesSearch && matchesProperty && matchesUnit;
   }, []);
 
   const {
@@ -44,23 +60,24 @@ export const useUsers = () => {
     filterFn
   });
 
-  const selectAll = useCallback(() => {
-    selectAllItems(filteredUsers.map(u => u.id));
-  }, [selectAllItems, filteredUsers]);
-
-  const stats = useMemo(() => userService.getStats(companyId, user?.is_super_admin), [companyId, user?.is_super_admin, userList]);
+  const stats = useMemo(() => 
+    userService.getStats(companyId, currentUser?.is_super_admin), 
+    [companyId, currentUser?.is_super_admin, userList]
+  );
 
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
-    if (editingUserId) {
-      await update(editingUserId, userData);
-    } else {
-      await create(userData);
+    try {
+      if (editingUserId) {
+        await update(editingUserId, userData);
+      } else {
+        await create({ ...userData, company_id: companyId });
+      }
+      return true;
+    } catch (error) {
+      console.error("Error saving user:", error);
+      return false;
     }
-  }, [create, update]);
-
-  const deleteUser = useCallback(async (userId: string) => {
-    await remove(userId);
-  }, [remove]);
+  }, [create, update, companyId]);
 
   const toggleUserStatus = useCallback(async (userId: string) => {
     const user = userList.find(u => u.id === userId);
@@ -70,11 +87,25 @@ export const useUsers = () => {
     }
   }, [update, userList]);
 
-  const bulkAction = useCallback(async (action: string) => {
-    if (selectedUsers.length === 0) {
-      toast({ title: "Nenhum usuário selecionado", description: "Selecione pelo menos um usuário.", variant: "destructive" });
-      return;
+  const handleResendInvite = useCallback(async (user: User) => {
+    const success = await userService.sendInvitation(user);
+    if (success) {
+      toast({ 
+        title: "Convite Enviado", 
+        description: `Um novo convite foi enviado para ${user.name}.` 
+      });
+    } else {
+      toast({ 
+        title: "Erro ao Enviar", 
+        description: "Não foi possível enviar o convite no momento.",
+        variant: "destructive"
+      });
     }
+    return success;
+  }, [toast]);
+
+  const handleBulkAction = useCallback(async (action: string) => {
+    if (selectedUsers.length === 0) return;
     
     switch (action) {
       case "activate": 
@@ -89,8 +120,7 @@ export const useUsers = () => {
     }
     
     setSelectedUsers([]);
-  }, [selectedUsers, toast, bulkUpdate, bulkRemove, setSelectedUsers]);
-
+  }, [selectedUsers, bulkUpdate, bulkRemove, setSelectedUsers]);
 
   return {
     userList,
@@ -110,11 +140,12 @@ export const useUsers = () => {
       setFilters(prev => ({ ...prev, ...newFilters }));
     },
     saveUser,
-    deleteUser,
+    deleteUser: remove,
     toggleUserStatus,
     toggleSelectUser,
-    selectAll,
-    bulkAction
+    selectAll: () => selectAllItems(filteredUsers.map(u => u.id!)),
+    handleBulkAction,
+    handleResendInvite
   };
 };
 
