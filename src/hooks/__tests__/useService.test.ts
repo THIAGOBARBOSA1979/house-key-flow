@@ -14,13 +14,20 @@ vi.mock('@/contexts/AuthContext', () => ({
   useAuth: vi.fn(),
 }));
 
-const mockService = {
+const mockService: any = {
   subscribe: vi.fn((cb) => {
     cb([{ id: '1', name: 'Item 1', company_id: 'comp-1' }]);
     return vi.fn(); // unsubscribe
   }),
   getAll: vi.fn(() => Promise.resolve([{ id: '1', name: 'Item 1', company_id: 'comp-1' }])),
+  getById: vi.fn(),
+  create: vi.fn(),
+  update: vi.fn(),
+  delete: vi.fn(),
+  bulkUpdate: vi.fn(),
+  bulkDelete: vi.fn(),
 };
+
 
 describe('useService Hook', () => {
   beforeEach(() => {
