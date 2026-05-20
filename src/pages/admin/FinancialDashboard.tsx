@@ -16,7 +16,8 @@ import {
   Calendar as CalendarIcon,
   PieChart,
   Wallet,
-  LineChart as LineChartIcon
+  LineChart as LineChartIcon,
+  RotateCw
 } from "lucide-react";
 import { financialService } from "@/services";
 import { exportService } from "@/services";
@@ -38,25 +39,36 @@ import { useToast } from "@/hooks";
 const FinancialDashboard = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const [isExporting, setIsExporting] = useState(false);
   const metrics = useMemo(() => financialService.getGlobalMetrics(user?.company_id, user?.is_super_admin), [user]);
   const transactions = useMemo(() => financialService.getRecentTransactions(user?.company_id, user?.is_super_admin), [user]);
   
   // Projection data (mock for demonstration)
   const projectionData = useMemo(() => {
+    const historical = metrics.revenueByMonth.map(m => ({ ...m, isProjection: false }));
+    const lastHistorical = historical[historical.length - 1];
+    
     return [
-      ...metrics.revenueByMonth.map(m => ({ ...m, isProjection: false })),
-      { month: 'Jul', value: 720000, isProjection: true },
-      { month: 'Ago', value: 780000, isProjection: true },
-      { month: 'Set', value: 850000, isProjection: true },
+      ...historical,
+      { month: 'Jul', value: (lastHistorical?.value || 600000) * 1.1, isProjection: true },
+      { month: 'Ago', value: (lastHistorical?.value || 600000) * 1.2, isProjection: true },
+      { month: 'Set', value: (lastHistorical?.value || 600000) * 1.3, isProjection: true },
     ];
   }, [metrics]);
 
-  const handleExport = () => {
-    exportService.exportToCSV(transactions, "relatorio_financeiro_transacoes");
-    toast({
-      title: "Exportação iniciada",
-      description: "O arquivo CSV com as transações recentes está sendo gerado.",
-    });
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      // Simulate processing
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      exportService.exportToCSV(transactions, "relatorio_financeiro_transacoes");
+      toast({
+        title: "Exportação concluída",
+        description: "O arquivo CSV com as transações recentes foi gerado.",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -67,8 +79,9 @@ const FinancialDashboard = () => {
         description="Visão global de recebíveis, fluxo de caixa e inadimplência."
       >
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-xl h-11 border-primary/20 hover:bg-primary/5 transition-all" onClick={handleExport}>
-            <Download className="mr-2 h-4 w-4" /> Exportar Dados
+          <Button variant="outline" className="rounded-xl h-11 border-primary/20 hover:bg-primary/5 transition-all" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? <RotateCw className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />} 
+            Exportar Dados
           </Button>
           <Button className="rounded-xl h-11 shadow-lg shadow-primary/20 font-bold">
             <Filter className="mr-2 h-4 w-4" /> Filtros Avançados
