@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { 
   Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, 
@@ -13,18 +13,14 @@ import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { safeFormat } from "@/lib/utils";
-import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
-import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { RescheduleInspectionDialog } from "@/components/Inspection/RescheduleInspectionDialog";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { documentService } from "@/services";
 import { useToast } from "@/hooks";
-import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks";
-import { InspectionAcceptance } from "@/components/Inspection/InspectionAcceptance";
 import { useAuth } from "@/contexts/AuthContext";
-import { inspectionService, Inspection } from "@/services";
-import { ClientTimeline, TimelineStep } from "@/components/Client/ClientTimeline";
+import { inspectionService } from "@/services";
+import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
+import { TimelineItem } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
 
 export default function ClientInspections() {
@@ -36,11 +32,14 @@ export default function ClientInspections() {
   const [inspections, setInspections] = useState<any[]>([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
-  const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
 
   const loadInspections = () => {
     const raw = inspectionService.getAll().filter(i => i && i.client === (user?.name || "João Silva"));
-    setInspections(raw.map(i => ({ ...i, title: i.type === 'keyDelivery' ? 'Entrega' : 'Vistoria', scheduledDate: i.date })));
+    setInspections(raw.map(i => ({ 
+      ...i, 
+      title: i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica', 
+      scheduledDate: i.date 
+    })));
     if (raw.length > 0 && !selectedInspection) setSelectedInspection(raw[0].id);
   };
 
@@ -50,34 +49,27 @@ export default function ClientInspections() {
 
   const handleViewPdf = () => {
     if (selectedInspection) {
-      const report = inspectionService.getReport(selectedInspection);
-      if (report) {
-        const generated = documentService.generateDocument('inspection', {});
-        setPreviewContent(generated.template || "");
-        setIsPreviewOpen(true);
-      }
+      const generated = documentService.generateDocument('inspection', {});
+      setPreviewContent(generated.template || "");
+      setIsPreviewOpen(true);
     }
   };
 
-  const handleAcceptInspection = (id: string, data: any) => {
-    inspectionService.signAcceptance(id, clientId, data);
-    loadInspections();
-    toast({ title: "Vistoria aceita" });
-  };
-
-  const steps: TimelineStep[] = [
-    { id: '1', title: 'Agendamento', description: 'Data e hora', status: 'completed' },
-    { id: '2', title: 'Vistoria', description: 'Campo', status: inspection?.status === 'complete' ? 'completed' : 'current' }
+  const timelineItems: TimelineItem[] = [
+    { id: '1', title: 'Agendamento Confirmado', date: inspection?.scheduledDate, status: 'completed', eventType: 'inspection_scheduled' },
+    { id: '2', title: 'Realização da Vistoria', status: inspection?.status === 'complete' ? 'completed' : 'current', eventType: 'inspection_completed' },
+    { id: '3', title: 'Assinatura do Termo', status: inspection?.signed ? 'completed' : 'pending', eventType: 'inspection_approved' }
   ];
 
   return (
-    <div className="space-y-layout-gap pb-20 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 animate-in fade-in duration-slow">
       <DocumentPreviewDialog 
         isOpen={isPreviewOpen} 
         onClose={() => setIsPreviewOpen(false)} 
         generatedContent={previewContent} 
-        document={{ title: "Relatório", type: "auto" } as any} 
+        document={{ title: "Relatório de Vistoria", type: "auto" } as any} 
       />
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight text-primary flex items-center gap-3">
@@ -88,7 +80,7 @@ export default function ClientInspections() {
           </h1>
           <p className="text-muted-foreground font-medium">Acompanhe seus agendamentos, laudos e status de aprovação da sua unidade.</p>
         </div>
-        {stage !== 'inspection_enabled' && stage !== 'warranty_enabled' && (
+        {(stage !== 'inspection_enabled' && stage !== 'warranty_enabled') && (
           <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 animate-in slide-in-from-right-4">
             <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
             <p className="text-xs text-amber-800 font-bold leading-tight">Módulo aguardando liberação estratégica pela incorporadora.</p>
@@ -127,16 +119,13 @@ export default function ClientInspections() {
         />
       </ResponsiveGrid>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
         <div className="space-y-6">
-          <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden bg-card/50 backdrop-blur-sm">
-            <CardHeader className="bg-muted/30 border-b border-border/50 pb-6">
-              <CardTitle className="text-xs font-black uppercase tracking-widest text-primary">Status da Jornada</CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
-              <ClientTimeline steps={steps} />
-            </CardContent>
-          </Card>
+          <ClientTimeline 
+            timeline={timelineItems} 
+            title="Evolução da Vistoria"
+            description="Progresso técnico da sua entrega"
+          />
           
           <Card className="rounded-[2rem] border-none shadow-xl bg-gradient-to-br from-primary/5 to-transparent">
             <CardHeader>
@@ -159,7 +148,7 @@ export default function ClientInspections() {
 
         <div className="lg:col-span-2 space-y-layout-gap">
           {inspection ? (
-            <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden group">
+            <Card className="rounded-[2rem] border-none shadow-xl overflow-hidden group bg-card/50 backdrop-blur-sm">
               <div className="h-24 bg-gradient-to-r from-primary/20 via-primary/5 to-transparent w-full" />
               <CardHeader className="relative -mt-12 px-8">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
