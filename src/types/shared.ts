@@ -3,8 +3,19 @@ export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
 
 export type StatusType = 
   | "pending" 
+  | "progress" 
+  | "complete" 
+  | "critical" 
+  | "success" 
+  | "warning" 
+  | "error" 
+  | "info" 
+  | "neutral"
+  | "reschedule_requested"
+  | "presence_confirmed"
+  | "on_track"
+  | "expired"
   | "confirmed" 
-  | "completed" 
   | "cancelled" 
   | "in_progress" 
   | "resolved" 
@@ -12,20 +23,12 @@ export type StatusType =
   | "overdue" 
   | "active" 
   | "inactive" 
-  | "expired" 
-  | "critical" 
   | "low" 
   | "medium" 
-  | "high"
-  | "progress"
-  | "complete"
-  | "success"
-  | "warning"
-  | "error"
-  | "info";
+  | "high";
 
 export interface SortConfig {
-  field: string;
+  key: string | null;
   direction: "asc" | "desc";
 }
 

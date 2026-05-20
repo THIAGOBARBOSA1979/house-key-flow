@@ -1,9 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 
-export interface SortConfig {
-  key: string | null;
-  direction: 'asc' | 'desc';
-}
+import { SortConfig } from "@/types";
 
 export function useDataTable<T>(data: T[], itemsPerPage: number = 10) {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
