@@ -9,12 +9,10 @@ import { User as UserIcon, UserCheck, Plus, Download, Key } from "lucide-react";
 import { UserForm } from "@/components/Users/UserForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
 import { userService } from "@/services/identity/UserService";
-import { inspectionService } from "@/services/operations/InspectionService";
 import { useToast } from "@/hooks/Shared/use-toast";
 import { User as UserProfile } from "@/types/user";
 
 const ClientArea = () => {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [allProfiles, setAllProfiles] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,18 +80,20 @@ const ClientArea = () => {
         title="Área do Cliente" 
         description="Gestão centralizada da jornada do proprietário e conformidade digital."
       >
-        <Button variant="outline" className="hidden sm:flex">
-          <Download className="mr-2 h-4 w-4" />
-          Exportar
-        </Button>
-        <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
-          <Key className="mr-2 h-4 w-4" />
-          Habilitar Acessos
-        </Button>
-        <Button onClick={() => setNewClientDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Novo Cliente
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" className="hidden sm:flex">
+            <Download className="mr-2 h-4 w-4" />
+            Exportar
+          </Button>
+          <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
+            <Key className="mr-2 h-4 w-4" />
+            Habilitar Acessos
+          </Button>
+          <Button onClick={() => setNewClientDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Cliente
+          </Button>
+        </div>
       </PageHeader>
 
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-slow">
@@ -112,9 +112,9 @@ const ClientArea = () => {
 
       <DataView
         items={filteredClients}
-        viewMode={viewMode}
+        viewMode="grid"
         isLoading={loading}
-        renderItem={(client) => (
+        renderGrid={(client) => (
           <div 
             key={client.id} 
             className="card-standard p-6 cursor-pointer interactive-hover"
