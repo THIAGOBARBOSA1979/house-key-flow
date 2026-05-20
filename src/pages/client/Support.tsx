@@ -264,7 +264,7 @@ const Support = () => {
           <CardContent className="p-0">
             <div className="divide-y">
               {tickets.length > 0 ? (
-                <div className="max-h-[500px] overflow-y-auto scrollbar-hide">
+                <div className="max-h-dialog-md overflow-y-auto scrollbar-hide">
                   {tickets.map((ticket) => (
                     <div key={ticket.id} className="p-6 hover:bg-muted/30 transition-all duration-300 cursor-pointer border-l-4 border-transparent hover:border-primary group">
                       <div className="flex items-center justify-between mb-3">
