@@ -67,7 +67,7 @@ class UserService extends SupabaseBaseService<User> {
       }, data.company_id);
 
       // If it's a client, also initialize their journey stage
-      if (newUser.role === 'client') {
+      if (newUser.role === 'client' || newUser.role === 'user') {
         const { clientStageService } = await import("@/services/operations/ClientStageService");
         
         // Use any to bypass strict Omit<ClientProfile, "id"> if needed, or pass correct structure

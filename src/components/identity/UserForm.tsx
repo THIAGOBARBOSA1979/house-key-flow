@@ -142,7 +142,8 @@ export const UserForm = ({ onSave, onCancel, editingUser }: UserFormProps) => {
                     <SelectItem value="admin">Administrador</SelectItem>
                     <SelectItem value="manager">Gerente de Obras</SelectItem>
                     <SelectItem value="technical">Técnico de Vistoria</SelectItem>
-                    <SelectItem value="client">Cliente / Proprietário</SelectItem>
+                    <SelectItem value="client">Proprietário (Residente)</SelectItem>
+                    <SelectItem value="user">Proprietário (Investidor)</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -151,14 +152,14 @@ export const UserForm = ({ onSave, onCancel, editingUser }: UserFormProps) => {
           />
         </div>
         
-        {form.watch("role") === "client" && (
+        {(form.watch("role") === "client" || form.watch("role") === "user") && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-dashed pt-6">
             <FormField
               control={form.control}
               name="propertyId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Vincular Empreendimento</FormLabel>
+                  <FormLabel>Empreendimento Vinculado</FormLabel>
                   <Select 
                     onValueChange={(value) => {
                       field.onChange(value);
