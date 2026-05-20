@@ -1,45 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { PageHeader } from "@/components/Layout/PageHeader";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { DataView } from "@/components/Shared/DataView";
 import { StatsCard } from "@/components/Shared/StatsCard";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User as UserIcon, UserCheck, Plus, Download, Key } from "lucide-react";
+import { User as UserIcon, UserCheck, Plus, Download, Key, ChevronRight, MapPin, Building, History, Activity } from "lucide-react";
 import { UserForm } from "@/components/identity/UserForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
 import { userService } from "@/services/identity/UserService";
 import { useToast } from "@/hooks/Shared/use-toast";
 import { User as UserProfile } from "@/types/user";
+import { useClientStages } from "@/hooks/operations/useClientStages";
+import { ClientStageManager } from "@/components/Admin/ClientStageManager";
+import { ClientEventHistory } from "@/components/Admin/ClientEventHistory";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { STAGE_CONFIG } from "@/types/clientFlow";
+import { cn } from "@/lib/utils";
 
 const ClientArea = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [allProfiles, setAllProfiles] = useState<UserProfile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { profiles, isLoading, refresh } = useClientStages();
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [isNewClientDialogOpen, setNewClientDialogOpen] = useState(false);
   const [isCredentialsDialogOpen, setCredentialsDialogOpen] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    loadClients();
-  }, []);
-
-  const loadClients = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await (userService as any).getAllProfiles();
-      if (error) throw error;
-      setAllProfiles(data || []);
-    } catch (error: any) {
-      toast({
-        title: "Erro ao carregar clientes",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCreateClient = async (data: any) => {
     try {
@@ -51,7 +37,7 @@ const ClientArea = () => {
         description: "O perfil do cliente foi criado com sucesso.",
       });
       setNewClientDialogOpen(false);
-      loadClients();
+      refresh();
     } catch (error: any) {
       toast({
         title: "Erro ao criar cliente",
@@ -69,80 +55,168 @@ const ClientArea = () => {
     setCredentialsDialogOpen(false);
   };
 
-  const filteredClients = allProfiles.filter(client => 
+  const filteredClients = profiles.filter(client => 
     client.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.email?.toLowerCase().includes(searchQuery.toLowerCase())
+    client.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.propertyName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.unitNumber?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const selectedClient = profiles.find(p => p.id === selectedClientId);
 
   return (
     <div className="container-responsive py-layout-gap animate-fade-in">
       <PageHeader 
-        title="Área do Cliente" 
-        description="Gestão centralizada da jornada do proprietário e conformidade digital."
+        title="Gestão de Proprietários" 
+        description="Governança completa da jornada do cliente, do lead ao ecossistema de garantias."
       >
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" className="hidden sm:flex">
+          <Button variant="outline" className="hidden sm:flex rounded-xl h-10 px-4">
             <Download className="mr-2 h-4 w-4" />
-            Exportar
+            Relatórios
           </Button>
-          <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)}>
+          <Button variant="outline" onClick={() => setCredentialsDialogOpen(true)} className="rounded-xl h-10 px-4">
             <Key className="mr-2 h-4 w-4" />
-            Habilitar Acessos
+            Acessos
           </Button>
-          <Button onClick={() => setNewClientDialogOpen(true)}>
+          <Button onClick={() => setNewClientDialogOpen(true)} className="rounded-xl h-10 px-6 font-black uppercase tracking-widest text-[10px]">
             <Plus className="mr-2 h-4 w-4" />
-            Novo Cliente
+            Integrar Proprietário
           </Button>
         </div>
       </PageHeader>
 
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-slow">
         <FilterBar
-          searchPlaceholder="Buscar por nome, email, telefone ou empreendimento..."
+          searchPlaceholder="Nome, email, unidade ou empreendimento..."
           searchValue={searchQuery}
           onSearchChange={setSearchQuery}
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <StatsCard label="Proprietários Homologados" value={allProfiles.length} icon={UserIcon} variant="brand" />
-        <StatsCard label="Interações no Portal" value="28" icon={UserCheck} variant="complete" />
-        <StatsCard label="Evolução de Leads" value="15" icon={Plus} variant="progress" />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <StatsCard label="Proprietários Homologados" value={profiles.length} icon={UserIcon} variant="brand" className="rounded-3xl" />
+        <StatsCard label="Vistorias Habilitadas" value={profiles.filter(p => p.currentStage === 'inspection_enabled').length} icon={Activity} variant="progress" className="rounded-3xl" />
+        <StatsCard label="Garantias Ativas" value={profiles.filter(p => p.currentStage === 'warranty_enabled').length} icon={UserCheck} variant="complete" className="rounded-3xl" />
+        <StatsCard label="Leads Pendentes" value={profiles.filter(p => p.currentStage === 'lead').length} icon={History} variant="pending" className="rounded-3xl" />
       </div>
 
-      <DataView
-        items={filteredClients}
-        viewMode="grid"
-        isLoading={loading}
-        renderGrid={(client) => (
-          <div 
-            key={client.id} 
-            className="card-standard p-6 cursor-pointer interactive-hover"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <UserIcon className="text-primary" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-1 space-y-4">
+          <h2 className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1 mb-2">Base de Proprietários</h2>
+          <DataView
+            items={filteredClients}
+            viewMode="list"
+            isLoading={isLoading}
+            renderList={(items) => (
+              <div className="space-y-2">
+                {items.map((client) => (
+                  <div 
+                    key={client.id} 
+                    onClick={() => setSelectedClientId(client.id)}
+                    className={cn(
+                      "flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-all border border-transparent mb-2",
+                      selectedClientId === client.id 
+                        ? "bg-primary/10 border-primary/20 shadow-sem-sm" 
+                        : "hover:bg-muted/50 border-border/5"
+                    )}
+                  >
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className={cn(
+                        "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
+                        selectedClientId === client.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                      )}>
+                        <UserIcon size={18} />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-sm truncate">{client.name}</h4>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <Badge variant="outline" className="text-[9px] h-4 uppercase tracking-tighter px-1">
+                            {STAGE_CONFIG[client.currentStage].label}
+                          </Badge>
+                          <span className="text-[10px] text-muted-foreground truncate">{client.unitNumber} • {client.propertyName}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className={cn(
+                      "text-muted-foreground/30 transition-transform",
+                      selectedClientId === client.id && "translate-x-1 text-primary"
+                    )} />
+                  </div>
+                ))}
+              </div>
+            )}
+          />
+        </div>
+
+        <div className="lg:col-span-2">
+          {selectedClient ? (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-slow">
+              <div className="bg-card rounded-3xl p-8 shadow-sem-sm border border-border/10">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                  <div className="flex items-center gap-6">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/10">
+                      <UserIcon size={40} className="text-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-black tracking-tight">{selectedClient.name}</h2>
+                      <p className="text-muted-foreground font-medium">{selectedClient.email}</p>
+                      <div className="flex flex-wrap gap-3 mt-3">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground px-3 py-1 bg-muted rounded-full">
+                          <Building size={14} /> {selectedClient.propertyName}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground px-3 py-1 bg-muted rounded-full">
+                          <MapPin size={14} /> Unidade {selectedClient.unitNumber}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="rounded-xl h-10">Editar Perfil</Button>
+                    <Button variant="outline" className="rounded-xl h-10 text-destructive hover:bg-destructive/5">Bloquear</Button>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg">{client.name || 'Sem nome'}</h3>
-                  <p className="text-sm text-muted-foreground">{client.email}</p>
-                </div>
+
+                <Tabs defaultValue="journey" className="w-full">
+                  <TabsList className="bg-muted/30 p-1 rounded-2xl mb-8">
+                    <TabsTrigger value="journey" className="rounded-xl font-bold">Jornada Digital</TabsTrigger>
+                    <TabsTrigger value="history" className="rounded-xl font-bold">Histórico Completo</TabsTrigger>
+                    <TabsTrigger value="docs" className="rounded-xl font-bold">Documentação</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="journey" className="animate-in fade-in duration-normal">
+                    <ClientStageManager 
+                      clientId={selectedClient.id} 
+                      onStageChange={refresh} 
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="history" className="animate-in fade-in duration-normal">
+                    <ClientEventHistory clientId={selectedClient.id} />
+                  </TabsContent>
+
+                  <TabsContent value="docs" className="animate-in fade-in duration-normal">
+                    <div className="p-12 text-center bg-muted/20 rounded-3xl border border-dashed">
+                      <Download size={40} className="mx-auto text-muted-foreground/30 mb-4" />
+                      <h3 className="text-sm font-bold">Repositório de Documentos</h3>
+                      <p className="text-xs text-muted-foreground mt-1">Contratos, plantas e manuais técnicos vinculados ao CPF deste proprietário.</p>
+                      <Button variant="outline" className="mt-6 rounded-xl">Visualizar Arquivos</Button>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
-            <div className="space-y-2 mt-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Telefone:</span>
-                <span className="font-medium">{client.phone || 'Não informado'}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Cargo:</span>
-                <span className="font-medium capitalize">{client.role}</span>
+          ) : (
+            <div className="h-full flex items-center justify-center p-12 bg-muted/5 rounded-3xl border border-dashed">
+              <div className="text-center">
+                <UserIcon size={48} className="mx-auto text-muted-foreground/20 mb-4" />
+                <h3 className="text-lg font-bold text-muted-foreground">Selecione um Proprietário</h3>
+                <p className="text-sm text-muted-foreground/60 max-w-xs mx-auto">Visualize e gerencie a jornada estratégica de cada cliente individualmente.</p>
               </div>
             </div>
-          </div>
-        )}
-      />
+          )}
+        </div>
+      </div>
 
       {/* Dialogs */}
       <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>

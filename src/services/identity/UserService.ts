@@ -58,6 +58,54 @@ class UserService extends SupabaseBaseService<User> {
     };
   }
 
+  public async createProfile(data: any): Promise<{ data?: User, error?: any }> {
+    try {
+      const newUser = this.create({
+        ...data,
+        status: data.status || 'active',
+        createdAt: new Date()
+      }, data.company_id);
+
+      // If it's a client, also initialize their journey stage
+      if (newUser.role === 'client' || newUser.role === 'user') {
+        const { clientStageService } = await import("@/services/operations/ClientStageService");
+        
+        // Use any to bypass strict Omit<ClientProfile, "id"> if needed, or pass correct structure
+        const stageData: any = {
+          name: newUser.name,
+          email: newUser.email,
+          phone: newUser.phone,
+          propertyId: data.propertyId || "",
+          propertyName: data.propertyName || "",
+          unitNumber: data.unit || "",
+          currentStage: 'registered',
+          createdAt: new Date(),
+          stageHistory: [{
+            id: crypto.randomUUID(),
+            fromStage: null,
+            toStage: 'registered',
+            changedAt: new Date(),
+            reason: 'Cadastro inicial homologado',
+            changedBy: 'Sistema',
+            isAutomatic: true
+          }]
+        };
+
+        // If BaseService.create handles ID generation, we don't pass it in Omit<T, "id">
+        // but here we want to sync the IDs
+        const newStageProfile = clientStageService.create(stageData, newUser.company_id);
+        // Force sync the IDs if BaseService generated a new one
+        if (newStageProfile.id !== newUser.id) {
+          (clientStageService as any).update(newStageProfile.id, { id: newUser.id }, true);
+        }
+      }
+
+      return { data: newUser };
+    } catch (error) {
+      return { error };
+    }
+  }
+
   /**
    * Mock method for sending invitations
    */
