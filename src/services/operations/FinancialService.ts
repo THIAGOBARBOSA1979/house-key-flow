@@ -22,9 +22,15 @@ export interface FinancialSummary {
 }
 
 const INITIAL_INSTALLMENTS: Installment[] = [
-  { id: 'inst-1', company_id: 'comp-1', number: 1, dueDate: new Date(2024, 4, 15), value: 2500, status: 'paid', type: 'monthly' },
-  { id: 'inst-2', company_id: 'comp-1', number: 2, dueDate: new Date(2024, 5, 15), value: 2500, status: 'paid', type: 'monthly' },
-  { id: 'inst-3', company_id: 'comp-1', number: 3, dueDate: new Date(2024, 6, 15), value: 2500, status: 'pending', type: 'monthly' },
+  { id: 'inst-1', company_id: 'comp-1', number: 1, dueDate: new Date(2024, 0, 15), value: 2500, status: 'paid', type: 'monthly' },
+  { id: 'inst-2', company_id: 'comp-1', number: 2, dueDate: new Date(2024, 1, 15), value: 2500, status: 'paid', type: 'monthly' },
+  { id: 'inst-3', company_id: 'comp-1', number: 3, dueDate: new Date(2024, 2, 15), value: 2500, status: 'paid', type: 'monthly' },
+  { id: 'inst-4', company_id: 'comp-1', number: 4, dueDate: new Date(2024, 3, 15), value: 2500, status: 'paid', type: 'monthly' },
+  { id: 'inst-5', company_id: 'comp-1', number: 5, dueDate: new Date(2024, 4, 15), value: 2500, status: 'paid', type: 'monthly' },
+  { id: 'inst-6', company_id: 'comp-1', number: 6, dueDate: new Date(2024, 5, 15), value: 2500, status: 'pending', type: 'monthly' },
+  { id: 'inst-7', company_id: 'comp-1', number: 7, dueDate: new Date(2024, 6, 15), value: 2500, status: 'pending', type: 'monthly' },
+  { id: 'inst-8', company_id: 'comp-1', number: 8, dueDate: new Date(2024, 7, 15), value: 2500, status: 'pending', type: 'monthly' },
+  { id: 'inst-9', company_id: 'comp-1', number: 0, dueDate: new Date(2024, 11, 20), value: 55000, status: 'pending', type: 'delivery' },
 ];
 
 class FinancialService extends SupabaseBaseService<Installment> {
