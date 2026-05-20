@@ -33,6 +33,7 @@ export interface SystemSettings {
     emergencySla: number;
     urgentSla: number;
     normalSla: number;
+    abntStandards: string[];
   };
 }
 
