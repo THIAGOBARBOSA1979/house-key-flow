@@ -217,7 +217,7 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
             <Menu size={20} />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-[280px] bg-sidebar border-r-sidebar-border shadow-sem-xl">
+        <SheetContent side="left" className="p-0 w-sidebar bg-sidebar border-r-sidebar-border shadow-sem-xl">
           <SidebarContent collapsed={false} onItemClick={() => setMobileOpen(false)} />
         </SheetContent>
       </Sheet>

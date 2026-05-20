@@ -143,6 +143,23 @@ export default {
 				'header-height': 'var(--header-height)',
 				'sidebar-width': 'var(--sidebar-width)',
 				'sidebar-collapsed-width': 'var(--sidebar-collapsed-width)',
+				'dialog-sm': 'var(--dialog-sm)',
+				'dialog-md': 'var(--dialog-md)',
+				'dialog-lg': 'var(--dialog-lg)',
+				'dialog-xl': 'var(--dialog-xl)',
+				'dialog-full': 'var(--dialog-full)',
+			},
+			maxWidth: {
+				'dialog-sm': 'var(--dialog-sm)',
+				'dialog-md': 'var(--dialog-md)',
+				'dialog-lg': 'var(--dialog-lg)',
+				'dialog-xl': 'var(--dialog-xl)',
+				'dialog-full': 'var(--dialog-full)',
+			},
+			minHeight: {
+				'input-base': 'var(--input-height-base)',
+				'input-lg': 'var(--input-height-lg)',
+				'card-base': 'var(--card-min-height)',
 			},
 			fontSize: {
 				'sem-display': ['var(--font-display)', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '800' }],
