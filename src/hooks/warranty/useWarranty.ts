@@ -117,7 +117,7 @@ export const useWarranty = () => {
     toast({ title: "Exportação concluída", description: "O arquivo CSV foi baixado com sucesso." });
   }, [filteredRequests, toast]);
 
-  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(), [requests]);
+  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(companyId, isSuperAdmin), [requests, companyId, isSuperAdmin]);
 
   return {
     requests,
