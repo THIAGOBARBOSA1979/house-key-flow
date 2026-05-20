@@ -66,7 +66,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.notify();
   }
 
-  protected async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
+  public async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
     if (this.options.auditEntityType) {
       await auditLogService.logAction({
         action,
