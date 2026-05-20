@@ -306,6 +306,29 @@ const ClientLayout = () => {
               </p>
             </div>
           </Link>
+          
+          {allProfiles.length > 1 && (
+            <div className="mt-4 px-4">
+              <div className="flex flex-col gap-2 bg-muted/30 p-4 rounded-2xl border border-border/10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Building size={12} className="text-primary" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Selecionar Unidade</span>
+                </div>
+                <Select value={selectedProfileId || ""} onValueChange={setSelectedProfileId}>
+                  <SelectTrigger className="h-10 border-none bg-background shadow-none font-bold text-xs w-full focus:ring-0 rounded-xl">
+                    <SelectValue placeholder="Trocar Unidade" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-none shadow-2xl">
+                    {allProfiles.map(p => (
+                      <SelectItem key={p.id} value={p.id} className="rounded-lg font-bold text-xs">
+                        {p.propertyName} - {p.unitNumber}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
         </div>
         <div className="px-6 py-2">
            <div className="h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
