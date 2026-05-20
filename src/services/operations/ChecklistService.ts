@@ -1,5 +1,6 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
+import { Database } from "@/integrations/supabase/types";
 
 export interface ChecklistItem {
   id: string;
@@ -22,6 +23,7 @@ export interface ChecklistGroup {
 
 export interface ChecklistTemplate {
   id: string;
+  company_id?: string;
   title: string;
   description: string;
   category: string;
@@ -33,6 +35,7 @@ export interface ChecklistTemplate {
 
 export interface ChecklistExecutionRecord {
   id: string;
+  company_id?: string;
   templateId: string;
   templateTitle: string;
   date: Date;
@@ -46,6 +49,7 @@ export interface ChecklistExecutionRecord {
 const INITIAL_TEMPLATES: ChecklistTemplate[] = [
   { 
     id: "1", 
+    company_id: 'comp-1',
     title: "Entrega de Chaves", 
     description: "Verificação final", 
     category: "vistoria", 
@@ -62,18 +66,11 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
   constructor() {
     super({
       storageKey: "a2_checklist_templates",
-      supabaseTable: "checklist_templates" as any,
+      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table
       auditEntityType: "checklist",
-      shouldSyncWithSupabase: true
+      shouldSyncWithSupabase: false
     }, INITIAL_TEMPLATES);
     this.loadExecutions();
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('checklist_templates', async () => {
-      await this.sync();
-    });
   }
 
   private loadExecutions() {
@@ -81,7 +78,8 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
     const stored = localStorage.getItem("a2_checklist_executions");
     if (stored) {
       try {
-        this.executions = JSON.parse(stored).map((e: any) => ({ 
+        const parsed = JSON.parse(stored);
+        this.executions = parsed.map((e: any) => ({ 
           ...e, 
           date: new Date(e.date) 
         }));
@@ -96,17 +94,9 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
     localStorage.setItem("a2_checklist_executions", JSON.stringify(this.executions));
   }
 
-  getAllTemplates() { 
-    return this.getAll(); 
-  }
-
-  getTemplateById(id: string) { 
-    return this.getById(id); 
-  }
-
-  getAllExecutions() { 
-    return [...this.executions]; 
-  }
+  getAllTemplates() { return this.getAll(); }
+  getTemplateById(id: string) { return this.getById(id); }
+  getAllExecutions() { return [...this.executions]; }
 
   async createTemplate(data: Omit<ChecklistTemplate, "id">) { 
     return this.create({ 
@@ -120,6 +110,7 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
   archiveTemplate(id: string) { 
     return this.delete(id); 
   }
+
 
   logExecution(templateId: string, groups: ChecklistGroup[], notes: string, name: string = "Admin", status: ChecklistExecutionRecord["status"] = "completed") {
     const template = this.getById(templateId);

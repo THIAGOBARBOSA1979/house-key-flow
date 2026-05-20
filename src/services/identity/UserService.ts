@@ -28,7 +28,6 @@ class UserService extends SupabaseBaseService<User> {
     };
   }
 
-
   protected mapFromSupabase(raw: any): User {
     return {
       ...raw,

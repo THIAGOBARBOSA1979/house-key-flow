@@ -1,9 +1,11 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
-import { auditLogService } from "../core/AuditLogService";
+import { auditLogService } from "@/services/core/AuditLogService";
+import { Database } from "@/integrations/supabase/types";
 
 export interface Installment {
   id: string;
+  company_id?: string;
   number: number;
   dueDate: Date;
   value: number;
@@ -20,26 +22,19 @@ export interface FinancialSummary {
 }
 
 const INITIAL_INSTALLMENTS: Installment[] = [
-  { id: 'inst-1', number: 1, dueDate: new Date(2024, 4, 15), value: 2500, status: 'paid', type: 'monthly' },
-  { id: 'inst-2', number: 2, dueDate: new Date(2024, 5, 15), value: 2500, status: 'paid', type: 'monthly' },
-  { id: 'inst-3', number: 3, dueDate: new Date(2024, 6, 15), value: 2500, status: 'pending', type: 'monthly' },
+  { id: 'inst-1', company_id: 'comp-1', number: 1, dueDate: new Date(2024, 4, 15), value: 2500, status: 'paid', type: 'monthly' },
+  { id: 'inst-2', company_id: 'comp-1', number: 2, dueDate: new Date(2024, 5, 15), value: 2500, status: 'paid', type: 'monthly' },
+  { id: 'inst-3', company_id: 'comp-1', number: 3, dueDate: new Date(2024, 6, 15), value: 2500, status: 'pending', type: 'monthly' },
 ];
 
 class FinancialService extends SupabaseBaseService<Installment> {
   constructor() {
     super({
       storageKey: "a2_financial_data",
-      supabaseTable: "installments" as any,
+      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table
       auditEntityType: "financial",
-      shouldSyncWithSupabase: true
+      shouldSyncWithSupabase: false
     }, INITIAL_INSTALLMENTS);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('installments', async () => {
-      await this.sync();
-    });
   }
 
   getInstallmentsByClient(clientId: string, companyId?: string, isSuperAdmin?: boolean): Installment[] { 
@@ -67,8 +62,6 @@ class FinancialService extends SupabaseBaseService<Installment> {
   }
 
   getGlobalMetrics(companyId?: string, isSuperAdmin?: boolean) {
-    // In a real multi-tenant scenario, these would be filtered by companyId in the database
-    // Mocking filtering for now
     if (!isSuperAdmin && !companyId) return {
       totalReceivable: 0,
       totalPaid: 0,
@@ -101,8 +94,8 @@ class FinancialService extends SupabaseBaseService<Installment> {
     const relevantItems = this.getAll(companyId, isSuperAdmin);
     return relevantItems.map(i => ({
       id: i.id,
-      client: 'Cliente Exemplo', // In a real app, join with users
-      property: 'Edifício Aurora', // In a real app, join with properties
+      client: 'Cliente Exemplo',
+      property: 'Edifício Aurora',
       value: i.value,
       date: i.dueDate,
       type: i.type === 'monthly' ? 'Mensalidade' : 'Extra',
@@ -113,14 +106,11 @@ class FinancialService extends SupabaseBaseService<Installment> {
   processPayment(transactionId: string) {
     const updated = this.update(transactionId, { status: 'paid' });
     if (updated) {
-      auditLogService.log({
+      auditLogService.logAction({
         entityType: 'financial',
         entityId: transactionId,
         action: 'payment_received',
-        performedBy: 'admin-1',
-        performedByName: 'Administrador',
-        performedByRole: 'admin',
-        details: `Pagamento da transação ${transactionId} processado.`
+        payload: { message: `Pagamento da transação ${transactionId} processado.` }
       });
     }
     return !!updated;

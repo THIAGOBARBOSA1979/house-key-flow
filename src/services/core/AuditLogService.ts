@@ -1,6 +1,6 @@
 import { Supabase, FilterParams } from "@/integrations/supabase";
 import { Database } from "@/integrations/supabase/types";
-import { BaseService } from "../BaseService";
+import { BaseService } from "@/services/BaseService";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -50,8 +50,6 @@ export interface AuditLogEntry {
 }
 
 class AuditLogService extends BaseService<any> {
-  
-
   constructor() {
     super({ storageKey: "audit_logs", shouldSyncWithSupabase: false }, []);
   }
@@ -83,7 +81,11 @@ class AuditLogService extends BaseService<any> {
     if (params.action && params.action !== 'all') filters.push({ column: 'action', operator: 'eq', value: params.action });
     if (params.entityType && params.entityType !== 'all') filters.push({ column: 'entity_type', operator: 'eq', value: params.entityType });
 
-    const { data, error } = await Supabase.db.findMany<any>(this.options.storageKey as keyof Database['public']['Tables'], {
+    if (!params.isSuperAdmin && params.companyId) {
+      filters.push({ column: 'company_id', operator: 'eq', value: params.companyId });
+    }
+
+    const { data, error } = await Supabase.db.findMany<any>('audit_logs', {
       filters,
       pagination: {
         page: params.page || 1,
@@ -98,7 +100,7 @@ class AuditLogService extends BaseService<any> {
     return (data || []).map(raw => this.mapToEntry(raw));
   }
 
-  async log(entry: any, userContext?: any): Promise<void> {
+  async log(entry: any): Promise<void> {
     await this.logAction({
       action: entry.action,
       entityType: entry.entityType,
@@ -113,6 +115,7 @@ class AuditLogService extends BaseService<any> {
     entityId?: string;
     payload?: any;
     previousValues?: any;
+    companyId?: string;
   }): Promise<void> {
     const { error } = await Supabase.db.rpc('log_audit_action', {
       p_action: data.action,
@@ -153,10 +156,10 @@ class AuditLogService extends BaseService<any> {
       callback(logs);
     });
     
-    (this.listeners as any).push(callback);
+    this.listeners.push(callback);
     return () => {
       channel.unsubscribe();
-      this.listeners = this.listeners.filter(l => l !== callback) as any;
+      this.listeners = this.listeners.filter(l => l !== callback);
     };
   }
 
@@ -169,7 +172,7 @@ class AuditLogService extends BaseService<any> {
     if (!isSuperAdmin && companyId) {
       filters.push({ column: 'company_id', operator: 'eq', value: companyId });
     }
-    const { data, error } = await Supabase.db.count('audit_logs' as keyof Database['public']['Tables'], filters);
+    const { data, error } = await Supabase.db.count('audit_logs', filters);
     return { totalLogs: data || 0, currentCount24h: 0 };
   }
 }

@@ -1,11 +1,9 @@
-import { auditLogService, AuditAction, AuditEntityType } from "./core/AuditLogService";
-
+import { auditLogService, AuditAction, AuditEntityType } from "@/services/core/AuditLogService";
 
 type Listener<T> = (items: T[]) => void;
 
 export interface BaseServiceOptions {
   storageKey: string;
-  supabaseTable?: string;
   auditEntityType?: AuditEntityType;
   shouldSyncWithSupabase?: boolean;
 }
@@ -16,53 +14,35 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   protected listeners: Listener<T>[] = [];
 
   constructor(options: BaseServiceOptions | string, initialData: T[] = []) {
-    if (typeof options === 'string') {
-      this.options = { storageKey: options };
-    } else {
-      this.options = options;
-    }
+    this.options = typeof options === 'string' ? { storageKey: options } : options;
     this.items = initialData;
     this.loadFromStorage();
   }
 
   subscribe(listener: Listener<T>) {
-    (this.listeners as Listener<T>[]).push(listener);
+    this.listeners.push(listener);
     return () => {
-      const index = (this.listeners as Listener<T>[]).indexOf(listener);
-      if (index !== -1) {
-        (this.listeners as Listener<T>[]).splice(index, 1);
-      }
+      this.listeners = this.listeners.filter(l => l !== listener);
     };
   }
 
-  private notify() {
+  protected notify() {
     this.listeners.forEach(listener => listener([...this.items]));
   }
 
-  protected mapToSupabase(item: T): any {
-    return item;
-  }
-
-  protected mapFromSupabase(raw: any): T {
-    return raw as T;
-  }
-
-  protected deserializeDates(item: Record<string, unknown>): T {
+  protected deserializeDates(item: any): T {
+    if (!item || typeof item !== 'object') return item;
+    
     const newItem = { ...item };
-    Object.keys(newItem).forEach(key => {
+    for (const key in newItem) {
       const value = newItem[key];
       if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
-        const date = new Date(value);
-        if (!isNaN(date.getTime())) newItem[key] = date;
+        newItem[key] = new Date(value);
       } else if (value && typeof value === 'object') {
-        if (Array.isArray(value)) {
-          newItem[key] = value.map(v => (v && typeof v === 'object') ? this.deserializeDates(v as Record<string, unknown>) : v);
-        } else if (Object.getPrototypeOf(value) === Object.prototype) {
-          newItem[key] = this.deserializeDates(value as Record<string, unknown>);
-        }
+        newItem[key] = this.deserializeDates(value);
       }
-    });
-    return newItem as unknown as T;
+    }
+    return newItem;
   }
 
   protected loadFromStorage() {
@@ -86,7 +66,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.notify();
   }
 
-  protected async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
+  public async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
     if (this.options.auditEntityType) {
       await auditLogService.logAction({
         action,
@@ -98,9 +78,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
   getAll(companyId?: string, isSuperAdmin?: boolean): T[] {
-    if (isSuperAdmin) {
-      return [...this.items];
-    }
+    if (isSuperAdmin) return [...this.items];
     
     if (!companyId) {
       console.warn(`[BaseService] Attempted to getAll from ${this.options.storageKey} without companyId/isSuperAdmin`);
@@ -112,14 +90,11 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {
     const item = this.items.find(item => item.id === id);
-    if (isSuperAdmin) return item;
+    if (!item) return undefined;
     
-    if (item && item.company_id === companyId) return item;
+    if (isSuperAdmin || item.company_id === companyId) return item;
     
-    if (item && item.company_id !== companyId) {
-      console.warn(`[BaseService] Tenant Isolation: Access denied to ${this.options.storageKey}:${id} (owner: ${item.company_id}, requested: ${companyId})`);
-    }
-    
+    console.warn(`[BaseService] Tenant Isolation: Access denied to ${this.options.storageKey}:${id}`);
     return undefined;
   }
 
@@ -133,15 +108,12 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     
     this.items.push(newItem);
     this.persist();
-    
     this.log('created', id, `Registro criado em ${this.options.storageKey}`);
-    
     return newItem;
   }
 
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
     const index = this.items.findIndex(item => item.id === id);
-
     if (index === -1) return undefined;
     
     const oldItem = { ...this.items[index] };
@@ -165,7 +137,6 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
       this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
       return true;
     }
-
     return false;
   }
 
@@ -187,6 +158,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
   count(companyId?: string, isSuperAdmin?: boolean): number {
+
     return this.getAll(companyId, isSuperAdmin).length;
   }
 

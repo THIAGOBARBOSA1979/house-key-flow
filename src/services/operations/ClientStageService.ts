@@ -1,5 +1,6 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
+import { Database } from "@/integrations/supabase/types";
 import { 
   ClientProfile, 
   ClientStage, 
@@ -15,9 +16,9 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   constructor() {
     super({
       storageKey: "a2_client_profiles",
-      supabaseTable: "client_profiles" as any,
+      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table
       auditEntityType: "user",
-      shouldSyncWithSupabase: true
+      shouldSyncWithSupabase: false
     }, [
       { 
         id: "client-1", 
@@ -32,25 +33,10 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
         stageHistory: []
       }
     ]);
-    this.initializeRealtime();
+    this.loadEvents();
   }
 
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('client_profiles', async () => {
-      await this.sync();
-    });
-  }
-
-  protected loadFromStorage() {
-    super.loadFromStorage();
-    this.items = this.items.map(item => ({
-      ...item,
-      createdAt: new Date(item.createdAt),
-      stageHistory: Array.isArray(item.stageHistory) 
-        ? item.stageHistory.map(h => ({ ...h, changedAt: new Date(h.changedAt) }))
-        : []
-    }));
-    
+  private loadEvents() {
     const storedEvents = localStorage.getItem("a2_client_events");
     if (storedEvents) {
       try {
@@ -123,7 +109,6 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   }
 
   getEvents(clientId: string, companyId?: string, isSuperAdmin?: boolean): ClientEvent[] {
-    // Basic filtering by company if provided, but typically clientId is specific enough
     return this.events.filter(e => e.clientId === clientId);
   }
 
@@ -147,8 +132,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
 
   isStageReached(clientId: string, stage: ClientStage): boolean {
     const profile = this.getById(clientId);
-    if (!profile) return false;
-    return profile.currentStage === stage;
+    return profile?.currentStage === stage;
   }
 }
 

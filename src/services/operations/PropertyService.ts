@@ -75,7 +75,6 @@ class PropertyService extends SupabaseBaseService<Property> {
     });
   }
 
-
   create(property: Omit<Property, "id">, companyId?: string): Property {
     return super.create({
       ...property,
@@ -100,15 +99,17 @@ class PropertyService extends SupabaseBaseService<Property> {
     const property = this.getById(propertyId, undefined, isSuperAdmin);
     if (!property || !property.milestones) return undefined;
 
-    const milestone = property.milestones.find(m => m.id === milestoneId);
     const milestones = property.milestones.map(m => 
       m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
     );
 
     const updated = this.update(propertyId, { milestones }, isSuperAdmin);
     
-    if (updated && milestone) {
-      this.log('updated', propertyId, `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`);
+    if (updated) {
+      const milestone = property.milestones.find(m => m.id === milestoneId);
+      if (milestone) {
+        this.log('updated', propertyId, `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`);
+      }
     }
 
     return updated;
@@ -172,7 +173,8 @@ class PropertyService extends SupabaseBaseService<Property> {
       total,
       byStatus,
       totalUnits,
-      totalCompleted, averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
+      totalCompleted, 
+      averageProgress: totalUnits > 0 ? Math.round((totalCompleted / totalUnits) * 100) : 0
     };
   }
 }
