@@ -69,9 +69,9 @@ class UserService extends SupabaseBaseService<User> {
       // If it's a client, also initialize their journey stage
       if (newUser.role === 'client') {
         const { clientStageService } = await import("@/services/operations/ClientStageService");
-        clientStageService.create({
-          id: newUser.id,
-          company_id: newUser.company_id,
+        
+        // Use any to bypass strict Omit<ClientProfile, "id"> if needed, or pass correct structure
+        const stageData: any = {
           name: newUser.name,
           email: newUser.email,
           phone: newUser.phone,
@@ -89,7 +89,15 @@ class UserService extends SupabaseBaseService<User> {
             changedBy: 'Sistema',
             isAutomatic: true
           }]
-        });
+        };
+
+        // If BaseService.create handles ID generation, we don't pass it in Omit<T, "id">
+        // but here we want to sync the IDs
+        const newStageProfile = clientStageService.create(stageData, newUser.company_id);
+        // Force sync the IDs if BaseService generated a new one
+        if (newStageProfile.id !== newUser.id) {
+          (clientStageService as any).update(newStageProfile.id, { id: newUser.id }, true);
+        }
       }
 
       return { data: newUser };
