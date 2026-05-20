@@ -50,10 +50,18 @@ export const GovernanceManager = () => {
             <TableBody>
               {/* Simplified for now until permissions are fully mapped in new guard */}
               <TableRow>
-                <TableCell className="font-medium text-sm">Controle Total</TableCell>
+                <TableCell className="font-medium text-sm">Gestão de Garantias</TableCell>
                 {roles.map(role => (
                   <TableCell key={role} className="text-center">
-                    {role === 'super_admin' ? <CheckCircle2 className="h-4 w-4 text-status-complete mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
+                    {['super_admin', 'admin', 'manager', 'technical'].includes(role) ? <CheckCircle2 className="h-4 w-4 text-status-complete mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium text-sm">Vistorias Técnicas</TableCell>
+                {roles.map(role => (
+                  <TableCell key={role} className="text-center">
+                    {['super_admin', 'admin', 'technical'].includes(role) ? <CheckCircle2 className="h-4 w-4 text-status-complete mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
                   </TableCell>
                 ))}
               </TableRow>

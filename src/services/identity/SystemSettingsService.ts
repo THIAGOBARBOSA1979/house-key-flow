@@ -61,6 +61,7 @@ const DEFAULT_SETTINGS: SystemSettings = {
     emergencySla: 24,
     urgentSla: 72,
     normalSla: 10,
+    abntStandards: ["ABNT NBR 15575", "ABNT NBR 16280", "ABNT NBR 5674"],
   }
 };
 

@@ -49,9 +49,9 @@ export const ChecklistSelector = ({
                   <div className="space-y-1">
                     <h4 className="font-black text-sem-label leading-tight tracking-tight">{checklist.title}</h4>
                     <p className="text-[11px] text-muted-foreground/60 leading-relaxed line-clamp-1 font-medium">{checklist.description}</p>
-                    <div className="flex items-center gap-2 pt-1">
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
                       <span className="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-lg uppercase tracking-widest border border-primary/10">
-                        {(checklist.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0)} Itens de Verificação
+                        {(checklist.groups?.reduce((acc, g) => acc + g.items.length, 0) || 0)} Itens (Norma ABNT)
                       </span>
                     </div>
                   </div>

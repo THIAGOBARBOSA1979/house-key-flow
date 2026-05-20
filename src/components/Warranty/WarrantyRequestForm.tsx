@@ -13,13 +13,13 @@ import { toast } from "@/components/ui/use-toast";
 
 // Categories for warranty claims
 const warrantyCategories = [
-  "Hidráulica",
-  "Elétrica",
-  "Estrutural", 
-  "Vedação e Impermeabilização",
+  "Hidráulica (ABNT NBR 15575-6)",
+  "Elétrica (ABNT NBR 5410)",
+  "Estrutural (ABNT NBR 15575-2)", 
+  "Impermeabilização (ABNT NBR 9575)",
   "Acabamento",
-  "Esquadrias",
-  "Equipamentos",
+  "Esquadrias (ABNT NBR 10821)",
+  "Revestimentos (ABNT NBR 13753/54/55)",
   "Outros"
 ];
 
