@@ -13,10 +13,22 @@ interface UseServiceOptions<T> {
   };
 }
 
+export interface IService<T> {
+  getAll(companyId?: string, isSuperAdmin?: boolean): T[] | Promise<T[]>;
+  getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined | Promise<T | undefined>;
+  create(data: Omit<T, "id">, companyId?: string): T | Promise<T>;
+  update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined | Promise<T | undefined>;
+  delete(id: string): boolean | Promise<boolean>;
+  bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): T[] | Promise<T[]>;
+  bulkDelete(ids: string[]): number | Promise<number>;
+  subscribe(listener: (items: T[]) => void): () => void;
+}
+
 export function useService<T extends { id: string; company_id?: string }>(
-  service: BaseService<T>,
+  service: IService<T>,
   options: UseServiceOptions<T> = {}
 ) {
+
   const { toast } = useToast();
   const { user } = useAuth();
   const companyId = user?.company_id;
