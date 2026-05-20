@@ -234,13 +234,13 @@ export default function Checklist() {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
             <Card className="card-standard bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-h4">Frequência de Uso</CardTitle>
                 <CardDescription>Execuções por categoria de checklist</CardDescription>
               </CardHeader>
-              <CardContent className="h-[250px] flex items-center justify-center text-muted-foreground italic font-medium">
+              <CardContent className="min-h-card-base flex items-center justify-center text-muted-foreground italic font-medium">
                 Gráfico de frequência em tempo real
               </CardContent>
             </Card>
@@ -249,7 +249,7 @@ export default function Checklist() {
                 <CardTitle className="text-h4">Qualidade Técnica</CardTitle>
                 <CardDescription>Conformidade média por empreendimento</CardDescription>
               </CardHeader>
-              <CardContent className="h-[250px] flex items-center justify-center text-muted-foreground italic font-medium">
+              <CardContent className="min-h-card-base flex items-center justify-center text-muted-foreground italic font-medium">
                 Índice de conformidade (KPI)
               </CardContent>
             </Card>

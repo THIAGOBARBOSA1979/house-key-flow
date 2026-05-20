@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { 
   Wrench, 
@@ -280,7 +279,7 @@ const Technicians = () => {
 
 
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-[550px] rounded-3xl border-none shadow-sem-xl">
+        <DialogContent className="max-w-dialog-md rounded-3xl border-none shadow-sem-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black tracking-tight">
               {editingTech ? "Editar Técnico" : "Novo Cadastro de Técnico"}
