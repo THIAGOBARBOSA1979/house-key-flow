@@ -23,25 +23,35 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
   }
 
   async sync(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
-    const filters: FilterParams[] = [];
-    if (!isSuperAdmin && companyId) {
-      filters.push({ column: 'company_id', operator: 'eq', value: companyId });
-    }
+    try {
+      const filters: FilterParams[] = [];
+      if (!isSuperAdmin && companyId) {
+        filters.push({ column: 'company_id', operator: 'eq', value: companyId });
+      }
 
-    const { data, error } = await Supabase.db.findMany<T>(this.supabaseTable, { filters });
-    
-    if (error) {
-      console.error(`[SupabaseBaseService] Sync failed for ${this.supabaseTable}:`, error);
+      const { data, error } = await Supabase.db.findMany<T>(this.supabaseTable, { filters });
+      
+      if (error) {
+        return this.handleSyncError(error);
+      }
+
+      if (data) {
+        this.items = data.map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
+        this.persist();
+      }
+      
       return this.items;
+    } catch (err) {
+      return this.handleSyncError(err);
     }
+  }
 
-    if (data) {
-      this.items = data.map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
-      this.persist();
-    }
-    
+  private handleSyncError(error: any): T[] {
+    console.error(`[SupabaseBaseService] Sync failed for ${this.supabaseTable}:`, error);
+    // Return current items but notify listeners of potential stale state if needed
     return this.items;
   }
+
 
   create(item: Omit<T, "id">, companyId?: string): T {
     const newItem = super.create(item, companyId);
