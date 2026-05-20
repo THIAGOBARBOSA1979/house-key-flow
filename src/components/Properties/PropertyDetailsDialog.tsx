@@ -42,7 +42,7 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0 border-none shadow-2xl overflow-hidden">
+      <DialogContent className="max-w-dialog-xl h-[90vh] flex flex-col p-0 border-none shadow-2xl overflow-hidden">
         <div className="relative h-60 bg-muted shrink-0">
           {property.imageUrl ? (
             <img src={property.imageUrl} alt={property.name} className="w-full h-full object-cover" />

@@ -394,7 +394,7 @@ const Financial = () => {
               </CardContent>
             </Card>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-dialog-md">
             <DialogHeader>
               <DialogTitle className="text-xl font-black tracking-tight">Entenda a correção do seu contrato</DialogTitle>
               <DialogDescription className="font-medium">Índices utilizados no mercado imobiliário</DialogDescription>

@@ -108,6 +108,17 @@
     --section-gap: var(--space-12);
     --container-max-width: 80rem; /* 1280px */
     --content-padding: var(--space-8);
+    
+    /* --- Component Sizing Tokens --- */
+    --dialog-sm: 28rem;   /* 448px */
+    --dialog-md: 40rem;   /* 640px */
+    --dialog-lg: 56rem;   /* 896px */
+    --dialog-xl: 72rem;   /* 1152px */
+    --dialog-full: 95vw;
+    
+    --card-min-height: 12rem;
+    --input-height-base: 2.75rem;
+    --input-height-lg: 3.5rem;
 
     /* --- Typography Tokens (Fluid with clamp) --- */
     --font-display: clamp(1.75rem, 5vw + 0.5rem, 3.75rem);
@@ -268,7 +279,7 @@
 @layer components {
   /* Layout Containers */
   .container-responsive {
-    @apply w-full max-w-7xl mx-auto px-[var(--content-padding)];
+    @apply w-full max-w-container mx-auto px-content-padding;
   }
 
   .grid-layout {

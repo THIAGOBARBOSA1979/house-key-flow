@@ -193,7 +193,7 @@ export default function Inspections() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
               <CardHeader><CardTitle className="text-h4">Distribuição por Status</CardTitle></CardHeader>
-              <CardContent className="h-[350px]">
+              <CardContent className="h-dialog-sm">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -213,7 +213,7 @@ export default function Inspections() {
 
             <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
               <CardHeader><CardTitle className="text-h4">Vistorias por Técnico</CardTitle></CardHeader>
-              <CardContent className="h-[350px]">
+              <CardContent className="h-dialog-sm">
                 <ResponsiveContainer width="100%" height="100%">
                   <ReBarChart
                     data={Object.entries(inspectionService.getStatsByTechnician(user?.company_id, user?.is_super_admin)).map(([name, value]) => ({ name, value }))}

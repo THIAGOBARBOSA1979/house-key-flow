@@ -106,7 +106,7 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden border-none shadow-2xl">
+      <DialogContent className="sm:max-w-dialog-md p-0 overflow-hidden border-none shadow-2xl">
         <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
           <DialogTitle className="flex items-center gap-2 text-2xl font-black tracking-tight">
             <FileUp className="w-6 h-6 text-primary" />
@@ -114,7 +114,7 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
           </DialogTitle>
         </DialogHeader>
         
-        <div className="max-h-[70vh] overflow-y-auto p-8">
+        <div className="max-h-[70vh] overflow-y-auto p-layout-gap">
           <div className="grid gap-6">
             <div className="grid gap-2">
               <Label htmlFor="title">Título do Documento</Label>
