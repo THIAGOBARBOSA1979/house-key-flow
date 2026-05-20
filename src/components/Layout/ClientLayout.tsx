@@ -200,7 +200,7 @@ const ClientLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const clientId = user?.id || "client-1";
-  const { profile } = useClientStage(clientId);
+  const { profile, allProfiles, selectedProfileId, setSelectedProfileId } = useClientStage(clientId);
   const { unreadCount, notifications, markAllAsRead } = useNotifications(clientId);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
