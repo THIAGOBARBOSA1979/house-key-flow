@@ -42,6 +42,7 @@ const INITIAL_TICKETS: SupportTicket[] = [
     clientName: 'João Silva',
     propertyName: 'Edifício Aurora',
     unitNumber: '101',
+    subject: 'Dúvida sobre manutenção preventiva',
     status: 'closed',
     priority: 'medium',
     category: 'technical',
@@ -77,7 +78,7 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   createTicket(clientId: string, clientName: string, data: any, context?: { propertyId?: string, propertyName?: string, unitNumber?: string }): SupportTicket {
     const createdAt = new Date();
     // Default 24h SLA for initial response
-    const slaDeadline = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000);
+    const slaDeadline = new Date(createdAt.getTime() + 48 * 60 * 60 * 1000); // 48h SLA
 
     return super.create({
       clientId,
