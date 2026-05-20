@@ -152,5 +152,3 @@ export default function Inspections() {
   );
 }
 
-// Missing import fix
-import { BarChart } from "lucide-react";
