@@ -97,18 +97,18 @@ const ClientProperties = () => {
   }
 
   return (
-    <div className="space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-foreground flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-2xl">
-              <Building2 className="h-8 w-8 text-primary" />
+          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-4 leading-tight">
+            <div className="p-3 bg-primary/10 rounded-2xl shadow-inner border border-primary/20 text-primary">
+              <Building2 className="h-8 w-8" strokeWidth={3} />
             </div>
-            Minha Unidade
+            Minha Unidade & Ativo
           </h1>
-          <p className="text-muted-foreground mt-1 font-medium">
-            Ficha técnica detalhada e documentação exclusiva do seu imóvel.
+          <p className="text-muted-foreground mt-2 font-bold text-sm">
+            Ficha técnica detalhada, especificações e dossiê documental do seu imóvel.
           </p>
         </div>
         <div className="flex items-center gap-3">
