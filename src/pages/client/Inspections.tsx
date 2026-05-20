@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 import { safeFormat } from "@/lib/utils";
 import { StartInspectionDialog } from "@/components/Inspection/StartInspectionDialog";
 import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
