@@ -27,7 +27,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
                   ...p, 
                   notifications: { 
                     ...p.notifications, 
-                    client: { ...(p.notifications?.client || {}), email: v } 
+                    client: { 
+                      email: true, sms: true, push: true,
+                      ...(p.notifications?.client || {}), 
+                      email: v 
+                    } 
                   }
                 }))}
               />
@@ -40,7 +44,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
                   ...p, 
                   notifications: { 
                     ...p.notifications, 
-                    client: { ...(p.notifications?.client || {}), sms: v } 
+                    client: { 
+                      email: true, sms: true, push: true,
+                      ...(p.notifications?.client || {}), 
+                      sms: v 
+                    } 
                   }
                 }))}
               />
@@ -53,7 +61,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
                   ...p, 
                   notifications: { 
                     ...p.notifications, 
-                    client: { ...(p.notifications?.client || {}), push: v } 
+                    client: { 
+                      email: true, sms: true, push: true,
+                      ...(p.notifications?.client || {}), 
+                      push: v 
+                    } 
                   }
                 }))}
               />
@@ -72,7 +84,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
                   ...p, 
                   notifications: { 
                     ...p.notifications, 
-                    team: { ...(p.notifications?.team || {}), email: v } 
+                    team: { 
+                      email: true, sms: false, system: true,
+                      ...(p.notifications?.team || {}), 
+                      email: v 
+                    } 
                   }
                 }))}
               />
@@ -85,7 +101,11 @@ export const NotificationsTab = ({ settings, setSettings }: NotificationsTabProp
                   ...p, 
                   notifications: { 
                     ...p.notifications, 
-                    team: { ...(p.notifications?.team || {}), system: v } 
+                    team: { 
+                      email: true, sms: false, system: true,
+                      ...(p.notifications?.team || {}), 
+                      system: v 
+                    } 
                   }
                 }))}
               />
