@@ -27,6 +27,8 @@ const formSchema = z.object({
   phone: z.string().min(10, "Telefone inválido"),
   specialty: z.string().min(2, "Informe pelo menos uma especialidade"),
   status: z.enum(["active", "inactive"]),
+  experienceLevel: z.enum(["junior", "mid", "senior"]),
+  notes: z.string().optional(),
 });
 
 interface TechnicianFormProps {
@@ -44,6 +46,8 @@ export function TechnicianForm({ initialData, onSubmit, onCancel }: TechnicianFo
       phone: initialData?.phone || "",
       specialty: initialData?.specialty.join(", ") || "",
       status: initialData?.status || "active",
+      experienceLevel: initialData?.experienceLevel || "mid",
+      notes: initialData?.notes || "",
     },
   });
 
@@ -115,23 +119,62 @@ export function TechnicianForm({ initialData, onSubmit, onCancel }: TechnicianFo
           )}
         />
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="rounded-xl h-11">
+                      <SelectValue placeholder="Selecione o status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="active">Ativo</SelectItem>
+                    <SelectItem value="inactive">Inativo</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="experienceLevel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nível de Experiência</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="rounded-xl h-11">
+                      <SelectValue placeholder="Selecione o nível" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="junior">Junior (Iniciante)</SelectItem>
+                    <SelectItem value="mid">Pleno (Intermediário)</SelectItem>
+                    <SelectItem value="senior">Sênior (Especialista)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
-          name="status"
+          name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="rounded-xl h-11">
-                    <SelectValue placeholder="Selecione o status" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="active">Ativo</SelectItem>
-                  <SelectItem value="inactive">Inativo</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Observações Internas</FormLabel>
+              <FormControl>
+                <Input placeholder="Qualificações, restrições ou observações relevantes..." className="rounded-xl h-11" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
