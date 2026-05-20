@@ -101,7 +101,7 @@ const Financial = () => {
         </div>
       </div>
 
-      <InstallmentsTable installments={installments} formatCurrency={formatCurrency} />
+      <InstallmentsTable installments={installments} formatCurrency={formatCurrency} onPay={handlePay} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
         <AntecipationSimulator formatCurrency={formatCurrency} />
