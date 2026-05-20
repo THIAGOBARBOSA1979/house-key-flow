@@ -63,9 +63,10 @@ class TechnicianService extends SupabaseBaseService<Technician> {
   constructor() {
     super({
       storageKey: "a2_technicians",
-      supabaseTable: "profiles" as keyof Database['public']['Tables'], // Using profiles as a fallback for technicians
+      supabaseTable: "technicians" as any, // Standardizing table name even if sync is off
       auditEntityType: "user",
-      shouldSyncWithSupabase: false // Disable sync if table doesn't strictly match schema
+      shouldSyncWithSupabase: false
+
     }, INITIAL_TECHNICIANS);
   }
 
