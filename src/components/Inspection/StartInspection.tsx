@@ -1,16 +1,14 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks";
-import { Check, X, Upload, Camera, AlertCircle, ArrowLeft, ClipboardList, CheckCircle2 } from "lucide-react";
-import { checklistService, ChecklistTemplate, ChecklistGroup, ChecklistItem } from "@/services";
+import { checklistService, ChecklistGroup } from "@/services";
 import { inspectionService } from "@/services";
 import { documentService } from "@/services";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { ChecklistProgress } from "./Checklist/ChecklistProgress";
+import { ChecklistGroupTabs } from "./Checklist/ChecklistGroupTabs";
+import { ChecklistItemCard } from "./Checklist/ChecklistItemCard";
+import { InspectionSummary } from "./Checklist/InspectionSummary";
 
 export const StartInspection = ({ 
   inspectionId, 
@@ -49,22 +47,16 @@ export const StartInspection = ({
 
       if (inspection?.checklistId) {
         const template = checklistService.getTemplateById(inspection.checklistId);
-        if (template) {
-          if (template.groups) {
-            setGroups(template.groups.map(g => ({
-              ...g,
-              items: g.items.map(item => ({
-                ...item,
-                conformity: item.conformity || "pending"
-              }))
-            })));
-          } else {
-            setGroups([{
-              id: "default",
-              name: "Geral",
-              items: []
-            }]);
-          }
+        if (template && template.groups) {
+          setGroups(template.groups.map(g => ({
+            ...g,
+            items: g.items.map(item => ({
+              ...item,
+              conformity: item.conformity || "pending"
+            }))
+          })));
+        } else {
+          setGroups([{ id: "default", name: "Geral", items: [] }]);
         }
       }
       setLoading(false);
@@ -94,9 +86,7 @@ export const StartInspection = ({
           ? {
               ...group,
               items: group.items.map(item => 
-                item.id === itemId 
-                  ? { ...item, conformity: value }
-                  : item
+                item.id === itemId ? { ...item, conformity: value } : item
               )
             }
           : group
@@ -111,9 +101,7 @@ export const StartInspection = ({
           ? {
               ...group,
               items: group.items.map(item => 
-                item.id === itemId 
-                  ? { ...item, notes }
-                  : item
+                item.id === itemId ? { ...item, notes } : item
               )
             }
           : group
@@ -122,7 +110,7 @@ export const StartInspection = ({
   };
   
   const handleReset = () => {
-    if (window.confirm("Tem certeza que deseja limpar todo o progresso?")) {
+    if (window.confirm("Tem certeza que deseja limpar todo o progresso técnico coletado até agora?")) {
       setGroups(prev => prev.map(g => ({
         ...g,
         items: g.items.map(i => ({ ...i, conformity: "pending", notes: "" }))
@@ -137,7 +125,7 @@ export const StartInspection = ({
     if (!signature.trim()) {
       toast({
         title: "Assinatura necessária",
-        description: "Por favor, informe seu nome para confirmar.",
+        description: "Por favor, informe o nome do responsável técnico para assinar o laudo.",
         variant: "destructive"
       });
       return;
@@ -145,93 +133,36 @@ export const StartInspection = ({
 
     setIsSubmitting(true);
     
-    // Count non-conforming items
-    const nonConformCount = groups.reduce((acc, group) => 
-      acc + group.items.filter(item => item.conformity === "nonconform").length, 0);
-    
-    // Simulate submission to backend
     setTimeout(() => {
-      const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}.`;
+      const nonConformCount = nonConformItems.length;
       const inspection = inspectionService.getAll().find(i => i.id === inspectionId);
+      const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}.`;
+      
       inspectionService.updateStatus(inspectionId, "complete", completionDetails);
 
-      // Gerar documento de vistoria e solicitar assinaturas digitais
       const doc = documentService.createDocument({
         title: `Relatório de Vistoria - ${inspection?.property || 'Unidade'}`,
         type: "auto",
         category: "relatorio",
-        description: `Relatório gerado automaticamente após vistoria finalizada em ${new Date().toLocaleDateString()}.`,
+        description: `Relatório técnico estruturado após vistoria finalizada em ${new Date().toLocaleDateString()}.`,
         priority: "medium",
-        associatedTo: {
-          property: inspection?.property,
-          client: inspection?.client
-        },
+        associatedTo: { property: inspection?.property, client: inspection?.client },
         visible: true,
         status: "published",
         createdBy: signature,
-        template: `RELATÓRIO DE VISTORIA TÉCNICA
-        
-EMPREENDIMENTO: ${inspection?.property || 'N/A'}
-CLIENTE: ${inspection?.client || 'N/A'}
-DATA: ${new Date().toLocaleDateString()}
-RESPONSÁVEL: ${signature}
-
-RESUMO:
-- Total de itens verificados: ${totalItems}
-- Itens em conformidade: ${totalItems - nonConformCount}
-- Não conformidades: ${nonConformCount}
-
-NOTAS GERAIS:
-${extraNotes || 'Nenhuma observação extra.'}
-
-ITENS COM FALHA:
-${nonConformItems.map(i => `- ${i.name || i.description}: ${i.notes || 'Sem observações'}`).join('\n')}
-
-Este documento serve como registro oficial da vistoria realizada.`
+        template: `LAUDO TÉCNICO DE VISTORIA\n\nEMPREENDIMENTO: ${inspection?.property || 'N/A'}\nCLIENTE: ${inspection?.client || 'N/A'}\nDATA: ${new Date().toLocaleDateString()}\nRESPONSÁVEL: ${signature}\n\nRESUMO:\n- Total de itens verificados: ${totalItems}\n- Itens em conformidade: ${totalItems - nonConformCount}\n- Não conformidades detectadas: ${nonConformCount}\n\nNOTAS GERAIS:\n${extraNotes || 'Nenhuma observação extra.'}\n\nITENS COM FALHA:\n${nonConformItems.map(i => `- ${i.name || i.description}: ${i.notes || 'Sem observações'}`).join('\n')}`
       });
 
-      // Adicionar signatários automáticos (Engenheiro e Cliente)
-      documentService.addSigner(doc.id, {
-        name: signature,
-        email: "engenheiro@a2.com",
-        role: "Engenheiro Responsável",
-        confirmationMethod: "email",
-        order: 1
-      });
-
+      documentService.addSigner(doc.id, { name: signature, email: "engenheiro@a2.com", role: "Engenheiro Responsável", confirmationMethod: "email", order: 1 });
       if (inspection?.client) {
-        documentService.addSigner(doc.id, {
-          name: inspection.client,
-          email: "cliente@exemplo.com",
-          role: "Cliente / Comprador",
-          confirmationMethod: "email",
-          order: 2
-        });
+        documentService.addSigner(doc.id, { name: inspection.client, email: "cliente@exemplo.com", role: "Cliente / Comprador", confirmationMethod: "email", order: 2 });
       }
 
-      toast({
-        title: "Vistoria finalizada com sucesso!",
-        description: `${nonConformCount} itens necessitam de atenção. Assinado por: ${signature}`,
-      });
-      
+      toast({ title: "Vistoria homologada com sucesso!", description: `Relatório gerado e enviado para assinaturas digitais.` });
       localStorage.removeItem(`inspection_progress_${inspectionId}`);
       
-      if (nonConformCount > 0) {
-        toast({
-          title: "Não Conformidades registradas",
-          description: `${nonConformCount} itens foram marcados como 'Não Conforme'. Recomenda-se gerar solicitações de assistência técnica.`,
-          variant: "destructive"
-        });
-      }
-      
       if (onComplete) {
-        onComplete({
-          inspectionId,
-          completedAt: new Date(),
-          groups,
-          nonConformCount,
-          signature
-        });
+        onComplete({ inspectionId, completedAt: new Date(), groups, nonConformCount, signature });
       }
       setIsSubmitting(false);
     }, 1500);
@@ -241,94 +172,25 @@ Este documento serve como registro oficial da vistoria realizada.`
     return (
       <div className="flex flex-col items-center justify-center p-12 space-y-4">
         <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-muted-foreground font-medium">Carregando...</p>
+        <p className="text-muted-foreground font-bold tracking-tight">Sincronizando dados técnicos...</p>
       </div>
     );
   }
 
   if (showSummary) {
     return (
-      <div className="space-y-6 animate-in fade-in duration-300">
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setShowSummary(false)}>
-            <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
-          </Button>
-          <h2 className="text-xl font-bold">Resumo da Vistoria</h2>
-        </div>
-
-        <Card className="border-primary/20 bg-primary/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-bold uppercase tracking-wider text-primary">Status Final</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-background p-3 rounded-lg border">
-                <p className="text-xs text-muted-foreground uppercase">Itens Conformes</p>
-                <p className="text-2xl font-bold text-green-600">{allItems.filter(i => i.conformity === "conform").length}</p>
-              </div>
-              <div className="bg-background p-3 rounded-lg border">
-                <p className="text-xs text-muted-foreground uppercase">Não Conformes</p>
-                <p className="text-2xl font-bold text-red-600">{nonConformItems.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {nonConformItems.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="font-bold text-sm flex items-center gap-2 text-red-600">
-              <AlertCircle className="h-4 w-4" /> Itens Não Conformes
-            </h3>
-            <div className="space-y-2">
-              {nonConformItems.map(item => (
-                <div key={item.id} className="p-3 border-l-4 border-l-red-500 bg-red-50 rounded-r-lg">
-                  <p className="font-bold text-sm text-red-900">{item.name || item.description}</p>
-                  {item.notes && <p className="text-xs text-red-700 mt-1 italic">"{item.notes}"</p>}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <Card className="border-muted bg-muted/5">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Observações Finais da Vistoria</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Textarea 
-              placeholder="Adicione observações gerais sobre a unidade ou o processo..."
-              value={extraNotes}
-              onChange={(e) => setExtraNotes(e.target.value)}
-              className="min-h-[80px] bg-background"
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Assinatura Digital</CardTitle>
-            <CardDescription>Confirme a realização da vistoria</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="signature">Nome Completo</Label>
-              <Input 
-                id="signature" 
-                placeholder="Digite seu nome para assinar" 
-                value={signature}
-                onChange={e => setSignature(e.target.value)}
-              />
-            </div>
-            <Button 
-              className="w-full h-12 text-lg font-bold" 
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Finalizando..." : "Confirmar e Enviar"}
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <InspectionSummary 
+        totalItems={totalItems}
+        conformCount={totalItems - nonConformItems.length}
+        nonConformItems={nonConformItems}
+        extraNotes={extraNotes}
+        onExtraNotesChange={setExtraNotes}
+        signature={signature}
+        onSignatureChange={setSignature}
+        onBack={() => setShowSummary(false)}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+      />
     );
   }
 
@@ -336,98 +198,55 @@ Este documento serve como registro oficial da vistoria realizada.`
   const isLastGroup = currentGroupIndex === groups.length - 1;
 
   return (
-    <div className="space-y-6">
-      <div className="bg-muted/30 p-4 rounded-xl border border-border/10">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-[10px] font-bold uppercase text-primary tracking-widest">Progresso: {progress}%</span>
-          <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs text-destructive hover:bg-destructive/10">
-            Resetar
-          </Button>
-        </div>
-        <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-          <div className="h-full bg-primary transition-all duration-500" style={{ width: `${progress}%` }} />
-        </div>
-      </div>
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <ChecklistProgress progress={progress} onReset={handleReset} />
 
-      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-        {groups.map((g, idx) => {
-          const groupDone = g.items.every(i => i.conformity !== "pending");
-          return (
-            <Button
-              key={g.id}
-              variant={currentGroupIndex === idx ? "default" : "outline"}
-              size="sm"
-              onClick={() => setCurrentGroupIndex(idx)}
-              className={cn("whitespace-nowrap rounded-full", groupDone && "border-green-500")}
-            >
-              {groupDone && <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" />}
-              {g.name}
-            </Button>
-          );
-        })}
-      </div>
+      <ChecklistGroupTabs 
+        groups={groups} 
+        currentIndex={currentGroupIndex} 
+        onSelect={setCurrentGroupIndex} 
+      />
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold text-foreground">{currentGroup.name}</h2>
+      <div className="space-y-4 min-h-[300px]">
+        <h2 className="text-xl font-bold text-foreground/90 flex items-center gap-2">
+          {currentGroup.name}
+          <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full font-bold text-muted-foreground">
+            {currentGroup.items.length} ITENS
+          </span>
+        </h2>
         {currentGroup.items.map(item => (
-          <Card key={item.id} className="overflow-hidden border-none shadow-sm bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-4 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                <span className="font-semibold text-sm leading-tight">{item.name || item.description}</span>
-                <div className="flex gap-2 shrink-0">
-                  <Button
-                    size="sm"
-                    variant={item.conformity === "conform" ? "default" : "outline"}
-                    className={item.conformity === "conform" ? "bg-green-600 hover:bg-green-700" : "hover:border-green-500 hover:text-green-600"}
-                    onClick={() => handleConformityChange(currentGroup.id, item.id, "conform")}
-                  >
-                    <Check className="h-3 w-3 mr-1" /> OK
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant={item.conformity === "nonconform" ? "default" : "outline"}
-                    className={item.conformity === "nonconform" ? "bg-red-600 hover:bg-red-700" : "hover:border-red-500 hover:text-red-600"}
-                    onClick={() => handleConformityChange(currentGroup.id, item.id, "nonconform")}
-                  >
-                    <X className="h-3 w-3 mr-1" /> Falha
-                  </Button>
-                </div>
-              </div>
-
-              {item.conformity !== "pending" && (
-                <div className="animate-in slide-in-from-top-2 duration-200 space-y-2">
-                  <Textarea
-                    placeholder="Observações (opcional)"
-                    className="text-xs min-h-[60px]"
-                    value={item.notes || ""}
-                    onChange={e => handleNotesChange(currentGroup.id, item.id, e.target.value)}
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <ChecklistItemCard 
+            key={item.id}
+            item={item}
+            onConformityChange={(val) => handleConformityChange(currentGroup.id, item.id, val)}
+            onNotesChange={(notes) => handleNotesChange(currentGroup.id, item.id, notes)}
+          />
         ))}
       </div>
 
-      <div className="flex justify-between pt-4 border-t sticky bottom-0 bg-background/80 backdrop-blur-sm py-4">
+      <div className="flex justify-between pt-6 border-t sticky bottom-0 bg-background/95 backdrop-blur-md py-4 z-10">
         <Button 
           variant="outline" 
           onClick={() => setCurrentGroupIndex(prev => prev - 1)}
           disabled={currentGroupIndex === 0}
+          className="rounded-xl h-11 px-6 font-bold"
         >
           Anterior
         </Button>
         {isLastGroup ? (
           <Button 
-            className="bg-primary hover:bg-primary/90 font-bold"
+            className="bg-primary hover:bg-primary/90 font-bold h-11 px-8 rounded-xl shadow-lg transition-all active:scale-95"
             disabled={completedItems < totalItems}
             onClick={() => setShowSummary(true)}
           >
-            Revisar e Finalizar
+            Revisar Protocolo
           </Button>
         ) : (
-          <Button onClick={() => setCurrentGroupIndex(prev => prev + 1)}>
-            Próximo
+          <Button 
+            onClick={() => setCurrentGroupIndex(prev => prev + 1)}
+            className="h-11 px-8 rounded-xl font-bold transition-all active:scale-95"
+          >
+            Próxima Seção
           </Button>
         )}
       </div>
