@@ -55,7 +55,8 @@ describe('Service Logic Regression', () => {
 
   it('Services should trigger audit logs through BaseService', async () => {
     const { auditLogService } = await import('@/services/core/AuditLogService');
-    const spy = vi.spyOn(auditLogService, 'logAction');
+    // The actual method in BaseService calls auditLogService.logAction
+    const spy = vi.spyOn(auditLogService, 'logAction').mockResolvedValue(true as any);
     
     propertyService.create({ 
       name: 'New Project', 

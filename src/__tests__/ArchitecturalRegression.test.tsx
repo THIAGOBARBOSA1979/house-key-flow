@@ -1,6 +1,6 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { BaseService } from '@/services/BaseService';
+import { SupabaseBaseService } from '@/services/SupabaseBaseService';
 import { Supabase } from '@/integrations/supabase';
 
 // Mock Supabase globally is already done in setup.ts, 
@@ -13,7 +13,7 @@ describe('Architectural Regression - BaseService', () => {
     company_id?: string;
   }
 
-  class TestService extends BaseService<TestItem> {}
+  class TestService extends SupabaseBaseService<TestItem> {}
 
   let service: TestService;
 
@@ -23,6 +23,7 @@ describe('Architectural Regression - BaseService', () => {
     
     service = new TestService({
       storageKey: 'regression_test',
+      supabaseTable: 'audit_logs' as any,
       auditEntityType: 'user',
       shouldSyncWithSupabase: true
     }, []);
@@ -35,7 +36,7 @@ describe('Architectural Regression - BaseService', () => {
     
     service.create(newItem, 'tenant-1');
     
-    expect(spy).toHaveBeenCalledWith('regression_test', expect.objectContaining({
+    expect(spy).toHaveBeenCalledWith('audit_logs', expect.objectContaining({
       name: 'Test Item',
       company_id: 'tenant-1'
     }));
@@ -47,7 +48,7 @@ describe('Architectural Regression - BaseService', () => {
     
     service.update(item.id, { name: 'Updated' }, true);
     
-    expect(spy).toHaveBeenCalledWith('regression_test', item.id, expect.objectContaining({
+    expect(spy).toHaveBeenCalledWith('audit_logs', item.id, expect.objectContaining({
       name: 'Updated'
     }));
   });
@@ -58,7 +59,7 @@ describe('Architectural Regression - BaseService', () => {
     
     service.delete(item.id);
     
-    expect(spy).toHaveBeenCalledWith('regression_test', item.id);
+    expect(spy).toHaveBeenCalledWith('audit_logs', item.id);
   });
 
   it('should enforce tenant isolation in getAll', () => {
