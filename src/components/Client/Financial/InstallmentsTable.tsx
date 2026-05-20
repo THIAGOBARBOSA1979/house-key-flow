@@ -8,6 +8,7 @@ import { Installment } from "@/services";
 interface InstallmentsTableProps {
   installments: Installment[];
   formatCurrency: (val: number) => string;
+  onPay?: (id: string) => void;
 }
 
 export const InstallmentsTable = ({ installments, formatCurrency }: InstallmentsTableProps) => {
