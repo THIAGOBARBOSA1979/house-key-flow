@@ -14,7 +14,6 @@ import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
 
 import { useClientDashboardData } from "@/hooks/core/useClientDashboardData";
 import { PropertyInfoCard } from "@/components/Dashboard/Client/PropertyInfoCard";
-import { QuickSummaryCard } from "@/components/Dashboard/Client/QuickSummaryCard";
 import { ReferralCard } from "@/components/Dashboard/Client/ReferralCard";
 import { TechnicalSheet } from "@/components/Dashboard/Client/TechnicalSheet";
 
@@ -25,7 +24,6 @@ const Dashboard = () => {
   
   const {
     isLoading,
-    financialSummary,
     allDocs,
     allInspections,
     warrantyRequests
@@ -136,14 +134,7 @@ const Dashboard = () => {
           contractDate={userInfo.contractDate}
         />
 
-        {/* Quick Summary Card */}
-        <QuickSummaryCard 
-          allDocsCount={allDocs.length}
-          completedInspectionsCount={allInspections.filter(i => i.status === 'complete').length}
-          activeWarrantiesCount={warrantyRequests.filter(r => r.currentStage !== 'completed' && r.currentStage !== 'rejected').length}
-          financialProgress={financialSummary.progress}
-          unreadNotificationsCount={unreadCount}
-        />
+        <ReferralCard />
       </ResponsiveGrid>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap">
@@ -169,7 +160,6 @@ const Dashboard = () => {
         </div>
         
         <div className="space-y-8">
-          <ReferralCard />
           <TechnicalSheet />
         </div>
       </div>

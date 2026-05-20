@@ -75,12 +75,6 @@ export const DashboardCharts = ({
     return data;
   }, [warranties]);
 
-  const revenueData = useMemo(() => {
-    return financialData.revenueByMonth.map(item => ({
-      name: item.month,
-      valor: item.value
-    }));
-  }, [financialData]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

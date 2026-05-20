@@ -91,7 +91,6 @@ const Dashboard = () => {
       <DashboardCharts 
         inspections={inspections} 
         warranties={warrantyClaims} 
-        financialData={financialMetrics} 
       />
       
       <QuickActions />

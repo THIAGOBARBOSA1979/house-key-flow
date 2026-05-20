@@ -23,7 +23,7 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
 
   return {
     isLoading,
-    financialSummary,
+    
     allDocs,
     allInspections,
     upcomingInspections,
