@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuth();
     
     // Listen for auth changes
-    const subscription = Supabase.auth.onAuthStateChange((event, session) => {
+    const subscription = Supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         localStorage.removeItem('auth_user');
@@ -125,6 +125,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return () => {
       subscription.unsubscribe();
+      window.removeEventListener('storage', handleStorageChange);
       cleanup();
     };
   }, [checkAuth, logout]);

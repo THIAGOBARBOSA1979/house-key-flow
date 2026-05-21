@@ -13,6 +13,7 @@ export const AuditProgressOverlay: React.FC = () => {
   // Auto-mark fixes for Wave 1
   useAuditMarker('Menu lateral responsivo no mobile apresenta sobreposição indesejada');
   useAuditMarker('Redirecionamentos de login legados (/admin/login) precisam de validação extra');
+  useAuditMarker('Persistência de sessão em abas múltiplas causando logouts inesperados');
 
   // Logic to move to next wave
   React.useEffect(() => {
