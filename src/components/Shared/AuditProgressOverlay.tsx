@@ -3,7 +3,7 @@ import { useAuditStore, AuditIssue } from '@/hooks/useAuditStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, AlertCircle, Clock, Layout, Package, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Clock, Layout, Package, ShieldCheck, Activity } from 'lucide-react';
 
 export const AuditProgressOverlay: React.FC = () => {
   const { issues, waves, currentWave, getCompletionPercentage } = useAuditStore();
