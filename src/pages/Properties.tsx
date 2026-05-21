@@ -107,7 +107,9 @@ const Properties = () => {
         isLoading={isLoading}
         isError={!!propertiesError}
         error={{
-          message: (propertiesError as any)?.message
+          code: (propertiesError as any)?.code,
+          message: (propertiesError as any)?.message,
+          retry: refreshList
         }}
         skeletonType="card"
         viewMode={viewMode}

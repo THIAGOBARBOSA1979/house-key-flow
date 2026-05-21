@@ -111,6 +111,7 @@ function DataViewComponent<T>({
     return (
       <ErrorView 
         code={error?.code}
+        title={error?.title || t('common.error_protocol', 'Protocolo de Instabilidade')}
         message={error?.message || t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
         onRetry={error?.retry}
         fullScreen

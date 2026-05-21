@@ -37,7 +37,8 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
       const { data, error } = await Supabase.db.findMany<T>(this.supabaseTable, { filters });
       
       if (error) {
-        return this.handleSyncError(error);
+        this.handleSyncError(error, 'sync');
+        return this.items;
       }
 
       if (data) {
@@ -49,7 +50,8 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
       
       return this.items;
     } catch (err) {
-      return this.handleSyncError(err);
+      this.handleSyncError(err, 'sync_catch');
+      return this.items;
     }
   }
 
