@@ -120,7 +120,12 @@ const ClientProperties = () => {
         </div>
       </div>
 
-
+      <FeatureGate
+        isAllowed={true}
+        requiredStage="registered"
+        featureName="O dossiê da unidade"
+        redirectTo="/client"
+      >
       {/* Hero Property Card */}
       <Card className="bg-white border-none shadow-2xl overflow-hidden rounded-[2.5rem] group border border-border/10">
         <div className="flex flex-col lg:flex-row min-h-[500px]">
