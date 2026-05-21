@@ -36,10 +36,11 @@ export class AppError extends Error {
     this.retryable = options.retryable ?? false;
     this.timestamp = new Date();
 
-    // Maintain proper stack trace (only available in V8 environments like Chrome/Node)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AppError);
+    // Maintain proper stack trace in supporting environments
+    if ((Error as any).captureStackTrace) {
+      (Error as any).captureStackTrace(this, AppError);
     }
+
   }
 
   static fromError(error: any, context?: string): AppError {

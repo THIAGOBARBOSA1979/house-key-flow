@@ -1,4 +1,6 @@
 import { type AuditAction, type AuditEntityType } from "@/services/core/AuditLogService";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
+
 
 type Listener<T> = (items: T[]) => void;
 
@@ -50,9 +52,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
   protected handleError(error: any, context: string): never {
-    const { errorHandler } = require("@/utils/errors/ErrorHandler");
     throw errorHandler.handle(error, `BaseService:${this.options.storageKey}:${context}`);
   }
+
 
 
 
