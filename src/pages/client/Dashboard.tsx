@@ -32,10 +32,6 @@ const Dashboard = () => {
   const userId = user?.id || "";
   const { profile, stage, isLoading: stageLoading, error: stageError, refreshProfile } = useClientStage(userId);
   
-  useAuditMarker('Mocks de dados no ConstructionFeed precisam ser substituídos por dados do Supabase');
-  useAuditMarker('Cards de "Vistorias" e "Garantias" no Dashboard sem fallback de estado vazio');
-  useAuditMarker('Layout do "Command Center" quebra em tablets na orientação vertical');
-  
   const {
     isLoading: dashboardLoading,
     error: dashboardError,
@@ -152,7 +148,7 @@ const Dashboard = () => {
             block={profile?.block}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch">
             <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden h-full">
               <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all">
                 <ClipboardCheck size={120} />
@@ -162,20 +158,20 @@ const Dashboard = () => {
                   <ClipboardCheck size={24} />
                 </div>
                 <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest">
-                  {upcomingInspections && upcomingInspections.length > 0 ? `${upcomingInspections.length} Agendadas` : "Vistorias"}
+                  {upcomingInspections && upcomingInspections.length > 0 ? `${upcomingInspections.length} Agendadas` : "Aguardando"}
                 </Badge>
               </div>
               <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">
-                {upcomingInspections && upcomingInspections.length > 0 ? "Vistoria em Andamento" : "Acompanhamento Técnico"}
+                {upcomingInspections && upcomingInspections.length > 0 ? "Vistoria em Andamento" : "Vistorias Técnicas"}
               </h3>
               <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
                 {upcomingInspections && upcomingInspections.length > 0 
                   ? `Você possui ${upcomingInspections.length} vistorias programadas para sua unidade.` 
-                  : "Gerencie protocolos de vistoria e laudos ABNT da sua unidade."}
+                  : "Nenhum protocolo de vistoria agendado no momento para sua unidade."}
               </p>
-              <Link to="/client/inspections" className="relative z-10 block">
+              <Link to="/client/inspections" className="relative z-10 block mt-auto">
                 <Button className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 shadow-lg shadow-primary/20">
-                  Ver Vistorias <ArrowRight size={14} className="ml-2" />
+                  {upcomingInspections && upcomingInspections.length > 0 ? "Ver Vistorias" : "Acessar Módulo"} <ArrowRight size={14} className="ml-2" />
                 </Button>
               </Link>
             </Card>
@@ -189,18 +185,18 @@ const Dashboard = () => {
                   <ShieldCheck size={24} />
                 </div>
                 <Badge className="bg-indigo-100 text-indigo-600 border-none font-black text-[10px] uppercase tracking-widest">
-                  {warrantyRequests && warrantyRequests.length > 0 ? `${warrantyRequests.length} Ativas` : "Garantias"}
+                  {warrantyRequests && warrantyRequests.length > 0 ? `${warrantyRequests.length} Ativas` : "Protegido"}
                 </Badge>
               </div>
               <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">Assistência Técnica</h3>
               <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
                 {warrantyRequests && warrantyRequests.length > 0 
                   ? `Existem ${warrantyRequests.length} solicitações de assistência técnica em processamento.` 
-                  : "Abra protocolos de assistência técnica com rastreabilidade total."}
+                  : "Seu imóvel está coberto. Nenhuma solicitação de reparo ativa no momento."}
               </p>
-              <Link to="/client/warranty" className="relative z-10 block">
+              <Link to="/client/warranty" className="relative z-10 block mt-auto">
                 <Button variant="outline" className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 border-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
-                  Gerenciar Garantias <ArrowRight size={14} className="ml-2" />
+                  {warrantyRequests && warrantyRequests.length > 0 ? "Gerenciar Garantias" : "Solicitar Suporte"} <ArrowRight size={14} className="ml-2" />
                 </Button>
               </Link>
             </Card>
