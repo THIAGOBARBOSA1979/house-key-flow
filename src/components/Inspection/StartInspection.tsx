@@ -133,48 +133,57 @@ export const StartInspection = ({
 
     setIsSubmitting(true);
     
-    setTimeout(() => {
-      const nonConformCount = nonConformItems.length;
-      const inspection = inspectionService.getAll().find(i => i.id === inspectionId);
-      const totalCount = totalItems || 1;
-      const conformityScore = Math.round(((totalCount - nonConformCount) / totalCount) * 100);
-      
-      const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}. Score de Conformidade: ${conformityScore}%.`;
-      
-      inspectionService.update(inspectionId, { 
-        status: "complete", 
-        notes: (inspection?.notes || "") + "\n" + completionDetails,
-        conformityScore,
-        nonConformitiesFound: nonConformCount
-      });
+    const runSubmission = async () => {
+      try {
+        const nonConformCount = nonConformItems.length;
+        const inspection = inspectionService.getAll().find(i => i.id === inspectionId);
+        const totalCount = totalItems || 1;
+        const conformityScore = Math.round(((totalCount - nonConformCount) / totalCount) * 100);
+        
+        const completionDetails = `Vistoria finalizada por ${signature}. Itens conformes: ${totalItems - nonConformCount}/${totalItems}. Score de Conformidade: ${conformityScore}%.`;
+        
+        await inspectionService.update(inspectionId, { 
+          status: "complete", 
+          notes: (inspection?.notes || "") + "\n" + completionDetails,
+          conformityScore,
+          nonConformitiesFound: nonConformCount
+        });
 
-      const doc = documentService.createDocument({
-        title: `Relatório de Vistoria - ${inspection?.property || 'Unidade'}`,
-        type: "auto",
-        category: "relatorio",
-        description: `Relatório técnico estruturado após vistoria finalizada em ${new Date().toLocaleDateString()}.`,
-        priority: "medium",
-        associatedTo: { property: inspection?.property, client: inspection?.client },
-        visible: true,
-        status: "published",
-        createdBy: signature,
-        template: `LAUDO TÉCNICO DE VISTORIA\n\nEMPREENDIMENTO: ${inspection?.property || 'N/A'}\nCLIENTE: ${inspection?.client || 'N/A'}\nDATA: ${new Date().toLocaleDateString()}\nRESPONSÁVEL: ${signature}\n\nRESUMO:\n- Total de itens verificados: ${totalItems}\n- Itens em conformidade: ${totalItems - nonConformCount}\n- Não conformidades detectadas: ${nonConformCount}\n\nNOTAS GERAIS:\n${extraNotes || 'Nenhuma observação extra.'}\n\nITENS COM FALHA:\n${nonConformItems.map(i => `- ${i.name || i.description}: ${i.notes || 'Sem observações'}`).join('\n')}`
-      });
+        const doc = await documentService.createDocument({
+          title: `Relatório de Vistoria - ${inspection?.property || 'Unidade'}`,
+          type: "auto",
+          category: "relatorio",
+          description: `Relatório técnico estruturado após vistoria finalizada em ${new Date().toLocaleDateString()}.`,
+          priority: "medium",
+          associatedTo: { property: inspection?.property, client: inspection?.client },
+          visible: true,
+          status: "published",
+          createdBy: signature,
+          template: `LAUDO TÉCNICO DE VISTORIA\n\nEMPREENDIMENTO: ${inspection?.property || 'N/A'}\nCLIENTE: ${inspection?.client || 'N/A'}\nDATA: ${new Date().toLocaleDateString()}\nRESPONSÁVEL: ${signature}\n\nRESUMO:\n- Total de itens verificados: ${totalItems}\n- Itens em conformidade: ${totalItems - nonConformCount}\n- Não conformidades detectadas: ${nonConformCount}\n\nNOTAS GERAIS:\n${extraNotes || 'Nenhuma observação extra.'}\n\nITENS COM FALHA:\n${nonConformItems.map(i => `- ${i.name || i.description}: ${i.notes || 'Sem observações'}`).join('\n')}`
+        });
 
-      documentService.addSigner(doc.id, { name: signature, email: "engenheiro@a2.com", role: "Engenheiro Responsável", confirmationMethod: "email", order: 1 });
-      if (inspection?.client) {
-        documentService.addSigner(doc.id, { name: inspection.client, email: "cliente@exemplo.com", role: "Cliente / Comprador", confirmationMethod: "email", order: 2 });
+        await documentService.addSigner(doc.id, { name: signature, email: "engenheiro@a2.com", role: "Engenheiro Responsável", confirmationMethod: "email", order: 1 });
+        if (inspection?.client) {
+          await documentService.addSigner(doc.id, { name: inspection.client, email: "cliente@exemplo.com", role: "Cliente / Comprador", confirmationMethod: "email", order: 2 });
+        }
+
+        toast({ title: "Vistoria homologada com sucesso!", description: `Relatório gerado e enviado para assinaturas digitais.` });
+        localStorage.removeItem(`inspection_progress_${inspectionId}`);
+        
+        if (onComplete) {
+          onComplete({ inspectionId, completedAt: new Date(), groups, nonConformCount, signature });
+        }
+      } catch (err) {
+        console.error("Submission error", err);
+        toast({ title: "Erro na finalização", description: "Não foi possível salvar os dados da vistoria.", variant: "destructive" });
+      } finally {
+        setIsSubmitting(false);
       }
+    };
 
-      toast({ title: "Vistoria homologada com sucesso!", description: `Relatório gerado e enviado para assinaturas digitais.` });
-      localStorage.removeItem(`inspection_progress_${inspectionId}`);
-      
-      if (onComplete) {
-        onComplete({ inspectionId, completedAt: new Date(), groups, nonConformCount, signature });
-      }
-      setIsSubmitting(false);
-    }, 1500);
+    runSubmission();
   };
+
   
   if (loading) {
     return (
