@@ -503,7 +503,6 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     // Trigger status automation
     import("./WarrantyAutomationService").then(({ warrantyAutomationService }) => {
       warrantyAutomationService.onStatusChange(requestId, request.currentStage, newStatus, changedBy, isAutomatic);
-    });
     }).catch(e => {
       console.error("Erro ao importar automação de garantia:", e);
     });
