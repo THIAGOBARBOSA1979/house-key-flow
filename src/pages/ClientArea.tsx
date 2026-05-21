@@ -30,8 +30,8 @@ const ClientArea = () => {
 
   const handleCreateClient = async (data: any) => {
     try {
-      const { error } = await (userService as any).createProfile(data);
-      if (error) throw error;
+      const result = await userService.createProfile(data);
+      if (result.error) throw result.error;
       
       toast({
         title: "Cliente criado",
