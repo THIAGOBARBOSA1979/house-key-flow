@@ -144,6 +144,7 @@ const Announcements = () => {
         </Button>
       </PageHeader>
 
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="md:col-span-1 rounded-3xl border-none bg-primary/5 shadow-none p-6 space-y-4">
           <div className="p-3 bg-white w-fit rounded-2xl shadow-sm">
