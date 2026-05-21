@@ -64,6 +64,88 @@ export type Database = {
           },
         ]
       }
+      checklist_items: {
+        Row: {
+          abnt_reference: string | null
+          description: string | null
+          group_name: string
+          id: string
+          name: string
+          required: boolean | null
+          sort_order: number | null
+          template_id: string
+        }
+        Insert: {
+          abnt_reference?: string | null
+          description?: string | null
+          group_name: string
+          id?: string
+          name: string
+          required?: boolean | null
+          sort_order?: number | null
+          template_id: string
+        }
+        Update: {
+          abnt_reference?: string | null
+          description?: string | null
+          group_name?: string
+          id?: string
+          name?: string
+          required?: boolean | null
+          sort_order?: number | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_items_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "checklist_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checklist_templates: {
+        Row: {
+          category: string | null
+          company_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          title: string
+          updated_at: string | null
+          version: number | null
+        }
+        Insert: {
+          category?: string | null
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+          version?: number | null
+        }
+        Update: {
+          category?: string | null
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+          version?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_templates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           created_at: string
@@ -99,6 +181,149 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      construction_updates: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_global: boolean | null
+          progress_data: Json | null
+          property_id: string | null
+          status: string
+          title: string
+          update_type: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_global?: boolean | null
+          progress_data?: Json | null
+          property_id?: string | null
+          status?: string
+          title: string
+          update_type: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_global?: boolean | null
+          progress_data?: Json | null
+          property_id?: string | null
+          status?: string
+          title?: string
+          update_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "construction_updates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "construction_updates_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          category: string
+          client_id: string | null
+          company_id: string
+          created_at: string | null
+          created_by: string | null
+          file_name: string | null
+          file_size: string | null
+          file_url: string | null
+          id: string
+          property_id: string | null
+          status: string
+          title: string
+          unit_number: string | null
+          updated_at: string | null
+          version: number | null
+          visible_to_client: boolean | null
+        }
+        Insert: {
+          category: string
+          client_id?: string | null
+          company_id: string
+          created_at?: string | null
+          created_by?: string | null
+          file_name?: string | null
+          file_size?: string | null
+          file_url?: string | null
+          id?: string
+          property_id?: string | null
+          status?: string
+          title: string
+          unit_number?: string | null
+          updated_at?: string | null
+          version?: number | null
+          visible_to_client?: boolean | null
+        }
+        Update: {
+          category?: string
+          client_id?: string | null
+          company_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          file_name?: string | null
+          file_size?: string | null
+          file_url?: string | null
+          id?: string
+          property_id?: string | null
+          status?: string
+          title?: string
+          unit_number?: string | null
+          updated_at?: string | null
+          version?: number | null
+          visible_to_client?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       inspections: {
         Row: {
@@ -138,6 +363,57 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          company_id: string
+          content: string | null
+          created_at: string | null
+          id: string
+          link: string | null
+          read_at: string | null
+          title: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -249,6 +525,245 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_messages: {
+        Row: {
+          company_id: string
+          content: string
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          is_internal: boolean | null
+          receiver_id: string | null
+          sender_id: string
+        }
+        Insert: {
+          company_id: string
+          content: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          is_internal?: boolean | null
+          receiver_id?: string | null
+          sender_id: string
+        }
+        Update: {
+          company_id?: string
+          content?: string
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          is_internal?: boolean | null
+          receiver_id?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      technicians: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          email: string | null
+          experience_level: string | null
+          id: string
+          name: string
+          phone: string | null
+          rating: number | null
+          specialties: string[] | null
+          status: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          email?: string | null
+          experience_level?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          rating?: number | null
+          specialties?: string[] | null
+          status?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          email?: string | null
+          experience_level?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          rating?: number | null
+          specialties?: string[] | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technicians_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warranty_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string | null
+          from_status: string | null
+          id: string
+          notes: string | null
+          request_id: string
+          to_status: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string | null
+          from_status?: string | null
+          id?: string
+          notes?: string | null
+          request_id: string
+          to_status: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string | null
+          from_status?: string | null
+          id?: string
+          notes?: string | null
+          request_id?: string
+          to_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_history_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "warranty_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warranty_requests: {
+        Row: {
+          actual_cost: number | null
+          assigned_technician_id: string | null
+          category: string
+          client_id: string
+          company_id: string
+          created_at: string | null
+          description: string | null
+          estimated_cost: number | null
+          id: string
+          internal_notes: string | null
+          priority: string
+          property_id: string
+          sla_deadline: string | null
+          status: string
+          title: string
+          unit_number: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_cost?: number | null
+          assigned_technician_id?: string | null
+          category: string
+          client_id: string
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          estimated_cost?: number | null
+          id?: string
+          internal_notes?: string | null
+          priority?: string
+          property_id: string
+          sla_deadline?: string | null
+          status?: string
+          title: string
+          unit_number: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_cost?: number | null
+          assigned_technician_id?: string | null
+          category?: string
+          client_id?: string
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          estimated_cost?: number | null
+          id?: string
+          internal_notes?: string | null
+          priority?: string
+          property_id?: string
+          sla_deadline?: string | null
+          status?: string
+          title?: string
+          unit_number?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_requests_assigned_technician_id_fkey"
+            columns: ["assigned_technician_id"]
+            isOneToOne: false
+            referencedRelation: "technicians"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_requests_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_requests_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
             referencedColumns: ["id"]
           },
         ]
