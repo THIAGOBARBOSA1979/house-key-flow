@@ -106,9 +106,12 @@ export class NotificationService extends BaseService<ClientNotification> {
   async markAllAsRead(clientId: string): Promise<void> {
     const clientNotifs = this.getNotifications(clientId);
     for (const n of clientNotifs) {
-      if (!n.read) await this.update(n.id!, { read: true } as any);
+      if (!n.read) {
+        await this.update(n.id!, { read: true } as any);
+      }
     }
   }
+
 
 
   deleteNotification(notificationId: string): boolean {

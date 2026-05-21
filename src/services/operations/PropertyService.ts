@@ -136,6 +136,7 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
 
+
   async batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
     const property = this.getById(propertyId);
     if (!property) return null;
