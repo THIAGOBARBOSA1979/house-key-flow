@@ -1,4 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
+import { ErrorView } from "@/components/Shared/ErrorView";
+
 import { Button } from "@/components/ui/button";
 import { 
   Calendar, ClipboardCheck, User, MapPin, List, CheckCircle, Clock, 
@@ -32,19 +34,27 @@ export default function ClientInspections() {
   const { toast } = useToast();
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [inspections, setInspections] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSignatureOpen, setIsSignatureOpen] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
 
+
   const loadInspections = () => {
-    const raw = inspectionService.getAll().filter(i => i && i.client === (user?.name || "João Silva"));
-    setInspections(raw.map(i => ({ 
-      ...i, 
-      title: i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica', 
-      scheduledDate: i.date 
-    })));
-    if (raw.length > 0 && !selectedInspection) setSelectedInspection(raw[0].id);
+    try {
+      setError(null);
+      const raw = inspectionService.getAll().filter(i => i && i.client === (user?.name || "João Silva"));
+      setInspections(raw.map(i => ({ 
+        ...i, 
+        title: i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica', 
+        scheduledDate: i.date 
+      })));
+      if (raw.length > 0 && !selectedInspection) setSelectedInspection(raw[0].id);
+    } catch (err) {
+      setError("Falha ao carregar vistorias.");
+    }
   };
+
 
   useEffect(() => { loadInspections(); }, [user]);
 
@@ -79,7 +89,16 @@ export default function ClientInspections() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="container-responsive py-20">
+        <ErrorView message={error} onRetry={loadInspections} fullScreen />
+      </div>
+    );
+  }
+
   return (
+
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       <DigitalSignatureDialog
         isOpen={isSignatureOpen}

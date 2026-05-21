@@ -1,4 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
+import { ErrorView } from "@/components/Shared/ErrorView";
+
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Plus, Lock, CheckCircle, TrendingUp, Activity } from "lucide-react";
@@ -25,8 +27,9 @@ const ClientWarranty = () => {
   const [searchParams] = useSearchParams();
   const inspectionId = searchParams.get("inspectionId");
   
-  const { claims, metrics, cancelClaim, addInfo, createClaim } = useWarrantyClaims(clientId, user?.name);
-  const { canRequestWarranty, stage, isLoading } = useClientStage(clientId);
+  const { claims, metrics, cancelClaim, addInfo, createClaim, error: warrantyError } = useWarrantyClaims(clientId, user?.name);
+  const { canRequestWarranty, stage, isLoading, refreshProfile } = useClientStage(clientId);
+
   
   const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -92,7 +95,16 @@ const ClientWarranty = () => {
     );
   }
 
+  if (warrantyError) {
+    return (
+      <div className="container-responsive py-20">
+        <ErrorView message={(warrantyError as any)?.message || "Erro ao carregar garantias."} onRetry={refreshProfile} fullScreen />
+      </div>
+    );
+  }
+
   return (
+
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="space-y-1">
