@@ -19,6 +19,8 @@ import { ReferralCard } from "@/components/Dashboard/Client/ReferralCard";
 import { TechnicalSheet } from "@/components/Dashboard/Client/TechnicalSheet";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+
 
 const Dashboard = () => {
   const { user } = useAuth();
