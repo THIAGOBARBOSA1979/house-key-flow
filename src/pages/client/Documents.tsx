@@ -180,36 +180,39 @@ export default function ClientDocuments() {
             <StatsCard label="Favoritos" value={stats.favorites} icon={Star} variant="brand" className="rounded-[2rem] border-none shadow-sem-sm" />
           </ResponsiveGrid>
 
-          <Card className="rounded-3xl border-none shadow-md overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1 group">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                  <Input 
-                    placeholder="Buscar por título ou descrição..." 
-                    className="pl-10 h-10 rounded-xl border-2 focus-visible:ring-primary/20 transition-all" 
-                    value={search} 
-                    onChange={(e) => setSearch(e.target.value)} 
-                  />
-                </div>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-full md:w-[220px] h-10 rounded-xl border-2">
-                    <div className="flex items-center gap-2">
-                      <Filter size={14} className="text-muted-foreground" />
-                      <SelectValue placeholder="Categoria Estratégica" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl border-none shadow-xl">
-                    <SelectItem value="all">Todas as Categorias</SelectItem>
-                    <SelectItem value="contrato">Contratos & Aditivos</SelectItem>
-                    <SelectItem value="planta">Plantas & Projetos</SelectItem>
-                    <SelectItem value="manual">Manuais Técnicos</SelectItem>
-                    <SelectItem value="financeiro">Comprovantes Financeiros</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+      <Card className="rounded-[2rem] border-none shadow-sem-lg overflow-hidden bg-white/70 backdrop-blur-md">
+        <CardContent className="p-8">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="relative flex-1 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-all" />
+              <Input 
+                placeholder="Localizar contrato, planta ou manual..." 
+                className="pl-12 h-14 rounded-2xl border-none bg-muted/30 focus-visible:ring-primary/20 transition-all font-bold text-base" 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)} 
+              />
+            </div>
+            <div className="flex gap-4">
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="w-full md:w-[240px] h-14 rounded-2xl border-none bg-muted/30 font-bold px-6">
+                  <div className="flex items-center gap-3">
+                    <Filter size={18} className="text-primary" />
+                    <SelectValue placeholder="Categoria" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl border-none shadow-sem-xl">
+                  <SelectItem value="all" className="rounded-xl font-bold">Todas Categorias</SelectItem>
+                  <SelectItem value="contrato" className="rounded-xl font-bold">Contratos & Aditivos</SelectItem>
+                  <SelectItem value="planta" className="rounded-xl font-bold">Plantas & Projetos</SelectItem>
+                  <SelectItem value="manual" className="rounded-xl font-bold">Manuais Técnicos</SelectItem>
+                  <SelectItem value="financeiro" className="rounded-xl font-bold">Financeiro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDocuments.map((doc) => (

@@ -6,6 +6,8 @@ import { Lock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ClientStage, STAGE_CONFIG } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+
 
 interface FeatureGateProps {
   children: ReactNode;
@@ -78,30 +80,30 @@ export function FeatureGate({
 
   // Block variant (default)
   return (
-    <Card className="border-dashed border-primary/30 bg-primary/5">
-      <CardHeader className="text-center pt-8">
-        <div className="w-16 h-16 rounded-full bg-background flex items-center justify-center mx-auto mb-4 shadow-sm border">
-          <Lock className="h-8 w-8 text-primary" />
+    <Card className="border-none bg-primary/5 rounded-[2.5rem] overflow-hidden shadow-sem-lg group">
+      <CardHeader className="text-center p-12 pb-6">
+        <div className="w-20 h-20 rounded-[1.5rem] bg-white flex items-center justify-center mx-auto mb-6 shadow-xl border border-primary/10 group-hover:scale-110 transition-transform duration-500">
+          <Lock className="h-10 w-10 text-primary" strokeWidth={2.5} />
         </div>
-        <CardTitle className="text-xl font-bold">Funcionalidade Bloqueada</CardTitle>
-        <CardDescription className="text-base font-medium max-w-sm mx-auto">
+        <CardTitle className="text-2xl font-black tracking-tighter">Acesso Restrito</CardTitle>
+        <CardDescription className="text-base font-bold text-muted-foreground/80 max-w-sm mx-auto mt-2 leading-relaxed">
           {displayMessage}
         </CardDescription>
       </CardHeader>
       {(redirectTo || requiredStage) && (
-        <CardContent className="text-center pb-8">
+        <CardContent className="text-center p-12 pt-4">
           {requiredStage && (
-            <div className="inline-flex items-center gap-2 bg-background px-4 py-2 rounded-full border mb-6 text-sm">
-              <span className="text-muted-foreground">Etapa necessária:</span>
-              <span className="font-bold text-primary">{STAGE_CONFIG[requiredStage].label}</span>
+            <div className="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-2xl border border-primary/10 mb-8 shadow-sm">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Etapa Necessária</span>
+              <Badge variant="outline" className="font-black border-primary/20 text-primary uppercase text-[10px] tracking-widest">{STAGE_CONFIG[requiredStage].label}</Badge>
             </div>
           )}
           {redirectTo && (
             <div>
               <Link to={redirectTo}>
-                <Button className="font-bold">
+                <Button className="font-black uppercase tracking-widest text-[11px] h-14 px-10 rounded-2xl shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-all active:scale-95">
                   {redirectLabel}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" strokeWidth={3} />
                 </Button>
               </Link>
             </div>
@@ -111,6 +113,7 @@ export function FeatureGate({
     </Card>
   );
 }
+
 
 // Utility component for disabled buttons
 interface GatedButtonProps {

@@ -82,23 +82,26 @@ export default function ClientInspections() {
         document={{ title: "Relatório de Vistoria", type: "auto" } as any} 
       />
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-1">
-          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-4 leading-tight">
-            <div className="p-3 bg-primary/10 rounded-2xl shadow-inner border border-primary/20 text-primary">
-              <ClipboardCheck className="h-8 w-8" strokeWidth={3} />
-            </div>
-            Vistorias Técnicas & Entrega
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+             <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Controle de Qualidade • ABNT</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
+            Vistorias & Entrega <span className="text-primary">.</span>
           </h1>
-          <p className="text-muted-foreground font-bold text-sm">Acompanhe seus agendamentos, laudos ABNT e o status de homologação da sua unidade.</p>
         </div>
         {(stage !== 'inspection_enabled' && stage !== 'warranty_enabled') && (
-          <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-200 animate-in slide-in-from-right-4">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <p className="text-xs text-amber-800 font-bold leading-tight">Módulo aguardando liberação estratégica pela incorporadora.</p>
+          <div className="flex items-center gap-4 p-5 bg-amber-50 rounded-[1.5rem] border border-amber-200/50 shadow-sm animate-in slide-in-from-right-8 duration-slow">
+            <div className="p-2 bg-amber-100 rounded-xl text-amber-600">
+              <AlertTriangle className="h-5 w-5" strokeWidth={3} />
+            </div>
+            <p className="text-xs text-amber-900 font-bold leading-tight max-w-[240px]">Aguardando liberação estratégica pela incorporadora para agendamento.</p>
           </div>
         )}
       </div>
+
 
       <ResponsiveGrid columns={4} gap="layout">
         <StatsCard 

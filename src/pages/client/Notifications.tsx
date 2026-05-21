@@ -97,17 +97,16 @@ const ClientNotifications = () => {
   return (
     <div className="space-y-6 pb-20 md:pb-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
-            <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
-              <Bell className="h-8 w-8" />
-            </div>
-            Notificações
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+             <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Radar de Eventos • Notificações</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
+            Notificações <span className="text-primary">.</span>
           </h1>
-          <p className="text-muted-foreground mt-2 font-medium">
-            Fique por dentro de todas as atualizações importantes sobre seu imóvel.
-          </p>
         </div>
+
         
         <div className="flex items-center gap-3">
           {activeTab === 'list' && unreadNotifications.length > 0 && (

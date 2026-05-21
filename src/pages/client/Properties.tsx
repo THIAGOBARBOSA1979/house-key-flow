@@ -99,27 +99,26 @@ const ClientProperties = () => {
   return (
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-4 leading-tight">
-            <div className="p-3 bg-primary/10 rounded-2xl shadow-inner border border-primary/20 text-primary">
-              <Building2 className="h-8 w-8" strokeWidth={3} />
-            </div>
-            Minha Unidade & Ativo
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+             <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Ativo Imobiliário • Dossiê Técnico</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
+            Minha Unidade <span className="text-primary">.</span>
           </h1>
-          <p className="text-muted-foreground mt-2 font-bold text-sm">
-            Ficha técnica detalhada, especificações e dossiê documental do seu imóvel.
-          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge className="bg-primary/5 text-primary border-primary/10 font-black uppercase tracking-widest px-4 py-2 rounded-xl">
+        <div className="flex items-center gap-4">
+          <Badge className="bg-primary/5 text-primary border-primary/20 font-black uppercase tracking-widest px-5 py-2.5 rounded-2xl shadow-sm">
             {profile?.unitNumber ? `Unidade ${profile.unitNumber}` : "Unidade 204"}
           </Badge>
-          <Badge className="bg-green-500/5 text-green-600 border-green-200 font-black uppercase tracking-widest px-4 py-2 rounded-xl">
-            Vistoriado
+          <Badge className="bg-emerald-500 text-white border-none font-black uppercase tracking-widest px-5 py-2.5 rounded-2xl shadow-lg shadow-emerald-500/20">
+            Homologado
           </Badge>
         </div>
       </div>
+
 
       {/* Hero Property Card */}
       <Card className="bg-white border-none shadow-2xl overflow-hidden rounded-[2.5rem] group border border-border/10">
