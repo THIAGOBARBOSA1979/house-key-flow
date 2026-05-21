@@ -1,6 +1,6 @@
 import { Supabase, FilterParams } from "@/integrations/supabase";
 import { Database } from "@/integrations/supabase/types";
-import { BaseService } from "@/services/BaseService";
+import { SupabaseBaseService } from "@/services/SupabaseBaseService";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -49,7 +49,7 @@ export interface AuditLogEntry {
   metadata?: any;
 }
 
-class AuditLogService extends BaseService<any> {
+class AuditLogService extends SupabaseBaseService<any> {
   constructor() {
     super({ 
       storageKey: "audit_logs", 

@@ -1,4 +1,4 @@
-import { BaseService } from "../BaseService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
 import { formatRelativeTime } from "@/utils/formatters";
 
 import { 
@@ -8,7 +8,7 @@ import {
   NotificationSettings
 } from '@/types/clientFlow';
 
-export class NotificationService extends BaseService<ClientNotification> {
+export class NotificationService extends SupabaseBaseService<ClientNotification> {
   private settingsMap: Map<string, NotificationSettings> = new Map();
   private settingsKey = "a2_notification_settings";
 
