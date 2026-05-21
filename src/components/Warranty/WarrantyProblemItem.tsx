@@ -9,21 +9,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 // Categories for warranty claims
 const warrantyCategories = [
-  "Hidráulica",
-  "Elétrica",
-  "Estrutural", 
-  "Vedação e Impermeabilização",
-  "Acabamento",
-  "Esquadrias",
-  "Equipamentos",
+  "Instalações Hidráulicas",
+  "Instalações Elétricas",
+  "Estrutura", 
+  "Impermeabilização",
+  "Revestimentos e Acabamentos",
+  "Esquadrias e Vidros",
+  "Equipamentos e Máquinas",
+  "Pintura",
   "Outros"
 ];
 
 // Severity options
 const severityOptions = [
-  { value: "low", label: "Leve" },
-  { value: "moderate", label: "Moderada" },
-  { value: "high", label: "Grave" },
+  { value: "low", label: "Leve (Estético/Funcionalidade Parcial)" },
+  { value: "moderate", label: "Moderada (Comprometimento de Uso)" },
+  { value: "high", label: "Grave (Risco Imediato/Dano Estrutural)" },
 ];
 
 export interface WarrantyProblem {
