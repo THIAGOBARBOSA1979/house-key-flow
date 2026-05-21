@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { companyService, Company, CompanyStatus, SubscriptionPlan, CompanySettings } from "@/services";
 import { userService } from "@/services";
 import { useToast } from "@/hooks";
@@ -7,7 +7,11 @@ import { useAuth } from "@/contexts/AuthContext";
 export const useSaaSAdmin = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [companies, setCompanies] = useState<Company[]>(() => companyService.getAll(undefined, true));
+  const [companies, setCompanies] = useState<Company[]>([]);
+
+  useEffect(() => {
+    companyService.getAll(undefined, true).then(setCompanies);
+  }, []);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -116,8 +120,9 @@ export const useSaaSAdmin = () => {
         updated_at: new Date()
       });
       
-      const updated = companyService.getById(selectedCompany.id, undefined, true);
-      if (updated) setSelectedCompany(updated);
+      companyService.getById(selectedCompany.id, undefined, true).then(updated => {
+        if (updated) setSelectedCompany(updated);
+      });
       
       refreshCompanies();
       setIsEditing(false);

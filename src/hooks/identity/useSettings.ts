@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { systemSettingsService, SystemSettings } from "@/services";
@@ -7,7 +7,7 @@ import { companyService, CompanySettings } from "@/services";
 export const useSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [settings, setSettings] = useState<SystemSettings>(systemSettingsService.getSettings());
+  const [settings, setSettings] = useState<SystemSettings>(() => systemSettingsService.getSettingsSync());
   const [companySettings, setCompanySettings] = useState<CompanySettings>({});
 
   useEffect(() => {
