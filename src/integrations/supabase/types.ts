@@ -146,6 +146,75 @@ export type Database = {
           },
         ]
       }
+      client_profiles: {
+        Row: {
+          block: string | null
+          company_id: string | null
+          created_at: string | null
+          current_stage: string
+          email: string
+          floor: string | null
+          id: string
+          name: string
+          phone: string | null
+          property_id: string | null
+          property_name: string | null
+          stage_history: Json | null
+          unit_number: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          block?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          current_stage?: string
+          email: string
+          floor?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          property_id?: string | null
+          property_name?: string | null
+          stage_history?: Json | null
+          unit_number?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          block?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          current_stage?: string
+          email?: string
+          floor?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          property_id?: string | null
+          property_name?: string | null
+          stage_history?: Json | null
+          unit_number?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_profiles_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           created_at: string
