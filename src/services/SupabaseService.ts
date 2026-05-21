@@ -1,5 +1,7 @@
 import { Supabase, FilterParams, PaginationParams, SupabaseResponse } from '@/integrations/supabase';
 import { Database } from '@/integrations/supabase/types';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+
 
 export abstract class SupabaseService<T extends { id: string; company_id?: string }> {
   protected table: keyof Database['public']['Tables'];
@@ -29,8 +31,9 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     });
 
     if (error) {
-      throw new Error(error.message);
+      throw errorHandler.handle(error, `SupabaseService:${this.table}:getAll`);
     }
+
 
     return data || [];
   }
@@ -57,8 +60,9 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     const { data, error } = await Supabase.db.create<T>(this.table, dataToInsert);
 
     if (error || !data) {
-      throw new Error(error?.message || 'Failed to create item');
+      throw errorHandler.handle(error || new Error('Failed to create item'), `SupabaseService:${this.table}:create`);
     }
+
     return data;
   }
 
@@ -66,8 +70,9 @@ export abstract class SupabaseService<T extends { id: string; company_id?: strin
     const { data: updated, error } = await Supabase.db.update<T>(this.table, id, data, idColumn);
 
     if (error || !updated) {
-      throw new Error(error?.message || 'Failed to update item');
+      throw errorHandler.handle(error || new Error('Failed to update item'), `SupabaseService:${this.table}:update`);
     }
+
     return updated;
   }
 
