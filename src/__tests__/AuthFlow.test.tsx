@@ -80,6 +80,11 @@ describe('Auth Flow', () => {
       </BrowserRouter>
     );
 
+    // Wait for initial load
+    await waitFor(() => {
+      expect(screen.getByTestId('loading-status').textContent).toBe('Loaded');
+    });
+
     // Initial check (from localStorage)
     expect(screen.getByTestId('auth-status').textContent).toBe('Authenticated');
 
@@ -89,7 +94,10 @@ describe('Auth Flow', () => {
       logoutBtn.click();
     });
 
-    expect(screen.getByTestId('auth-status').textContent).toBe('Not Authenticated');
+    await waitFor(() => {
+      expect(screen.getByTestId('auth-status').textContent).toBe('Not Authenticated');
+    });
+    
     expect(localStorage.getItem('auth_user')).toBeNull();
   });
 });
