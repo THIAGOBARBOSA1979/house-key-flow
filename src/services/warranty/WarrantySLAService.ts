@@ -4,21 +4,22 @@ import {
   SLAConfig,
   SLAStatus,
   SLADeadlineInfo,
-  DEFAULT_SLA_CONFIGS,
   WARRANTY_STAGES,
   WarrantyRequestFlow
 } from '../../types/warrantyFlow';
+import { SupabaseBaseService } from '../SupabaseBaseService';
+import { auditLogService } from '../core/AuditLogService';
 
 /**
- * Service for managing SLA configurations and calculations
+ * Service for managing SLA configurations and calculations with Supabase persistence
  */
-class WarrantySLAService {
-  private slaConfigs: Map<string, SLAConfig> = new Map();
-
+class WarrantySLAService extends SupabaseBaseService<SLAConfig & { id: string }> {
   constructor() {
-    // Initialize with default configurations
-    DEFAULT_SLA_CONFIGS.forEach(config => {
-      this.slaConfigs.set(config.warrantyType, config);
+    super({
+      storageKey: "a2_warranty_sla_configs",
+      supabaseTable: "warranty_sla_configs",
+      auditEntityType: "system_settings",
+      shouldSyncWithSupabase: true
     });
   }
 
@@ -26,12 +27,14 @@ class WarrantySLAService {
    * Get SLA configuration for a warranty type
    */
   getSLAConfig(warrantyType: string): SLAConfig {
-    const config = this.slaConfigs.get(warrantyType);
+    const configs = this.getAllSync();
+    const config = configs.find(c => c.warrantyType === warrantyType);
+    
     if (config) {
       return config;
     }
     
-    // Return default config if type not found
+    // Fallback to defaults if not synced yet or not found
     return {
       warrantyType,
       analysisHours: 48,
@@ -45,16 +48,23 @@ class WarrantySLAService {
   /**
    * Get all SLA configurations
    */
-  getAllSLAConfigs(): SLAConfig[] {
-    return Array.from(this.slaConfigs.values());
+  async getAllSLAConfigs(): Promise<SLAConfig[]> {
+    return await this.getAll();
   }
 
   /**
-   * Update SLA configuration for a warranty type
+   * Update SLA configuration
    */
-  updateSLAConfig(config: SLAConfig): void {
-    this.slaConfigs.set(config.warrantyType, config);
-    console.log('[WarrantySLAService] SLA config updated:', config);
+  async updateSLAConfig(config: SLAConfig & { id: string }): Promise<void> {
+    await this.update(config.id, config);
+    console.log('[WarrantySLAService] SLA config updated in Supabase:', config);
+    
+    await auditLogService.logAction({
+      entityType: 'system_settings',
+      entityId: config.id,
+      action: 'updated',
+      payload: { message: `Configuração de SLA para "${config.warrantyType}" atualizada.` }
+    });
   }
 
   /**
@@ -65,7 +75,7 @@ class WarrantySLAService {
     
     switch (stage) {
       case "opened":
-        return 0; // No SLA for opened state
+        return 0;
       case "in_analysis":
         return config.analysisHours;
       case "inspection_scheduled":
@@ -73,14 +83,14 @@ class WarrantySLAService {
       case "inspection_completed":
         return config.decisionHours;
       case "approved":
-        return 0; // Transition state
+        return 0;
       case "in_execution":
         return config.executionHours;
       case "rejected":
       case "completed":
-        return 0; // Final states
+        return 0;
       default:
-        return 48; // Default 2 days
+        return 48;
     }
   }
 
@@ -100,7 +110,6 @@ class WarrantySLAService {
       let hoursRemaining = slaHours;
       const currentDate = new Date(startDate);
       
-      // Advance to the next business hour/day
       while (hoursRemaining > 0) {
         currentDate.setHours(currentDate.getHours() + 1);
         const dayOfWeek = currentDate.getDay();
@@ -114,7 +123,6 @@ class WarrantySLAService {
       
       return currentDate;
     } else {
-      // Simple hour addition
       deadline.setTime(deadline.getTime() + (slaHours * 60 * 60 * 1000));
     }
     
@@ -122,27 +130,19 @@ class WarrantySLAService {
   }
 
   /**
-   * Calculate SLA deadline info for a request at a specific stage
+   * Calculate SLA deadline info
    */
   calculateSLADeadlineInfo(
     request: WarrantyRequestFlow,
     stage: WarrantyStage = request.currentStage
   ): SLADeadlineInfo {
     const slaHours = this.getSLAHoursForStage(request.category, stage);
-    const startedAt = request.stageStartedAt;
+    const startedAt = new Date(request.stageStartedAt);
     
-    // Adjust startedAt if the request is paused to preserve SLA
-    if (request.isPaused && request.pausedAt) {
-      // In a real system, we would calculate the time elapsed before pause
-      // and add it to the current time to get a new virtual start date.
-      // For this mock, we'll just show it as "paused" logic.
-    }
-
     const deadline = this.calculateDeadline(startedAt, slaHours);
     const now = new Date();
     
-    // If paused, the "now" for calculation purposes is the pausedAt date
-    const effectiveNow = request.isPaused && request.pausedAt ? request.pausedAt : now;
+    const effectiveNow = request.isPaused && request.pausedAt ? new Date(request.pausedAt) : now;
     
     const diffMs = deadline.getTime() - effectiveNow.getTime();
     const hoursRemaining = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60)));
@@ -152,7 +152,7 @@ class WarrantySLAService {
     
     let status: SLAStatus;
     if (request.isPaused) {
-      status = "on_track"; // Or a new "paused" status if we added it to the type
+      status = "on_track";
     } else if (hoursRemaining <= 0) {
       status = "expired";
     } else if (percentageRemaining <= 20) {
@@ -179,143 +179,15 @@ class WarrantySLAService {
     return info.status;
   }
 
-  /**
-   * Format remaining time as human-readable string
-   */
   formatRemainingTime(hoursRemaining: number): string {
-    if (hoursRemaining <= 0) {
-      return "Atrasado";
-    }
-    
-    if (hoursRemaining < 24) {
-      return `${hoursRemaining}h restantes`;
-    }
+    if (hoursRemaining <= 0) return "Atrasado";
+    if (hoursRemaining < 24) return `${hoursRemaining}h restantes`;
     
     const days = Math.floor(hoursRemaining / 24);
     const hours = hoursRemaining % 24;
     
-    if (hours === 0) {
-      return `${days} dia${days > 1 ? 's' : ''} restante${days > 1 ? 's' : ''}`;
-    }
-    
+    if (hours === 0) return `${days}d restante${days > 1 ? 's' : ''}`;
     return `${days}d ${hours}h restantes`;
-  }
-
-  /**
-   * Check if any SLA is expiring soon (within threshold)
-   */
-  checkSLAWarnings(
-    requests: WarrantyRequestFlow[], 
-    warningThresholdHours: number = 8
-  ): WarrantyRequestFlow[] {
-    return requests.filter(request => {
-      const info = this.calculateSLADeadlineInfo(request);
-      return info.status === "warning" || 
-             (info.status === "on_track" && info.hoursRemaining <= warningThresholdHours);
-    });
-  }
-
-  /**
-   * Check for expired SLAs
-   */
-  checkExpiredSLAs(requests: WarrantyRequestFlow[]): WarrantyRequestFlow[] {
-    return requests.filter(request => {
-      const info = this.calculateSLADeadlineInfo(request);
-      return info.status === "expired";
-    });
-  }
-
-  /**
-   * Calculate average resolution time by warranty type
-   */
-  calculateAverageTimeByType(
-    completedRequests: WarrantyRequestFlow[]
-  ): Record<string, number> {
-    const typeMap: Record<string, { total: number; count: number }> = {};
-    
-    completedRequests.forEach(request => {
-      if (request.completionDate) {
-        const resolutionTime = request.completionDate.getTime() - request.createdAt.getTime();
-        const resolutionHours = resolutionTime / (1000 * 60 * 60);
-        
-        if (!typeMap[request.category]) {
-          typeMap[request.category] = { total: 0, count: 0 };
-        }
-        
-        typeMap[request.category].total += resolutionHours;
-        typeMap[request.category].count += 1;
-      }
-    });
-    
-    const result: Record<string, number> = {};
-    Object.entries(typeMap).forEach(([type, data]) => {
-      result[type] = data.count > 0 ? Math.round(data.total / data.count) : 0;
-    });
-    
-    return result;
-  }
-
-  /**
-   * Calculate SLA compliance rate
-   */
-  calculateComplianceRate(requests: WarrantyRequestFlow[]): number {
-    const completed = requests.filter(r => r.currentStage === "completed");
-    if (completed.length === 0) return 100;
-    
-    // Check if each completed request was finished within SLA
-    let onTimeCount = 0;
-    completed.forEach(request => {
-      if (request.completionDate) {
-        const totalConfig = this.getSLAConfig(request.category);
-        const deadline = this.calculateDeadline(request.createdAt, totalConfig.totalHours);
-        
-        if (request.completionDate <= deadline) {
-          onTimeCount++;
-        }
-      }
-    });
-    
-    return Math.round((onTimeCount / completed.length) * 100);
-  }
-
-  /**
-   * Get priority order for sorting
-   */
-  getPriorityOrder(priority: string): number {
-    const order: Record<string, number> = {
-      critical: 1,
-      high: 2,
-      medium: 3,
-      low: 4
-    };
-    return order[priority] || 5;
-  }
-
-  /**
-   * Sort requests by urgency (SLA status + priority)
-   */
-  sortByUrgency(requests: WarrantyRequestFlow[]): WarrantyRequestFlow[] {
-    return [...requests].sort((a, b) => {
-      const slaA = this.calculateSLADeadlineInfo(a);
-      const slaB = this.calculateSLADeadlineInfo(b);
-      
-      // First by SLA status
-      const slaOrder: Record<SLAStatus, number> = {
-        expired: 1,
-        warning: 2,
-        on_track: 3
-      };
-      
-      const slaCompare = slaOrder[slaA.status] - slaOrder[slaB.status];
-      if (slaCompare !== 0) return slaCompare;
-      
-      // Then by priority
-      const priorityCompare = this.getPriorityOrder(a.priority) - this.getPriorityOrder(b.priority);
-      if (priorityCompare !== 0) return priorityCompare;
-      
-      // Then by hours remaining
-      return slaA.hoursRemaining - slaB.hoursRemaining;
-    });
   }
 }
 

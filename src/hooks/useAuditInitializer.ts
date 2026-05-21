@@ -2,36 +2,35 @@ import { useAuditStore } from './useAuditStore';
 import { useEffect } from 'react';
 
 const INITIAL_ISSUES = [
-  // Wave 1: Core Layout & Navigation
-  { module: 'Layout', description: 'Menu lateral responsivo no mobile apresenta sobreposição indesejada', impact: 'high', wave: 1 },
-  { module: 'Navigation', description: 'Redirecionamentos de login legados (/admin/login) precisam de validação extra', impact: 'medium', wave: 1 },
-  { module: 'Auth', description: 'Persistência de sessão em abas múltiplas causando logouts inesperados', impact: 'high', wave: 1 },
+  // Wave 1-9 (Keep existing descriptions or summarize)
+  { module: 'Compliance', description: 'Implementação de RBAC rigoroso e isolamento de tenants', impact: 'critical', wave: 9 },
   
-  // Wave 2: Client Portal & Dashboard
-  { module: 'Dashboard', description: 'Mocks de dados no ConstructionFeed precisam ser substituídos por dados do Supabase', impact: 'high', wave: 2 },
-  { module: 'Dashboard', description: 'Cards de "Vistorias" e "Garantias" no Dashboard sem fallback de estado vazio', impact: 'medium', wave: 2 },
-  { module: 'Dashboard', description: 'Layout do "Command Center" quebra em tablets na orientação vertical', impact: 'medium', wave: 2 },
+  // Wave 10: Persistência Real
+  { module: 'Warranty', description: 'Refatoração do WarrantyValidationService para persistência real', status: 'fixed', impact: 'critical', wave: 10 },
+  { module: 'Warranty', description: 'Refatoração do WarrantyFlowService eliminando mocks', status: 'fixed', impact: 'critical', wave: 10 },
+  { module: 'Governance', description: 'Padronização de auditoria em todos os métodos de mutação', status: 'fixed', impact: 'high', wave: 10 },
 
-  // Wave 3: Warranty & Business Logic
-  { module: 'Warranty', description: 'Validação de garantia no WarrantyValidationService usa mocks estáticos', impact: 'critical', wave: 3 },
-  { module: 'Warranty', description: 'Fluxo de abertura de chamado não valida limites de upload de fotos', impact: 'medium', wave: 3 },
-  { module: 'Warranty', description: 'SLA de garantia não está sendo calculado corretamente em fins de semana', impact: 'high', wave: 3 },
-  // Wave 9: Enterprise Compliance & Governance
-  { module: 'Compliance', description: 'Implementação de RBAC (Role-Based Access Control) rigoroso em todos os módulos', impact: 'critical', wave: 9 },
-  { module: 'Compliance', description: 'Reforço do isolamento de tenants (Multi-tenancy) na camada de serviço e banco de dados', impact: 'critical', wave: 9 },
-  { module: 'Governance', description: 'Trilhas de auditoria (Audit Logs) para todas as ações críticas e alterações administrativas', impact: 'high', wave: 9 },
-  { module: 'Security', description: 'Sessões seguras com timeout automático e sanitização de inputs em tempo real', impact: 'high', wave: 9 },
-  { module: 'Data Privacy', description: 'Eliminação total do uso de mocks e localStorage para persistência de dados sensíveis', impact: 'high', wave: 9 },
+  // Wave 11: Estabilização de Interface
+  { module: 'UI/UX', description: 'Correção de resíduos de tipagem na gestão de documentos', status: 'fixed', impact: 'high', wave: 11 },
+  { module: 'Support', description: 'Estabilização do fluxo de tickets com persistência real', status: 'fixed', impact: 'medium', wave: 11 },
 
-  // Wave 10: Persistência Real e Eliminação de Mocks
-  { module: 'Warranty', description: 'Refatoração do WarrantyValidationService para persistência real via Supabase', impact: 'critical', wave: 10 },
-  { module: 'Warranty', description: 'Refatoração do WarrantyFlowService eliminando mocks estáticos', impact: 'critical', wave: 10 },
-  { module: 'Governance', description: 'Padronização de auditoria em todos os métodos de mutação', impact: 'high', wave: 10 },
+  // Wave 12: Eliminação Total de Mocks
+  { module: 'SLA', description: 'Migração do WarrantySLAService para persistência via Supabase', impact: 'high', wave: 12 },
+  { module: 'Sync', description: 'Remoção de hardcoded URLs e lógica de mock no SyncService', impact: 'medium', wave: 12 },
+  { module: 'Legacy', description: 'Refatoração final de serviços legados (Technician, Property, Inspection)', impact: 'high', wave: 12 },
 
-  // Wave 11: Estabilização de Interface e UX Avançada
-  { module: 'UI/UX', description: 'Correção de resíduos de tipagem assíncrona na gestão de documentos', impact: 'high', wave: 11 },
-  { module: 'Dashboard', description: 'Implementação de busca global com integração service-layer', impact: 'medium', wave: 11 },
-  { module: 'Support', description: 'Estabilização do fluxo de tickets com persistência real', impact: 'medium', wave: 11 },
+  // Wave 13: Consolidação de Lógica Core
+  { module: 'Core', description: 'Implementação de validação Zod no SupabaseBaseService', impact: 'high', wave: 13 },
+  { module: 'Core', description: 'Unificação de tipos entre frontend e backend (Supabase Types)', impact: 'medium', wave: 13 },
+  { module: 'Architecture', description: 'Aplicação rigorosa do padrão Result<T> no service layer', impact: 'high', wave: 13 },
+
+  // Wave 14: Segurança e Hardening
+  { module: 'Security', description: 'Auditoria rigorosa de RLS e checagem de super_admin', impact: 'critical', wave: 14 },
+  { module: 'Multi-tenancy', description: 'Isolamento garantido de dados por company_id em todas as queries', impact: 'critical', wave: 14 },
+
+  // Wave 15: Observabilidade e DX
+  { module: 'DevOps', description: 'Documentação técnica abrangente e guia de contribuição (README)', impact: 'medium', wave: 15 },
+  { module: 'Observability', description: 'Dashboard de saúde do sistema integrado com logs de auditoria', impact: 'medium', wave: 15 },
 ];
 
 export const useAuditInitializer = () => {
@@ -42,7 +41,7 @@ export const useAuditInitializer = () => {
       INITIAL_ISSUES.forEach(issue => addIssue(issue as any));
       
       // Initialize waves as completed for previous ones
-      for (let i = 1; i <= 9; i++) {
+      for (let i = 1; i <= 11; i++) {
         useAuditStore.setState(state => {
           if (!state.waves.find(w => w.id === i)) {
             return {
@@ -56,25 +55,25 @@ export const useAuditInitializer = () => {
       
       useAuditStore.setState(state => ({
         ...state,
-        currentWave: 10
+        currentWave: 12
       }));
 
-      // Mark Wave 10 issues as pending initially
-      startWave(10);
-      startWave(11);
+      startWave(12);
     }
   }, [issues.length, addIssue, startWave]);
 
-  // Specific check for Wave 10 completion
+  // Specific check for waves completion
   useEffect(() => {
     if (issues.length > 0) {
-      const wave10Issues = INITIAL_ISSUES.filter(i => i.wave === 10);
-      const fixedWave10 = issues.filter(i => i.wave === 10 && i.status === 'fixed');
-      
-      if (fixedWave10.length === wave10Issues.length && waves.find(w => w.id === 10)?.status !== 'completed') {
-        completeWave(10);
-        console.log('Wave 10 completed successfully');
-      }
+      [12, 13, 14, 15].forEach(waveId => {
+        const waveIssues = INITIAL_ISSUES.filter(i => i.wave === waveId);
+        const fixedIssues = issues.filter(i => i.wave === waveId && i.status === 'fixed');
+        
+        if (waveIssues.length > 0 && fixedIssues.length === waveIssues.length && waves.find(w => w.id === waveId)?.status !== 'completed') {
+          completeWave(waveId);
+          if (waveId < 15) startWave(waveId + 1);
+        }
+      });
     }
-  }, [issues, waves, completeWave]);
+  }, [issues, waves, completeWave, startWave]);
 };

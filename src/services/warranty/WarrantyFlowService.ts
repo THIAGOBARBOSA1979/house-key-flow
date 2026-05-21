@@ -83,7 +83,9 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     this.internalLog('info', 'Creating new request', { title: data.title });
     const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
-    const slaConfig = DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === category) || DEFAULT_SLA_CONFIGS[0];
+    
+    // Get SLA config from DB-backed service
+    const slaConfig = warrantySLAService.getSLAConfig(category);
     
     const newRequest: WarrantyRequestFlow = {
       id,
@@ -102,9 +104,9 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       updatedAt: new Date(),
       slaStatus: "on_track",
       slaConfig,
-      slaDeadline: new Date(), // placeholder, updated below
-      assignedTo: undefined,
-      assignedToName: undefined,
+      slaDeadline: new Date(), // updated below
+      assignedTo: null,
+      assignedToName: null,
       history: [
         {
           id: crypto.randomUUID(),
