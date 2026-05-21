@@ -48,6 +48,11 @@ export const useUsers = () => {
     return matchesRole && matchesStatus && matchesSearch && matchesProperty && matchesUnit;
   }, []);
 
+  const listOptions = useMemo(() => ({
+    initialFilters: { role: "all", status: "all", property: "all", unit: "" },
+    filterFn
+  }), [filterFn]);
+
   const {
     filteredItems: filteredUsers,
     filters,
@@ -58,10 +63,7 @@ export const useUsers = () => {
     selectAll: selectAllItems,
     searchTerm,
     setSearchTerm,
-  } = useDataList<User>(userList, {
-    initialFilters: { role: "all", status: "all", property: "all", unit: "" },
-    filterFn
-  });
+  } = useDataList<User>(userList, listOptions);
 
   const stats = useMemo(() => 
     userService.getStats(companyId, currentUser?.is_super_admin), 
@@ -71,13 +73,12 @@ export const useUsers = () => {
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     try {
       if (editingUserId) {
-        await update(editingUserId, userData);
+        return await update(editingUserId, userData);
       } else {
-        await create({ ...userData, company_id: companyId });
+        return await create({ ...userData, company_id: companyId });
       }
-      return true;
     } catch (error) {
-      console.error("Error saving user:", error);
+      // Error is already handled by useService
       return false;
     }
   }, [create, update, companyId]);

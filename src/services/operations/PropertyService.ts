@@ -65,13 +65,18 @@ class PropertyService extends SupabaseBaseService<Property> {
       supabaseTable: "properties",
       auditEntityType: "property",
       shouldSyncWithSupabase: true
-    }, INITIAL_PROPERTIES);
+    }, import.meta.env.DEV ? INITIAL_PROPERTIES : []);
     this.initializeRealtime();
   }
 
   private async initializeRealtime() {
+    let syncTimeout: any = null;
     Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
-      await this.sync();
+      // Debounce sync to avoid multiple rapid requests
+      if (syncTimeout) clearTimeout(syncTimeout);
+      syncTimeout = setTimeout(async () => {
+        await this.sync();
+      }, 500);
     });
   }
 

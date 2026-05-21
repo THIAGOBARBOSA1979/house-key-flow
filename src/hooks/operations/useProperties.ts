@@ -31,12 +31,13 @@ export const useProperties = () => {
   const filterFn = useCallback((property: Property, currentFilters: any) => {
     const matchesStatus = currentFilters.status === "all" || property.status === currentFilters.status;
     const matchesManager = currentFilters.manager === "all" || property.manager === currentFilters.manager;
-    const matchesSearch = !searchTerm || 
-      property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesStatus && matchesManager && matchesSearch;
+    return matchesStatus && matchesManager;
   }, []);
+
+  const listOptions = useMemo(() => ({
+    initialFilters: { status: "all", manager: "all" },
+    filterFn
+  }), [filterFn]);
 
   const {
     filteredItems: filteredProperties,
@@ -48,10 +49,7 @@ export const useProperties = () => {
     searchTerm,
     setSearchTerm,
     clearFilters
-  } = useDataList<Property>(properties, {
-    initialFilters: { status: "all", manager: "all" },
-    filterFn
-  });
+  } = useDataList<Property>(properties, listOptions);
 
   const metrics = useMemo(() => 
     propertyService.getMetrics(companyId, user?.is_super_admin), 
