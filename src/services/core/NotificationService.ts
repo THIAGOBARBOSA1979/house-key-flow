@@ -9,8 +9,8 @@ import {
 } from '@/types/clientFlow';
 
 export class NotificationService extends SupabaseBaseService<ClientNotification> {
-  private settingsMap: Map<string, NotificationSettings> = new Map();
-  private settingsKey = "a2_notification_settings";
+  // private settingsMap: Map<string, NotificationSettings> = new Map();
+  // private settingsKey = "a2_notification_settings";
 
   constructor() {
     super({ 
@@ -22,24 +22,11 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
   }
 
   private loadSettings() {
-    if (typeof window === 'undefined') return;
-    const storedSettings = localStorage.getItem(this.settingsKey);
-    if (storedSettings) {
-      try {
-        const parsed = JSON.parse(storedSettings);
-        Object.entries(parsed).forEach(([clientId, settings]: [string, any]) => {
-          this.settingsMap.set(clientId, settings);
-        });
-      } catch (e) {
-        console.error("Failed to load notification settings", e);
-      }
-    }
+    // Disabled
   }
 
   private persistSettings() {
-    if (typeof window === 'undefined') return;
-    const settingsObj = Object.fromEntries(this.settingsMap.entries());
-    localStorage.setItem(this.settingsKey, JSON.stringify(settingsObj));
+    // Disabled
   }
 
   async createNotification(
@@ -51,13 +38,11 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
     const template = NOTIFICATION_TEMPLATES[type];
     
     return await this.create({
-      clientId,
+      user_id: clientId,
       type,
       title: customMessage?.title || template.title,
-      message: customMessage?.message || template.message,
-      createdAt: new Date(),
-      read: false,
-      urgent: template.urgent,
+      content: customMessage?.message || template.message,
+      read_at: null,
       metadata
     } as any);
 
@@ -65,11 +50,11 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
 
 
   getNotifications(clientId: string): ClientNotification[] {
-    return this.items.filter(n => n.clientId === clientId);
+    return this.items.filter(n => (n as any).user_id === clientId || n.clientId === clientId);
   }
 
   getUnreadNotifications(clientId: string): ClientNotification[] {
-    return this.getNotifications(clientId).filter(n => !n.read);
+    return this.getNotifications(clientId).filter(n => !(n as any).read_at && !n.read);
   }
 
   getUrgentNotifications(clientId: string): ClientNotification[] {
@@ -108,9 +93,6 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
   }
 
   getSettings(clientId: string): NotificationSettings {
-    const settings = this.settingsMap.get(clientId);
-    if (settings) return settings;
-    
     return {
       email: { inspections: true, warranty: true, updates: true, reminders: true },
       sms: { inspections: true, warranty: true, updates: true, reminders: true }
@@ -118,8 +100,7 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
   }
 
   updateSettings(clientId: string, newSettings: NotificationSettings): void {
-    this.settingsMap.set(clientId, newSettings);
-    this.persistSettings();
+    // In a real scenario, this would persist to a 'user_settings' or 'profiles' table
   }
 
   formatRelativeTime(date: Date): string {
