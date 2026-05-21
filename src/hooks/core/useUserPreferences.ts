@@ -24,20 +24,18 @@ export const useUserPreferences = () => {
 
     const loadPreferences = async () => {
       try {
-        const { data, error } = await Supabase.db.findOne('user_preferences', user.id, 'user_id');
+        const { data, error } = await Supabase.db.findOne<any>('user_preferences', user.id, 'user_id');
         
         if (error && error.code !== 'PGRST116') throw error;
         
-        if (data) {
+        if (data && data.preferences) {
           setPreferences(data.preferences as UserPreferences);
         } else {
-          // Default preferences
           const defaultPrefs: UserPreferences = {
             sidebarCollapsed: false,
             theme: 'light'
           };
           setPreferences(defaultPrefs);
-          // Don't await creation to avoid blocking
           Supabase.db.create('user_preferences', {
             user_id: user.id,
             preferences: defaultPrefs

@@ -75,16 +75,15 @@ class SystemSettingsService {
   async loadSettings(companyId: string): Promise<SystemSettings> {
     this.currentCompanyId = companyId;
     try {
-      const { data, error } = await Supabase.db.findOne('system_settings', companyId, 'company_id');
+      const { data, error } = await Supabase.db.findOne<any>('system_settings', companyId, 'company_id');
       
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "No rows found"
+      if (error && error.code !== 'PGRST116') {
         throw error;
       }
 
-      if (data) {
+      if (data && data.settings) {
         this.settings = { ...DEFAULT_SETTINGS, ...(data.settings as any) };
       } else {
-        // Initialize default settings for company if not exists
         await this.initializeDefaultSettings(companyId);
       }
       
