@@ -496,12 +496,11 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     });
     
     // Disparar automação de status
-    try {
-      const { warrantyAutomationService } = await import("./WarrantyAutomationService");
+    import("./WarrantyAutomationService").then(({ warrantyAutomationService }) => {
       warrantyAutomationService.onStatusChange(requestId, request.currentStage, newStatus, changedBy, isAutomatic);
-    } catch (e) {
+    }).catch(e => {
       console.error("Erro ao importar automação de garantia:", e);
-    }
+    });
 
     return { success: true, request: updatedRequest };
   }
