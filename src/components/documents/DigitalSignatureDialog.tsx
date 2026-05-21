@@ -345,8 +345,8 @@ export function DigitalSignatureDialog({
                       <p>Data: {s.signedAt ? format(s.signedAt, "dd/MM/yyyy HH:mm:ss", { locale: ptBR }) : '-'}</p>
                       <p>IP: {s.ipAddress}</p>
                       <p>Autenticação: {s.confirmationMethod === 'email' ? 'E-mail' : 'SMS'} verificado</p>
-                      <p>Hardware: {s.evidence?.browser} ({s.evidence?.os})</p>
-                      <p>Localização: {s.evidence?.location}</p>
+                      <p>Hardware: {(s.evidence as any)?.browser} ({(s.evidence as any)?.os})</p>
+                      <p>Localização: {(s.evidence as any)?.location}</p>
                       <p className="font-mono mt-1 text-[9px] bg-muted p-1 rounded truncate">Hash: {s.documentHash}</p>
                     </div>
                   </div>
