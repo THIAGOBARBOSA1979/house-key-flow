@@ -16,12 +16,18 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
   protected supabaseTable: keyof Database['public']['Tables'];
   protected fieldMapping: Record<string, string>;
   protected validationSchema?: z.ZodSchema;
+  protected cache: Map<string, { data: T[]; timestamp: number }> = new Map();
+  protected readonly CACHE_TTL = 30 * 1000; // 30 seconds cache for list queries
 
   constructor(options: SupabaseBaseServiceOptions, initialItems: T[] = []) {
     super(options, initialItems);
     this.supabaseTable = options.supabaseTable;
     this.fieldMapping = options.fieldMapping || {};
     this.validationSchema = options.validationSchema;
+  }
+
+  protected invalidateCache() {
+    this.cache.clear();
   }
 
   protected validate(data: unknown): T {
@@ -61,6 +67,13 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
   // --- Core CRUD (Standard Pattern - throws error) ---
 
   async getAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<T[]> {
+    const cacheKey = JSON.stringify({ companyId, isSuperAdmin, extraFilters });
+    const cached = this.cache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      return cached.data;
+    }
+
     try {
       const filters: FilterParams[] = [...extraFilters];
       if (!isSuperAdmin && companyId) {
@@ -73,7 +86,10 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       if (error) throw error;
       
       const mappedData = (data || []).map(item => this.mapFromSupabase(item));
+      
+      // Update local items state and cache
       this.items = mappedData;
+      this.cache.set(cacheKey, { data: mappedData, timestamp: Date.now() });
       this.notifyListeners();
       
       return mappedData;
@@ -109,6 +125,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       const created = this.mapFromSupabase(data);
       this.addItem(created);
+      this.invalidateCache();
       return created;
     } catch (err) {
       this.handleError(err, 'create');
@@ -122,6 +139,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       const updated = this.mapFromSupabase(remoteData);
       this.updateItem(updated);
+      this.invalidateCache();
       return updated;
     } catch (err) {
       this.handleError(err, 'update');
@@ -134,6 +152,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       if (error) throw error;
       
       this.removeItem(id);
+      this.invalidateCache();
       return true;
     } catch (err) {
       this.handleError(err, 'delete');

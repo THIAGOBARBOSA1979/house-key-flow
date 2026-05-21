@@ -71,27 +71,42 @@ const DEFAULT_SETTINGS: SystemSettings = {
 class SystemSettingsService {
   private settings: SystemSettings = DEFAULT_SETTINGS;
   private currentCompanyId: string | null = null;
+  private loadPromise: Promise<SystemSettings> | null = null;
 
   async loadSettings(companyId: string): Promise<SystemSettings> {
-    this.currentCompanyId = companyId;
-    try {
-      const { data, error } = await Supabase.db.findOne<any>('system_settings', companyId, 'company_id');
-      
-      if (error && error.code !== 'PGRST116') {
-        throw error;
-      }
-
-      if (data && data.settings) {
-        this.settings = { ...DEFAULT_SETTINGS, ...(data.settings as any) };
-      } else {
-        await this.initializeDefaultSettings(companyId);
-      }
-      
+    if (this.currentCompanyId === companyId && this.settings !== DEFAULT_SETTINGS) {
       return this.settings;
-    } catch (err) {
-      errorHandler.handle(err, 'SystemSettingsService:loadSettings');
-      return DEFAULT_SETTINGS;
     }
+
+    if (this.loadPromise && this.currentCompanyId === companyId) {
+      return this.loadPromise;
+    }
+
+    this.currentCompanyId = companyId;
+    this.loadPromise = (async () => {
+      try {
+        const { data, error } = await Supabase.db.findOne<any>('system_settings', companyId, 'company_id');
+        
+        if (error && error.code !== 'PGRST116') {
+          throw error;
+        }
+
+        if (data && data.settings) {
+          this.settings = { ...DEFAULT_SETTINGS, ...(data.settings as any) };
+        } else {
+          await this.initializeDefaultSettings(companyId);
+        }
+        
+        return this.settings;
+      } catch (err) {
+        errorHandler.handle(err, 'SystemSettingsService:loadSettings');
+        return DEFAULT_SETTINGS;
+      } finally {
+        this.loadPromise = null;
+      }
+    })();
+
+    return this.loadPromise;
   }
 
   private async initializeDefaultSettings(companyId: string) {
