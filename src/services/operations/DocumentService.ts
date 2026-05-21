@@ -69,7 +69,10 @@ export interface Document {
   technical_metadata?: Record<string, unknown>;
   versionHistory?: DocumentVersion[];
   approvalHistory?: ApprovalHistoryEntry[];
-  description?: string; // Mantido para compatibilidade com UI
+  description?: string;
+  approvedBy?: string;
+  approvedAt?: Date;
+  approvalComment?: string;
 }
 
 class DocumentService extends SupabaseBaseService<Document> {
