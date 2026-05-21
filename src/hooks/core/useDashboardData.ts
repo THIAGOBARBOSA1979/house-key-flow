@@ -1,123 +1,67 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-
-import { propertyService } from "@/services";
-import { inspectionService } from "@/services";
-import { 
-  warrantyFlowService, 
-  auditLogService, 
-  supportService, 
-  systemHealthService 
-} from "@/services";
+import { propertyService, inspectionService, warrantyFlowService, auditLogService, supportService, systemHealthService } from "@/services";
 import { SystemHealthMetrics } from "@/services";
 import { useToast } from "@/components/ui/use-toast";
 
-/**
- * Custom hook to manage and provide data for the Admin Dashboard.
- */
 export const useDashboardData = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const companyId = user?.company_id;
-  const [loading, setLoading] = useState(false);
+  const isSuperAdmin = !!user?.is_super_admin;
   
-  const initialData = useMemo(() => ({
-    properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-    inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-    warrantyClaims: warrantyFlowService.getAllRequests().filter(r => user?.is_super_admin || (r as any).company_id === companyId).slice(0, 2),
-    recentActivities: [], // Start empty, will be populated by useEffect
-
-    recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
-    propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
-    technicalConformity: inspectionService.getTechnicalConformityScore(companyId, user?.is_super_admin),
-  }), [companyId, user?.is_super_admin]);
-
-
-
-
-  const [data, setData] = useState(initialData);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any>({
+    properties: [],
+    inspections: [],
+    warrantyClaims: [],
+    recentActivities: [],
+    recentTickets: [],
+    propertyMetrics: null,
+    technicalConformity: 100
+  });
 
   const refreshData = useCallback(async () => {
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Explicit refresh
-    setData({
-      properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-      inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-      warrantyClaims: warrantyFlowService.getAllRequests().filter(r => user?.is_super_admin || (r as any).company_id === companyId).slice(0, 2),
-      recentActivities: auditLogService.getRecentLogs(5),
+    try {
+      const [properties, inspections, warrantyClaims, recentActivities, recentTickets] = await Promise.all([
+        propertyService.getAll(companyId, isSuperAdmin),
+        inspectionService.getAll(companyId, isSuperAdmin),
+        warrantyFlowService.getAllRequests(companyId, isSuperAdmin),
+        auditLogService.getRecentLogsAsync(5),
+        supportService.getAll(companyId, isSuperAdmin)
+      ]);
 
-      recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
-      propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
-      technicalConformity: inspectionService.getTechnicalConformityScore(companyId, user?.is_super_admin),
-    });
+      setData({
+        properties: properties.slice(0, 3),
+        inspections: inspections.slice(0, 3),
+        warrantyClaims: warrantyClaims.slice(0, 2),
+        recentActivities,
+        recentTickets: recentTickets.filter((t: any) => t.status !== 'closed').slice(0, 3),
+        propertyMetrics: propertyService.getMetrics(companyId, isSuperAdmin),
+        technicalConformity: inspectionService.getTechnicalConformityScore(companyId, isSuperAdmin),
+      });
 
+      toast({ 
+        title: "Dados atualizados", 
+        description: "O dashboard foi sincronizado com os dados mais recentes." 
+      });
+    } catch (err) {
+      console.error("Dashboard refresh error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [companyId, isSuperAdmin, toast]);
 
-
-
-    auditLogService.log({
-      entityType: 'system',
-      entityId: 'dashboard',
-      action: 'updated',
-      performedBy: 'admin-1',
-      performedByName: 'Administrador',
-      performedByRole: 'admin',
-      details: 'Dashboard sincronizado manualmente.'
-    });
-    
-    toast({ 
-      title: "Dados atualizados", 
-      description: "O dashboard foi sincronizado com os dados mais recentes." 
-    });
-    setLoading(false);
-  }, [toast]);
-  
   const [healthMetrics, setHealthMetrics] = useState<SystemHealthMetrics>(systemHealthService.getHealthMetrics());
 
-  // Listen to service updates
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    
-    // Batch updates to avoid multiple re-renders
-    const scheduleUpdate = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setData({
-          properties: propertyService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-          inspections: inspectionService.getAll(companyId, user?.is_super_admin).slice(0, 3),
-          warrantyClaims: warrantyFlowService.getAllRequests().filter(r => user?.is_super_admin || (r as any).company_id === companyId).slice(0, 2),
-          recentActivities: auditLogService.getRecentLogs(5),
-          recentTickets: supportService.getAllTickets().filter(t => (user?.is_super_admin || (t as any).company_id === companyId) && t.status !== 'closed').slice(0, 3),
-          
-          propertyMetrics: propertyService.getMetrics(companyId, user?.is_super_admin),
-          technicalConformity: inspectionService.getTechnicalConformityScore(companyId, user?.is_super_admin),
-        });
-
-
-
-      }, 50);
-    };
-
-    const unsubProperties = propertyService.subscribe(scheduleUpdate);
-    const unsubInspections = inspectionService.subscribe(scheduleUpdate);
-    const unsubWarranty = warrantyFlowService.subscribe(scheduleUpdate);
-    const unsubLogs = auditLogService.subscribe(scheduleUpdate);
-
+    refreshData();
     const interval = setInterval(() => {
       setHealthMetrics(systemHealthService.getHealthMetrics());
     }, 30000);
-
-    return () => {
-      unsubProperties();
-      unsubInspections();
-      unsubWarranty();
-      unsubLogs();
-      clearInterval(interval);
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
+    return () => clearInterval(interval);
+  }, [refreshData]);
 
   return {
     loading,
