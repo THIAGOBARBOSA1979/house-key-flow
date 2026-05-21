@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Card, 
   CardContent, 
@@ -55,7 +55,29 @@ const getEventColor = (type: EventType): string => {
 };
 
 export function ClientEventHistory({ clientId }: ClientEventHistoryProps) {
-  const events = clientStageService.getEvents(clientId);
+  const [events, setEvents] = useState<ClientEvent[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      setIsLoading(true);
+      const data = await clientStageService.getEvents(clientId);
+      setEvents(data);
+      setIsLoading(false);
+    };
+    loadEvents();
+  }, [clientId]);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center">
+          <div className="h-8 w-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin mx-auto mb-3" />
+          <p className="text-muted-foreground">Carregando eventos...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (events.length === 0) {
     return (

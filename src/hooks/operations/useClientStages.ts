@@ -33,8 +33,8 @@ export function useClientStages() {
     return () => unsubscribe();
   }, [loadData]);
 
-  const advanceStage = (clientId: string, stage: ClientStage, notes?: string) => {
-    const result = clientStageService.advanceStage(
+  const advanceStage = async (clientId: string, stage: ClientStage, notes?: string) => {
+    const result = await clientStageService.advanceStage(
       clientId, 
       stage, 
       notes, 
@@ -58,9 +58,9 @@ export function useClientStages() {
     }
   };
 
-  const getClientEvents = (clientId: string) => {
-    return clientStageService.getEvents(clientId);
-  };
+  const getClientEvents = useCallback(async (clientId: string) => {
+    return await clientStageService.getEvents(clientId);
+  }, []);
 
   return {
     profiles,

@@ -82,7 +82,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
           ? 'Liberação manual de vistoria pelo administrador'
           : 'Liberação manual de garantia pelo administrador');
 
-      const result = clientStageService.advanceStage(
+      const result = await clientStageService.advanceStage(
         clientId,
         targetStage,
         reason,
