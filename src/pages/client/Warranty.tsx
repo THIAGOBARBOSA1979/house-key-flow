@@ -171,47 +171,52 @@ const ClientWarranty = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
           <div className="lg:col-span-4 space-y-layout-gap">
-            <Card className="shadow-sem-lg border-none bg-white/60 backdrop-blur-md rounded-[2rem] overflow-hidden">
-              <CardHeader className="pb-4 p-8 border-b border-border/5">
-                <CardTitle className="text-xl font-black tracking-tight flex items-center gap-3">
-                   <Activity className="h-5 w-5 text-primary" />
-                   Minhas Solicitações
-                </CardTitle>
-                <CardDescription className="font-bold">Histórico de protocolos técnicos</CardDescription>
+            <Card className="shadow-sem-lg border-none bg-white/70 backdrop-blur-md rounded-[2.5rem] overflow-hidden group">
+              <CardHeader className="p-8 pb-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 transition-transform">
+                    <Activity className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl font-black tracking-tight">Meus Protocolos</CardTitle>
+                    <CardDescription className="font-bold">Acompanhamento técnico em tempo real</CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-3 p-6">
+              <CardContent className="p-6 space-y-4">
                 {claims.length > 0 ? (
                   claims.map(c => (
                     <div 
                       key={c.id} 
                       onClick={() => setSelectedClaimId(c.id)}
                       className={cn(
-                        "p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 relative group",
+                        "p-5 rounded-[1.5rem] border-2 cursor-pointer transition-all duration-300 relative group/item",
                         selectedClaimId === c.id 
-                          ? "border-primary bg-primary/5 shadow-md scale-[1.02]" 
+                          ? "border-primary bg-primary/5 shadow-md" 
                           : "border-transparent bg-muted/20 hover:bg-muted/40"
                       )}
                     >
                       <div className="flex justify-between items-start mb-3">
-                        <span className="text-sm font-black truncate text-foreground/80 group-hover:text-primary transition-colors">{c.title}</span>
+                        <span className="text-sm font-black truncate group-hover/item:text-primary transition-colors">{c.title}</span>
                       </div>
                       <div className="flex justify-between items-center text-[9px] text-muted-foreground uppercase font-black tracking-widest opacity-60">
-                        <span className="bg-muted px-2 py-0.5 rounded-md">#{c.id.slice(0, 8)}</span>
-                        <span>{new Date(c.createdAt).toLocaleDateString()}</span>
+                        <span className="bg-muted px-2 py-1 rounded-lg">#{c.id.slice(0, 8)}</span>
+                        <span>{new Date(c.createdAt).toLocaleDateString('pt-BR')}</span>
                       </div>
                       {selectedClaimId === c.id && (
-                        <div className="absolute left-[-2px] top-1/2 -translate-y-1/2 w-1.5 h-12 bg-primary rounded-full" />
+                        <div className="absolute left-[-2px] top-1/2 -translate-y-1/2 w-1.5 h-10 bg-primary rounded-full" />
                       )}
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-16 opacity-40">
+                  <div className="text-center py-20 opacity-30">
                     <ShieldCheck size={48} className="mx-auto mb-4" />
-                    <p className="text-[10px] font-black uppercase tracking-widest">Nenhum protocolo ativo</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest">Nenhum chamado ativo</p>
                   </div>
                 )}
               </CardContent>
             </Card>
+
             <WarrantyGuide />
           </div>
 
