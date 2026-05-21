@@ -1,7 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { KanbanCardData, WARRANTY_STAGES, SLAStatus } from "@/types/warrantyFlow";
-import { SLABadge } from "../ClientFlow/SLAIndicator";
+import { SLABadge } from '../client-flow/SLAIndicator";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";

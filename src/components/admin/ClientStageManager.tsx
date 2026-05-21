@@ -31,7 +31,7 @@ import { ClientStage, ClientProfile, STAGE_CONFIG } from "@/types/clientFlow";
 import { clientStageService } from "@/services";
 import { notificationService } from "@/services";
 import { useToast } from "@/components/ui/use-toast";
-import { StageIndicator } from "../ClientFlow/StageIndicator";
+import { StageIndicator } from '../client-flow/StageIndicator";
 import { format } from "date-fns";
 
 interface ClientStageManagerProps {
