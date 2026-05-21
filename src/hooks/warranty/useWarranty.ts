@@ -28,7 +28,7 @@ export const useWarranty = () => {
     if (currentFilters.propertyId && currentFilters.propertyId !== "all" && request.propertyId !== currentFilters.propertyId) return false;
     if (currentFilters.category && currentFilters.category !== "all" && request.category !== currentFilters.category) return false;
     if (currentFilters.priority && currentFilters.priority !== "all" && request.priority !== currentFilters.priority) return false;
-    if (currentFilters.slaStatus && currentFilters.slaStatus !== "all" && request.slaStatus !== currentFilters.slaStatus) return false;
+    if (currentFilters.slaStatus && (currentFilters.slaStatus as string) !== "all" && request.slaStatus !== currentFilters.slaStatus) return false;
     if (currentFilters.isPaused !== undefined && request.isPaused !== currentFilters.isPaused) return false;
     
     if (searchTerm) {
