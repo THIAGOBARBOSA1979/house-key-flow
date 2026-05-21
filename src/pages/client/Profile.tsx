@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,11 +18,22 @@ const ClientProfile = () => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
-    name: user?.name || "João Silva",
-    email: user?.email || "cliente@exemplo.com",
-    phone: "(11) 99999-8888",
-    address: "Rua das Flores, 123 - Edifício Aurora, Apto 101",
+    name: user?.name || "Carregando...",
+    email: user?.email || "",
+    phone: (user as any)?.phone || "",
+    address: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        name: user.name || "",
+        email: user.email || "",
+        phone: (user as any).phone || "",
+        address: (user as any).address || "",
+      });
+    }
+  }, [user]);
 
   const handleSave = () => {
     setIsEditing(false);
