@@ -2,7 +2,6 @@ import { ErrorCode } from "@/utils/errors/AppError";
 
 export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
 
-
 export type StatusType = 
   | "pending" 
   | "progress" 
@@ -39,5 +38,21 @@ export interface SortConfig {
 export interface FilterConfig {
   field: string;
   value: any;
-  operator: "eq" | "contains" | "gt" | "lt" | "between";
+  operator: "eq" | "contains" | "gt" | "lt" | "between" | "in" | "neq";
 }
+
+export interface PaginationConfig {
+  page: number;
+  pageSize: number;
+  total?: number;
+}
+
+export interface BaseEntity {
+  id: string;
+  company_id?: string;
+  created_at?: Date | string;
+  updated_at?: Date | string;
+}
+
+export type Listener<T> = (items: T[]) => void;
+
