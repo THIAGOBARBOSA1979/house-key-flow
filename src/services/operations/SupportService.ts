@@ -36,15 +36,15 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   constructor() {
     super({
       storageKey: "a2_support_tickets",
-      supabaseTable: "support_tickets" as any,
+      supabaseTable: "support_tickets",
       auditEntityType: "system",
       shouldSyncWithSupabase: true
     });
   }
 
-  protected mapToSupabase(item: Partial<SupportTicket>): any {
+  protected mapToSupabase(item: Partial<SupportTicket>): Record<string, any> {
     const mapped = super.mapToSupabase(item);
-    if (mapped.messages) {
+    if (mapped.messages && typeof mapped.messages !== 'string') {
       mapped.messages = JSON.stringify(mapped.messages);
     }
     return mapped;
@@ -52,9 +52,9 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
 
   protected mapFromSupabase(raw: any): SupportTicket {
     const item = super.mapFromSupabase(raw);
-    if (typeof item.messages === 'string') {
+    if (typeof (item as any).messages === 'string') {
       try {
-        item.messages = JSON.parse(item.messages);
+        item.messages = JSON.parse((item as any).messages);
       } catch (e) {
         item.messages = [];
       }
@@ -66,14 +66,22 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   async getTicketById(id: string) { return await this.getById(id); }
   getTicketsByClient(clientId: string) { return this.items.filter(t => t.clientId === clientId); }
 
-  async createTicket(clientId: string, clientName: string, data: any, context?: { propertyId?: string, propertyName?: string, unitNumber?: string }): Promise<SupportTicket> {
+  async createTicket(
+    clientId: string, 
+    clientName: string, 
+    data: { subject: string, priority?: TicketPriority, category?: TicketCategory, message: string, company_id?: string }, 
+    context?: { propertyId?: string, propertyName?: string, unitNumber?: string }
+  ): Promise<SupportTicket> {
     const createdAt = new Date();
     const slaDeadline = new Date(createdAt.getTime() + 48 * 60 * 60 * 1000);
 
-    const ticketData: any = {
-      client_id: clientId,
-      company_id: (data as any).company_id,
-      property_id: context?.propertyId,
+    const ticketData: Omit<SupportTicket, 'id'> = {
+      clientId,
+      clientName,
+      company_id: data.company_id,
+      propertyId: context?.propertyId,
+      propertyName: context?.propertyName,
+      unitNumber: context?.unitNumber,
       subject: data.subject,
       status: 'pending',
       priority: data.priority || 'medium',
@@ -86,16 +94,16 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
         text: data.message, 
         createdAt: new Date() 
       }],
-      sla_deadline: slaDeadline,
-      created_at: createdAt,
-      updated_at: createdAt
+      slaDeadline,
+      createdAt,
+      updatedAt: createdAt
     };
 
     return await this.create(ticketData);
   }
 
   async updateTicketStatus(id: string, status: SupportTicket['status']) {
-    return await this.update(id, { status, updatedAt: new Date() } as any);
+    return await this.update(id, { status, updatedAt: new Date() });
   }
 
   async addMessageToTicket(id: string, senderId: string, senderName: string, role: 'admin' | 'client', text: string) {
@@ -117,7 +125,7 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
       messages, 
       status: newStatus,
       updatedAt: new Date() 
-    } as any);
+    });
   }
 }
 
