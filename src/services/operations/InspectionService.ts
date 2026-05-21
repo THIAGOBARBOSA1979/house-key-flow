@@ -113,33 +113,33 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     technician: string; 
     checklist?: string; 
     notes?: string; 
-    requestId?: string; 
+    request_id?: string; 
     priority?: Inspection["priority"] 
-  }, propertyInfo?: { property: string; unit: string; client: string; companyId?: string }): Promise<Inspection> {
+  }, propertyInfo?: { property: string; unit: string; client: string; company_id?: string, client_id?: string }): Promise<Inspection> {
     const newInspection = await super.create({
       property: propertyInfo?.property || "Empreendimento Exemplo",
-      unit: propertyInfo?.unit || "101",
-      client: propertyInfo?.client || "Cliente Exemplo",
+      unit_number: propertyInfo?.unit || "101",
+      client_id: propertyInfo?.client_id,
       date: data.date,
       time: data.time,
       type: data.inspectionType,
-      technician: data.technician,
-      checklistId: data.checklist,
+      technician_id: data.technician,
+      checklist_id: data.checklist,
       status: "pending",
       notes: data.notes,
-      requestId: data.requestId,
+      request_id: data.request_id,
       priority: data.priority || "medium",
-      createdAt: new Date()
-    }, propertyInfo?.companyId);
+      created_at: new Date()
+    } as any, propertyInfo?.company_id);
 
-    await this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`);
+    await this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit_number}.`);
     return newInspection;
   }
 
 
   async updateStatus(id: string, status: string, details?: string) {
     const oldItem = this.getById(id);
-    const updated = await super.update(id, { status });
+    const updated = await super.update(id, { status } as any);
     if (updated) {
       await this.log('stage_changed', id, details || `Status da vistoria alterado de ${oldItem?.status} para ${status}.`, {
         oldStatus: oldItem?.status,
@@ -147,10 +147,12 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       });
 
       // Integração com automação de eventos para avançar jornada do cliente
-      if (status === 'complete') {
+      if (status === 'complete' || status === 'accepted') {
         const { eventAutomationService } = await import("../core/EventAutomationService");
-        const profileId = (updated as any).clientId || updated.client; // Ajuste conforme estrutura real
-        eventAutomationService.onInspectionApproved(id, profileId);
+        const clientId = (updated as any).client_id || (updated as any).clientId;
+        if (clientId) {
+          eventAutomationService.onInspectionApproved(id, clientId);
+        }
       }
     }
     return updated;

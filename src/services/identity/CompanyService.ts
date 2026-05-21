@@ -24,6 +24,7 @@ export interface Company {
   settings?: CompanySettings;
   created_at: Date;
   updated_at: Date;
+  company_id?: string; // Multi-tenancy support for consistency
 }
 
 const INITIAL_COMPANIES: Company[] = [
