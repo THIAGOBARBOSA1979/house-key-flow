@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BaseService } from '@/services/BaseService';
+import { SupabaseBaseService } from '@/services/SupabaseBaseService';
 
 export interface UseEntityOptions {
   companyId?: string;
@@ -16,9 +17,15 @@ export function useEntity<T extends { id: string; company_id?: string }>(
 
   const { companyId, isSuperAdmin } = options;
 
-  const refresh = useCallback(() => {
+  const refresh = useCallback(async () => {
     try {
       setLoading(true);
+      
+      // If service is SupabaseBaseService, trigger a real sync first
+      if (service instanceof SupabaseBaseService) {
+        await service.sync(companyId, isSuperAdmin);
+      }
+      
       const items = service.getAll(companyId, isSuperAdmin);
       setData(items);
       setError(null);
@@ -31,6 +38,8 @@ export function useEntity<T extends { id: string; company_id?: string }>(
 
   useEffect(() => {
     refresh();
+    
+    // Subscribe to internal service changes (which include real-time Supabase events if sync() is called)
     return service.subscribe((items) => {
       const filtered = isSuperAdmin 
         ? items 
