@@ -43,7 +43,8 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
       title: customMessage?.title || template.title,
       content: customMessage?.message || template.message,
       read_at: null,
-      metadata
+      metadata,
+      company_id: (metadata as any)?.company_id
     } as any);
 
   }

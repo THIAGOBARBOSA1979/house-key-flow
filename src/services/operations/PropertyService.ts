@@ -89,7 +89,7 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
   async create(property: Omit<Property, "id">, companyId?: string): Promise<Property> {
-    return await super.create(property, companyId);
+    return await super.create(property, companyId || property.company_id);
   }
 
   async update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Promise<Property | undefined> {

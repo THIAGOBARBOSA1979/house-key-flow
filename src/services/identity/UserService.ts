@@ -30,6 +30,7 @@ class UserService extends SupabaseBaseService<User> {
     delete mapped.name;
     delete mapped.avatar;
     delete mapped.created_at; // Handled by DB
+    delete mapped.id; // Usually not updated manually
     delete mapped.email; // email is in auth.users
     
     return mapped;
