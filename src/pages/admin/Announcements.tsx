@@ -39,7 +39,6 @@ import { formatDate } from "@/lib/utils";
 import { DataView } from "@/components/Shared/DataView";
 import { ErrorView } from "@/components/Shared/ErrorView";
 
-
 const Announcements = () => {
   const { 
     updates, 
@@ -144,7 +143,6 @@ const Announcements = () => {
       </PageHeader>
 
 
-
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="md:col-span-1 rounded-3xl border-none bg-primary/5 shadow-none p-6 space-y-4">
           <div className="p-3 bg-white w-fit rounded-2xl shadow-sm">
@@ -183,7 +181,6 @@ const Announcements = () => {
               message: (announcementError as any)?.message
             }}
             viewMode="table"
-
             itemsPerPage={10}
             columns={[
               { 
@@ -271,8 +268,6 @@ const Announcements = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-
-
         <DialogContent className="max-w-dialog-md rounded-3xl border-none shadow-sem-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
@@ -382,5 +377,5 @@ const Announcements = () => {
   );
 };
 
-export default Announcements;
 
+export default Announcements;
