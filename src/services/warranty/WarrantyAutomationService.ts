@@ -104,12 +104,6 @@ class WarrantyAutomationService {
         }
       );
     }
-
-    console.log('[WarrantyAutomation] Notification created:', {
-      clientId: request.clientId,
-      type: notificationType,
-      requestId: request.id
-    });
   }
 
   /**
