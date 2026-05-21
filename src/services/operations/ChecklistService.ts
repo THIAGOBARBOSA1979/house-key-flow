@@ -10,7 +10,7 @@ export interface ChecklistItem {
   required?: boolean;
   severity?: "low" | "medium" | "high" | "critical";
   status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na" | "nonconform";
-  evidence?: any[];
+  evidence?: string[];
   conformity?: "conform" | "non_conform" | "not_applicable" | "pending" | "nonconform";
   abntReference?: string;
   inspectionMethod?: string;
