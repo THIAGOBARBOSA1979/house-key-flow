@@ -2,7 +2,7 @@ import { Supabase, FilterParams } from "@/integrations/supabase";
 import { Database } from "@/integrations/supabase/types";
 import { SupabaseBaseService } from "@/services/SupabaseBaseService";
 
-export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
+export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth' | 'client_profile';
 export type AuditAction = 
   | 'created' 
   | 'updated' 

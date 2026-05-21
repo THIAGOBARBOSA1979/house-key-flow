@@ -126,7 +126,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
         <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
             <History className="h-4 w-4 text-primary" />
-            Evolução da Jornada do Proprietário
+            Evolução da Jornada do Cliente
           </div>
 
         </CardTitle>
@@ -187,7 +187,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
 
         {/* Stage History */}
         <div className="space-y-3">
-          <span className="text-sm font-medium text-muted-foreground">AuditLog da Jornada:</span>
+          <span className="text-sm font-medium text-muted-foreground">Log de Auditoria da Jornada:</span>
           <div className="space-y-2">
             {profile.stageHistory.slice().reverse().map((change) => (
               <div 

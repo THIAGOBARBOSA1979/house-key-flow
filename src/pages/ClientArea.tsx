@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PageHeader } from "@/components/layout/PageHeader";
+import { PageTemplate } from "@/components/layout/PageTemplate";
 import { FilterBar } from "@/components/layout/FilterBar";
 import { DataView } from "@/components/shared/DataView";
 import { StatsCard } from "@/components/shared/StatsCard";
@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { User as UserIcon, UserCheck, Plus, Download, Key, ChevronRight, MapPin, Building, History, Activity } from "lucide-react";
 import { UserForm } from "@/components/identity/UserForm";
 import { GenerateCredentialsForm } from "@/components/client-area/GenerateCredentialsForm";
-import { userService } from "@/services/identity/UserService";
-import { useToast } from "@/hooks/shared/use-toast";
+import { userService } from "@/services";
+import { useToast } from "@/hooks";
 import { User as UserProfile } from "@/types/user";
 import { useClientStages } from "@/hooks/operations/useClientStages";
 import { ClientStageManager } from "@/components/admin/ClientStageManager";
@@ -20,6 +20,7 @@ import { STAGE_CONFIG } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
 
 const ClientArea = () => {
+  const [activeTab, setActiveTab] = useState("journey");
   const [searchQuery, setSearchQuery] = useState("");
   const { profiles, isLoading, refresh } = useClientStages();
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
@@ -29,8 +30,8 @@ const ClientArea = () => {
 
   const handleCreateClient = async (data: any) => {
     try {
-      const { error } = await (userService as any).createProfile(data);
-      if (error) throw error;
+      const result = await userService.createProfile(data);
+      if (result.error) throw result.error;
       
       toast({
         title: "Cliente criado",
@@ -65,11 +66,11 @@ const ClientArea = () => {
   const selectedClient = profiles.find(p => p.id === selectedClientId);
 
   return (
-    <div className="container-responsive py-layout-gap animate-fade-in">
-      <PageHeader 
-        title="Gestão de Proprietários" 
-        description="Governança completa da jornada do cliente, do lead ao ecossistema de garantias."
-      >
+    <PageTemplate
+      title="Gestão de Clientes" 
+      description="Governança completa da jornada do cliente e proprietário no ecossistema digital."
+      icon={UserIcon}
+      actions={
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" className="hidden sm:flex rounded-xl h-10 px-4">
             <Download className="mr-2 h-4 w-4" />
@@ -79,12 +80,15 @@ const ClientArea = () => {
             <Key className="mr-2 h-4 w-4" />
             Acessos
           </Button>
-          <Button onClick={() => setNewClientDialogOpen(true)} className="rounded-xl h-10 px-6 font-black uppercase tracking-widest text-[10px]">
+          <Button onClick={() => {
+            setNewClientDialogOpen(true);
+          }} className="rounded-xl h-10 px-6 font-black uppercase tracking-widest text-[10px]">
             <Plus className="mr-2 h-4 w-4" />
-            Integrar Proprietário
+            Integrar Cliente
           </Button>
         </div>
-      </PageHeader>
+      }
+    >
 
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-slow">
         <FilterBar
@@ -95,15 +99,15 @@ const ClientArea = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <StatsCard label="Proprietários Homologados" value={profiles.length} icon={UserIcon} variant="brand" className="rounded-3xl" />
+        <StatsCard label="Clientes Homologados" value={profiles.length} icon={UserIcon} variant="brand" className="rounded-3xl" />
         <StatsCard label="Vistorias Habilitadas" value={profiles.filter(p => p.currentStage === 'inspection_enabled').length} icon={Activity} variant="progress" className="rounded-3xl" />
         <StatsCard label="Garantias Ativas" value={profiles.filter(p => p.currentStage === 'warranty_enabled').length} icon={UserCheck} variant="complete" className="rounded-3xl" />
-        <StatsCard label="Leads Pendentes" value={profiles.filter(p => p.currentStage === 'lead').length} icon={History} variant="pending" className="rounded-3xl" />
+        <StatsCard label="Novos Leads" value={profiles.filter(p => p.currentStage === 'lead').length} icon={History} variant="pending" className="rounded-3xl" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-4">
-          <h2 className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1 mb-2">Base de Proprietários</h2>
+          <h2 className="text-xs font-black uppercase tracking-widest text-muted-foreground px-1 mb-2">Base de Clientes</h2>
           <DataView
             items={filteredClients}
             viewMode="list"
@@ -172,12 +176,15 @@ const ClientArea = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" className="rounded-xl h-10">Editar Perfil</Button>
+                    <Button variant="outline" className="rounded-xl h-10" onClick={() => {
+                      setNewClientDialogOpen(true);
+                      // In a real app, you'd load the profile into the form
+                    }}>Editar Perfil</Button>
                     <Button variant="outline" className="rounded-xl h-10 text-destructive hover:bg-destructive/5">Bloquear</Button>
                   </div>
                 </div>
 
-                <Tabs defaultValue="journey" className="w-full">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                   <TabsList className="bg-muted/30 p-1 rounded-2xl mb-8">
                     <TabsTrigger value="journey" className="rounded-xl font-bold">Jornada Digital</TabsTrigger>
                     <TabsTrigger value="history" className="rounded-xl font-bold">Histórico Completo</TabsTrigger>
@@ -210,7 +217,7 @@ const ClientArea = () => {
             <div className="h-full flex items-center justify-center p-12 bg-muted/5 rounded-3xl border border-dashed">
               <div className="text-center">
                 <UserIcon size={48} className="mx-auto text-muted-foreground/20 mb-4" />
-                <h3 className="text-lg font-bold text-muted-foreground">Selecione um Proprietário</h3>
+                <h3 className="text-lg font-bold text-muted-foreground">Selecione um Cliente</h3>
                 <p className="text-sm text-muted-foreground/60 max-w-xs mx-auto">Visualize e gerencie a jornada estratégica de cada cliente individualmente.</p>
               </div>
             </div>
@@ -219,14 +226,33 @@ const ClientArea = () => {
       </div>
 
       {/* Dialogs */}
-      <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>
+      <Dialog open={isNewClientDialogOpen} onOpenChange={(open) => {
+        setNewClientDialogOpen(open);
+        if (!open) {
+          // Reset any editing state if needed
+        }
+      }}>
         <DialogContent className="max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-sem-xl">
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
-            <DialogTitle className="text-2xl font-black tracking-tight">Novo Proprietário</DialogTitle>
+            <DialogTitle className="text-2xl font-black tracking-tight">Novo Cliente</DialogTitle>
             <DialogDescription className="text-sm font-medium">Cadastre um novo cliente no ecossistema digital.</DialogDescription>
           </DialogHeader>
           <div className="p-layout-gap max-h-[70vh] overflow-y-auto overflow-x-hidden">
-            <UserForm onSave={handleCreateClient} onCancel={() => setNewClientDialogOpen(false)} />
+            <UserForm 
+              onSave={handleCreateClient} 
+              onCancel={() => setNewClientDialogOpen(false)} 
+              editingUser={selectedClient ? {
+                id: selectedClient.id,
+                name: selectedClient.name,
+                email: selectedClient.email,
+                phone: selectedClient.phone,
+                role: 'client',
+                status: 'active',
+                propertyId: selectedClient.propertyId,
+                propertyName: selectedClient.propertyName,
+                unit: selectedClient.unitNumber
+              } as any : null}
+            />
           </div>
         </DialogContent>
       </Dialog>
@@ -242,7 +268,7 @@ const ClientArea = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </PageTemplate>
   );
 };
 

@@ -1,6 +1,5 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
-import { Database } from "@/integrations/supabase/types";
 import { 
   ClientProfile, 
   ClientStage, 
@@ -16,8 +15,8 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   constructor() {
     super({
       storageKey: "a2_client_profiles",
-      supabaseTable: "client_profiles" as any, 
-      auditEntityType: "user",
+      supabaseTable: "client_profiles", 
+      auditEntityType: "client_profile",
       shouldSyncWithSupabase: true
     }, []);
     // this.loadEvents(); // Disabled for DB-first
@@ -113,7 +112,13 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
 
   isStageReached(clientId: string, stage: ClientStage): boolean {
     const profile = this.getById(clientId);
-    return profile?.currentStage === stage;
+    if (!profile) return false;
+    
+    const stages: ClientStage[] = ['lead', 'registered', 'inspection_enabled', 'warranty_enabled'];
+    const currentOrder = stages.indexOf(profile.currentStage);
+    const targetOrder = stages.indexOf(stage);
+    
+    return currentOrder >= targetOrder;
   }
 }
 
