@@ -117,7 +117,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     } as T;
     
     this.items.push(newItem);
-    this.persist();
+    this.notify();
     await this.log('created', id, `Registro criado em ${this.options.storageKey}`);
     return newItem;
   }
@@ -128,7 +128,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     
     const oldItem = { ...this.items[index] };
     this.items[index] = { ...this.items[index], ...data };
-    this.persist();
+    this.notify();
     
     await this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, {
       changes: data,
@@ -143,7 +143,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.items = this.items.filter(item => item.id !== id);
     
     if (this.items.length !== initialLength) {
-      this.persist();
+      this.notify();
       await this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
       return true;
     }
@@ -177,6 +177,6 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   clearAllData() {
     this.items = [];
-    this.persist();
+    this.notify();
   }
 }
