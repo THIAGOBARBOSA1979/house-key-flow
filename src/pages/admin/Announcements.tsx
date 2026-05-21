@@ -46,8 +46,10 @@ const Announcements = () => {
     properties, 
     createAnnouncement, 
     updateAnnouncement, 
-    deleteAnnouncement 
+    deleteAnnouncement,
+    error: announcementError
   } = useAnnouncements();
+
   
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -98,34 +100,40 @@ const Announcements = () => {
     deleteAnnouncement(id);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.title || !formData.description) {
       return;
     }
 
-    if (editingId) {
-      updateAnnouncement(editingId, {
-        title: formData.title,
-        description: formData.description,
-        type: formData.type,
-        isGlobal: formData.isGlobal,
-        status: formData.status
-      });
-    } else {
-      createAnnouncement({
-        title: formData.title,
-        description: formData.description,
-        type: formData.type,
-        isGlobal: formData.isGlobal,
-        status: formData.status
-      });
+    try {
+      if (editingId) {
+        await updateAnnouncement(editingId, {
+          title: formData.title,
+          description: formData.description,
+          type: formData.type,
+          isGlobal: formData.isGlobal,
+          status: formData.status
+        });
+      } else {
+        await createAnnouncement({
+          title: formData.title,
+          description: formData.description,
+          type: formData.type,
+          isGlobal: formData.isGlobal,
+          status: formData.status
+        });
+      }
+      setIsDialogOpen(false);
+    } catch (err) {
+      // Error handled by useAnnouncements/useService
     }
-
-    setIsDialogOpen(false);
   };
+
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+
       <PageHeader
         icon={Megaphone}
         title="Comunicados e Notícias"
@@ -169,7 +177,12 @@ const Announcements = () => {
           <DataView<ConstructionUpdate>
             items={filteredUpdates}
             isLoading={isLoading}
+            isError={!!announcementError}
+            error={{
+              message: (announcementError as any)?.message
+            }}
             viewMode="table"
+
             itemsPerPage={10}
             columns={[
               { 
@@ -365,5 +378,6 @@ const Announcements = () => {
     </div>
   );
 };
+
 
 export default Announcements;
