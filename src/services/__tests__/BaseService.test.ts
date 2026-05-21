@@ -10,7 +10,14 @@ vi.mock("@/services", () => ({
 }));
 
 // Concrete implementation for testing
-class TestService extends BaseService<{ id: string; name: string; company_id?: string }> {
+interface TestItem {
+  id: string;
+  name: string;
+  company_id?: string;
+  created_at?: Date;
+}
+
+class TestService extends BaseService<TestItem> {
   constructor() {
     super({
       storageKey: 'test-storage',
