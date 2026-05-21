@@ -59,8 +59,10 @@ const Technicians = () => {
     handleBulkDelete,
     toggleSelect,
     clearSelection,
-    exportData
+    exportData,
+    error: techniciansError
   } = useTechnicians();
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -169,7 +171,12 @@ const Technicians = () => {
       <DataView<Technician>
         items={filteredTechnicians}
         isLoading={isLoading}
+        isError={!!techniciansError}
+        error={{
+          message: (techniciansError as any)?.message
+        }}
         viewMode="grid"
+
         itemsPerPage={6}
         skeletonType="card"
         renderGrid={(tech) => (
