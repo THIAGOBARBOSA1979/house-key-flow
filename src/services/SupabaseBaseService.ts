@@ -58,7 +58,9 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
     return mapped as T;
   }
 
-  async getAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<Result<T[]>> {
+  // --- Result-based methods (New Pattern - Onda 18) ---
+
+  async tryGetAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<Result<T[]>> {
     try {
       const filters: FilterParams[] = [...extraFilters];
       if (!isSuperAdmin && companyId) {
@@ -76,12 +78,12 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       return success(mappedData);
     } catch (err) {
-      this.handleError(err, 'getAll');
-      return failure('Erro ao buscar registros');
+      const appError = this.handleError(err, 'getAll');
+      return failure(appError.message, appError.code);
     }
   }
 
-  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<Result<T | undefined>> {
+  async tryGetById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<Result<T | undefined>> {
     try {
       const { data, error } = await Supabase.db.findOne<any>(this.supabaseTable, id);
       if (error) throw error;
@@ -89,17 +91,17 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       const mapped = this.mapFromSupabase(data);
       if (!isSuperAdmin && companyId && (mapped as any).companyId && (mapped as any).companyId !== companyId) {
-        return failure('Acesso negado');
+        return failure('Acesso negado', 'FORBIDDEN');
       }
       
       return success(mapped);
     } catch (err) {
-      this.handleError(err, 'getById');
-      return failure('Erro ao buscar registro');
+      const appError = this.handleError(err, 'getById');
+      return failure(appError.message, appError.code);
     }
   }
 
-  async create(item: Omit<T, "id">, companyId?: string): Promise<Result<T>> {
+  async tryCreate(item: Omit<T, "id">, companyId?: string): Promise<Result<T>> {
     try {
       const validated = this.validate(item);
       const payload = { ...validated, companyId: companyId || (validated as any).companyId };
@@ -111,12 +113,12 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.addItem(created);
       return success(created);
     } catch (err) {
-      this.handleError(err, 'create');
-      return failure('Erro ao criar registro');
+      const appError = this.handleError(err, 'create');
+      return failure(appError.message, appError.code);
     }
   }
 
-  async update(id: string, data: Partial<T>): Promise<Result<T>> {
+  async tryUpdate(id: string, data: Partial<T>): Promise<Result<T>> {
     try {
       const { data: remoteData, error } = await Supabase.db.update<any>(this.supabaseTable, id, this.mapToSupabase(data));
       if (error) throw error;
@@ -125,12 +127,12 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.updateItem(updated);
       return success(updated);
     } catch (err) {
-      this.handleError(err, 'update');
-      return failure('Erro ao atualizar registro');
+      const appError = this.handleError(err, 'update');
+      return failure(appError.message, appError.code);
     }
   }
 
-  async delete(id: string): Promise<Result<boolean>> {
+  async tryDelete(id: string): Promise<Result<boolean>> {
     try {
       const { error } = await Supabase.db.delete(this.supabaseTable, id);
       if (error) throw error;
@@ -138,8 +140,40 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.removeItem(id);
       return success(true);
     } catch (err) {
-      this.handleError(err, 'delete');
-      return failure('Erro ao remover registro');
+      const appError = this.handleError(err, 'delete');
+      return failure(appError.message, appError.code);
     }
+  }
+
+  // --- Compatibility methods (Onda 17) ---
+
+  async getAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<T[]> {
+    const res = await this.tryGetAll(companyId, isSuperAdmin, extraFilters);
+    if (res.success) return res.data;
+    throw new Error(res.error);
+  }
+
+  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
+    const res = await this.tryGetById(id, companyId, isSuperAdmin);
+    if (res.success) return res.data;
+    throw new Error(res.error);
+  }
+
+  async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
+    const res = await this.tryCreate(item, companyId);
+    if (res.success) return res.data;
+    throw new Error(res.error);
+  }
+
+  async update(id: string, data: Partial<T>): Promise<T | undefined> {
+    const res = await this.tryUpdate(id, data);
+    if (res.success) return res.data;
+    throw new Error(res.error);
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const res = await this.tryDelete(id);
+    if (res.success) return res.data;
+    throw new Error(res.error);
   }
 }
