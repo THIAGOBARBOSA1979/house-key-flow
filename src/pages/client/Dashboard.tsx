@@ -162,14 +162,14 @@ const Dashboard = () => {
                   <ClipboardCheck size={24} />
                 </div>
                 <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest">
-                  {upcomingInspections?.length > 0 ? `${upcomingInspections.length} Agendadas` : "Vistorias"}
+                  {upcomingInspections && upcomingInspections.length > 0 ? `${upcomingInspections.length} Agendadas` : "Vistorias"}
                 </Badge>
               </div>
               <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">
-                {upcomingInspections?.length > 0 ? "Vistoria em Andamento" : "Acompanhamento Técnico"}
+                {upcomingInspections && upcomingInspections.length > 0 ? "Vistoria em Andamento" : "Acompanhamento Técnico"}
               </h3>
               <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
-                {upcomingInspections?.length > 0 
+                {upcomingInspections && upcomingInspections.length > 0 
                   ? `Você possui ${upcomingInspections.length} vistorias programadas para sua unidade.` 
                   : "Gerencie protocolos de vistoria e laudos ABNT da sua unidade."}
               </p>
@@ -189,12 +189,12 @@ const Dashboard = () => {
                   <ShieldCheck size={24} />
                 </div>
                 <Badge className="bg-indigo-100 text-indigo-600 border-none font-black text-[10px] uppercase tracking-widest">
-                  {warrantyRequests?.length > 0 ? `${warrantyRequests.length} Ativas` : "Garantias"}
+                  {warrantyRequests && warrantyRequests.length > 0 ? `${warrantyRequests.length} Ativas` : "Garantias"}
                 </Badge>
               </div>
               <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">Assistência Técnica</h3>
               <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
-                {warrantyRequests?.length > 0 
+                {warrantyRequests && warrantyRequests.length > 0 
                   ? `Existem ${warrantyRequests.length} solicitações de assistência técnica em processamento.` 
                   : "Abra protocolos de assistência técnica com rastreabilidade total."}
               </p>
