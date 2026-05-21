@@ -235,7 +235,7 @@ const ClientWarranty = () => {
           <div className="lg:col-span-8 space-y-layout-gap">
             {selectedClaim ? (
               <div className="space-y-layout-gap animate-in fade-in slide-in-from-bottom-4 duration-slow">
-                <WarrantyStatus status={selectedClaim.status as any || 'pending'} />
+                <WarrantyStatus status={selectedClaim.currentStage} />
                 <WarrantyRequestTimeline request={selectedClaim} />
                 
                 {/* Acknowledge Action for Completed */}

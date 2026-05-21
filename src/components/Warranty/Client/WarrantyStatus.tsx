@@ -1,45 +1,80 @@
-import { Clock, MessageSquare, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Clock, MessageSquare, ShieldCheck, AlertTriangle, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type StatusType = "pending" | "progress" | "complete" | "critical";
+import { 
+  WarrantyStage, 
+  WARRANTY_STAGES 
+} from "@/types/warrantyFlow";
 
 interface WarrantyStatusProps {
-  status: StatusType;
+  status: WarrantyStage;
 }
 
 export const WarrantyStatus = ({ status }: WarrantyStatusProps) => {
   const statusConfig = {
-    pending: {
+    opened: {
       icon: Clock,
-      color: "text-status-pending",
-      bg: "bg-status-pending/10",
-      border: "border-status-pending/20",
-      text: "Aguardando Análise",
-      description: "Sua solicitação foi registrada e está aguardando análise da equipe técnica."
+      color: "text-blue-500",
+      bg: "bg-blue-50/50",
+      border: "border-blue-100",
+      text: "Protocolo Aberto",
+      description: "Sua solicitação foi registrada e está em fila de processamento."
     },
-    progress: {
+    in_analysis: {
+      icon: Clock,
+      color: "text-amber-500",
+      bg: "bg-amber-50/50",
+      border: "border-amber-100",
+      text: "Em Análise Técnica",
+      description: "Nossa engenharia está avaliando os detalhes e evidências fornecidas."
+    },
+    inspection_scheduled: {
+      icon: Clock,
+      color: "text-purple-500",
+      bg: "bg-purple-50/50",
+      border: "border-purple-100",
+      text: "Vistoria Agendada",
+      description: "Um especialista visitará sua unidade na data acordada."
+    },
+    inspection_completed: {
       icon: MessageSquare,
-      color: "text-status-progress",
-      bg: "bg-status-progress/10",
-      border: "border-status-progress/20",
-      text: "Em Atendimento",
-      description: "Um técnico foi designado e está trabalhando na sua solicitação."
+      color: "text-indigo-500",
+      bg: "bg-indigo-50/50",
+      border: "border-indigo-100",
+      text: "Vistoria Realizada",
+      description: "Laudo técnico em fase de elaboração e orçamento."
     },
-    complete: {
+    approved: {
       icon: ShieldCheck,
-      color: "text-status-complete",
-      bg: "bg-status-complete/10",
-      border: "border-status-complete/20",
-      text: "Finalizado",
-      description: "O atendimento foi concluído com sucesso."
+      color: "text-emerald-500",
+      bg: "bg-emerald-50/50",
+      border: "border-emerald-100",
+      text: "Aprovado para Reparo",
+      description: "Sua solicitação foi validada tecnicamente e seguirá para execução."
     },
-    critical: {
+    in_execution: {
+      icon: Activity,
+      color: "text-blue-600",
+      bg: "bg-blue-50/80",
+      border: "border-blue-200",
+      text: "Reparo em Andamento",
+      description: "Equipe técnica em campo realizando as intervenções necessárias."
+    },
+    completed: {
+      icon: ShieldCheck,
+      color: "text-emerald-600",
+      bg: "bg-emerald-100/50",
+      border: "border-emerald-200",
+      text: "Protocolo Concluído",
+      description: "O atendimento foi finalizado e homologado."
+    },
+    rejected: {
       icon: AlertTriangle,
-      color: "text-status-critical",
-      bg: "bg-status-critical/10",
-      border: "border-status-critical/20",
-      text: "Crítico",
-      description: "Sua solicitação foi classificada como crítica e está sendo tratada com prioridade."
+      color: "text-red-500",
+      bg: "bg-red-50/50",
+      border: "border-red-100",
+      text: "Encerrado / Não Procedente",
+      description: "Este protocolo foi finalizado sem intervenção técnica adicional."
     }
   };
 

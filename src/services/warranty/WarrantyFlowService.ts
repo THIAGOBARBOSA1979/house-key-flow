@@ -364,6 +364,11 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       ]
     } as any);
 
+    // Trigger automation for cancellation
+    import("./WarrantyAutomationService").then(({ warrantyAutomationService }) => {
+      warrantyAutomationService.onStatusChange(requestId, request.currentStage, "rejected", clientId, false);
+    });
+
     return true;
   }
 
