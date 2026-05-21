@@ -150,7 +150,6 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.notify();
   }
 
-
   clearAllData() {
     this.items = [];
     this.notify();
