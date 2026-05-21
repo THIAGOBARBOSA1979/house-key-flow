@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Folder, FileText, Plus, FolderPlus, Upload, ClipboardCheck, LayoutGrid, ShieldCheck, Zap, Grid, CheckCircle2 } from "lucide-react";
 import { documentService } from "@/services";
 import { Button } from "@/components/ui/button";
