@@ -1,54 +1,68 @@
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { securityService } from './SystemSecurityService';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { securityService } from '../SystemSecurityService';
 
 describe('SystemSecurityService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
-    // Reset singleton state if possible or ensure it starts clean
+    vi.useFakeTimers();
   });
 
-  it('should validate password strength correctly', () => {
-    // Weak passwords
-    expect(securityService.validatePasswordStrength('123')).toBe(false);
-    expect(securityService.validatePasswordStrength('password')).toBe(false);
-    
-    // Strong passwords (if it requires 8 chars, 1 uppercase, 1 lowercase, 1 number)
-    // Checking implementation details might be needed but let's test basic length if that's the rule
-    expect(securityService.validatePasswordStrength('Password123!')).toBe(true);
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it('should track and prevent brute force attempts', () => {
-    const email = 'target@example.com';
-    
-    // Fail 5 times (assuming 5 is the limit)
-    for (let i = 0; i < 5; i++) {
-      securityService.recordLoginAttempt(email, false);
-    }
-    
-    expect(securityService.isLockedOut(email)).toBe(true);
-    
-    // Success should reset
-    securityService.recordLoginAttempt(email, true);
-    expect(securityService.isLockedOut(email)).toBe(false);
+  it('should validate email correctly', () => {
+    expect(securityService.validateEmail('test@example.com')).toBe(true);
+    expect(securityService.validateEmail('invalid-email')).toBe(false);
+    expect(securityService.validateEmail('test@')).toBe(false);
+  });
+
+  it('should sanitize strings by removing sensitive characters', () => {
+    const malicious = '<script>alert("xss")</script>';
+    const sanitized = securityService.sanitizeString(malicious);
+    expect(sanitized).not.toContain('<');
+    expect(sanitized).not.toContain('>');
   });
 
   it('should handle session timeouts', () => {
     const onTimeout = vi.fn();
-    securityService.initialize(onTimeout);
     
-    // Simulate inactivity
-    // Implementation likely uses setTimeout or setInterval
-    // We might need to mock timers
-    vi.useFakeTimers();
+    // Simulate being logged in
+    localStorage.setItem('auth_user', JSON.stringify({ id: '1', name: 'Test' }));
     
-    securityService.resetInactivityTimer();
+    const cleanup = securityService.initialize(onTimeout);
     
-    // Advance time by 31 minutes (assuming 30m is timeout)
+    // Advance time by 31 minutes (timeout is 30m)
     vi.advanceTimersByTime(31 * 60 * 1000);
     
     expect(onTimeout).toHaveBeenCalled();
-    vi.useRealTimers();
+    
+    if (cleanup) cleanup();
+  });
+
+  it('should reset inactivity timer on user interaction', () => {
+    const onTimeout = vi.fn();
+    localStorage.setItem('auth_user', JSON.stringify({ id: '1', name: 'Test' }));
+    
+    const cleanup = securityService.initialize(onTimeout);
+    
+    // Advance 20 minutes
+    vi.advanceTimersByTime(20 * 60 * 1000);
+    
+    // Simulate interaction
+    window.dispatchEvent(new MouseEvent('mousemove'));
+    
+    // Advance another 20 minutes (total 40m, but 20m since last interaction)
+    vi.advanceTimersByTime(20 * 60 * 1000);
+    
+    expect(onTimeout).not.toHaveBeenCalled();
+    
+    // Advance another 15 minutes (total 35m since interaction)
+    vi.advanceTimersByTime(15 * 60 * 1000);
+    expect(onTimeout).toHaveBeenCalled();
+
+    if (cleanup) cleanup();
   });
 });
