@@ -50,6 +50,27 @@ export const formatPhone = (value: string | undefined): string => {
   return value;
 };
 
+export const formatCNPJ = (value: string | undefined): string => {
+  if (!value) return "-";
+  const cleaned = value.replace(/\D/g, "");
+  if (cleaned.length !== 14) return value;
+  return cleaned.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+};
+
+export const formatCPF = (value: string | undefined): string => {
+  if (!value) return "-";
+  const cleaned = value.replace(/\D/g, "");
+  if (cleaned.length !== 11) return value;
+  return cleaned.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+};
+
+export const formatCEP = (value: string | undefined): string => {
+  if (!value) return "-";
+  const cleaned = value.replace(/\D/g, "");
+  if (cleaned.length !== 8) return value;
+  return cleaned.replace(/^(\d{5})(\d{3})$/, "$1-$2");
+};
+
 
 export const formatRelativeTime = (date: Date | string | number | undefined): string => {
   if (!date) return "Agora";

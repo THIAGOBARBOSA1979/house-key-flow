@@ -98,7 +98,7 @@ export abstract class BaseService<T extends BaseEntity> {
     
     this.items.push(newItem);
     this.notify();
-    await this.log('created', id, `Registro criado em ${this.options.storageKey}`);
+    await this.log('created', id, `Registro criado em ${this.options.storageKey}`, newItem);
     return newItem;
   }
 

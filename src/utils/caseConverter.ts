@@ -3,7 +3,7 @@
  * Utility to safe check if a value is a date or should be treated as such
  */
 const isDateString = (value: any): boolean => {
-  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value);
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}(T|\s)\d{2}:\d{2}:\d{2}/.test(value);
 };
 
 export const toSnakeCase = (str: string): string => {

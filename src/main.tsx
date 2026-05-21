@@ -9,9 +9,12 @@ import { ErrorBoundary } from './components/shared/ErrorBoundary.tsx'
 
 // Initialize the SyncService with error handling
 try {
-  SyncService.initialize();
+  // SyncService is optional based on environment
+  if (import.meta.env.VITE_API_URL) {
+    SyncService.initialize();
+  }
 } catch (error) {
-  console.error('Erro ao inicializar SyncService:', error);
+  console.error('Failed to initialize optional services:', error);
 }
 
 const rootElement = document.getElementById("root");
