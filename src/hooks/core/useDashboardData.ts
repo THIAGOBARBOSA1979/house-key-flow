@@ -21,15 +21,18 @@ export const useDashboardData = () => {
     technicalConformity: 100
   });
 
+  const [healthMetrics, setHealthMetrics] = useState<SystemHealthMetrics | null>(null);
+
   const refreshData = useCallback(async () => {
     setLoading(true);
     try {
-      const [properties, inspections, warrantyClaims, recentActivities, recentTickets] = await Promise.all([
+      const [properties, inspections, warrantyClaims, recentActivities, recentTickets, hMetrics] = await Promise.all([
         propertyService.getAll(companyId, isSuperAdmin),
         inspectionService.getAll(companyId, isSuperAdmin),
         warrantyFlowService.getAllRequests(companyId, isSuperAdmin),
         auditLogService.getRecentLogsAsync(5),
-        supportService.getAll(companyId, isSuperAdmin)
+        supportService.getAll(companyId, isSuperAdmin),
+        systemHealthService.getHealthMetrics()
       ]);
 
       setData({
@@ -38,9 +41,11 @@ export const useDashboardData = () => {
         warrantyClaims: warrantyClaims.slice(0, 2),
         recentActivities,
         recentTickets: recentTickets.filter((t: any) => t.status !== 'closed').slice(0, 3),
-        propertyMetrics: propertyService.getMetrics(companyId, isSuperAdmin),
-        technicalConformity: inspectionService.getTechnicalConformityScore(companyId, isSuperAdmin),
+        propertyMetrics: propertyService.getMetricsSync(companyId, isSuperAdmin),
+        technicalConformity: inspectionService.getTechnicalConformityScoreSync(companyId, isSuperAdmin),
       });
+
+      setHealthMetrics(hMetrics);
 
       toast({ 
         title: "Dados atualizados", 
@@ -53,12 +58,11 @@ export const useDashboardData = () => {
     }
   }, [companyId, isSuperAdmin, toast]);
 
-  const [healthMetrics, setHealthMetrics] = useState<SystemHealthMetrics>(systemHealthService.getHealthMetrics());
-
   useEffect(() => {
     refreshData();
-    const interval = setInterval(() => {
-      setHealthMetrics(systemHealthService.getHealthMetrics());
+    const interval = setInterval(async () => {
+      const hMetrics = await systemHealthService.getHealthMetrics();
+      setHealthMetrics(hMetrics);
     }, 30000);
     return () => clearInterval(interval);
   }, [refreshData]);

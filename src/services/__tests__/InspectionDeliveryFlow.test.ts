@@ -61,7 +61,7 @@ describe('Integration: Inspection and Delivery Flow', () => {
       }
     ];
 
-    const execution = checklistService.logExecution(
+    const execution = await checklistService.logExecution(
       template.id,
       executedGroups as any,
       'Tudo em ordem na vistoria técnica.',
