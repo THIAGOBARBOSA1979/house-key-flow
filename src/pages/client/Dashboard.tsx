@@ -15,7 +15,7 @@ import { useMemo } from "react";
 import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
 import { ConstructionFeed } from "@/components/client/ConstructionFeed";
 import { Skeleton } from "@/components/ui/skeleton";
-import { StageIndicator } from "@/components/clientFlow/StageIndicator";
+import { StageIndicator } from "@/components/client-flow/StageIndicator";
 import { useClientDashboardData } from "@/hooks/core/useClientDashboardData";
 import { PropertyInfoCard } from "@/components/dashboard/Client/PropertyInfoCard";
 import { ReferralCard } from "@/components/dashboard/Client/ReferralCard";

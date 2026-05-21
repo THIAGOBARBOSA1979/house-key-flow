@@ -26,7 +26,7 @@ import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { DocumentPreviewDialog } from "@/components/documents/DocumentPreviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks";
-import { FeatureGate } from "@/components/clientFlow/FeatureGate";
+import { FeatureGate } from "@/components/client-flow/FeatureGate";
 
 interface ClientDocument extends Omit<Document, 'status'> {
   size?: string;
