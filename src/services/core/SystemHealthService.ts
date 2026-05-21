@@ -27,8 +27,8 @@ export interface SystemHealthMetrics {
 class SystemHealthService {
   private startTime = new Date();
 
-  getHealthMetrics(): SystemHealthMetrics {
-    const allRequests = warrantyFlowService.getAllRequests();
+  async getHealthMetrics(): Promise<SystemHealthMetrics> {
+    const allRequests = await warrantyFlowService.getAllRequests();
     const allInspections = inspectionService.getAllSync(undefined, true);
     const allProperties = propertyService.getAllSync(undefined, true);
     const allLogs = auditLogService.getAllLogs();
@@ -39,17 +39,7 @@ class SystemHealthService {
     if (overdueWarranties > 5) status = 'warning';
     if (overdueWarranties > 15) status = 'critical';
 
-    // Advanced storage monitoring using Supabase usage statistics
-    // (In a real scenario, this would call a management API or monitor persistent draft storage)
-    let storageUsage = "0 KB";
-    try {
-      // Transitioned from localStorage to DB persistence
-      // Placeholder for actual storage bucket usage if needed
-      storageUsage = "Auditada via DB";
-    } catch (e) {
-      console.warn("Could not calculate storage usage", e);
-    }
-
+    let storageUsage = "Auditada via DB";
 
     return {
       status,
