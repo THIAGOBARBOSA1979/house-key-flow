@@ -23,10 +23,6 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 
-/**
- * User Governance Page (Refactored in Wave 4)
- * Centralizes user management, permissions, and company linking.
- */
 const Users = () => {
   const { toast } = useToast();
   const { confirm } = useConfirm();
@@ -47,7 +43,6 @@ const Users = () => {
     error: usersError
   } = useUsers();
 
-  
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
@@ -91,7 +86,7 @@ const Users = () => {
     >
       <UserStats stats={stats || { total: 0, active: 0, inactive: 0, clients: 0, staff: 0 }} />
 
-      <UserActionBanner stats={stats}>
+      <UserActionBanner stats={stats || { total: 0, active: 0, inactive: 0, clients: 0, staff: 0 }}>
         <UserBulkActions 
           selectedCount={selectedUsers.length} 
           onBulkAction={handleBulkAction} 
@@ -116,10 +111,9 @@ const Users = () => {
         isLoading={isLoading}
         isError={!!usersError}
         error={{
-          message: (usersError as any)?.message
+          message: (usersError as any)?.message || 'Erro ao carregar usuários'
         }}
         skeletonType="table"
-
         viewMode={viewMode}
         itemsPerPage={8}
         renderGrid={(user) => (

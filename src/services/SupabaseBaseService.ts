@@ -7,12 +7,9 @@ import { BaseEntity } from '@/types/shared';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
   supabaseTable: keyof Database['public']['Tables'];
-  fieldMapping?: Record<string, string>; // frontendKey -> backendKey
+  fieldMapping?: Record<string, string>;
 }
 
-/**
- * Enhanced service that synchronizes local state with Supabase.
- */
 export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseService<T> {
   protected supabaseTable: keyof Database['public']['Tables'];
   protected fieldMapping: Record<string, string>;
@@ -23,46 +20,27 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
     this.fieldMapping = options.fieldMapping || {};
   }
 
-  /**
-   * Map local entity to Supabase snake_case format.
-   */
   protected mapToSupabase(item: any): any {
     const mapped = { ...item };
     delete (mapped as any).error;
     delete (mapped as any).isLoading;
-    
     Object.entries(this.fieldMapping).forEach(([frontendKey, backendKey]) => {
       if (mapped[frontendKey] !== undefined) {
         mapped[backendKey] = mapped[frontendKey];
         delete mapped[frontendKey];
       }
     });
-
     return mapObjectKeys(mapped, toSnakeCase);
   }
 
-  /**
-   * Map Supabase raw data to local camelCase entity.
-   */
   protected mapFromSupabase(raw: any): T {
     if (!raw) return null as any;
     const mapped = mapObjectKeys(raw, toCamelCase);
-    
     Object.entries(this.fieldMapping).forEach(([frontendKey, backendKey]) => {
       const backendValue = raw[backendKey];
-      if (backendValue !== undefined) {
-        mapped[frontendKey] = backendValue;
-      }
+      if (backendValue !== undefined) mapped[frontendKey] = backendValue;
     });
-
     return mapped as T;
-  }
-
-  /**
-   * Fetch all items from Supabase.
-   */
-  getAllSync(companyId?: string, isSuperAdmin?: boolean): T[] {
-    return this.items;
   }
 
   async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
@@ -71,42 +49,23 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       if (!isSuperAdmin && companyId) {
         filters.push({ column: 'company_id', operator: 'eq', value: companyId });
       }
-
-      const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, { 
-        filters,
-        pagination: { page: 1, pageSize: 1000 }
-      });
-      
+      const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, { filters, pagination: { page: 1, pageSize: 1000 } });
       if (error) throw error;
-      const mappedItems = (data || []).map(item => this.mapFromSupabase(item));
-      this.items = mappedItems;
-      return mappedItems;
+      this.items = (data || []).map(item => this.mapFromSupabase(item));
+      return this.items;
     } catch (err) {
       this.handleError(err, 'getAll');
-      return [];
+      return this.items;
     }
   }
 
-  /**
-   * Fetch a single item by ID.
-   */
-  getByIdSync(id: string): T | undefined {
-    return this.items.find(i => i.id === id);
-  }
-
-  /**
-   * Fetch a single item by ID.
-   */
   async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
     try {
       const { data, error } = await Supabase.db.findById<any>(this.supabaseTable, id);
       if (error) throw error;
       if (!data) return undefined;
-      
       const mapped = this.mapFromSupabase(data);
-      if (!isSuperAdmin && companyId && mapped.company_id !== companyId) {
-        return undefined;
-      }
+      if (!isSuperAdmin && companyId && (mapped as any).company_id !== companyId) return undefined;
       return mapped;
     } catch (err) {
       this.handleError(err, 'getById');
@@ -146,26 +105,5 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.handleError(err, 'delete');
       return false;
     }
-  }
-
-  async bulkUpdate(ids: string[], data: Partial<T>): Promise<T[]> {
-    const results: T[] = [];
-    for (const id of ids) {
-      const updated = await this.update(id, data);
-      if (updated) results.push(updated);
-    }
-    return results;
-  }
-
-  async bulkDelete(ids: string[]): Promise<number> {
-    let count = 0;
-    for (const id of ids) {
-      if (await this.delete(id)) count++;
-    }
-    return count;
-  }
-
-  count(companyId?: string, isSuperAdmin?: boolean): number {
-    return this.items.length;
   }
 }

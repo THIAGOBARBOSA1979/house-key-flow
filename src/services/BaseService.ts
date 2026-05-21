@@ -8,10 +8,6 @@ export interface BaseServiceOptions {
   shouldSyncWithSupabase?: boolean;
 }
 
-/**
- * Generic BaseService handling basic operations.
- * Stateless version to be used with React Query.
- */
 export abstract class BaseService<T extends BaseEntity> {
   protected options: BaseServiceOptions;
   protected items: T[] = [];
@@ -24,41 +20,73 @@ export abstract class BaseService<T extends BaseEntity> {
     return () => {};
   }
 
-  async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
-    return this.items;
+  getAllSync(companyId?: string, isSuperAdmin?: boolean): T[] {
+    if (isSuperAdmin) return this.items;
+    if (!companyId) return [];
+    return this.items.filter(item => item.company_id === companyId);
   }
 
-  getAllSync(companyId?: string, isSuperAdmin?: boolean): T[] {
-    return this.items;
+  async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
+    return this.getAllSync(companyId, isSuperAdmin);
+  }
+
+  getByIdSync(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {
+    const item = this.items.find(item => item.id === id);
+    if (!item) return undefined;
+    if (isSuperAdmin || item.company_id === companyId) return item;
+    return undefined;
   }
 
   async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
-    return this.items.find(i => i.id === id);
-  }
-
-  getByIdSync(id: string): T | undefined {
-    return this.items.find(i => i.id === id);
+    return this.getByIdSync(id, companyId, isSuperAdmin);
   }
 
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
-    const newItem = { id: crypto.randomUUID(), ...item } as any;
+    const id = (item as any).id || crypto.randomUUID();
+    const newItem = { ...item, id, company_id: companyId || (item as any).company_id } as T;
+    this.items.push(newItem);
+    await this.log('created', id, `Registro criado em ${this.options.storageKey}`, newItem);
     return newItem;
   }
 
   async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
-    return undefined;
+    const index = this.items.findIndex(item => item.id === id);
+    if (index === -1) return undefined;
+    const oldItem = { ...this.items[index] };
+    this.items[index] = { ...this.items[index], ...data };
+    await this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, { changes: data, previous: oldItem });
+    return this.items[index];
   }
 
   async delete(id: string): Promise<boolean> {
-    return true;
+    const initialLength = this.items.length;
+    this.items = this.items.filter(item => item.id !== id);
+    if (this.items.length !== initialLength) {
+      await this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
+      return true;
+    }
+    return false;
   }
 
   async bulkUpdate(ids: string[], data: Partial<T>): Promise<T[]> {
-    return [];
+    const results: T[] = [];
+    for (const id of ids) {
+      const updated = await this.update(id, data);
+      if (updated) results.push(updated);
+    }
+    return results;
   }
 
   async bulkDelete(ids: string[]): Promise<number> {
-    return 0;
+    let count = 0;
+    for (const id of ids) {
+      if (await this.delete(id)) count++;
+    }
+    return count;
+  }
+
+  count(companyId?: string, isSuperAdmin?: boolean): number {
+    return this.getAllSync(companyId, isSuperAdmin).length;
   }
 
   protected handleError(error: any, context: string): never {
@@ -83,9 +111,7 @@ export abstract class BaseService<T extends BaseEntity> {
     }
   }
 
-  clearAllData() {}
-  
-  count(companyId?: string, isSuperAdmin?: boolean): number {
-    return this.items.length;
+  clearAllData() {
+    this.items = [];
   }
 }
