@@ -25,10 +25,16 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 
 
+import { useAuditMarker } from "@/hooks/useAuditMarker";
+
 const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.id || "client-1";
   const { profile, stage, isLoading: stageLoading, error: stageError, refreshProfile } = useClientStage(userId);
+  
+  useAuditMarker('Mocks de dados no ConstructionFeed precisam ser substituídos por dados do Supabase');
+  useAuditMarker('Cards de "Vistorias" e "Garantias" no Dashboard sem fallback de estado vazio');
+  useAuditMarker('Layout do "Command Center" quebra em tablets na orientação vertical');
   
   const {
     isLoading: dashboardLoading,
