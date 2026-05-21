@@ -20,19 +20,18 @@ export abstract class BaseService<T extends BaseEntity> {
   }
 
   /**
-   * Centralized error handling.
+   * Subscribe to state changes.
+   * @deprecated React Query is now the source of truth for state
    */
-  protected handleError(error: any, context: string): never {
-    throw errorHandler.handle(error, `BaseService:${this.options.storageKey}:${context}`);
+  subscribe(listener: Listener<T>) {
+    return () => {};
   }
 
   /**
-   * Get all items, filtered by company isolation rules.
-   * Now primarily a proxy for API calls, as state is managed by TanStack Query.
+   * Notify all subscribers of state changes.
+   * @deprecated
    */
-  async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
-    return []; // To be implemented by subclasses using Supabase
-  }
+  protected notify() {}
 
   /**
    * Get a single item by ID with isolation checks.
@@ -41,11 +40,20 @@ export abstract class BaseService<T extends BaseEntity> {
     return undefined; // To be implemented by subclasses
   }
 
+  async bulkUpdate(ids: string[], data: Partial<T>): Promise<T[]> {
+    return [];
+  }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    return 0;
+  }
+
   /**
-   * Placeholder for persistence logic.
-   * @deprecated State is now managed by React Query
+   * Centralized error handling.
    */
-  protected notify() {}
+  protected handleError(error: any, context: string): never {
+    throw errorHandler.handle(error, `BaseService:${this.options.storageKey}:${context}`);
+  }
 
   /**
    * Clear all items from state.

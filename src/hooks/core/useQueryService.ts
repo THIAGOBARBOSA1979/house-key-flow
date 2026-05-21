@@ -25,9 +25,6 @@ export function useQueryService<T extends { id: string; company_id?: string }>(
     queryKey: [queryKey, companyId, isSuperAdmin],
     queryFn: async () => {
       try {
-        if ('sync' in service && typeof (service as any).sync === 'function') {
-          await (service as any).sync(companyId, isSuperAdmin);
-        }
         return await service.getAll(companyId, isSuperAdmin);
       } catch (err) {
         errorHandler.handle(err, `useQueryService:${queryKey}:getAll`);
