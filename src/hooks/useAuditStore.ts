@@ -24,7 +24,7 @@ interface AuditState {
   currentWave: number;
   
   // Actions
-  addIssue: (issue: Omit<AuditIssue, 'id' | 'status'>) => void;
+  addIssue: (issue: Omit<AuditIssue, 'id'>) => void;
   markAsFixed: (id: string) => void;
   startWave: (waveId: number) => void;
   completeWave: (waveId: number) => void;
@@ -40,11 +40,16 @@ export const useAuditStore = create<AuditState>()((set, get) => ({
   currentWave: 0,
 
   addIssue: (issue) => set((state) => {
-    const newIssue = { ...issue, id: crypto.randomUUID(), status: 'pending' as const };
+    const newIssue = { 
+      status: 'pending' as const,
+      ...issue, 
+      id: crypto.randomUUID() 
+    };
     const newIssues = [...state.issues, newIssue];
     return {
       issues: newIssues,
-      totalIssues: newIssues.length
+      totalIssues: newIssues.length,
+      fixedIssues: newIssues.filter(i => i.status === 'fixed').length
     };
   }),
 

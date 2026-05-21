@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,11 +31,24 @@ import { Settings, Save, Clock, AlertCircle, Edit2 } from "lucide-react";
 
 export function SLAConfigurationPanel() {
   const { toast } = useToast();
-  const [configs, setConfigs] = useState<SLAConfig[]>(
-    warrantySLAService.getAllSLAConfigs()
-  );
-  const [editingConfig, setEditingConfig] = useState<SLAConfig | null>(null);
+  const [configs, setConfigs] = useState<SLAConfig[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editingConfig, setEditingConfig] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const loadConfigs = async () => {
+      try {
+        const data = await warrantySLAService.getAllSLAConfigs();
+        setConfigs(data);
+      } catch (error) {
+        console.error("Failed to load SLA configs", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadConfigs();
+  }, []);
 
   // Convert hours to days for display
   const hoursToDays = (hours: number) => (hours / 24).toFixed(1);
@@ -80,7 +93,7 @@ export function SLAConfigurationPanel() {
       editingConfig.executionHours;
     
     // Update in service
-    warrantySLAService.updateSLAConfig(editingConfig);
+    warrantySLAService.updateSLAConfig(editingConfig as any);
     
     // Update local state
     setConfigs(prev => prev.map(c => 
@@ -149,7 +162,19 @@ export function SLAConfigurationPanel() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {configs.map((config) => (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    Carregando configurações...
+                  </TableCell>
+                </TableRow>
+              ) : configs.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    Nenhuma configuração encontrada.
+                  </TableCell>
+                </TableRow>
+              ) : configs.map((config) => (
                 <TableRow key={config.warrantyType}>
                   <TableCell className="font-medium">
                     {config.warrantyType}

@@ -50,11 +50,33 @@ export abstract class BaseService<T extends BaseEntity> {
     return this.getByIdSync(id, companyId, isSuperAdmin);
   }
 
+  protected addItem(item: T) {
+    const exists = this.items.findIndex(i => i.id === item.id);
+    if (exists !== -1) {
+      this.items[exists] = item;
+    } else {
+      this.items.push(item);
+    }
+    this.notifyListeners();
+  }
+
+  protected updateItem(item: T) {
+    const index = this.items.findIndex(i => i.id === item.id);
+    if (index !== -1) {
+      this.items[index] = item;
+      this.notifyListeners();
+    }
+  }
+
+  protected removeItem(id: string) {
+    this.items = this.items.filter(item => item.id !== id);
+    this.notifyListeners();
+  }
+
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const id = (item as any).id || crypto.randomUUID();
     const newItem = { ...item, id, company_id: companyId || (item as any).company_id } as T;
-    this.items.push(newItem);
-    this.notifyListeners();
+    this.addItem(newItem);
     await this.log('created', id, `Registro criado em ${this.options.storageKey}`, newItem);
     return newItem;
   }
@@ -63,17 +85,16 @@ export abstract class BaseService<T extends BaseEntity> {
     const index = this.items.findIndex(item => item.id === id);
     if (index === -1) return undefined;
     const oldItem = { ...this.items[index] };
-    this.items[index] = { ...this.items[index], ...data };
-    this.notifyListeners();
+    const updatedItem = { ...this.items[index], ...data };
+    this.updateItem(updatedItem);
     await this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, { changes: data, previous: oldItem });
-    return this.items[index];
+    return updatedItem;
   }
 
   async delete(id: string): Promise<boolean> {
     const initialLength = this.items.length;
-    this.items = this.items.filter(item => item.id !== id);
+    this.removeItem(id);
     if (this.items.length !== initialLength) {
-      this.notifyListeners();
       await this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
       return true;
     }
