@@ -16,7 +16,9 @@ export interface ChecklistItem {
   conformity?: "conform" | "non_conform" | "not_applicable" | "pending" | "nonconform";
   abntReference?: string; // Ex: NBR 15575-3:2013
   inspectionMethod?: string; // Visual, Percussão, etc.
+  photos?: string[];
 }
+
 
 export interface ChecklistGroup {
   id: string;
