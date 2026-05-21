@@ -34,10 +34,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const location = useLocation();
   const { sidebarCollapsed, setSidebarCollapsed } = useUserPreferences();
 
-  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+  const [company, setCompany] = useState<any>(null);
 
-  const company = useMemo(() => {
-    return user?.company_id ? companyService.getById(user.company_id, undefined, true) : null;
+  useEffect(() => {
+    if (user?.company_id) {
+      companyService.getById(user.company_id, undefined, true).then(setCompany);
+    }
   }, [user]);
 
   const sidebarWidthClass = sidebarCollapsed ? "md:pl-sidebar-collapsed-width" : "md:pl-sidebar-width";

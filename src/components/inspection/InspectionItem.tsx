@@ -1,5 +1,6 @@
 
 import { safeFormat } from "@/lib/utils";
+import { useState, useEffect } from "react";
 import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play, ClipboardList } from "lucide-react";
 import { checklistService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+
 import { ScheduleInspectionDialog } from "./ScheduleInspectionDialog";
 import { StartInspectionDialog } from "./StartInspectionDialog";
 import { useToast } from "@/components/ui/use-toast";
@@ -84,14 +85,13 @@ export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionIte
     if (onUpdate) onUpdate();
   };
 
-  const startInspection = () => {
-    setStartInspectionDialogOpen(true);
-    if (inspection.status === "pending") {
-      inspectionService.updateStatus(inspection.id, "progress");
-    }
-  };
+  const [checklist, setChecklist] = useState<any>(null);
 
-  const checklist = inspection.checklistId ? checklistService.getTemplateById(inspection.checklistId) : null;
+  useEffect(() => {
+    if (inspection.checklistId) {
+      checklistService.getById(inspection.checklistId).then(setChecklist);
+    }
+  }, [inspection.checklistId]);
 
   return (
     <div className="relative group">
