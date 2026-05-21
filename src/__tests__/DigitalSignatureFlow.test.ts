@@ -66,7 +66,7 @@ describe('Digital Signature Flow', () => {
       
       const rejectedDoc = documentService.getById(doc.id);
       expect(rejectedDoc?.signatures?.[0].status).toBe('rejected');
-      // @ts-ignore
+      // @ts-expect-error - rejectionReason may not be in base type
       expect(rejectedDoc?.signatures?.[0].rejectionReason).toBe('Dados incorretos no termo');
     }
   });

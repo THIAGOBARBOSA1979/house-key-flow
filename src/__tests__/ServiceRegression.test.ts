@@ -26,7 +26,7 @@ describe('Service Logic Regression', () => {
     // Let's create a new instance for isolated testing if possible, 
     // but usually singletons are initialized on import.
     
-    // @ts-ignore - accessing private method for test
+    // @ts-expect-error - accessing private method for test
     await userService.initializeSupabase();
     
     const users = userService.getAll(undefined, true);
