@@ -43,8 +43,21 @@ class UserService extends SupabaseBaseService<User> {
   /**
    * Extends the base getAll to include specific logic if needed
    */
-  public getStats(companyId?: string, isSuperAdmin?: boolean): UserStats {
-    const relevant = this.getAll(companyId, isSuperAdmin);
+  public async getStats(companyId?: string, isSuperAdmin?: boolean): Promise<UserStats> {
+    const relevant = await this.getAll(companyId, isSuperAdmin);
+    const clients = relevant.filter(u => u.role === 'client').length;
+    
+    return {
+      total: relevant.length,
+      active: relevant.filter(u => u.status === 'active').length,
+      inactive: relevant.filter(u => u.status === 'inactive').length,
+      clients,
+      staff: relevant.length - clients,
+    };
+  }
+
+  public getStatsSync(companyId?: string, isSuperAdmin?: boolean): UserStats {
+    const relevant = this.getAllSync(companyId, isSuperAdmin);
     const clients = relevant.filter(u => u.role === 'client').length;
     
     return {
