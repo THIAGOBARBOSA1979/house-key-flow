@@ -36,7 +36,7 @@ import { useNavigate } from "react-router-dom";
 import { propertyService, Property } from "@/services";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
+import { FeatureGate } from "@/components/client-flow/FeatureGate";
 
 const ClientProperties = () => {
   const { user } = useAuth();

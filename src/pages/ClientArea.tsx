@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { User as UserIcon, UserCheck, Plus, Download, Key, ChevronRight, MapPin, Building, History, Activity } from "lucide-react";
 import { UserForm } from "@/components/identity/UserForm";
-import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
+import { GenerateCredentialsForm } from "@/components/client-area/GenerateCredentialsForm";
 import { userService } from "@/services/identity/UserService";
 import { useToast } from "@/hooks/shared/use-toast";
 import { User as UserProfile } from "@/types/user";

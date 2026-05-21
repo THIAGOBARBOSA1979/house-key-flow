@@ -23,10 +23,10 @@ import { useToast } from "@/hooks";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
 import { inspectionService } from "@/services";
-import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
+import { ClientTimeline } from "@/components/client-flow/ClientTimeline";
 import { TimelineItem } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
-import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
+import { FeatureGate } from "@/components/client-flow/FeatureGate";
 
 export default function ClientInspections() {
   const { user } = useAuth();
