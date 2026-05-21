@@ -76,8 +76,10 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
   const { logout, user } = useAuth();
   
   // Load company data using useService for proper state management and sync
-  const { items: companies, isLoading: companyLoading } = useService(companyService);
+  const { items, isLoading: companyLoading } = useService(companyService);
+  const companies = items as any[];
   const company = user?.company_id ? companies.find(c => c.id === user.company_id) : null;
+
 
   const toggleLanguage = () => {
     const nextLng = i18n.language === 'pt' ? 'en' : 'pt';

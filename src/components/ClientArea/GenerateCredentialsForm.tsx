@@ -42,11 +42,13 @@ interface GenerateCredentialsFormProps {
 
 export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredentialsFormProps) {
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
-  const { items: allUsers, isLoading } = useService(userService);
+  const { items, isLoading } = useService(userService);
+  const allUsers = items as any[];
   
   const clients = useMemo(() => 
     allUsers.filter(u => u.role === 'client' || u.role === 'user'),
   [allUsers]);
+
 
   
   // Initialize form with validation
