@@ -11,8 +11,9 @@ import {
 import { warrantySLAService } from "@/services";
 import { WarrantyTimelineStep as TimelineStepComponent } from "./WarrantyTimelineStep";
 import { SLAIndicator } from "./SLAIndicator";
-import { History, AlertTriangle, ShieldCheck, Clock, XCircle } from "lucide-react";
+import { History, AlertTriangle, ShieldCheck, Clock, XCircle, Building, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { formatDate, formatDateTime } from "@/utils/formatters";
 
@@ -148,24 +149,29 @@ export function WarrantyRequestTimeline({ request, compact = false }: WarrantyRe
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <History className="h-5 w-5" />
-              Acompanhamento da Solicitação
-            </CardTitle>
-            <CardDescription>
-              Protocolo #{request.id} • Aberta em {formatDate(request.createdAt)}
-            </CardDescription>
+    <Card className="border-none shadow-sem-lg rounded-[2.5rem] overflow-hidden bg-white/60 backdrop-blur-md transition-all duration-500 hover:shadow-sem-xl">
+      <div className="h-2 w-full bg-gradient-to-r from-primary to-transparent" />
+      <CardHeader className="p-8 sm:p-10 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-primary/10 rounded-2xl text-primary shadow-inner">
+               <History className="h-7 w-7" strokeWidth={2.5} />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-black tracking-tight leading-none">
+                Ciclo de Atendimento Técnico
+              </CardTitle>
+              <CardDescription className="font-bold text-[10px] uppercase tracking-[0.2em] mt-2 text-muted-foreground/60">
+                Protocolo #{request.id} • Aberta em {formatDate(request.createdAt)}
+              </CardDescription>
+            </div>
           </div>
           
           <div className="flex flex-wrap gap-2">
-            <Badge className={priorityConfig[request.priority].className}>
+            <Badge className={cn("px-3 py-1 font-black uppercase text-[10px] border-none rounded-full", priorityConfig[request.priority].className)}>
               Prioridade {priorityConfig[request.priority].label}
             </Badge>
-            <Badge variant="outline">{request.category}</Badge>
+            <Badge variant="outline" className="px-3 py-1 font-black uppercase text-[10px] rounded-full border-2">{request.category}</Badge>
           </div>
         </div>
         
@@ -214,27 +220,46 @@ export function WarrantyRequestTimeline({ request, compact = false }: WarrantyRe
       
       <Separator />
       
-      <CardContent className="pt-6">
-        {/* Request details */}
-        <div className="mb-6 space-y-2">
-          <h3 className="font-semibold text-lg">{request.title}</h3>
-          <p className="text-muted-foreground">{request.description}</p>
-          <div className="flex flex-wrap gap-4 text-sm">
-            <span>
-              <strong>Imóvel:</strong> {request.propertyName} - Unidade {request.unitNumber}
-            </span>
+      <CardContent className="px-8 sm:px-10 pb-10 pt-8">
+        {/* Request details summary card */}
+        <div className="mb-10 p-6 bg-muted/20 rounded-[2rem] border-2 border-dashed border-border/10 group/details transition-all">
+          <h3 className="font-black text-xl tracking-tight mb-2 group-hover/details:text-primary transition-colors">{request.title}</h3>
+          <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-6">{request.description}</p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 border-t border-border/10">
+            <div className="space-y-1">
+              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Ativo Imobiliário</span>
+              <p className="text-xs font-black flex items-center gap-2">
+                <Building className="h-3.5 w-3.5 text-primary" />
+                {request.propertyName} <span className="text-primary">•</span> Unidade {request.unitNumber}
+              </p>
+            </div>
             {request.assignedToName && (
-              <span>
-                <strong>Técnico:</strong> {request.assignedToName}
-              </span>
+              <div className="space-y-1">
+                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Responsável Técnico</span>
+                <p className="text-xs font-black flex items-center gap-2">
+                  <User className="h-3.5 w-3.5 text-primary" />
+                  {request.assignedToName}
+                </p>
+              </div>
+            )}
+            {request.currentStage !== 'completed' && !isFinal && (
+              <div className="space-y-1">
+                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Previsão Próxima Etapa</span>
+                <p className="text-xs font-black text-primary animate-pulse">Analista A2 em triagem</p>
+              </div>
             )}
           </div>
         </div>
         
-        <Separator className="my-6" />
+        <div className="flex items-center gap-3 mb-10">
+           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 whitespace-nowrap px-4">Timeline Estratégica</span>
+           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+        </div>
         
         {/* Timeline */}
-        <div className="space-y-0">
+        <div className="space-y-0 px-4">
           {timelineSteps.map((step, index) => (
             <TimelineStepComponent
               key={step.stage}
