@@ -165,8 +165,8 @@ export function EnhancedWarrantyRequestForm({ onSubmit, onCancel, selectedItem }
         <div className="space-y-6 bg-muted/20 p-6 md:p-8 rounded-[2rem] border-2 border-dashed border-border/50">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h3 className="text-lg font-black tracking-tight">Detalhamento dos Problemas</h3>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Breakdown técnico conforme normas ABNT</p>
+              <h3 className="text-lg font-black tracking-tight">Detalhamento Técnico das Ocorrências</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Breakdown obrigatório com evidências fotográficas</p>
             </div>
           </div>
           
@@ -205,8 +205,8 @@ export function EnhancedWarrantyRequestForm({ onSubmit, onCancel, selectedItem }
           control={form.control}
           name="additionalInfo"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Informações adicionais</FormLabel>
+            <FormItem className="space-y-2">
+              <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Contexto ou Observações Adicionais</FormLabel>
               <FormControl>
                 <textarea 
                   className="min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"

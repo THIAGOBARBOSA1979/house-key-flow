@@ -17,6 +17,7 @@ import { warrantySLAService } from './WarrantySLAService';
 import { auditLogService, AuditAction } from '../core/AuditLogService';
 import { SupabaseBaseService } from '../SupabaseBaseService';
 import { Supabase } from '@/integrations/supabase';
+import { warrantyAutomationService } from './WarrantyAutomationService';
 
 
 // Mock warranty requests data
@@ -152,7 +153,6 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       shouldSyncWithSupabase: true
     }, initialMockRequests);
 
-    
     this.items = this.items.map(item => ({
       ...item,
       company_id: (item as any).company_id || "comp-1"
@@ -364,6 +364,9 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       ]
     } as any);
 
+    // Trigger automation for cancellation
+    warrantyAutomationService.onStatusChange(requestId, request.currentStage, "rejected", clientId, false);
+
     return true;
   }
 
@@ -495,12 +498,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       performedByRole: performedByRole
     });
     
-    // Disparar automação de status
-    import("./WarrantyAutomationService").then(({ warrantyAutomationService }) => {
-      warrantyAutomationService.onStatusChange(requestId, request.currentStage, newStatus, changedBy, isAutomatic);
-    }).catch(e => {
-      console.error("Erro ao importar automação de garantia:", e);
-    });
+    // Trigger status automation
+    warrantyAutomationService.onStatusChange(requestId, request.currentStage, newStatus, changedBy, isAutomatic);
 
     return { success: true, request: updatedRequest };
   }
