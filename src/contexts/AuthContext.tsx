@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(true);
     try {
       // Source of truth: Supabase session
-      const { data: { session } } = await Supabase.auth.getSession();
+      const session = await Supabase.auth.getSession();
       
       if (session?.user) {
         const authenticatedUser: User = {
@@ -150,8 +150,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           is_super_admin: data.user.user_metadata?.role === 'super_admin'
         };
       } else {
-        // 2. Fallback to Mocks for demo/dev
-        if (password === '123456' || password === 'admin123') {
+        // 2. Fallback to Mocks for demo/dev (ONLY if in dev mode)
+        if (import.meta.env.DEV && (password === '123456' || password === 'admin123')) {
           const mockEmail = email === 'admin@a2incorporadora.com.br' ? 'admin@exemplo.com' : email;
           const mock = findMockUser(mockEmail, role);
           if (mock) authenticatedUser = mock;
