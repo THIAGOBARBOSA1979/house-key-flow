@@ -15,15 +15,27 @@ export function GlobalSearch({ onClose }: { onClose?: () => void }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const searchResults = useMemo(() => {
-    if (!debouncedSearchQuery || debouncedSearchQuery.length < 2) return { properties: [], users: [], documents: [] };
+  const [searchResults, setSearchResults] = useState<{ properties: any[], users: any[], documents: any[] }>({ properties: [], users: [], documents: [] });
+
+  useEffect(() => {
+    if (!debouncedSearchQuery || debouncedSearchQuery.length < 2) {
+      setSearchResults({ properties: [], users: [], documents: [] });
+      return;
+    }
     
     const query = debouncedSearchQuery.toLowerCase();
-    return {
-      properties: propertyService.getAllSync(user?.company_id, user?.is_super_admin).filter(p => p.name.toLowerCase().includes(query)).slice(0, 3),
-      users: userService.getAllSync(user?.company_id, user?.is_super_admin).filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)).slice(0, 3),
-      documents: documentService.searchDocuments(debouncedSearchQuery, { companyId: user?.company_id, isSuperAdmin: user?.is_super_admin }).slice(0, 3)
+    const fetchResults = async () => {
+      const properties = propertyService.getAllSync(user?.company_id, user?.is_super_admin).filter(p => p.name.toLowerCase().includes(query)).slice(0, 3);
+      const users = userService.getAllSync(user?.company_id, user?.is_super_admin).filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)).slice(0, 3);
+      const documents = await documentService.searchDocuments(debouncedSearchQuery, { companyId: user?.company_id, isSuperAdmin: user?.is_super_admin });
+      
+      setSearchResults({
+        properties,
+        users,
+        documents: documents.slice(0, 3)
+      });
     };
+    fetchResults();
   }, [debouncedSearchQuery, user]);
 
   const hasResults = searchResults.properties.length > 0 || searchResults.users.length > 0 || searchResults.documents.length > 0;

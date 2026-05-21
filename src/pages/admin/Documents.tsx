@@ -58,19 +58,21 @@ const AdminDocuments = () => {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [isSignatureWorkflowOpen, setIsSignatureWorkflowOpen] = useState(false);
   
-  const categories = documentService.getCategories();
-
-  const refreshDocuments = useCallback(() => {
-    const docs = documentService.searchDocuments(searchTerm, activeFilters);
-    setDocuments(docs);
+  useEffect(() => {
+    const fetchDocs = async () => {
+      const docs = await documentService.searchDocuments(searchTerm, activeFilters);
+      setDocuments(docs);
+    };
+    fetchDocs();
   }, [searchTerm, activeFilters]);
 
-  useEffect(() => {
-    refreshDocuments();
-  }, [refreshDocuments]);
+  const refreshDocuments = async () => {
+    const docs = await documentService.searchDocuments(searchTerm, activeFilters);
+    setDocuments(docs);
+  };
 
-  const handleDelete = (id: string) => {
-    documentService.deleteDocument(id);
+  const handleDelete = async (id: string) => {
+    await documentService.deleteDocument(id);
     refreshDocuments();
     toast({
       title: "Documento removido",
