@@ -30,7 +30,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   }, [fetchClaims]);
 
   const cancelClaim = useCallback(async (claimId: string) => {
-    const success = warrantyFlowService.cancelRequest(claimId, clientId);
+    const success = await warrantyFlowService.cancelRequest(claimId, clientId);
     if (success) {
       setClaims(prev => prev.filter(c => c.id !== claimId));
       toast({ title: "Solicitação cancelada", description: "Sua solicitação de garantia foi cancelada com sucesso." });
@@ -40,7 +40,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   }, [clientId, toast]);
 
   const addInfo = useCallback(async (claimId: string, info: string) => {
-    const result = warrantyFlowService.addUpdate(
+    const result = await warrantyFlowService.addUpdate(
       claimId, 
       clientId, 
       userName || "Cliente", 

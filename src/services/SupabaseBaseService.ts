@@ -11,11 +11,8 @@ export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
 }
 
 export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseService<T> {
-  protected supabaseTable: keyof Database['public']['Tables'];
-  protected fieldMapping: Record<string, string>;
-
-  constructor(options: SupabaseBaseServiceOptions) {
-    super(options);
+  constructor(options: SupabaseBaseServiceOptions, initialItems: T[] = []) {
+    super(options, initialItems);
     this.supabaseTable = options.supabaseTable;
     this.fieldMapping = options.fieldMapping || {};
   }

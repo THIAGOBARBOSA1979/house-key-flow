@@ -17,7 +17,7 @@ describe('PropertyService', () => {
       milestones: []
     }, "comp-test");
 
-    const metrics = propertyService.getMetrics(undefined, true);
+    const metrics = await propertyService.getMetrics(undefined, true);
     expect(metrics.total).toBe(1);
     expect(metrics.totalUnits).toBe(10);
   });
