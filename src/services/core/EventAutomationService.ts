@@ -11,17 +11,17 @@ export interface AutomationResult {
 
 class EventAutomationService {
   // Process inspection accepted by client
-  onInspectionAccepted(inspectionId: string, clientId: string): AutomationResult {
+  async onInspectionAccepted(inspectionId: string, clientId: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
-      const stageResult = clientStageService.advanceStage(
+      const stageResult = await clientStageService.advanceStage(
         clientId, 'warranty_enabled',
         'Vistoria aceita pelo cliente - Garantia liberada automaticamente',
         'Cliente', true
       );
       if (!stageResult.success) {
-        return { success: false, actions, error: stageResult.error };
+        return { success: false, actions, error: (stageResult as any).error };
       }
       actions.push('Etapa do cliente atualizada para "Garantia Liberada"');
 
@@ -56,17 +56,17 @@ class EventAutomationService {
   }
 
   // Process inspection approved event (admin)
-  onInspectionApproved(inspectionId: string, clientId: string): AutomationResult {
+  async onInspectionApproved(inspectionId: string, clientId: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
-      const stageResult = clientStageService.advanceStage(
+      const stageResult = await clientStageService.advanceStage(
         clientId, 'warranty_enabled',
         'Vistoria aprovada - Garantia liberada automaticamente',
         'Sistema', true
       );
       if (!stageResult.success) {
-        return { success: false, actions, error: stageResult.error };
+        return { success: false, actions, error: (stageResult as any).error };
       }
       actions.push('Etapa do cliente atualizada para "Garantia Liberada"');
 

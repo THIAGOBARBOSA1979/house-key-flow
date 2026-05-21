@@ -32,8 +32,9 @@ export function useClientStage(userId: string): UseClientStageResult {
   const { activeProfileId: selectedProfileId, setActiveProfileId: setSelectedProfileId } = useUserPreferences();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [events, setEvents] = useState<ClientEvent[]>([]);
 
-  const loadData = useCallback(() => {
+  const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -45,6 +46,9 @@ export function useClientStage(userId: string): UseClientStageResult {
         setSelectedProfileId(userProfiles[0].id);
       }
 
+      const activeId = (userProfiles.find(p => p.id === selectedProfileId) || userProfiles[0] || { id: userId }).id;
+      const clientEvents = await clientStageService.getEvents(activeId);
+      setEvents(clientEvents);
       
       if (userProfiles.length === 0) {
         setError('Nenhuma unidade vinculada encontrada');
@@ -54,7 +58,7 @@ export function useClientStage(userId: string): UseClientStageResult {
     } finally {
       setIsLoading(false);
     }
-  }, [userId, selectedProfileId]);
+  }, [userId, selectedProfileId, setSelectedProfileId]);
 
   useEffect(() => {
     loadData();
@@ -68,15 +72,15 @@ export function useClientStage(userId: string): UseClientStageResult {
 
   const stage = activeProfile?.currentStage || null;
   const permissions = clientStageService.getPermissions(activeId);
-  const events = clientStageService.getEvents(activeId);
-  const timeline: TimelineItem[] = events.map(event => ({
+  
+  const timeline: TimelineItem[] = useMemo(() => events.map(event => ({
     id: event.id,
     title: event.title,
     description: event.description,
     date: event.createdAt,
     status: 'completed' as const,
     eventType: event.eventType
-  }));
+  })), [events]);
 
   const canScheduleInspection = clientStageService.canScheduleInspection(activeId);
   const canRequestWarranty = clientStageService.canRequestWarranty(activeId);
@@ -88,7 +92,6 @@ export function useClientStage(userId: string): UseClientStageResult {
   const handleSetProfile = (id: string) => {
     setSelectedProfileId(id);
   };
-
 
   return {
     profile: activeProfile,

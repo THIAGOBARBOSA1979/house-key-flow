@@ -24,9 +24,6 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
     Supabase.realtime.subscribeToTable('client_profiles', async () => {
       await this.sync();
     });
-    Supabase.realtime.subscribeToTable('client_events', async () => {
-      // Logic to sync events if needed, but usually we fetch them per client
-    });
   }
 
   getAllProfiles(companyId?: string, isSuperAdmin?: boolean): ClientProfile[] {
@@ -97,8 +94,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
 
   async getEvents(clientId: string, companyId?: string, isSuperAdmin?: boolean): Promise<ClientEvent[]> {
     const { data, error } = await Supabase.db.findMany<any>('client_events', {
-      filters: [{ column: 'client_id', operator: 'eq', value: clientId }],
-      sort: { column: 'created_at', order: 'desc' }
+      filters: [{ column: 'client_id', operator: 'eq', value: clientId }]
     });
 
     if (error) {
@@ -106,16 +102,18 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
       return [];
     }
 
-    return (data || []).map(e => ({
-      id: e.id,
-      clientId: e.client_id,
-      company_id: e.company_id,
-      eventType: e.event_type,
-      title: e.title,
-      description: e.description,
-      createdAt: new Date(e.created_at),
-      metadata: e.metadata
-    }));
+    return (data || [])
+      .map(e => ({
+        id: e.id,
+        clientId: e.client_id,
+        company_id: e.company_id,
+        eventType: e.event_type,
+        title: e.title,
+        description: e.description,
+        createdAt: new Date(e.created_at),
+        metadata: e.metadata
+      }))
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   getPermissions(clientId: string): StagePermissions {
