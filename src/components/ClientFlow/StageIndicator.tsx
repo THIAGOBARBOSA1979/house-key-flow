@@ -1,4 +1,4 @@
-
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { ClientStage, STAGE_CONFIG } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
@@ -6,7 +6,9 @@ import {
   UserCheck, 
   ClipboardCheck, 
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  HardHat
 } from "lucide-react";
 
 interface StageIndicatorProps {
@@ -15,34 +17,34 @@ interface StageIndicatorProps {
   variant?: 'badge' | 'steps' | 'compact';
 }
 
-const stageIcons: Record<ClientStage, typeof UserCheck> = {
-  lead: UserCheck,
+const stageIcons: Record<ClientStage, any> = {
+  lead: Zap,
   registered: UserCheck,
-  inspection_enabled: ClipboardCheck,
+  inspection_enabled: HardHat,
   warranty_enabled: ShieldCheck
 };
 
 
 const stageColors: Record<ClientStage, { bg: string; text: string; border: string }> = {
   lead: {
-    bg: 'bg-muted/10',
-    text: 'text-muted-foreground',
-    border: 'border-muted/20'
+    bg: 'bg-amber-500/10',
+    text: 'text-amber-600',
+    border: 'border-amber-200'
   },
   registered: {
-    bg: 'bg-status-pending/10',
-    text: 'text-status-pending',
-    border: 'border-status-pending/20'
+    bg: 'bg-blue-500/10',
+    text: 'text-blue-600',
+    border: 'border-blue-200'
   },
   inspection_enabled: {
-    bg: 'bg-status-progress/10',
-    text: 'text-status-progress',
-    border: 'border-status-progress/20'
+    bg: 'bg-emerald-500/10',
+    text: 'text-emerald-600',
+    border: 'border-emerald-200'
   },
   warranty_enabled: {
-    bg: 'bg-status-complete/10',
-    text: 'text-status-complete',
-    border: 'border-status-complete/20'
+    bg: 'bg-primary/10',
+    text: 'text-primary',
+    border: 'border-primary/20'
   }
 };
 
@@ -62,13 +64,13 @@ export function StageIndicator({
         <Badge 
           variant="outline" 
           className={cn(
-            "px-3 py-1.5 font-medium border",
+            "px-4 py-2 font-black uppercase tracking-widest text-[10px] border shadow-sm rounded-xl transition-all hover:scale-105",
             colors.bg,
             colors.text,
             colors.border
           )}
         >
-          <Icon className="h-4 w-4 mr-1.5" />
+          <Icon className="h-3.5 w-3.5 mr-2" />
           {config.label}
         </Badge>
         {showDescription && (

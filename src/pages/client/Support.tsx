@@ -223,7 +223,7 @@ const Support = () => {
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Descrição</label>
                 <Textarea value={formState.message} onChange={e => setFormState(prev => ({...prev, message: e.target.value}))} placeholder="Descreva detalhadamente..." className="min-h-[150px] rounded-xl resize-none" required />
               </div>
-              <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20">
+              <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
                 Enviar Solicitação
               </Button>
             </form>

@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   ClipboardCheck
 } from "lucide-react";
+import { propertyService } from "@/services/operations/PropertyService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useClientStage } from "@/hooks";
 import { useMemo } from "react";
@@ -24,10 +25,16 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 
 
+import { useAuditMarker } from "@/hooks/useAuditMarker";
+
 const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.id || "client-1";
   const { profile, stage, isLoading: stageLoading, error: stageError, refreshProfile } = useClientStage(userId);
+  
+  useAuditMarker('Mocks de dados no ConstructionFeed precisam ser substituídos por dados do Supabase');
+  useAuditMarker('Cards de "Vistorias" e "Garantias" no Dashboard sem fallback de estado vazio');
+  useAuditMarker('Layout do "Command Center" quebra em tablets na orientação vertical');
   
   const {
     isLoading: dashboardLoading,
@@ -36,13 +43,21 @@ const Dashboard = () => {
   } = useClientDashboardData(profile?.id || userId, user?.name);
 
   
-  const userInfo = useMemo(() => ({
-    name: user?.name?.split(' ')[0] || "Cliente",
-    property: profile?.propertyName || "Seu Empreendimento",
-    unit: profile?.unitNumber || "N/A",
-    deliveryDate: new Date(2025, 11, 15),
-    contractDate: new Date(2023, 5, 10),
-  }), [user, profile]);
+  const userInfo = useMemo(() => {
+    const propertyData = profile?.propertyId ? propertyService.getById(profile.propertyId) : null;
+    const progress = propertyData?.units && propertyData?.completedUnits 
+      ? Math.round((propertyData.completedUnits / propertyData.units) * 100) 
+      : 85;
+
+    return {
+      name: user?.name?.split(' ')[0] || "Cliente",
+      property: profile?.propertyName || "Seu Empreendimento",
+      unit: profile?.unitNumber || "N/A",
+      deliveryDate: propertyData?.deliveryDate || new Date(2025, 11, 15),
+      contractDate: profile?.createdAt || new Date(2023, 5, 10),
+      progress: progress
+    };
+  }, [user, profile]);
 
   const timeline: TimelineStep[] = [
     { id: '1', title: 'Contrato', description: 'Assinatura homologada.', date: '10/06/23', status: 'completed' },
@@ -75,8 +90,8 @@ const Dashboard = () => {
     ];
   }, [serviceUpdates]);
 
-  const daysToDelivery = userInfo.deliveryDate ? Math.ceil((userInfo.deliveryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0;
-  const contractProgress = 85;
+  const daysToDelivery = userInfo.deliveryDate ? Math.max(0, Math.ceil((userInfo.deliveryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))) : 0;
+  const contractProgress = userInfo.progress;
 
   if (stageLoading || dashboardLoading) {
     return (

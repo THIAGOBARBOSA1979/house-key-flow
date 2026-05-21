@@ -29,6 +29,7 @@ interface AuditState {
   markAsFixed: (id: string) => void;
   startWave: (waveId: number) => void;
   completeWave: (waveId: number) => void;
+  getWaveCompletion: (waveId: number) => number;
   getCompletionPercentage: () => number;
 }
 
@@ -66,6 +67,14 @@ export const useAuditStore = create<AuditState>()(
       completeWave: (waveId) => set((state) => ({
         waves: state.waves.map(w => w.id === waveId ? { ...w, status: 'completed' as const, completedAt: new Date().toISOString() } : w)
       })),
+
+      getWaveCompletion: (waveId) => {
+        const state = get();
+        const waveIssues = state.issues.filter(i => i.wave === waveId);
+        if (waveIssues.length === 0) return 0;
+        const fixed = waveIssues.filter(i => i.status === 'fixed').length;
+        return Math.round((fixed / waveIssues.length) * 100);
+      },
 
       getCompletionPercentage: () => {
         const state = get();
