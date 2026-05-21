@@ -40,19 +40,22 @@ class SystemHealthService {
     if (overdueWarranties > 15) status = 'critical';
 
     // Advanced storage monitoring
-    let totalSize = 0;
-    const tableMetrics = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key) {
-        const itemSize = (localStorage.getItem(key) || '').length * 2;
-        totalSize += itemSize;
-        if (key.startsWith('a2_')) {
-          tableMetrics.push({ key, size: (itemSize / 1024).toFixed(2) + ' KB' });
+    // Non-blocking storage monitoring
+    let storageUsage = "0 KB";
+    try {
+      let totalSize = 0;
+      // Sampling instead of full iteration if too many items
+      const keysToProcess = localStorage.length > 50 ? 50 : localStorage.length;
+      for (let i = 0; i < keysToProcess; i++) {
+        const key = localStorage.key(i);
+        if (key) {
+          totalSize += (localStorage.getItem(key) || '').length * 2;
         }
       }
+      storageUsage = (totalSize / 1024).toFixed(2) + ' KB' + (localStorage.length > 50 ? '+' : '');
+    } catch (e) {
+      console.warn("Could not calculate storage usage", e);
     }
-    const storageUsage = (totalSize / 1024).toFixed(2) + ' KB';
 
     return {
       status,

@@ -40,11 +40,16 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
         return this.items;
       }
 
-      if (data) {
-        this.items = data
+      if (data && data.length > 0) {
+        const newItems = data
           .filter(item => item !== null && item !== undefined)
           .map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
-        this.persist();
+        
+        // Deep compare to avoid unnecessary updates if data hasn't changed
+        if (JSON.stringify(newItems) !== JSON.stringify(this.items)) {
+          this.items = newItems;
+          this.persist();
+        }
       }
       
       return this.items;

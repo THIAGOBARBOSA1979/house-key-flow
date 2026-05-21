@@ -32,38 +32,46 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   useEffect(() => {
     if (user) {
       AuthGuard.initialize();
     }
   }, [user]);
 
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
   const isAuthenticated = !!user;
 
-  const logout = useCallback(() => {
-    setUser(null);
-    localStorage.removeItem('auth_user');
-    localStorage.removeItem('rememberMe');
-    localStorage.removeItem('rememberClient');
-    localStorage.removeItem('rememberAdmin');
-    
-    toast({
-      title: "Logout realizado",
-      description: "Você foi desconectado com sucesso.",
-    });
-    
-    navigate('/');
+  const logout = useCallback(async () => {
+    try {
+      await Supabase.auth.signOut();
+      setUser(null);
+      
+      // Cleanup sensitive local storage
+      localStorage.removeItem('rememberMe');
+      localStorage.removeItem('rememberClient');
+      localStorage.removeItem('rememberAdmin');
+      
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso.",
+      });
+      
+      navigate('/');
+    } catch (error) {
+      errorHandler.handle(error, 'AuthContext:logout');
+    }
   }, [navigate, toast]);
 
   const checkAuth = useCallback(async () => {
     setIsLoading(true);
     try {
       // Source of truth: Supabase session
-      const session = await Supabase.auth.getSession();
+      const { data: { session }, error } = await Supabase.auth.getSession();
       
+      if (error) throw error;
+
       if (session?.user) {
         const authenticatedUser: User = {
           id: session.user.id,
@@ -76,18 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         };
         setUser(authenticatedUser);
       } else {
-        // Fallback to local storage ONLY if no supabase session
-        const storedUser = localStorage.getItem('auth_user');
-        if (storedUser) {
-          try {
-            const parsedUser = JSON.parse(storedUser);
-            if (parsedUser && typeof parsedUser === 'object' && parsedUser.id) {
-              setUser(parsedUser);
-            }
-          } catch (e) {
-            localStorage.removeItem('auth_user');
-          }
-        }
+        setUser(null);
       }
     } catch (error) {
       console.error('Erro ao verificar autenticação:', error);
@@ -100,30 +97,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     checkAuth();
     
-    // Handle cross-tab sync via storage event
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'auth_user') {
-        if (e.newValue) {
-          try {
-            setUser(JSON.parse(e.newValue));
-          } catch (error) {
-            console.error('Error parsing auth_user from storage:', error);
-          }
-        } else {
-          setUser(null);
-          navigate('/login');
-        }
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-    
     // Listen for auth changes
-    const subscription = Supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = Supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
-        localStorage.removeItem('auth_user');
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-        const storedUser = localStorage.getItem('auth_user');
         if (session?.user) {
           const authenticatedUser: User = {
             id: session.user.id,
@@ -136,11 +114,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           };
           
           setUser(authenticatedUser);
-          
-          // Keep localStorage in sync if it was previously set
-          if (storedUser) {
-            localStorage.setItem('auth_user', JSON.stringify(authenticatedUser));
-          }
         }
       }
     });
@@ -149,7 +122,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return () => {
       subscription.unsubscribe();
-      window.removeEventListener('storage', handleStorageChange);
       cleanup();
     };
   }, [checkAuth, logout]);
@@ -202,14 +174,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 
       
+      // Persistence is handled by Supabase auth storage (localStorage by default)
       setUser(authenticatedUser);
-      
-      // Store user data
-      const rememberMe = localStorage.getItem('rememberMe') === 'true';
-
-      if (rememberMe) {
-        localStorage.setItem('auth_user', JSON.stringify(authenticatedUser));
-      }
       
       toast({
         title: "✅ Login realizado com sucesso",

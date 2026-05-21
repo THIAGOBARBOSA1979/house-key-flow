@@ -20,8 +20,8 @@ class SystemSecurityService {
 
     const interval = setInterval(() => {
       if (Date.now() - this.lastActivity > this.SESSION_TIMEOUT) {
-        const user = localStorage.getItem('auth_user');
-        if (user) {
+        const { data: { session } } = await Supabase.auth.getSession();
+        if (session?.user) {
           auditLogService.log({
             entityType: 'system',
             entityId: 'session',
@@ -51,7 +51,12 @@ class SystemSecurityService {
   }
 
   static sanitizeString(str: string): string {
-    return str.replace(/[<>]/g, ''); // Simple XSS prevention
+    if (!str) return '';
+    return str
+      .replace(/[<>]/g, '') // Basic tag removal
+      .replace(/javascript:/gi, '') // Protocol removal
+      .replace(/on\w+=/gi, '') // Event handler removal
+      .trim();
   }
 }
 
