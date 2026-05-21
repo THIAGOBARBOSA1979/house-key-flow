@@ -217,12 +217,6 @@ class WarrantyAutomationService {
     toStage: WarrantyStage,
     movedBy: string
   ): Promise<{ success: boolean; error?: string }> {
-    console.log('[WarrantyAutomation] Kanban drop:', {
-      requestId,
-      from: fromStage,
-      to: toStage,
-      movedBy
-    });
 
     // Special case: if moving to 'inspection_scheduled', this is usually triggered by a form,
     // but if dragged here, we might need extra handling or just prevent it if data is missing.
