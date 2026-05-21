@@ -1,4 +1,3 @@
-
 import { 
   WarrantyItem, 
   WarrantyEligibilityResult, 
@@ -9,7 +8,7 @@ import {
 import { warrantyFlowService } from "../warranty/WarrantyFlowService";
 import { clientStageService } from "../operations/ClientStageService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
-import { Supabase } from "@/integrations/supabase";
+import { FilterParams } from "@/integrations/supabase";
 
 class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
   constructor() {
@@ -36,36 +35,17 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
     };
   }
 
-  /**
-   * Check if a warranty item is currently active
-   */
   isWarrantyActive(item: WarrantyItem): boolean {
     const now = new Date();
-    
-    // Check status
-    if (item.statusGarantia !== "ativa") {
-      return false;
-    }
-    
-    // Check date range
-    if (now < item.dataInicioGarantia) {
-      return false;
-    }
-    
-    if (now > item.dataFimGarantia) {
-      return false;
-    }
-    
+    if (item.statusGarantia !== "ativa") return false;
+    if (now < item.dataInicioGarantia) return false;
+    if (now > item.dataFimGarantia) return false;
     return true;
   }
 
-  /**
-   * Get detailed eligibility result for a warranty item
-   */
   getEligibility(item: WarrantyItem, clientId: string): WarrantyEligibilityResult {
     const now = new Date();
     
-    // Check ownership
     if (item.clientId !== clientId) {
       return {
         isEligible: false,
@@ -74,7 +54,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       };
     }
     
-    // Check status
     if (item.statusGarantia === "cancelada") {
       return {
         isEligible: false,
@@ -91,7 +70,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       };
     }
     
-    // Check if warranty hasn't started
     if (now < item.dataInicioGarantia) {
       return {
         isEligible: false,
@@ -100,7 +78,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       };
     }
     
-    // Check if warranty has expired by date
     if (now > item.dataFimGarantia) {
       return {
         isEligible: false,
@@ -109,7 +86,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       };
     }
     
-    // Calculate remaining time
     const totalDays = Math.floor(
       (item.dataFimGarantia.getTime() - item.dataInicioGarantia.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -128,26 +104,26 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
   }
 
   /**
-   * Get all warranty items for a client
+   * Performance Optimized: Use server-side filtering (Onda 17)
    */
   async getWarrantyItemsByClient(clientId: string): Promise<WarrantyItem[]> {
-    const items = await this.getAll();
-    return items.filter(item => item.clientId === clientId);
+    const filters: FilterParams[] = [{ column: 'client_id', operator: 'eq', value: clientId }];
+    return await this.getAll(undefined, true, filters);
   }
 
   /**
-   * Get only eligible warranty items for a client
+   * Performance Optimized: Use server-side filtering (Onda 17)
    */
   async getEligibleWarrantyItems(clientId: string): Promise<WarrantyItem[]> {
-    const items = await this.getAll();
-    return items.filter(
-      item => item.clientId === clientId && this.isWarrantyActive(item)
-    );
+    const filters: FilterParams[] = [
+      { column: 'client_id', operator: 'eq', value: clientId },
+      { column: 'status', operator: 'eq', value: 'ativa' }
+    ];
+    const items = await this.getAll(undefined, true, filters);
+    // Date checks still need to be in-memory for precision or we could use DB current_date
+    return items.filter(item => this.isWarrantyActive(item));
   }
 
-  /**
-   * Validate and create a warranty request
-   */
   async validateAndCreateRequest(
     itemId: string,
     clientId: string,
@@ -157,7 +133,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       additionalInfo?: string;
     }
   ): Promise<{ success: true; request: WarrantyRequest } | { success: false; error: WarrantyErrorResponse }> {
-    // Find the item
     const item = await this.getById(itemId);
     
     if (!item) {
@@ -174,7 +149,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       };
     }
     
-    // Check eligibility
     const eligibility = this.getEligibility(item, clientId);
     
     if (!eligibility.isEligible) {
@@ -191,7 +165,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       };
     }
     
-    // Create the request
     const request: WarrantyRequest = {
       id: `req-${Date.now()}`,
       itemId,
@@ -207,7 +180,6 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       additionalInfo: data.additionalInfo,
     };
     
-    // Create the persistent request in WarrantyFlowService
     const profile = clientStageService.getClientProfile(clientId);
     await warrantyFlowService.createRequest({
       clientId,
@@ -232,13 +204,9 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
     return { success: true, request };
   }
 
-  /**
-   * Determine priority based on problem severity
-   */
   private determinePriority(problems: WarrantyProblemData[]): "low" | "medium" | "high" | "critical" {
     const hasSevere = problems.some(p => p.severity === "severe");
     const hasModerate = problems.some(p => p.severity === "moderate");
-    
     if (hasSevere) return "high";
     if (hasModerate) return "medium";
     return "low";
