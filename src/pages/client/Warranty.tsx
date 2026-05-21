@@ -1,24 +1,24 @@
 import { useState, useMemo, useEffect } from "react";
-import { ErrorView } from "@/components/Shared/ErrorView";
+import { ErrorView } from "@/components/shared/ErrorView";
 
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Plus, Lock, CheckCircle, TrendingUp, Activity } from "lucide-react";
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { WarrantyItem } from "@/types/warranty";
-import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
+import { FeatureGate, GatedButton } from "@/components/client-flow/FeatureGate";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
-import { WarrantyRequestTimeline } from "@/components/Warranty/ClientTimeline/WarrantyRequestTimeline";
+import { WarrantyRequestTimeline } from "@/components/warranty/client-timeline/WarrantyRequestTimeline";
 import { cn } from "@/lib/utils";
 
 import { useWarrantyClaims } from "@/hooks/warranty/useWarrantyClaims";
-import { WarrantyGuide } from "@/components/Warranty/Client/WarrantyGuide";
-import { WarrantyStatus } from "@/components/Warranty/Client/WarrantyStatus";
-import { NewWarrantyRequestDialog } from "@/components/Warranty/Client/NewWarrantyRequestDialog";
+import { WarrantyGuide } from "@/components/warranty/client/WarrantyGuide";
+import { WarrantyStatus } from "@/components/warranty/client/WarrantyStatus";
+import { NewWarrantyRequestDialog } from "@/components/warranty/client/NewWarrantyRequestDialog";
 
 const ClientWarranty = () => {
   const { user } = useAuth();

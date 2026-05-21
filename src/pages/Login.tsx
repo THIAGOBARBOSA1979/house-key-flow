@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthForm } from "@/hooks/identity/useAuthForm";
-import { LoginForm } from "@/components/Auth/LoginForm";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 export default function Login() {
   const [activeTab, setActiveTab] = useState("client");

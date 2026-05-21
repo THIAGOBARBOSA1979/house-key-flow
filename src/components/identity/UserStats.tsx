@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Users as UsersIcon, UserCheck, UserMinus, UserCog } from "lucide-react";
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 
 interface UserStatsProps {
   stats: {

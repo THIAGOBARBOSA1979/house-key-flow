@@ -2,8 +2,8 @@ import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 
 // Layouts
-export const AppLayout = lazy(() => import("@/components/Layout/AppLayout").then(module => ({ default: module.AppLayout })));
-export const ClientLayout = lazy(() => import("@/components/Layout/ClientLayout"));
+export const AppLayout = lazy(() => import("@/components/layout/AppLayout").then(module => ({ default: module.AppLayout })));
+export const ClientLayout = lazy(() => import("@/components/layout/ClientLayout"));
 
 // Public Pages
 export const Home = lazy(() => import("@/pages/Home"));

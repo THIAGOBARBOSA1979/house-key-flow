@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
-import { WarrantyKanban } from "@/components/Warranty/Kanban/WarrantyKanban";
-import { WarrantyMetricsDashboard } from "@/components/Warranty/Dashboard/WarrantyMetricsDashboard";
-import { SLAConfigurationPanel } from "@/components/Warranty/SLA/SLAConfigurationPanel";
-import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
+import { WarrantyKanban } from "@/components/warranty/kanban/WarrantyKanban";
+import { WarrantyMetricsDashboard } from "@/components/warranty/dashboard/WarrantyMetricsDashboard";
+import { SLAConfigurationPanel } from "@/components/warranty/sla/SLAConfigurationPanel";
+import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { useWarranty } from "@/hooks";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";
-import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { WarrantyTabsHeader } from "@/components/Warranty/WarrantyTabsHeader";
-import { WarrantyPageActions } from "@/components/Warranty/WarrantyPageActions";
-import { WarrantyDialogsContainer } from "@/components/Warranty/WarrantyDialogsContainer";
-import { ErrorView } from "@/components/Shared/ErrorView";
+import { PageTemplate } from "@/components/layout/PageTemplate";
+import { WarrantyTabsHeader } from "@/components/warranty/WarrantyTabsHeader";
+import { WarrantyPageActions } from "@/components/warranty/WarrantyPageActions";
+import { WarrantyDialogsContainer } from "@/components/warranty/WarrantyDialogsContainer";
+import { ErrorView } from "@/components/shared/ErrorView";
 
 const Warranty = () => {
   const [activeTab, setActiveTab] = useState("kanban");

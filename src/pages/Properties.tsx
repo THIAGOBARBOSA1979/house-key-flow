@@ -1,24 +1,24 @@
 import { useState, useMemo } from "react";
 import { Building, Plus, Trash2, MoreHorizontal, Pencil } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PropertyCard } from "@/components/Properties/PropertyCard";
-import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { DataView } from "@/components/Shared/DataView";
-import { DataTable } from "@/components/Shared/DataTable";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { PropertyCard } from "@/components/properties/PropertyCard";
+import { PageTemplate } from "@/components/layout/PageTemplate";
+import { DataView } from "@/components/shared/DataView";
+import { DataTable } from "@/components/shared/DataTable";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services";
 import { formatDate } from "@/utils/formatters";
 import { useProperties, useConfirm } from "@/hooks";
 import { Property } from "@/services";
 import { Button } from "@/components/ui/button";
-import { PropertyStats } from "@/components/Properties/PropertyStats";
-import { PropertyFilters } from "@/components/Properties/PropertyFilters";
-import { PropertyViewTabs } from "@/components/Properties/PropertyViewTabs";
-import { PropertyDialogs } from "@/components/Properties/PropertyDialogs";
-import { PropertyTimeline } from "@/components/Properties/PropertyTimeline";
-import { PropertyBulkActions } from "@/components/Properties/PropertyBulkActions";
+import { PropertyStats } from "@/components/properties/PropertyStats";
+import { PropertyFilters } from "@/components/properties/PropertyFilters";
+import { PropertyViewTabs } from "@/components/properties/PropertyViewTabs";
+import { PropertyDialogs } from "@/components/properties/PropertyDialogs";
+import { PropertyTimeline } from "@/components/properties/PropertyTimeline";
+import { PropertyBulkActions } from "@/components/properties/PropertyBulkActions";
 import { DataViewMode } from "@/types";
-import { EntityActionMenu } from "@/components/Shared/EntityActionMenu";
+import { EntityActionMenu } from "@/components/shared/EntityActionMenu";
 import { cn } from "@/lib/utils";
 
 const Properties = () => {

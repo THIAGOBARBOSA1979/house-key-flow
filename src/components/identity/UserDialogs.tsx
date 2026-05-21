@@ -1,6 +1,6 @@
 import { User, UserFormData } from "@/types/user";
 import { UserForm } from "./UserForm";
-import { FormDialog } from "@/components/Shared/FormDialog";
+import { FormDialog } from "@/components/shared/FormDialog";
 
 interface UserDialogsProps {
   isFormOpen: boolean;

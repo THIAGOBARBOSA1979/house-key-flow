@@ -14,7 +14,7 @@ import {
   Paperclip,
   Eye
 } from "lucide-react";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,7 @@ import { supportService, SupportTicket, TicketMessage } from "@/services";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 

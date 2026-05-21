@@ -1,5 +1,5 @@
 export * from './BaseService';
-export * from './SupabaseService';
+export * from './SupabaseBaseService';
 
 // Identity Domain
 export * from './identity/CompanyService';
@@ -15,8 +15,8 @@ export * from './operations/ConstructionService';
 export * from './operations/ClientStageService';
 export * from './operations/DocumentService';
 export * from './operations/ChecklistService';
-
 export * from './operations/SupportService';
+export * from './operations/InspectionDraftService';
 
 // Warranty Domain
 export * from './warranty/WarrantyFlowService';
@@ -31,4 +31,4 @@ export * from './core/ExportService';
 export * from './core/SyncService';
 export * from './core/SystemHealthService';
 export * from './core/EventAutomationService';
-
+export * from './core/FileService';

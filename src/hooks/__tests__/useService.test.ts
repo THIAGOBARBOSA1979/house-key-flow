@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { useService } from '../Shared/useService';
+import { useService } from '../shared/useService';
 import * as AuthContext from '@/contexts/AuthContext';
 import { useToast } from '@/hooks';
 

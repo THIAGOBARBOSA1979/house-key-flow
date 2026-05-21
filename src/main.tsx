@@ -5,7 +5,7 @@ import App from './App.tsx'
 import './index.css'
 
 import { SyncService } from './services'
-import { ErrorBoundary } from './components/Shared/ErrorBoundary.tsx'
+import { ErrorBoundary } from './components/shared/ErrorBoundary.tsx'
 
 // Initialize the SyncService with error handling
 try {

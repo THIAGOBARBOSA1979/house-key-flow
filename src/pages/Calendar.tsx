@@ -1,11 +1,11 @@
 import { useState, useCallback } from "react";
-import { CalendarHeader } from "@/components/Calendar/CalendarHeader";
-import { CalendarView } from "@/components/Calendar/CalendarView";
-import { ListView } from "@/components/Calendar/ListView";
-import { AppointmentDetails } from "@/components/Calendar/AppointmentDetails";
-import { CalendarFilters } from "@/components/Calendar/CalendarFilters";
-import { QuickActions } from "@/components/Calendar/QuickActions";
-import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
+import { CalendarHeader } from "@/components/calendar/CalendarHeader";
+import { CalendarView } from "@/components/calendar/CalendarView";
+import { ListView } from "@/components/calendar/ListView";
+import { AppointmentDetails } from "@/components/calendar/AppointmentDetails";
+import { CalendarFilters } from "@/components/calendar/CalendarFilters";
+import { QuickActions } from "@/components/calendar/QuickActions";
+import { ScheduleInspectionDialog } from "@/components/inspection/ScheduleInspectionDialog";
 import { useCalendar } from "@/hooks";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar as CalendarIcon, List } from "lucide-react";

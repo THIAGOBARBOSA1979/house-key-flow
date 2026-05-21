@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,11 +33,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
-import { DataView } from "@/components/Shared/DataView";
-import { ErrorView } from "@/components/Shared/ErrorView";
+import { DataView } from "@/components/shared/DataView";
+import { ErrorView } from "@/components/shared/ErrorView";
 
 const Announcements = () => {
   const { 

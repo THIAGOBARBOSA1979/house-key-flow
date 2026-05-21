@@ -9,8 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks";
 import { User, Mail, Phone, MapPin, Shield, Lock, BellRing } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { CheckCircle, Clock } from "lucide-react";
 
 const ClientProfile = () => {

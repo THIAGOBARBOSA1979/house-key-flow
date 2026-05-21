@@ -16,7 +16,7 @@ import {
   Download,
   ShieldCheck
 } from "lucide-react";
-import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
+import { ClientFAQ } from "@/components/client-flow/ClientFAQ";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -30,9 +30,9 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { supportService, SupportTicket, TicketPriority, TicketCategory } from "@/services";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useAuth } from "@/contexts/AuthContext";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea as ChatScrollArea } from "@/components/ui/scroll-area";
 

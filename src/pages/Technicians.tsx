@@ -17,7 +17,7 @@ import {
   Briefcase,
   Settings
 } from "lucide-react";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,10 +31,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast, useTechnicians } from "@/hooks";
 import { type Technician } from "@/services";
-import { DataView } from "@/components/Shared/DataView";
+import { DataView } from "@/components/shared/DataView";
 
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { cn } from "@/lib/utils";
 import { exportService } from "@/services";
 import {
@@ -43,7 +43,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { TechnicianForm } from "@/components/Admin/TechnicianForm";
+import { TechnicianForm } from "@/components/admin/TechnicianForm";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const Technicians = () => {
