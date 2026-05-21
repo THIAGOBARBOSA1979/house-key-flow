@@ -109,10 +109,10 @@ export const useUsers = () => {
     stats,
     filters: {
       search: searchTerm,
-      role: (filters.role as any) || "all",
-      status: (filters.status as any) || "all",
-      property: (filters.property as any) || "all",
-      unit: (filters.unit as any) || ""
+      role: filters.role,
+      status: filters.status,
+      property: filters.property,
+      unit: filters.unit
     } as UserFiltersData,
     setFilters: (newFilters: Partial<UserFiltersData>) => {
       if (newFilters.search !== undefined) setSearchTerm(newFilters.search);
