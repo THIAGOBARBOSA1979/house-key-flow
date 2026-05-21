@@ -1,71 +1,44 @@
-
 import React from 'react';
-import { Inbox, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { LucideIcon, Ghost } from 'lucide-react';
 
 interface EmptyStateProps {
+  icon?: LucideIcon;
   title: string;
-  description?: string;
-  icon?: React.ReactNode;
-  className?: string;
+  description: string;
   action?: React.ReactNode;
-  variant?: 'default' | 'error' | 'success';
-  actionLabel?: string;
-  onAction?: () => void;
+  className?: string;
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
+  icon: Icon = Ghost,
   title,
   description,
-  icon,
-  className,
   action,
-  variant = 'default',
-  actionLabel,
-  onAction
+  className
 }) => {
-  const isError = variant === 'error';
+  const { t } = useTranslation();
 
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center p-12 text-center space-y-4 border-2 border-dashed rounded-[2rem] bg-muted/5 animate-in fade-in duration-500",
-      isError ? "border-destructive/20 bg-destructive/5" : "border-border/40",
+      "flex flex-col items-center justify-center py-12 px-6 text-center animate-in fade-in zoom-in duration-500",
       className
     )}>
-      <div className={cn(
-        "w-20 h-20 rounded-3xl flex items-center justify-center mb-2",
-        isError ? "bg-destructive/10 text-destructive/40" : "bg-muted/30 text-muted-foreground/40"
-      )}>
-        {icon || (isError ? <AlertCircle size={32} /> : <Inbox size={32} />)}
+      <div className="w-20 h-20 rounded-3xl bg-primary/5 flex items-center justify-center mb-6 ring-8 ring-primary/2">
+        <Icon className="w-10 h-10 text-primary/40" />
       </div>
-      <div className="space-y-1.5 max-w-sm">
-        <h3 className={cn(
-          "text-xl font-black tracking-tight uppercase tracking-widest text-[11px]",
-          isError ? "text-destructive/80" : "text-foreground/80 opacity-60"
-        )}>
-          {title}
-        </h3>
-        {description && (
-          <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-            {description}
-          </p>
-        )}
-      </div>
-      {action ? (
-        <div className="pt-2">{action}</div>
-      ) : actionLabel && onAction ? (
-        <div className="pt-2">
-          <Button 
-            onClick={onAction}
-            variant={isError ? "destructive" : "default"}
-            className="rounded-xl font-bold uppercase tracking-widest text-[10px]"
-          >
-            {actionLabel}
-          </Button>
+      <h3 className="text-xl font-black text-foreground tracking-tight mb-2">
+        {title}
+      </h3>
+      <p className="text-muted-foreground text-sm max-w-[280px] mb-8 leading-relaxed">
+        {description}
+      </p>
+      {action && (
+        <div className="animate-in slide-in-from-bottom-2 duration-700 delay-200 fill-mode-both">
+          {action}
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
-
