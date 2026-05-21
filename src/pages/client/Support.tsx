@@ -42,6 +42,9 @@ import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { useAuth } from "@/contexts/AuthContext";
 import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ScrollArea as ChatScrollArea } from "@/components/ui/scroll-area";
+
 const Support = () => {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -58,6 +61,8 @@ const Support = () => {
     category: "technical"
   });
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
   useEffect(() => {
     setTickets(supportService.getTicketsByClient(clientId));
@@ -73,6 +78,24 @@ const Support = () => {
     });
     setFormState({ subject: "", message: "", priority: "medium", category: "technical" });
   };
+
+  const handleSendReply = () => {
+    if (!selectedTicketId || !replyText.trim()) return;
+    supportService.addMessageToTicket(
+      selectedTicketId, 
+      clientId, 
+      user?.name || "Cliente", 
+      'client', 
+      replyText
+    );
+    setTickets(supportService.getTicketsByClient(clientId));
+    setReplyText("");
+    toast({ title: "Resposta enviada", description: "Sua mensagem foi adicionada ao chamado." });
+  };
+
+  const selectedTicket = useMemo(() => 
+    tickets.find(t => t.id === selectedTicketId), 
+  [tickets, selectedTicketId]);
 
   const contactMethods = [
     {
@@ -304,7 +327,12 @@ const Support = () => {
                               Avaliar
                             </Button>
                           )}
-                          <Button variant="ghost" size="sm" className="h-7 text-[10px] font-black uppercase text-primary hover:bg-primary/5 rounded-lg px-3">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 text-[10px] font-black uppercase text-primary hover:bg-primary/5 rounded-lg px-3"
+                            onClick={() => setSelectedTicketId(ticket.id)}
+                          >
                             Ver Chat
                           </Button>
                         </div>
@@ -400,6 +428,65 @@ const Support = () => {
         </div>
         <ClientFAQ />
       </div>
+
+      <Dialog open={!!selectedTicketId} onOpenChange={(open) => !open && setSelectedTicketId(null)}>
+        <DialogContent className="max-w-2xl h-[80vh] flex flex-col p-0 overflow-hidden border-none rounded-[2rem] shadow-2xl">
+          <DialogHeader className="p-8 border-b bg-muted/5">
+            <div className="flex justify-between items-center">
+              <div>
+                <DialogTitle className="text-xl font-black tracking-tight">{selectedTicket?.subject}</DialogTitle>
+                <DialogDescription className="font-bold text-[10px] uppercase tracking-widest mt-1">Protocolo #{selectedTicket?.id.split('-')[1] || selectedTicket?.id}</DialogDescription>
+              </div>
+              <StatusBadge 
+                status={selectedTicket?.status === 'closed' ? 'complete' : (selectedTicket?.status === 'in_progress' ? 'progress' : 'pending')} 
+                label={selectedTicket?.status === 'closed' ? 'Resolvido' : (selectedTicket?.status === 'in_progress' ? 'Atendimento' : 'Aguardando')}
+                size="sm"
+              />
+            </div>
+          </DialogHeader>
+          
+          <ChatScrollArea className="flex-1 p-8">
+            <div className="space-y-6">
+              {selectedTicket?.messages.map((msg, i) => (
+                <div key={i} className={cn(
+                  "flex flex-col max-w-[80%] space-y-2",
+                  msg.role === 'client' ? "ml-auto items-end" : "items-start"
+                )}>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase text-muted-foreground">{msg.senderName}</span>
+                    <span className="text-[9px] font-medium text-muted-foreground/60">{new Date(msg.createdAt).toLocaleTimeString()}</span>
+                  </div>
+                  <div className={cn(
+                    "p-4 rounded-2xl text-sm leading-relaxed shadow-sm",
+                    msg.role === 'client' 
+                      ? "bg-primary text-primary-foreground rounded-tr-none" 
+                      : "bg-muted text-foreground rounded-tl-none border border-border/20"
+                  )}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ChatScrollArea>
+
+          {selectedTicket?.status !== 'closed' && (
+            <div className="p-6 bg-card border-t border-border/10">
+              <div className="flex gap-3">
+                <Input 
+                  value={replyText}
+                  onChange={e => setReplyText(e.target.value)}
+                  placeholder="Escreva sua resposta técnica..." 
+                  className="h-12 rounded-xl focus:ring-primary/20"
+                  onKeyDown={e => e.key === 'Enter' && handleSendReply()}
+                />
+                <Button onClick={handleSendReply} className="h-12 w-12 rounded-xl p-0">
+                  <Send className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
