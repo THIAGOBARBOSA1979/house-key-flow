@@ -9,7 +9,7 @@ import { User as UserIcon, UserCheck, Plus, Download, Key, ChevronRight, MapPin,
 import { UserForm } from "@/components/identity/UserForm";
 import { GenerateCredentialsForm } from "@/components/ClientArea/GenerateCredentialsForm";
 import { userService } from "@/services/identity/UserService";
-import { useToast } from "@/hooks/Shared/use-toast";
+import { useToast } from "@/hooks/shared/use-toast";
 import { User as UserProfile } from "@/types/user";
 import { useClientStages } from "@/hooks/operations/useClientStages";
 import { ClientStageManager } from "@/components/Admin/ClientStageManager";

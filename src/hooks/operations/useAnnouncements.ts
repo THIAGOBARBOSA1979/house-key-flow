@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { constructionService, type ConstructionUpdate, propertyService } from "@/services";
 import { errorHandler } from "@/utils/errors/ErrorHandler";
-import { useToast } from "../Shared/use-toast";
+import { useToast } from "../shared/use-toast";
 
 
 export const useAnnouncements = () => {

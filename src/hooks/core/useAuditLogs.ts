@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { auditLogService, AuditLogEntry, AuditEntityType } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
-import { useDataList } from "@/hooks/Shared/useDataList";
+import { useDataList } from "@/hooks/shared/useDataList";
 
 interface UseAuditLogsProps {
   entityType?: AuditEntityType;

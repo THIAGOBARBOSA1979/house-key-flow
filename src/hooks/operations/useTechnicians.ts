@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { technicianService, type Technician, exportService } from "@/services";
 import { errorHandler } from "@/utils/errors/ErrorHandler";
-import { useToast } from "../Shared/use-toast";
+import { useToast } from "../shared/use-toast";
 
 
 export const useTechnicians = () => {
