@@ -64,7 +64,7 @@ export const useSaaSAdmin = () => {
         owner_id: user?.id || "system",
         created_at: new Date(),
         updated_at: new Date()
-      } as Omit<Company, "id">);
+      });
       refreshCompanies();
       setIsAddOpen(false);
       setNewCompany({ name: '', slug: '', plan: 'basic' });
