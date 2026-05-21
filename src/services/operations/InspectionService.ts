@@ -126,7 +126,7 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     request_id?: string; 
     priority?: Inspection["priority"] 
   }, propertyInfo?: { property: string; unit: string; client: string; company_id?: string, client_id?: string }): Promise<Inspection> {
-    const newInspection = await super.create({
+    const newInspection = await this.create({
       property: propertyInfo?.property || "Empreendimento Exemplo",
       unit_number: propertyInfo?.unit || "101",
       client_id: propertyInfo?.client_id,

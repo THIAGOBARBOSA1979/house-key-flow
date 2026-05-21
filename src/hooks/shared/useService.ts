@@ -68,17 +68,8 @@ export function useService<T extends { id: string; company_id?: string }>(
   }, [fetchItems]);
 
   useEffect(() => {
-    return service.subscribe((allNewItems: T[]) => {
-      startTransition(() => {
-        if (isSuperAdmin) {
-          setItems(allNewItems);
-        } else if (companyId) {
-          setItems(allNewItems.filter(item => item.company_id === companyId));
-        } else {
-          setItems([]);
-        }
-      });
-    });
+    // Subscription removed as React Query now handles state
+    return () => {};
   }, [service, companyId, isSuperAdmin]);
 
   const refresh = useCallback(() => {

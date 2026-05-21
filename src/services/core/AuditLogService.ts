@@ -55,7 +55,7 @@ class AuditLogService extends SupabaseBaseService<any> {
       storageKey: "audit_logs", 
       supabaseTable: "audit_logs",
       shouldSyncWithSupabase: true 
-    }, []);
+    });
   }
 
   protected mapFromSupabase(raw: any): AuditLogEntry {
@@ -178,21 +178,9 @@ class AuditLogService extends SupabaseBaseService<any> {
 
   subscribe(callback: (logs: AuditLogEntry[]) => void) {
     this.getRecentLogsAsync(50).then(logs => {
-      this.items = logs;
       callback(logs);
     });
-
-    const channel = Supabase.realtime.subscribeToTable('audit_logs', async () => {
-      const logs = await this.getRecentLogsAsync(50);
-      this.items = logs;
-      callback(logs);
-    });
-    
-    this.listeners.push(callback);
-    return () => {
-      channel.unsubscribe();
-      this.listeners = this.listeners.filter(l => l !== callback);
-    };
+    return () => {};
   }
 
   async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
