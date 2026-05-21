@@ -51,19 +51,8 @@ export interface ChecklistExecutionRecord {
   conformityRate: number;
 }
 
-const INITIAL_TEMPLATES: ChecklistTemplate[] = [
-  { 
-    id: "1", 
-    company_id: 'comp-1',
-    title: "Entrega de Chaves", 
-    description: "Verificação final", 
-    category: "vistoria", 
-    groups: [],
-    createdAt: new Date(),
-    lastUpdated: new Date(),
-    version: 1
-  }
-];
+// Removed INITIAL_TEMPLATES mock data
+
 
 class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
   private executions: ChecklistExecutionRecord[] = [];
