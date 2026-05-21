@@ -51,55 +51,76 @@ vi.mock('@/integrations/supabase/client', () => ({
       signOut: vi.fn().mockResolvedValue({ error: null }),
       onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
     },
-    rpc: vi.fn((fn, params) => simulator.getBuilder('rpc').rpc(fn, params))
+    rpc: vi.fn((fn, params) => simulator.getBuilder('rpc').rpc(fn, params)),
+    storage: {
+      from: vi.fn(() => ({
+        upload: vi.fn().mockResolvedValue({ data: { path: 'test-path' }, error: null }),
+        getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'http://example.com/test-path' } }),
+        download: vi.fn().mockResolvedValue({ data: new Blob(), error: null }),
+        remove: vi.fn().mockResolvedValue({ error: null }),
+      }))
+    }
   }
 }));
 
 // Mock the internal Supabase helper to use the simulator
-vi.mock('@/integrations/supabase', () => ({
-  Supabase: {
-    db: {
-      findMany: vi.fn(async (table, options) => {
-        const builder = simulator.getBuilder(table);
-        if (options?.filters) {
-          options.filters.forEach((f: any) => {
-            if (f.operator === 'eq') builder.eq(f.column, f.value);
-            if (f.operator === 'in') builder.in(f.column, f.value);
-          });
-        }
-        if (options?.pagination) {
-          const from = (options.pagination.page - 1) * options.pagination.pageSize;
-          const to = from + options.pagination.pageSize - 1;
-          builder.range(from, to);
-        }
-        const res = await (builder as any);
-        return { data: res.data, error: null };
+vi.mock('@/integrations/supabase', () => {
+  const SupabaseAuth = {
+    signInWithPassword: vi.fn().mockResolvedValue({ 
+      data: { user: { id: 'u1', email: 'admin@exemplo.com', user_metadata: { role: 'admin', full_name: 'Admin User' } }, session: { access_token: 'fake' } }, 
+      error: null 
+    }),
+    signOut: vi.fn().mockResolvedValue({ data: null, error: null }),
+    getSession: vi.fn().mockResolvedValue(null),
+    getUser: vi.fn().mockResolvedValue(null),
+    getCurrentUser: vi.fn().mockResolvedValue(null),
+    onAuthStateChange: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
+  };
 
-      }),
-      findOne: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).single()),
-      create: vi.fn((table, data) => simulator.getBuilder(table).insert(data)),
-      update: vi.fn((table, id, data) => simulator.getBuilder(table).eq('id', id).update(data)),
-      delete: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).delete()),
-      rpc: vi.fn((fn, params) => simulator.getBuilder('rpc').rpc(fn, params)),
+  const SupabaseDatabase = {
+    findMany: vi.fn(async (table, options) => {
+      const builder = simulator.getBuilder(table);
+      if (options?.filters) {
+        options.filters.forEach((f: any) => {
+          if (f.operator === 'eq') builder.eq(f.column, f.value);
+          if (f.operator === 'in') builder.in(f.column, f.value);
+        });
+      }
+      if (options?.pagination) {
+        const from = (options.pagination.page - 1) * options.pagination.pageSize;
+        const to = from + options.pagination.pageSize - 1;
+        builder.range(from, to);
+      }
+      const res = await (builder as any);
+      return { data: res.data, error: null };
+    }),
+    findOne: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).single()),
+    create: vi.fn((table, data) => simulator.getBuilder(table).insert(data)),
+    update: vi.fn((table, id, data) => simulator.getBuilder(table).eq('id', id).update(data)),
+    delete: vi.fn((table, id) => simulator.getBuilder(table).eq('id', id).delete()),
+    rpc: vi.fn((fn, params) => simulator.getBuilder('rpc').rpc(fn, params)),
+  };
+
+  return {
+    Supabase: {
+      auth: SupabaseAuth,
+      db: SupabaseDatabase,
+      storage: {
+        uploadFile: vi.fn().mockResolvedValue({ data: { path: 'test' }, error: null }),
+        getPublicUrl: vi.fn().mockResolvedValue('http://example.com/test'),
+        downloadFile: vi.fn().mockResolvedValue({ data: new Blob(), error: null }),
+        deleteFile: vi.fn().mockResolvedValue({ data: null, error: null }),
+      },
+      realtime: {
+        subscribeToTable: vi.fn(() => ({ unsubscribe: vi.fn() })),
+      }
     },
-    auth: {
-      signInWithPassword: vi.fn().mockResolvedValue({ 
-        user: { id: 'u1', full_name: 'Simulated User', role: 'admin' }, 
-        error: null 
-      }),
-      signOut: vi.fn().mockResolvedValue({ error: null }),
-      getCurrentUser: vi.fn().mockResolvedValue({ 
-        id: 'u1', 
-        full_name: 'Simulated User', 
-        role: 'admin',
-        company_id: 'tenant-1'
-      }),
-    },
-    realtime: {
-      subscribeToTable: vi.fn(() => ({ unsubscribe: vi.fn() })),
+    default: {
+      auth: SupabaseAuth,
+      db: SupabaseDatabase,
     }
-  }
-}));
+  };
+});
 
 
 
