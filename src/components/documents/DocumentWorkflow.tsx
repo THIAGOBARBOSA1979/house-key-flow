@@ -22,6 +22,8 @@ export function DocumentWorkflow({ document, onUpdate }: DocumentWorkflowProps) 
       id: crypto.randomUUID(),
       status,
       comment,
+      by: "Admin Atual",
+      at: new Date(),
       performedBy: "Admin Atual",
       performedAt: new Date()
     };

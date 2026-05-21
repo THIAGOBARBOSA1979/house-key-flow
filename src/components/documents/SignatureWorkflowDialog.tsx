@@ -68,9 +68,9 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
       order: signatures.length + 1
     };
 
-    const added = documentService.addSigner(documentId, signer);
-    if (added) {
-      setSignatures([...signatures, added]);
+    documentService.addSigner(documentId, signer).then(added => {
+      if (added) {
+        setSignatures([...signatures, added]);
       setNewSigner({
         name: "",
         email: "",

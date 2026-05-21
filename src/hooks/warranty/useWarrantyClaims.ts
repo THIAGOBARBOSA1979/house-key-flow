@@ -73,7 +73,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     if (!result.success) {
       toast({
         title: "Erro na solicitação",
-        description: result.error.error,
+        description: (result as any).error?.error || "Erro desconhecido",
         variant: "destructive"
       });
       return false;
