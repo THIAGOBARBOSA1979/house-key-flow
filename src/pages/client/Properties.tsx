@@ -50,19 +50,19 @@ const ClientProperties = () => {
   const [isLoading, setIsLoading] = useState(true);
 
 
-  const loadPropertyData = () => {
+  const loadPropertyData = async () => {
     try {
       setIsLoading(true);
       setError(null);
       if (profile?.propertyId) {
-        const p = propertyService.getById(profile.propertyId);
+        const p = await propertyService.getById(profile.propertyId);
         if (p) {
           setPropertyData(p);
         } else {
           setError("Empreendimento não encontrado.");
         }
       } else {
-        const all = propertyService.getAll();
+        const all = await propertyService.getAll();
         if (all.length > 0) {
           setPropertyData(all[0]);
         } else {

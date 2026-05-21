@@ -7,15 +7,16 @@ import { companyService, CompanySettings } from "@/services";
 export const useSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [settings, setSettings] = useState<SystemSettings>(() => systemSettingsService.getSettingsSync());
+  const [settings, setSettings] = useState<SystemSettings>(() => systemSettingsService.getSettings());
   const [companySettings, setCompanySettings] = useState<CompanySettings>({});
 
   useEffect(() => {
     if (user?.company_id) {
-      const company = companyService.getById(user.company_id, undefined, true);
-      if (company?.settings) {
-        setCompanySettings(company.settings);
-      }
+      companyService.getById(user.company_id, undefined, true).then(company => {
+        if (company?.settings) {
+          setCompanySettings(company.settings);
+        }
+      });
     }
   }, [user]);
 
