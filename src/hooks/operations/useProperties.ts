@@ -34,6 +34,11 @@ export const useProperties = () => {
     return matchesStatus && matchesManager;
   }, []);
 
+  const listOptions = useMemo(() => ({
+    initialFilters: { status: "all", manager: "all" },
+    filterFn
+  }), [filterFn]);
+
   const {
     filteredItems: filteredProperties,
     filters,
@@ -44,10 +49,7 @@ export const useProperties = () => {
     searchTerm,
     setSearchTerm,
     clearFilters
-  } = useDataList<Property>(properties, {
-    initialFilters: { status: "all", manager: "all" },
-    filterFn
-  });
+  } = useDataList<Property>(properties, listOptions);
 
   const metrics = useMemo(() => 
     propertyService.getMetrics(companyId, user?.is_super_admin), 

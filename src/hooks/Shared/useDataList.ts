@@ -11,7 +11,7 @@ export function useDataList<T extends { id: string }>(
   items: T[],
   options: UseDataListOptions<T> = {}
 ) {
-  const { itemsPerPage = 0 } = options;
+  const { itemsPerPage = 0, initialFilters, filterFn, sortFn } = options;
 
   const [filters, setFilters] = useState<Record<string, any>>(options.initialFilters || {});
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -39,16 +39,16 @@ export function useDataList<T extends { id: string }>(
       });
     }
 
-    if (options.filterFn) {
-      result = result.filter(item => item && options.filterFn!(item, filters));
+    if (filterFn) {
+      result = result.filter(item => item && filterFn(item, filters));
     }
 
-    if (options.sortFn) {
-      result.sort(options.sortFn);
+    if (sortFn) {
+      result.sort(sortFn);
     }
 
     return result;
-  }, [items, filters, searchTerm, options]);
+  }, [items, filters, searchTerm, filterFn, sortFn]);
 
   const paginatedItems = useMemo(() => {
     if (!itemsPerPage) return filteredItems;
