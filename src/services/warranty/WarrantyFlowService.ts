@@ -60,6 +60,14 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     }
   }
 
+  getAllRequestsSync(companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllSync(companyId, isSuperAdmin);
+  }
+
+  getRequestSync(requestId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow | undefined {
+    return this.getByIdSync(requestId, companyId, isSuperAdmin);
+  }
+
   async getAllRequests(companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
     return await this.getAll(companyId, isSuperAdmin);
   }
@@ -67,7 +75,6 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   async getRequest(requestId: string, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow | undefined> {
     return await this.getById(requestId, companyId, isSuperAdmin);
   }
-
 
   /**
    * Create a new warranty request
@@ -143,11 +150,20 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     return requests.filter(r => r.clientId === clientId);
   }
 
+  getClientRequestsSync(clientId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequestsSync(companyId, isSuperAdmin).filter(r => r.clientId === clientId);
+  }
+
   /**
    * Get requests by stage
    */
-  getRequestsByStage(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
-    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.currentStage === stage);
+  getRequestsByStageSync(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequestsSync(companyId, isSuperAdmin).filter(r => r.currentStage === stage);
+  }
+
+  async getRequestsByStage(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
+    const requests = await this.getAllRequests(companyId, isSuperAdmin);
+    return requests.filter(r => r.currentStage === stage);
   }
 
   /**
