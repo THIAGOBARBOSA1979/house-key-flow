@@ -130,4 +130,3 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
 }
 
 export const supportService = new SupportService();
-
