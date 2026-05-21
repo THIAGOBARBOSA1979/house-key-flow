@@ -159,8 +159,7 @@ class WarrantyAutomationService {
   /**
    * Handle warranty rejected
    */
-  private onRejected(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Warranty rejected:', request.id);
+  private onRejected(_request: WarrantyRequestFlow): void {
     // Final state - no further actions needed
   }
 
