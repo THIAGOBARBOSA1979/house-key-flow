@@ -19,7 +19,7 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
         message: 'content',
         read: 'read_at'
       }
-    }, []);
+    });
   }
 
   protected mapToSupabase(item: any): any {

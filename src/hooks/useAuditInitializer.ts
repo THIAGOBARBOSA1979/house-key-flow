@@ -23,6 +23,10 @@ const INITIAL_ISSUES = [
   { module: 'Security', description: 'Sessões seguras com timeout automático e sanitização de inputs em tempo real', impact: 'high', wave: 9 },
   { module: 'Data Privacy', description: 'Eliminação total do uso de mocks e localStorage para persistência de dados sensíveis', impact: 'high', wave: 9 },
 
+  // Wave 10: Persistência Real e Eliminação de Mocks
+  { module: 'Warranty', description: 'Refatoração do WarrantyValidationService para persistência real via Supabase', impact: 'critical', wave: 10 },
+  { module: 'Warranty', description: 'Refatoração do WarrantyFlowService eliminando mocks estáticos', impact: 'critical', wave: 10 },
+  { module: 'Governance', description: 'Padronização de auditoria em todos os métodos de mutação', impact: 'high', wave: 10 },
 ];
 
 export const useAuditInitializer = () => {

@@ -14,6 +14,23 @@ export interface DocumentSignature {
   evidence?: any;
 }
 
+export interface DocumentVersion {
+  id: string;
+  version: number;
+  fileUrl: string;
+  createdAt: Date;
+  createdBy: string;
+  changeNotes?: string;
+}
+
+export interface ApprovalHistoryEntry {
+  id: string;
+  status: "approved" | "rejected";
+  by: string;
+  at: Date;
+  comment?: string;
+}
+
 export interface Document {
   id: string;
   company_id?: string;
@@ -44,6 +61,12 @@ export interface Document {
   expiresAt?: Date;
   isSigned?: boolean;
   isFavorite?: boolean;
+  technical_metadata?: any;
+  versionHistory?: DocumentVersion[];
+  approvalHistory?: ApprovalHistoryEntry[];
+  approvedBy?: string;
+  approvedAt?: Date;
+  approvalComment?: string;
 }
 
 class DocumentService extends SupabaseBaseService<Document> {
@@ -63,7 +86,10 @@ class DocumentService extends SupabaseBaseService<Document> {
     return this.items.filter(doc => doc?.associatedTo?.client === clientName); 
   }
   
-  getFavoriteDocuments() { return this.items.filter(doc => doc.isFavorite); }
+  async getFavoriteDocuments() { 
+    const docs = await this.getAll();
+    return docs.filter(doc => doc.isFavorite); 
+  }
   
   async getSignatureHistory(id: string) { 
     const doc = await this.getById(id);
@@ -80,7 +106,7 @@ class DocumentService extends SupabaseBaseService<Document> {
   }
 
   async logView(id: string) {
-    const doc = this.getByIdSync(id);
+    const doc = await this.getById(id);
     if (doc) await this.update(id, { viewCount: (doc.viewCount || 0) + 1 });
   }
 
@@ -148,12 +174,64 @@ class DocumentService extends SupabaseBaseService<Document> {
     return !!(await this.update(id, { signatures }));
   }
 
-  async addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): Promise<DocumentSignature | null> { 
+  async addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): Promise<DocumentSignature> { 
     const doc = await this.getById(id);
-    if (!doc) return null;
+    if (!doc) throw new Error("Documento não encontrado");
     const newSigner: DocumentSignature = { ...signer, id: crypto.randomUUID(), status: "pending" };
     await this.update(id, { signatures: [...(doc.signatures || []), newSigner] });
     return newSigner;
+  }
+
+  async toggleFavorite(id: string) {
+    const doc = await this.getById(id);
+    if (!doc) return false;
+    return !!(await this.update(id, { isFavorite: !doc.isFavorite }));
+  }
+
+  async duplicateDocument(id: string) {
+    const doc = await this.getById(id);
+    if (!doc) return null;
+    const { id: _, createdAt: __, updatedAt: ___, ...rest } = doc;
+    return await this.create({
+      ...rest,
+      title: `${doc.title} (Cópia)`
+    });
+  }
+
+  async getCategories() {
+    const docs = await this.getAll();
+    return Array.from(new Set(docs.map(d => d.category)));
+  }
+
+  async getExpiringDocuments(days: number = 30) {
+    const docs = await this.getAll();
+    const threshold = new Date();
+    threshold.setDate(threshold.getDate() + days);
+    return docs.filter(d => d.expiresAt && d.expiresAt <= threshold);
+  }
+
+  async getFolderStructure() {
+    const docs = await this.getAll();
+    return Array.from(new Set(docs.map(d => d.category))).map(cat => ({
+      name: cat,
+      count: docs.filter(d => d.category === cat).length
+    }));
+  }
+
+  async moveDocument(id: string, newCategory: string) {
+    return !!(await this.update(id, { category: newCategory }));
+  }
+
+  async generateDocument(type: string, data: any) {
+    // Placeholder for document generation logic
+    return await this.create({
+      title: `Documento Gerado - ${type}`,
+      category: "Gerados",
+      type: "auto",
+      status: "published",
+      visible: true,
+      ...data
+    } as any);
   }
 }
 

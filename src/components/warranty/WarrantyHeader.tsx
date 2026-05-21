@@ -57,7 +57,7 @@ export const WarrantyHeader = ({ onExportData }: WarrantyHeaderProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-64 p-2 rounded-2xl shadow-sem-xl border-none animate-in zoom-in-95">
             <DropdownMenuLabel className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Exportar Dados</DropdownMenuLabel>
-            <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => exportService.exportToCSV(warrantyFlowService.getAllRequests(), 'garantias_a2')}>
+            <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => exportService.exportToCSV(warrantyFlowService.getAllRequestsSync(), 'garantias_a2')}>
               <Download className="mr-3 h-4 w-4 opacity-50" /> Exportar CSV
             </DropdownMenuItem>
             <DropdownMenuItem className="py-3 px-4 font-bold cursor-pointer rounded-xl focus:bg-primary/5 focus:text-primary" onClick={() => toast({ title: "BI em processamento", description: "O dashboard executivo está sendo gerado." })}>

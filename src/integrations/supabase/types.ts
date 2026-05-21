@@ -1034,6 +1034,115 @@ export type Database = {
           },
         ]
       }
+      warranty_items: {
+        Row: {
+          category: string
+          client_id: string | null
+          company_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          property_id: string | null
+          property_name: string | null
+          status: string
+          unit_number: string | null
+          updated_at: string | null
+          warranty_end_date: string
+          warranty_start_date: string
+          warranty_years: number | null
+        }
+        Insert: {
+          category: string
+          client_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          property_id?: string | null
+          property_name?: string | null
+          status?: string
+          unit_number?: string | null
+          updated_at?: string | null
+          warranty_end_date: string
+          warranty_start_date: string
+          warranty_years?: number | null
+        }
+        Update: {
+          category?: string
+          client_id?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          property_id?: string | null
+          property_name?: string | null
+          status?: string
+          unit_number?: string | null
+          updated_at?: string | null
+          warranty_end_date?: string
+          warranty_start_date?: string
+          warranty_years?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warranty_problem_breakdown: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          location: string | null
+          photos: string[] | null
+          request_id: string | null
+          severity: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          photos?: string[] | null
+          request_id?: string | null
+          severity?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          photos?: string[] | null
+          request_id?: string | null
+          severity?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_problem_breakdown_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "warranty_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       warranty_requests: {
         Row: {
           actual_cost: number | null
@@ -1119,6 +1228,47 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warranty_status_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string | null
+          from_status: string | null
+          id: string
+          is_automatic: boolean | null
+          notes: string | null
+          request_id: string | null
+          to_status: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string | null
+          from_status?: string | null
+          id?: string
+          is_automatic?: boolean | null
+          notes?: string | null
+          request_id?: string | null
+          to_status: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string | null
+          from_status?: string | null
+          id?: string
+          is_automatic?: boolean | null
+          notes?: string | null
+          request_id?: string | null
+          to_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_status_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "warranty_requests"
             referencedColumns: ["id"]
           },
         ]

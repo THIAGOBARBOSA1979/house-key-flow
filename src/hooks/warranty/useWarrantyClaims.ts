@@ -12,13 +12,23 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   const companyId = user?.company_id;
   const isSuperAdmin = !!user?.is_super_admin;
   
-  const allClaims = useMemo(() => 
-    warrantyFlowService.getClientRequests(clientId, companyId, isSuperAdmin).sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    ), [clientId, companyId, isSuperAdmin]);
-    
-  const [claims, setClaims] = useState<any[]>(allClaims);
+  const [claims, setClaims] = useState<any[]>([]);
   const [error, setError] = useState<any>(null);
+
+  const fetchClaims = useCallback(async () => {
+    try {
+      const data = await warrantyFlowService.getClientRequests(clientId, companyId, isSuperAdmin);
+      setClaims(data.sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      ));
+    } catch (err) {
+      setError(err);
+    }
+  }, [clientId, companyId, isSuperAdmin]);
+
+  useEffect(() => {
+    fetchClaims();
+  }, [fetchClaims]);
 
 
   const cancelClaim = useCallback((claimId: string) => {

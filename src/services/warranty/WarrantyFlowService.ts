@@ -19,127 +19,8 @@ import { SupabaseBaseService } from '../SupabaseBaseService';
 import { Supabase } from '@/integrations/supabase';
 import { warrantyAutomationService } from './WarrantyAutomationService';
 
-
-// Mock warranty requests data
-const initialMockRequests: WarrantyRequestFlow[] = [
-  {
-    id: "wr-001",
-    clientId: "client-1",
-    clientName: "Maria Oliveira",
-    propertyId: "prop-1",
-    propertyName: "Edifício Aurora",
-    unitNumber: "204",
-    title: "Infiltração no banheiro",
-    description: "Identificada infiltração na parede do box do banheiro social.",
-    category: "Instalações Hidráulicas",
-    priority: "high",
-    currentStage: "in_analysis",
-    stageStartedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Instalações Hidráulicas")!,
-    slaDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    slaStatus: "on_track",
-    assignedTo: "tech-1",
-    assignedToName: "Carlos Técnico",
-    estimatedCost: 850,
-    actualCost: 120,
-    materials: [
-      { id: "mat-1", name: "Vedante Silicone", quantity: 2, unit: "un", cost: 40 },
-      { id: "mat-2", name: "Rejunte Impermeável", quantity: 1, unit: "kg", cost: 25 }
-    ],
-    internalNotes: "Análise inicial sugere falha no rejuntamento.",
-    problems: [
-      {
-        id: "prob-1",
-        category: "Hidráulica",
-        location: "Banheiro Social",
-        description: "Vazamento no registro",
-        severity: "moderate",
-        photos: [],
-        status: "pending",
-        createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000)
-      }
-    ],
-    history: [
-      {
-        id: "hist-001",
-        requestId: "wr-001",
-        fromStatus: null,
-        toStatus: "opened",
-        changedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        changedBy: "client-1",
-        isAutomatic: false
-      },
-      {
-        id: "hist-002",
-        requestId: "wr-001",
-        fromStatus: "opened",
-        toStatus: "in_analysis",
-        changedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        changedBy: "admin-1",
-        isAutomatic: false,
-        notes: "Abertura de protocolo técnico inicial"
-      }
-    ]
-  },
-  {
-    id: "wr-002",
-    clientId: "client-2",
-    clientName: "João Santos",
-    propertyId: "prop-2",
-    propertyName: "Residencial Bosque Verde",
-    unitNumber: "305",
-    title: "Porta empenada",
-    description: "A porta do quarto principal está empenada e não fecha corretamente.",
-    category: "Esquadrias",
-    priority: "medium",
-    currentStage: "inspection_scheduled",
-    stageStartedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
-    createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
-    slaConfig: DEFAULT_SLA_CONFIGS.find(c => c.warrantyType === "Esquadrias")!,
-    slaDeadline: new Date(Date.now() + 60 * 60 * 60 * 1000),
-    slaStatus: "on_track",
-    isPaused: true,
-    pausedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
-    pauseReason: "Aguardando disponibilidade do morador",
-    assignedTo: "tech-2",
-    assignedToName: "Ana Vistoriadora",
-    inspectionDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    history: [
-      {
-        id: "hist-003",
-        requestId: "wr-002",
-        fromStatus: null,
-        toStatus: "opened",
-        changedAt: new Date(Date.now() - 72 * 60 * 60 * 1000),
-        changedBy: "client-2",
-        isAutomatic: false
-      },
-      {
-        id: "hist-004",
-        requestId: "wr-002",
-        fromStatus: "opened",
-        toStatus: "in_analysis",
-        changedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        changedBy: "admin-1",
-        isAutomatic: false
-      },
-      {
-        id: "hist-005",
-        requestId: "wr-002",
-        fromStatus: "in_analysis",
-        toStatus: "inspection_scheduled",
-        changedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
-        changedBy: "admin-1",
-        isAutomatic: false,
-        notes: "Vistoria técnica integrada ao cronograma operacional"
-      }
-    ]
-  }
-];
+// Eliminando mocks estáticos para persistência real via Supabase
+const initialMockRequests: WarrantyRequestFlow[] = [];
 
 class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   private debugMode = false;
@@ -179,19 +60,26 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     }
   }
 
-  getAllRequests(companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
-    return this.getAll(companyId, isSuperAdmin);
+  getAllRequestsSync(companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllSync(companyId, isSuperAdmin);
   }
 
-  getRequest(requestId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow | undefined {
-    return this.getById(requestId, companyId, isSuperAdmin);
+  getRequestSync(requestId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow | undefined {
+    return this.getByIdSync(requestId, companyId, isSuperAdmin);
   }
 
+  async getAllRequests(companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
+    return await this.getAll(companyId, isSuperAdmin);
+  }
+
+  async getRequest(requestId: string, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow | undefined> {
+    return await this.getById(requestId, companyId, isSuperAdmin);
+  }
 
   /**
    * Create a new warranty request
    */
-  createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
+  async createRequest(data: Partial<WarrantyRequestFlow>): Promise<WarrantyRequestFlow> {
     this.internalLog('info', 'Creating new request', { title: data.title });
     const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
@@ -242,14 +130,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     const slaInfo = warrantySLAService.calculateSLADeadlineInfo(newRequest);
     newRequest.slaDeadline = slaInfo.deadline;
 
-    // Ensure the item is actually in the internal array since BaseService.update only works if it exists
-    const existing = this.getById(id);
-    if (!existing) {
-      this.items.push(newRequest);
-      this.persist();
-    } else {
-      this.update(id, newRequest);
-    }
+    // Persist real via Supabase
+    const created = await this.create(newRequest);
 
     this.log('created', id, `Solicitação de garantia criada: ${newRequest.title}`, {
       performedBy: data.clientId || 'client',
@@ -257,23 +139,31 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       performedByRole: 'client'
     });
 
-    return newRequest;
+    return created;
   }
-
-
 
   /**
    * Get requests for a specific client
    */
-  getClientRequests(clientId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
-    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.clientId === clientId);
+  async getClientRequests(clientId: string, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
+    const requests = await this.getAllRequests(companyId, isSuperAdmin);
+    return requests.filter(r => r.clientId === clientId);
+  }
+
+  getClientRequestsSync(clientId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequestsSync(companyId, isSuperAdmin).filter(r => r.clientId === clientId);
   }
 
   /**
    * Get requests by stage
    */
-  getRequestsByStage(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
-    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.currentStage === stage);
+  getRequestsByStageSync(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
+    return this.getAllRequestsSync(companyId, isSuperAdmin).filter(r => r.currentStage === stage);
+  }
+
+  async getRequestsByStage(stage: WarrantyStage, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
+    const requests = await this.getAllRequests(companyId, isSuperAdmin);
+    return requests.filter(r => r.currentStage === stage);
   }
 
   /**

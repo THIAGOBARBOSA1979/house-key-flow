@@ -1,4 +1,4 @@
-
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Star, Clock, Archive, AlertTriangle, TrendingUp } from "lucide-react";
@@ -6,9 +6,23 @@ import { documentService } from "@/services";
 import { StatsCard } from "@/components/shared/StatsCard";
 
 export function DocumentsDashboard() {
-  const stats = documentService.getDocumentStats();
-  const expiringDocs = documentService.getExpiringDocuments();
-  const favoriteDocs = documentService.getFavoriteDocuments();
+  const [stats, setStats] = useState<any>(null);
+  const [expiringDocs, setExpiringDocs] = useState<any[]>([]);
+  const [favoriteDocs, setFavoriteDocs] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const s = await documentService.getDocumentStats();
+      const ed = await documentService.getExpiringDocuments();
+      const fd = await documentService.getFavoriteDocuments();
+      setStats(s);
+      setExpiringDocs(ed);
+      setFavoriteDocs(fd);
+    };
+    fetchData();
+  }, []);
+
+  if (!stats) return null;
 
   return (
     <div className="space-y-6">
