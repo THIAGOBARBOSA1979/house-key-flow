@@ -1,3 +1,4 @@
+import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 
 export type CompanyStatus = 'active' | 'suspended' | 'cancelled';

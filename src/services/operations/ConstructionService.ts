@@ -1,3 +1,4 @@
+import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { Supabase } from "@/integrations/supabase";
 
