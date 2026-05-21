@@ -23,11 +23,12 @@ import { inspectionService } from "@/services";
 import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
 import { TimelineItem } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
+import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
 
 export default function ClientInspections() {
   const { user } = useAuth();
   const clientId = user?.id || "client-1";
-  const { stage } = useClientStage(clientId);
+  const { stage, isLoading, canScheduleInspection } = useClientStage(clientId);
   const { toast } = useToast();
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [inspections, setInspections] = useState<any[]>([]);
