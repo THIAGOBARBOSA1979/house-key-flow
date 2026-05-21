@@ -72,7 +72,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Create a new warranty request
    */
-  createRequest(data: Partial<WarrantyRequestFlow>): WarrantyRequestFlow {
+  async createRequest(data: Partial<WarrantyRequestFlow>): Promise<WarrantyRequestFlow> {
     this.internalLog('info', 'Creating new request', { title: data.title });
     const id = data.id || `wr-${crypto.randomUUID()}`;
     const category = data.category || "Outros";
@@ -123,14 +123,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     const slaInfo = warrantySLAService.calculateSLADeadlineInfo(newRequest);
     newRequest.slaDeadline = slaInfo.deadline;
 
-    // Ensure the item is actually in the internal array since BaseService.update only works if it exists
-    const existing = this.getById(id);
-    if (!existing) {
-      this.items.push(newRequest);
-      this.persist();
-    } else {
-      this.update(id, newRequest);
-    }
+    // Persist real via Supabase
+    const created = await this.create(newRequest);
 
     this.log('created', id, `Solicitação de garantia criada: ${newRequest.title}`, {
       performedBy: data.clientId || 'client',
@@ -138,16 +132,15 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       performedByRole: 'client'
     });
 
-    return newRequest;
+    return created;
   }
-
-
 
   /**
    * Get requests for a specific client
    */
-  getClientRequests(clientId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
-    return this.getAllRequests(companyId, isSuperAdmin).filter(r => r.clientId === clientId);
+  async getClientRequests(clientId: string, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
+    const requests = await this.getAllRequests(companyId, isSuperAdmin);
+    return requests.filter(r => r.clientId === clientId);
   }
 
   /**
