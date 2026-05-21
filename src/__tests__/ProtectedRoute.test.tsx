@@ -14,7 +14,7 @@ vi.mock('../contexts/AuthContext', async (importOriginal) => {
   };
 });
 
-const mockUseAuth = AuthContext.useAuth as vi.Mock;
+const mockUseAuth = AuthContext.useAuth as any;
 
 describe('ProtectedRoute', () => {
   it('should redirect to login if not authenticated', () => {

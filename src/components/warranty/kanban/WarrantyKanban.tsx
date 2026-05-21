@@ -163,8 +163,8 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
     if (selectedCards.size === 0) return;
     const ids = Array.from(selectedCards);
     let successCount = 0;
-    ids.forEach(id => {
-      const result = warrantyFlowService.assignTechnician(id, techId, techName, 'admin-1');
+    ids.forEach(async id => {
+      const result = await warrantyFlowService.assignTechnician(id, techId, techName, 'admin-1');
       if (result.success) successCount++;
     });
     if (successCount > 0) {
@@ -186,7 +186,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
 
 
   // Execute status transition
-  const executeTransition = (
+  const executeTransition = async (
     cardIds: string[], 
     fromStage: WarrantyStage, 
     toStage: WarrantyStage, 
@@ -195,8 +195,8 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
     let successCount = 0;
     let lastError = "";
 
-    cardIds.forEach(cardId => {
-      const result = warrantyAutomationService.onKanbanDrop(
+    for (const cardId of cardIds) {
+      const result = await warrantyAutomationService.onKanbanDrop(
         cardId,
         fromStage,
         toStage,
@@ -204,7 +204,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       );
       if (result.success) successCount++;
       else lastError = result.error || "Erro desconhecido";
-    });
+    }
     
     if (successCount > 0) {
       toast({
