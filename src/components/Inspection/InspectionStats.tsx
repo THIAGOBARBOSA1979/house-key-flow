@@ -1,4 +1,4 @@
-
+import { memo } from "react";
 import { CheckCircle, Clock, AlertTriangle, TrendingUp } from "lucide-react";
 import { StatsCard } from "@/components/Shared/StatsCard";
 import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
@@ -13,7 +13,7 @@ interface InspectionStatsProps {
   };
 }
 
-export const InspectionStats = ({ stats }: InspectionStatsProps) => {
+export const InspectionStats = memo(({ stats }: InspectionStatsProps) => {
   const complianceRate = stats.total > stats.cancelled 
     ? Math.round((stats.complete / (stats.total - stats.cancelled)) * 100) 
     : 100;
@@ -51,4 +51,4 @@ export const InspectionStats = ({ stats }: InspectionStatsProps) => {
       />
     </ResponsiveGrid>
   );
-};
+});

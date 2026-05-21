@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { SkeletonLoader } from "./SkeletonLoader";
 import { EmptyState } from "./EmptyState";
-import { LucideIcon, ArrowUpDown } from "lucide-react";
+import { LucideIcon, ArrowUpDown, Ghost } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Column<T> {
@@ -33,7 +33,7 @@ interface DataTableProps<T> {
   emptyState?: {
     title: string;
     description: string;
-    icon?: React.ReactNode;
+    icon?: LucideIcon;
   };
 
   className?: string;
@@ -59,7 +59,7 @@ function DataTableComponent<T>({
         description={emptyState?.description || "Nenhum protocolo ou registro estratégico foi localizado nesta coordenada."}
 
 
-        icon={emptyState?.icon}
+        icon={emptyState?.icon || Ghost}
       />
     );
   }

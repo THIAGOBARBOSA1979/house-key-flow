@@ -72,6 +72,7 @@ export const ScheduleInspectionForm = ({
 }) => {
   const { toast } = useToast();
   const [conflictWarning, setConflictWarning] = React.useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(inspectionSchema),
@@ -104,7 +105,9 @@ export const ScheduleInspectionForm = ({
 
 
   const onSubmit = async (data: FormValues) => {
-    const newInspection = await inspectionService.schedule(data as any, propertyInfo);
+    setIsSubmitting(true);
+    try {
+      const newInspection = await inspectionService.schedule(data as any, propertyInfo);
 
     toast({
       title: "Agendamento Estratégico Confirmado",
@@ -139,6 +142,9 @@ export const ScheduleInspectionForm = ({
     
     if (onSuccess) {
       onSuccess();
+    }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -340,8 +346,15 @@ export const ScheduleInspectionForm = ({
         />
         
         <div className="flex gap-4 justify-end pt-10 border-t border-border/10 -mx-10 px-10 mt-10">
-          <Button type="button" variant="outline" className="px-8 h-12 rounded-xl font-bold border-2 hover:bg-muted/50 transition-all">Descartar</Button>
-          <Button type="submit" className="font-black uppercase tracking-widest text-[11px] px-12 h-12 rounded-xl shadow-sem-lg active:scale-95 transition-all">Confirmar Agendamento</Button>
+          <Button type="button" variant="outline" className="px-8 h-12 rounded-xl font-bold border-2 hover:bg-muted/50 transition-all" disabled={isSubmitting}>Descartar</Button>
+          <Button type="submit" className="font-black uppercase tracking-widest text-[11px] px-12 h-12 rounded-xl shadow-sem-lg active:scale-95 transition-all" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Agendando...
+              </div>
+            ) : "Confirmar Agendamento"}
+          </Button>
         </div>
       </form>
     </Form>

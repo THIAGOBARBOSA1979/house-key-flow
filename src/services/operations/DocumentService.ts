@@ -184,9 +184,16 @@ class DocumentService extends SupabaseBaseService<Document> {
     if (doc) this.update(id, { viewCount: (doc.viewCount || 0) + 1 }, true);
   }
 
-  downloadDocument(id: string) {
+  async downloadDocument(id: string) {
     const doc = this.getById(id, undefined, true);
-    if (doc) this.update(id, { downloads: (doc.downloads || 0) + 1 }, true);
+    if (!doc) throw new Error("Documento não encontrado para download");
+    
+    try {
+      await this.update(id, { downloads: (doc.downloads || 0) + 1 }, true);
+      return doc.fileUrl;
+    } catch (err) {
+      throw new Error(`Falha no protocolo de download: ${err instanceof Error ? err.message : 'Erro de rede'}`);
+    }
   }
 
   getDocumentStats(companyId?: string, isSuperAdmin?: boolean) { 

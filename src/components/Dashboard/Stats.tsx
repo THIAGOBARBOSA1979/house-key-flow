@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { cn } from "@/lib/utils";
 import { Building, ShieldCheck, ClipboardCheck, Activity } from "lucide-react";
 import { StatsCard } from "@/components/Shared/StatsCard";
@@ -13,7 +13,7 @@ interface StatItem {
   trend?: { value: string; isPositive: boolean };
 }
 
-export const Stats = ({ className }: { className?: string }) => {
+export const Stats = memo(({ className }: { className?: string }) => {
   const { properties } = useProperties();
   const { inspections } = useInspections();
   const { requests: warranties } = useWarranty();
@@ -72,4 +72,4 @@ export const Stats = ({ className }: { className?: string }) => {
       ))}
     </div>
   );
-};
+});

@@ -27,17 +27,24 @@ export const AuditProgressOverlay: React.FC = () => {
   useAuditMarker('Sanitização de entradas de usuário insuficiente para proteção XSS/SQLi');
   useAuditMarker('Inconsistência de nomenclatura entre frontend (camelCase) e DB (snake_case)');
   useAuditMarker('SystemHealthService iterando sincronicamente sobre localStorage impactando a Main Thread');
+  
+  // Wave 5 Fixes
+  useAuditMarker('Modais de criação de vistoria sem feedback visual de progresso durante upload');
+  useAuditMarker('Dashboards sem estados de fallback "Empty State" para novos usuários/empresas');
+  useAuditMarker('Quebra de layout no Kanban de Garantias em telas Ultra-Wide (>2000px)');
+  useAuditMarker('Re-renderizações excessivas no menu lateral ao alternar rotas');
+  useAuditMarker('Exceções não tratadas em falhas de rede durante download de documentos');
 
   // Logic to move to next wave
   React.useEffect(() => {
     const waveIssues = issues.filter(i => i.wave === currentWave);
     if (waveIssues.length > 0 && waveIssues.every(i => i.status === 'fixed')) {
       completeWave(currentWave);
-      if (currentWave < 4) {
+      if (currentWave < 5) {
         startWave(currentWave + 1);
       } else {
-        // All waves completed or awaiting next command
-        completeWave(4);
+        // All waves completed
+        completeWave(5);
       }
     }
   }, [issues, currentWave, completeWave, startWave]);

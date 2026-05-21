@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Card } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 
@@ -7,10 +7,10 @@ interface GeneralSummaryProps {
   inspectionsCompletedPercent: number;
 }
 
-export const GeneralSummary: React.FC<GeneralSummaryProps> = ({ 
+export const GeneralSummary = memo(({ 
   averageProgress, 
   inspectionsCompletedPercent 
-}) => {
+}: GeneralSummaryProps) => {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
@@ -61,4 +61,4 @@ export const GeneralSummary: React.FC<GeneralSummaryProps> = ({
 
     </section>
   );
-};
+});

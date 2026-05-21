@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, List, LayoutGrid, Calendar as CalendarIcon }
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EmptyState } from "./EmptyState";
+import { LucideIcon, Ghost } from "lucide-react";
 import { ErrorView } from "./ErrorView";
 import { SkeletonLoader } from "./SkeletonLoader";
 import { DataTable } from "./DataTable";
@@ -40,7 +41,7 @@ export interface DataViewProps<T> {
   emptyState?: {
     title: string;
     description: string;
-    icon?: React.ReactNode;
+    icon?: LucideIcon;
 
     action?: {
       label: string;
@@ -136,7 +137,7 @@ function DataViewComponent<T>({
         <EmptyState 
           title={emptyState?.title || t('common.empty_title', 'Repositório Digital Vazio')}
           description={emptyState?.description || t('common.empty_description', 'Nenhum protocolo ou registro estratégico foi localizado nesta coordenada.')}
-          icon={emptyState?.icon}
+          icon={emptyState?.icon || Ghost}
           action={emptyState?.action ? <Button onClick={emptyState.action.onClick} variant="outline" className="rounded-xl font-bold uppercase tracking-widest text-[10px]">{emptyState.action.label}</Button> : undefined}
 
         />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { 
@@ -68,7 +68,7 @@ const systemItems = [
 
 
 
-function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) {
+const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { logout, user } = useAuth();
@@ -187,9 +187,9 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
       )}
     </div>
   );
-}
+});
 
-export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
+export const Sidebar = memo(({ className, onCollapseChange }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -239,4 +239,4 @@ export const Sidebar = ({ className, onCollapseChange }: SidebarProps) => {
       />
     </div>
   );
-};
+});
