@@ -2,6 +2,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { securityService } from '../SystemSecurityService';
 
+// Mock auditLogService to avoid circular dependency
+vi.mock('../../core/AuditLogService', () => ({
+  auditLogService: {
+    log: vi.fn().mockResolvedValue(true)
+  }
+}));
+
 describe('SystemSecurityService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
