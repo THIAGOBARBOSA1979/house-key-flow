@@ -1,5 +1,5 @@
 
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { 
   BarChart, 
   Bar, 
@@ -22,7 +22,7 @@ import { inspectionService, warrantyFlowService } from '@/services';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
-export const DashboardCharts = ({ 
+export const DashboardCharts = memo(({ 
   inspections = [], 
   warranties = []
 }: {
@@ -252,4 +252,4 @@ export const DashboardCharts = ({
       </Card>
     </div>
   );
-};
+});
