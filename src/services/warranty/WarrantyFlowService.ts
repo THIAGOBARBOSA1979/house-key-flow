@@ -60,12 +60,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     }
   }
 
-  getAllRequests(companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
-    return this.getAll(companyId, isSuperAdmin);
+  async getAllRequests(companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
+    return await this.getAll(companyId, isSuperAdmin);
   }
 
-  getRequest(requestId: string, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow | undefined {
-    return this.getById(requestId, companyId, isSuperAdmin);
+  async getRequest(requestId: string, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow | undefined> {
+    return await this.getById(requestId, companyId, isSuperAdmin);
   }
 
 
