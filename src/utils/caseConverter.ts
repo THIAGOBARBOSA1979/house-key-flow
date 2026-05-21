@@ -1,4 +1,11 @@
 
+/**
+ * Utility to safe check if a value is a date or should be treated as such
+ */
+const isDateString = (value: any): boolean => {
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value);
+};
+
 export const toSnakeCase = (str: string): string => {
   return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 };
@@ -16,7 +23,17 @@ export const mapObjectKeys = (obj: any, mapper: (key: string) => string): any =>
   const mapped: any = {};
   Object.keys(obj).forEach((key) => {
     const newKey = mapper(key);
-    mapped[newKey] = mapObjectKeys(obj[key], mapper);
+    let value = obj[key];
+    
+    // Auto-deserialize dates during camelCase conversion (incoming from DB)
+    if (mapper === toCamelCase && isDateString(value)) {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        value = date;
+      }
+    }
+
+    mapped[newKey] = mapObjectKeys(value, mapper);
   });
   return mapped;
 };
