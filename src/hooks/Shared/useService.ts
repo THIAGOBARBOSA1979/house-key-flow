@@ -37,6 +37,7 @@ export function useService<T extends { id: string; company_id?: string }>(
   const [items, setItems] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<AppError | null>(null);
+  const [isPending, startTransition] = useTransition();
 
 
   const optionsRef = useRef(options);
@@ -51,7 +52,9 @@ export function useService<T extends { id: string; company_id?: string }>(
         await (service as any).sync(companyId, isSuperAdmin);
       }
       const data = await service.getAll(companyId, isSuperAdmin);
-      setItems(data);
+      startTransition(() => {
+        setItems(data);
+      });
     } catch (err) {
       const appError = errorHandler.handle(err, 'useService:fetchItems');
       setError(appError);
@@ -68,13 +71,15 @@ export function useService<T extends { id: string; company_id?: string }>(
 
   useEffect(() => {
     return service.subscribe((allNewItems: T[]) => {
-      if (isSuperAdmin) {
-        setItems(allNewItems);
-      } else if (companyId) {
-        setItems(allNewItems.filter(item => item.company_id === companyId));
-      } else {
-        setItems([]);
-      }
+      startTransition(() => {
+        if (isSuperAdmin) {
+          setItems(allNewItems);
+        } else if (companyId) {
+          setItems(allNewItems.filter(item => item.company_id === companyId));
+        } else {
+          setItems([]);
+        }
+      });
     });
   }, [service, companyId, isSuperAdmin]);
 
@@ -204,7 +209,7 @@ export function useService<T extends { id: string; company_id?: string }>(
 
   return {
     items,
-    isLoading,
+    isLoading: isLoading || isPending,
     refresh,
     error,
 
