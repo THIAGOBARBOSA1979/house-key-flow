@@ -37,27 +37,8 @@ export const propertySchema = z.object({
   createdAt: z.date().optional(),
 });
 
-const INITIAL_PROPERTIES: Property[] = [
-  { 
-    id: "1", 
-    company_id: "comp-1",
-    name: "Edifício Aurora", 
-    location: "São Paulo, SP", 
-    units: 120, 
-    completedUnits: 85, 
-    status: "progress", 
-    manager: "Carlos Andrade", 
-    totalArea: 12500,
-    createdAt: new Date(2023, 0, 1),
-    milestones: [
-      { id: "m1", title: "Fundação", targetDate: new Date(2023, 5, 10), completed: true, completedAt: new Date(2023, 5, 15) },
-      { id: "m2", title: "Estrutura", targetDate: new Date(2024, 1, 20), completed: true, completedAt: new Date(2024, 1, 25) },
-      { id: "m3", title: "Acabamento", targetDate: new Date(2025, 7, 30), completed: false }
-    ]
-  },
-  { id: "2", company_id: "comp-1", name: "Residencial Bosque Verde", location: "Rio de Janeiro, RJ", units: 75, completedUnits: 75, status: "complete", manager: "Luiza Mendes", totalArea: 8400, createdAt: new Date(2022, 5, 1) },
-  { id: "3", company_id: "comp-1", name: "Condomínio Monte Azul", location: "Belo Horizonte, MG", units: 50, completedUnits: 10, status: "pending", manager: "Roberto Santos", totalArea: 5200, createdAt: new Date(2023, 10, 1) },
-];
+// Removed INITIAL_PROPERTIES mock data
+
 
 class PropertyService extends SupabaseBaseService<Property> {
   constructor() {
