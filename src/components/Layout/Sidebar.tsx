@@ -114,7 +114,8 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
             variant="ghost" 
             size="icon" 
             onClick={onToggleCollapse}
-            className="text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-normal"
+            className="text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-normal focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </Button>
@@ -177,7 +178,8 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-sidebar-foreground/40 hover:text-status-critical hover:bg-status-critical/10 rounded-xl h-10 w-10 transition-all active:scale-95"
+              className="text-sidebar-foreground/40 hover:text-status-critical hover:bg-status-critical/10 rounded-xl h-10 w-10 transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-status-critical"
+              aria-label="Sair do sistema"
               onClick={logout}
             >
               <LogOut size={18} />
