@@ -6,13 +6,27 @@ import { documentService } from "@/services";
 import { TrendingUp, TrendingDown, Download, Star, Clock, FileText } from "lucide-react";
 
 export function DocumentAnalytics() {
-  const stats = documentService.getDocumentStats();
-  const documents = documentService.getAllDocuments();
+  const [stats, setStats] = useState<any>(null);
+  const [documents, setDocuments] = useState<any[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const [s, d] = await Promise.all([
+        documentService.getDocumentStats(),
+        documentService.getAllDocuments()
+      ]);
+      setStats(s);
+      setDocuments(d);
+    };
+    load();
+  }, []);
+
+  if (!stats) return null;
   
   // Calcular estatísticas adicionais
-  const totalDownloads = documents.reduce((sum, doc) => sum + doc.downloads, 0);
+  const totalDownloads = documents.reduce((sum, doc) => sum + (doc.downloads || 0), 0);
   const avgDownloads = documents.length > 0 ? Math.round(totalDownloads / documents.length) : 0;
-  const mostDownloaded = documents.sort((a, b) => b.downloads - a.downloads)[0];
+  const mostDownloaded = [...documents].sort((a, b) => (b.downloads || 0) - (a.downloads || 0))[0];
   
   const statusDistribution = [
     { status: 'published', label: 'Publicados', count: stats.published, color: 'bg-status-complete' },
