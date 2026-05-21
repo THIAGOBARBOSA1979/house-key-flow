@@ -502,17 +502,17 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Schedule inspection
    */
-  scheduleInspection(
+  async scheduleInspection(
     requestId: string,
     inspectionDate: Date,
     technicianId: string,
     technicianName: string,
     scheduledBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
-    const statusResult = this.changeStatus(
+    const statusResult = await this.changeStatus(
       requestId,
       "inspection_scheduled",
       scheduledBy,
@@ -539,12 +539,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Complete inspection
    */
-  completeInspection(
+  async completeInspection(
     requestId: string,
     notes: string,
     completedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const statusResult = this.changeStatus(requestId, "inspection_completed", completedBy, false, notes);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const statusResult = await this.changeStatus(requestId, "inspection_completed", completedBy, false, notes);
     if (!statusResult.success) return statusResult;
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -559,12 +559,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Approve warranty
    */
-  approveWarranty(
+  async approveWarranty(
     requestId: string,
     notes: string,
     approvedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const statusResult = this.changeStatus(requestId, "approved", approvedBy, false, notes);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const statusResult = await this.changeStatus(requestId, "approved", approvedBy, false, notes);
     if (!statusResult.success) return statusResult;
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -580,12 +580,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Reject warranty
    */
-  rejectWarranty(
+  async rejectWarranty(
     requestId: string,
     reason: string,
     rejectedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const statusResult = this.changeStatus(requestId, "rejected", rejectedBy, false, reason);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const statusResult = await this.changeStatus(requestId, "rejected", rejectedBy, false, reason);
     if (!statusResult.success) return statusResult;
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -600,12 +600,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Start execution
    */
-  startExecution(
+  async startExecution(
     requestId: string,
     notes: string,
     startedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const statusResult = this.changeStatus(requestId, "in_execution", startedBy, false, notes);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const statusResult = await this.changeStatus(requestId, "in_execution", startedBy, false, notes);
     if (!statusResult.success) return statusResult;
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -621,19 +621,19 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Complete warranty
    */
-  completeWarranty(
+  async completeWarranty(
     requestId: string,
     notes: string,
     completedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getRequest(requestId);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getRequest(requestId);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     if (request.problems && request.problems.some(p => p.status !== "resolved")) {
       return { success: false, error: "Não é possível finalizar a garantia com problemas pendentes. Resolva todos os itens primeiro." };
     }
 
-    const statusResult = this.changeStatus(requestId, "completed", completedBy, false, notes);
+    const statusResult = await this.changeStatus(requestId, "completed", completedBy, false, notes);
     if (!statusResult.success) return statusResult;
 
     const updatedRequest: WarrantyRequestFlow = {

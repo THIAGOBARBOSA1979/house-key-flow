@@ -18,14 +18,14 @@ class WarrantyAutomationService {
   /**
    * Handle status change event
    */
-  onStatusChange(
+  async onStatusChange(
     requestId: string,
     oldStatus: WarrantyStage,
     newStatus: WarrantyStage,
     changedBy: string,
     isAutomatic: boolean = false
-  ): void {
-    const request = warrantyFlowService.getRequest(requestId);
+  ): Promise<void> {
+    const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
       console.error('[WarrantyAutomation] Request not found:', requestId);
       return;
@@ -208,8 +208,8 @@ class WarrantyAutomationService {
    * Check and process SLA warnings
    * Should be called periodically (e.g., every hour)
    */
-  checkSLAWarnings(): void {
-    const allRequests = warrantyFlowService.getAllRequests();
+  async checkSLAWarnings(): Promise<void> {
+    const allRequests = await warrantyFlowService.getAllRequests();
     const warnings = warrantySLAService.checkSLAWarnings(allRequests);
     const expired = warrantySLAService.checkExpiredSLAs(allRequests);
 
@@ -230,12 +230,12 @@ class WarrantyAutomationService {
   /**
    * Handle Kanban drag-and-drop
    */
-  onKanbanDrop(
+  async onKanbanDrop(
     requestId: string,
     fromStage: WarrantyStage,
     toStage: WarrantyStage,
     movedBy: string
-  ): { success: boolean; error?: string } {
+  ): Promise<{ success: boolean; error?: string }> {
     console.log('[WarrantyAutomation] Kanban drop:', {
       requestId,
       from: fromStage,
@@ -247,7 +247,7 @@ class WarrantyAutomationService {
     // but if dragged here, we might need extra handling or just prevent it if data is missing.
     
     // Use flow service to change status (includes validation)
-    const result = warrantyFlowService.changeStatus(
+    const result = await warrantyFlowService.changeStatus(
       requestId,
       toStage,
       movedBy,
@@ -258,7 +258,7 @@ class WarrantyAutomationService {
 
     if (result.success && result.request) {
       // Trigger automation for the status change
-      this.onStatusChange(requestId, fromStage, toStage, movedBy, false);
+      await this.onStatusChange(requestId, fromStage, toStage, movedBy, false);
       
       // Auto-assign task if moving to execution and no responsible yet
       if (toStage === 'in_execution' && !result.request.assignedTo) {
@@ -273,19 +273,19 @@ class WarrantyAutomationService {
   /**
    * Schedule inspection with automation
    */
-  scheduleInspection(
+  async scheduleInspection(
     requestId: string,
     inspectionDate: Date,
     technicianId: string,
     technicianName: string,
     scheduledBy: string
-  ): { success: boolean; error?: string } {
-    const request = warrantyFlowService.getRequest(requestId);
+  ): Promise<{ success: boolean; error?: string }> {
+    const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
     }
 
-    const result = warrantyFlowService.scheduleInspection(
+    const result = await warrantyFlowService.scheduleInspection(
       requestId,
       inspectionDate,
       technicianId,
@@ -294,7 +294,7 @@ class WarrantyAutomationService {
     );
 
     if (result.success && result.request) {
-      this.onStatusChange(
+      await this.onStatusChange(
         requestId,
         request.currentStage,
         'inspection_scheduled',
@@ -309,20 +309,20 @@ class WarrantyAutomationService {
   /**
    * Complete inspection with automation
    */
-  completeInspection(
+  async completeInspection(
     requestId: string,
     notes: string,
     completedBy: string
-  ): { success: boolean; error?: string } {
-    const request = warrantyFlowService.getRequest(requestId);
+  ): Promise<{ success: boolean; error?: string }> {
+    const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
     }
 
-    const result = warrantyFlowService.completeInspection(requestId, notes, completedBy);
+    const result = await warrantyFlowService.completeInspection(requestId, notes, completedBy);
 
     if (result.success && result.request) {
-      this.onStatusChange(
+      await this.onStatusChange(
         requestId,
         request.currentStage,
         'inspection_completed',
@@ -337,20 +337,20 @@ class WarrantyAutomationService {
   /**
    * Approve warranty with automation
    */
-  approveWarranty(
+  async approveWarranty(
     requestId: string,
     notes: string,
     approvedBy: string
-  ): { success: boolean; error?: string } {
-    const request = warrantyFlowService.getRequest(requestId);
+  ): Promise<{ success: boolean; error?: string }> {
+    const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
     }
 
-    const result = warrantyFlowService.approveWarranty(requestId, notes, approvedBy);
+    const result = await warrantyFlowService.approveWarranty(requestId, notes, approvedBy);
 
     if (result.success && result.request) {
-      this.onStatusChange(
+      await this.onStatusChange(
         requestId,
         request.currentStage,
         'approved',
@@ -365,20 +365,20 @@ class WarrantyAutomationService {
   /**
    * Reject warranty with automation
    */
-  rejectWarranty(
+  async rejectWarranty(
     requestId: string,
     reason: string,
     rejectedBy: string
-  ): { success: boolean; error?: string } {
-    const request = warrantyFlowService.getRequest(requestId);
+  ): Promise<{ success: boolean; error?: string }> {
+    const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
     }
 
-    const result = warrantyFlowService.rejectWarranty(requestId, reason, rejectedBy);
+    const result = await warrantyFlowService.rejectWarranty(requestId, reason, rejectedBy);
 
     if (result.success && result.request) {
-      this.onStatusChange(
+      await this.onStatusChange(
         requestId,
         request.currentStage,
         'rejected',
@@ -393,20 +393,20 @@ class WarrantyAutomationService {
   /**
    * Start execution with automation
    */
-  startExecution(
+  async startExecution(
     requestId: string,
     notes: string,
     startedBy: string
-  ): { success: boolean; error?: string } {
-    const request = warrantyFlowService.getRequest(requestId);
+  ): Promise<{ success: boolean; error?: string }> {
+    const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
     }
 
-    const result = warrantyFlowService.startExecution(requestId, notes, startedBy);
+    const result = await warrantyFlowService.startExecution(requestId, notes, startedBy);
 
     if (result.success && result.request) {
-      this.onStatusChange(
+      await this.onStatusChange(
         requestId,
         request.currentStage,
         'in_execution',
@@ -421,20 +421,20 @@ class WarrantyAutomationService {
   /**
    * Complete warranty with automation
    */
-  completeWarranty(
+  async completeWarranty(
     requestId: string,
     notes: string,
     completedBy: string
-  ): { success: boolean; error?: string } {
-    const request = warrantyFlowService.getRequest(requestId);
+  ): Promise<{ success: boolean; error?: string }> {
+    const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
       return { success: false, error: "Solicitação não encontrada" };
     }
 
-    const result = warrantyFlowService.completeWarranty(requestId, notes, completedBy);
+    const result = await warrantyFlowService.completeWarranty(requestId, notes, completedBy);
 
     if (result.success && result.request) {
-      this.onStatusChange(
+      await this.onStatusChange(
         requestId,
         request.currentStage,
         'completed',
