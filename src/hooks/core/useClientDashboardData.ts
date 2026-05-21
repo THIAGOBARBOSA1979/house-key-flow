@@ -2,10 +2,11 @@ import { useMemo, useState, useEffect } from "react";
 import { 
   documentService, 
   inspectionService, 
-  warrantyFlowService 
+  warrantyFlowService,
+  constructionService
 } from "@/services";
 
-export const useClientDashboardData = (clientId: string, userName?: string) => {
+export const useClientDashboardData = (clientId: string, userName?: string, propertyId?: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   

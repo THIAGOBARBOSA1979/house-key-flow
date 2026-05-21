@@ -30,7 +30,7 @@ export function ConstructionFeed({ updates }: ConstructionFeedProps) {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap- layout-gap">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
         {updates.length > 0 ? updates.map((update) => (
           <Card key={update.id} className="overflow-hidden border-none shadow-sem-lg group hover:translate-y-[-6px] transition-all duration-700 rounded-[2.5rem] bg-white">
             <div className="aspect-video relative overflow-hidden">

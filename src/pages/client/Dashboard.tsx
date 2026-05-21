@@ -26,8 +26,9 @@ const Dashboard = () => {
     isLoading,
     allDocs,
     allInspections,
-    warrantyRequests
-  } = useClientDashboardData(profile?.id || userId, user?.name);
+    warrantyRequests,
+    constructionUpdates: serviceUpdates
+  } = useClientDashboardData(profile?.id || userId, user?.name, profile?.propertyId);
   
   const userInfo = useMemo(() => ({
     name: user?.name?.split(' ')[0] || "Cliente",
@@ -45,24 +46,28 @@ const Dashboard = () => {
     { id: '5', title: 'Pós-Venda e Garantia', description: 'Suporte especializado para qualquer ajuste necessário.', status: stage === 'warranty_enabled' ? 'current' : 'pending' },
   ];
 
-  const constructionUpdates: ConstructionUpdate[] = [
-    {
-      id: '1',
-      date: '15/04/2025',
-      title: 'Finalização do Revestimento Externo',
-      description: 'Concluímos a pintura da fachada e instalação de vidros nas varandas do bloco A.',
-      percentage: 85,
-      imageUrl: 'https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&w=800&q=80'
-    },
-    {
-      id: '2',
-      date: '02/04/2025',
-      title: 'Instalações Elétricas e Hidráulicas',
-      description: 'Avançamos para 95% das instalações internas em todas as unidades do 1º ao 15º andar.',
-      percentage: 78,
-      imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=800&q=80'
+  const constructionUpdates = useMemo(() => {
+    if (serviceUpdates && serviceUpdates.length > 0) {
+      return serviceUpdates.map(u => ({
+        id: u.id,
+        date: new Date(u.date).toLocaleDateString('pt-BR'),
+        title: u.title,
+        description: u.description,
+        percentage: (u as any).progressItems?.[0]?.percentage || 0,
+        imageUrl: u.imageUrl
+      }));
     }
-  ];
+    return [
+      {
+        id: '1',
+        date: '15/04/2025',
+        title: 'Finalização do Revestimento Externo',
+        description: 'Concluímos a pintura da fachada e instalação de vidros nas varandas do bloco A.',
+        percentage: 85,
+        imageUrl: 'https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&w=800&q=80'
+      }
+    ];
+  }, [serviceUpdates]);
 
   const daysToDelivery = userInfo.deliveryDate ? Math.ceil((userInfo.deliveryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0;
   const contractProgress = userInfo.deliveryDate && userInfo.contractDate ? Math.min(((new Date().getTime() - userInfo.contractDate.getTime()) / (userInfo.deliveryDate.getTime() - userInfo.contractDate.getTime())) * 100, 100) : 0;
