@@ -16,12 +16,12 @@ export interface UseServiceOptions<T> {
 }
 
 export interface IService<T> {
-  getAll(companyId?: string, isSuperAdmin?: boolean): T[] | Promise<T[]>;
-  getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined | Promise<T | undefined>;
+  getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]>;
+  getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined>;
   create(data: Omit<T, "id">, companyId?: string): Promise<T>;
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined>;
   delete(id: string): Promise<boolean>;
-  bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]>;
+  bulkUpdate(ids: string[], data: Partial<T>): Promise<T[]>;
   bulkDelete(ids: string[]): Promise<number>;
   subscribe(listener: (items: T[]) => void): () => void;
 }
@@ -47,10 +47,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      if ('sync' in service && typeof (service as any).sync === 'function') {
+      // Removed sync call as getAll now handles it
 
-        await (service as any).sync(companyId, isSuperAdmin);
-      }
       const data = await service.getAll(companyId, isSuperAdmin);
       startTransition(() => {
         setItems(data);
@@ -70,17 +68,8 @@ export function useService<T extends { id: string; company_id?: string }>(
   }, [fetchItems]);
 
   useEffect(() => {
-    return service.subscribe((allNewItems: T[]) => {
-      startTransition(() => {
-        if (isSuperAdmin) {
-          setItems(allNewItems);
-        } else if (companyId) {
-          setItems(allNewItems.filter(item => item.company_id === companyId));
-        } else {
-          setItems([]);
-        }
-      });
-    });
+    // Subscription removed as React Query now handles state
+    return () => {};
   }, [service, companyId, isSuperAdmin]);
 
   const refresh = useCallback(() => {
@@ -164,7 +153,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      const results = await service.bulkUpdate(ids, data, isSuperAdmin);
+      const results = await service.bulkUpdate(ids, data);
       toast({ 
         title: "Atualização em Massa", 
         description: `${results.length} registros foram sincronizados.` 

@@ -16,8 +16,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
       supabaseTable: "client_profiles", 
       auditEntityType: "client_profile",
       shouldSyncWithSupabase: true
-    }, []);
-    this.initializeRealtime();
+    });
   }
 
   private async initializeRealtime() {

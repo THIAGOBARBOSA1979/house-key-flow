@@ -54,18 +54,6 @@ class PropertyService extends SupabaseBaseService<Property> {
         totalArea: 'total_area',
         manager: 'manager_id'
       }
-    }, []);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    let syncTimeout: any = null;
-    Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
-      // Debounce sync to avoid multiple rapid requests
-      if (syncTimeout) clearTimeout(syncTimeout);
-      syncTimeout = setTimeout(async () => {
-        await this.sync();
-      }, 500);
     });
   }
 
@@ -74,7 +62,7 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
   async update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Promise<Property | undefined> {
-    const oldItem = this.getById(id, undefined, isSuperAdmin);
+    const oldItem = await this.getById(id, undefined, isSuperAdmin);
     const updated = await super.update(id, property, isSuperAdmin);
 
     if (updated && property.status && property.status !== oldItem?.status) {
@@ -88,7 +76,7 @@ class PropertyService extends SupabaseBaseService<Property> {
 
 
   async updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Promise<Property | undefined> {
-    const property = this.getById(propertyId, undefined, isSuperAdmin);
+    const property = await this.getById(propertyId, undefined, isSuperAdmin);
     if (!property || !property.milestones) return undefined;
 
     const milestones = property.milestones.map(m => 
@@ -109,7 +97,7 @@ class PropertyService extends SupabaseBaseService<Property> {
 
 
   async updateUnitStatus(propertyId: string, unitId: string, status: PropertyUnit['status']): Promise<Property | undefined> {
-    const property = this.getById(propertyId);
+    const property = await this.getById(propertyId);
     if (!property || !property.unitsList) return undefined;
 
     const unit = property.unitsList.find(u => u.id === unitId);
@@ -129,7 +117,7 @@ class PropertyService extends SupabaseBaseService<Property> {
 
 
   async batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
-    const property = this.getById(propertyId);
+    const property = await this.getById(propertyId);
     if (!property) return null;
 
     const newUnits: PropertyUnit[] = [];
@@ -155,16 +143,25 @@ class PropertyService extends SupabaseBaseService<Property> {
 
 
 
-  getMetrics(companyId?: string, isSuperAdmin?: boolean): PropertyMetrics {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    const total = relevantItems.length;
-    const byStatus = relevantItems.reduce((acc, p) => {
+  async getMetrics(companyId?: string, isSuperAdmin?: boolean): Promise<PropertyMetrics> {
+    const relevantItems = await this.getAll(companyId, isSuperAdmin);
+    return this.calculateMetrics(relevantItems);
+  }
+
+  getMetricsSync(companyId?: string, isSuperAdmin?: boolean): PropertyMetrics {
+    const relevantItems = this.getAllSync(companyId, isSuperAdmin);
+    return this.calculateMetrics(relevantItems);
+  }
+
+  private calculateMetrics(items: Property[]): PropertyMetrics {
+    const total = items.length;
+    const byStatus = items.reduce((acc, p) => {
       acc[p.status] = (acc[p.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const totalUnits = relevantItems.reduce((acc, p) => acc + (p.units || 0), 0);
-    const totalCompleted = relevantItems.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
+    const totalUnits = items.reduce((acc, p) => acc + (p.units || 0), 0);
+    const totalCompleted = items.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
     
     return {
       total,

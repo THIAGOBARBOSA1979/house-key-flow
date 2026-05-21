@@ -30,8 +30,8 @@ export function useNotifications(clientId: string): UseNotificationsResult {
   useEffect(() => {
     loadNotifications();
     
-    // Initial sync
-    notificationService.sync();
+    // Initial sync removed as it's now handled by the service during fetch
+
 
     // Subscribe to changes
     return notificationService.subscribe(loadNotifications);

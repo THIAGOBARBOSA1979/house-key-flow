@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Building, Plus, Trash2, MoreHorizontal, Pencil } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PropertyCard } from "@/components/properties/PropertyCard";
@@ -9,7 +9,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { exportService } from "@/services";
 import { formatDate } from "@/utils/formatters";
 import { useProperties, useConfirm } from "@/hooks";
-import { Property } from "@/services";
+import { Property, propertyService } from "@/services";
 import { Button } from "@/components/ui/button";
 import { PropertyStats } from "@/components/properties/PropertyStats";
 import { PropertyFilters } from "@/components/properties/PropertyFilters";
@@ -20,8 +20,10 @@ import { PropertyBulkActions } from "@/components/properties/PropertyBulkActions
 import { DataViewMode } from "@/types";
 import { EntityActionMenu } from "@/components/shared/EntityActionMenu";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Properties = () => {
+  const { user } = useAuth();
   const {
     properties,
     isLoading,
@@ -32,7 +34,6 @@ const Properties = () => {
     setFilters,
     selectedIds,
     setSelectedIds,
-    metrics,
     clearFilters,
     createProperty,
     updateProperty,
@@ -43,12 +44,20 @@ const Properties = () => {
     error: propertiesError
   } = useProperties();
 
-
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [metrics, setMetrics] = useState<any>(null);
   const { confirm } = useConfirm();
+
+  useEffect(() => {
+    const loadMetrics = async () => {
+      const data = await propertyService.getMetrics(user?.company_id, user?.is_super_admin);
+      setMetrics(data);
+    };
+    loadMetrics();
+  }, [user?.company_id, user?.is_super_admin, properties]);
 
   const managers = useMemo(() => 
     Array.from(new Set(properties.map(p => p.manager).filter(Boolean))) as string[],
@@ -95,7 +104,6 @@ const Properties = () => {
         onStatusChange={(val) => setFilters(prev => ({ ...prev, status: val }))}
         managerFilter={filters.manager}
         onManagerChange={(val) => setFilters(prev => ({ ...prev, manager: val }))}
-
         managers={managers}
         onClearFilters={clearFilters}
       >
@@ -193,7 +201,7 @@ const Properties = () => {
                         confirmLabel: "Excluir",
                         variant: "destructive"
                       });
-                      if (result) deleteProperty(p.id!);
+                      if (result) deleteProperty(property.id!);
                     }}
                     onView={() => setSelectedProperty(p)}
                   />

@@ -7,154 +7,103 @@ import { BaseEntity } from '@/types/shared';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
   supabaseTable: keyof Database['public']['Tables'];
-  fieldMapping?: Record<string, string>; // frontendKey -> backendKey
+  fieldMapping?: Record<string, string>;
 }
 
-/**
- * Enhanced service that synchronizes local state with Supabase.
- */
 export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseService<T> {
   protected supabaseTable: keyof Database['public']['Tables'];
   protected fieldMapping: Record<string, string>;
 
-  constructor(options: SupabaseBaseServiceOptions, initialData: T[] = []) {
-    super(options, initialData);
+  constructor(options: SupabaseBaseServiceOptions) {
+    super(options);
     this.supabaseTable = options.supabaseTable;
     this.fieldMapping = options.fieldMapping || {};
   }
 
-  /**
-   * Map local entity to Supabase snake_case format.
-   */
   protected mapToSupabase(item: any): any {
     const mapped = { ...item };
-    
-    // Remove internal UI state
     delete (mapped as any).error;
     delete (mapped as any).isLoading;
-    
-    // Apply custom field mapping
     Object.entries(this.fieldMapping).forEach(([frontendKey, backendKey]) => {
       if (mapped[frontendKey] !== undefined) {
         mapped[backendKey] = mapped[frontendKey];
         delete mapped[frontendKey];
       }
     });
-
     return mapObjectKeys(mapped, toSnakeCase);
   }
 
-  /**
-   * Map Supabase raw data to local camelCase entity.
-   */
   protected mapFromSupabase(raw: any): T {
+    if (!raw) return null as any;
     const mapped = mapObjectKeys(raw, toCamelCase);
-    
-    // Apply reverse custom field mapping
     Object.entries(this.fieldMapping).forEach(([frontendKey, backendKey]) => {
       const backendValue = raw[backendKey];
-      if (backendValue !== undefined) {
-        mapped[frontendKey] = backendValue;
-      }
+      if (backendValue !== undefined) mapped[frontendKey] = backendValue;
     });
-
     return mapped as T;
   }
 
-  /**
-   * Synchronize local state with remote database.
-   */
-  async sync(companyId?: string, isSuperAdmin?: boolean, retryCount = 0): Promise<T[]> {
+  async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
     try {
       const filters: FilterParams[] = [];
       if (!isSuperAdmin && companyId) {
         filters.push({ column: 'company_id', operator: 'eq', value: companyId });
       }
-
-      const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, { 
-        filters,
-        pagination: { page: 1, pageSize: 1000 }
-      });
-      
-      if (error) {
-        // Automatic retry logic
-        if (retryCount < 2 && (error.status === 0 || error.code === 'NETWORK_ERROR')) {
-          await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
-          return this.sync(companyId, isSuperAdmin, retryCount + 1);
-        }
-        this.handleSyncError(error, 'sync');
-        return this.items;
-      }
-
-      if (data) {
-        const newItems = data
-          .filter(item => item !== null && item !== undefined)
-          .map(item => this.mapFromSupabase(item as any));
-        
-        // Update local state if changed
-        if (JSON.stringify(newItems) !== JSON.stringify(this.items)) {
-          this.items = newItems;
-          this.notify();
-        }
-      }
-      
+      const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, { filters, pagination: { page: 1, pageSize: 1000 } });
+      if (error) throw error;
+      this.items = (data || []).map(item => this.mapFromSupabase(item));
       return this.items;
     } catch (err) {
-      this.handleSyncError(err, 'sync_catch');
+      this.handleError(err, 'getAll');
       return this.items;
     }
   }
 
-  protected handleSyncError(error: any, action: string = 'sync'): T[] {
-    errorHandler.handle(error, `SupabaseBaseService:${this.supabaseTable}:${action}`);
-    return this.items;
+  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
+    try {
+      const { data, error } = await Supabase.db.findById<any>(this.supabaseTable, id);
+      if (error) throw error;
+      if (!data) return undefined;
+      const mapped = this.mapFromSupabase(data);
+      if (!isSuperAdmin && companyId && (mapped as any).company_id !== companyId) return undefined;
+      return mapped;
+    } catch (err) {
+      this.handleError(err, 'getById');
+      return undefined;
+    }
   }
 
-
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
-    const newItem = await super.create(item, companyId);
-    
-    if (this.options.shouldSyncWithSupabase) {
-      try {
-        const { data, error } = await Supabase.db.create<T>(this.supabaseTable, this.mapToSupabase(newItem));
-        if (error) throw error;
-        if (data) return this.mapFromSupabase(data as any);
-      } catch (err) {
-        this.handleSyncError(err, 'create');
-        throw err;
-      }
+    try {
+      const payload = { ...item, company_id: companyId || (item as any).company_id };
+      const { data, error } = await Supabase.db.create<any>(this.supabaseTable, this.mapToSupabase(payload));
+      if (error) throw error;
+      return this.mapFromSupabase(data);
+    } catch (err) {
+      this.handleError(err, 'create');
+      throw err;
     }
-    return newItem;
   }
 
   async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
-    const updated = await super.update(id, data, isSuperAdmin);
-    
-    if (updated && this.options.shouldSyncWithSupabase) {
-      try {
-        const { data: remoteData, error } = await Supabase.db.update<T>(this.supabaseTable, id, this.mapToSupabase(data));
-        if (error) throw error;
-        if (remoteData) return this.mapFromSupabase(remoteData as any);
-      } catch (err) {
-        this.handleSyncError(err, 'update');
-        throw err;
-      }
+    try {
+      const { data: remoteData, error } = await Supabase.db.update<any>(this.supabaseTable, id, this.mapToSupabase(data));
+      if (error) throw error;
+      return this.mapFromSupabase(remoteData);
+    } catch (err) {
+      this.handleError(err, 'update');
+      throw err;
     }
-    return updated;
   }
 
   async delete(id: string): Promise<boolean> {
-    const success = await super.delete(id);
-    
-    if (success && this.options.shouldSyncWithSupabase) {
-      try {
-        const { error } = await Supabase.db.delete(this.supabaseTable, id);
-        if (error) throw error;
-      } catch (err) {
-        this.handleSyncError(err, 'delete');
-        throw err;
-      }
+    try {
+      const { error } = await Supabase.db.delete(this.supabaseTable, id);
+      if (error) throw error;
+      return true;
+    } catch (err) {
+      this.handleError(err, 'delete');
+      return false;
     }
-    return success;
   }
 }

@@ -63,14 +63,6 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
       supabaseTable: "checklist_templates",
       auditEntityType: "checklist",
       shouldSyncWithSupabase: true
-    }, []);
-    // this.loadExecutions(); // Disabled for DB-first
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
-      await this.sync();
     });
   }
 
@@ -83,8 +75,10 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
     // Disabled
   }
 
-  getAllTemplates() { return this.getAll(); }
-  getTemplateById(id: string) { return this.getById(id); }
+  async getAllTemplates() { return await this.getAll(); }
+  getAllTemplatesSync() { return this.getAllSync(); }
+  async getTemplateById(id: string) { return await this.getById(id); }
+  getTemplateByIdSync(id: string) { return this.getByIdSync(id); }
   getAllExecutions() { return [...this.executions]; }
 
   async createTemplate(data: Omit<ChecklistTemplate, "id">) { 

@@ -68,18 +68,12 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       supabaseTable: "inspections",
       auditEntityType: "inspection",
       shouldSyncWithSupabase: true
-    }, []);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
-      await this.sync();
     });
   }
 
-  getTechnicians() {
-    return technicianService.getAll().map(t => ({
+  async getTechnicians() {
+    const all = await technicianService.getAll();
+    return all.map(t => ({
       id: t.id,
       name: t.name,
       specialty: t.specialty.join(", "),
@@ -88,8 +82,30 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     }));
   }
 
-  getTechnicianById(id: string) {
-    const t = technicianService.getById(id);
+  getTechniciansSync() {
+    return technicianService.getAllSync().map(t => ({
+      id: t.id,
+      name: t.name,
+      specialty: t.specialty.join(", "),
+      contact: t.phone,
+      active: t.status === "active"
+    }));
+  }
+
+  async getTechnicianById(id: string) {
+    const t = await technicianService.getById(id);
+    if (!t) return undefined;
+    return {
+      id: t.id,
+      name: t.name,
+      specialty: t.specialty.join(", "),
+      contact: t.phone,
+      active: t.status === "active"
+    };
+  }
+
+  getTechnicianByIdSync(id: string) {
+    const t = technicianService.getByIdSync(id);
     if (!t) return undefined;
     return {
       id: t.id,
@@ -110,7 +126,7 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     request_id?: string; 
     priority?: Inspection["priority"] 
   }, propertyInfo?: { property: string; unit: string; client: string; company_id?: string, client_id?: string }): Promise<Inspection> {
-    const newInspection = await super.create({
+    const newInspection = await this.create({
       property: propertyInfo?.property || "Empreendimento Exemplo",
       unit_number: propertyInfo?.unit || "101",
       client_id: propertyInfo?.client_id,
@@ -131,7 +147,7 @@ class InspectionService extends SupabaseBaseService<Inspection> {
 
 
   async updateStatus(id: string, status: string, details?: string) {
-    const oldItem = this.getById(id);
+    const oldItem = await this.getById(id);
     const updated = await super.update(id, { status } as any);
     if (updated) {
       await this.log('stage_changed', id, details || `Status da vistoria alterado de ${oldItem?.status} para ${status}.`, {
@@ -152,35 +168,37 @@ class InspectionService extends SupabaseBaseService<Inspection> {
   }
 
 
-  getStatsByStatus(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
+  async getStatsByStatus(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = await this.getAll(companyId, isSuperAdmin);
     return relevantItems.reduce((acc, curr) => {
       acc[curr.status] = (acc[curr.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
   }
 
-  getStatsByType(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
+  async getStatsByType(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = await this.getAll(companyId, isSuperAdmin);
     return relevantItems.reduce((acc, curr) => {
       acc[curr.type] = (acc[curr.type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
   }
 
-  getStatsByTechnician(companyId?: string, isSuperAdmin?: boolean) {
-    const relevantItems = this.getAll(companyId, isSuperAdmin);
-    return relevantItems.reduce((acc, curr) => {
-      const tech = this.getTechnicianById(curr.technician);
+  async getStatsByTechnician(companyId?: string, isSuperAdmin?: boolean) {
+    const relevantItems = await this.getAll(companyId, isSuperAdmin);
+    const stats: Record<string, number> = {};
+    for (const curr of relevantItems) {
+      const tech = await this.getTechnicianById(curr.technician);
       const name = tech?.name || "Desconhecido";
-      acc[name] = (acc[name] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+      stats[name] = (stats[name] || 0) + 1;
+    }
+    return stats;
   }
 
-  getAllConflicts() {
+  async getAllConflicts() {
     const conflicts: { date: string; technician: string; count: number }[] = [];
-    const grouped = this.items.reduce((acc, current) => {
+    const items = await this.getAll(undefined, true);
+    const grouped = items.reduce((acc, current) => {
       if (current.status === 'cancelled') return acc;
       const key = `${current.date.toDateString()}|${current.technician}`;
       acc[key] = (acc[key] || 0) + 1;
@@ -196,8 +214,10 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     return conflicts;
   }
 
-  getConflicts(date: Date, technicianId: string, excludeId?: string) {
-    return this.items.filter(i => 
+  async getConflicts(date: Date, technicianId: string, excludeId?: string) {
+    const items = await this.getAll(undefined, true);
+    return items.filter(i => 
+
       i.date.toDateString() === date.toDateString() && 
       i.technician === technicianId &&
       i.status !== "cancelled" &&
@@ -209,13 +229,14 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     return { avgDeliveryTime: "2.4d", avgFirstContact: "4.2h" };
   }
 
-  getReport(id: string) {
-    const inspection = this.getById(id);
+  async getReport(id: string) {
+    const inspection = await this.getById(id);
     return inspection ? { inspection, generatedAt: new Date() } : null;
   }
 
-  getTechnicalConformityScore(companyId?: string, isSuperAdmin?: boolean) {
-    const items = this.getAll(companyId, isSuperAdmin).filter(i => i.status === 'complete' && (i as any).conformityScore !== undefined);
+  async getTechnicalConformityScore(companyId?: string, isSuperAdmin?: boolean) {
+    const itemsRaw = await this.getAll(companyId, isSuperAdmin);
+    const items = itemsRaw.filter(i => i.status === 'complete' && (i as any).conformityScore !== undefined);
     if (items.length === 0) return 100;
     
     const totalScore = items.reduce((acc, curr) => acc + ((curr as any).conformityScore || 0), 0);
@@ -246,21 +267,26 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     return this.update(id, { date: newDate, time: newTime, status: "reschedule_requested" });
   }
 
-  exportData(format: 'json' | 'csv' = 'json') {
-    if (format === 'json') return JSON.stringify(this.items, null, 2);
+  async exportData(format: 'json' | 'csv' = 'json') {
+    const items = await this.getAll(undefined, true);
+    if (format === 'json') return JSON.stringify(items, null, 2);
     
     const headers = ["ID", "Propriedade", "Unidade", "Cliente", "Data", "Horário", "Status", "Tipo", "Técnico"];
-    const rows = this.items.map(i => [
-      i.id,
-      i.property,
-      i.unit,
-      i.client,
-      i.date.toLocaleDateString(),
-      i.time,
-      i.status,
-      i.type,
-      this.getTechnicianById(i.technician)?.name || "N/A"
-    ]);
+    const rows: string[][] = [];
+    for (const i of items) {
+      const tech = await this.getTechnicianById(i.technician);
+      rows.push([
+        i.id,
+        i.property,
+        i.unit,
+        i.client,
+        i.date.toLocaleDateString(),
+        i.time,
+        i.status,
+        i.type,
+        tech?.name || "N/A"
+      ]);
+    }
     
     return [headers, ...rows].map(row => row.join(",")).join("\n");
   }

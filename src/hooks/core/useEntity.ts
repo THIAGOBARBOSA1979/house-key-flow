@@ -22,11 +22,7 @@ export function useEntity<T extends { id: string; company_id?: string }>(
       setLoading(true);
       
       // If service is SupabaseBaseService, trigger a real sync first
-      if (service instanceof SupabaseBaseService) {
-        await service.sync(companyId, isSuperAdmin);
-      }
-      
-      const items = service.getAll(companyId, isSuperAdmin);
+      const items = await service.getAll(companyId, isSuperAdmin);
       setData(items);
       setError(null);
     } catch (err) {
