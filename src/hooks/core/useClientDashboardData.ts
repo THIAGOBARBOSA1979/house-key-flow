@@ -2,10 +2,11 @@ import { useMemo, useState, useEffect } from "react";
 import { 
   documentService, 
   inspectionService, 
-  warrantyFlowService 
+  warrantyFlowService,
+  constructionService
 } from "@/services";
 
-export const useClientDashboardData = (clientId: string, userName?: string) => {
+export const useClientDashboardData = (clientId: string, userName?: string, propertyId?: string) => {
   const [isLoading, setIsLoading] = useState(true);
 
   
@@ -15,6 +16,8 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
   const upcomingInspections = useMemo(() => allInspections.filter(i => i.status !== 'complete'), [allInspections]);
   const warrantyRequests = useMemo(() => 
     warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId), [clientId]);
+  const constructionUpdates = useMemo(() => 
+    propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(), [propertyId]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
@@ -23,10 +26,10 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
 
   return {
     isLoading,
-    
     allDocs,
     allInspections,
     upcomingInspections,
-    warrantyRequests
+    warrantyRequests,
+    constructionUpdates
   };
 };

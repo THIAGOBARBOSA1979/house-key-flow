@@ -208,8 +208,28 @@ const ClientWarranty = () => {
           <div className="lg:col-span-8 space-y-layout-gap">
             {selectedClaim ? (
               <div className="space-y-layout-gap animate-in fade-in slide-in-from-bottom-4 duration-slow">
-                <WarrantyStatus status={selectedClaim.status || 'pending'} />
+                <WarrantyStatus status={selectedClaim.status as any || 'pending'} />
                 <WarrantyRequestTimeline request={selectedClaim} />
+                
+                {/* Acknowledge Action for Completed */}
+                {selectedClaim.currentStage === 'completed' && (
+                  <Card className="border-emerald-500/20 bg-emerald-50/30 rounded-[2rem] p-8 animate-in zoom-in-95 duration-700">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-emerald-500 text-white rounded-2xl shadow-lg">
+                           <CheckCircle size={24} strokeWidth={3} />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-black tracking-tight">Atendimento Finalizado</h4>
+                          <p className="text-sm text-muted-foreground font-medium">O reparo técnico foi homologado. Por favor, confirme o recebimento.</p>
+                        </div>
+                      </div>
+                      <Button className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-12 shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700">
+                        Homologar Recebimento
+                      </Button>
+                    </div>
+                  </Card>
+                )}
               </div>
             ) : (
               <Card className="h-full min-h-[400px] flex flex-col items-center justify-center p-12 text-center border-dashed border-2 border-muted-foreground/10 bg-muted/5 rounded-[3rem]">

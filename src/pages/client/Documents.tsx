@@ -78,14 +78,32 @@ export default function ClientDocuments() {
   const filteredDocuments = documents.filter(doc => {
     if (search && !doc.title.toLowerCase().includes(search.toLowerCase())) return false;
     if (typeFilter !== "all" && doc.type !== typeFilter) return false;
-    if (statusFilter !== "all" && doc.status !== statusFilter) return false;
+    if (statusFilter === "favorites" && !(doc as any).isFavorite) return false;
+    if (statusFilter === "recent") {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      if (doc.createdAt < oneWeekAgo) return false;
+    }
+    if (statusFilter !== "all" && statusFilter !== "favorites" && statusFilter !== "recent" && doc.status !== statusFilter) return false;
     return true;
   });
 
   const handleDownload = (doc: ClientDocument) => {
     if (doc.status === "processando") return;
     documentService.downloadDocument(doc.id);
+    loadClientDocuments(); // Refresh to update download count if shown
     toast({ title: "Download iniciado", description: `Baixando ${doc.title}...` });
+  };
+
+  const handleToggleFavorite = (docId: string) => {
+    const success = documentService.toggleFavorite(docId);
+    if (success) {
+      loadClientDocuments();
+      toast({ 
+        title: "Favorito atualizado", 
+        description: "Suas preferências de documentos foram sincronizadas." 
+      });
+    }
   };
 
   const handlePreview = (doc: ClientDocument) => {
@@ -141,13 +159,17 @@ export default function ClientDocuments() {
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="space-y-layout-gap">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="all"><FileText className="h-4 w-4 mr-2" />Todos</TabsTrigger>
-          <TabsTrigger value="favorites"><Star className="h-4 w-4 mr-2" />Favoritos</TabsTrigger>
-          <TabsTrigger value="recent"><Clock className="h-4 w-4 mr-2" />Recentes</TabsTrigger>
-          <TabsTrigger value="contracts"><Archive className="h-4 w-4 mr-2" />Contratos</TabsTrigger>
-          <TabsTrigger value="stats"><BarChart className="h-4 w-4 mr-2" />Estatísticas</TabsTrigger>
+      <Tabs defaultValue="all" className="space-y-layout-gap" onValueChange={(val) => {
+        if (val === 'favorites') setStatusFilter('favorites');
+        else if (val === 'recent') setStatusFilter('recent');
+        else setStatusFilter('all');
+      }}>
+        <TabsList className="flex w-full overflow-x-auto no-scrollbar bg-muted/50 p-1 rounded-2xl h-auto min-h-12">
+          <TabsTrigger value="all" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><FileText className="h-4 w-4 mr-2" />Todos</TabsTrigger>
+          <TabsTrigger value="favorites" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><Star className="h-4 w-4 mr-2" />Favoritos</TabsTrigger>
+          <TabsTrigger value="recent" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><Clock className="h-4 w-4 mr-2" />Recentes</TabsTrigger>
+          <TabsTrigger value="contracts" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><Archive className="h-4 w-4 mr-2" />Contratos</TabsTrigger>
+          <TabsTrigger value="stats" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><BarChart className="h-4 w-4 mr-2" />Estatísticas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-layout-gap pt-2">
@@ -195,8 +217,21 @@ export default function ClientDocuments() {
                 <div className="h-2 w-full bg-gradient-to-r from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <CardHeader className="p-8">
                   <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                      <FileText className="h-7 w-7" />
+                    <div className="flex gap-2">
+                      <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                        <FileText className="h-7 w-7" />
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className={cn(
+                          "rounded-xl h-10 w-10 transition-all",
+                          (doc as any).isFavorite ? "text-amber-500 fill-amber-500 bg-amber-50" : "text-muted-foreground hover:bg-primary/5"
+                        )}
+                        onClick={() => handleToggleFavorite(doc.id)}
+                      >
+                        <Star size={18} strokeWidth={2.5} />
+                      </Button>
                     </div>
                     <StatusBadge 
                       status={(doc as any).isSigned ? "complete" : (doc.status === "disponivel" ? "complete" : "progress")} 

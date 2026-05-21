@@ -78,64 +78,62 @@ export function WarrantyTimelineStep({
   const StatusIcon = currentConfig.StatusIcon;
 
   return (
-    <div className="relative flex gap-4">
+    <div className={cn("relative flex gap-6 group/step transition-all duration-500", status === "pending" && "opacity-40")}>
       {/* Vertical line connector */}
       {!isLast && (
         <div 
           className={cn(
-            "absolute left-5 top-10 bottom-0 w-0.5 -ml-px",
-            currentConfig.lineColor
+            "absolute left-[19px] top-10 bottom-0 w-[2px] transition-all duration-700",
+            status === "completed" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]" : "bg-muted"
           )} 
         />
       )}
       
       {/* Icon */}
       <div className={cn(
-        "relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 border-background shadow-sm",
-        currentConfig.iconBg
+        "relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-[1rem] border-2 border-background shadow-sem-md transition-all duration-500 group-hover/step:scale-110",
+        currentConfig.iconBg,
+        status === 'current' && 'animate-pulse ring-2 ring-primary/20 ring-offset-2'
       )}>
         {status === "completed" ? (
-          <CheckCircle2 className={cn("h-5 w-5", currentConfig.iconColor)} />
+          <CheckCircle2 className={cn("h-5 w-5", currentConfig.iconColor)} strokeWidth={3} />
         ) : (
-          <StageIcon className={cn("h-5 w-5", currentConfig.iconColor)} />
+          <StageIcon className={cn("h-5 w-5", currentConfig.iconColor)} strokeWidth={2.5} />
         )}
       </div>
       
       {/* Content */}
-      <div className={cn(
-        "flex-1 pb-6",
-        status === "pending" && "opacity-60"
-      )}>
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-          <div>
+      <div className="flex-1 pb-10">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <div className="space-y-1">
             <h4 className={cn(
-              "font-medium",
-              status === "current" && "text-primary"
+              "text-sm font-black uppercase tracking-widest",
+              status === "current" ? "text-primary" : (status === "completed" ? "text-emerald-700" : "text-muted-foreground")
             )}>
               {config.label}
             </h4>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground font-medium leading-relaxed max-w-lg">
               {config.description}
             </p>
           </div>
           
           {/* Status badge */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {status === "completed" && completedAt && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground/60 bg-muted/30 px-2 py-1 rounded-lg">
                 {isValid(new Date(completedAt)) ? format(new Date(completedAt), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "—"}
               </span>
             )}
             {status === "current" && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                <Clock className="h-3 w-3" />
-                Em andamento
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary animate-pulse">
+                <Clock className="h-3 w-3" strokeWidth={3} />
+                Etapa Ativa
               </span>
             )}
             {status === "blocked" && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                <Lock className="h-3 w-3" />
-                Bloqueado
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-red-100 text-red-700">
+                <Lock className="h-3 w-3" strokeWidth={3} />
+                Suspenso
               </span>
             )}
           </div>

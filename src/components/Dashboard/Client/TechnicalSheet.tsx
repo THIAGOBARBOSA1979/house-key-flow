@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Download, ShieldCheck, Map, Ruler, Info } from "lucide-react";
+import { FileText, Download, ShieldCheck, Map, Ruler, Info, Sun, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const TechnicalSheet = () => {
@@ -8,19 +8,21 @@ export const TechnicalSheet = () => {
     { label: "Área Privativa", value: "85,40 m²", icon: Ruler },
     { label: "Área Total", value: "112,20 m²", icon: Ruler },
     { label: "Vagas de Garagem", value: "02 Vagas (G1)", icon: Map },
-    { label: "Orientação Solar", value: "Norte/Leste", icon: Info },
-    { label: "Data de Entrega", value: "Junho/2025", icon: ShieldCheck },
+    { label: "Orientação Solar", value: "Norte/Leste", icon: Sun },
+    { label: "Data de Entrega", value: "Dezembro/2025", icon: Calendar },
+    { label: "Início Garantia", value: "Abril/2025", icon: ShieldCheck },
   ];
 
   const documents = [
     { name: "Manual do Proprietário", size: "4.2 MB", type: "PDF" },
     { name: "Planta Humanizada", size: "1.8 MB", type: "PDF" },
     { name: "Memorial Descritivo", size: "2.1 MB", type: "PDF" },
+    { name: "Termo de Garantia", size: "1.5 MB", type: "PDF" },
   ];
 
   return (
-    <Card className="border-none shadow-xl overflow-hidden rounded-[2rem] bg-card/50 backdrop-blur-sm group">
-      <CardHeader className="bg-muted/30 pb-6 p-8 border-b border-border/50">
+    <Card className="border-none shadow-sem-lg overflow-hidden rounded-[2.5rem] bg-white/70 backdrop-blur-md group transition-all duration-500 hover:shadow-sem-xl">
+      <CardHeader className="bg-muted/10 pb-6 p-8 border-b border-border/5">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Ficha Técnica & Arquivos</CardTitle>
