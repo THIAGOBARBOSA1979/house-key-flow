@@ -43,7 +43,11 @@ const AdminSupport = () => {
   const [replyText, setReplyText] = useState("");
 
   useEffect(() => {
-    supportService.getAllTickets().then(setTickets);
+    const fetchTickets = async () => {
+      const data = await supportService.getAll();
+      setTickets(data);
+    };
+    fetchTickets();
   }, []);
 
   const filteredTickets = useMemo(() => {
@@ -61,26 +65,33 @@ const AdminSupport = () => {
   const handleSelectTicket = (ticket: SupportTicket) => {
     setSelectedTicket(ticket);
     if (ticket.status === 'pending') {
-      supportService.updateTicketStatus(ticket.id, 'in_progress').then(() => {
-        supportService.getAllTickets().then(setTickets);
-      });
+      const updateAndRefresh = async () => {
+        await supportService.updateTicketStatus(ticket.id, 'in_progress');
+        const data = await supportService.getAll();
+        setTickets(data);
+      };
+      updateAndRefresh();
     }
   };
 
   const handleSendReply = () => {
     if (!selectedTicket || !replyText.trim()) return;
 
-    supportService.addMessageToTicket(
-      selectedTicket.id,
-      adminUser?.id || "admin-1",
-      adminUser?.name || "Administrador",
-      'admin',
-      replyText
-    ).then(() => {
+    const sendReply = async () => {
+      await supportService.addMessageToTicket(
+        selectedTicket.id,
+        adminUser?.id || "admin-1",
+        adminUser?.name || "Administrador",
+        'admin',
+        replyText
+      );
       setReplyText("");
-      supportService.getAllTickets().then(setTickets);
-      supportService.getTicketById(selectedTicket.id).then(t => setSelectedTicket(t || null));
-    });
+      const data = await supportService.getAll();
+      setTickets(data);
+      const updated = await supportService.getById(selectedTicket.id);
+      setSelectedTicket(updated || null);
+    };
+    sendReply();
     
     toast({
       title: "Resposta enviada",
@@ -89,12 +100,16 @@ const AdminSupport = () => {
   };
 
   const handleCloseTicket = (ticketId: string) => {
-    supportService.updateTicketStatus(ticketId, 'closed').then(() => {
-      supportService.getAllTickets().then(setTickets);
+    const closeTicket = async () => {
+      await supportService.updateTicketStatus(ticketId, 'closed');
+      const data = await supportService.getAll();
+      setTickets(data);
       if (selectedTicket?.id === ticketId) {
-        supportService.getTicketById(ticketId).then(t => setSelectedTicket(t || null));
+        const updated = await supportService.getById(ticketId);
+        setSelectedTicket(updated || null);
       }
-    });
+    };
+    closeTicket();
     toast({
       title: "Ticket encerrado",
       description: "O atendimento foi finalizado e o ticket foi fechado.",
