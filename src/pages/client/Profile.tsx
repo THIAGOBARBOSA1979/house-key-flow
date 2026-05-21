@@ -34,17 +34,16 @@ const ClientProfile = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-layout-gap animate-in fade-in duration-700 pb-20 md:pb-6">
-      <div>
-        <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-primary">
-          <div className="p-2 bg-primary/10 rounded-xl shadow-sm border border-primary/20">
-            <User className="h-8 w-8" />
-          </div>
-          Meu Perfil
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+           <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Governança de Acessos • Perfil Proprietário</span>
+        </div>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
+          Meu Perfil <span className="text-primary">.</span>
         </h1>
-        <p className="text-muted-foreground mt-2 font-medium">
-          Gerencie suas informações pessoais e preferências de conta.
-        </p>
       </div>
+
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column: Avatar and Summary */}
