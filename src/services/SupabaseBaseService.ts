@@ -3,13 +3,17 @@ import { BaseService, BaseServiceOptions } from './BaseService';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
 import { Database } from '@/integrations/supabase/types';
 import { toSnakeCase, toCamelCase, mapObjectKeys } from '@/utils/caseConverter';
+import { BaseEntity } from '@/types/shared';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
   supabaseTable: keyof Database['public']['Tables'];
   fieldMapping?: Record<string, string>; // frontendKey -> backendKey
 }
 
-export abstract class SupabaseBaseService<T extends { id: string; company_id?: string }> extends BaseService<T> {
+/**
+ * Enhanced service that synchronizes local state with Supabase.
+ */
+export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseService<T> {
   protected supabaseTable: keyof Database['public']['Tables'];
   protected fieldMapping: Record<string, string>;
 
@@ -19,8 +23,13 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     this.fieldMapping = options.fieldMapping || {};
   }
 
+  /**
+   * Map local entity to Supabase snake_case format.
+   */
   protected mapToSupabase(item: any): any {
     const mapped = { ...item };
+    
+    // Remove internal UI state
     delete (mapped as any).error;
     delete (mapped as any).isLoading;
     
@@ -35,6 +44,9 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     return mapObjectKeys(mapped, toSnakeCase);
   }
 
+  /**
+   * Map Supabase raw data to local camelCase entity.
+   */
   protected mapFromSupabase(raw: any): T {
     const mapped = mapObjectKeys(raw, toCamelCase);
     
@@ -49,6 +61,9 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     return mapped as T;
   }
 
+  /**
+   * Synchronize local state with remote database.
+   */
   async sync(companyId?: string, isSuperAdmin?: boolean, retryCount = 0): Promise<T[]> {
     try {
       const filters: FilterParams[] = [];
@@ -56,13 +71,13 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
         filters.push({ column: 'company_id', operator: 'eq', value: companyId });
       }
 
-      const { data, error } = await Supabase.db.findMany<T>(this.supabaseTable, { 
+      const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, { 
         filters,
-        pagination: { page: 1, pageSize: 1000 } // Safety limit
+        pagination: { page: 1, pageSize: 1000 }
       });
       
       if (error) {
-        // Automatic retry for network errors
+        // Automatic retry logic
         if (retryCount < 2 && (error.status === 0 || error.code === 'NETWORK_ERROR')) {
           await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
           return this.sync(companyId, isSuperAdmin, retryCount + 1);
@@ -76,7 +91,7 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
           .filter(item => item !== null && item !== undefined)
           .map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
         
-        // Use functional state update logic if items were actually changed
+        // Update local state if changed
         if (JSON.stringify(newItems) !== JSON.stringify(this.items)) {
           this.items = newItems;
           this.notify();
@@ -90,13 +105,35 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     }
   }
 
-  private handleSyncError(error: any, action: string = 'sync'): T[] {
+  protected handleSyncError(error: any, action: string = 'sync'): T[] {
     errorHandler.handle(error, `SupabaseBaseService:${this.supabaseTable}:${action}`);
     return this.items;
   }
 
+  /**
+   * Deserializes ISO date strings back into Date objects.
+   */
+  protected deserializeDates(item: any): any {
+    if (!item || typeof item !== 'object') return item;
+    
+    const newItem = { ...item };
+    for (const key in newItem) {
+      const value = newItem[key];
+      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          newItem[key] = date;
+        }
+      } else if (value && typeof value === 'object' && !(value instanceof Date)) {
+        newItem[key] = this.deserializeDates(value);
+      }
+    }
+    return newItem;
+  }
+
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const newItem = await super.create(item, companyId);
+    
     if (this.options.shouldSyncWithSupabase) {
       try {
         const { data, error } = await Supabase.db.create<T>(this.supabaseTable, this.mapToSupabase(newItem));
@@ -112,6 +149,7 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
 
   async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
     const updated = await super.update(id, data, isSuperAdmin);
+    
     if (updated && this.options.shouldSyncWithSupabase) {
       try {
         const { data: remoteData, error } = await Supabase.db.update<T>(this.supabaseTable, id, this.mapToSupabase(data));
@@ -127,6 +165,7 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
 
   async delete(id: string): Promise<boolean> {
     const success = await super.delete(id);
+    
     if (success && this.options.shouldSyncWithSupabase) {
       try {
         const { error } = await Supabase.db.delete(this.supabaseTable, id);
