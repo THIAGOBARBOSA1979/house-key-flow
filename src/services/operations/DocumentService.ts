@@ -77,6 +77,13 @@ export interface Document {
   expiresAt?: Date;
   isSigned?: boolean;
   isFavorite?: boolean;
+  technical_metadata?: {
+    dimensions?: string;
+    resolution?: string;
+    scale?: string;
+    layers?: boolean;
+    [key: string]: any;
+  };
 }
 
 const INITIAL_DOCUMENTS: Document[] = [

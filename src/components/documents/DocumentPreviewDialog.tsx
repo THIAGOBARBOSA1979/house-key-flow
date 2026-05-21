@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw, ShieldCheck, History, Clock } from "lucide-react";
+import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw, ShieldCheck, History, Clock, AlertTriangle } from "lucide-react";
 import { Document, documentService } from "@/services";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
