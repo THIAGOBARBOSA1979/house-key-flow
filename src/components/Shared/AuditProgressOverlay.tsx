@@ -1,13 +1,29 @@
 import React from 'react';
 import { useAuditStore, AuditIssue } from '@/hooks/useAuditStore';
+import { useAuditMarker } from '@/hooks/useAuditMarker';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle2, AlertCircle, Clock, Layout, Package, ShieldCheck, Activity } from 'lucide-react';
 
 export const AuditProgressOverlay: React.FC = () => {
-  const { issues, waves, currentWave, getCompletionPercentage } = useAuditStore();
+  const { issues, waves, currentWave, getCompletionPercentage, completeWave, startWave } = useAuditStore();
   const [isOpen, setIsOpen] = React.useState(false);
+
+  // Auto-mark fixes for Wave 1
+  useAuditMarker('Menu lateral responsivo no mobile apresenta sobreposição indesejada');
+  useAuditMarker('Redirecionamentos de login legados (/admin/login) precisam de validação extra');
+
+  // Logic to move to next wave
+  React.useEffect(() => {
+    const waveIssues = issues.filter(i => i.wave === currentWave);
+    if (waveIssues.length > 0 && waveIssues.every(i => i.status === 'fixed')) {
+      completeWave(currentWave);
+      if (currentWave < 3) {
+        startWave(currentWave + 1);
+      }
+    }
+  }, [issues, currentWave, completeWave, startWave]);
 
   const percentage = getCompletionPercentage();
   const currentWaveData = waves.find(w => w.id === currentWave);

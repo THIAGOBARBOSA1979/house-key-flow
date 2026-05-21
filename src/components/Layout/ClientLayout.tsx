@@ -145,7 +145,7 @@ const ClientLayout = () => {
 
       {/* Main Content */}
       <main className="lg:ml-80 min-h-screen">
-        <div className="p-8 lg:p-12 max-w-[1600px] mx-auto">
+        <div className="p-4 sm:p-8 lg:p-12 max-w-[1600px] mx-auto overflow-x-hidden">
           <Outlet />
         </div>
       </main>
