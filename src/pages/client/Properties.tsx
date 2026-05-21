@@ -351,6 +351,7 @@ const ClientProperties = () => {
            </Card>
         </TabsContent>
       </Tabs>
+      </FeatureGate>
     </div>
   );
 };
