@@ -70,9 +70,10 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     );
     
     if (!result.success) {
+      const errorMessage = 'error' in result ? result.error.error : "Erro desconhecido";
       toast({
         title: "Erro na solicitação",
-        description: result.error.error || "Erro desconhecido",
+        description: errorMessage,
         variant: "destructive"
       });
       return false;
