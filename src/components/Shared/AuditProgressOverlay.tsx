@@ -27,6 +27,11 @@ export const AuditProgressOverlay: React.FC = () => {
   useAuditMarker('Sanitização de entradas de usuário insuficiente para proteção XSS/SQLi');
   useAuditMarker('Inconsistência de nomenclatura entre frontend (camelCase) e DB (snake_case)');
   useAuditMarker('SystemHealthService iterando sincronicamente sobre localStorage impactando a Main Thread');
+
+  // Logic to move to next wave
+  React.useEffect(() => {
+    const waveIssues = issues.filter(i => i.wave === currentWave);
+    if (waveIssues.length > 0 && waveIssues.every(i => i.status === 'fixed')) {
       completeWave(currentWave);
       if (currentWave < 4) {
         startWave(currentWave + 1);
