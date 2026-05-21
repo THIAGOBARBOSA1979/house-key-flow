@@ -187,7 +187,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
 
         {/* Stage History */}
         <div className="space-y-3">
-          <span className="text-sm font-medium text-muted-foreground">AuditLog da Jornada:</span>
+          <span className="text-sm font-medium text-muted-foreground">Log de Auditoria da Jornada:</span>
           <div className="space-y-2">
             {profile.stageHistory.slice().reverse().map((change) => (
               <div 
