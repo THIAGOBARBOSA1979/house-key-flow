@@ -13,8 +13,9 @@ export abstract class BaseService<T extends BaseEntity> {
   protected items: T[] = [];
   protected listeners: Listener<T>[] = [];
 
-  constructor(options: BaseServiceOptions | string) {
+  constructor(options: BaseServiceOptions | string, initialItems: T[] = []) {
     this.options = typeof options === 'string' ? { storageKey: options } : options;
+    this.items = [...initialItems];
   }
 
   subscribe(listener: Listener<T>) {
