@@ -5,7 +5,8 @@ import {
   WarrantyRequestFlow, 
   WarrantyFilters, 
   WarrantyStage,
-  KanbanCardData
+  KanbanCardData,
+  WarrantyMetrics
 } from "@/types/warrantyFlow";
 import { useToast, useService, useDataList } from "@/hooks";
 
@@ -24,11 +25,11 @@ export const useWarranty = () => {
   });
 
 
-  const filterFn = useCallback((request: WarrantyRequestFlow, currentFilters: any) => {
+  const filterFn = useCallback((request: WarrantyRequestFlow, currentFilters: Partial<WarrantyFilters>) => {
     if (currentFilters.propertyId && currentFilters.propertyId !== "all" && request.propertyId !== currentFilters.propertyId) return false;
     if (currentFilters.category && currentFilters.category !== "all" && request.category !== currentFilters.category) return false;
     if (currentFilters.priority && currentFilters.priority !== "all" && request.priority !== currentFilters.priority) return false;
-    if (currentFilters.slaStatus && currentFilters.slaStatus !== "all" && request.slaStatus !== currentFilters.slaStatus) return false;
+    if (currentFilters.slaStatus && (currentFilters.slaStatus as string) !== "all" && request.slaStatus !== currentFilters.slaStatus) return false;
     if (currentFilters.isPaused !== undefined && request.isPaused !== currentFilters.isPaused) return false;
     
     if (searchTerm) {
@@ -124,7 +125,7 @@ export const useWarranty = () => {
     toast({ title: "Exportação concluída", description: "O arquivo CSV foi baixado com sucesso." });
   }, [filteredRequests, toast]);
 
-  const [metrics, setMetrics] = useState<any | null>(null);
+  const [metrics, setMetrics] = useState<WarrantyMetrics | null>(null);
 
   useEffect(() => {
     const fetchMetrics = async () => {

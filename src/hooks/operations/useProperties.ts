@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { propertyService } from "@/services";
 import { useDataList } from "@/hooks";
@@ -28,14 +28,14 @@ export const useProperties = () => {
     }
   });
 
-  const filterFn = useCallback((property: Property, currentFilters: any) => {
+  const filterFn = useCallback((property: Property, currentFilters: { status?: string, manager?: string }) => {
     const matchesStatus = currentFilters.status === "all" || property.status === currentFilters.status;
     const matchesManager = currentFilters.manager === "all" || property.manager === currentFilters.manager;
     return matchesStatus && matchesManager;
   }, []);
 
   const listOptions = useMemo(() => ({
-    initialFilters: { status: "all", manager: "all" },
+    initialFilters: { status: "all" as const, manager: "all" as const },
     filterFn
   }), [filterFn]);
 
@@ -51,10 +51,11 @@ export const useProperties = () => {
     clearFilters
   } = useDataList<Property>(properties, listOptions);
 
-  const metrics = useMemo(() => 
-    propertyService.getMetrics(companyId, user?.is_super_admin), 
-    [companyId, user?.is_super_admin, properties]
-  );
+  const [metrics, setMetrics] = useState<any>(null);
+
+  useEffect(() => {
+    propertyService.getMetrics(companyId, user?.is_super_admin).then(setMetrics);
+  }, [companyId, user?.is_super_admin, properties]);
 
   const bulkDelete = useCallback(async () => {
     try {

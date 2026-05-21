@@ -27,7 +27,7 @@ export const useInspections = () => {
   });
 
 
-  const filterFn = useCallback((inspection: Inspection, currentFilters: any, searchTerm: string) => {
+  const filterFn = useCallback((inspection: Inspection, currentFilters: { status?: string, technician?: string, property?: string, checklist?: string }) => {
     const matchesStatus = !currentFilters.status || currentFilters.status === "all" || inspection.status === currentFilters.status;
     const matchesTech = !currentFilters.technician || currentFilters.technician === "all" || inspection.technician === currentFilters.technician;
     const matchesProperty = !currentFilters.property || currentFilters.property === "all" || inspection.property === currentFilters.property;
@@ -50,7 +50,7 @@ export const useInspections = () => {
     clearFilters
   } = useDataList<Inspection>(inspections, {
     initialFilters: { status: "all", technician: "all", property: "all", checklist: "all" },
-    filterFn: (item, filters) => filterFn(item, filters, searchTerm)
+    filterFn
   });
 
   const stats = useMemo(() => {
@@ -69,16 +69,13 @@ export const useInspections = () => {
 
 
   const analyticsStats = useMemo(() => {
-    // These now return Promises, so we need to handle them differently or provide defaults
-    // Since this is a memo, we'll return defaults and use a separate state/effect for real analytics if needed
-    // For now, providing safe defaults to avoid UI crash
     return {
       status: [],
       technician: [],
       conformityScore: 100,
       trend: []
     };
-  }, [inspections, user]);
+  }, []);
 
   const properties = useMemo(() => {
     return Array.from(new Set(inspections.map(i => i.property)));

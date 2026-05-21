@@ -1,10 +1,9 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { warrantyFlowService, warrantyValidationService, eventAutomationService } from "@/services";
-import { WarrantyItem } from "@/types/warranty";
+import { WarrantyItem, WarrantyProblemData } from "@/types/warranty";
 import { WarrantyRequestFlow, WarrantyMetrics } from "@/types/warrantyFlow";
-import { errorHandler } from "@/utils/errors/ErrorHandler";
 
 export const useWarrantyClaims = (clientId: string, userName?: string) => {
   const { user } = useAuth();
@@ -59,7 +58,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     return false;
   }, [clientId, userName, toast]);
 
-  const createClaim = useCallback(async (selectedItem: WarrantyItem, data: { title: string; problems: any[]; additionalInfo?: string }) => {
+  const createClaim = useCallback(async (selectedItem: WarrantyItem, data: { title: string; problems: WarrantyProblemData[]; additionalInfo?: string }) => {
     const result = await warrantyValidationService.validateAndCreateRequest(
       selectedItem.id,
       clientId,
@@ -71,9 +70,10 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     );
     
     if (!result.success) {
+      const errorMessage = 'error' in result ? result.error.error : "Erro desconhecido";
       toast({
         title: "Erro na solicitação",
-        description: (result as any).error?.error || "Erro desconhecido",
+        description: errorMessage,
         variant: "destructive"
       });
       return false;
