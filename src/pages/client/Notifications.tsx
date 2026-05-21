@@ -109,13 +109,16 @@ const ClientNotifications = () => {
           </p>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {activeTab === 'list' && unreadNotifications.length > 0 && (
-            <Button variant="outline" size="sm" onClick={markAllAsRead} className="font-bold">
+            <Button variant="outline" size="sm" onClick={markAllAsRead} className="font-black uppercase tracking-widest text-[10px] rounded-xl border-2 h-10 px-4">
               <CheckCircle className="mr-2 h-4 w-4" />
-              Marcar todas como lidas
+              Marcar lidas
             </Button>
           )}
+          <Button variant="outline" size="icon" className="rounded-xl h-10 w-10 border-2">
+             <Filter className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
