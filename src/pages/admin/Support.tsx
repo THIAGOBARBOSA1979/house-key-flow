@@ -43,7 +43,7 @@ const AdminSupport = () => {
   const [replyText, setReplyText] = useState("");
 
   useEffect(() => {
-    setTickets(supportService.getAllTickets());
+    supportService.getAllTickets().then(setTickets);
   }, []);
 
   const filteredTickets = useMemo(() => {
@@ -61,8 +61,9 @@ const AdminSupport = () => {
   const handleSelectTicket = (ticket: SupportTicket) => {
     setSelectedTicket(ticket);
     if (ticket.status === 'pending') {
-      supportService.updateTicketStatus(ticket.id, 'in_progress');
-      setTickets(supportService.getAllTickets());
+      supportService.updateTicketStatus(ticket.id, 'in_progress').then(() => {
+        supportService.getAllTickets().then(setTickets);
+      });
     }
   };
 
@@ -75,11 +76,11 @@ const AdminSupport = () => {
       adminUser?.name || "Administrador",
       'admin',
       replyText
-    );
-
-    setReplyText("");
-    setTickets(supportService.getAllTickets());
-    setSelectedTicket(supportService.getTicketById(selectedTicket.id) || null);
+    ).then(() => {
+      setReplyText("");
+      supportService.getAllTickets().then(setTickets);
+      supportService.getTicketById(selectedTicket.id).then(t => setSelectedTicket(t || null));
+    });
     
     toast({
       title: "Resposta enviada",
@@ -88,11 +89,12 @@ const AdminSupport = () => {
   };
 
   const handleCloseTicket = (ticketId: string) => {
-    supportService.updateTicketStatus(ticketId, 'closed');
-    setTickets(supportService.getAllTickets());
-    if (selectedTicket?.id === ticketId) {
-      setSelectedTicket(supportService.getTicketById(ticketId) || null);
-    }
+    supportService.updateTicketStatus(ticketId, 'closed').then(() => {
+      supportService.getAllTickets().then(setTickets);
+      if (selectedTicket?.id === ticketId) {
+        supportService.getTicketById(ticketId).then(t => setSelectedTicket(t || null));
+      }
+    });
     toast({
       title: "Ticket encerrado",
       description: "O atendimento foi finalizado e o ticket foi fechado.",

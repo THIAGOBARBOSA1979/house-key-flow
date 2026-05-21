@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ErrorView } from "@/components/shared/ErrorView";
 
@@ -11,7 +12,6 @@ import {
 import { propertyService } from "@/services/operations/PropertyService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useClientStage } from "@/hooks";
-import { useMemo } from "react";
 import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
 import { ConstructionFeed } from "@/components/client/ConstructionFeed";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -41,8 +41,15 @@ const Dashboard = () => {
   } = useClientDashboardData(profile?.id || userId, user?.name);
 
   
+  const [propertyData, setPropertyData] = useState<any>(null);
+
+  useEffect(() => {
+    if (profile?.propertyId) {
+      propertyService.getById(profile.propertyId).then(setPropertyData);
+    }
+  }, [profile?.propertyId]);
+
   const userInfo = useMemo(() => {
-    const propertyData = profile?.propertyId ? propertyService.getById(profile.propertyId) : null;
     const progress = propertyData?.units && propertyData?.completedUnits 
       ? Math.round((propertyData.completedUnits / propertyData.units) * 100) 
       : 85;
@@ -55,7 +62,7 @@ const Dashboard = () => {
       contractDate: profile?.createdAt || new Date(2023, 5, 10),
       progress: progress
     };
-  }, [user, profile]);
+  }, [user, profile, propertyData]);
 
   const timeline: TimelineStep[] = [
     { id: '1', title: 'Contrato', description: 'Assinatura homologada.', date: '10/06/23', status: 'completed' },
@@ -144,7 +151,7 @@ const Dashboard = () => {
             contractProgress={contractProgress}
             deliveryDate={userInfo.deliveryDate}
             contractDate={userInfo.contractDate}
-            location={profile?.propertyName ? propertyService.getAll().find(p => p.id === profile.propertyId)?.location : undefined}
+            location={profile?.propertyName ? propertyService.getAllSync().find(p => p.id === profile.propertyId)?.location : undefined}
             block={profile?.block}
           />
 
@@ -207,7 +214,7 @@ const Dashboard = () => {
 
         <div className="lg:col-span-1 space-y-8">
           <TechnicalSheet 
-            propertyArea={profile?.propertyId ? propertyService.getById(profile.propertyId)?.totalArea : undefined}
+            propertyArea={propertyData?.totalArea}
             deliveryDate={userInfo.deliveryDate?.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
           />
           
