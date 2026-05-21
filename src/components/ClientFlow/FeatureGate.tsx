@@ -6,6 +6,8 @@ import { Lock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ClientStage, STAGE_CONFIG } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+
 
 interface FeatureGateProps {
   children: ReactNode;
