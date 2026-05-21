@@ -171,7 +171,7 @@ describe('DataView Component', () => {
     expect(screen.getByText('Error Title')).toBeDefined();
     expect(screen.getByText('Error Message')).toBeDefined();
     
-    const retryButton = screen.getByRole('button', { name: /Tentar Novamente/i });
+    const retryButton = screen.getByRole('button', { name: /Reiniciar Protocolo/i });
     expect(retryButton).toBeDefined();
     fireEvent.click(retryButton);
     expect(onRetry).toHaveBeenCalledTimes(1);
