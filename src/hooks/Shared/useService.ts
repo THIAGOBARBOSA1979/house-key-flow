@@ -15,11 +15,11 @@ export interface UseServiceOptions<T> {
 export interface IService<T> {
   getAll(companyId?: string, isSuperAdmin?: boolean): T[] | Promise<T[]>;
   getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined | Promise<T | undefined>;
-  create(data: Omit<T, "id">, companyId?: string): T | Promise<T>;
-  update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined | Promise<T | undefined>;
-  delete(id: string): boolean | Promise<boolean>;
-  bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): T[] | Promise<T[]>;
-  bulkDelete(ids: string[]): number | Promise<number>;
+  create(data: Omit<T, "id">, companyId?: string): Promise<T>;
+  update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined>;
+  delete(id: string): Promise<boolean>;
+  bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]>;
+  bulkDelete(ids: string[]): Promise<number>;
   subscribe(listener: (items: T[]) => void): () => void;
 }
 
@@ -84,6 +84,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     } catch (error) {
       optionsRef.current.onError?.(error);
       toast({ title: "Erro", description: "Falha ao criar item.", variant: "destructive" });
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -103,6 +104,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     } catch (error) {
       optionsRef.current.onError?.(error);
       toast({ title: "Erro", description: "Falha ao atualizar item.", variant: "destructive" });
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -122,6 +124,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     } catch (error) {
       optionsRef.current.onError?.(error);
       toast({ title: "Erro", description: "Falha ao remover item.", variant: "destructive" });
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -135,6 +138,7 @@ export function useService<T extends { id: string; company_id?: string }>(
       return results;
     } catch (error) {
       toast({ title: "Erro", description: "Falha na atualização em massa.", variant: "destructive" });
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -148,10 +152,15 @@ export function useService<T extends { id: string; company_id?: string }>(
       return count;
     } catch (error) {
       toast({ title: "Erro", description: "Falha na remoção em massa.", variant: "destructive" });
+      throw error;
     } finally {
       setIsLoading(false);
     }
   }, [service, toast]);
+
+  const getById = useCallback(async (id: string) => {
+    return await service.getById(id, companyId, isSuperAdmin);
+  }, [service, companyId, isSuperAdmin]);
 
   return {
     items,
@@ -162,6 +171,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     remove,
     bulkUpdate,
     bulkRemove,
-    getById: useCallback(async (id: string) => await service.getById(id, companyId, isSuperAdmin), [service, companyId, isSuperAdmin])
+    getById
   };
 }
+

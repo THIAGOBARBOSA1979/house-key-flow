@@ -75,12 +75,12 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   getTicketById(id: string) { return this.getById(id); }
   getTicketsByClient(clientId: string) { return this.items.filter(t => t.clientId === clientId); }
 
-  createTicket(clientId: string, clientName: string, data: any, context?: { propertyId?: string, propertyName?: string, unitNumber?: string }): SupportTicket {
+  async createTicket(clientId: string, clientName: string, data: any, context?: { propertyId?: string, propertyName?: string, unitNumber?: string }): Promise<SupportTicket> {
     const createdAt = new Date();
     // Default 24h SLA for initial response
     const slaDeadline = new Date(createdAt.getTime() + 48 * 60 * 60 * 1000); // 48h SLA
 
-    return super.create({
+    return await super.create({
       clientId,
       clientName,
       propertyId: context?.propertyId,
@@ -104,6 +104,7 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
       updatedAt: createdAt
     } as any);
   }
+
 
   updateTicketStatus(id: string, status: SupportTicket['status']) {
     return this.update(id, { status, updatedAt: new Date() });

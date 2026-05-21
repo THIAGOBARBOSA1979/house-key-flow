@@ -106,7 +106,7 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     };
   }
 
-  schedule(data: { 
+  async schedule(data: { 
     date: Date; 
     time: string; 
     inspectionType: string; 
@@ -115,8 +115,8 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     notes?: string; 
     requestId?: string; 
     priority?: Inspection["priority"] 
-  }, propertyInfo?: { property: string; unit: string; client: string; companyId?: string }): Inspection {
-    const newInspection = super.create({
+  }, propertyInfo?: { property: string; unit: string; client: string; companyId?: string }): Promise<Inspection> {
+    const newInspection = await super.create({
       property: propertyInfo?.property || "Empreendimento Exemplo",
       unit: propertyInfo?.unit || "101",
       client: propertyInfo?.client || "Cliente Exemplo",
@@ -132,22 +132,23 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       createdAt: new Date()
     }, propertyInfo?.companyId);
 
-    this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`);
+    await this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit}.`);
     return newInspection;
   }
 
 
-  updateStatus(id: string, status: string, details?: string) {
+  async updateStatus(id: string, status: string, details?: string) {
     const oldItem = this.getById(id);
-    const updated = super.update(id, { status });
+    const updated = await super.update(id, { status });
     if (updated) {
-      this.log('stage_changed', id, details || `Status da vistoria alterado de ${oldItem?.status} para ${status}.`, {
+      await this.log('stage_changed', id, details || `Status da vistoria alterado de ${oldItem?.status} para ${status}.`, {
         oldStatus: oldItem?.status,
         newStatus: status
       });
     }
     return updated;
   }
+
 
   getStatsByStatus(companyId?: string, isSuperAdmin?: boolean) {
     const relevantItems = this.getAll(companyId, isSuperAdmin);

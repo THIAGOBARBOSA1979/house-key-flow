@@ -104,7 +104,7 @@ export const ScheduleInspectionForm = ({
 
 
   const onSubmit = async (data: FormValues) => {
-    const newInspection = inspectionService.schedule(data as any, propertyInfo);
+    const newInspection = await inspectionService.schedule(data as any, propertyInfo);
 
     toast({
       title: "Agendamento Estratégico Confirmado",
@@ -113,9 +113,8 @@ export const ScheduleInspectionForm = ({
     });
     
     if (data.notifyClient && propertyInfo) {
-      // Integration with notification service
       const { notificationService } = await import("@/services");
-      notificationService.createNotification(
+      await notificationService.createNotification(
         clientId || "client-1",
         "inspection_scheduled",
         {
@@ -129,6 +128,7 @@ export const ScheduleInspectionForm = ({
 
         }
       );
+
 
       toast({
         title: "Engajamento do Cliente Ativado",

@@ -60,7 +60,7 @@ class UserService extends SupabaseBaseService<User> {
 
   public async createProfile(data: any): Promise<{ data?: User, error?: any }> {
     try {
-      const newUser = this.create({
+      const newUser = await this.create({
         ...data,
         status: data.status || 'active',
         createdAt: new Date()
@@ -70,7 +70,6 @@ class UserService extends SupabaseBaseService<User> {
       if (newUser.role === 'client' || newUser.role === 'user') {
         const { clientStageService } = await import("@/services/operations/ClientStageService");
         
-        // Use any to bypass strict Omit<ClientProfile, "id"> if needed, or pass correct structure
         const stageData: any = {
           name: newUser.name,
           email: newUser.email,
@@ -91,12 +90,9 @@ class UserService extends SupabaseBaseService<User> {
           }]
         };
 
-        // If BaseService.create handles ID generation, we don't pass it in Omit<T, "id">
-        // but here we want to sync the IDs
-        const newStageProfile = clientStageService.create(stageData, newUser.company_id);
-        // Force sync the IDs if BaseService generated a new one
+        const newStageProfile = await clientStageService.create(stageData, newUser.company_id);
         if (newStageProfile.id !== newUser.id) {
-          (clientStageService as any).update(newStageProfile.id, { id: newUser.id }, true);
+          await (clientStageService as any).update(newStageProfile.id, { id: newUser.id }, true);
         }
       }
 
@@ -105,6 +101,7 @@ class UserService extends SupabaseBaseService<User> {
       return { error };
     }
   }
+
 
   /**
    * Mock method for sending invitations

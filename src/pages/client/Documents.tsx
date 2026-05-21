@@ -107,17 +107,20 @@ export default function ClientDocuments() {
     }
   };
 
-  const handlePreview = (doc: ClientDocument) => {
+  const handlePreview = async (doc: ClientDocument) => {
     if (doc.status === "processando") return;
     if (doc.type === "auto" && doc.template) {
-      const generated = documentService.generateDocument(doc.id, {});
-      setPreviewContent(generated.template || "");
-      setSelectedDoc(generated);
-      setIsPreviewOpen(true);
+      const generated = await documentService.generateDocument(doc.id, {});
+      if (generated) {
+        setPreviewContent(generated.template || "");
+        setSelectedDoc(generated);
+        setIsPreviewOpen(true);
+      }
     } else {
       window.open(doc.downloadUrl, '_blank');
     }
   };
+
 
   const handleOpenSignature = (doc: ClientDocument) => {
     setSelectedDoc(doc as any);

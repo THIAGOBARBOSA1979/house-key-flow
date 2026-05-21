@@ -107,12 +107,13 @@ class DocumentService extends SupabaseBaseService<Document> {
   constructor() {
     super({
       storageKey: "a2_documents",
-      supabaseTable: "documents" as any, // Plan to create this table later if needed
+      supabaseTable: "documents",
       auditEntityType: "document",
-      shouldSyncWithSupabase: false
+      shouldSyncWithSupabase: true
     }, INITIAL_DOCUMENTS);
 
   }
+
 
   // Backward compatibility aliases
   getAllDocuments() { return this.getAll(undefined, true); }
@@ -146,8 +147,8 @@ class DocumentService extends SupabaseBaseService<Document> {
     });
   }
 
-  create(item: Omit<Document, "id">, companyId?: string): Document {
-    return super.create({
+  async create(item: Omit<Document, "id">, companyId?: string): Promise<Document> {
+    return await super.create({
       ...item,
       version: 1,
       approvalStatus: "pending",
@@ -158,6 +159,7 @@ class DocumentService extends SupabaseBaseService<Document> {
       status: item.status || "draft"
     }, companyId);
   }
+
 
   duplicateDocument(id: string) {
     const doc = this.getById(id, undefined, true);

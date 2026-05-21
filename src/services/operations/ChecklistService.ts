@@ -68,12 +68,13 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
   constructor() {
     super({
       storageKey: "a2_checklist_templates",
-      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table
+      supabaseTable: "checklist_templates",
       auditEntityType: "checklist",
-      shouldSyncWithSupabase: false
+      shouldSyncWithSupabase: true
     }, INITIAL_TEMPLATES);
     this.loadExecutions();
   }
+
 
   private loadExecutions() {
     if (typeof window === 'undefined') return;
