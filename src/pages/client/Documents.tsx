@@ -289,6 +289,7 @@ export default function ClientDocuments() {
           </div>
         </TabsContent>
       </Tabs>
+      </FeatureGate>
     </div>
   );
 }
