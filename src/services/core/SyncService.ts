@@ -1,8 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { toast } from '@/components/ui/use-toast';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
-import { ErrorCode } from '@/utils/errors/AppError';
-
 
 interface TicketUpdateData {
   id: string;
@@ -21,6 +19,8 @@ export class SyncService {
   private static isInitialized = false;
 
   static initialize() {
+    if (this.isInitialized) return;
+
     console.log('SyncService: Inicializando...');
     
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -49,7 +49,6 @@ export class SyncService {
       errorHandler.handle(error, 'SyncService:initialize');
       this.isInitialized = true;
     }
-
   }
 
   private static setupEventListeners() {
@@ -78,11 +77,11 @@ export class SyncService {
       window.dispatchEvent(new CustomEvent('ticket_update', { detail: data }));
     });
 
-    this.socket.on('warranty_update', (data: unknown) => {
+    this.socket.on('warranty_update', (data: Record<string, unknown>) => {
       window.dispatchEvent(new CustomEvent('warranty_update', { detail: data }));
     });
 
-    this.socket.on('inspection_update', (data: unknown) => {
+    this.socket.on('inspection_update', (data: Record<string, unknown>) => {
       window.dispatchEvent(new CustomEvent('inspection_update', { detail: data }));
     });
   }
