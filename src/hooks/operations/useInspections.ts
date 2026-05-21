@@ -12,12 +12,14 @@ export const useInspections = () => {
   const { user } = useAuth();
   const { 
     items: inspections, 
-    isLoading, 
+    isLoading,
     refresh: loadData,
     create: createInspection,
     update: updateInspection,
-    remove: deleteInspection
+    remove: deleteInspection,
+    error
   } = useService<Inspection>(inspectionService);
+
 
   const filterFn = useCallback((inspection: Inspection, currentFilters: any, searchTerm: string) => {
     const matchesStatus = !currentFilters.status || currentFilters.status === "all" || inspection.status === currentFilters.status;
@@ -117,6 +119,8 @@ export const useInspections = () => {
     createInspection,
     updateInspection,
     deleteInspection,
-    updateStatus
+    updateStatus,
+    error
   };
 };
+
