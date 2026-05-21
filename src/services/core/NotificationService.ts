@@ -9,24 +9,33 @@ import {
 } from '@/types/clientFlow';
 
 export class NotificationService extends SupabaseBaseService<ClientNotification> {
-  // private settingsMap: Map<string, NotificationSettings> = new Map();
-  // private settingsKey = "a2_notification_settings";
-
   constructor() {
     super({ 
       storageKey: "a2_notifications", 
       supabaseTable: "notifications",
-      shouldSyncWithSupabase: true 
+      shouldSyncWithSupabase: true,
+      fieldMapping: {
+        clientId: 'user_id',
+        message: 'content',
+        read: 'read_at'
+      }
     }, []);
-    // this.loadSettings(); // Disabled for DB-first
   }
 
-  private loadSettings() {
-    // Disabled
+  protected mapToSupabase(item: any): any {
+    const mapped = super.mapToSupabase(item);
+    if (mapped.read_at === true) {
+      mapped.read_at = new Date().toISOString();
+    } else if (mapped.read_at === false) {
+      mapped.read_at = null;
+    }
+    return mapped;
   }
 
-  private persistSettings() {
-    // Disabled
+  protected mapFromSupabase(raw: any): ClientNotification {
+    const mapped = super.mapFromSupabase(raw);
+    (mapped as any).read = !!raw.read_at;
+    return mapped;
   }
 
   async createNotification(
@@ -38,24 +47,23 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
     const template = NOTIFICATION_TEMPLATES[type];
     
     return await this.create({
-      user_id: clientId,
+      clientId,
       type,
       title: customMessage?.title || template.title,
-      content: customMessage?.message || template.message,
-      read_at: null,
+      message: customMessage?.message || template.message,
+      read: false,
+      urgent: template.urgent,
       metadata,
       company_id: (metadata as any)?.company_id
     } as any);
-
   }
 
-
   getNotifications(clientId: string): ClientNotification[] {
-    return this.items.filter(n => (n as any).user_id === clientId || n.clientId === clientId);
+    return this.items.filter(n => n.clientId === clientId);
   }
 
   getUnreadNotifications(clientId: string): ClientNotification[] {
-    return this.getNotifications(clientId).filter(n => !(n as any).read_at && !n.read);
+    return this.getNotifications(clientId).filter(n => !n.read);
   }
 
   getUrgentNotifications(clientId: string): ClientNotification[] {
@@ -72,15 +80,11 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
   }
 
   async markAllAsRead(clientId: string): Promise<void> {
-    const clientNotifs = this.getNotifications(clientId);
-    for (const n of clientNotifs) {
-      if (!n.read) {
-        await this.update(n.id!, { read: true } as any);
-      }
+    const unread = this.getUnreadNotifications(clientId);
+    for (const n of unread) {
+      await this.markAsRead(n.id!);
     }
   }
-
-
 
   async deleteNotification(notificationId: string): Promise<boolean> {
     return await this.delete(notificationId);

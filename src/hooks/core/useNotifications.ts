@@ -29,6 +29,11 @@ export function useNotifications(clientId: string): UseNotificationsResult {
 
   useEffect(() => {
     loadNotifications();
+    
+    // Initial sync
+    notificationService.sync();
+
+    // Subscribe to changes
     return notificationService.subscribe(loadNotifications);
   }, [loadNotifications]);
 

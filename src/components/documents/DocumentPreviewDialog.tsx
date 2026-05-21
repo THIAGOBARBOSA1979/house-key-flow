@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw, ShieldCheck, History, Clock } from "lucide-react";
+import { Download, FileText, Printer, ZoomIn, ZoomOut, RotateCw, ShieldCheck, History, Clock, AlertTriangle } from "lucide-react";
 import { Document, documentService } from "@/services";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -24,6 +24,8 @@ interface DocumentPreviewDialogProps {
 export function DocumentPreviewDialog({ document, isOpen, onClose, generatedContent }: DocumentPreviewDialogProps) {
   const [zoom, setZoom] = useState(100);
   const [rotation, setRotation] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!document) return null;
 
@@ -58,36 +60,105 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
         </DialogHeader>
         
         <div className="flex-1 overflow-hidden bg-muted/10 p-4 sm:p-8">
-          <div className="h-full bg-white rounded-xl shadow-sem-lg border border-border/50 overflow-hidden flex flex-col">
-            <ScrollArea className="h-full">
-              <div className="p-8 sm:p-12 min-h-full flex flex-col items-center">
-                <div 
-                  className="w-full max-w-3xl prose prose-sm transition-all duration-300 origin-top"
-                  style={{ 
-                    transform: `scale(${zoom / 100})`,
-                    marginBottom: `${(zoom / 100) * 20}px`
-                  }}
-                >
-                  <div style={{ transform: `rotate(${rotation}deg)` }}>
-                    {document.type === "auto" ? (
-                      <pre className="whitespace-pre-wrap font-serif text-base text-gray-800 bg-transparent p-0 border-none shadow-none leading-relaxed">
-                        {generatedContent || document.template}
-                      </pre>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground text-center">
-                        <div className="p-6 rounded-full bg-muted/30 mb-6">
-                          <FileText size={64} className="opacity-20" />
-                        </div>
-                        <h3 className="text-lg font-bold text-foreground mb-2">Documento Manual</h3>
-                        <p className="max-w-xs mx-auto">Este arquivo (PDF/Imagem) foi enviado manualmente e não possui visualização dinâmica.</p>
-                        <Button variant="outline" className="mt-6 font-bold">
-                          <Download className="w-4 h-4 mr-2" /> Baixar para Visualizar
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                  </div>
+          <div className="h-full bg-white rounded-xl shadow-sem-lg border border-border/50 overflow-hidden flex flex-col relative">
+            {isLoading && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="h-12 w-12 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
+                  <p className="text-sm font-bold text-primary animate-pulse">Otimizando visualização técnica...</p>
+                </div>
+              </div>
+            )}
 
+            {error ? (
+              <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+                <AlertTriangle className="h-16 w-16 text-destructive mb-4" />
+                <h3 className="text-lg font-bold mb-2">Erro ao carregar documento</h3>
+                <p className="text-muted-foreground max-w-md mb-6">{error}</p>
+                <Button onClick={onClose} variant="outline">Fechar Visualizador</Button>
+              </div>
+            ) : (
+              <ScrollArea className="h-full">
+                <div className="p-8 sm:p-12 min-h-full flex flex-col items-center">
+                  <div 
+                    className="w-full max-w-4xl prose prose-sm transition-all duration-300 origin-top"
+                    style={{ 
+                      transform: `scale(${zoom / 100})`,
+                      marginBottom: `${(zoom / 100) * 20}px`
+                    }}
+                  >
+                    <div style={{ transform: `rotate(${rotation}deg)` }}>
+                      {document.type === "auto" ? (
+                        <pre className="whitespace-pre-wrap font-serif text-base text-gray-800 bg-transparent p-0 border-none shadow-none leading-relaxed">
+                          {generatedContent || document.template}
+                        </pre>
+                      ) : document.fileUrl ? (
+                        <div className="space-y-6">
+                          {/* Modern PDF/Image viewer for technical docs */}
+                          {document.fileUrl.match(/\.(jpg|jpeg|png|webp|gif)$/i) ? (
+                            <div className="rounded-lg overflow-hidden border shadow-sm bg-slate-50">
+                              <img 
+                                src={document.fileUrl} 
+                                alt={document.title} 
+                                className="w-full h-auto object-contain"
+                                onLoad={() => setIsLoading(false)}
+                                onError={() => {
+                                  setError("Não foi possível carregar a imagem técnica.");
+                                  setIsLoading(false);
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <div className="aspect-[1/1.4] w-full rounded-lg overflow-hidden border shadow-sm bg-slate-50">
+                              <iframe 
+                                src={`${document.fileUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                                className="w-full h-full border-none"
+                                onLoad={() => setIsLoading(false)}
+                                title={document.title}
+                              />
+                            </div>
+                          )}
+                          
+                          {document.technical_metadata && (
+                            <div className="mt-8 p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                              <h5 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
+                                <FileText className="w-4 h-4" /> Especificações Técnicas do Arquivo
+                              </h5>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <div className="space-y-1">
+                                  <p className="text-[10px] text-slate-400 font-bold uppercase">Dimensões</p>
+                                  <p className="text-sm font-bold">{(document as any).technical_metadata?.dimensions || 'N/A'}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] text-slate-400 font-bold uppercase">Resolução</p>
+                                  <p className="text-sm font-bold">{(document as any).technical_metadata?.resolution || 'N/A'}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] text-slate-400 font-bold uppercase">Escala</p>
+                                  <p className="text-sm font-bold">{(document as any).technical_metadata?.scale || 'Original'}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] text-slate-400 font-bold uppercase">Camadas</p>
+                                  <p className="text-sm font-bold">{(document as any).technical_metadata?.layers ? 'Habilitadas' : 'N/A'}</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground text-center">
+                          <div className="p-6 rounded-full bg-muted/30 mb-6">
+                            <FileText size={64} className="opacity-20" />
+                          </div>
+                          <h3 className="text-lg font-bold text-foreground mb-2">Documento Manual</h3>
+                          <p className="max-w-xs mx-auto">Este arquivo (PDF/Imagem) foi enviado manualmente e não possui visualização dinâmica.</p>
+                          <Button variant="outline" className="mt-6 font-bold">
+                            <Download className="w-4 h-4 mr-2" /> Baixar para Visualizar
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   {document.signatures && document.signatures.some(s => s.status === 'signed') && (
                     <div className="mt-20 pt-10 border-t-2 border-dashed border-gray-200 w-full max-w-3xl">
                       <div className="flex items-center justify-between mb-8">
@@ -140,7 +211,8 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
                     </div>
                   )}
                 </div>
-            </ScrollArea>
+              </ScrollArea>
+            )}
           </div>
         </div>
         
