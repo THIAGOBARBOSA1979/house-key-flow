@@ -139,7 +139,7 @@ export abstract class BaseService<T extends BaseEntity> {
           });
         }
       } catch (err) {
-        console.error("Critical: Failed to log audit action", err);
+        errorHandler.handle(err, 'BaseService:log');
       }
     }
   }

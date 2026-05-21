@@ -4,6 +4,7 @@ import { propertyService } from "@/services";
 import { useDataList } from "@/hooks";
 import { useQueryService } from "@/hooks/core/useQueryService";
 import { Property } from "@/types/property";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
 
 /**
  * Custom hook to manage properties logic.
@@ -65,7 +66,7 @@ export const useProperties = () => {
         setSelectedIds([]);
       }
     } catch (err) {
-      console.error("Bulk delete failed", err);
+      errorHandler.handle(err, 'useProperties:bulkDelete');
     }
   }, [selectedIds, refreshList, setSelectedIds]);
 

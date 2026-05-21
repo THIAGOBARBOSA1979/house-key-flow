@@ -101,7 +101,7 @@ class SystemSettingsService {
         settings: DEFAULT_SETTINGS
       });
     } catch (err) {
-      console.error('Failed to initialize default settings', err);
+      errorHandler.handle(err, 'SystemSettingsService:initializeDefaultSettings');
     }
   }
 

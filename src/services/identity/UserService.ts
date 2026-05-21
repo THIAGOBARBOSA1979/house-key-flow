@@ -103,8 +103,7 @@ class UserService extends SupabaseBaseService<User> {
     }
   }
 
-  public async sendInvitation(user: User): Promise<boolean> {
-    console.log(`Sending invitation to ${user.email || user.name}`);
+  public async sendInvitation(_user: User): Promise<boolean> {
     return true;
   }
 }

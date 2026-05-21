@@ -27,17 +27,11 @@ class WarrantyAutomationService {
   ): Promise<void> {
     const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
-      console.error('[WarrantyAutomation] Request not found:', requestId);
       return;
     }
 
-    console.log('[WarrantyAutomation] Status changed:', {
-      requestId,
-      from: oldStatus,
-      to: newStatus,
-      changedBy,
-      isAutomatic
-    });
+    // Trigger appropriate notification based on new status
+    this.createNotificationForStatus(request, newStatus);
 
     // Trigger appropriate notification based on new status
     this.createNotificationForStatus(request, newStatus);
@@ -110,12 +104,6 @@ class WarrantyAutomationService {
         }
       );
     }
-
-    console.log('[WarrantyAutomation] Notification created:', {
-      clientId: request.clientId,
-      type: notificationType,
-      requestId: request.id
-    });
   }
 
   /**
@@ -142,16 +130,14 @@ class WarrantyAutomationService {
   /**
    * Handle start of analysis
    */
-  private onStartAnalysis(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Analysis started for:', request.id);
+  private onStartAnalysis(_request: WarrantyRequestFlow): void {
     // Start SLA timer for analysis phase
   }
 
   /**
    * Handle inspection scheduled
    */
-  private onInspectionScheduled(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Inspection scheduled for:', request.id);
+  private onInspectionScheduled(_request: WarrantyRequestFlow): void {
     // Could send calendar invite, reminder notifications, etc.
   }
 
@@ -159,7 +145,6 @@ class WarrantyAutomationService {
    * Handle inspection completed
    */
   private onInspectionCompleted(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Inspection completed for:', request.id);
     // Notify admin to make decision
     this.notifyAdminForDecision(request);
   }
@@ -167,16 +152,14 @@ class WarrantyAutomationService {
   /**
    * Handle warranty approved
    */
-  private onApproved(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Warranty approved:', request.id);
+  private onApproved(_request: WarrantyRequestFlow): void {
     // Start execution SLA timer
   }
 
   /**
    * Handle warranty rejected
    */
-  private onRejected(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Warranty rejected:', request.id);
+  private onRejected(_request: WarrantyRequestFlow): void {
     // Final state - no further actions needed
   }
 
@@ -213,15 +196,13 @@ class WarrantyAutomationService {
     const warnings = warrantySLAService.checkSLAWarnings(allRequests);
     const expired = warrantySLAService.checkExpiredSLAs(allRequests);
 
-    warnings.forEach(request => {
-      console.log('[WarrantyAutomation] SLA Warning for:', request.id);
+    warnings.forEach(_request => {
       // Create admin notification for SLA warning
     });
 
     expired.forEach(request => {
       // Update request SLA status if not already marked
       if (request.slaStatus !== 'expired') {
-        console.log('[WarrantyAutomation] SLA Expired for:', request.id);
         // Create notifications for both admin and client
       }
     });
@@ -236,12 +217,6 @@ class WarrantyAutomationService {
     toStage: WarrantyStage,
     movedBy: string
   ): Promise<{ success: boolean; error?: string }> {
-    console.log('[WarrantyAutomation] Kanban drop:', {
-      requestId,
-      from: fromStage,
-      to: toStage,
-      movedBy
-    });
 
     // Special case: if moving to 'inspection_scheduled', this is usually triggered by a form,
     // but if dragged here, we might need extra handling or just prevent it if data is missing.
