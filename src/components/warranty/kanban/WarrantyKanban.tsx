@@ -111,7 +111,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
     
     // Check for special case: moving to inspection_scheduled
     if (toStage === "inspection_scheduled") {
-      const request = warrantyFlowService.getRequest(cardId);
+      const request = warrantyFlowService.getRequestSync(cardId);
       if (request) {
         setTransitionDialog({
           open: true,
@@ -228,7 +228,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
 
   // Handle card click
   const handleCardClick = (cardId: string) => {
-    const request = warrantyFlowService.getRequest(cardId);
+    const request = warrantyFlowService.getRequestSync(cardId);
     if (request && onSelectRequest) {
       onSelectRequest(request);
     }
@@ -460,7 +460,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
                     setTransitionDialog(prev => ({ ...prev, open: false }));
                   }}
                   propertyInfo={(() => {
-                    const req = warrantyFlowService.getRequest(transitionDialog.cardIds[0]);
+                    const req = warrantyFlowService.getRequestSync(transitionDialog.cardIds[0]);
                     return req ? {
                       property: req.propertyName,
                       unit: req.unitNumber,
