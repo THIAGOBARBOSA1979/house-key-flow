@@ -38,8 +38,9 @@ export const ErrorView: React.FC<ErrorViewProps> = ({
         >
           <RefreshCcw className="w-3.5 h-3.5" />
           Tentar Novamente
-        </h3>
+        </Button>
       )}
+
     </div>
   );
 

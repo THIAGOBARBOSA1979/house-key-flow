@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { propertyService } from "@/services";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
+
 import { Property } from "@/types/property";
 
 /**
@@ -13,17 +15,28 @@ export const usePropertyQueries = () => {
     return useQuery({
       queryKey: ["properties", companyId, isSuperAdmin],
       queryFn: async () => {
-        return propertyService.getAll(companyId, isSuperAdmin);
+        try {
+          return await propertyService.getAll(companyId, isSuperAdmin);
+        } catch (error) {
+          errorHandler.handle(error, 'useAllProperties');
+          throw error;
+        }
       },
+
     });
   };
 
   const useCreateProperty = (companyId?: string) => {
     return useMutation({
       mutationFn: async (data: Omit<Property, "id">) => {
-        const newItem = propertyService.create(data, companyId);
-        return newItem;
+        try {
+          return await propertyService.create(data, companyId);
+        } catch (error) {
+          errorHandler.handle(error, 'useCreateProperty');
+          throw error;
+        }
       },
+
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["properties"] });
       },
