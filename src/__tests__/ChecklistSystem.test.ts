@@ -34,8 +34,8 @@ describe('Checklist & Inspection System', () => {
     expect(retrieved?.groups).toHaveLength(1);
   });
 
-  it('should calculate technical conformity score after inspection', () => {
-    const inspection = inspectionService.schedule({
+  it('should calculate technical conformity score after inspection', async () => {
+    const inspection = await inspectionService.schedule({
       date: new Date(),
       time: '10:00',
       inspectionType: 'technical',
@@ -48,7 +48,7 @@ describe('Checklist & Inspection System', () => {
     });
 
     // Simulate completion with 100% conformity
-    inspectionService.update(inspection.id, {
+    await inspectionService.update(inspection.id, {
       status: 'complete',
       conformityScore: 100,
       nonConformitiesFound: 0
@@ -58,15 +58,16 @@ describe('Checklist & Inspection System', () => {
     expect(stats).toBeGreaterThan(0);
   });
 
-  it('should track non-conformities found during inspection', () => {
-     const inspection = inspectionService.schedule({
+
+  it('should track non-conformities found during inspection', async () => {
+     const inspection = await inspectionService.schedule({
       date: new Date(),
       time: '14:00',
       inspectionType: 'technical',
       technician: 'tech-1'
     });
 
-    inspectionService.update(inspection.id, {
+    await inspectionService.update(inspection.id, {
       status: 'complete',
       conformityScore: 80,
       nonConformitiesFound: 2
@@ -76,4 +77,5 @@ describe('Checklist & Inspection System', () => {
     expect(updated?.nonConformitiesFound).toBe(2);
     expect(updated?.conformityScore).toBe(80);
   });
+
 });

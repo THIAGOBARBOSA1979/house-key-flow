@@ -115,9 +115,10 @@ export class NotificationService extends BaseService<ClientNotification> {
 
 
 
-  deleteNotification(notificationId: string): boolean {
-    return this.delete(notificationId);
+  async deleteNotification(notificationId: string): Promise<boolean> {
+    return await this.delete(notificationId);
   }
+
 
   getRecentNotifications(clientId: string, days: number = 7): ClientNotification[] {
     const cutoffDate = new Date();

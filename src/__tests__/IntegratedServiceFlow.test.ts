@@ -17,7 +17,7 @@ describe('Integrated Technical Flow (E2E Service Logic)', () => {
 
   it('should execute the full technical cycle from ticket to signature', async () => {
     // 1. Client opens a ticket
-    const ticket = supportService.createTicket(
+    const ticket = await supportService.createTicket(
       'user-1', 
       'João Client', 
       { subject: 'Vazamento', message: 'Urgente', priority: 'high', category: 'technical' },
@@ -25,8 +25,9 @@ describe('Integrated Technical Flow (E2E Service Logic)', () => {
     );
     expect(ticket.status).toBe('pending');
 
+
     // 2. Admin screens the ticket and schedules an inspection
-    const inspection = inspectionService.schedule({
+    const inspection = await inspectionService.schedule({
       date: new Date(),
       time: '09:00',
       inspectionType: 'technical',
@@ -37,19 +38,21 @@ describe('Integrated Technical Flow (E2E Service Logic)', () => {
       unit: ticket.unitNumber || '',
       client: ticket.clientName
     });
+
     
     expect(inspection.requestId).toBe(ticket.id);
     expect(inspection.status).toBe('pending');
 
     // 3. Technician completes the inspection checklist
-    inspectionService.update(inspection.id, {
+    await inspectionService.update(inspection.id, {
       status: 'complete',
       conformityScore: 95,
       notes: 'Reparo simples efetuado no local.'
     });
 
+
     // 4. System/Admin generates a technical report (Document)
-    const report = documentService.createDocument({
+    const report = await documentService.createDocument({
       title: `Relatório Técnico - Unidade ${inspection.unit}`,
       category: 'relatorio',
       associatedTo: { 
@@ -60,18 +63,21 @@ describe('Integrated Technical Flow (E2E Service Logic)', () => {
       status: 'published'
     });
 
+
     expect(report.category).toBe('relatorio');
 
     // 5. Digital signature flow
-    const clientSigner = documentService.addSigner(report.id, {
+    const clientSigner = await documentService.addSigner(report.id, {
       name: inspection.client,
       email: 'joao@client.com',
       role: 'Client',
       confirmationMethod: 'email'
     });
 
+
     if (clientSigner) {
-      const signed = documentService.signDocument(report.id, clientSigner.id);
+      const signed = await documentService.signDocument(report.id, clientSigner.id);
+
       expect(signed).toBe(true);
       
       const finalDoc = documentService.getById(report.id);
@@ -80,7 +86,7 @@ describe('Integrated Technical Flow (E2E Service Logic)', () => {
     }
 
     // 6. Close the original ticket
-    supportService.updateTicketStatus(ticket.id, 'closed');
+    await supportService.updateTicketStatus(ticket.id, 'closed');
     const finalTicket = supportService.getById(ticket.id);
     expect(finalTicket?.status).toBe('closed');
   });

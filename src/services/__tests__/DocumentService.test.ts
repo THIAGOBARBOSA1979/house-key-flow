@@ -9,8 +9,8 @@ describe('DocumentService - Digital Signature Flow', () => {
     (documentService as any).items = [];
   });
 
-  it('should create a document and add a signer', () => {
-    const doc = documentService.createDocument({
+  it('should create a document and add a signer', async () => {
+    const doc = await documentService.createDocument({
       title: 'Contrato de Teste',
       category: 'contrato'
     });
@@ -18,7 +18,7 @@ describe('DocumentService - Digital Signature Flow', () => {
     expect(doc.id).toBeDefined();
     expect(doc.approvalStatus).toBe('pending');
 
-    const signer = documentService.addSigner(doc.id, {
+    const signer = await documentService.addSigner(doc.id, {
       name: 'João Signatário',
       email: 'joao@teste.com',
       role: 'Testemunha',
@@ -33,16 +33,16 @@ describe('DocumentService - Digital Signature Flow', () => {
     expect(updatedDoc?.signatures?.[0].name).toBe('João Signatário');
   });
 
-  it('should sign a document successfully', () => {
-    const doc = documentService.createDocument({ title: 'Doc to Sign' });
-    const signer = documentService.addSigner(doc.id, {
+  it('should sign a document successfully', async () => {
+    const doc = await documentService.createDocument({ title: 'Doc to Sign' });
+    const signer = await documentService.addSigner(doc.id, {
       name: 'Signer',
       email: 's@s.com',
       role: 'Owner',
       confirmationMethod: 'sms'
     });
 
-    const success = documentService.signDocument(doc.id, signer!.id, 'sms', { ip: '127.0.0.1' });
+    const success = await documentService.signDocument(doc.id, signer!.id, 'sms', { ip: '127.0.0.1' });
     expect(success).toBe(true);
 
     const signedDoc = documentService.getDocumentById(doc.id);
@@ -51,20 +51,21 @@ describe('DocumentService - Digital Signature Flow', () => {
     expect(signedDoc?.signatures?.[0].signedAt).toBeDefined();
   });
 
-  it('should reject a signature with reason', () => {
-    const doc = documentService.createDocument({ title: 'Doc to Reject' });
-    const signer = documentService.addSigner(doc.id, {
+  it('should reject a signature with reason', async () => {
+    const doc = await documentService.createDocument({ title: 'Doc to Reject' });
+    const signer = await documentService.addSigner(doc.id, {
       name: 'Signer',
       email: 's@s.com',
       role: 'Owner',
       confirmationMethod: 'email'
     });
 
-    const success = documentService.rejectSignature(doc.id, signer!.id, 'Dados incorretos');
+    const success = await documentService.rejectSignature(doc.id, signer!.id, 'Dados incorretos');
     expect(success).toBe(true);
 
     const rejectedDoc = documentService.getDocumentById(doc.id);
     expect(rejectedDoc?.signatures?.[0].status).toBe('rejected');
     expect((rejectedDoc?.signatures?.[0] as any).rejectionReason).toBe('Dados incorretos');
   });
+
 });

@@ -38,31 +38,31 @@ describe('BaseService - Tenant Isolation', () => {
     (service as any).items = [];
   });
 
-  it('should restrict getAll for non-super-admins when no companyId is provided', () => {
-    service.create({ name: 'Item 1' }, 'comp-1');
+  it('should restrict getAll for non-super-admins when no companyId is provided', async () => {
+    await service.create({ name: 'Item 1' }, 'comp-1');
     const items = service.getAll();
     expect(items).toHaveLength(0);
   });
 
-  it('should return only tenant-specific items for non-super-admins', () => {
-    service.create({ name: 'Tenant 1 Item' }, 'comp-1');
-    service.create({ name: 'Tenant 2 Item' }, 'comp-2');
+  it('should return only tenant-specific items for non-super-admins', async () => {
+    await service.create({ name: 'Tenant 1 Item' }, 'comp-1');
+    await service.create({ name: 'Tenant 2 Item' }, 'comp-2');
     
     const tenant1Items = service.getAll('comp-1', false);
     expect(tenant1Items).toHaveLength(1);
     expect(tenant1Items[0].name).toBe('Tenant 1 Item');
   });
 
-  it('should return all items for super-admins', () => {
-    service.create({ name: 'Tenant 1 Item' }, 'comp-1');
-    service.create({ name: 'Tenant 2 Item' }, 'comp-2');
+  it('should return all items for super-admins', async () => {
+    await service.create({ name: 'Tenant 1 Item' }, 'comp-1');
+    await service.create({ name: 'Tenant 2 Item' }, 'comp-2');
     
     const allItems = service.getAll(undefined, true);
     expect(allItems).toHaveLength(2);
   });
 
-  it('should verify ownership on getById for non-super-admins', () => {
-    const item = service.create({ name: 'Private Item' }, 'comp-1');
+  it('should verify ownership on getById for non-super-admins', async () => {
+    const item = await service.create({ name: 'Private Item' }, 'comp-1');
     
     // Access from correct tenant
     expect(service.getById(item.id, 'comp-1')).toBeDefined();
@@ -73,4 +73,5 @@ describe('BaseService - Tenant Isolation', () => {
     // Access as super admin
     expect(service.getById(item.id, undefined, true)).toBeDefined();
   });
+
 });
