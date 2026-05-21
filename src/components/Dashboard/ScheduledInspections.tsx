@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, ClipboardCheck } from "lucide-react";
+import { ChevronRight, ClipboardCheck, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { InspectionItem } from "@/components/Inspection/InspectionItem";
 import { Inspection } from "@/services";
+import { EmptyState } from "@/components/Shared/EmptyState";
+import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
 
 interface ScheduledInspectionsProps {
   inspections: Inspection[];
@@ -41,9 +43,20 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
           ))
 
         ) : (
-          <div className="py-12 text-center bg-muted/10 rounded-2xl border border-dashed">
-            <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Nenhuma vistoria para hoje</p>
-          </div>
+          <EmptyState
+            icon={CalendarPlus}
+            title="Nenhuma Vistoria Agendada"
+            description="Mantenha sua produtividade em alta. Agende novas vistorias técnicas para garantir a qualidade das entregas."
+            action={
+              <ScheduleInspectionDialog 
+                triggerButton={
+                  <Button className="font-black uppercase tracking-widest text-[11px] px-8 h-12 rounded-xl shadow-sem-lg active:scale-95 transition-all">
+                    Agendar Agora
+                  </Button>
+                }
+              />
+            }
+          />
         )}
       </div>
     </section>
