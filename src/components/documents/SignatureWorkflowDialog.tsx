@@ -68,20 +68,21 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
       order: signatures.length + 1
     };
 
-    const added = documentService.addSigner(documentId, signer);
-    if (added) {
-      setSignatures([...signatures, added]);
-      setNewSigner({
-        name: "",
-        email: "",
-        role: "Comprador",
-        confirmationMethod: "email"
-      });
-      toast({
-        title: "Signatário Adicionado",
-        description: `${newSigner.name} foi incluído no fluxo de assinatura.`
-      });
-    }
+    documentService.addSigner(documentId, signer).then(added => {
+      if (added) {
+        setSignatures([...signatures, added]);
+        setNewSigner({
+          name: "",
+          email: "",
+          role: "Comprador",
+          confirmationMethod: "email"
+        });
+        toast({
+          title: "Signatário Adicionado",
+          description: `${newSigner.name} foi incluído no fluxo de assinatura.`
+        });
+      }
+    });
   };
 
   const handleRemoveSigner = async (signerId: string) => {

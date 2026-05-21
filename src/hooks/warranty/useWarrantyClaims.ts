@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { warrantyFlowService, warrantyValidationService, eventAutomationService } from "@/services";
 import { WarrantyItem } from "@/types/warranty";
+import { WarrantyRequestFlow, WarrantyMetrics } from "@/types/warrantyFlow";
 import { errorHandler } from "@/utils/errors/ErrorHandler";
 
 export const useWarrantyClaims = (clientId: string, userName?: string) => {
@@ -11,9 +12,9 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   const companyId = user?.company_id;
   const isSuperAdmin = !!user?.is_super_admin;
   
-  const [claims, setClaims] = useState<any[]>([]);
+  const [claims, setClaims] = useState<WarrantyRequestFlow[]>([]);
   const [error, setError] = useState<unknown>(null);
-  const [metrics, setMetrics] = useState<any>({ totalActiveRequests: 0, pendingRequests: 0, averageResolutionDays: 0, slaComplianceRate: 0 });
+  const [metrics, setMetrics] = useState<WarrantyMetrics | null>(null);
 
   const fetchClaims = useCallback(async () => {
     try {
@@ -50,15 +51,15 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
       userName || "Cliente", 
       info
     );
-    if (result.success) {
-      setClaims(prev => prev.map(c => c.id === claimId ? result.request : c));
+    if (result.success && result.request) {
+      setClaims(prev => prev.map(c => c.id === claimId ? result.request! : c));
       toast({ title: "Informações adicionadas", description: "As informações foram anexadas à sua solicitação." });
       return true;
     }
     return false;
   }, [clientId, userName, toast]);
 
-  const createClaim = useCallback(async (selectedItem: WarrantyItem, data: any) => {
+  const createClaim = useCallback(async (selectedItem: WarrantyItem, data: { title: string; problems: any[]; additionalInfo?: string }) => {
     const result = await warrantyValidationService.validateAndCreateRequest(
       selectedItem.id,
       clientId,
@@ -72,11 +73,15 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     if (!result.success) {
       toast({
         title: "Erro na solicitação",
-        description: (result as any).error.error,
+        description: (result as any).error?.error || "Erro desconhecido",
         variant: "destructive"
       });
       return false;
     }
+    
+    // As the new request is created in the flow service, we should re-fetch or find it
+    // For now we re-fetch to ensure consistency with backend
+    await fetchClaims();
     
     eventAutomationService.onWarrantyRequested(
       result.request.id,
@@ -84,13 +89,12 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
       selectedItem.name
     );
     
-    setClaims(prev => [result.request, ...prev]);
     toast({
       title: "Solicitação enviada",
       description: "Sua solicitação de garantia foi enviada com sucesso."
     });
     return true;
-  }, [clientId, toast]);
+  }, [clientId, toast, fetchClaims]);
 
   return {
     claims,

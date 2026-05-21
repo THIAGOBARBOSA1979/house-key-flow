@@ -66,10 +66,10 @@ export function DocumentsDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {Object.entries(stats.byCategory).map(([category, count]) => (
+            {Object.entries(stats.byCategory || {}).map(([category, count]) => (
               <div key={category} className="flex items-center justify-between p-3 border rounded-lg">
                 <span className="font-medium text-xs uppercase tracking-tight">{category}</span>
-                <Badge variant="secondary">{count}</Badge>
+                <Badge variant="secondary">{String(count)}</Badge>
               </div>
             ))}
           </div>

@@ -60,8 +60,11 @@ export const useSaaSAdmin = () => {
         name: newCompany.name,
         slug: newCompany.slug,
         status: 'active',
-        subscription_plan: newCompany.plan
-      });
+        subscription_plan: newCompany.plan,
+        owner_id: user?.id || "system",
+        created_at: new Date(),
+        updated_at: new Date()
+      } as Omit<Company, "id">);
       refreshCompanies();
       setIsAddOpen(false);
       setNewCompany({ name: '', slug: '', plan: 'basic' });
@@ -69,7 +72,51 @@ export const useSaaSAdmin = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [newCompany, refreshCompanies, toast]);
+  }, [newCompany, refreshCompanies, toast, user]);
+
+  const handleUpdateSubscription = useCallback(async (id: string, plan: SubscriptionPlan, expiresAt: string) => {
+    setIsSaving(true);
+    try {
+      await companyService.updateSubscription(id, plan, expiresAt ? new Date(expiresAt) : undefined);
+      refreshCompanies();
+      setIsUpdatingSub(false);
+      toast({ title: "Assinatura atualizada" });
+    } finally {
+      setIsSaving(false);
+    }
+  }, [refreshCompanies, toast]);
+
+  const handleSaveEdit = useCallback(async (id: string, data: Partial<Company>) => {
+    setIsSaving(true);
+    try {
+      await companyService.update(id, data, true);
+      refreshCompanies();
+      setIsEditing(false);
+      toast({ title: "Dados salvos com sucesso" });
+    } finally {
+      setIsSaving(false);
+    }
+  }, [refreshCompanies, toast]);
+
+  const handleDeleteCompany = useCallback(async (id: string) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta empresa? Esta ação é irreversível.")) return;
+    setIsSaving(true);
+    try {
+      await companyService.delete(id);
+      refreshCompanies();
+      setSelectedCompany(null);
+      toast({ title: "Empresa excluída permanentemente" });
+    } finally {
+      setIsSaving(false);
+    }
+  }, [refreshCompanies, toast]);
+
+  const startEditing = useCallback(() => {
+    if (selectedCompany) {
+      setEditData({ ...selectedCompany });
+      setIsEditing(true);
+    }
+  }, [selectedCompany]);
 
   return {
     user,
@@ -94,6 +141,10 @@ export const useSaaSAdmin = () => {
     totalUsers,
     handleToggleStatus,
     handleAddCompany,
+    handleUpdateSubscription,
+    handleSaveEdit,
+    handleDeleteCompany,
+    startEditing,
     refreshCompanies
   };
 };

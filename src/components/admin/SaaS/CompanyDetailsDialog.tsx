@@ -37,13 +37,13 @@ interface CompanyDetailsDialogProps {
   setEditData: (data: any) => void;
   slugError: string | null;
   isSaving: boolean;
-  onSave: () => void;
+  onSave: (data: Partial<Company>) => void;
   onStartEditing: () => void;
   isUpdatingSub: boolean;
   setIsUpdatingSub: (val: boolean) => void;
   expiryDate: string;
   setExpiryDate: (val: string) => void;
-  onUpdateSub: () => void;
+  onUpdateSub: (plan: SubscriptionPlan, expiresAt: string) => void;
   onToggleStatus: (id: string, status: any) => void;
   onDelete: (id: string) => void;
   companyUsers: User[];
@@ -146,7 +146,7 @@ export const CompanyDetailsDialog: React.FC<CompanyDetailsDialogProps> = ({
 
             <div className="flex gap-3 justify-end pt-4 border-t">
               <Button variant="ghost" onClick={() => setIsEditing(false)} className="rounded-xl h-11 px-6 font-bold">Cancelar</Button>
-              <Button onClick={onSave} disabled={isSaving} className="rounded-xl h-11 px-8 font-black uppercase tracking-widest text-xs gap-2">
+              <Button onClick={() => onSave(editData)} disabled={isSaving} className="rounded-xl h-11 px-8 font-black uppercase tracking-widest text-xs gap-2">
                 <Save className="w-4 h-4" /> 
                 {isSaving ? "Salvando..." : "Salvar Alterações"}
               </Button>
@@ -302,7 +302,7 @@ export const CompanyDetailsDialog: React.FC<CompanyDetailsDialogProps> = ({
                     <Label className="text-[10px] font-bold uppercase">Nova Data de Expiração</Label>
                     <Input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="h-11 rounded-xl" />
                   </div>
-                  <Button className="h-11 rounded-xl font-black uppercase tracking-widest text-xs" onClick={onUpdateSub}>
+                  <Button className="h-11 rounded-xl font-black uppercase tracking-widest text-xs" onClick={() => onUpdateSub(selectedCompany.subscription_plan, expiryDate)}>
                     Confirmar Nova Data
                   </Button>
                 </div>

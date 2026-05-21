@@ -21,6 +21,8 @@ export interface DocumentVersion {
   createdAt: Date;
   createdBy: string;
   changeNotes?: string;
+  changes?: string; // Mantido para compatibilidade com UI
+  template?: string; // Mantido para compatibilidade com UI
 }
 
 export interface ApprovalHistoryEntry {
@@ -29,6 +31,8 @@ export interface ApprovalHistoryEntry {
   by: string;
   at: Date;
   comment?: string;
+  performedBy?: string; // Mantido para compatibilidade com UI
+  performedAt?: Date;   // Mantido para compatibilidade com UI
 }
 
 export interface Document {
@@ -131,14 +135,15 @@ class DocumentService extends SupabaseBaseService<Document> {
   }
 
   async create(item: Omit<Document, "id">, companyId?: string): Promise<Document> {
+    const now = new Date();
     return await super.create({
       ...item,
-      version: 1,
-      approvalStatus: "pending",
-      downloads: 0,
-      viewCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      version: item.version || 1,
+      approvalStatus: item.approvalStatus || "pending",
+      downloads: item.downloads || 0,
+      viewCount: item.viewCount || 0,
+      createdAt: item.createdAt || now,
+      updatedAt: item.updatedAt || now,
       status: item.status || "draft"
     }, companyId);
   }
@@ -195,7 +200,7 @@ class DocumentService extends SupabaseBaseService<Document> {
     return await this.create({
       ...rest,
       title: `${doc.title} (Cópia)`
-    });
+    } as Omit<Document, "id">);
   }
 
   async getCategories() {
