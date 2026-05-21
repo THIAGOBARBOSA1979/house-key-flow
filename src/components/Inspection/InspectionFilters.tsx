@@ -1,4 +1,4 @@
-
+import { memo } from "react";
 import { Filter, Building } from "lucide-react";
 import { FilterBar } from "@/components/Layout/FilterBar";
 import { 
@@ -22,7 +22,7 @@ interface InspectionFiltersProps {
   properties?: string[];
 }
 
-export const InspectionFilters = ({ 
+export const InspectionFilters = memo(({ 
   searchTerm, 
   onSearchChange, 
   filters, 
@@ -75,4 +75,4 @@ export const InspectionFilters = ({
       </div>
     </FilterBar>
   );
-};
+});
