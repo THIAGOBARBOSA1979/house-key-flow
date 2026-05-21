@@ -116,6 +116,7 @@ export default function Inspections() {
             viewMode={viewMode}
 
 
+
             itemsPerPage={6}
             gridClassName="grid-cols-1 xl:grid-cols-2"
             renderGrid={(inspection) => (
