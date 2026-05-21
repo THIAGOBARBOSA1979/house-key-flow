@@ -1,5 +1,7 @@
 import { Supabase, FilterParams } from '@/integrations/supabase';
 import { BaseService, BaseServiceOptions } from './BaseService';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+
 import { Database } from '@/integrations/supabase/types';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
@@ -52,9 +54,10 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
   }
 
   private handleSyncError(error: any): T[] {
-    console.error(`[SupabaseBaseService] Sync failed for ${this.supabaseTable}:`, error);
+    errorHandler.handle(error, `SupabaseBaseService:${this.supabaseTable}:sync`);
     return this.items;
   }
+
 
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const newItem = super.create(item, companyId);

@@ -1,5 +1,8 @@
 import { io, Socket } from 'socket.io-client';
 import { toast } from '@/components/ui/use-toast';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+import { ErrorCode } from '@/utils/errors/AppError';
+
 
 interface TicketUpdateData {
   id: string;
@@ -43,9 +46,10 @@ export class SyncService {
       this.isInitialized = true;
       console.log('SyncService: Inicializado com sucesso');
     } catch (error) {
-      console.error('SyncService: Erro na inicialização:', error);
+      errorHandler.handle(error, 'SyncService:initialize');
       this.isInitialized = true;
     }
+
   }
 
   private static setupEventListeners() {

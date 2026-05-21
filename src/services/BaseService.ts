@@ -50,10 +50,10 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
   protected handleError(error: any, context: string): never {
-    const message = error?.message || "An unexpected error occurred";
-    console.error(`[BaseService:${this.options.storageKey}] ${context}:`, error);
-    throw new Error(`${context}: ${message}`);
+    const { errorHandler } = require("@/utils/errors/ErrorHandler");
+    throw errorHandler.handle(error, `BaseService:${this.options.storageKey}:${context}`);
   }
+
 
 
   protected loadFromStorage() {
