@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Activity, Shield, Download, Trash2, Filter, Search, RotateCw } from "lucide-react";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
-import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
+import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { useToast } from "@/hooks";
 import { exportService } from "@/services";
 import { auditLogService } from "@/services";

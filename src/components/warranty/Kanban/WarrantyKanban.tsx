@@ -33,7 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RefreshCw, AlertCircle, LayoutGrid, List, CheckSquare, MoveRight, UserCheck } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ScheduleInspectionForm } from "@/components/Inspection/ScheduleInspectionForm";
+import { ScheduleInspectionForm } from "@/components/inspection/ScheduleInspectionForm";
 import { cn } from "@/lib/utils";
 
 

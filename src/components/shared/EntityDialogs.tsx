@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { FormDialog } from "@/components/Shared/FormDialog";
+import { FormDialog } from "@/components/shared/FormDialog";
 
 interface EntityDialogsProps<T> {
   entityName: string;

@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Filter, Building } from "lucide-react";
-import { FilterBar } from "@/components/Layout/FilterBar";
+import { FilterBar } from "@/components/layout/FilterBar";
 import { 
   Select, 
   SelectContent, 

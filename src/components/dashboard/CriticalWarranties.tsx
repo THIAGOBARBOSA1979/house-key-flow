@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useWarranty } from "@/hooks";
 
 export const CriticalWarranties = () => {

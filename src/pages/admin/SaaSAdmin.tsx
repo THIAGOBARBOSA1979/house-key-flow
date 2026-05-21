@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { PageTemplate } from "@/components/Layout/PageTemplate";
+import { PageTemplate } from "@/components/layout/PageTemplate";
 import { Company } from "@/services";
-import { DataTable } from "@/components/Shared/DataTable";
+import { DataTable } from "@/components/shared/DataTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -34,12 +34,12 @@ import { Separator } from "@/components/ui/separator";
 import { Navigate } from "react-router-dom";
 
 import { useSaaSAdmin } from "@/hooks";
-import { SaaSStats } from "@/components/Admin/SaaS/SaaSStats";
-import { AddCompanyDialog } from "@/components/Admin/SaaS/AddCompanyDialog";
-import { CompanyDetailsDialog } from "@/components/Admin/SaaS/CompanyDetailsDialog";
-import { GovernanceManager } from "@/components/Admin/GovernanceManager";
-import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { SystemHealth } from "@/components/Admin/SaaS/SystemHealth";
+import { SaaSStats } from "@/components/admin/SaaS/SaaSStats";
+import { AddCompanyDialog } from "@/components/admin/SaaS/AddCompanyDialog";
+import { CompanyDetailsDialog } from "@/components/admin/SaaS/CompanyDetailsDialog";
+import { GovernanceManager } from "@/components/admin/GovernanceManager";
+import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
+import { SystemHealth } from "@/components/admin/SaaS/SystemHealth";
 
 import { propertyService } from "@/services";
 import { inspectionService } from "@/services";

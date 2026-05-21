@@ -13,7 +13,7 @@ import { ShieldCheck, FileText, Printer, Download, MapPin, User, Calendar, Clock
 import { WarrantyRequestFlow, WARRANTY_STAGES } from "@/types/warrantyFlow";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 
 interface TechnicalReportDialogProps {
   request: WarrantyRequestFlow | null;

@@ -9,21 +9,21 @@ import {
   BarChart
 } from "lucide-react";
 
-import { InspectionItem } from "@/components/Inspection/InspectionItem";
-import { PageTemplate } from "@/components/Layout/PageTemplate";
-import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
+import { InspectionItem } from "@/components/inspection/InspectionItem";
+import { PageTemplate } from "@/components/layout/PageTemplate";
+import { ScheduleInspectionDialog } from "@/components/inspection/ScheduleInspectionDialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
+import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { Inspection } from "@/types/inspection";
-import { InspectionCalendar } from "@/components/Inspection/InspectionCalendar";
-import { DataView } from "@/components/Shared/DataView";
+import { InspectionCalendar } from "@/components/inspection/InspectionCalendar";
+import { DataView } from "@/components/shared/DataView";
 import { useInspections, useConfirm } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { DataViewMode } from "@/types";
-import { InspectionStats } from "@/components/Inspection/InspectionStats";
-import { InspectionFilters } from "@/components/Inspection/InspectionFilters";
-import { InspectionAnalytics } from "@/components/Inspection/InspectionAnalytics";
+import { InspectionStats } from "@/components/inspection/InspectionStats";
+import { InspectionFilters } from "@/components/inspection/InspectionFilters";
+import { InspectionAnalytics } from "@/components/inspection/InspectionAnalytics";
 
 export default function Inspections() {
   const {

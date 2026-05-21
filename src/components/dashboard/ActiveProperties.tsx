@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DataView } from "@/components/Shared/DataView";
-import { PropertyCard } from "@/components/Properties/PropertyCard";
+import { DataView } from "@/components/shared/DataView";
+import { PropertyCard } from "@/components/properties/PropertyCard";
 import { useProperties } from "@/hooks";
 
 

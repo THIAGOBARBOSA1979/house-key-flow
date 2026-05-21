@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { ErrorView } from "@/components/Shared/ErrorView";
+import { ErrorView } from "@/components/shared/ErrorView";
 import { propertyService } from "@/services/operations/PropertyService";
 
 import { Button } from "@/components/ui/button";
@@ -8,25 +8,25 @@ import {
   FileText, Lock, Info, TrendingUp, AlertTriangle, Activity, 
   History, ArrowRight, ChevronRight, MessageSquare, ShieldCheck, PenTool
 } from "lucide-react";
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { safeFormat } from "@/lib/utils";
-import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
-import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
+import { DocumentPreviewDialog } from "@/components/documents/DocumentPreviewDialog";
+import { DigitalSignatureDialog } from "@/components/documents/DigitalSignatureDialog";
 import { documentService } from "@/services";
 import { useToast } from "@/hooks";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
 import { inspectionService } from "@/services";
-import { ClientTimeline } from "@/components/ClientFlow/ClientTimeline";
+import { ClientTimeline } from "@/components/clientFlow/ClientTimeline";
 import { TimelineItem } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
-import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
+import { FeatureGate } from "@/components/clientFlow/FeatureGate";
 
 export default function ClientInspections() {
   const { user } = useAuth();

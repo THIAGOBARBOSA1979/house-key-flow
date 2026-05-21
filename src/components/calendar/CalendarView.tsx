@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Calendar } from "@/components/ui/calendar";
 import { AppointmentItem } from "./AppointmentItem";
 import { Appointment } from "@/types";
-import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
+import { ScheduleInspectionDialog } from "@/components/inspection/ScheduleInspectionDialog";
 import { Button } from "@/components/ui/button";
 
 interface CalendarViewProps {

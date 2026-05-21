@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook, FileText, Activity, Layers } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import WebhooksConfig from "@/components/Settings/WebhooksConfig";
-import { AuditLogViewer } from "@/components/Admin/AuditLogViewer";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import WebhooksConfig from "@/components/settings/WebhooksConfig";
+import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { useSettings } from "@/hooks/identity/useSettings";
-import { GeneralTab } from "@/components/Settings/GeneralTab";
-import { CompanyTab } from "@/components/Settings/CompanyTab";
-import { BrandingTab } from "@/components/Settings/BrandingTab";
-import { NotificationsTab } from "@/components/Settings/NotificationsTab";
-import { SecurityTab } from "@/components/Settings/SecurityTab";
-import { WarrantyTab } from "@/components/Settings/WarrantyTab";
+import { GeneralTab } from "@/components/settings/GeneralTab";
+import { CompanyTab } from "@/components/settings/CompanyTab";
+import { BrandingTab } from "@/components/settings/BrandingTab";
+import { NotificationsTab } from "@/components/settings/NotificationsTab";
+import { SecurityTab } from "@/components/settings/SecurityTab";
+import { WarrantyTab } from "@/components/settings/WarrantyTab";
 
 const Settings = () => {
   const {

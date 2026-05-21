@@ -1,6 +1,6 @@
 import { Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { SystemHealthMetrics } from "@/services";
 
 interface SystemHealthProps {

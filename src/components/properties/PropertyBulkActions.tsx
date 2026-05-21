@@ -1,5 +1,5 @@
 import { Trash2 } from "lucide-react";
-import { BulkActions, BulkActionItem } from "@/components/Shared/BulkActions";
+import { BulkActions, BulkActionItem } from "@/components/shared/BulkActions";
 
 interface PropertyBulkActionsProps {
   selectedCount: number;

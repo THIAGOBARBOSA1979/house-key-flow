@@ -6,18 +6,18 @@ import {
   Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/Layout/PageHeader";
-import { Stats } from "@/components/Dashboard/Stats";
-import { DashboardCharts } from "@/components/Dashboard/DashboardCharts";
-import { QuickActions } from "@/components/Dashboard/QuickActions";
-import { ActiveProperties } from "@/components/Dashboard/ActiveProperties";
-import { ScheduledInspections } from "@/components/Dashboard/ScheduledInspections";
-import { SystemHealth } from "@/components/Dashboard/SystemHealth";
-import { CriticalWarranties } from "@/components/Dashboard/CriticalWarranties";
-import { RecentTickets } from "@/components/Dashboard/RecentTickets";
-import { SystemAuditTimeline } from "@/components/Dashboard/SystemAuditTimeline";
-import { GeneralSummary } from "@/components/Dashboard/GeneralSummary";
-import { PendingDocuments } from "@/components/Dashboard/PendingDocuments";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { Stats } from "@/components/dashboard/Stats";
+import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
+import { QuickActions } from "@/components/dashboard/QuickActions";
+import { ActiveProperties } from "@/components/dashboard/ActiveProperties";
+import { ScheduledInspections } from "@/components/dashboard/ScheduledInspections";
+import { SystemHealth } from "@/components/dashboard/SystemHealth";
+import { CriticalWarranties } from "@/components/dashboard/CriticalWarranties";
+import { RecentTickets } from "@/components/dashboard/RecentTickets";
+import { SystemAuditTimeline } from "@/components/dashboard/SystemAuditTimeline";
+import { GeneralSummary } from "@/components/dashboard/GeneralSummary";
+import { PendingDocuments } from "@/components/dashboard/PendingDocuments";
 import { useDashboardData } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
 

@@ -1,7 +1,7 @@
 import { FilterX, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FilterBar } from "@/components/Layout/FilterBar";
+import { FilterBar } from "@/components/layout/FilterBar";
 import { Property } from "@/types/property";
 
 interface PropertyFiltersProps {

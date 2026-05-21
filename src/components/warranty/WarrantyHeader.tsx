@@ -23,7 +23,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { exportService } from "@/services";
 import { warrantyFlowService } from "@/services";
 

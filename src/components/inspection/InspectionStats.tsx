@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { CheckCircle, Clock, AlertTriangle, TrendingUp } from "lucide-react";
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 
 interface InspectionStatsProps {
   stats: {

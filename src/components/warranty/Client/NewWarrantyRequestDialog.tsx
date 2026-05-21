@@ -6,8 +6,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { WarrantyItemSelector } from "@/components/Warranty/WarrantyItemSelector";
-import { EnhancedWarrantyRequestForm } from "@/components/Warranty/EnhancedWarrantyRequestForm";
+import { WarrantyItemSelector } from "@/components/warranty/WarrantyItemSelector";
+import { EnhancedWarrantyRequestForm } from "@/components/warranty/EnhancedWarrantyRequestForm";
 import { WarrantyItem } from "@/types/warranty";
 
 interface NewWarrantyRequestDialogProps {

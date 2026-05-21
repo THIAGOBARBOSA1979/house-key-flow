@@ -1,6 +1,6 @@
 
 import React from "react";
-import { FormDialog } from "@/components/Shared/FormDialog";
+import { FormDialog } from "@/components/shared/FormDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ScheduleInspectionForm } from "./ScheduleInspectionForm";

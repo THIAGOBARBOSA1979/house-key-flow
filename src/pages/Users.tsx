@@ -1,12 +1,12 @@
 import { useState, useCallback } from "react";
 import { Users as UsersIcon, Plus, Upload, MoreHorizontal, Pencil, Trash2, ShieldCheck, Mail } from "lucide-react";
-import { PageTemplate } from "@/components/Layout/PageTemplate";
+import { PageTemplate } from "@/components/layout/PageTemplate";
 import { Button } from "@/components/ui/button";
 import { UserFilters } from "@/components/identity/UserFilters";
 import { UserCard } from "@/components/identity/UserCard";
 import { UserDialogs } from "@/components/identity/UserDialogs";
 import { useToast, useConfirm } from "@/hooks";
-import { DataView } from "@/components/Shared/DataView";
+import { DataView } from "@/components/shared/DataView";
 import { DataViewMode } from "@/types";
 import { exportService } from "@/services";
 import { useUsers } from "@/hooks";
@@ -15,7 +15,7 @@ import { UserStats } from "@/components/identity/UserStats";
 import { UserActionBanner } from "@/components/identity/UserActionBanner";
 import { UserBulkActions } from "@/components/identity/UserBulkActions";
 import { Checkbox } from "@/components/ui/checkbox";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 

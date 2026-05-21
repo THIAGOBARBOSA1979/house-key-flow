@@ -1,8 +1,8 @@
 import { CalendarIcon, Filter, FileCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
-import { PageHeader } from "@/components/Layout/PageHeader";
+import { ScheduleInspectionDialog } from "@/components/inspection/ScheduleInspectionDialog";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 interface CalendarHeaderProps {
   onChangeView: (view: string) => void;

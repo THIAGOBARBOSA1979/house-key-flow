@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { FileText, Star, Clock, Archive, AlertTriangle, TrendingUp } from "lucide-react";
 import { documentService } from "@/services";
-import { StatsCard } from "@/components/Shared/StatsCard";
+import { StatsCard } from "@/components/shared/StatsCard";
 
 export function DocumentsDashboard() {
   const stats = documentService.getDocumentStats();

@@ -1,7 +1,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { UploadDocumentDialog } from '../components/Documents/UploadDocumentDialog';
+import { UploadDocumentDialog } from '../components/documents/UploadDocumentDialog';
 import { documentService } from '@/services';
 import { Toaster } from '../components/ui/toaster';
 

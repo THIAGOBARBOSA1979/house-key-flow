@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { StatusBadge } from "@/components/Shared/StatusBadge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import {
   Star, AlertTriangle, Archive, BarChart, PenTool, ShieldCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DigitalSignatureDialog } from "@/components/Documents/DigitalSignatureDialog";
+import { DigitalSignatureDialog } from "@/components/documents/DigitalSignatureDialog";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -21,12 +21,12 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks";
 import { documentService, Document } from "@/services";
-import { StatsCard } from "@/components/Shared/StatsCard";
-import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
-import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
+import { DocumentPreviewDialog } from "@/components/documents/DocumentPreviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks";
-import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
+import { FeatureGate } from "@/components/clientFlow/FeatureGate";
 
 interface ClientDocument extends Omit<Document, 'status'> {
   size?: string;

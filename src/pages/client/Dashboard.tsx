@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { ErrorView } from "@/components/Shared/ErrorView";
+import { ErrorView } from "@/components/shared/ErrorView";
 
 import { 
   TrendingUp, 
@@ -12,14 +12,14 @@ import { propertyService } from "@/services/operations/PropertyService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useClientStage } from "@/hooks";
 import { useMemo } from "react";
-import { ClientTimeline, TimelineStep } from "@/components/Client/ClientTimeline";
-import { ConstructionFeed } from "@/components/Client/ConstructionFeed";
+import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
+import { ConstructionFeed } from "@/components/client/ConstructionFeed";
 import { Skeleton } from "@/components/ui/skeleton";
-import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
+import { StageIndicator } from "@/components/clientFlow/StageIndicator";
 import { useClientDashboardData } from "@/hooks/core/useClientDashboardData";
-import { PropertyInfoCard } from "@/components/Dashboard/Client/PropertyInfoCard";
-import { ReferralCard } from "@/components/Dashboard/Client/ReferralCard";
-import { TechnicalSheet } from "@/components/Dashboard/Client/TechnicalSheet";
+import { PropertyInfoCard } from "@/components/dashboard/Client/PropertyInfoCard";
+import { ReferralCard } from "@/components/dashboard/Client/ReferralCard";
+import { TechnicalSheet } from "@/components/dashboard/Client/TechnicalSheet";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";

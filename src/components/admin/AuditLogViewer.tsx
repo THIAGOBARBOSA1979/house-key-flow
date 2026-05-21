@@ -27,7 +27,7 @@ import { cn, safeFormat } from "@/lib/utils";
 import { auditLogService, AuditLogEntry, AuditEntityType, AuditAction } from "@/services";
 import { exportService } from "@/services";
 import { useAuth } from "@/contexts/AuthContext";
-import { DataTable } from "@/components/Shared/DataTable";
+import { DataTable } from "@/components/shared/DataTable";
 import {
   Dialog,
   DialogContent,

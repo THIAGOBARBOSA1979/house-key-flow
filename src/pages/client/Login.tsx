@@ -17,7 +17,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useAuthForm } from "@/hooks/identity/useAuthForm";
-import { LoginForm } from "@/components/Auth/LoginForm";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 export default function ClientLogin() {
   const authForm = useAuthForm("client");

@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { inspectionService } from "@/services";
 import { useService, useDataList } from "@/hooks";
-import { getUnifiedAppointments } from "@/components/Calendar/AppointmentData";
+import { getUnifiedAppointments } from "@/components/calendar/AppointmentData";
 import { Appointment } from "@/types";
 
 export const useCalendar = () => {

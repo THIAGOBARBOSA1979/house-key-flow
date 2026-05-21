@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight, ClipboardCheck, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { InspectionItem } from "@/components/Inspection/InspectionItem";
+import { InspectionItem } from "@/components/inspection/InspectionItem";
 import { Inspection } from "@/services";
-import { EmptyState } from "@/components/Shared/EmptyState";
-import { ScheduleInspectionDialog } from "@/components/Inspection/ScheduleInspectionDialog";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ScheduleInspectionDialog } from "@/components/inspection/ScheduleInspectionDialog";
 
 interface ScheduledInspectionsProps {
   inspections: Inspection[];
