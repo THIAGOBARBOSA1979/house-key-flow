@@ -100,7 +100,7 @@ class EventAutomationService {
   }
 
   // Process inspection rejected event
-  onInspectionRejected(inspectionId: string, clientId: string, reason?: string): AutomationResult {
+  async onInspectionRejected(inspectionId: string, clientId: string, reason?: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -146,7 +146,7 @@ class EventAutomationService {
   }
 
   // Process inspection scheduled event
-  onInspectionScheduled(inspectionId: string, clientId: string, scheduledDate: Date): AutomationResult {
+  async onInspectionScheduled(inspectionId: string, clientId: string, scheduledDate: Date): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -190,7 +190,7 @@ class EventAutomationService {
   }
 
   // Process warranty request created event
-  onWarrantyRequested(warrantyId: string, clientId: string, itemName: string): AutomationResult {
+  async onWarrantyRequested(warrantyId: string, clientId: string, itemName: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -234,7 +234,7 @@ class EventAutomationService {
   }
 
   // Process warranty completed event
-  onWarrantyCompleted(warrantyId: string, clientId: string): AutomationResult {
+  async onWarrantyCompleted(warrantyId: string, clientId: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -271,7 +271,7 @@ class EventAutomationService {
   }
 
   // Generic event processor
-  processEvent(event: { type: EventType; clientId: string; entityId?: string; data?: any }): AutomationResult {
+  async processEvent(event: { type: EventType; clientId: string; entityId?: string; data?: any }): Promise<AutomationResult> {
     switch (event.type) {
       case 'inspection_approved':
         return this.onInspectionApproved(event.entityId || '', event.clientId);
