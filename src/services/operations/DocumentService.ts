@@ -102,7 +102,24 @@ class DocumentService extends SupabaseBaseService<Document> {
     return doc?.signatures || []; 
   }
   
-  async createDocument(data: Omit<Document, "id">) { return await this.create(data); }
+  async createDocument(data: Partial<Document>) { 
+    return await this.create({
+      title: "Novo Documento",
+      type: "manual",
+      category: "Geral",
+      status: "draft",
+      visible: true,
+      associatedTo: {},
+      version: 1,
+      approvalStatus: "pending",
+      downloads: 0,
+      viewCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...data
+    } as Omit<Document, "id">); 
+  }
+
   async updateDocument(id: string, data: Partial<Document>) { return await this.update(id, data); }
   async deleteDocument(id: string) { return await this.delete(id); }
   async deleteMultipleDocuments(ids: string[]) { return await this.bulkDelete(ids); }
@@ -139,14 +156,17 @@ class DocumentService extends SupabaseBaseService<Document> {
   async create(item: Omit<Document, "id">, companyId?: string): Promise<Document> {
     const now = new Date();
     return await super.create({
-      ...item,
-      version: item.version || 1,
-      approvalStatus: item.approvalStatus || "pending",
-      downloads: item.downloads || 0,
-      viewCount: item.viewCount || 0,
-      createdAt: item.createdAt || now,
-      updatedAt: item.updatedAt || now,
-      status: item.status || "draft"
+      version: 1,
+      approvalStatus: "pending",
+      downloads: 0,
+      viewCount: 0,
+      createdAt: now,
+      updatedAt: now,
+      status: "draft",
+      type: "manual",
+      visible: true,
+      associatedTo: {},
+      ...item
     }, companyId);
   }
 
@@ -230,7 +250,6 @@ class DocumentService extends SupabaseBaseService<Document> {
   }
 
   async generateDocument(type: string, data: Partial<Document>) {
-    // Placeholder for document generation logic
     return await this.create({
       title: `Documento Gerado - ${type}`,
       category: "Gerados",
