@@ -65,7 +65,7 @@ class PropertyService extends SupabaseBaseService<Property> {
       supabaseTable: "properties",
       auditEntityType: "property",
       shouldSyncWithSupabase: true
-    }, INITIAL_PROPERTIES);
+    }, import.meta.env.DEV ? INITIAL_PROPERTIES : []);
     this.initializeRealtime();
   }
 

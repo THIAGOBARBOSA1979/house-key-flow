@@ -58,19 +58,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     navigate('/');
   }, [navigate, toast]);
 
-  const checkAuth = useCallback(() => {
+  const checkAuth = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const storedUser = localStorage.getItem('auth_user');
+      // Source of truth: Supabase session
+      const { data: { session } } = await Supabase.auth.getSession();
       
-      if (storedUser) {
-        try {
-          const parsedUser = JSON.parse(storedUser);
-          if (parsedUser && typeof parsedUser === 'object' && parsedUser.id) {
-            setUser(parsedUser);
+      if (session?.user) {
+        const authenticatedUser: User = {
+          id: session.user.id,
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
+          email: session.user.email || '',
+          role: (session.user.user_metadata?.role as any) || 'client',
+          status: 'active',
+          company_id: session.user.user_metadata?.company_id,
+          is_super_admin: session.user.user_metadata?.role === 'super_admin'
+        };
+        setUser(authenticatedUser);
+      } else {
+        // Fallback to local storage ONLY if no supabase session
+        const storedUser = localStorage.getItem('auth_user');
+        if (storedUser) {
+          try {
+            const parsedUser = JSON.parse(storedUser);
+            if (parsedUser && typeof parsedUser === 'object' && parsedUser.id) {
+              setUser(parsedUser);
+            }
+          } catch (e) {
+            localStorage.removeItem('auth_user');
           }
-        } catch (e) {
-          console.error('Falha ao processar dados de autenticação:', e);
-          localStorage.removeItem('auth_user');
         }
       }
     } catch (error) {
@@ -83,8 +99,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Check for existing session on mount
   useEffect(() => {
     checkAuth();
+    
+    // Listen for auth changes
+    const subscription = Supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        localStorage.removeItem('auth_user');
+      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) {
+          const authenticatedUser: User = {
+            id: session.user.id,
+            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
+            email: session.user.email || '',
+            role: (session.user.user_metadata?.role as any) || 'client',
+            status: 'active',
+            company_id: session.user.user_metadata?.company_id,
+            is_super_admin: session.user.user_metadata?.role === 'super_admin'
+          };
+          setUser(authenticatedUser);
+        }
+      }
+    });
+
     const cleanup = securityService.initialize(() => logout());
-    return cleanup;
+    
+    return () => {
+      subscription.unsubscribe();
+      cleanup();
+    };
   }, [checkAuth, logout]);
 
   const login = async (email: string, password: string, role: 'admin' | 'client' = 'admin') => {

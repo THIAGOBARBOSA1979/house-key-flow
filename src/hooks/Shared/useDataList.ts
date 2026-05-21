@@ -31,7 +31,10 @@ export function useDataList<T extends { id: string }>(
           item.name?.toLowerCase().includes(lowerSearch) ||
           item.title?.toLowerCase().includes(lowerSearch) ||
           item.description?.toLowerCase().includes(lowerSearch) ||
-          item.email?.toLowerCase().includes(lowerSearch)
+          item.email?.toLowerCase().includes(lowerSearch) ||
+          item.location?.toLowerCase().includes(lowerSearch) ||
+          item.unit?.toLowerCase().includes(lowerSearch) ||
+          item.propertyName?.toLowerCase().includes(lowerSearch)
         );
       });
     }

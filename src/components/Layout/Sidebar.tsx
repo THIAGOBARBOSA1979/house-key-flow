@@ -72,8 +72,10 @@ function SidebarContent({ collapsed, onToggleCollapse, onItemClick }: { collapse
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { logout, user } = useAuth();
-  const company = user?.company_id ? companyService.getById(user.company_id, undefined, true) : null;
-
+  
+  // Load company data using useService for proper state management and sync
+  const { items: companies, isLoading: companyLoading } = useService(companyService);
+  const company = user?.company_id ? companies.find(c => c.id === user.company_id) : null;
 
   const toggleLanguage = () => {
     const nextLng = i18n.language === 'pt' ? 'en' : 'pt';

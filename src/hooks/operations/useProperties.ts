@@ -31,11 +31,7 @@ export const useProperties = () => {
   const filterFn = useCallback((property: Property, currentFilters: any) => {
     const matchesStatus = currentFilters.status === "all" || property.status === currentFilters.status;
     const matchesManager = currentFilters.manager === "all" || property.manager === currentFilters.manager;
-    const matchesSearch = !searchTerm || 
-      property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesStatus && matchesManager && matchesSearch;
+    return matchesStatus && matchesManager;
   }, []);
 
   const {
