@@ -34,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 import { propertyService, Property } from "@/services";
 import { StatsCard } from "@/components/Shared/StatsCard";
 import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
+import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
 
 const ClientProperties = () => {
   const { user } = useAuth();
@@ -119,7 +120,12 @@ const ClientProperties = () => {
         </div>
       </div>
 
-
+      <FeatureGate
+        isAllowed={true}
+        requiredStage="registered"
+        featureName="O dossiê da unidade"
+        redirectTo="/client"
+      >
       {/* Hero Property Card */}
       <Card className="bg-white border-none shadow-2xl overflow-hidden rounded-[2.5rem] group border border-border/10">
         <div className="flex flex-col lg:flex-row min-h-[500px]">
@@ -345,6 +351,7 @@ const ClientProperties = () => {
            </Card>
         </TabsContent>
       </Tabs>
+      </FeatureGate>
     </div>
   );
 };

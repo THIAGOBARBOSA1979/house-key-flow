@@ -26,6 +26,7 @@ import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
 import { DocumentPreviewDialog } from "@/components/Documents/DocumentPreviewDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks";
+import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
 
 interface ClientDocument extends Omit<Document, 'status'> {
   size?: string;
@@ -153,11 +154,18 @@ export default function ClientDocuments() {
             <div className="p-3 bg-primary/10 rounded-2xl shadow-inner border border-primary/20 text-primary">
               <FileText className="h-8 w-8" strokeWidth={3} />
             </div>
-            Meus Documentos & Contratos
+            Dossiê Digital do Proprietário
           </h1>
           <p className="text-muted-foreground mt-2 font-bold text-sm">Gerenciamento seguro de contratos, plantas e manuais técnicos da unidade.</p>
         </div>
       </div>
+
+      <FeatureGate
+        isAllowed={true}
+        requiredStage="registered"
+        featureName="O dossiê de documentos"
+        redirectTo="/client"
+      >
 
       <Tabs defaultValue="all" className="space-y-layout-gap" onValueChange={(val) => {
         if (val === 'favorites') setStatusFilter('favorites');
@@ -281,6 +289,7 @@ export default function ClientDocuments() {
           </div>
         </TabsContent>
       </Tabs>
+      </FeatureGate>
     </div>
   );
 }
