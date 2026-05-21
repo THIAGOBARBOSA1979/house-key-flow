@@ -1,7 +1,8 @@
 import { useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { propertyService } from "@/services";
-import { useService, useDataList } from "@/hooks";
+import { useDataList } from "@/hooks";
+import { useQueryService } from "@/hooks/core/useQueryService";
 import { Property } from "@/types/property";
 
 /**
@@ -19,8 +20,7 @@ export const useProperties = () => {
     remove: deleteProperty, 
     refresh: refreshList,
     error
-  } = useService<Property>(propertyService, {
-
+  } = useQueryService<Property>(propertyService, "properties", {
     toastMessages: {
       create: "Empreendimento criado com sucesso.",
       update: "Empreendimento atualizado com sucesso.",
