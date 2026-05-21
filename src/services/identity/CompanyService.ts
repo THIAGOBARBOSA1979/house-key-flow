@@ -25,21 +25,8 @@ export interface Company {
   settings?: CompanySettings;
   created_at: Date;
   updated_at: Date;
-  company_id?: string; // Multi-tenancy support for consistency
+  company_id?: string;
 }
-
-const INITIAL_COMPANIES: Company[] = [
-  {
-    id: 'comp-1',
-    name: 'A2 Incorporadora (Matriz)',
-    slug: 'a2-incorporadora',
-    status: 'active',
-    owner_id: '1',
-    subscription_plan: 'enterprise',
-    created_at: new Date(),
-    updated_at: new Date()
-  }
-];
 
 class CompanyService extends SupabaseBaseService<Company> {
   constructor() {
@@ -76,8 +63,8 @@ class CompanyService extends SupabaseBaseService<Company> {
     });
   }
 
-  updateSettings(id: string, settings: Partial<CompanySettings>) {
-    const company = this.getById(id, undefined, true);
+  async updateSettings(id: string, settings: Partial<CompanySettings>) {
+    const company = await this.getById(id, undefined, true);
     if (!company) return undefined;
 
     return this.update(id, {

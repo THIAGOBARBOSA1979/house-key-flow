@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeEach } from 'vitest';
 import { documentService } from '../operations/DocumentService';
 
@@ -28,7 +27,7 @@ describe('DocumentService - Digital Signature Flow', () => {
     expect(signer).toBeDefined();
     expect(signer?.status).toBe('pending');
     
-    const updatedDoc = documentService.getDocumentById(doc.id);
+    const updatedDoc = await documentService.getDocumentById(doc.id);
     expect(updatedDoc?.signatures).toHaveLength(1);
     expect(updatedDoc?.signatures?.[0].name).toBe('João Signatário');
   });
@@ -42,10 +41,10 @@ describe('DocumentService - Digital Signature Flow', () => {
       confirmationMethod: 'sms'
     });
 
-    const success = await documentService.signDocument(doc.id, signer!.id, 'sms', { ip: '127.0.0.1' });
+    const success = await documentService.signDocument(doc.id, signer!.id, 'sms');
     expect(success).toBe(true);
 
-    const signedDoc = documentService.getDocumentById(doc.id);
+    const signedDoc = await documentService.getDocumentById(doc.id);
     expect(signedDoc?.isSigned).toBe(true);
     expect(signedDoc?.signatures?.[0].status).toBe('signed');
     expect(signedDoc?.signatures?.[0].signedAt).toBeDefined();
@@ -63,7 +62,7 @@ describe('DocumentService - Digital Signature Flow', () => {
     const success = await documentService.rejectSignature(doc.id, signer!.id, 'Dados incorretos');
     expect(success).toBe(true);
 
-    const rejectedDoc = documentService.getDocumentById(doc.id);
+    const rejectedDoc = await documentService.getDocumentById(doc.id);
     expect(rejectedDoc?.signatures?.[0].status).toBe('rejected');
     expect((rejectedDoc?.signatures?.[0] as any).rejectionReason).toBe('Dados incorretos');
   });

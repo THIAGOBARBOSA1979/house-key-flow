@@ -31,8 +31,8 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
     const mapped = super.mapFromSupabase(raw);
     return {
       ...mapped,
-      dataInicioGarantia: new Date(raw.warranty_start_date),
-      dataFimGarantia: new Date(raw.warranty_end_date)
+      dataInicioGarantia: raw.warranty_start_date ? new Date(raw.warranty_start_date) : mapped.dataInicioGarantia,
+      dataFimGarantia: raw.warranty_end_date ? new Date(raw.warranty_end_date) : mapped.dataFimGarantia
     };
   }
 

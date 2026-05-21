@@ -33,7 +33,7 @@ describe('Integration: Support Ticket Flow', () => {
     );
 
 
-    const updatedTicket = supportService.getTicketById(ticket.id);
+    const updatedTicket = await supportService.getTicketById(ticket.id);
     expect(updatedTicket?.status).toBe('in_progress');
     expect(updatedTicket?.messages).toHaveLength(2);
     expect(updatedTicket?.messages[1].role).toBe('admin');
@@ -48,11 +48,11 @@ describe('Integration: Support Ticket Flow', () => {
     );
 
 
-    expect(supportService.getTicketById(ticket.id)?.messages).toHaveLength(3);
+    expect((await supportService.getTicketById(ticket.id))?.messages).toHaveLength(3);
 
     // 4. Admin closes ticket
     await supportService.updateTicketStatus(ticket.id, 'closed');
-    expect(supportService.getTicketById(ticket.id)?.status).toBe('closed');
+    expect((await supportService.getTicketById(ticket.id))?.status).toBe('closed');
   });
 
   it('should filter tickets by client', async () => {
@@ -61,7 +61,7 @@ describe('Integration: Support Ticket Flow', () => {
     await supportService.createTicket('c1', 'Client 1', { subject: 'T3', message: 'M3' });
 
 
-    const c1Tickets = supportService.getTicketsByClient('c1');
+    const c1Tickets = await supportService.getTicketsByClient('c1');
     expect(c1Tickets).toHaveLength(2);
   });
 });

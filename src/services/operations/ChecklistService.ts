@@ -1,7 +1,5 @@
 import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
-import { Supabase } from "@/integrations/supabase";
-import { Database } from "@/integrations/supabase/types";
 
 export interface ChecklistItem {
   id: string;
@@ -14,8 +12,8 @@ export interface ChecklistItem {
   status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na" | "nonconform";
   evidence?: any[];
   conformity?: "conform" | "non_conform" | "not_applicable" | "pending" | "nonconform";
-  abntReference?: string; // Ex: NBR 15575-3:2013
-  inspectionMethod?: string; // Visual, Percussão, etc.
+  abntReference?: string;
+  inspectionMethod?: string;
   photos?: string[];
 }
 
@@ -51,9 +49,6 @@ export interface ChecklistExecutionRecord {
   conformityRate: number;
 }
 
-// Removed INITIAL_TEMPLATES mock data
-
-
 class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
   private executions: ChecklistExecutionRecord[] = [];
 
@@ -66,14 +61,6 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
     });
   }
 
-
-  private loadExecutions() {
-    // Disabled
-  }
-
-  private persistExecutions() {
-    // Disabled
-  }
 
   async getAllTemplates() { return await this.getAll(); }
   getAllTemplatesSync() { return this.getAllSync(); }
@@ -95,8 +82,8 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
   }
 
 
-  logExecution(templateId: string, groups: ChecklistGroup[], notes: string, name: string = "Admin", status: ChecklistExecutionRecord["status"] = "completed") {
-    const template = this.getById(templateId);
+  async logExecution(templateId: string, groups: ChecklistGroup[], notes: string, name: string = "Admin", status: ChecklistExecutionRecord["status"] = "completed") {
+    const template = await this.getById(templateId);
     const record: ChecklistExecutionRecord = {
       id: crypto.randomUUID(),
       templateId,
@@ -109,8 +96,7 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
       conformityRate: 100
     };
     this.executions.unshift(record);
-    // this.persistExecutions(); // Disabled
-    this.notify();
+    this.notifyListeners();
     return record;
   }
 }

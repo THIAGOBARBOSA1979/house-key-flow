@@ -1,6 +1,4 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
-import { Supabase } from "@/integrations/supabase";
-import { Database } from "@/integrations/supabase/types";
 
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent' | 'blocker';
 export type TicketCategory = 'technical' | 'administrative' | 'warranty' | 'inspection' | 'legal' | 'safety' | 'other';
@@ -34,9 +32,6 @@ export interface SupportTicket {
   updatedAt: Date;
 }
 
-// Removed INITIAL_TICKETS mock data
-
-
 export class SupportService extends SupabaseBaseService<SupportTicket> {
   constructor() {
     super({
@@ -68,7 +63,7 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   }
 
   getAllTickets() { return [...this.items]; }
-  getTicketById(id: string) { return this.getById(id); }
+  async getTicketById(id: string) { return await this.getById(id); }
   getTicketsByClient(clientId: string) { return this.items.filter(t => t.clientId === clientId); }
 
   async createTicket(clientId: string, clientName: string, data: any, context?: { propertyId?: string, propertyName?: string, unitNumber?: string }): Promise<SupportTicket> {
@@ -104,7 +99,7 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   }
 
   async addMessageToTicket(id: string, senderId: string, senderName: string, role: 'admin' | 'client', text: string) {
-    const ticket = this.getById(id);
+    const ticket = await this.getById(id);
     if (!ticket) return null;
     
     const messages = [...(ticket.messages || []), { 

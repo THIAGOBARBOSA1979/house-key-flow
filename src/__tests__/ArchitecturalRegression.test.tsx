@@ -3,9 +3,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SupabaseBaseService } from '@/services/SupabaseBaseService';
 import { Supabase } from '@/integrations/supabase';
 
-// Mock Supabase globally is already done in setup.ts, 
-// but we want to spy on it specifically for these tests.
-
 describe('Architectural Regression - BaseService', () => {
   interface TestItem {
     id: string;
@@ -13,7 +10,11 @@ describe('Architectural Regression - BaseService', () => {
     company_id?: string;
   }
 
-  class TestService extends SupabaseBaseService<TestItem> {}
+  class TestService extends SupabaseBaseService<TestItem> {
+    constructor(options: any, initialItems: any[] = []) {
+      super(options, initialItems);
+    }
+  }
 
   let service: TestService;
 
@@ -67,7 +68,7 @@ describe('Architectural Regression - BaseService', () => {
     await service.create({ name: 'Tenant 1 Item' }, 'tenant-1');
     await service.create({ name: 'Tenant 2 Item' }, 'tenant-2');
     
-    const results = service.getAll('tenant-1', false);
+    const results = await service.getAll('tenant-1', false);
     expect(results).toHaveLength(1);
     expect(results[0].name).toBe('Tenant 1 Item');
   });
@@ -76,7 +77,7 @@ describe('Architectural Regression - BaseService', () => {
     await service.create({ name: 'Tenant 1 Item' }, 'tenant-1');
     await service.create({ name: 'Tenant 2 Item' }, 'tenant-2');
     
-    const results = service.getAll(undefined, true);
+    const results = await service.getAll(undefined, true);
     expect(results).toHaveLength(2);
   });
 

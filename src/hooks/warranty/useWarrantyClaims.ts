@@ -12,7 +12,8 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   const isSuperAdmin = !!user?.is_super_admin;
   
   const [claims, setClaims] = useState<any[]>([]);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<unknown>(null);
+  const [metrics, setMetrics] = useState<any>({ totalActiveRequests: 0, pendingRequests: 0, averageResolutionDays: 0, slaComplianceRate: 0 });
 
   const fetchClaims = useCallback(async () => {
     try {
@@ -20,6 +21,9 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
       setClaims(data.sort((a, b) => 
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       ));
+
+      const metricsData = await warrantyFlowService.calculateMetrics(companyId, isSuperAdmin);
+      setMetrics(metricsData);
     } catch (err) {
       setError(err);
     }
@@ -30,7 +34,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   }, [fetchClaims]);
 
   const cancelClaim = useCallback(async (claimId: string) => {
-    const success = warrantyFlowService.cancelRequest(claimId, clientId);
+    const success = await warrantyFlowService.cancelRequest(claimId, clientId);
     if (success) {
       setClaims(prev => prev.filter(c => c.id !== claimId));
       toast({ title: "Solicitação cancelada", description: "Sua solicitação de garantia foi cancelada com sucesso." });
@@ -40,7 +44,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   }, [clientId, toast]);
 
   const addInfo = useCallback(async (claimId: string, info: string) => {
-    const result = warrantyFlowService.addUpdate(
+    const result = await warrantyFlowService.addUpdate(
       claimId, 
       clientId, 
       userName || "Cliente", 
@@ -87,15 +91,6 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     });
     return true;
   }, [clientId, toast]);
-
-  const metrics = useMemo(() => {
-    try {
-      return warrantyFlowService.calculateMetrics(companyId, isSuperAdmin);
-    } catch (err) {
-      errorHandler.handle(err, 'useWarrantyClaims:calculateMetrics');
-      return { totalActiveRequests: 0, pendingRequests: 0, averageResolutionDays: 0, slaComplianceRate: 0 };
-    }
-  }, [companyId, isSuperAdmin]);
 
   return {
     claims,

@@ -6,12 +6,12 @@ import { documentService } from '@/services';
 import { Toaster } from '../components/ui/toaster';
 
 // Mock documentService.createDocument
-vi.mock('@/services', async () => {
-  const actual = await vi.importActual('@/services');
+vi.mock('@/services', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/services')>();
   return {
-    ...actual as any,
+    ...actual,
     documentService: {
-      ... (actual as any).documentService,
+      ...actual.documentService,
       createDocument: vi.fn(),
       getCategories: vi.fn(() => [{ id: 'contrato', name: 'Contratos' }])
     },

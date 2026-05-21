@@ -101,8 +101,8 @@ export const useWarranty = () => {
     }
   }, [toast, refreshList]);
 
-  const togglePause = useCallback((requestId: string, isPaused: boolean, reason: string) => {
-    const result = warrantyFlowService.togglePause(requestId, isPaused, reason, "admin-1");
+  const togglePause = useCallback(async (requestId: string, isPaused: boolean, reason: string) => {
+    const result = await warrantyFlowService.togglePause(requestId, isPaused, reason, "admin-1");
     if (result.success) {
       toast({ title: isPaused ? "SLA Pausado" : "SLA Retomado", description: isPaused ? `Motivo: ${reason}` : "O cronômetro do SLA foi retomado." });
       refreshList();
@@ -110,8 +110,8 @@ export const useWarranty = () => {
     return result;
   }, [toast, refreshList]);
 
-  const assignTechnician = useCallback((requestId: string, techId: string, techName: string) => {
-    const result = warrantyFlowService.assignTechnician(requestId, techId, techName, "admin-1");
+  const assignTechnician = useCallback(async (requestId: string, techId: string, techName: string) => {
+    const result = await warrantyFlowService.assignTechnician(requestId, techId, techName, "admin-1");
     if (result.success) {
       toast({ title: "Técnico atribuído", description: `O profissional ${techName} agora é o responsável.` });
       refreshList();
@@ -124,7 +124,15 @@ export const useWarranty = () => {
     toast({ title: "Exportação concluída", description: "O arquivo CSV foi baixado com sucesso." });
   }, [filteredRequests, toast]);
 
-  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(companyId, isSuperAdmin), [requests, companyId, isSuperAdmin]);
+  const [metrics, setMetrics] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      const data = await warrantyFlowService.calculateMetrics(companyId, isSuperAdmin);
+      setMetrics(data);
+    };
+    fetchMetrics();
+  }, [requests, companyId, isSuperAdmin]);
 
   return {
     requests,
