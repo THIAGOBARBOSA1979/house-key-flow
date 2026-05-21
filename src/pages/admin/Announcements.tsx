@@ -271,6 +271,7 @@ const Announcements = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+
         <DialogContent className="max-w-dialog-md rounded-3xl border-none shadow-sem-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
