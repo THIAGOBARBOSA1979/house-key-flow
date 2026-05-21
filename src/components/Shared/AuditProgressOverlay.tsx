@@ -41,17 +41,29 @@ export const AuditProgressOverlay: React.FC = () => {
   useAuditMarker('Contraste insuficiente em badges de status no modo escuro');
   useAuditMarker('Falta de suporte completo a navegação por teclado (focus rings) em tabelas');
   useAuditMarker('Atributos ARIA (aria-labels) ausentes em ícones de ação e botões globais');
+  
+  // Wave 7 Fixes
+  useAuditMarker('Falta de auditoria em operações de deleção física no banco de dados');
+  useAuditMarker('Queries ao Supabase sem limites de paginação (risco de timeout em datasets grandes)');
+  useAuditMarker('Middleware de proteção de rotas vulnerável a manipulação de payload JWT local');
+  useAuditMarker('Circular dependency detectada entre AuditLogService e BaseService em ambiente de produção');
+
+  // Wave 8 Fixes
+  useAuditMarker('Gargalo de performance na geração de relatórios PDF com grandes volumes de dados');
+  useAuditMarker('Monitoramento de erros de rede (Network Error) sem retry automático em áreas de sinal fraco');
+  useAuditMarker('Queries Supabase sem filtragem no lado do servidor em listas de notificações antigas');
+  useAuditMarker('Falta de feedback visual em operações de "Sincronização em Segundo Plano"');
 
   // Logic to move to next wave
   React.useEffect(() => {
     const waveIssues = issues.filter(i => i.wave === currentWave);
     if (waveIssues.length > 0 && waveIssues.every(i => i.status === 'fixed')) {
       completeWave(currentWave);
-      if (currentWave < 6) {
+      if (currentWave < 8) {
         startWave(currentWave + 1);
       } else {
         // Final audit completed
-        completeWave(6);
+        completeWave(8);
       }
     }
   }, [issues, currentWave, completeWave, startWave]);

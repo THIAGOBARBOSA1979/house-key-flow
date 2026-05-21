@@ -49,16 +49,24 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     return mapped as T;
   }
 
-  async sync(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
+  async sync(companyId?: string, isSuperAdmin?: boolean, retryCount = 0): Promise<T[]> {
     try {
       const filters: FilterParams[] = [];
       if (!isSuperAdmin && companyId) {
         filters.push({ column: 'company_id', operator: 'eq', value: companyId });
       }
 
-      const { data, error } = await Supabase.db.findMany<T>(this.supabaseTable, { filters });
+      const { data, error } = await Supabase.db.findMany<T>(this.supabaseTable, { 
+        filters,
+        pagination: { page: 1, pageSize: 1000 } // Safety limit
+      });
       
       if (error) {
+        // Automatic retry for network errors
+        if (retryCount < 2 && (error.status === 0 || error.code === 'NETWORK_ERROR')) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+          return this.sync(companyId, isSuperAdmin, retryCount + 1);
+        }
         this.handleSyncError(error, 'sync');
         return this.items;
       }
