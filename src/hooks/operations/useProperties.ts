@@ -17,8 +17,10 @@ export const useProperties = () => {
     create: createProperty, 
     update: updateProperty, 
     remove: deleteProperty, 
-    refresh: refreshList 
+    refresh: refreshList,
+    error
   } = useService<Property>(propertyService, {
+
     toastMessages: {
       create: "Empreendimento criado com sucesso.",
       update: "Empreendimento atualizado com sucesso.",
@@ -85,8 +87,10 @@ export const useProperties = () => {
     deleteProperty,
     bulkDelete,
     toggleSelect,
-    refreshList
+    refreshList,
+    error
   };
 };
+
 
 
