@@ -75,9 +75,9 @@ export function ClientTimeline({ steps, className }: ClientTimelineProps) {
               </p>
               
               {step.status === "current" && (
-                <div className="mt-3 flex gap-2">
-                   <div className="h-1 flex-1 bg-primary/20 rounded-full overflow-hidden">
-                      <div className="h-full bg-primary w-1/2 animate-pulse" />
+                <div className="mt-4 flex gap-2 w-full max-w-[200px]">
+                   <div className="h-1.5 flex-1 bg-primary/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-primary w-1/3 animate-[progress-pulse_3s_infinite_linear]" />
                    </div>
                 </div>
               )}
