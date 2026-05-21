@@ -8,9 +8,34 @@ import {
 } from "@/types/warranty";
 import { warrantyFlowService } from "../warranty/WarrantyFlowService";
 import { clientStageService } from "../operations/ClientStageService";
+import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
+class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
+  constructor() {
+    super({
+      storageKey: "a2_warranty_items",
+      supabaseTable: "warranty_items",
+      auditEntityType: "warranty",
+      shouldSyncWithSupabase: true,
+      fieldMapping: {
+        dataInicioGarantia: 'warranty_start_date',
+        dataFimGarantia: 'warranty_end_date',
+        statusGarantia: 'status',
+        warrantyYears: 'warranty_years'
+      }
+    });
+  }
 
-class WarrantyValidationService {
+  protected mapFromSupabase(raw: any): WarrantyItem {
+    const mapped = super.mapFromSupabase(raw);
+    return {
+      ...mapped,
+      dataInicioGarantia: new Date(raw.warranty_start_date),
+      dataFimGarantia: new Date(raw.warranty_end_date)
+    };
+  }
+
   /**
    * Check if a warranty item is currently active
    */
@@ -106,14 +131,14 @@ class WarrantyValidationService {
    * Get all warranty items for a client
    */
   getWarrantyItemsByClient(clientId: string): WarrantyItem[] {
-    return mockWarrantyItems.filter(item => item.clientId === clientId);
+    return this.items.filter(item => item.clientId === clientId);
   }
 
   /**
    * Get only eligible warranty items for a client
    */
   getEligibleWarrantyItems(clientId: string): WarrantyItem[] {
-    return mockWarrantyItems.filter(
+    return this.items.filter(
       item => item.clientId === clientId && this.isWarrantyActive(item)
     );
   }
@@ -131,7 +156,7 @@ class WarrantyValidationService {
     }
   ): { success: true; request: WarrantyRequest } | { success: false; error: WarrantyErrorResponse } {
     // Find the item
-    const item = mockWarrantyItems.find(i => i.id === itemId);
+    const item = this.items.find(i => i.id === itemId);
     
     if (!item) {
       return {
@@ -182,7 +207,7 @@ class WarrantyValidationService {
     
     // Create the persistent request in WarrantyFlowService
     const profile = clientStageService.getClientProfile(clientId);
-    const requestFlow = warrantyFlowService.createRequest({
+    warrantyFlowService.createRequest({
       clientId,
       clientName: profile?.name || "Cliente",
       propertyId: item.propertyId,
@@ -192,7 +217,7 @@ class WarrantyValidationService {
       description: data.problems.map(p => p.description).join("; "),
       category: item.category,
       problems: data.problems.map(p => ({
-        id: `prob-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        id: p.id || `prob-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
         category: p.category,
         location: p.location,
         description: p.description,
