@@ -1,6 +1,5 @@
-
-import { safeFormat } from "@/lib/utils";
 import { useState, useEffect } from "react";
+import { safeFormat } from "@/lib/utils";
 import { Calendar, User, MapPin, Eye, MoreVertical, BellRing, Trash2, CalendarClock, Play, ClipboardList } from "lucide-react";
 import { checklistService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -34,23 +33,25 @@ interface InspectionItemProps {
   onCancel?: () => void;
 }
 
-/**
- * Reusable InspectionItem refactored with Design System tokens.
- */
 export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionItemProps) => {
   const { toast } = useToast();
   const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
   const [startInspectionDialogOpen, setStartInspectionDialogOpen] = useState(false);
+  const [checklist, setChecklist] = useState<any>(null);
+
+  useEffect(() => {
+    if (inspection.checklistId) {
+      checklistService.getById(inspection.checklistId).then(setChecklist);
+    }
+  }, [inspection.checklistId]);
 
   if (!inspection) return null;
 
-  
   const handleViewDetails = () => {
     toast({
       title: "Resumo da Atividade Técnica",
       description: `Vistoria ${inspection.id} • Unidade estratégica ${inspection.unit} em ${inspection.property}.`,
     });
-
   };
 
   const handleCancelInspection = () => {
@@ -72,7 +73,6 @@ export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionIte
       title: "Protocolo de Lembrete Ativado",
       description: `O cliente ${inspection.client} recebeu uma atualização de status via multicanal.`,
     });
-
   };
 
   const handleInspectionComplete = (data: any) => {
@@ -85,13 +85,12 @@ export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionIte
     if (onUpdate) onUpdate();
   };
 
-  const [checklist, setChecklist] = useState<any>(null);
-
-  useEffect(() => {
-    if (inspection.checklistId) {
-      checklistService.getById(inspection.checklistId).then(setChecklist);
+  const handleStartInspectionAction = () => {
+    setStartInspectionDialogOpen(true);
+    if (inspection.status === "pending") {
+      inspectionService.updateStatus(inspection.id, "progress");
     }
-  }, [inspection.checklistId]);
+  };
 
   return (
     <div className="relative group">
@@ -147,7 +146,7 @@ export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionIte
               <Button 
                 variant="default" 
                 size="sm"
-                onClick={startInspection}
+                onClick={handleStartInspectionAction}
                 className="h-9 px-4 text-xs font-bold bg-primary hover:bg-primary/90 transition-all active:scale-95 shadow-md rounded-xl"
               >
                 <Play className="h-3.5 w-3.5 mr-2 fill-current" /> 
@@ -213,4 +212,3 @@ export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionIte
     </div>
   );
 };
-
