@@ -89,7 +89,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       if (data) {
         const newItems = data
           .filter(item => item !== null && item !== undefined)
-          .map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
+          .map(item => this.mapFromSupabase(item as any));
         
         // Update local state if changed
         if (JSON.stringify(newItems) !== JSON.stringify(this.items)) {
@@ -110,26 +110,6 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
     return this.items;
   }
 
-  /**
-   * Deserializes ISO date strings back into Date objects.
-   */
-  protected deserializeDates(item: any): any {
-    if (!item || typeof item !== 'object') return item;
-    
-    const newItem = { ...item };
-    for (const key in newItem) {
-      const value = newItem[key];
-      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
-        const date = new Date(value);
-        if (!isNaN(date.getTime())) {
-          newItem[key] = date;
-        }
-      } else if (value && typeof value === 'object' && !(value instanceof Date)) {
-        newItem[key] = this.deserializeDates(value);
-      }
-    }
-    return newItem;
-  }
 
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const newItem = await super.create(item, companyId);
@@ -138,7 +118,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       try {
         const { data, error } = await Supabase.db.create<T>(this.supabaseTable, this.mapToSupabase(newItem));
         if (error) throw error;
-        if (data) return this.mapFromSupabase(this.deserializeDates(data as any));
+        if (data) return this.mapFromSupabase(data as any);
       } catch (err) {
         this.handleSyncError(err, 'create');
         throw err;
@@ -154,7 +134,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       try {
         const { data: remoteData, error } = await Supabase.db.update<T>(this.supabaseTable, id, this.mapToSupabase(data));
         if (error) throw error;
-        if (remoteData) return this.mapFromSupabase(this.deserializeDates(remoteData as any));
+        if (remoteData) return this.mapFromSupabase(remoteData as any);
       } catch (err) {
         this.handleSyncError(err, 'update');
         throw err;

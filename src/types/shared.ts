@@ -50,8 +50,8 @@ export interface PaginationConfig {
 export interface BaseEntity {
   id: string;
   company_id?: string;
-  created_at?: Date | string;
-  updated_at?: Date | string;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export type Listener<T> = (items: T[]) => void;
