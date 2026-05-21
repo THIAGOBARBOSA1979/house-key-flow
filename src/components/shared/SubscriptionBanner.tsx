@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { companyService } from '@/services';
 import { AlertTriangle, Clock } from 'lucide-react';
@@ -10,7 +10,14 @@ export const SubscriptionBanner = () => {
   
   if (!user?.company_id || user.is_super_admin) return null;
   
-  const company = companyService.getById(user.company_id, undefined, true);
+  const [company, setCompany] = useState<any>(null);
+
+  useEffect(() => {
+    if (user?.company_id) {
+      companyService.getById(user.company_id, undefined, true).then(setCompany);
+    }
+  }, [user]);
+
   if (!company) return null;
   
   if (company.status === 'suspended') {
