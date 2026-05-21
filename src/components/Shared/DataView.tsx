@@ -98,6 +98,16 @@ function DataViewComponent<T>({
     }
   };
 
+  const totalItems = items.length;
+  const isPaginationEnabled = itemsPerPage > 0 && totalItems > itemsPerPage;
+  const totalPages = isPaginationEnabled ? Math.ceil(totalItems / itemsPerPage) : 1;
+  const effectivePage = Math.min(currentPage, totalPages);
+  
+  const displayedItems = useMemo(() => {
+    if (!isPaginationEnabled) return items;
+    return items.slice((effectivePage - 1) * itemsPerPage, effectivePage * itemsPerPage);
+  }, [items, isPaginationEnabled, effectivePage, itemsPerPage]);
+
   if (isLoading) {
     const effectiveSkeletonType = skeletonType || (viewMode === 'table' ? 'table' : viewMode === 'list' ? 'list' : 'card');
     return (
@@ -133,17 +143,6 @@ function DataViewComponent<T>({
       </div>
     );
   }
-
-
-  const totalItems = items.length;
-  const isPaginationEnabled = itemsPerPage > 0 && totalItems > itemsPerPage;
-  const totalPages = isPaginationEnabled ? Math.ceil(totalItems / itemsPerPage) : 1;
-  const effectivePage = Math.min(currentPage, totalPages);
-  
-  const displayedItems = useMemo(() => {
-    if (!isPaginationEnabled) return items;
-    return items.slice((effectivePage - 1) * itemsPerPage, effectivePage * itemsPerPage);
-  }, [items, isPaginationEnabled, effectivePage, itemsPerPage]);
 
   const renderContent = () => {
     switch (viewMode) {

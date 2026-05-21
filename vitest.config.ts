@@ -24,22 +24,28 @@ export default defineConfig({
       ],
       thresholds: {
         'src/services/**': {
-          lines: 25,
-          functions: 20,
-          branches: 20,
-          statements: 25
+          lines: 60,
+          functions: 50,
+          branches: 40,
+          statements: 60
         },
         'src/hooks/**': {
-          lines: 25,
-          functions: 20,
-          branches: 5,
-          statements: 25
+          lines: 50,
+          functions: 40,
+          branches: 30,
+          statements: 50
         },
         'src/core/**': {
-          lines: 25,
-          functions: 20,
-          branches: 20,
-          statements: 25
+          lines: 60,
+          functions: 50,
+          branches: 40,
+          statements: 60
+        },
+        'src/utils/**': {
+          lines: 70,
+          functions: 60,
+          branches: 50,
+          statements: 70
         }
       }
     },
