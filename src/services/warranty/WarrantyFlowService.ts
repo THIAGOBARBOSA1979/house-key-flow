@@ -495,6 +495,10 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       performedByRole: performedByRole
     });
     
+    // Disparar automação de status
+    const { warrantyAutomationService } = await import("./WarrantyAutomationService");
+    warrantyAutomationService.onStatusChange(requestId, request.currentStage, newStatus, changedBy, isAutomatic);
+
     return { success: true, request: updatedRequest };
 
   }
