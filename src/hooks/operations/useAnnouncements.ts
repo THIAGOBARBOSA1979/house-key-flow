@@ -25,7 +25,7 @@ export const useAnnouncements = () => {
     setIsLoading(true);
     try {
       setError(null);
-      setUpdates(constructionService.getUpdates());
+      constructionService.getUpdates().then(setUpdates);
     } catch (err) {
       setError(err);
       errorHandler.handle(err, 'useAnnouncements:refreshUpdates');
