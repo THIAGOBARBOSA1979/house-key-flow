@@ -30,7 +30,9 @@ interface UserFormProps {
 }
 
 export const UserForm = ({ onSave, onCancel, editingUser }: UserFormProps) => {
-  const { items: properties, isLoading: loadingProperties } = useService(propertyService);
+  const { items, isLoading: loadingProperties } = useService(propertyService);
+  const properties = items as any[];
+
   
   const form = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
