@@ -1,5 +1,4 @@
-
-import { useMemo, memo } from 'react';
+import { useMemo, memo, useState, useEffect } from 'react';
 import { 
   BarChart, 
   Bar, 
@@ -11,9 +10,7 @@ import {
   Cell, 
   PieChart, 
   Pie,
-  Legend,
-  AreaChart,
-  Area
+  Legend
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
