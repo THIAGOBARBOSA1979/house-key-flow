@@ -16,11 +16,13 @@ const INITIAL_ISSUES = [
   { module: 'Warranty', description: 'Validação de garantia no WarrantyValidationService usa mocks estáticos', impact: 'critical', wave: 3 },
   { module: 'Warranty', description: 'Fluxo de abertura de chamado não valida limites de upload de fotos', impact: 'medium', wave: 3 },
   { module: 'Warranty', description: 'SLA de garantia não está sendo calculado corretamente em fins de semana', impact: 'high', wave: 3 },
-  // Wave 8: Performance Monitoring & Advanced Analytics
-  { module: 'Analytics', description: 'Gargalo de performance na geração de relatórios PDF com grandes volumes de dados', impact: 'medium', wave: 8 },
-  { module: 'Monitoring', description: 'Monitoramento de erros de rede (Network Error) sem retry automático em áreas de sinal fraco', impact: 'high', wave: 8 },
-  { module: 'Performance', description: 'Queries Supabase sem filtragem no lado do servidor em listas de notificações antigas', impact: 'medium', wave: 8 },
-  { module: 'UX', description: 'Falta de feedback visual em operações de "Sincronização em Segundo Plano"', impact: 'low', wave: 8 },
+  // Wave 9: Enterprise Compliance & Governance
+  { module: 'Compliance', description: 'Implementação de RBAC (Role-Based Access Control) rigoroso em todos os módulos', impact: 'critical', wave: 9 },
+  { module: 'Compliance', description: 'Reforço do isolamento de tenants (Multi-tenancy) na camada de serviço e banco de dados', impact: 'critical', wave: 9 },
+  { module: 'Governance', description: 'Trilhas de auditoria (Audit Logs) para todas as ações críticas e alterações administrativas', impact: 'high', wave: 9 },
+  { module: 'Security', description: 'Sessões seguras com timeout automático e sanitização de inputs em tempo real', impact: 'high', wave: 9 },
+  { module: 'Data Privacy', description: 'Eliminação total do uso de mocks e localStorage para persistência de dados sensíveis', impact: 'high', wave: 9 },
+
 ];
 
 export const useAuditInitializer = () => {
@@ -50,9 +52,10 @@ export const useAuditInitializer = () => {
           { id: 5, status: 'completed', issues: [] },
           { id: 6, status: 'completed', issues: [] },
           { id: 7, status: 'completed', issues: [] },
-          { id: 8, status: 'completed', issues: [] }
+          { id: 8, status: 'completed', issues: [] },
+          { id: 9, status: 'completed', issues: [] }
         ],
-        currentWave: 8
+        currentWave: 9
       }));
 
       // Simulate wave completion
