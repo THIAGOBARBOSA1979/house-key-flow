@@ -20,7 +20,7 @@ export const useSettings = () => {
     }
   }, [user]);
 
-  const updateSection = useCallback((section: keyof SystemSettings, data: any) => {
+  const updateSection = useCallback(<T extends keyof SystemSettings>(section: T, data: Partial<SystemSettings[T]>) => {
     setSettings(prev => ({
       ...prev,
       [section]: { ...prev[section], ...data }
