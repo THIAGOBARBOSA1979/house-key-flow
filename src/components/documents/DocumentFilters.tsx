@@ -31,7 +31,15 @@ export function DocumentFilters({ onSearch, activeFilters, onClearFilters }: Doc
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>(activeFilters.dateRange || {});
   
-  const categories = documentService.getCategories();
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+
+  useEffect(() => {
+    const fetchCats = async () => {
+      const data = await documentService.getCategories();
+      setCategories(data.map(c => ({ id: c, name: c })));
+    };
+    fetchCats();
+  }, []);
 
   const handleSearch = (updatedFilters?: any) => {
     const filters = updatedFilters || {

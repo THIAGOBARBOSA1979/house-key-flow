@@ -27,6 +27,11 @@ const INITIAL_ISSUES = [
   { module: 'Warranty', description: 'Refatoração do WarrantyValidationService para persistência real via Supabase', impact: 'critical', wave: 10 },
   { module: 'Warranty', description: 'Refatoração do WarrantyFlowService eliminando mocks estáticos', impact: 'critical', wave: 10 },
   { module: 'Governance', description: 'Padronização de auditoria em todos os métodos de mutação', impact: 'high', wave: 10 },
+
+  // Wave 11: Estabilização de Interface e UX Avançada
+  { module: 'UI/UX', description: 'Correção de resíduos de tipagem assíncrona na gestão de documentos', impact: 'high', wave: 11 },
+  { module: 'Dashboard', description: 'Implementação de busca global com integração service-layer', impact: 'medium', wave: 11 },
+  { module: 'Support', description: 'Estabilização do fluxo de tickets com persistência real', impact: 'medium', wave: 11 },
 ];
 
 export const useAuditInitializer = () => {
@@ -56,6 +61,7 @@ export const useAuditInitializer = () => {
 
       // Mark Wave 10 issues as pending initially
       startWave(10);
+      startWave(11);
     }
   }, [issues.length, addIssue, startWave]);
 

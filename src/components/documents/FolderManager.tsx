@@ -13,7 +13,15 @@ export interface FolderItem {
 
 export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string | null) => void }) {
   const { toast } = useToast();
-  const folders = documentService.getFolderStructure();
+  const [folders, setFolders] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchFolders = async () => {
+      const data = await documentService.getFolderStructure();
+      setFolders(data);
+    };
+    fetchFolders();
+  }, []);
 
   const getFolderIcon = (iconName: string) => {
     switch(iconName) {
