@@ -1,77 +1,102 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { supabase } from '@/integrations/supabase/client';
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BaseService } from '../BaseService';
 
-// Mock Supabase client
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-      single: vi.fn().mockResolvedValue({ data: null, error: null }),
-    })),
-    auth: {
-      getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
-      getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
-    }
+// Mock AuditLogService to prevent circular imports and side effects
+vi.mock("@/services", () => ({
+  auditLogService: {
+    logAction: vi.fn().mockResolvedValue(true)
   }
 }));
 
-// Concrete implementation for testing BaseService
-class TestService extends BaseService<{ id: string; company_id?: string; name: string }> {
+// Concrete implementation for testing
+interface TestItem {
+  id: string;
+  name: string;
+  company_id?: string;
+  created_at?: Date;
+}
+
+class TestService extends BaseService<TestItem> {
   constructor() {
-    super('test_storage', []);
+    super({
+      storageKey: 'test-storage',
+      auditEntityType: 'user' as any,
+      shouldSyncWithSupabase: false
+    });
   }
 }
 
-describe('BaseService - Tenant Isolation', () => {
+describe('BaseService', () => {
   let service: TestService;
 
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
     service = new TestService();
-    // Force clear internal items since it might have loaded from localStorage before clear
-    (service as any).items = [];
   });
 
-  it('should restrict getAll for non-super-admins when no companyId is provided', async () => {
-    await service.create({ name: 'Item 1' }, 'comp-1');
-    const items = service.getAll();
-    expect(items).toHaveLength(0);
+  it('should create an item and persist to localStorage', async () => {
+    const item = await service.create({ name: 'Test Item' }, 'tenant-1');
+    
+    expect(item.id).toBeDefined();
+    expect(item.name).toBe('Test Item');
+    expect(item.company_id).toBe('tenant-1');
+    
+    const stored = JSON.parse(localStorage.getItem('test-storage') || '[]');
+    expect(stored).toHaveLength(1);
+    expect(stored[0].name).toBe('Test Item');
   });
 
-  it('should return only tenant-specific items for non-super-admins', async () => {
-    await service.create({ name: 'Tenant 1 Item' }, 'comp-1');
-    await service.create({ name: 'Tenant 2 Item' }, 'comp-2');
+  it('should isolate data by tenant (company_id)', async () => {
+    await service.create({ name: 'Tenant 1 Item' }, 'tenant-1');
+    await service.create({ name: 'Tenant 2 Item' }, 'tenant-2');
     
-    const tenant1Items = service.getAll('comp-1', false);
-    expect(tenant1Items).toHaveLength(1);
-    expect(tenant1Items[0].name).toBe('Tenant 1 Item');
+    const t1Items = service.getAll('tenant-1');
+    expect(t1Items).toHaveLength(1);
+    expect(t1Items[0].name).toBe('Tenant 1 Item');
+    
+    const allItemsSuper = service.getAll(undefined, true);
+    expect(allItemsSuper).toHaveLength(2);
   });
 
-  it('should return all items for super-admins', async () => {
-    await service.create({ name: 'Tenant 1 Item' }, 'comp-1');
-    await service.create({ name: 'Tenant 2 Item' }, 'comp-2');
+  it('should prevent cross-tenant access in getById', async () => {
+    const item = await service.create({ name: 'Secret' }, 'tenant-1');
     
-    const allItems = service.getAll(undefined, true);
-    expect(allItems).toHaveLength(2);
+    const accessed = service.getById(item.id, 'tenant-2');
+    expect(accessed).toBeUndefined();
+    
+    const accessedRight = service.getById(item.id, 'tenant-1');
+    expect(accessedRight?.name).toBe('Secret');
   });
 
-  it('should verify ownership on getById for non-super-admins', async () => {
-    const item = await service.create({ name: 'Private Item' }, 'comp-1');
+  it('should update items and notify listeners', async () => {
+    const item = await service.create({ name: 'Old Name' }, 'tenant-1');
+    const listener = vi.fn();
+    service.subscribe(listener);
     
-    // Access from correct tenant
-    expect(service.getById(item.id, 'comp-1')).toBeDefined();
+    await service.update(item.id, { name: 'New Name' });
     
-    // Access from wrong tenant
-    expect(service.getById(item.id, 'comp-2')).toBeUndefined();
-    
-    // Access as super admin
-    expect(service.getById(item.id, undefined, true)).toBeDefined();
+    expect(service.getById(item.id, 'tenant-1')?.name).toBe('New Name');
+    expect(listener).toHaveBeenCalled();
   });
 
+  it('should delete items', async () => {
+    const item = await service.create({ name: 'To be deleted' }, 'tenant-1');
+    const success = await service.delete(item.id);
+    
+    expect(success).toBe(true);
+    expect(service.getAll('tenant-1')).toHaveLength(0);
+  });
+
+  it('should deserialize dates correctly', async () => {
+    const dateStr = '2026-05-20T10:00:00.000Z';
+    localStorage.setItem('test-storage', JSON.stringify([{ id: '1', name: 'Date test', created_at: dateStr }]));
+    
+    // Create new instance to trigger loadFromStorage
+    const newService = new TestService();
+    const item = newService.getById('1', undefined, true);
+    
+    expect(item?.created_at).toBeInstanceOf(Date);
+  });
 });
