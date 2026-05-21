@@ -9,29 +9,34 @@ import { useClientStage } from "@/hooks/operations/useClientStage";
 
 export const useClientDashboardData = (clientId: string, userName?: string) => {
   const [isLoading, setIsLoading] = useState(true);
-  const { profile } = useClientStage(clientId);
+  const { profile, isLoading: profileLoading } = useClientStage(clientId);
   const propertyId = profile?.propertyId;
 
-  const allDocs = useMemo(() => documentService.getDocumentsByClient(userName || "João Silva"), [userName]);
-  const allInspections = useMemo(() => 
-    inspectionService.getAll().filter(i => i && i.client === (userName || "João Silva")), [userName]);
-  const upcomingInspections = useMemo(() => allInspections.filter(i => i.status !== 'complete'), [allInspections]);
-  const warrantyRequests = useMemo(() => 
-    warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId), [clientId]);
-  const constructionUpdates = useMemo(() => 
-    propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(), [propertyId]);
+  const data = useMemo(() => {
+    if (profileLoading) return null;
+    
+    return {
+      allDocs: documentService.getDocumentsByClient(userName || profile?.name || "João Silva"),
+      allInspections: inspectionService.getAll().filter(i => i && i.client === (userName || profile?.name || "João Silva")),
+      warrantyRequests: warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId),
+      constructionUpdates: propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(),
+    };
+  }, [clientId, userName, profile?.name, propertyId, profileLoading]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!profileLoading) {
+      const timer = setTimeout(() => setIsLoading(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [profileLoading]);
 
   return {
-    isLoading,
-    allDocs,
-    allInspections,
-    upcomingInspections,
-    warrantyRequests,
-    constructionUpdates
+    isLoading: isLoading || profileLoading,
+    allDocs: data?.allDocs || [],
+    allInspections: data?.allInspections || [],
+    upcomingInspections: data?.allInspections?.filter(i => i.status !== 'complete') || [],
+    warrantyRequests: data?.warrantyRequests || [],
+    constructionUpdates: data?.constructionUpdates || []
   };
 };
+
