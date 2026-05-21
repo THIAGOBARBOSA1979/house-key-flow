@@ -24,10 +24,10 @@ export const useClientDashboardData = (clientId: string, userName?: string, prop
 
   return {
     isLoading,
-    
     allDocs,
     allInspections,
     upcomingInspections,
-    warrantyRequests
+    warrantyRequests,
+    constructionUpdates
   };
 };
