@@ -7,28 +7,21 @@ import {
   Mail, 
   FileQuestion, 
   HelpCircle, 
-  ArrowRight,
   ChevronRight,
   LifeBuoy,
   BookOpen,
   Send,
-  ExternalLink,
   Search,
   CheckCircle,
-  Download
+  Download,
+  ShieldCheck
 } from "lucide-react";
 import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useToast } from "@/hooks";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { 
   Select, 
   SelectContent, 
@@ -37,11 +30,9 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { supportService, SupportTicket, TicketPriority, TicketCategory } from "@/services";
-import { useMemo, useEffect } from "react";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { useAuth } from "@/contexts/AuthContext";
 import { ResponsiveGrid } from "@/components/Shared/ResponsiveGrid";
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea as ChatScrollArea } from "@/components/ui/scroll-area";
 
@@ -74,7 +65,7 @@ const Support = () => {
     setTickets(supportService.getTicketsByClient(clientId));
     toast({
       title: "Solicitação enviada",
-      description: "Sua mensagem foi enviada para nossa equipe de suporte. Responderemos em breve.",
+      description: "Sua mensagem foi registrada em nossa central de governança técnica.",
     });
     setFormState({ subject: "", message: "", priority: "medium", category: "technical" });
   };
@@ -129,49 +120,37 @@ const Support = () => {
 
   return (
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-3 leading-tight">
             <div className="p-2.5 bg-primary/10 rounded-2xl shadow-inner">
               <LifeBuoy className="h-7 w-7 text-primary" strokeWidth={3} />
             </div>
-            Central de Ajuda & Suporte
+            Central de Governança Técnica
           </h1>
           <p className="text-muted-foreground font-bold mt-2 text-sm">
-            Encontre soluções estratégicas ou fale com nossa engenharia de pós-venda.
+            Suporte premium integrado à engenharia de pós-venda.
           </p>
         </div>
       </div>
 
-      {/* Hero Section / Knowledge Base Search */}
       <Card className="bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-primary-foreground overflow-hidden relative border-none shadow-2xl rounded-[3rem] group">
         <div className="absolute right-[-2%] top-[-10%] opacity-10 pointer-events-none rotate-12 group-hover:rotate-0 transition-all duration-slow">
           <BookOpen size={350} />
         </div>
         <CardContent className="p-12 md:p-24 relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
-          <Badge className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-black uppercase tracking-[0.25em] text-[10px] px-6 py-2 rounded-full mb-10 backdrop-blur-xl">Central de Inteligência Técnica</Badge>
-          <h2 className="text-4xl md:text-6xl font-black mb-12 tracking-tighter leading-[1] scale-in-center">Como podemos ajudar <br className="hidden md:block" /> você hoje?</h2>
+          <Badge className="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-black uppercase tracking-[0.25em] text-[10px] px-6 py-2 rounded-full mb-10 backdrop-blur-xl">Base de Conhecimento</Badge>
+          <h2 className="text-4xl md:text-6xl font-black mb-12 tracking-tighter leading-[1] scale-in-center">Como podemos auxiliar <br className="hidden md:block" /> seu projeto?</h2>
           <div className="w-full relative group/input">
             <Input 
               className="h-16 md:h-24 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-3xl pl-16 pr-6 text-xl focus:bg-white focus:text-foreground transition-all duration-500 shadow-2xl border-2"
-              placeholder="Pesquise por vistorias, garantias ou financeiro..."
+              placeholder="Ex: Manuais, vistorias, garantias..."
             />
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40 group-focus-within/input:text-primary h-8 w-8 transition-all" strokeWidth={3} />
-          </div>
-          <div className="flex flex-wrap justify-center gap-3 mt-12">
-            {['Vistorias', 'Garantias', 'Financeiro', 'Manuais'].map(tag => (
-              <span key={tag} className="text-[10px] font-black uppercase tracking-widest px-6 py-3 bg-white/5 hover:bg-white/10 rounded-2xl cursor-pointer transition-all border border-white/10 backdrop-blur-md">
-                {tag}
-              </span>
-            ))}
           </div>
         </CardContent>
       </Card>
 
-
-
-      {/* Contact Methods Grid */}
       <ResponsiveGrid columns={3} gap="layout">
         {contactMethods.map((method, idx) => {
           const Icon = method.icon;
@@ -197,9 +176,7 @@ const Support = () => {
       </ResponsiveGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
-        {/* Support Ticket Form */}
         <Card className="shadow-2xl border-none bg-card/60 backdrop-blur-md rounded-[2.5rem] overflow-hidden group">
-          <div className="h-2 w-full bg-gradient-to-r from-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <CardHeader className="p-10 pb-6">
             <CardTitle className="flex items-center gap-4 text-2xl font-black tracking-tight">
               <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 transition-transform">
@@ -207,9 +184,6 @@ const Support = () => {
               </div>
               Protocolo de Suporte
             </CardTitle>
-            <CardDescription className="font-bold text-muted-foreground/80 mt-2">
-              Não encontrou o que precisava? Envie sua solicitação detalhada e rastreie o atendimento.
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -218,14 +192,12 @@ const Support = () => {
                   <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Categoria</label>
                   <Select value={formState.category} onValueChange={(v: TicketCategory) => setFormState(prev => ({...prev, category: v}))}>
                     <SelectTrigger className="h-12 rounded-xl">
-                      <SelectValue placeholder="Selecione uma categoria" />
+                      <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="financial">Financeiro</SelectItem>
                       <SelectItem value="technical">Assistência Técnica</SelectItem>
+                      <SelectItem value="financial">Financeiro</SelectItem>
                       <SelectItem value="administrative">Administrativo</SelectItem>
-                      <SelectItem value="warranty">Garantia</SelectItem>
-                      <SelectItem value="other">Outros</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -239,45 +211,25 @@ const Support = () => {
                       <SelectItem value="low">Baixa</SelectItem>
                       <SelectItem value="medium">Média</SelectItem>
                       <SelectItem value="high">Alta</SelectItem>
-                      <SelectItem value="urgent">Urgente</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Assunto da Mensagem</label>
-                <Input 
-                  value={formState.subject}
-                  onChange={e => setFormState(prev => ({...prev, subject: e.target.value}))}
-                  placeholder="Ex: Dúvida sobre a parcela de entrega" 
-                  className="h-12 rounded-xl focus:ring-primary/20"
-                  required
-                />
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Assunto</label>
+                <Input value={formState.subject} onChange={e => setFormState(prev => ({...prev, subject: e.target.value}))} placeholder="Ex: Dúvida sobre vistoria" className="h-12 rounded-xl" required />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Descrição</label>
-                <Textarea 
-                  value={formState.message}
-                  onChange={e => setFormState(prev => ({...prev, message: e.target.value}))}
-                  placeholder="Explique seu caso com detalhes..." 
-                  className="min-h-[150px] rounded-xl focus:ring-primary/20 resize-none"
-                  required
-                />
+                <Textarea value={formState.message} onChange={e => setFormState(prev => ({...prev, message: e.target.value}))} placeholder="Descreva detalhadamente..." className="min-h-[150px] rounded-xl resize-none" required />
               </div>
-              
-              <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-xl border border-dashed">
-                <ExternalLink className="h-4 w-4 text-primary" />
-                <span className="text-xs font-bold text-muted-foreground">Adicionar anexos (em breve)</span>
-              </div>
-              <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
-                Enviar Mensagem para Suporte
+              <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20">
+                Enviar Solicitação
               </Button>
             </form>
           </CardContent>
         </Card>
 
-        {/* Support Tickets List */}
         <Card className="shadow-lg border-none bg-white">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl font-black tracking-tight">
@@ -286,76 +238,32 @@ const Support = () => {
               </div>
               Meus Chamados
             </CardTitle>
-            <CardDescription className="font-medium">Histórico e status das suas solicitações.</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y">
-              {tickets.length > 0 ? (
-                <div className="max-h-dialog-md overflow-y-auto scrollbar-hide">
-                  {tickets.map((ticket) => (
-                    <div key={ticket.id} className="p-6 hover:bg-muted/30 transition-all duration-300 cursor-pointer border-l-4 border-transparent hover:border-primary group">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted px-2 py-1 rounded">#{ticket.id.includes('-') ? ticket.id.split('-')[1] : ticket.id}</span>
-                          <Badge variant="outline" className="text-[9px] font-black uppercase bg-primary/5 border-primary/20">{ticket.category}</Badge>
-                        </div>
-                        <StatusBadge 
-                          status={ticket.status === 'closed' ? 'complete' : (ticket.status === 'in_progress' ? 'progress' : 'pending')} 
-                          label={ticket.status === 'closed' ? 'Resolvido' : (ticket.status === 'in_progress' ? 'Em Atendimento' : 'Aguardando')}
-                          size="sm"
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <h4 className="font-black text-sm group-hover:text-primary transition-colors">{ticket.subject}</h4>
-                        {ticket.priority === 'urgent' && <Badge variant="destructive" className="h-4 text-[8px] px-1 animate-pulse">URGENTE</Badge>}
-                      </div>
-                      <p className="text-xs text-muted-foreground line-clamp-2 mb-4 leading-relaxed font-medium">
-                        {ticket.messages[0]?.text}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">{ticket.createdAt.toLocaleDateString('pt-BR')}</p>
-                          {ticket.messages[0]?.attachments && ticket.messages[0].attachments.length > 0 && (
-                             <span className="text-[10px] text-primary font-black uppercase flex items-center gap-1">
-                               <ExternalLink className="h-3 w-3" /> {ticket.messages[0].attachments.length} Anexos
-                             </span>
-                          )}
-                        </div>
-                        <div className="flex gap-2">
-                          {ticket.status === 'closed' && (
-                            <Button variant="ghost" size="sm" className="h-7 text-[10px] font-black uppercase text-primary hover:bg-primary/5 rounded-lg px-3">
-                              Avaliar
-                            </Button>
-                          )}
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-7 text-[10px] font-black uppercase text-primary hover:bg-primary/5 rounded-lg px-3"
-                            onClick={() => setSelectedTicketId(ticket.id)}
-                          >
-                            Ver Chat
-                          </Button>
-                        </div>
-                      </div>
+            {tickets.length > 0 ? (
+              <div className="max-h-[500px] overflow-y-auto p-4 space-y-4">
+                {tickets.map((ticket) => (
+                  <div key={ticket.id} className="p-6 rounded-[1.5rem] bg-muted/30 hover:bg-primary/5 transition-all border border-transparent hover:border-primary/20 cursor-pointer" onClick={() => setSelectedTicketId(ticket.id)}>
+                    <div className="flex items-center justify-between mb-3">
+                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-white px-2 py-1 rounded-lg">#{ticket.id.slice(0,8)}</span>
+                       <StatusBadge status={ticket.status === 'closed' ? 'complete' : 'progress'} label={ticket.status === 'closed' ? 'Resolvido' : 'Em Atendimento'} size="sm" />
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-20 text-center bg-muted/20 animate-in fade-in duration-700">
-                  <div className="w-24 h-24 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <MessageSquare className="h-10 w-10 text-primary/20" />
+                    <h4 className="font-black text-sm mb-2">{ticket.subject}</h4>
+                    <p className="text-xs text-muted-foreground font-bold">{ticket.createdAt.toLocaleDateString('pt-BR')}</p>
                   </div>
-                  <h3 className="font-black text-xl text-foreground/80 tracking-tight">Nenhum chamado aberto</h3>
-                  <p className="text-xs text-muted-foreground mt-2 max-w-[260px] mx-auto font-bold leading-relaxed">Você ainda não abriu nenhuma solicitação. Nossa equipe está à disposição!</p>
-                </div>
-              )}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-20 text-center opacity-40">
+                <ShieldCheck size={48} className="mx-auto mb-4" />
+                <p className="font-black uppercase tracking-widest text-[10px]">Nenhum chamado ativo</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout-gap mt-8">
-        {/* Quick Links / Resources */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="border-none shadow-lg">
             <CardHeader>
@@ -401,26 +309,17 @@ const Support = () => {
               <CardTitle className="text-lg font-black tracking-tight">Dica de Manutenção</CardTitle>
             </CardHeader>
             <CardContent className="text-sm font-medium leading-relaxed text-indigo-50 relative z-10">
-              "Para manter o brilho e a durabilidade dos seus revestimentos, utilize apenas pano úmido e detergente neutro. Evite produtos abrasivos que podem comprometer a camada protetora."
+              "Para manter o brilho e a durabilidade dos seus revestimentos, utilize apenas pano úmido e detergente neutro."
             </CardContent>
             <CardFooter>
-              <Button variant="secondary" size="sm" className="w-full font-black uppercase tracking-widest text-[10px] bg-white text-indigo-600 hover:bg-indigo-50">
+              <Button variant="secondary" size="sm" className="w-full font-black uppercase tracking-widest text-[10px] bg-white text-indigo-600">
                 Ver mais dicas <ChevronRight size={14} className="ml-1" />
               </Button>
             </CardFooter>
           </Card>
-
-          <Card className="border-dashed shadow-none bg-muted/30 flex flex-col items-center p-6 text-center">
-             <div className="p-3 bg-white rounded-full mb-3 shadow-sm">
-               <CheckCircle className="h-6 w-6 text-green-500" />
-             </div>
-             <h4 className="text-sm font-black mb-1">Satisfação Garantida</h4>
-             <p className="text-[10px] text-muted-foreground font-bold uppercase leading-tight max-w-[150px]">98% dos nossos clientes avaliam nosso suporte como excelente.</p>
-          </Card>
         </div>
       </div>
 
-      {/* FAQ Integration */}
       <div className="mt-12">
         <div className="flex items-center gap-3 mb-8">
           <div className="h-10 w-1 bg-primary rounded-full" />

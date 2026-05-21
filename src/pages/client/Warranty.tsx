@@ -178,8 +178,8 @@ const ClientWarranty = () => {
                     <Activity className="h-6 w-6" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl font-black tracking-tight">Meus Protocolos</CardTitle>
-                    <CardDescription className="font-bold">Acompanhamento técnico em tempo real</CardDescription>
+                    <CardTitle className="text-xl font-black tracking-tight">Protocolos Ativos</CardTitle>
+                    <CardDescription className="font-bold">Governança técnica em tempo real</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -200,7 +200,7 @@ const ClientWarranty = () => {
                         <span className="text-sm font-black truncate group-hover/item:text-primary transition-colors">{c.title}</span>
                       </div>
                       <div className="flex justify-between items-center text-[9px] text-muted-foreground uppercase font-black tracking-widest opacity-60">
-                        <span className="bg-muted px-2 py-1 rounded-lg">#{c.id.slice(0, 8)}</span>
+                        <span className="bg-white px-2 py-1 rounded-lg border">#{c.id.slice(0, 8)}</span>
                         <span>{new Date(c.createdAt).toLocaleDateString('pt-BR')}</span>
                       </div>
                       {selectedClaimId === c.id && (
@@ -211,7 +211,7 @@ const ClientWarranty = () => {
                 ) : (
                   <div className="text-center py-20 opacity-30">
                     <ShieldCheck size={48} className="mx-auto mb-4" />
-                    <p className="text-[10px] font-black uppercase tracking-widest">Nenhum chamado ativo</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest">Nenhum protocolo encontrado</p>
                   </div>
                 )}
               </CardContent>

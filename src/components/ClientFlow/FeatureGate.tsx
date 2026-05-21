@@ -80,9 +80,9 @@ export function FeatureGate({
 
   // Block variant (default)
   return (
-    <Card className="border-none bg-primary/5 rounded-[2.5rem] overflow-hidden shadow-sem-lg group">
+    <Card className="border-none bg-background/40 backdrop-blur-xl rounded-[2.5rem] overflow-hidden shadow-sem-lg group border border-white/20">
       <CardHeader className="text-center p-12 pb-6">
-        <div className="w-20 h-20 rounded-[1.5rem] bg-white flex items-center justify-center mx-auto mb-6 shadow-xl border border-primary/10 group-hover:scale-110 transition-transform duration-500">
+        <div className="w-20 h-20 rounded-[1.5rem] bg-white/80 backdrop-blur-md flex items-center justify-center mx-auto mb-6 shadow-xl border border-primary/10 group-hover:scale-110 transition-transform duration-500">
           <Lock className="h-10 w-10 text-primary" strokeWidth={2.5} />
         </div>
         <CardTitle className="text-2xl font-black tracking-tighter">Acesso Restrito</CardTitle>
