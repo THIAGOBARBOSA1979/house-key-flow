@@ -50,13 +50,16 @@ export default function ClientInspections() {
 
   const inspection = useMemo(() => selectedInspection ? inspections.find(i => i.id === selectedInspection) : null, [selectedInspection, inspections]);
 
-  const handleViewPdf = () => {
+  const handleViewPdf = async () => {
     if (selectedInspection) {
-      const generated = documentService.generateDocument('inspection', {});
-      setPreviewContent(generated.template || "");
-      setIsPreviewOpen(true);
+      const generated = await documentService.generateDocument('inspection', {});
+      if (generated) {
+        setPreviewContent(generated.template || "");
+        setIsPreviewOpen(true);
+      }
     }
   };
+
 
   const handleOpenSignature = () => {
     setIsSignatureOpen(true);
