@@ -41,7 +41,7 @@ describe('DocumentService - Digital Signature Flow', () => {
       confirmationMethod: 'sms'
     });
 
-    const success = await documentService.signDocument(doc.id, signer!.id, 'sms', { ip: '127.0.0.1' });
+    const success = await documentService.signDocument(doc.id, signer!.id, 'sms');
     expect(success).toBe(true);
 
     const signedDoc = await documentService.getDocumentById(doc.id);

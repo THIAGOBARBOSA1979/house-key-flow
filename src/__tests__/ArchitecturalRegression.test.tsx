@@ -10,7 +10,11 @@ describe('Architectural Regression - BaseService', () => {
     company_id?: string;
   }
 
-  class TestService extends SupabaseBaseService<TestItem> {}
+  class TestService extends SupabaseBaseService<TestItem> {
+    constructor(options: any, initialItems: any[] = []) {
+      super(options, initialItems);
+    }
+  }
 
   let service: TestService;
 
