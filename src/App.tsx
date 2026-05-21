@@ -68,7 +68,7 @@ const App = () => {
                   <Route path="documents" element={<Pages.AdminDocuments />} />
                   <Route path="calendar" element={<Pages.Calendar />} />
                   <Route path="users" element={<Pages.Users />} />
-                  <Route path="client-area" element={<Pages.ClientArea />} />
+                  <Route path="ClientArea" element={<Pages.ClientArea />} />
                   <Route path="checklist" element={<Pages.Checklist />} />
                   <Route path="settings" element={<Pages.Settings />} />
                   <Route path="design-system" element={<Pages.DesignSystem />} />
@@ -102,7 +102,7 @@ const App = () => {
                 <Route path="/warranty" element={<Navigate to="/admin/warranty" replace />} />
                 <Route path="/calendar" element={<Navigate to="/admin/calendar" replace />} />
                 <Route path="/users" element={<Navigate to="/admin/users" replace />} />
-                <Route path="/client-area" element={<Navigate to="/admin/client-area" replace />} />
+                <Route path="/ClientArea" element={<Navigate to="/admin/ClientArea" replace />} />
                 <Route path="/checklist" element={<Navigate to="/admin/checklist" replace />} />
                 <Route path="/settings" element={<Navigate to="/admin/settings" replace />} />
 

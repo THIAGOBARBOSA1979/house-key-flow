@@ -13,7 +13,7 @@ const routeLabels: Record<string, string> = {
   "checklist": "Checklists",
   "calendar": "Agendamentos",
   "users": "Usuários",
-  "client-area": "Área do Cliente",
+  "ClientArea": "Área do Cliente",
   "settings": "Configurações",
   "client": "Portal do Cliente",
   "dashboard": "Dashboard",

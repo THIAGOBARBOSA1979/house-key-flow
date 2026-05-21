@@ -12,10 +12,10 @@ import { propertyService } from "@/services/operations/PropertyService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useClientStage } from "@/hooks";
 import { useMemo } from "react";
-import { client-timeline, TimelineStep } from "@/components/client/client-timeline";
+import { ClientTimeline, TimelineStep } from "@/components/client/ClientTimeline";
 import { ConstructionFeed } from "@/components/client/ConstructionFeed";
 import { Skeleton } from "@/components/ui/skeleton";
-import { StageIndicator } from "@/components/client-flow/StageIndicator";
+import { StageIndicator } from "@/components/ClientFlow/StageIndicator";
 import { useClientDashboardData } from "@/hooks/core/useClientDashboardData";
 import { PropertyInfoCard } from "@/components/dashboard/Client/PropertyInfoCard";
 import { ReferralCard } from "@/components/dashboard/Client/ReferralCard";
@@ -202,7 +202,7 @@ const Dashboard = () => {
               <CardTitle className="text-xl font-black tracking-tight">Jornada Digital</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <client-timeline steps={timeline} />
+              <ClientTimeline steps={timeline} />
             </CardContent>
           </Card>
 

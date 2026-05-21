@@ -9,10 +9,10 @@ import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { WarrantyItem } from "@/types/warranty";
-import { FeatureGate, GatedButton } from "@/components/client-flow/FeatureGate";
+import { FeatureGate, GatedButton } from "@/components/ClientFlow/FeatureGate";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
-import { WarrantyRequestTimeline } from "@/components/warranty/client-timeline/WarrantyRequestTimeline";
+import { WarrantyRequestTimeline } from "@/components/warranty/ClientTimeline/WarrantyRequestTimeline";
 import { cn } from "@/lib/utils";
 
 import { useWarrantyClaims } from "@/hooks/warranty/useWarrantyClaims";

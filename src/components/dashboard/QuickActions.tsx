@@ -34,7 +34,7 @@ export const QuickActions = () => {
     { 
       label: "Gestão de Clientes", 
       icon: User, 
-      onClick: () => navigate("/admin/client-area"),
+      onClick: () => navigate("/admin/ClientArea"),
       color: "text-emerald-500",
       bgColor: "bg-emerald-50",
       description: "Painel de relacionamento"

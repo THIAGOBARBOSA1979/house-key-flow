@@ -16,7 +16,7 @@ import {
   Download,
   ShieldCheck
 } from "lucide-react";
-import { ClientFAQ } from "@/components/client-flow/ClientFAQ";
+import { ClientFAQ } from "@/components/ClientFlow/ClientFAQ";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
