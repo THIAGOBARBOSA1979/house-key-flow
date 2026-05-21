@@ -1,3 +1,4 @@
+import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 
 export type CompanyStatus = 'active' | 'suspended' | 'cancelled';
@@ -24,6 +25,7 @@ export interface Company {
   settings?: CompanySettings;
   created_at: Date;
   updated_at: Date;
+  company_id?: string; // Multi-tenancy support for consistency
 }
 
 const INITIAL_COMPANIES: Company[] = [

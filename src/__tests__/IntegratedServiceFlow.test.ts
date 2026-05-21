@@ -32,7 +32,7 @@ describe('Integrated Technical Flow (E2E Service Logic)', () => {
       time: '09:00',
       inspectionType: 'technical',
       technician: 'tech-1',
-      requestId: ticket.id
+      request_id: ticket.id
     }, {
       property: ticket.propertyName || '',
       unit: ticket.unitNumber || '',

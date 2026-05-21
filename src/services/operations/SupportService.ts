@@ -65,10 +65,30 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
   constructor() {
     super({
       storageKey: "a2_support_tickets",
-      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table for now if it doesn't exist
+      supabaseTable: "support_tickets" as any,
       auditEntityType: "system",
-      shouldSyncWithSupabase: false
+      shouldSyncWithSupabase: true
     }, INITIAL_TICKETS);
+  }
+
+  protected mapToSupabase(item: Partial<SupportTicket>): any {
+    const mapped = super.mapToSupabase(item);
+    if (mapped.messages) {
+      mapped.messages = JSON.stringify(mapped.messages);
+    }
+    return mapped;
+  }
+
+  protected mapFromSupabase(raw: any): SupportTicket {
+    const item = super.mapFromSupabase(raw);
+    if (typeof item.messages === 'string') {
+      try {
+        item.messages = JSON.parse(item.messages);
+      } catch (e) {
+        item.messages = [];
+      }
+    }
+    return item;
   }
 
   getAllTickets() { return [...this.items]; }
@@ -77,15 +97,12 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
 
   async createTicket(clientId: string, clientName: string, data: any, context?: { propertyId?: string, propertyName?: string, unitNumber?: string }): Promise<SupportTicket> {
     const createdAt = new Date();
-    // Default 24h SLA for initial response
-    const slaDeadline = new Date(createdAt.getTime() + 48 * 60 * 60 * 1000); // 48h SLA
+    const slaDeadline = new Date(createdAt.getTime() + 48 * 60 * 60 * 1000);
 
-    return await super.create({
-      clientId,
-      clientName,
-      propertyId: context?.propertyId,
-      propertyName: context?.propertyName,
-      unitNumber: context?.unitNumber,
+    const ticketData: any = {
+      client_id: clientId,
+      company_id: (data as any).company_id,
+      property_id: context?.propertyId,
       subject: data.subject,
       status: 'pending',
       priority: data.priority || 'medium',
@@ -98,22 +115,23 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
         text: data.message, 
         createdAt: new Date() 
       }],
-      slaDeadline,
-      slaStatus: 'on_track',
-      createdAt,
-      updatedAt: createdAt
-    } as any);
+      sla_deadline: slaDeadline,
+      created_at: createdAt,
+      updated_at: createdAt
+    };
+
+    return await this.create(ticketData);
   }
 
-
-  updateTicketStatus(id: string, status: SupportTicket['status']) {
-    return this.update(id, { status, updatedAt: new Date() });
+  async updateTicketStatus(id: string, status: SupportTicket['status']) {
+    return await this.update(id, { status, updatedAt: new Date() } as any);
   }
 
-  addMessageToTicket(id: string, senderId: string, senderName: string, role: 'admin' | 'client', text: string) {
+  async addMessageToTicket(id: string, senderId: string, senderName: string, role: 'admin' | 'client', text: string) {
     const ticket = this.getById(id);
     if (!ticket) return null;
-    const messages = [...ticket.messages, { 
+    
+    const messages = [...(ticket.messages || []), { 
       id: crypto.randomUUID(), 
       senderId, 
       senderName, 
@@ -121,12 +139,14 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
       text, 
       createdAt: new Date() 
     }];
+    
     const newStatus = role === 'admin' ? 'waiting_client' : 'in_progress';
-    return this.update(id, { 
+    
+    return await this.update(id, { 
       messages, 
       status: newStatus,
       updatedAt: new Date() 
-    });
+    } as any);
   }
 }
 
