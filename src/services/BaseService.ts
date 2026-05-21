@@ -83,14 +83,20 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   public async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
     if (this.options.auditEntityType) {
-      // Use dynamic import or a deferred reference to avoid circular dependency
-      const { auditLogService } = await import("@/services/core/AuditLogService");
-      await auditLogService.logAction({
-        action,
-        entityType: this.options.auditEntityType,
-        entityId,
-        payload: { ...metadata, message: details }
-      });
+      // Use a safer dynamic check to avoid Vite circularity warnings
+      try {
+        const services = await import("@/services");
+        if (services.auditLogService) {
+          await services.auditLogService.logAction({
+            action,
+            entityType: this.options.auditEntityType,
+            entityId,
+            payload: { ...metadata, message: details }
+          });
+        }
+      } catch (err) {
+        console.error("Critical: Failed to log audit action", err);
+      }
     }
   }
 

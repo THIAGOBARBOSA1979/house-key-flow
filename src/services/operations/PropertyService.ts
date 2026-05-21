@@ -70,8 +70,13 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
   private async initializeRealtime() {
+    let syncTimeout: any = null;
     Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
-      await this.sync();
+      // Debounce sync to avoid multiple rapid requests
+      if (syncTimeout) clearTimeout(syncTimeout);
+      syncTimeout = setTimeout(async () => {
+        await this.sync();
+      }, 500);
     });
   }
 

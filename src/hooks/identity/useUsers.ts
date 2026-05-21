@@ -71,13 +71,12 @@ export const useUsers = () => {
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     try {
       if (editingUserId) {
-        await update(editingUserId, userData);
+        return await update(editingUserId, userData);
       } else {
-        await create({ ...userData, company_id: companyId });
+        return await create({ ...userData, company_id: companyId });
       }
-      return true;
     } catch (error) {
-      console.error("Error saving user:", error);
+      // Error is already handled by useService
       return false;
     }
   }, [create, update, companyId]);
