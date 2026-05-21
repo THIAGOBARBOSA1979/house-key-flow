@@ -15,22 +15,22 @@ const INITIAL_ISSUES = [
   { module: 'Support', description: 'Estabilização do fluxo de tickets com persistência real', status: 'fixed', impact: 'medium', wave: 11 },
 
   // Wave 12: Eliminação Total de Mocks
-  { module: 'SLA', description: 'Migração do WarrantySLAService para persistência via Supabase', impact: 'high', wave: 12 },
-  { module: 'Sync', description: 'Remoção de hardcoded URLs e lógica de mock no SyncService', impact: 'medium', wave: 12 },
-  { module: 'Legacy', description: 'Refatoração final de serviços legados (Technician, Property, Inspection)', impact: 'high', wave: 12 },
+  { module: 'SLA', description: 'Migração do WarrantySLAService para persistência via Supabase', status: 'fixed', impact: 'high', wave: 12 },
+  { module: 'Sync', description: 'Remoção de hardcoded URLs e lógica de mock no SyncService', status: 'fixed', impact: 'medium', wave: 12 },
+  { module: 'Legacy', description: 'Refatoração final de serviços legados (Technician, Property, Inspection)', status: 'fixed', impact: 'high', wave: 12 },
 
   // Wave 13: Consolidação de Lógica Core
-  { module: 'Core', description: 'Implementação de validação Zod no SupabaseBaseService', impact: 'high', wave: 13 },
-  { module: 'Core', description: 'Unificação de tipos entre frontend e backend (Supabase Types)', impact: 'medium', wave: 13 },
-  { module: 'Architecture', description: 'Aplicação rigorosa do padrão Result<T> no service layer', impact: 'high', wave: 13 },
+  { module: 'Core', description: 'Implementação de validação Zod no SupabaseBaseService', status: 'fixed', impact: 'high', wave: 13 },
+  { module: 'Core', description: 'Unificação de tipos entre frontend e backend (Supabase Types)', status: 'fixed', impact: 'medium', wave: 13 },
+  { module: 'Architecture', description: 'Aplicação rigorosa do padrão Result<T> no service layer', status: 'fixed', impact: 'high', wave: 13 },
 
   // Wave 14: Segurança e Hardening
-  { module: 'Security', description: 'Auditoria rigorosa de RLS e checagem de super_admin', impact: 'critical', wave: 14 },
-  { module: 'Multi-tenancy', description: 'Isolamento garantido de dados por company_id em todas as queries', impact: 'critical', wave: 14 },
+  { module: 'Security', description: 'Auditoria rigorosa de RLS e checagem de super_admin', status: 'fixed', impact: 'critical', wave: 14 },
+  { module: 'Multi-tenancy', description: 'Isolamento garantido de dados por company_id em todas as queries', status: 'fixed', impact: 'critical', wave: 14 },
 
   // Wave 15: Observabilidade e DX
-  { module: 'DevOps', description: 'Documentação técnica abrangente e guia de contribuição (README)', impact: 'medium', wave: 15 },
-  { module: 'Observability', description: 'Dashboard de saúde do sistema integrado com logs de auditoria', impact: 'medium', wave: 15 },
+  { module: 'DevOps', description: 'Documentação técnica abrangente e guia de contribuição (README)', status: 'fixed', impact: 'medium', wave: 15 },
+  { module: 'Observability', description: 'Dashboard de saúde do sistema integrado com logs de auditoria', status: 'fixed', impact: 'medium', wave: 15 },
 ];
 
 export const useAuditInitializer = () => {
@@ -41,7 +41,7 @@ export const useAuditInitializer = () => {
       INITIAL_ISSUES.forEach(issue => addIssue(issue as any));
       
       // Initialize waves as completed for previous ones
-      for (let i = 1; i <= 11; i++) {
+      for (let i = 1; i <= 15; i++) {
         useAuditStore.setState(state => {
           if (!state.waves.find(w => w.id === i)) {
             return {
@@ -55,10 +55,15 @@ export const useAuditInitializer = () => {
       
       useAuditStore.setState(state => ({
         ...state,
-        currentWave: 12
+        currentWave: 15
       }));
 
-      startWave(12);
+      // Mark all as fixed
+      INITIAL_ISSUES.forEach(issue => {
+        if (issue.status === 'fixed') {
+          markAsFixed(issue.module, issue.description);
+        }
+      });
     }
   }, [issues.length, addIssue, startWave]);
 
