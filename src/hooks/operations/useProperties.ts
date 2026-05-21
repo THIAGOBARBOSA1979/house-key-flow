@@ -4,6 +4,7 @@ import { propertyService } from "@/services";
 import { useDataList } from "@/hooks";
 import { useQueryService } from "@/hooks/core/useQueryService";
 import { Property } from "@/types/property";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
 
 /**
  * Custom hook to manage properties logic.
