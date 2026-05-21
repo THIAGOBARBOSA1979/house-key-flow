@@ -1067,57 +1067,6 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     };
   }
 
-  /**
-   * Add a comment/update to a request
-   */
-  addUpdate(
-    requestId: string,
-    authorId: string,
-    authorName: string,
-    text: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
-    if (!request) return { success: false, error: "Solicitação não encontrada" };
-
-    const newUpdate = {
-      id: `upd-${crypto.randomUUID()}`,
-      date: new Date(),
-      author: authorName,
-      text: text
-    };
-
-    const updatedRequest: WarrantyRequestFlow = {
-      ...request,
-      updates: [...request.updates || [], newUpdate],
-      updatedAt: new Date()
-    };
-
-    this.update(requestId, updatedRequest);
-
-    auditLogService.log({
-      entityType: 'warranty',
-      entityId: requestId,
-      action: 'updated',
-      performedBy: authorId,
-      performedByName: authorName,
-      performedByRole: authorId === 'admin-1' ? 'admin' : 'client',
-      details: `Novo comentário adicionado à solicitação.`
-    });
-
-    return { success: true, request: updatedRequest };
-  }
-
-  /**
-   * Cancel a request
-   */
-  cancelRequest(requestId: string, clientId: string): boolean {
-    const request = this.getById(requestId);
-    if (request && request.clientId === clientId) {
-      this.changeStatus(requestId, 'rejected' as any, clientId, false, "Solicitação cancelada pelo cliente");
-      return true;
-    }
-    return false;
-  }
 }
 
 export const warrantyFlowService = new WarrantyFlowService();
