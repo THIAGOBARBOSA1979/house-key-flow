@@ -98,7 +98,7 @@ function DataTableComponent<T>({
               <TableRow 
                 key={rowIdx}
                 className={cn(
-                  "group transition-all duration-300 border-b-border/20 outline-none focus-within:bg-primary/5",
+                  "group transition-all duration-300 border-b-border/20 outline-none focus-within:ring-2 focus-within:ring-primary/20",
                   onRowClick ? "cursor-pointer hover:bg-primary/5 active:bg-primary/10" : "cursor-default hover:bg-muted/10"
                 )}
                 onClick={() => onRowClick?.(item)}
@@ -128,7 +128,7 @@ function DataTableComponent<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-5 space-y-4 interactive-active border border-border/40 bg-card/60 backdrop-blur-md shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-primary/20 outline-none active:scale-[0.98]"
+            className="card-standard p-5 space-y-4 interactive-active border border-border/40 bg-card/60 backdrop-blur-md shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
             onClick={() => onRowClick?.(item)}
             tabIndex={onRowClick ? 0 : -1}
             onKeyDown={(e) => {

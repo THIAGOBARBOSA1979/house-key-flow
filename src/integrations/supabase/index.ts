@@ -275,6 +275,16 @@ export class SupabaseStorage {
   }
 
   static async getPublicUrl(bucket: string, path: string): Promise<string> {
+    // SECURITY: Switched to signed URLs for protected buckets
+    const protectedBuckets = ['documents', 'inspections-photos'];
+    if (protectedBuckets.includes(bucket)) {
+      const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, 3600); // 1 hour expiry
+      if (error) {
+        console.error('Failed to create signed URL:', error);
+        return '';
+      }
+      return data.signedUrl;
+    }
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
   }
