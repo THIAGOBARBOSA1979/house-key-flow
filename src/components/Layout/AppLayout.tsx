@@ -31,7 +31,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { QuickLauncher } from "@/components/Shared/QuickLauncher";
 import { useDebounce } from "@/hooks";
+import { useUserPreferences } from "@/hooks/core/useUserPreferences";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 interface AppLayoutProps {
   children?: React.ReactNode;

@@ -33,6 +33,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { companyService } from "@/services";
 import { AuthGuard } from "@/integrations/supabase/auth-guard";
+import { useUserPreferences } from "@/hooks/core/useUserPreferences";
+
 
 
 interface SidebarProps {
