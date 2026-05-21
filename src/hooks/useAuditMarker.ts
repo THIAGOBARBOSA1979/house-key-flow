@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { useAuditManager } from './useAuditManager';
 
 export const useAuditMarker = (issueDescription: string) => {
-  const { markFixed } = useAuditManager();
+  const { completeTask } = useAuditManager();
 
   useEffect(() => {
-    // Small delay to ensure store stability
+    // Pequeno delay para garantir estabilidade do store
     const timer = setTimeout(() => {
       completeTask(issueDescription);
     }, 500);
     return () => clearTimeout(timer);
-  }, [issueDescription, markFixed]);
+  }, [issueDescription, completeTask]);
 };
