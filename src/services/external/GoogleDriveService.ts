@@ -1,32 +1,38 @@
 
+import { Supabase } from '@/integrations/supabase';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+
 /**
- * Mock Google Drive Service for development.
- * This should be replaced with a real implementation if needed.
+ * Service for file management, integrated with Supabase Storage.
+ * Replaces the old mock Google Drive implementation.
  */
 export class GoogleDriveService {
-  private static initialized: boolean = false;
-
-  static async initialize() {
-    this.initialized = true;
-    console.log('[GoogleDriveService] Initialized');
-  }
-
   static async uploadFile(file: File, clientId: string, type: 'warranty' | 'document' | 'inspection') {
     try {
-      await this.initialize();
-      console.log(`[GoogleDriveService] Mocking upload for ${file.name} (${type})`);
+      const bucket = type === 'inspection' ? 'inspections-photos' : 'documents';
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `${clientId}/${type}/${fileName}`;
+
+      const { data, error } = await Supabase.storage.uploadFile({
+        bucket,
+        path: filePath,
+        file: file
+      });
+
+      if (error) throw error;
       
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const publicUrl = await Supabase.storage.getPublicUrl(bucket, filePath);
 
       return {
-        fileId: `mock-file-${crypto.randomUUID()}`,
-        viewLink: URL.createObjectURL(file),
+        fileId: data?.path,
+        viewLink: publicUrl,
       };
     } catch (error) {
-      console.error('Error uploading file to Google Drive:', error);
-      throw new Error('Falha ao fazer upload do arquivo');
+      console.error('Error uploading file to storage:', error);
+      throw errorHandler.handle(error, 'GoogleDriveService:uploadFile');
     }
   }
 }
+
 
