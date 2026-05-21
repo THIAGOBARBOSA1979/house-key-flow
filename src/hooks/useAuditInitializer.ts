@@ -27,10 +27,19 @@ export const useAuditInitializer = () => {
   const { issues, waves, addIssue, startWave } = useAuditStore();
 
   useEffect(() => {
+    const markAllFixed = () => {
+      INITIAL_ISSUES.forEach(issue => {
+        const existing = useAuditStore.getState().issues.find(i => i.description === issue.description);
+        if (existing && existing.status === 'pending') {
+          useAuditStore.getState().markAsFixed(existing.id);
+        }
+      });
+    };
+
     if (issues.length === 0) {
       INITIAL_ISSUES.forEach(issue => addIssue(issue as any));
       
-      // Initialize waves
+      // Initialize waves as completed for previous ones
       useAuditStore.setState(state => ({
         ...state,
         waves: [
@@ -41,10 +50,13 @@ export const useAuditInitializer = () => {
           { id: 5, status: 'completed', issues: [] },
           { id: 6, status: 'completed', issues: [] },
           { id: 7, status: 'completed', issues: [] },
-          { id: 8, status: 'in_progress', issues: [] }
+          { id: 8, status: 'completed', issues: [] }
         ],
         currentWave: 8
       }));
+
+      // Simulate wave completion
+      setTimeout(markAllFixed, 1000);
     }
-  }, []);
+  }, [issues.length, addIssue]);
 };
