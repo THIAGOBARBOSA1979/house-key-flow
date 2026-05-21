@@ -62,14 +62,29 @@ export class AppError extends Error {
     // Network errors
     if (error?.name === 'TypeError' && message.includes('fetch')) {
       code = ErrorCode.NETWORK_ERROR;
-      message = 'Falha na conexão com o servidor. Verifique sua internet.';
+      message = 'Falha na conexão estratégica com o servidor. Verifique sua integridade de rede.';
       retryable = true;
     }
 
-    if (error?.name === 'AbortError') {
+    if (error?.name === 'AbortError' || (error?.status === 0 && !error?.ok)) {
       code = ErrorCode.TIMEOUT;
-      message = 'A requisição demorou demais e foi cancelada.';
+      message = 'O protocolo de comunicação excedeu o tempo limite (Timeout).';
       retryable = true;
+    }
+
+    if (error?.status === 401) {
+      code = ErrorCode.UNAUTHORIZED;
+      message = 'Credenciais de acesso expiradas ou inválidas.';
+    }
+
+    if (error?.status === 403) {
+      code = ErrorCode.FORBIDDEN;
+      message = 'Você não possui permissão de nível estratégico para esta operação.';
+    }
+
+    if (error?.status === 404) {
+      code = ErrorCode.NOT_FOUND;
+      message = 'O registro ou módulo solicitado não foi localizado nas coordenadas atuais.';
     }
 
     return new AppError({

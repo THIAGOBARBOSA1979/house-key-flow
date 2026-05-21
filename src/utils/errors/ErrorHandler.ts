@@ -39,8 +39,14 @@ export class ErrorHandler {
       originalError: error.originalError,
     };
 
-    console.group(`[AppError] ${error.code} in ${error.context || 'unknown'}`);
-    console.error(logData);
+    // Technical structured logging
+    console.group(`%c[AppError] ${error.code}`, 'color: #ff4d4f; font-weight: bold;');
+    console.log(`Context: ${error.context || 'unknown'}`);
+    console.log(`Message: ${error.message}`);
+    console.table(logData);
+    if (error.originalError) {
+      console.log('Original Error:', error.originalError);
+    }
     console.groupEnd();
 
     // In a real production environment, we would send this to Sentry, LogRocket, etc.

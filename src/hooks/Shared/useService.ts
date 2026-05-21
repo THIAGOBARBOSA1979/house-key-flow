@@ -85,16 +85,21 @@ export function useService<T extends { id: string; company_id?: string }>(
   const create = useCallback(async (data: Omit<T, "id">) => {
     setIsLoading(true);
     try {
+      setError(null);
       const newItem = await service.create(data, companyId);
       if (optionsRef.current.toastMessages?.create) {
-        toast({ title: "Sucesso", description: optionsRef.current.toastMessages.create });
+        toast({ 
+          title: "Sincronização Concluída", 
+          description: optionsRef.current.toastMessages.create 
+        });
       }
       optionsRef.current.onSuccess?.(newItem, 'create');
       return newItem;
     } catch (error) {
+      const appError = errorHandler.handle(error, 'useService:create');
+      setError(appError);
       optionsRef.current.onError?.(error);
-      toast({ title: "Erro", description: "Falha ao criar item.", variant: "destructive" });
-      throw error;
+      throw appError;
     } finally {
       setIsLoading(false);
     }
@@ -103,18 +108,23 @@ export function useService<T extends { id: string; company_id?: string }>(
   const update = useCallback(async (id: string, data: Partial<T>) => {
     setIsLoading(true);
     try {
+      setError(null);
       const updatedItem = await service.update(id, data, isSuperAdmin);
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
-          toast({ title: "Sucesso", description: optionsRef.current.toastMessages.update });
+          toast({ 
+            title: "Registro Atualizado", 
+            description: optionsRef.current.toastMessages.update 
+          });
         }
         optionsRef.current.onSuccess?.(updatedItem, 'update');
       }
       return updatedItem;
     } catch (error) {
+      const appError = errorHandler.handle(error, 'useService:update');
+      setError(appError);
       optionsRef.current.onError?.(error);
-      toast({ title: "Erro", description: "Falha ao atualizar item.", variant: "destructive" });
-      throw error;
+      throw appError;
     } finally {
       setIsLoading(false);
     }
@@ -123,18 +133,23 @@ export function useService<T extends { id: string; company_id?: string }>(
   const remove = useCallback(async (id: string) => {
     setIsLoading(true);
     try {
+      setError(null);
       const success = await service.delete(id);
       if (success) {
         if (optionsRef.current.toastMessages?.delete) {
-          toast({ title: "Sucesso", description: optionsRef.current.toastMessages.delete });
+          toast({ 
+            title: "Módulo Removido", 
+            description: optionsRef.current.toastMessages.delete 
+          });
         }
         optionsRef.current.onSuccess?.({ id } as T, 'delete');
       }
       return success;
     } catch (error) {
+      const appError = errorHandler.handle(error, 'useService:remove');
+      setError(appError);
       optionsRef.current.onError?.(error);
-      toast({ title: "Erro", description: "Falha ao remover item.", variant: "destructive" });
-      throw error;
+      throw appError;
     } finally {
       setIsLoading(false);
     }
@@ -143,12 +158,17 @@ export function useService<T extends { id: string; company_id?: string }>(
   const bulkUpdate = useCallback(async (ids: string[], data: Partial<T>) => {
     setIsLoading(true);
     try {
+      setError(null);
       const results = await service.bulkUpdate(ids, data, isSuperAdmin);
-      toast({ title: "Sucesso", description: `${results.length} itens atualizados.` });
+      toast({ 
+        title: "Atualização em Massa", 
+        description: `${results.length} registros foram sincronizados.` 
+      });
       return results;
     } catch (error) {
-      toast({ title: "Erro", description: "Falha na atualização em massa.", variant: "destructive" });
-      throw error;
+      const appError = errorHandler.handle(error, 'useService:bulkUpdate');
+      setError(appError);
+      throw appError;
     } finally {
       setIsLoading(false);
     }
@@ -157,19 +177,29 @@ export function useService<T extends { id: string; company_id?: string }>(
   const bulkRemove = useCallback(async (ids: string[]) => {
     setIsLoading(true);
     try {
+      setError(null);
       const count = await service.bulkDelete(ids);
-      toast({ title: "Sucesso", description: `${count} itens removidos.` });
+      toast({ 
+        title: "Exclusão em Massa", 
+        description: `${count} registros foram eliminados do protocolo.` 
+      });
       return count;
     } catch (error) {
-      toast({ title: "Erro", description: "Falha na remoção em massa.", variant: "destructive" });
-      throw error;
+      const appError = errorHandler.handle(error, 'useService:bulkRemove');
+      setError(appError);
+      throw appError;
     } finally {
       setIsLoading(false);
     }
   }, [service, toast]);
 
   const getById = useCallback(async (id: string) => {
-    return await service.getById(id, companyId, isSuperAdmin);
+    try {
+      return await service.getById(id, companyId, isSuperAdmin);
+    } catch (error) {
+      errorHandler.handle(error, 'useService:getById');
+      return undefined;
+    }
   }, [service, companyId, isSuperAdmin]);
 
   return {

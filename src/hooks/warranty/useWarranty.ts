@@ -15,7 +15,13 @@ export const useWarranty = () => {
   const companyId = user?.company_id;
   const isSuperAdmin = !!user?.is_super_admin;
   
-  const { items: requests, isLoading: isServiceLoading, refresh: refreshList, error } = useService<WarrantyRequestFlow>(warrantyFlowService);
+  const { items: requests, isLoading: isServiceLoading, refresh: refreshList, error } = useService<WarrantyRequestFlow>(warrantyFlowService, {
+    toastMessages: {
+      create: "Protocolo de garantia aberto com sucesso.",
+      update: "Registro de garantia sincronizado.",
+      delete: "Protocolo de garantia arquivado."
+    }
+  });
 
 
   const filterFn = useCallback((request: WarrantyRequestFlow, currentFilters: any) => {

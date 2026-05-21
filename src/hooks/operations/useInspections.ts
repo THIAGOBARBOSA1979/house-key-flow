@@ -18,7 +18,13 @@ export const useInspections = () => {
     update: updateInspection,
     remove: deleteInspection,
     error
-  } = useService<Inspection>(inspectionService);
+  } = useService<Inspection>(inspectionService, {
+    toastMessages: {
+      create: "Protocolo de vistoria iniciado com sucesso.",
+      update: "Relatório de vistoria atualizado.",
+      delete: "Vistoria removida do histórico estratégico."
+    }
+  });
 
 
   const filterFn = useCallback((inspection: Inspection, currentFilters: any, searchTerm: string) => {
