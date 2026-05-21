@@ -96,7 +96,7 @@ const ClientNotifications = () => {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-20 md:pb-6 animate-in fade-in duration-slow">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
@@ -108,7 +108,6 @@ const ClientNotifications = () => {
           </h1>
         </div>
 
-        
         <div className="flex items-center gap-3">
           {activeTab === 'list' && unreadNotifications.length > 0 && (
             <Button variant="outline" size="sm" onClick={markAllAsRead} className="font-black uppercase tracking-widest text-[10px] rounded-xl border-2 h-10 px-4">
@@ -121,6 +120,13 @@ const ClientNotifications = () => {
           </Button>
         </div>
       </div>
+
+      <FeatureGate
+        isAllowed={true}
+        requiredStage="registered"
+        featureName="A central de notificações"
+        redirectTo="/client"
+      >
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="bg-muted/50 p-1">
