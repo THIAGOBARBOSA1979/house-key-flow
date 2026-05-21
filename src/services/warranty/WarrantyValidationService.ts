@@ -45,8 +45,8 @@ const mockWarrantyItems: WarrantyItem[] = [
     propertyId: "prop-1",
     propertyName: "Edifício Aurora",
     unitNumber: "204",
-    category: "Revestimentos Cerâmicos",
-    name: "Revestimentos Cerâmicos",
+    category: "Revestimentos e Acabamentos",
+    name: "Revestimentos e Acabamentos",
     description: "Pisos e azulejos cerâmicos em todos os ambientes",
     dataInicioGarantia: new Date(2024, 3, 15), // 15/04/2024
     dataFimGarantia: new Date(2025, 3, 15), // 15/04/2025
@@ -59,7 +59,7 @@ const mockWarrantyItems: WarrantyItem[] = [
     propertyId: "prop-1",
     propertyName: "Edifício Aurora",
     unitNumber: "204",
-    category: "Esquadrias",
+    category: "Esquadrias e Vidros",
     name: "Esquadrias de Alumínio",
     description: "Janelas, portas e divisórias em alumínio",
     dataInicioGarantia: new Date(2025, 3, 15), // 15/04/2025
@@ -73,7 +73,7 @@ const mockWarrantyItems: WarrantyItem[] = [
     propertyId: "prop-1",
     propertyName: "Edifício Aurora",
     unitNumber: "204",
-    category: "Estrutural",
+    category: "Estrutura",
     name: "Estrutura de Concreto",
     description: "Fundações, pilares, vigas e lajes estruturais",
     dataInicioGarantia: new Date(2025, 3, 15), // 15/04/2025
@@ -87,7 +87,7 @@ const mockWarrantyItems: WarrantyItem[] = [
     propertyId: "prop-1",
     propertyName: "Edifício Aurora",
     unitNumber: "204",
-    category: "Elétrica",
+    category: "Instalações Elétricas",
     name: "Instalações Elétricas",
     description: "Fiação, quadros de distribuição e tomadas",
     dataInicioGarantia: new Date(2025, 3, 15), // 15/04/2025

@@ -132,7 +132,7 @@ export interface SLAConfig {
 // Default SLA configurations by warranty type
 export const DEFAULT_SLA_CONFIGS: SLAConfig[] = [
   {
-    warrantyType: "Estrutural",
+    warrantyType: "Estrutura",
     analysisHours: 72,        // 3 days
     inspectionHours: 120,     // 5 days
     decisionHours: 48,        // 2 days
@@ -148,7 +148,7 @@ export const DEFAULT_SLA_CONFIGS: SLAConfig[] = [
     totalHours: 312
   },
   {
-    warrantyType: "Elétrica",
+    warrantyType: "Instalações Elétricas",
     analysisHours: 48,
     inspectionHours: 72,
     decisionHours: 24,
@@ -164,7 +164,7 @@ export const DEFAULT_SLA_CONFIGS: SLAConfig[] = [
     totalHours: 600
   },
   {
-    warrantyType: "Acabamentos",
+    warrantyType: "Revestimentos e Acabamentos",
     analysisHours: 48,
     inspectionHours: 72,
     decisionHours: 24,
@@ -172,7 +172,7 @@ export const DEFAULT_SLA_CONFIGS: SLAConfig[] = [
     totalHours: 264
   },
   {
-    warrantyType: "Esquadrias",
+    warrantyType: "Esquadrias e Vidros",
     analysisHours: 48,
     inspectionHours: 72,
     decisionHours: 24,
@@ -180,7 +180,7 @@ export const DEFAULT_SLA_CONFIGS: SLAConfig[] = [
     totalHours: 384
   },
   {
-    warrantyType: "Revestimentos Cerâmicos",
+    warrantyType: "Equipamentos e Máquinas",
     analysisHours: 48,
     inspectionHours: 72,
     decisionHours: 24,
@@ -188,12 +188,12 @@ export const DEFAULT_SLA_CONFIGS: SLAConfig[] = [
     totalHours: 312
   },
   {
-    warrantyType: "Equipamentos",
+    warrantyType: "Pintura",
     analysisHours: 48,
     inspectionHours: 72,
     decisionHours: 24,
-    executionHours: 168,
-    totalHours: 312
+    executionHours: 120,
+    totalHours: 264
   }
 ];
 
