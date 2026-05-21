@@ -5,11 +5,13 @@ import {
   warrantyFlowService,
   constructionService
 } from "@/services";
+import { useClientStage } from "@/hooks/operations/useClientStage";
 
-export const useClientDashboardData = (clientId: string, userName?: string, propertyId?: string) => {
+export const useClientDashboardData = (clientId: string, userName?: string) => {
   const [isLoading, setIsLoading] = useState(true);
+  const { profile } = useClientStage(clientId);
+  const propertyId = profile?.propertyId;
 
-  
   const allDocs = useMemo(() => documentService.getDocumentsByClient(userName || "João Silva"), [userName]);
   const allInspections = useMemo(() => 
     inspectionService.getAll().filter(i => i && i.client === (userName || "João Silva")), [userName]);

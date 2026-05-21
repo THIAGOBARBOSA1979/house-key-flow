@@ -146,28 +146,28 @@ export function EnhancedWarrantyRequestForm({ onSubmit, onCancel, selectedItem }
   
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-slow">
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Título da solicitação <span className="text-destructive">*</span></FormLabel>
+            <FormItem className="space-y-2">
+              <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Título do Protocolo Técnico <span className="text-destructive">*</span></FormLabel>
               <FormControl>
-                <Input placeholder="Ex: Problemas em meu apartamento" {...field} />
+                <Input placeholder="Descreva brevemente o motivo principal..." className="h-12 rounded-xl border-2 focus-visible:ring-primary/10" {...field} />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="font-bold text-[10px]" />
             </FormItem>
           )}
         />
         
         {/* Problems Section */}
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <h3 className="text-lg font-medium">Problemas Reportados</h3>
-            <p className="text-sm text-muted-foreground mt-1 sm:mt-0">
-              Adicione todos os problemas que deseja reportar
-            </p>
+        <div className="space-y-6 bg-muted/20 p-6 md:p-8 rounded-[2rem] border-2 border-dashed border-border/50">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-black tracking-tight">Detalhamento dos Problemas</h3>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Breakdown técnico conforme normas ABNT</p>
+            </div>
           </div>
           
           {problems.length > 2 && (
@@ -193,10 +193,10 @@ export function EnhancedWarrantyRequestForm({ onSubmit, onCancel, selectedItem }
             type="button"
             variant="outline"
             onClick={addProblem}
-            className="w-full"
+            className="w-full h-14 rounded-2xl border-2 border-primary/20 hover:border-primary hover:bg-primary/5 text-primary font-black uppercase tracking-widest text-[11px] transition-all active:scale-95"
           >
-            <Plus className="mr-2 h-4 w-4" />
-            Adicionar outro problema
+            <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+            Adicionar Outra Ocorrência
           </Button>
         </div>
         
@@ -219,14 +219,14 @@ export function EnhancedWarrantyRequestForm({ onSubmit, onCancel, selectedItem }
           )}
         />
         
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel} className="h-12 rounded-xl font-bold px-8">
               Cancelar
             </Button>
           )}
-          <Button type="submit">
-            Enviar solicitação
+          <Button type="submit" className="h-12 rounded-xl px-12 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 active:scale-[0.98]">
+            Transmitir Solicitação Técnica
           </Button>
         </div>
       </form>
