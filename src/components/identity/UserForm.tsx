@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { propertyService } from "@/services";
+import { useService } from "@/hooks";
 import { UserFormData, User } from "@/types/user";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
@@ -29,7 +30,7 @@ interface UserFormProps {
 }
 
 export const UserForm = ({ onSave, onCancel, editingUser }: UserFormProps) => {
-  const properties = propertyService.getAll();
+  const { items: properties, isLoading: loadingProperties } = useService(propertyService);
   
   const form = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
