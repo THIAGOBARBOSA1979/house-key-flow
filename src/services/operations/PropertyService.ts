@@ -65,7 +65,14 @@ class PropertyService extends SupabaseBaseService<Property> {
       storageKey: "a2_properties",
       supabaseTable: "properties",
       auditEntityType: "property",
-      shouldSyncWithSupabase: true
+      shouldSyncWithSupabase: true,
+      fieldMapping: {
+        units: 'units_total',
+        completedUnits: 'units_completed',
+        deliveryDate: 'delivery_date',
+        totalArea: 'total_area',
+        manager: 'manager_id'
+      }
     }, import.meta.env.DEV ? INITIAL_PROPERTIES : []);
     this.initializeRealtime();
   }
@@ -82,29 +89,12 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
   async create(property: Omit<Property, "id">, companyId?: string): Promise<Property> {
-    const data: any = {
-      ...property,
-      company_id: companyId,
-      units_total: property.units,
-      units_completed: property.completedUnits || 0,
-      delivery_date: property.deliveryDate,
-      total_area: property.totalArea,
-      created_at: property.createdAt || new Date(),
-      updated_at: new Date()
-    };
-    return await super.create(data);
+    return await super.create(property, companyId);
   }
 
   async update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Promise<Property | undefined> {
     const oldItem = this.getById(id, undefined, isSuperAdmin);
-    
-    const mappedProperty: any = { ...property };
-    if (property.units !== undefined) mappedProperty.units_total = property.units;
-    if (property.completedUnits !== undefined) mappedProperty.units_completed = property.completedUnits;
-    if (property.deliveryDate !== undefined) mappedProperty.delivery_date = property.deliveryDate;
-    if (property.totalArea !== undefined) mappedProperty.total_area = property.totalArea;
-
-    const updated = await super.update(id, mappedProperty, isSuperAdmin);
+    const updated = await super.update(id, property, isSuperAdmin);
 
     if (updated && property.status && property.status !== oldItem?.status) {
       await this.log('stage_changed', id, `Status do empreendimento ${updated.name} alterado para ${property.status}.`, {

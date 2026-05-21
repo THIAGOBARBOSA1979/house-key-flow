@@ -150,7 +150,11 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       storageKey: "a2_warranty_requests",
       supabaseTable: "warranty_requests",
       auditEntityType: "warranty",
-      shouldSyncWithSupabase: true
+      shouldSyncWithSupabase: true,
+      fieldMapping: {
+        assignedTo: 'assigned_technician_id',
+        currentStage: 'status'
+      }
     }, initialMockRequests);
 
     this.items = this.items.map(item => ({
