@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Download, ShieldCheck, Map, Ruler, Info } from "lucide-react";
+import { FileText, Download, ShieldCheck, Map, Ruler, Info, Sun, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const TechnicalSheet = () => {
