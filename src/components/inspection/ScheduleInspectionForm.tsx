@@ -46,7 +46,7 @@ const inspectionTypes = [
   { id: "postWork", name: "Pós-obra" }
 ];
 
-const technicians = inspectionService.getTechnicians();
+const technicians = inspectionService.getTechniciansSync();
 
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
@@ -92,15 +92,18 @@ export const ScheduleInspectionForm = ({
   const watchTechnician = form.watch("technician");
 
   React.useEffect(() => {
-    if (watchDate && watchTechnician) {
-      const conflicts = inspectionService.getConflicts(watchDate, watchTechnician);
-      if (conflicts.length > 0) {
-        const slots = conflicts.map(c => c.time).join(", ");
-        setConflictWarning(`Atenção: O técnico já possui ${conflicts.length} agendamento(s) nesta data nos horários: ${slots}.`);
-      } else {
-        setConflictWarning(null);
+    const checkConflicts = async () => {
+      if (watchDate && watchTechnician) {
+        const conflicts = await inspectionService.getConflicts(watchDate, watchTechnician);
+        if (conflicts.length > 0) {
+          const slots = conflicts.map(c => c.time).join(", ");
+          setConflictWarning(`Atenção: O técnico já possui ${conflicts.length} agendamento(s) nesta data nos horários: ${slots}.`);
+        } else {
+          setConflictWarning(null);
+        }
       }
-    }
+    };
+    checkConflicts();
   }, [watchDate, watchTechnician]);
 
 
