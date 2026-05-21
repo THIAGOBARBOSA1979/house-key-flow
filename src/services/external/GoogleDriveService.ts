@@ -29,7 +29,6 @@ export class GoogleDriveService {
         viewLink: publicUrl,
       };
     } catch (error) {
-      console.error('Error uploading file to storage:', error);
       throw errorHandler.handle(error, 'GoogleDriveService:uploadFile');
     }
   }
