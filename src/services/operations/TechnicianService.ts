@@ -35,13 +35,15 @@ class TechnicianService extends SupabaseBaseService<Technician> {
 
 
   async create(technician: Omit<Technician, "id" | "joinedAt" | "completedJobs" | "activeJobs" | "rating">): Promise<Technician> {
-    const newTechnician = await super.create({
+    const technicianData: Omit<Technician, "id"> = {
       ...technician,
       joinedAt: new Date(),
       completedJobs: 0,
       activeJobs: 0,
       rating: 5.0
-    } as any);
+    };
+
+    const newTechnician = await super.create(technicianData);
 
     await auditLogService.logAction({
       entityType: 'user',

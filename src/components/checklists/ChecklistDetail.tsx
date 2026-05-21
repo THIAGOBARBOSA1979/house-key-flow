@@ -81,7 +81,7 @@ export const ChecklistDetail = ({
 
                   {item.evidence && item.evidence.length > 0 && (
                     <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                      {item.evidence.map((ev) => (
+                      {item.evidence.map((ev: any) => (
                         <div key={ev.id} className="relative shrink-0">
                           <img 
                             src={ev.url} 

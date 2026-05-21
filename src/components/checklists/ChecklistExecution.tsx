@@ -84,7 +84,7 @@ export function ChecklistExecution({
                           file: f, 
                           url: URL.createObjectURL(f), 
                           timestamp: new Date() 
-                        }))
+                        } as any))
                       ] 
                     }
                   : item

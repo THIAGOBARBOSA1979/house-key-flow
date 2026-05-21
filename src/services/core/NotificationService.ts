@@ -22,7 +22,7 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
     });
   }
 
-  protected mapToSupabase(item: any): any {
+  protected mapToSupabase(item: Partial<ClientNotification>): Record<string, any> {
     const mapped = super.mapToSupabase(item);
     if (mapped.read_at === true) {
       mapped.read_at = new Date().toISOString();
@@ -34,7 +34,7 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
 
   protected mapFromSupabase(raw: any): ClientNotification {
     const mapped = super.mapFromSupabase(raw);
-    (mapped as any).read = !!raw.read_at;
+    mapped.read = !!raw.read_at;
     return mapped;
   }
 
@@ -54,8 +54,9 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
       read: false,
       urgent: template.urgent,
       metadata,
-      company_id: (metadata as any)?.company_id
-    } as any);
+      createdAt: new Date(),
+      company_id: (metadata as any)?.company_id || ''
+    });
   }
 
   getNotifications(clientId: string): ClientNotification[] {
@@ -75,7 +76,7 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
   }
 
   async markAsRead(notificationId: string): Promise<boolean> {
-    const updated = await this.update(notificationId, { read: true } as any);
+    const updated = await this.update(notificationId, { read: true });
     return !!updated;
   }
 
@@ -90,11 +91,10 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
     return await this.delete(notificationId);
   }
 
-
   getRecentNotifications(clientId: string, days: number = 7): ClientNotification[] {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
-    return this.getNotifications(clientId).filter(n => n.createdAt >= cutoffDate);
+    return this.getNotifications(clientId).filter(n => new Date(n.createdAt) >= cutoffDate);
   }
 
   getSettings(clientId: string): NotificationSettings {
@@ -112,7 +112,5 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
     return formatRelativeTime(date);
   }
 }
-
-
 
 export const notificationService = new NotificationService();

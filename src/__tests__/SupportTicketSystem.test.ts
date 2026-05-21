@@ -34,7 +34,7 @@ describe('Support Ticket System (Triagem)', () => {
   });
 
   it('should transition ticket status and update SLA state', async () => {
-    const ticket = await supportService.createTicket('c1', 'Client 1', { subject: 'Test' });
+    const ticket = await supportService.createTicket('c1', 'Client 1', { subject: 'Test', message: 'Initial message' });
     
     // Admin responds -> transitions to waiting_client
     await supportService.addMessageToTicket(ticket.id, 'admin-1', 'Admin', 'admin', 'Favor anexar fotos');
@@ -51,8 +51,8 @@ describe('Support Ticket System (Triagem)', () => {
   });
 
   it('should filter tickets by status correctly for screening', async () => {
-    await supportService.createTicket('c1', 'Client 1', { subject: 'P1' });
-    const t2 = await supportService.createTicket('c2', 'Client 2', { subject: 'P2' });
+    await supportService.createTicket('c1', 'Client 1', { subject: 'P1', message: 'M1' });
+    const t2 = await supportService.createTicket('c2', 'Client 2', { subject: 'P2', message: 'M2' });
     await supportService.updateTicketStatus(t2.id, 'closed');
 
 
