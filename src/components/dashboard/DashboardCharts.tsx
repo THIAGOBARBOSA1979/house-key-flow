@@ -29,6 +29,15 @@ export const DashboardCharts = memo(({
   inspections?: Array<{ date: Date | string }>;
   warranties?: Array<{ category: string }>;
 }) => {
+  const [metrics, setMetrics] = useState<any>(null);
+
+  useEffect(() => {
+    const loadMetrics = async () => {
+      const data = await warrantyFlowService.calculateMetrics();
+      setMetrics(data);
+    };
+    loadMetrics();
+  }, []);
 
   const inspectionChartData = useMemo(() => {
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
@@ -81,7 +90,7 @@ export const DashboardCharts = memo(({
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg md:text-h4 font-black">Conformidade Global de SLAs</CardTitle>
             <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black text-[10px]">
-              {warrantyFlowService.calculateMetrics().slaComplianceRate}% META
+              {metrics?.slaComplianceRate || 0}% META
             </Badge>
           </div>
         </CardHeader>
@@ -105,18 +114,18 @@ export const DashboardCharts = memo(({
                  strokeWidth="16"
                  fill="transparent"
                  strokeDasharray={2 * Math.PI * 80}
-                 strokeDashoffset={2 * Math.PI * 80 * (1 - warrantyFlowService.calculateMetrics().slaComplianceRate / 100)}
+                 strokeDashoffset={2 * Math.PI * 80 * (1 - (metrics?.slaComplianceRate || 0) / 100)}
                  className="text-primary transition-all duration-1000 ease-out"
                  strokeLinecap="round"
                />
              </svg>
              <div className="absolute inset-0 flex flex-col items-center justify-center">
-               <span className="text-4xl font-black tracking-tighter text-foreground font-sans">{warrantyFlowService.calculateMetrics().slaComplianceRate}%</span>
+               <span className="text-4xl font-black tracking-tighter text-foreground font-sans">{metrics?.slaComplianceRate || 0}%</span>
                <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Sincronização Ativa</span>
              </div>
           </div>
           <p className="text-xs font-bold text-muted-foreground mt-4 italic text-center">
-            {warrantyFlowService.calculateMetrics().onTrackCount} protocolos técnicos em conformidade com o cronograma.
+            {metrics?.onTrackCount || 0} protocolos técnicos em conformidade com o cronograma.
           </p>
         </CardContent>
       </Card>
@@ -130,7 +139,7 @@ export const DashboardCharts = memo(({
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 layout="vertical"
-                data={Object.entries(warrantyFlowService.calculateMetrics().stageDistribution)
+                data={Object.entries(metrics?.stageDistribution || {})
                   .filter(([_, value]) => (value as number) > 0)
                   .map(([key, value]) => ({ 
                     name: key === 'in_analysis' ? 'Análise' : key === 'inspection_scheduled' ? 'Vistoria' : key === 'in_execution' ? 'Execução' : key, 

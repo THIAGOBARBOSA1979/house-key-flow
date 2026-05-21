@@ -47,8 +47,8 @@ const ClientWarranty = () => {
     }
   }, [inspectionId, toast]);
 
-  const handleHomologate = (claimId: string) => {
-    const success = addInfo(claimId, "Cliente homologou o recebimento e finalizou o processo estrategicamente.");
+  const handleHomologate = async (claimId: string) => {
+    const success = await addInfo(claimId, "Cliente homologou o recebimento e finalizou o processo estrategicamente.");
     if (success) {
       toast({
         title: "Protocolo Finalizado",

@@ -23,10 +23,10 @@ export function WarrantyMetricsDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState("quarter");
 
-  const loadMetrics = useCallback(() => {
+  const loadMetrics = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = warrantyFlowService.calculateMetrics();
+      const data = await warrantyFlowService.calculateMetrics();
       setMetrics(data);
     } catch (error) {
       console.error("Error loading metrics:", error);

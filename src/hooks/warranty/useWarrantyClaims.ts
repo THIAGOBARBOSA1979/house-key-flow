@@ -13,6 +13,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   
   const [claims, setClaims] = useState<any[]>([]);
   const [error, setError] = useState<unknown>(null);
+  const [metrics, setMetrics] = useState<any>({ totalActiveRequests: 0, pendingRequests: 0, averageResolutionDays: 0, slaComplianceRate: 0 });
 
   const fetchClaims = useCallback(async () => {
     try {
@@ -20,6 +21,9 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
       setClaims(data.sort((a, b) => 
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       ));
+
+      const metricsData = await warrantyFlowService.calculateMetrics(companyId, isSuperAdmin);
+      setMetrics(metricsData);
     } catch (err) {
       setError(err);
     }
@@ -87,15 +91,6 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     });
     return true;
   }, [clientId, toast]);
-
-  const metrics = useMemo(() => {
-    try {
-      return warrantyFlowService.calculateMetrics(companyId, isSuperAdmin);
-    } catch (err) {
-      errorHandler.handle(err, 'useWarrantyClaims:calculateMetrics');
-      return { totalActiveRequests: 0, pendingRequests: 0, averageResolutionDays: 0, slaComplianceRate: 0 };
-    }
-  }, [companyId, isSuperAdmin]);
 
   return {
     claims,

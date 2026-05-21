@@ -124,7 +124,15 @@ export const useWarranty = () => {
     toast({ title: "Exportação concluída", description: "O arquivo CSV foi baixado com sucesso." });
   }, [filteredRequests, toast]);
 
-  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(companyId, isSuperAdmin), [requests, companyId, isSuperAdmin]);
+  const [metrics, setMetrics] = useState<WarrantyMetrics | null>(null);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      const data = await warrantyFlowService.calculateMetrics(companyId, isSuperAdmin);
+      setMetrics(data);
+    };
+    fetchMetrics();
+  }, [requests, companyId, isSuperAdmin]);
 
   return {
     requests,
