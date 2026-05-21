@@ -44,8 +44,7 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
       supabaseTable: "support_tickets" as any,
       auditEntityType: "system",
       shouldSyncWithSupabase: true
-    }, []);
-
+    });
   }
 
   protected mapToSupabase(item: Partial<SupportTicket>): any {
