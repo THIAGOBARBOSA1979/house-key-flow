@@ -200,7 +200,7 @@ class DocumentService extends SupabaseBaseService<Document> {
     return await this.create({
       ...rest,
       title: `${doc.title} (Cópia)`
-    });
+    } as Omit<Document, "id">);
   }
 
   async getCategories() {

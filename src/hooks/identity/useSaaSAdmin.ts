@@ -102,7 +102,7 @@ export const useSaaSAdmin = () => {
     if (!window.confirm("Tem certeza que deseja excluir esta empresa? Esta ação é irreversível.")) return;
     setIsSaving(true);
     try {
-      await companyService.delete(id, true);
+      await companyService.delete(id);
       refreshCompanies();
       setSelectedCompany(null);
       toast({ title: "Empresa excluída permanentemente" });

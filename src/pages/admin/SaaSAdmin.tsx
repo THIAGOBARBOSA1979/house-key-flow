@@ -238,13 +238,13 @@ export default function SaaSAdmin() {
         setEditData={setEditData}
         slugError={slugError}
         isSaving={isSaving}
-        onSave={handleSaveEdit}
+        onSave={(data) => selectedCompany && handleSaveEdit(selectedCompany.id, data)}
         onStartEditing={startEditing}
         isUpdatingSub={isUpdatingSub}
         setIsUpdatingSub={setIsUpdatingSub}
         expiryDate={expiryDate}
         setExpiryDate={setExpiryDate}
-        onUpdateSub={handleUpdateSubscription}
+        onUpdateSub={(plan, expiresAt) => selectedCompany && handleUpdateSubscription(selectedCompany.id, plan, expiresAt)}
         onToggleStatus={handleToggleStatus}
         onDelete={handleDeleteCompany}
         companyUsers={companyUsers}
