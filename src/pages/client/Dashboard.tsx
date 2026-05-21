@@ -42,7 +42,7 @@ const Dashboard = () => {
     constructionUpdates: serviceUpdates,
     upcomingInspections,
     warrantyRequests
-  } = useClientDashboardData(profile?.id || userId, user?.full_name);
+  } = useClientDashboardData(profile?.id || userId, user?.name);
 
   
   const userInfo = useMemo(() => {
@@ -52,7 +52,7 @@ const Dashboard = () => {
       : 85;
 
     return {
-      name: user?.full_name?.split(' ')[0] || "Cliente",
+      name: user?.name?.split(' ')[0] || "Cliente",
       property: profile?.propertyName || "Seu Empreendimento",
       unit: profile?.unitNumber || "N/A",
       deliveryDate: propertyData?.deliveryDate || new Date(2025, 11, 15),
