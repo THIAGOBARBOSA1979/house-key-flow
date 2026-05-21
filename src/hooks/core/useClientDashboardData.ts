@@ -1,4 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
+
 import { 
   documentService, 
   inspectionService, 
@@ -9,18 +11,27 @@ import { useClientStage } from "@/hooks/operations/useClientStage";
 
 export const useClientDashboardData = (clientId: string, userName?: string) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
+
   const { profile, isLoading: profileLoading } = useClientStage(clientId);
   const propertyId = profile?.propertyId;
 
   const data = useMemo(() => {
     if (profileLoading) return null;
     
-    return {
-      allDocs: documentService.getDocumentsByClient(userName || profile?.name || "João Silva"),
-      allInspections: inspectionService.getAll().filter(i => i && i.client === (userName || profile?.name || "João Silva")),
-      warrantyRequests: warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId),
-      constructionUpdates: propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(),
-    };
+    try {
+      return {
+        allDocs: documentService.getDocumentsByClient(userName || profile?.name || "João Silva"),
+        allInspections: inspectionService.getAll().filter(i => i && i.client === (userName || profile?.name || "João Silva")),
+        warrantyRequests: warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId),
+        constructionUpdates: propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(),
+      };
+    } catch (err) {
+      errorHandler.handle(err, 'useClientDashboardData');
+      setError(err);
+      return null;
+    }
+
   }, [clientId, userName, profile?.name, propertyId, profileLoading]);
 
   useEffect(() => {
@@ -32,6 +43,8 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
 
   return {
     isLoading: isLoading || profileLoading,
+    error,
+
     allDocs: data?.allDocs || [],
     allInspections: data?.allInspections || [],
     upcomingInspections: data?.allInspections?.filter(i => i.status !== 'complete') || [],

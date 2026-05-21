@@ -1,4 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { ErrorView } from "@/components/Shared/ErrorView";
+
 import { 
   TrendingUp, 
   Activity,
@@ -25,12 +27,14 @@ import { Badge } from "@/components/ui/badge";
 const Dashboard = () => {
   const { user } = useAuth();
   const userId = user?.id || "client-1";
-  const { profile, stage, isLoading: stageLoading } = useClientStage(userId);
+  const { profile, stage, isLoading: stageLoading, error: stageError, refreshProfile } = useClientStage(userId);
   
   const {
-    isLoading,
+    isLoading: dashboardLoading,
+    error: dashboardError,
     constructionUpdates: serviceUpdates
   } = useClientDashboardData(profile?.id || userId, user?.name);
+
   
   const userInfo = useMemo(() => ({
     name: user?.name?.split(' ')[0] || "Cliente",
@@ -74,7 +78,7 @@ const Dashboard = () => {
   const daysToDelivery = userInfo.deliveryDate ? Math.ceil((userInfo.deliveryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0;
   const contractProgress = 85;
 
-  if (isLoading || stageLoading) {
+  if (stageLoading || dashboardLoading) {
     return (
       <div className="container-responsive py-8 space-y-8 animate-pulse">
         <Skeleton className="h-12 w-64 rounded-xl" />
@@ -85,6 +89,19 @@ const Dashboard = () => {
       </div>
     );
   }
+
+  if (stageError || dashboardError) {
+    return (
+      <div className="container-responsive py-20 flex items-center justify-center">
+        <ErrorView 
+          message={stageError || (dashboardError as any)?.message || "Ocorreu um erro ao carregar o painel administrativo."} 
+          onRetry={refreshProfile}
+          fullScreen
+        />
+      </div>
+    );
+  }
+
 
   return (
     <div className="container-responsive py-8 space-y-12 animate-in fade-in duration-slow">
