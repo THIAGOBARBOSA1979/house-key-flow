@@ -118,7 +118,7 @@ class DocumentService extends SupabaseBaseService<Document> {
   // Backward compatibility aliases
   getAllDocuments() { return this.getAll(undefined, true); }
   getDocumentById(id: string) { return this.getById(id, undefined, true); }
-  getDocumentsByClient(clientName: string) { return this.items.filter(doc => doc?.associatedTo?.client === clientName); }
+  getDocumentsByClient(clientName: string) { return this.items.filter(doc => doc?.associatedTo?.client === clientName || (doc as any).client_name === clientName); }
   getFavoriteDocuments() { return this.items.filter(doc => doc.isFavorite); }
   getExpiringDocuments() { return this.items.filter(d => d.expiresAt); }
   getCategories() {

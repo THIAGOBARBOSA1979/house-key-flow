@@ -37,7 +37,7 @@ class UserService extends SupabaseBaseService<User> {
       role: (raw.role as User['role']) || "client",
       status: "active", // Default status as 'profiles' table doesn't have it yet
       company_id: raw.company_id || undefined,
-      avatar: raw.avatar_url || undefined,
+      avatar: raw.avatar || raw.avatar_url || undefined,
       createdAt: raw.created_at ? new Date(raw.created_at) : undefined
     };
   }
