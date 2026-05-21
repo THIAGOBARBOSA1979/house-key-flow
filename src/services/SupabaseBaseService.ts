@@ -18,8 +18,9 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
 
   protected mapToSupabase(item: any): any {
     const mapped = { ...item };
-    // Remove complex nested objects that don't belong in flat table columns
-    // This is a safety measure to prevent Supabase from choking on nested JSON that isn't expected
+    // Remove transient/frontend-only properties
+    delete (mapped as any).error;
+    delete (mapped as any).isLoading;
     return mapped;
   }
 
