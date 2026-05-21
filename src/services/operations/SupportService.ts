@@ -1,271 +1,133 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
 
-export interface DocumentSignature {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  status: "pending" | "signed" | "rejected";
-  signedAt?: Date;
-  confirmationMethod: "email" | "sms" | "govbr" | "facial";
-  order?: number;
-  ipAddress?: string;
-  documentHash?: string;
-  evidence?: Record<string, unknown>;
-  rejectionReason?: string;
-}
+export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent' | 'blocker';
+export type TicketCategory = 'technical' | 'administrative' | 'warranty' | 'inspection' | 'legal' | 'safety' | 'other';
 
-export interface DocumentVersion {
+export interface TicketMessage {
   id: string;
-  version: number;
-  fileUrl: string;
+  senderId: string;
+  senderName: string;
+  role: 'admin' | 'client';
+  text: string;
   createdAt: Date;
-  createdBy: string;
-  changeNotes?: string;
-  changes?: string; // Mantido para compatibilidade com UI
-  template?: string; // Mantido para compatibilidade com UI
+  attachments?: string[];
 }
 
-export interface ApprovalHistoryEntry {
-  id: string;
-  status: "approved" | "rejected";
-  by: string;
-  at: Date;
-  comment?: string;
-  performedBy?: string; // Mantido para compatibilidade com UI
-  performedAt?: Date;   // Mantido para compatibilidade com UI
-}
-
-export interface Document {
+export interface SupportTicket {
   id: string;
   company_id?: string;
-  title: string;
-  type: "auto" | "manual";
-  category: string;
-  status: "draft" | "published" | "archived" | "trash";
-  visible: boolean;
+  clientId: string;
+  clientName: string;
+  propertyId?: string;
+  propertyName?: string;
+  unitNumber?: string;
+  subject: string;
+  status: 'pending' | 'in_progress' | 'waiting_client' | 'closed';
+  priority: TicketPriority;
+  category: TicketCategory;
+  messages: TicketMessage[];
+  slaDeadline?: Date;
+  slaStatus?: 'on_track' | 'expired';
   createdAt: Date;
   updatedAt: Date;
-  downloads: number;
-  viewCount: number;
-  associatedTo: {
-    client?: string;
-    property?: string;
-    unit?: string;
-  };
-  fileUrl?: string;
-  fileName?: string;
-  fileSize?: string;
-  tags?: string[];
-  template?: string;
-  signatures?: DocumentSignature[];
-  version: number;
-  approvalStatus: "pending" | "approved" | "rejected";
-  createdBy?: string;
-  priority?: "low" | "medium" | "high";
-  expiresAt?: Date;
-  isSigned?: boolean;
-  isFavorite?: boolean;
-  technical_metadata?: Record<string, unknown>;
-  versionHistory?: DocumentVersion[];
-  approvalHistory?: ApprovalHistoryEntry[];
-  approvedBy?: string;
-  approvedAt?: Date;
-  approvalComment?: string;
-  description?: string; // Adicionado para compatibilidade com UI
 }
 
-class DocumentService extends SupabaseBaseService<Document> {
+export class SupportService extends SupabaseBaseService<SupportTicket> {
   constructor() {
     super({
-      storageKey: "a2_documents",
-      supabaseTable: "documents",
-      auditEntityType: "document",
+      storageKey: "a2_support_tickets",
+      supabaseTable: "support_tickets",
+      auditEntityType: "system",
       shouldSyncWithSupabase: true
     });
   }
 
-  async getAllDocuments() { return await this.getAll(); }
-  async getDocumentById(id: string) { return await this.getById(id); }
-  
-  getDocumentsByClient(clientName: string) { 
-    return this.items.filter(doc => doc?.associatedTo?.client === clientName); 
-  }
-  
-  async getFavoriteDocuments() { 
-    const docs = await this.getAll();
-    return docs.filter(doc => doc.isFavorite); 
-  }
-  
-  async getSignatureHistory(id: string) { 
-    const doc = await this.getById(id);
-    return doc?.signatures || []; 
-  }
-  
-  async createDocument(data: Partial<Document>) { 
-    return await this.create({
-      title: "Novo Documento",
-      type: "manual",
-      category: "Geral",
-      status: "draft",
-      visible: true,
-      associatedTo: {},
-      version: 1,
-      approvalStatus: "pending",
-      downloads: 0,
-      viewCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...data
-    } as Omit<Document, "id">); 
+  protected mapToSupabase(item: Partial<SupportTicket>): Record<string, any> {
+    const mapped = super.mapToSupabase(item);
+    if (mapped.messages && typeof mapped.messages !== 'string') {
+      mapped.messages = JSON.stringify(mapped.messages);
+    }
+    return mapped;
   }
 
-  async updateDocument(id: string, data: Partial<Document>) { return await this.update(id, data); }
-  async deleteDocument(id: string) { return await this.delete(id); }
-  async deleteMultipleDocuments(ids: string[]) { return await this.bulkDelete(ids); }
-  
-  async restoreDocument(id: string) {
-    return await this.update(id, { status: 'published' });
+  protected mapFromSupabase(raw: any): SupportTicket {
+    const item = super.mapFromSupabase(raw);
+    if (typeof (item as any).messages === 'string') {
+      try {
+        item.messages = JSON.parse((item as any).messages);
+      } catch (e) {
+        item.messages = [];
+      }
+    }
+    return item;
   }
 
-  async logView(id: string) {
-    const doc = await this.getById(id);
-    if (doc) await this.update(id, { viewCount: (doc.viewCount || 0) + 1 });
-  }
+  getAllTickets() { return [...this.items]; }
+  async getTicketById(id: string) { return await this.getById(id); }
+  getTicketsByClient(clientId: string) { return this.items.filter(t => t.clientId === clientId); }
 
-  async downloadDocument(id: string) {
-    const doc = await this.getById(id);
-    if (!doc) throw new Error("Documento não encontrado");
-    await this.update(id, { downloads: (doc.downloads || 0) + 1 });
-    return doc.fileUrl;
-  }
+  async createTicket(
+    clientId: string, 
+    clientName: string, 
+    data: { subject: string, priority?: TicketPriority, category?: TicketCategory, message: string, company_id?: string }, 
+    context?: { propertyId?: string, propertyName?: string, unitNumber?: string }
+  ): Promise<SupportTicket> {
+    const createdAt = new Date();
+    const slaDeadline = new Date(createdAt.getTime() + 48 * 60 * 60 * 1000);
 
-  shareDocument(id: string) {
-    return `${window.location.origin}/share/doc/${id}`;
-  }
-
-  async searchDocuments(term: string, filters: { category?: string; companyId?: string; isSuperAdmin?: boolean }): Promise<Document[]> {
-    const allDocs = await this.getAll(filters.companyId, filters.isSuperAdmin);
-    return allDocs.filter(doc => {
-      const matchesSearch = !term || doc.title.toLowerCase().includes(term.toLowerCase());
-      const matchesCategory = !filters.category || filters.category === 'all' || doc.category === filters.category;
-      return matchesSearch && matchesCategory;
-    });
-  }
-
-  async create(item: Omit<Document, "id">, companyId?: string): Promise<Document> {
-    const now = new Date();
-    return await super.create({
-      version: 1,
-      approvalStatus: "pending",
-      downloads: 0,
-      viewCount: 0,
-      createdAt: now,
-      updatedAt: now,
-      status: "draft",
-      type: "manual",
-      visible: true,
-      associatedTo: {},
-      ...item
-    }, companyId);
-  }
-
-  async getDocumentStats(companyId?: string, isSuperAdmin?: boolean) { 
-    const items = await this.getAll(companyId, isSuperAdmin);
-    return { 
-      total: items.length, 
-      pending: items.filter(d => d.approvalStatus === 'pending').length,
-      published: items.filter(d => d.status === 'published').length,
-      draft: items.filter(d => d.status === 'draft').length,
-      archived: items.filter(d => d.status === 'archived').length,
-      favorites: items.filter(d => d.isFavorite).length,
-      expiring: 0,
-      byCategory: items.reduce((acc, doc) => {
-        acc[doc.category] = (acc[doc.category] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>)
+    const ticketData: Omit<SupportTicket, 'id'> = {
+      clientId,
+      clientName,
+      company_id: data.company_id,
+      propertyId: context?.propertyId,
+      propertyName: context?.propertyName,
+      unitNumber: context?.unitNumber,
+      subject: data.subject,
+      status: 'pending',
+      priority: data.priority || 'medium',
+      category: data.category || 'other',
+      messages: [{ 
+        id: crypto.randomUUID(), 
+        senderId: clientId, 
+        senderName: clientName, 
+        role: 'client', 
+        text: data.message, 
+        createdAt: new Date() 
+      }],
+      slaDeadline,
+      createdAt,
+      updatedAt: createdAt
     };
-  }
-  
-  async signDocument(id: string, signerId: string) { 
-    const doc = await this.getById(id);
-    if (!doc) return false;
-    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s);
-    return !!(await this.update(id, { signatures, isSigned: true }));
+
+    return await this.create(ticketData);
   }
 
-  async rejectSignature(id: string, signerId: string, reason: string) { 
-    const doc = await this.getById(id);
-    if (!doc) return false;
-    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: reason } : s);
-    return !!(await this.update(id, { signatures }));
+  async updateTicketStatus(id: string, status: SupportTicket['status']) {
+    return await this.update(id, { status, updatedAt: new Date() });
   }
 
-  async addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): Promise<DocumentSignature> { 
-    const doc = await this.getById(id);
-    if (!doc) throw new Error("Documento não encontrado");
-    const newSigner: DocumentSignature = { ...signer, id: crypto.randomUUID(), status: "pending" };
-    await this.update(id, { signatures: [...(doc.signatures || []), newSigner] });
-    return newSigner;
-  }
-
-  async toggleFavorite(id: string) {
-    const doc = await this.getById(id);
-    if (!doc) return false;
-    return !!(await this.update(id, { isFavorite: !doc.isFavorite }));
-  }
-
-  async duplicateDocument(id: string) {
-    const doc = await this.getById(id);
-    if (!doc) return null;
-    const { id: _, createdAt: __, updatedAt: ___, ...rest } = doc;
-    return await this.create({
-      ...rest,
-      title: `${doc.title} (Cópia)`
-    } as Omit<Document, "id">);
-  }
-
-  async getCategories() {
-    const docs = await this.getAll();
-    return Array.from(new Set(docs.map(d => d.category)));
-  }
-
-  async getExpiringDocuments(days: number = 30) {
-    const docs = await this.getAll();
-    const threshold = new Date();
-    threshold.setDate(threshold.getDate() + days);
-    return docs.filter(d => d.expiresAt && d.expiresAt <= threshold);
-  }
-
-  async getFolderStructure() {
-    const docs = await this.getAll();
-    return Array.from(new Set(docs.map(d => d.category))).map(cat => ({
-      name: cat,
-      count: docs.filter(d => d.category === cat).length
-    }));
-  }
-
-  async moveDocument(id: string, newCategory: string) {
-    return !!(await this.update(id, { category: newCategory }));
-  }
-
-  async generateDocument(type: string, data: Partial<Document>) {
-    return await this.create({
-      title: `Documento Gerado - ${type}`,
-      category: "Gerados",
-      type: "auto",
-      status: "published",
-      visible: true,
-      associatedTo: {},
-      version: 1,
-      approvalStatus: "approved",
-      downloads: 0,
-      viewCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...data
-    } as Omit<Document, "id">);
+  async addMessageToTicket(id: string, senderId: string, senderName: string, role: 'admin' | 'client', text: string) {
+    const ticket = await this.getById(id);
+    if (!ticket) return null;
+    
+    const messages = [...(ticket.messages || []), { 
+      id: crypto.randomUUID(), 
+      senderId, 
+      senderName, 
+      role, 
+      text, 
+      createdAt: new Date() 
+    }];
+    
+    const newStatus = role === 'admin' ? 'waiting_client' : 'in_progress';
+    
+    return await this.update(id, { 
+      messages, 
+      status: newStatus,
+      updatedAt: new Date() 
+    });
   }
 }
 
-export const documentService = new DocumentService();
+export const supportService = new SupportService();
+
