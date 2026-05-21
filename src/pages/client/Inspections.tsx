@@ -271,6 +271,7 @@ export default function ClientInspections() {
           )}
         </div>
       </div>
+      </FeatureGate>
     </div>
   );
 }
