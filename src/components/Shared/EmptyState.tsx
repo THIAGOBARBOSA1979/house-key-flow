@@ -1,89 +1,42 @@
-// Optimized UI state component with standardized premium microcopy.
-import { ReactNode } from "react";
-import { useTranslation } from "react-i18next";
-import { LucideIcon, RefreshCw, AlertCircle } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { Inbox } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface EmptyStateProps {
-  icon?: LucideIcon;
   title: string;
-  description: string;
-  actionLabel?: string;
-  onAction?: () => void;
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
-  variant?: 'default' | 'error';
-  children?: ReactNode;
+  description?: string;
+  icon?: React.ReactNode;
+  className?: string;
+  action?: React.ReactNode;
 }
 
-export function EmptyState({
-  icon: Icon,
+export const EmptyState: React.FC<EmptyStateProps> = ({
   title,
   description,
-  actionLabel,
-  onAction,
-  action,
-  variant = 'default',
-  children
-}: EmptyStateProps) {
-  const { t } = useTranslation();
-  const displayActionLabel = actionLabel || action?.label;
-
-  const handleAction = onAction || action?.onClick;
-  
-  const isError = variant === 'error';
-  const EffectiveIcon = Icon || (isError ? AlertCircle : null);
-
+  icon,
+  className,
+  action
+}) => {
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center py-10 md:py-20 px-4 md:px-6 text-center rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-dashed transition-all duration-500 group",
-      isError 
-        ? "bg-destructive/5 border-destructive/20 hover:bg-destructive/10 hover:border-destructive/30" 
-        : "bg-muted/5 border-border/40 hover:bg-muted/10 hover:border-primary/20"
+      "flex flex-col items-center justify-center p-12 text-center space-y-4 border-2 border-dashed border-border/40 rounded-[2rem] bg-muted/5 animate-in fade-in duration-500",
+      className
     )}>
-      <div className={cn(
-        "p-4 md:p-6 rounded-2xl bg-background shadow-sm border border-border/10 mb-4 md:mb-6 group-hover:scale-110 transition-all duration-500 group-hover:shadow-md",
-        isError ? "group-hover:bg-destructive/5 group-hover:border-destructive/20" : "group-hover:bg-primary/5 group-hover:border-primary/20"
-      )}>
-        {EffectiveIcon && (
-          <EffectiveIcon className={cn(
-            "h-8 w-8 md:h-12 md:w-12 transition-colors",
-            isError ? "text-destructive/40 group-hover:text-destructive" : "text-muted-foreground/30 group-hover:text-primary"
-          )} />
+      <div className="w-20 h-20 bg-muted/30 text-muted-foreground/40 rounded-3xl flex items-center justify-center mb-2">
+        {icon || <Inbox size={32} />}
+      </div>
+      <div className="space-y-1.5 max-w-sm">
+        <h3 className="text-xl font-black tracking-tight text-foreground/80 uppercase tracking-widest text-[11px] opacity-60">
+          {title}
+        </h3>
+        {description && (
+          <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+            {description}
+          </p>
         )}
       </div>
-      
-      <h3 className={cn(
-        "text-xl md:text-2xl font-black tracking-tight mb-2 md:mb-3 transition-colors",
-        isError ? "text-destructive group-hover:text-destructive/80" : "text-foreground/90 group-hover:text-primary"
-      )}>
-        {title}
-      </h3>
-      
-      <p className="text-sm md:text-base text-muted-foreground/60 max-w-md mb-6 md:mb-10 font-medium leading-relaxed group-hover:text-muted-foreground/80 transition-colors">
-        {description}
-      </p>
-      
-      {displayActionLabel && handleAction && (
-        <Button 
-          onClick={handleAction} 
-          className={cn(
-            "font-black uppercase tracking-widest text-[10px] px-10 h-12 shadow-md hover:shadow-lg rounded-xl transition-all duration-300 hover:scale-105 active:scale-95",
-            isError ? "bg-destructive hover:bg-destructive/90" : "bg-primary hover:bg-primary/90"
-          )}
-        >
-          {isError && !actionLabel && <RefreshCw className="mr-2 h-3 w-3 animate-spin-slow" />}
-          {displayActionLabel || (isError ? t('common.error_action', 'Sincronizar Dados') : t('common.restart', 'Recomeçar'))}
-
-        </Button>
-      )}
-      
-      {children}
+      {action && <div className="pt-2">{action}</div>}
     </div>
   );
-}
-
+};
