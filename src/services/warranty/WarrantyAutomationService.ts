@@ -137,8 +137,7 @@ class WarrantyAutomationService {
   /**
    * Handle inspection scheduled
    */
-  private onInspectionScheduled(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Inspection scheduled for:', request.id);
+  private onInspectionScheduled(_request: WarrantyRequestFlow): void {
     // Could send calendar invite, reminder notifications, etc.
   }
 
