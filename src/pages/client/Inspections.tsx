@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { ErrorView } from "@/components/Shared/ErrorView";
+import { propertyService } from "@/services/operations/PropertyService";
 
 import { Button } from "@/components/ui/button";
 import { 
@@ -30,7 +31,7 @@ import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
 export default function ClientInspections() {
   const { user } = useAuth();
   const clientId = user?.id || "client-1";
-  const { stage, isLoading, canScheduleInspection } = useClientStage(clientId);
+  const { profile, stage, isLoading, canScheduleInspection } = useClientStage(clientId);
   const { toast } = useToast();
   const [selectedInspection, setSelectedInspection] = useState<string | null>(null);
   const [inspections, setInspections] = useState<any[]>([]);
@@ -216,7 +217,7 @@ export default function ClientInspections() {
                       </div>
                       <CardTitle className="text-3xl font-black tracking-tight leading-tight">{inspection.title} <span className="text-primary">•</span> {inspection.unit}</CardTitle>
                       <CardDescription className="font-bold flex items-center gap-2 mt-2 text-muted-foreground/80">
-                        <MapPin size={16} className="text-primary" /> {inspection.property}
+                        <MapPin size={16} className="text-primary" /> {inspection.property} {profile?.propertyId && propertyService.getById(profile.propertyId)?.location && ` • ${propertyService.getById(profile.propertyId)?.location}`}
                       </CardDescription>
                     </div>
                   </div>

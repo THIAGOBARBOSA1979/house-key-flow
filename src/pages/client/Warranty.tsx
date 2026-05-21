@@ -113,7 +113,7 @@ const ClientWarranty = () => {
               <ShieldCheck className="h-7 w-7 text-primary" strokeWidth={3} />
             </div>
             Assistência Técnica & Garantias
-            {!canRequestWarranty && <Lock className="h-5 w-5 text-muted-foreground/40 ml-2" />}
+            {!canRequestWarranty && <Lock className="h-5 w-5 text-muted-foreground/40 ml-2 animate-pulse" />}
           </h1>
           <p className="text-muted-foreground font-bold text-sm">
             {canRequestWarranty 
