@@ -73,7 +73,7 @@ class PropertyService extends SupabaseBaseService<Property> {
         totalArea: 'total_area',
         manager: 'manager_id'
       }
-    }, import.meta.env.DEV ? INITIAL_PROPERTIES : []);
+    }, []);
     this.initializeRealtime();
   }
 

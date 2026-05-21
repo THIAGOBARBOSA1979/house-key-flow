@@ -18,7 +18,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   constructor(options: BaseServiceOptions | string, initialData: T[] = []) {
     this.options = typeof options === 'string' ? { storageKey: options } : options;
     this.items = initialData;
-    this.loadFromStorage();
+    // this.loadFromStorage(); // Disabled for DB-first persistence
   }
 
   subscribe(listener: Listener<T>) {
@@ -77,7 +77,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   protected persist() {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(this.options.storageKey, JSON.stringify(this.items));
+    // localStorage.setItem(this.options.storageKey, JSON.stringify(this.items)); // Disabled
     this.notify();
   }
 

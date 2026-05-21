@@ -48,7 +48,7 @@ class CompanyService extends SupabaseBaseService<Company> {
       supabaseTable: "companies",
       auditEntityType: "system",
       shouldSyncWithSupabase: true
-    }, import.meta.env.DEV ? INITIAL_COMPANIES : []);
+    }, []);
   }
 
   getCompanyBySlug(slug: string): Company | undefined {
