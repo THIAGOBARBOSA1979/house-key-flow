@@ -80,7 +80,9 @@ const ClientArea = () => {
             <Key className="mr-2 h-4 w-4" />
             Acessos
           </Button>
-          <Button onClick={() => setNewClientDialogOpen(true)} className="rounded-xl h-10 px-6 font-black uppercase tracking-widest text-[10px]">
+          <Button onClick={() => {
+            setNewClientDialogOpen(true);
+          }} className="rounded-xl h-10 px-6 font-black uppercase tracking-widest text-[10px]">
             <Plus className="mr-2 h-4 w-4" />
             Integrar Cliente
           </Button>
@@ -174,7 +176,10 @@ const ClientArea = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" className="rounded-xl h-10">Editar Perfil</Button>
+                    <Button variant="outline" className="rounded-xl h-10" onClick={() => {
+                      setNewClientDialogOpen(true);
+                      // In a real app, you'd load the profile into the form
+                    }}>Editar Perfil</Button>
                     <Button variant="outline" className="rounded-xl h-10 text-destructive hover:bg-destructive/5">Bloquear</Button>
                   </div>
                 </div>
@@ -221,14 +226,33 @@ const ClientArea = () => {
       </div>
 
       {/* Dialogs */}
-      <Dialog open={isNewClientDialogOpen} onOpenChange={setNewClientDialogOpen}>
+      <Dialog open={isNewClientDialogOpen} onOpenChange={(open) => {
+        setNewClientDialogOpen(open);
+        if (!open) {
+          // Reset any editing state if needed
+        }
+      }}>
         <DialogContent className="max-w-dialog-md p-0 overflow-hidden rounded-3xl border-none shadow-sem-xl">
           <DialogHeader className="px-8 pt-8 pb-6 border-b bg-muted/5">
             <DialogTitle className="text-2xl font-black tracking-tight">Novo Cliente</DialogTitle>
             <DialogDescription className="text-sm font-medium">Cadastre um novo cliente no ecossistema digital.</DialogDescription>
           </DialogHeader>
           <div className="p-layout-gap max-h-[70vh] overflow-y-auto overflow-x-hidden">
-            <UserForm onSave={handleCreateClient} onCancel={() => setNewClientDialogOpen(false)} />
+            <UserForm 
+              onSave={handleCreateClient} 
+              onCancel={() => setNewClientDialogOpen(false)} 
+              editingUser={selectedClient ? {
+                id: selectedClient.id,
+                name: selectedClient.name,
+                email: selectedClient.email,
+                phone: selectedClient.phone,
+                role: 'client',
+                status: 'active',
+                propertyId: selectedClient.propertyId,
+                propertyName: selectedClient.propertyName,
+                unit: selectedClient.unitNumber
+              } as any : null}
+            />
           </div>
         </DialogContent>
       </Dialog>
