@@ -52,7 +52,9 @@ export const useAuditInitializer = () => {
           return state;
         });
       }
-      
+      useAuditStore.setState(state => ({
+        ...state,
+        currentWave: 15
       }));
     }
   }, [issues.length, addIssue, startWave]);
