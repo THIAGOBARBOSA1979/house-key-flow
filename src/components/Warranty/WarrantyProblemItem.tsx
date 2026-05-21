@@ -76,26 +76,26 @@ export function WarrantyProblemItem({
   };
   
   return (
-    <div className="space-y-4 p-4 border rounded-md bg-muted/20 relative">
+    <div className="space-y-6 p-6 md:p-8 rounded-[2rem] bg-white/40 border-2 border-border/5 shadow-inner relative group/problem transition-all hover:bg-white/60">
       {index > 0 && (
         <Button
           type="button"
-          variant="destructive"
-          size="sm"
-          className="absolute top-2 right-2"
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 h-8 w-8 rounded-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover/problem:opacity-100 shadow-sm"
           onClick={() => onRemove(index)}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
       )}
       
-      <h3 className="font-medium">
-        {index === 0 ? "Problema principal" : `Problema adicional ${index}`}
+      <h3 className="font-black text-xs uppercase tracking-widest text-primary/60 mb-2">
+        {index === 0 ? "Ocorrência Principal" : `Ocorrência Adicional #${index}`}
       </h3>
       
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <FormLabel>Categoria <span className="text-destructive">*</span></FormLabel>
+          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Categoria Técnica <span className="text-destructive">*</span></FormLabel>
           <Select 
             value={problem.category} 
             onValueChange={(value) => onChange(index, 'category', value)}
@@ -112,7 +112,7 @@ export function WarrantyProblemItem({
         </div>
         
         <div className="space-y-2">
-          <FormLabel>Localização exata <span className="text-destructive">*</span></FormLabel>
+          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Ambiente / Local <span className="text-destructive">*</span></FormLabel>
           <Input 
             placeholder="Ex: Banheiro da suíte, Cozinha" 
             value={problem.location}
@@ -122,7 +122,7 @@ export function WarrantyProblemItem({
       </div>
       
       <div className="space-y-2">
-        <FormLabel>Gravidade <span className="text-destructive">*</span></FormLabel>
+        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Severidade Percebida <span className="text-destructive">*</span></FormLabel>
         <Select 
           value={problem.severity}
           onValueChange={(value) => onChange(index, 'severity', value)}
@@ -139,7 +139,7 @@ export function WarrantyProblemItem({
       </div>
       
       <div className="space-y-2">
-        <FormLabel>Descrição detalhada <span className="text-destructive">*</span></FormLabel>
+        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Descrição do Vício ou Defeito <span className="text-destructive">*</span></FormLabel>
         <Textarea 
           placeholder="Descreva quando começou, sintomas observados, riscos aparentes, etc."
           rows={3}
@@ -151,7 +151,7 @@ export function WarrantyProblemItem({
       {/* Photo upload section */}
       <div className="space-y-3">
         <div>
-          <FormLabel>Anexar fotos</FormLabel>
+          <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Evidências Fotográficas</FormLabel>
           <p className="text-xs text-muted-foreground">
             Adicione fotos que mostrem claramente o problema para facilitar a análise
           </p>
