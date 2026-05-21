@@ -58,9 +58,9 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
     return mapped as T;
   }
 
-  // --- Result-based methods (New Pattern - Onda 18) ---
+  // --- Core CRUD (Standard Pattern - throws error) ---
 
-  async tryGetAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<Result<T[]>> {
+  async getAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<T[]> {
     try {
       const filters: FilterParams[] = [...extraFilters];
       if (!isSuperAdmin && companyId) {
@@ -76,32 +76,30 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.items = mappedData;
       this.notifyListeners();
       
-      return success(mappedData);
+      return mappedData;
     } catch (err) {
-      const appError = this.handleError(err, 'getAll');
-      return failure(appError.message, appError.code);
+      this.handleError(err, 'getAll');
     }
   }
 
-  async tryGetById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<Result<T | undefined>> {
+  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
     try {
       const { data, error } = await Supabase.db.findOne<any>(this.supabaseTable, id);
       if (error) throw error;
-      if (!data) return success(undefined);
+      if (!data) return undefined;
       
       const mapped = this.mapFromSupabase(data);
       if (!isSuperAdmin && companyId && (mapped as any).companyId && (mapped as any).companyId !== companyId) {
-        return failure('Acesso negado', 'FORBIDDEN');
+        throw new Error('Acesso negado');
       }
       
-      return success(mapped);
+      return mapped;
     } catch (err) {
-      const appError = this.handleError(err, 'getById');
-      return failure(appError.message, appError.code);
+      this.handleError(err, 'getById');
     }
   }
 
-  async tryCreate(item: Omit<T, "id">, companyId?: string): Promise<Result<T>> {
+  async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     try {
       const validated = this.validate(item);
       const payload = { ...validated, companyId: companyId || (validated as any).companyId };
@@ -111,69 +109,73 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       const created = this.mapFromSupabase(data);
       this.addItem(created);
-      return success(created);
+      return created;
     } catch (err) {
-      const appError = this.handleError(err, 'create');
-      return failure(appError.message, appError.code);
+      this.handleError(err, 'create');
     }
   }
 
-  async tryUpdate(id: string, data: Partial<T>): Promise<Result<T>> {
+  async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
     try {
       const { data: remoteData, error } = await Supabase.db.update<any>(this.supabaseTable, id, this.mapToSupabase(data));
       if (error) throw error;
       
       const updated = this.mapFromSupabase(remoteData);
       this.updateItem(updated);
-      return success(updated);
+      return updated;
     } catch (err) {
-      const appError = this.handleError(err, 'update');
-      return failure(appError.message, appError.code);
+      this.handleError(err, 'update');
     }
   }
 
-  async tryDelete(id: string): Promise<Result<boolean>> {
+  async delete(id: string): Promise<boolean> {
     try {
       const { error } = await Supabase.db.delete(this.supabaseTable, id);
       if (error) throw error;
       
       this.removeItem(id);
-      return success(true);
+      return true;
     } catch (err) {
-      const appError = this.handleError(err, 'delete');
-      return failure(appError.message, appError.code);
+      this.handleError(err, 'delete');
     }
   }
 
-  // --- Compatibility methods (Onda 17) ---
+  // --- Result-based wrappers (New Pattern - Onda 18) ---
 
-  async getAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<T[]> {
-    const res = await this.tryGetAll(companyId, isSuperAdmin, extraFilters);
-    if (res.success) return res.data;
-    throw new Error(res.error);
+  async tryGetAll(companyId?: string, isSuperAdmin?: boolean, extraFilters: FilterParams[] = []): Promise<Result<T[]>> {
+    try {
+      const data = await this.getAll(companyId, isSuperAdmin, extraFilters);
+      return success(data);
+    } catch (err: any) {
+      return failure(err.message || 'Erro ao buscar registros');
+    }
   }
 
-  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
-    const res = await this.tryGetById(id, companyId, isSuperAdmin);
-    if (res.success) return res.data;
-    throw new Error(res.error);
+  async tryGetById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<Result<T | undefined>> {
+    try {
+      const data = await this.getById(id, companyId, isSuperAdmin);
+      return success(data);
+    } catch (err: any) {
+      return failure(err.message || 'Erro ao buscar registro');
+    }
   }
 
-  async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
-    const res = await this.tryCreate(item, companyId);
-    if (res.success) return res.data;
-    throw new Error(res.error);
+  async tryCreate(item: Omit<T, "id">, companyId?: string): Promise<Result<T>> {
+    try {
+      const data = await this.create(item, companyId);
+      return success(data);
+    } catch (err: any) {
+      return failure(err.message || 'Erro ao criar registro');
+    }
   }
 
-  async update(id: string, data: Partial<T>): Promise<T | undefined> {
-    const res = await this.tryUpdate(id, data);
-    if (res.success) return res.data;
-    throw new Error(res.error);
-  }
-
-  async delete(id: string): Promise<boolean> {
-    const res = await this.tryDelete(id);
-    if (res.success) return res.data;
-    throw new Error(res.error);
+  async tryUpdate(id: string, data: Partial<T>): Promise<Result<T>> {
+    try {
+      const updated = await this.update(id, data);
+      if (!updated) return failure('Registro não encontrado');
+      return success(updated);
+    } catch (err: any) {
+      return failure(err.message || 'Erro ao atualizar registro');
+    }
   }
 }
