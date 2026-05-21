@@ -16,12 +16,11 @@ const INITIAL_ISSUES = [
   { module: 'Warranty', description: 'Validação de garantia no WarrantyValidationService usa mocks estáticos', impact: 'critical', wave: 3 },
   { module: 'Warranty', description: 'Fluxo de abertura de chamado não valida limites de upload de fotos', impact: 'medium', wave: 3 },
   { module: 'Warranty', description: 'SLA de garantia não está sendo calculado corretamente em fins de semana', impact: 'high', wave: 3 },
-  // Wave 6: Security (Storage) & Accessibility (WCAG)
-  { module: 'Security', description: 'Assinaturas de Storage (RLS) sem validação de expiração em URLs públicas', impact: 'high', wave: 6 },
-  { module: 'Security', description: 'Vulnerabilidade em metadados de fotos de vistorias (EXIF data sensível)', impact: 'medium', wave: 6 },
-  { module: 'Accessibility', description: 'Contraste insuficiente em badges de status no modo escuro', impact: 'low', wave: 6 },
-  { module: 'Accessibility', description: 'Falta de suporte completo a navegação por teclado (focus rings) em tabelas', impact: 'medium', wave: 6 },
-  { module: 'Accessibility', description: 'Atributos ARIA (aria-labels) ausentes em ícones de ação e botões globais', impact: 'medium', wave: 6 },
+  // Wave 7: Deep Technical Hardening & DB Refinement
+  { module: 'DB', description: 'Falta de auditoria em operações de deleção física no banco de dados', impact: 'medium', wave: 7 },
+  { module: 'Performance', description: 'Queries ao Supabase sem limites de paginação (risco de timeout em datasets grandes)', impact: 'high', wave: 7 },
+  { module: 'Security', description: 'Middleware de proteção de rotas vulnerável a manipulação de payload JWT local', impact: 'critical', wave: 7 },
+  { module: 'Architecture', description: 'Circular dependency detectada entre AuditLogService e BaseService em ambiente de produção', impact: 'high', wave: 7 },
 ];
 
 export const useAuditInitializer = () => {
@@ -40,9 +39,10 @@ export const useAuditInitializer = () => {
           { id: 3, status: 'completed', issues: [] },
           { id: 4, status: 'completed', issues: [] },
           { id: 5, status: 'completed', issues: [] },
-          { id: 6, status: 'in_progress', issues: [] }
+          { id: 6, status: 'completed', issues: [] },
+          { id: 7, status: 'in_progress', issues: [] }
         ],
-        currentWave: 6
+        currentWave: 7
       }));
     }
   }, []);
