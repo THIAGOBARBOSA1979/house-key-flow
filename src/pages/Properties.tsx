@@ -201,7 +201,7 @@ const Properties = () => {
                         confirmLabel: "Excluir",
                         variant: "destructive"
                       });
-                      if (result) deleteProperty(property.id!);
+                      if (result) deleteProperty(p.id!);
                     }}
                     onView={() => setSelectedProperty(p)}
                   />
