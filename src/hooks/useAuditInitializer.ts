@@ -53,17 +53,7 @@ export const useAuditInitializer = () => {
         });
       }
       
-      useAuditStore.setState(state => ({
-        ...state,
-        currentWave: 15
       }));
-
-      // Mark all as fixed
-      INITIAL_ISSUES.forEach(issue => {
-        if (issue.status === 'fixed') {
-          markAsFixed(issue.module, issue.description);
-        }
-      });
     }
   }, [issues.length, addIssue, startWave]);
 
