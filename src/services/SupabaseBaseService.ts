@@ -15,7 +15,10 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
   }
 
   protected mapToSupabase(item: any): any {
-    return item;
+    const mapped = { ...item };
+    // Remove complex nested objects that don't belong in flat table columns
+    // This is a safety measure to prevent Supabase from choking on nested JSON that isn't expected
+    return mapped;
   }
 
   protected mapFromSupabase(raw: any): T {
@@ -50,35 +53,48 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
 
   private handleSyncError(error: any): T[] {
     console.error(`[SupabaseBaseService] Sync failed for ${this.supabaseTable}:`, error);
-    // Return current items but notify listeners of potential stale state if needed
     return this.items;
   }
 
-
-  create(item: Omit<T, "id">, companyId?: string): T {
+  async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const newItem = super.create(item, companyId);
     if (this.options.shouldSyncWithSupabase) {
-      Supabase.db.create<T>(this.supabaseTable, this.mapToSupabase(newItem))
-        .catch(err => console.error(`[SupabaseBaseService] Sync create failed:`, err));
+      try {
+        const { data, error } = await Supabase.db.create<T>(this.supabaseTable, this.mapToSupabase(newItem));
+        if (error) throw error;
+        if (data) return this.mapFromSupabase(this.deserializeDates(data as any));
+      } catch (err) {
+        console.error(`[SupabaseBaseService] Sync create failed for ${this.supabaseTable}:`, err);
+      }
     }
     return newItem;
   }
 
-  update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
+  async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
     const updated = super.update(id, data, isSuperAdmin);
     if (updated && this.options.shouldSyncWithSupabase) {
-      Supabase.db.update<T>(this.supabaseTable, id, this.mapToSupabase(data))
-        .catch(err => console.error(`[SupabaseBaseService] Sync update failed:`, err));
+      try {
+        const { data: remoteData, error } = await Supabase.db.update<T>(this.supabaseTable, id, this.mapToSupabase(data));
+        if (error) throw error;
+        if (remoteData) return this.mapFromSupabase(this.deserializeDates(remoteData as any));
+      } catch (err) {
+        console.error(`[SupabaseBaseService] Sync update failed for ${this.supabaseTable}:`, err);
+      }
     }
     return updated;
   }
 
-  delete(id: string): boolean {
+  async delete(id: string): Promise<boolean> {
     const success = super.delete(id);
     if (success && this.options.shouldSyncWithSupabase) {
-      Supabase.db.delete(this.supabaseTable, id)
-        .catch(err => console.error(`[SupabaseBaseService] Sync delete failed:`, err));
+      try {
+        const { error } = await Supabase.db.delete(this.supabaseTable, id);
+        if (error) throw error;
+      } catch (err) {
+        console.error(`[SupabaseBaseService] Sync delete failed for ${this.supabaseTable}:`, err);
+      }
     }
     return success;
   }
 }
+

@@ -147,10 +147,11 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   constructor() {
     super({
       storageKey: "a2_warranty_requests",
-      supabaseTable: "warranty_requests" as any, // Standardizing table names later if needed
+      supabaseTable: "warranty_requests",
       auditEntityType: "warranty",
       shouldSyncWithSupabase: true
     }, initialMockRequests);
+
     
     this.items = this.items.map(item => ({
       ...item,

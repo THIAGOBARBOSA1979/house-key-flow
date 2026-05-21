@@ -107,12 +107,13 @@ class DocumentService extends SupabaseBaseService<Document> {
   constructor() {
     super({
       storageKey: "a2_documents",
-      supabaseTable: "documents" as any, // Plan to create this table later if needed
+      supabaseTable: "documents",
       auditEntityType: "document",
-      shouldSyncWithSupabase: false
+      shouldSyncWithSupabase: true
     }, INITIAL_DOCUMENTS);
 
   }
+
 
   // Backward compatibility aliases
   getAllDocuments() { return this.getAll(undefined, true); }

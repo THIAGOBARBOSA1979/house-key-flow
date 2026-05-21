@@ -71,12 +71,13 @@ class TechnicianService extends SupabaseBaseService<Technician> {
   constructor() {
     super({
       storageKey: "a2_technicians",
-      supabaseTable: "technicians" as any, // Standardizing table name even if sync is off
+      supabaseTable: "technicians",
       auditEntityType: "user",
-      shouldSyncWithSupabase: false
+      shouldSyncWithSupabase: true
 
     }, INITIAL_TECHNICIANS);
   }
+
 
   create(technician: Omit<Technician, "id" | "joinedAt" | "completedJobs" | "activeJobs" | "rating">): Technician {
     const newTechnician = super.create({
