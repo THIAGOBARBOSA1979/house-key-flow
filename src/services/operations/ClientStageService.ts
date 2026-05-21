@@ -10,8 +10,6 @@ import {
 } from "@/types/clientFlow";
 
 class ClientStageService extends SupabaseBaseService<ClientProfile> {
-  private events: ClientEvent[] = [];
-
   constructor() {
     super({
       storageKey: "a2_client_profiles",
@@ -19,15 +17,16 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
       auditEntityType: "client_profile",
       shouldSyncWithSupabase: true
     }, []);
-    // this.loadEvents(); // Disabled for DB-first
+    this.initializeRealtime();
   }
 
-  private loadEvents() {
-    // Disabled
-  }
-
-  private persistEvents() {
-    // Disabled
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable('client_profiles', async () => {
+      await this.sync();
+    });
+    Supabase.realtime.subscribeToTable('client_events', async () => {
+      // Logic to sync events if needed, but usually we fetch them per client
+    });
   }
 
   getAllProfiles(companyId?: string, isSuperAdmin?: boolean): ClientProfile[] {
@@ -42,7 +41,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
     return this.getById(id, companyId, isSuperAdmin);
   }
 
-  advanceStage(id: string, stage: ClientStage, notes: string = "", changedBy: string = "system", automatic: boolean = false) {
+  async advanceStage(id: string, stage: ClientStage, notes: string = "", changedBy: string = "system", automatic: boolean = false) {
     const profile = this.getById(id);
     if (!profile) return { success: false, error: "Cliente não encontrado" };
 
@@ -56,13 +55,13 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
       isAutomatic: automatic
     };
 
-    const updated = this.update(id, {
+    const updated = await this.update(id, {
       currentStage: stage,
       stageHistory: [...(profile.stageHistory || []), stageChange]
     });
 
     if (updated) {
-      this.addEvent({
+      await this.addEvent({
         clientId: id,
         company_id: profile.company_id,
         eventType: 'stage_changed' as any,
@@ -76,30 +75,53 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
     return { success: false, error: "Falha ao atualizar perfil" };
   }
 
-  addEvent(event: Omit<ClientEvent, "id" | "createdAt">) {
-    const newEvent: ClientEvent = {
-      ...event,
-      id: crypto.randomUUID(),
-      createdAt: new Date()
-    } as ClientEvent;
-    this.events.unshift(newEvent);
-    // this.persistEvents(); // Disabled
+  async addEvent(event: Omit<ClientEvent, "id" | "createdAt">) {
+    const { data, error } = await Supabase.db.create('client_events', {
+      client_id: event.clientId,
+      company_id: event.company_id,
+      event_type: event.eventType,
+      title: event.title,
+      description: event.description,
+      metadata: event.metadata,
+      created_at: new Date().toISOString()
+    });
+
+    if (error) {
+      console.error("Error adding client event:", error);
+      return null;
+    }
+
     this.notify();
-    return newEvent;
+    return data;
   }
 
-  getEvents(clientId: string, companyId?: string, isSuperAdmin?: boolean): ClientEvent[] {
-    return this.events.filter(e => e.clientId === clientId);
+  async getEvents(clientId: string, companyId?: string, isSuperAdmin?: boolean): Promise<ClientEvent[]> {
+    const { data, error } = await Supabase.db.findMany<any>('client_events', {
+      filters: [{ column: 'client_id', operator: 'eq', value: clientId }],
+      sort: { column: 'created_at', order: 'desc' }
+    });
+
+    if (error) {
+      console.error("Error fetching client events:", error);
+      return [];
+    }
+
+    return (data || []).map(e => ({
+      id: e.id,
+      clientId: e.client_id,
+      company_id: e.company_id,
+      eventType: e.event_type,
+      title: e.title,
+      description: e.description,
+      createdAt: new Date(e.created_at),
+      metadata: e.metadata
+    }));
   }
 
   getPermissions(clientId: string): StagePermissions {
     const profile = this.getById(clientId);
     const stage = profile?.currentStage || 'registered';
     return STAGE_PERMISSIONS[stage];
-  }
-
-  getTimeline(clientId: string) {
-    return this.getEvents(clientId);
   }
 
   canScheduleInspection(clientId: string): boolean {

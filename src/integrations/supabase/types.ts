@@ -146,6 +146,47 @@ export type Database = {
           },
         ]
       }
+      client_events: {
+        Row: {
+          client_id: string
+          company_id: string | null
+          created_at: string | null
+          description: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          title: string
+        }
+        Insert: {
+          client_id: string
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          title: string
+        }
+        Update: {
+          client_id?: string
+          company_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_profiles: {
         Row: {
           block: string | null
@@ -154,8 +195,10 @@ export type Database = {
           current_stage: string
           email: string
           floor: string | null
+          governance_metadata: Json | null
           id: string
           name: string
+          notes: string | null
           phone: string | null
           property_id: string | null
           property_name: string | null
@@ -171,8 +214,10 @@ export type Database = {
           current_stage?: string
           email: string
           floor?: string | null
+          governance_metadata?: Json | null
           id?: string
           name: string
+          notes?: string | null
           phone?: string | null
           property_id?: string | null
           property_name?: string | null
@@ -188,8 +233,10 @@ export type Database = {
           current_stage?: string
           email?: string
           floor?: string | null
+          governance_metadata?: Json | null
           id?: string
           name?: string
+          notes?: string | null
           phone?: string | null
           property_id?: string | null
           property_name?: string | null
