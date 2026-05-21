@@ -1,6 +1,13 @@
 import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 
+export interface ChecklistEvidence {
+  id: string;
+  file?: File;
+  url: string;
+  timestamp: Date;
+}
+
 export interface ChecklistItem {
   id: string;
   name?: string;
@@ -10,7 +17,7 @@ export interface ChecklistItem {
   required?: boolean;
   severity?: "low" | "medium" | "high" | "critical";
   status?: "pending" | "conform" | "non_conform" | "not_applicable" | "ok" | "issue" | "na" | "nonconform";
-  evidence?: string[];
+  evidence?: ChecklistEvidence[];
   conformity?: "conform" | "non_conform" | "not_applicable" | "pending" | "nonconform";
   abntReference?: string;
   inspectionMethod?: string;
