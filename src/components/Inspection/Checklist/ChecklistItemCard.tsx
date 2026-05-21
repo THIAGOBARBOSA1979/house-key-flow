@@ -1,33 +1,72 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, X, Camera, Image as ImageIcon, Trash2 } from "lucide-react";
+import { Check, X, Camera, Trash2, Loader2 } from "lucide-react";
 import { ChecklistItem } from "@/services";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { FileService } from "@/services/core/FileService";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/components/ui/use-toast";
 
 interface ChecklistItemCardProps {
   item: ChecklistItem;
   onConformityChange: (value: "conform" | "nonconform") => void;
   onNotesChange: (notes: string) => void;
+  onPhotosChange?: (photos: string[]) => void;
+  inspectionId?: string;
 }
 
-export const ChecklistItemCard = ({ item, onConformityChange, onNotesChange }: ChecklistItemCardProps) => {
-  const [photos, setPhotos] = useState<string[]>([]);
+export const ChecklistItemCard = ({ 
+  item, 
+  onConformityChange, 
+  onNotesChange, 
+  onPhotosChange,
+  inspectionId 
+}: ChecklistItemCardProps) => {
+  const [photos, setPhotos] = useState<string[]>(item.photos || []);
+  const [isUploading, setIsUploading] = useState(false);
+  const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAddMockPhoto = () => {
-    // Simulando adição de foto para evidência técnica
-    const mockPhotos = [
-      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=200&q=80",
-      "https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&w=200&q=80"
-    ];
-    const newPhoto = mockPhotos[Math.floor(Math.random() * mockPhotos.length)];
-    setPhotos(prev => [...prev, newPhoto]);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !user || !inspectionId) return;
+
+    setIsUploading(true);
+    try {
+      const uploadPromises = Array.from(files).map(file => 
+        FileService.uploadInspectionPhoto(file, user.company_id || 'general', inspectionId)
+      );
+      
+      const urls = await Promise.all(uploadPromises);
+      const validUrls = urls.filter((url): url is string => url !== null);
+      
+      const newPhotos = [...photos, ...validUrls];
+      setPhotos(newPhotos);
+      onPhotosChange?.(newPhotos);
+      
+      toast({
+        title: "Fotos anexadas",
+        description: `${validUrls.length} fotos foram carregadas com sucesso.`
+      });
+    } catch (error) {
+      console.error("Upload error", error);
+      toast({
+        title: "Erro no upload",
+        description: "Não foi possível carregar as imagens.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   const removePhoto = (index: number) => {
-    setPhotos(prev => prev.filter((_, i) => i !== index));
+    const newPhotos = photos.filter((_, i) => i !== index);
+    setPhotos(newPhotos);
+    onPhotosChange?.(newPhotos);
   };
 
   return (
@@ -90,12 +129,27 @@ export const ChecklistItemCard = ({ item, onConformityChange, onNotesChange }: C
                     </button>
                   </div>
                 ))}
+                
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  multiple 
+                  className="hidden" 
+                  ref={fileInputRef} 
+                  onChange={handleFileChange}
+                />
+                
                 <button 
-                  onClick={handleAddMockPhoto}
-                  className="w-20 h-20 rounded-xl border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center gap-1 hover:bg-primary/5 hover:border-primary/40 transition-all text-muted-foreground hover:text-primary group"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="w-20 h-20 rounded-xl border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center gap-1 hover:bg-primary/5 hover:border-primary/40 transition-all text-muted-foreground hover:text-primary group disabled:opacity-50"
                 >
-                  <Camera size={18} className="group-hover:scale-110 transition-transform" />
-                  <span className="text-[8px] font-black uppercase">Anexar</span>
+                  {isUploading ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : (
+                    <Camera size={18} className="group-hover:scale-110 transition-transform" />
+                  )}
+                  <span className="text-[8px] font-black uppercase">{isUploading ? 'Enviando...' : 'Anexar'}</span>
                 </button>
               </div>
             </div>
@@ -115,4 +169,3 @@ export const ChecklistItemCard = ({ item, onConformityChange, onNotesChange }: C
     </Card>
   );
 };
-
