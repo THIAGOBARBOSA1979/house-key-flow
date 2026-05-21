@@ -172,7 +172,7 @@ export const QuickLauncher = () => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-[600px] p-0 overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
+      <DialogContent className="w-[95vw] sm:max-w-[650px] p-0 overflow-hidden rounded-[2rem] sm:rounded-[3rem] border-none shadow-sem-xl bg-background/80 backdrop-blur-3xl">
         <DialogHeader className="p-6 md:p-8 border-b border-border/10 bg-primary/5">
           <DialogTitle className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-3">
             <Zap className="text-primary h-5 w-5 md:h-6 md:w-6" />

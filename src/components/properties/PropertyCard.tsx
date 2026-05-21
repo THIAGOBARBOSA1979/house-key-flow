@@ -33,7 +33,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
   return (
     <Card 
       onClick={onClick}
-      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/40 backdrop-blur-md flex flex-col h-full cursor-pointer group rounded-lg shadow-sem-sm hover:shadow-sem-md", className)}
+      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/60 dark:bg-card/30 backdrop-blur-3xl flex flex-col h-full cursor-pointer group rounded-2xl shadow-sem-lg hover:shadow-sem-xl ring-1 ring-black/5 dark:ring-white/10", className)}
     >
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
         {property.imageUrl ? (
@@ -52,7 +52,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         </div>
       </div>
 
-      <CardHeader className="pb-2 space-y-1 px-4 lg:px-6">
+      <CardHeader className="pb-3 space-y-1.5 px-6">
         <div className="flex justify-between items-start gap-2">
           <div className="min-w-0">
             <CardTitle className="text-lg font-bold truncate leading-tight group-hover:text-primary transition-colors">
@@ -66,7 +66,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pt-2 flex-1 px-4 lg:px-6">
+      <CardContent className="space-y-6 pt-2 flex-1 px-6">
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-muted/20 p-2.5-sem rounded-lg border border-border/10 flex flex-col justify-center">
             <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
@@ -123,7 +123,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         )}
       </CardContent>
 
-      <CardFooter className="flex-col sm:flex-row gap-2 pt-4 border-t border-border/5 bg-muted/5 px-4 lg:px-6">
+      <CardFooter className="flex-col sm:flex-row gap-3 pt-5 border-t border-border/10 bg-muted/5 px-6">
         <Button 
           variant="default" 
           size="sm" 

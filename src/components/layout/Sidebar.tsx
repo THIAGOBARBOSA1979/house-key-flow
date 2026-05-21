@@ -97,42 +97,37 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
   return (
 
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between h-header-height px-5 border-b border-sidebar-border">
-        {!collapsed && (
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center shadow-sem-md overflow-hidden">
+      <div className="flex flex-col items-center justify-center py-8 px-5 border-b border-sidebar-border/10">
+        {!collapsed ? (
+          <div className="flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-500">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-4 ring-sidebar-primary/10 border border-white/10 group cursor-pointer hover:rotate-3 transition-transform">
                {company?.settings?.logo_url ? (
                  <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />
                ) : (
-                 <Building className="text-sidebar-primary-foreground h-5 w-5" />
+                 <Building className="text-sidebar-primary-foreground h-8 w-8" />
                )}
             </div>
-            <h1 className="text-h4 font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[120px]">
-              {company?.settings?.display_name || company?.name || "A2 GESTÃO"}
-            </h1>
+            <div className="text-center">
+              <h1 className="text-xl font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[180px] leading-tight">
+                {company?.settings?.display_name || company?.name || "A2 GESTÃO"}
+              </h1>
+              <p className="text-[10px] font-black text-sidebar-primary uppercase tracking-[0.2em] mt-1 opacity-70">Enterprise v3.1</p>
+            </div>
           </div>
-        )}
-
-        {onToggleCollapse && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={onToggleCollapse}
-            className="text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-normal focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
-          >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          </Button>
+        ) : (
+          <div className="w-10 h-10 rounded-xl bg-sidebar-primary flex items-center justify-center shadow-sem-lg animate-in fade-in zoom-in duration-500">
+            <Building className="text-sidebar-primary-foreground h-5 w-5" />
+          </div>
         )}
       </div>
 
       {!collapsed && (
-        <div className="px-5 py-2">
+        <div className="px-5 py-4">
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
             onClick={toggleLanguage}
-            className="w-full rounded-xl text-[10px] font-black uppercase tracking-widest h-8 border-sidebar-border hover:bg-sidebar-accent"
+            className="w-full rounded-xl text-[9px] font-black uppercase tracking-widest h-8 border border-sidebar-border/20 hover:bg-sidebar-accent/50 text-sidebar-foreground/40 hover:text-sidebar-foreground transition-all"
           >
             {i18n.language === 'pt' ? 'Switch to English' : 'Mudar para Português'}
           </Button>
@@ -165,28 +160,40 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
       </nav>
       
       {!collapsed && (
-        <div className="p-4-sem border-t border-sidebar-border animate-fade-in bg-sidebar-accent/5 mt-auto">
-          <div className="flex items-center justify-between gap-3-sem">
-            <div className="flex items-center gap-3-sem min-w-0 group cursor-pointer p-1 rounded-xl hover:bg-white/5 transition-all" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary/20 to-sidebar-accent flex items-center justify-center text-sidebar-primary font-black shadow-sem-sm border border-sidebar-border shrink-0 group-hover:scale-110 transition-transform">
+        <div className="p-5 border-t border-sidebar-border/10 animate-fade-in bg-sidebar-accent/5 mt-auto relative">
+          {onToggleCollapse && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={onToggleCollapse}
+              className="absolute -top-5 right-5 h-10 w-10 rounded-full bg-sidebar-primary text-sidebar-primary-foreground shadow-sem-xl hover:scale-110 active:scale-90 transition-all z-10 border border-white/10"
+              aria-label={collapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
+            >
+              {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+            </Button>
+          )}
+
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 min-w-0 group cursor-pointer p-1 rounded-2xl hover:bg-white/5 transition-all" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-110 transition-transform">
                 {user?.name?.charAt(0) || "A"}
               </div>
               <div className="min-w-0">
-                <p className="text-sem-label font-bold text-sidebar-foreground truncate group-hover:text-primary transition-colors">{user?.name || "Administrador"}</p>
-                <div className="flex items-center gap-1.5">
+                <p className="text-sm font-black text-sidebar-foreground truncate group-hover:text-primary transition-colors leading-tight">{user?.name || "Administrador"}</p>
+                <div className="flex items-center gap-1.5 mt-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-status-complete animate-pulse" />
-                  <p className="text-sem-tiny text-sidebar-foreground/50 truncate font-black uppercase tracking-tighter">Sessão ativa</p>
+                  <p className="text-[9px] text-sidebar-foreground/40 truncate font-black uppercase tracking-widest">Sessão ativa</p>
                 </div>
               </div>
             </div>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-sidebar-foreground/40 hover:text-status-critical hover:bg-status-critical/10 rounded-xl h-10 w-10 transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-status-critical"
+              className="text-sidebar-foreground/20 hover:text-status-critical hover:bg-status-critical/10 rounded-2xl h-11 w-11 transition-all active:scale-90 focus-visible:ring-2 focus-visible:ring-status-critical"
               aria-label="Sair do sistema"
               onClick={logout}
             >
-              <LogOut size={18} />
+              <LogOut size={20} />
             </Button>
           </div>
         </div>
@@ -235,7 +242,7 @@ export const Sidebar = memo(({ className, onCollapseChange }: SidebarProps) => {
   return (
     <div 
       className={cn(
-        "fixed inset-y-0 left-0 z-sticky bg-sidebar flex flex-col transition-all duration-normal ease-out-sem border-r border-sidebar-border",
+        "fixed inset-y-0 left-0 z-sticky bg-sidebar flex flex-col transition-all duration-slow ease-spring border-r border-sidebar-border/10 shadow-sem-xl",
         sidebarCollapsed ? "w-sidebar-collapsed-width" : "w-sidebar-width",
         className
       )}

@@ -32,8 +32,8 @@ export function PageHeader({
         <div className="space-y-3 max-w-full xl:max-w-2xl">
           <div className="flex items-center gap-3 md:gap-5">
             {Icon && (
-              <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 shadow-sem-sm animate-in zoom-in duration-700 shrink-0">
-                <Icon className="h-5 w-5 md:h-7 md:w-7 text-primary" strokeWidth={2.5} />
+              <div className="flex items-center justify-center h-12 w-12 md:h-16 md:w-16 rounded-2xl md:rounded-[2rem] bg-gradient-to-br from-primary to-primary/60 shadow-sem-lg shadow-primary/20 animate-in zoom-in duration-700 shrink-0 ring-4 ring-primary/5">
+                <Icon className="h-6 w-6 md:h-8 md:w-8 text-white" strokeWidth={2.5} />
               </div>
             )}
             <h1 className="text-sem-h1 tracking-tight font-black text-gradient leading-[1.1] text-xl sm:text-2xl md:text-3xl lg:text-4xl truncate">
