@@ -3,13 +3,15 @@
 
 import React, { useState, useMemo, memo } from 'react';
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, LucideIcon, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, List, LayoutGrid, Calendar as CalendarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EmptyState } from "./EmptyState";
+import { ErrorView } from "./ErrorView";
 import { SkeletonLoader } from "./SkeletonLoader";
 import { DataTable } from "./DataTable";
+
 import { ResponsiveGrid } from "./ResponsiveGrid";
 
 /**
@@ -24,10 +26,12 @@ export interface DataViewProps<T> {
   isLoading?: boolean;
   isError?: boolean;
   error?: {
+    code?: ErrorCode;
     title?: string;
     message?: string;
     retry?: () => void;
   };
+
   skeletonType?: 'card' | 'table' | 'page' | 'list';
   itemsPerPage?: number;
   gridClassName?: string;
@@ -103,17 +107,15 @@ function DataViewComponent<T>({
 
   if (isError) {
     return (
-      <div className="animate-in zoom-in duration-300">
-        <EmptyState 
-          variant="error"
-          title={error?.title || t('common.error_title', 'Sincronização Interrompida')}
-          description={error?.message || t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
-          actionLabel={error?.retry ? t('common.retry', 'Reiniciar Protocolo') : undefined}
-          onAction={error?.retry}
-        />
-      </div>
+      <ErrorView 
+        code={error?.code}
+        message={error?.message || t('common.error_description', 'Detectamos uma instabilidade no protocolo de carregamento. Verifique sua conexão estratégica e tente novamente.')}
+        onRetry={error?.retry}
+        fullScreen
+      />
     );
   }
+
 
   if (items.length === 0) {
     return (

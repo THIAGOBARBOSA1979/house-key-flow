@@ -1,5 +1,7 @@
+import { ErrorCode } from "@/utils/errors/AppError";
 
 export type DataViewMode = 'grid' | 'list' | 'timeline' | 'table' | 'calendar';
+
 
 export type StatusType = 
   | "pending" 
