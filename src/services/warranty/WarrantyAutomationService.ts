@@ -196,15 +196,13 @@ class WarrantyAutomationService {
     const warnings = warrantySLAService.checkSLAWarnings(allRequests);
     const expired = warrantySLAService.checkExpiredSLAs(allRequests);
 
-    warnings.forEach(request => {
-      console.log('[WarrantyAutomation] SLA Warning for:', request.id);
+    warnings.forEach(_request => {
       // Create admin notification for SLA warning
     });
 
     expired.forEach(request => {
       // Update request SLA status if not already marked
       if (request.slaStatus !== 'expired') {
-        console.log('[WarrantyAutomation] SLA Expired for:', request.id);
         // Create notifications for both admin and client
       }
     });
