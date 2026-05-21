@@ -24,22 +24,11 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   }
 
   private loadEvents() {
-    const storedEvents = localStorage.getItem("a2_client_events");
-    if (storedEvents) {
-      try {
-        const parsed = JSON.parse(storedEvents);
-        this.events = parsed.map((e: any) => ({
-          ...e,
-          createdAt: new Date(e.createdAt)
-        }));
-      } catch (e) {
-        console.error("Error loading events", e);
-      }
-    }
+    // Disabled
   }
 
   private persistEvents() {
-    localStorage.setItem("a2_client_events", JSON.stringify(this.events));
+    // Disabled
   }
 
   getAllProfiles(companyId?: string, isSuperAdmin?: boolean): ClientProfile[] {
@@ -95,7 +84,8 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
       createdAt: new Date()
     } as ClientEvent;
     this.events.unshift(newEvent);
-    this.persistEvents();
+    // this.persistEvents(); // Disabled
+    this.notify();
     return newEvent;
   }
 
