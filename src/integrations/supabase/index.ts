@@ -1,4 +1,6 @@
 import { supabase } from './client';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+
 import { Database } from './types';
 import { User, Session, AuthChangeEvent, AuthResponse } from '@supabase/supabase-js';
 
@@ -51,10 +53,11 @@ export class SupabaseErrorHandler {
   };
 
   static handle(error: any): SupabaseError {
-    console.error('[Supabase Integration Error]:', error);
+    const appError = errorHandler.handle(error, 'SupabaseIntegration');
+
 
     const code = error?.code || error?.status?.toString() || 'UNKNOWN_ERROR';
-    const message = this.errorMap[code] || error?.message || 'Ocorreu um erro inesperado. Tente novamente.';
+    const message = this.errorMap[code] || appError.message || 'Ocorreu um erro inesperado. Tente novamente.';
 
     return {
       message,
@@ -74,6 +77,7 @@ export class SupabaseErrorHandler {
     });
   }
 }
+
 
 export class SupabaseAuth {
   static async getCurrentUser(): Promise<User | null> {
