@@ -39,7 +39,7 @@ const mapServiceToAppointment = (ins: {
 
 // Combine service data and provide as a single exported variable
 export const getUnifiedAppointments = (): Appointment[] => {
-  const serviceInspections = inspectionService.getAll();
+  const serviceInspections = inspectionService.getAllSync();
   
   return serviceInspections
     .filter(Boolean)

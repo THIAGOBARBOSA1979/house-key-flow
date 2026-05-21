@@ -1,18 +1,32 @@
-
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { documentService } from "@/services";
-import { TrendingUp, TrendingDown, Download, Star, Clock, FileText } from "lucide-react";
+import { TrendingUp, Download, Star, Clock } from "lucide-react";
 
 export function DocumentAnalytics() {
-  const stats = documentService.getDocumentStats();
-  const documents = documentService.getAllDocuments();
+  const [stats, setStats] = useState<any>(null);
+  const [documents, setDocuments] = useState<any[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const [s, d] = await Promise.all([
+        documentService.getDocumentStats(),
+        documentService.getAllDocuments()
+      ]);
+      setStats(s);
+      setDocuments(d);
+    };
+    load();
+  }, []);
+
+  if (!stats) return null;
   
-  // Calcular estatísticas adicionais
-  const totalDownloads = documents.reduce((sum, doc) => sum + doc.downloads, 0);
+  const totalDownloads = documents.reduce((sum, doc) => sum + (doc.downloads || 0), 0);
   const avgDownloads = documents.length > 0 ? Math.round(totalDownloads / documents.length) : 0;
-  const mostDownloaded = documents.sort((a, b) => b.downloads - a.downloads)[0];
+  const mostDownloaded = [...documents].sort((a, b) => (b.downloads || 0) - (a.downloads || 0))[0];
   
   const statusDistribution = [
     { status: 'published', label: 'Publicados', count: stats.published, color: 'bg-status-complete' },
@@ -28,7 +42,6 @@ export function DocumentAnalytics() {
 
   return (
     <div className="space-y-6">
-      {/* Métricas principais */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
@@ -85,7 +98,6 @@ export function DocumentAnalytics() {
         </Card>
       </div>
 
-      {/* Distribuição por status */}
       <Card>
         <CardHeader>
           <CardTitle>Distribuição por Status</CardTitle>
@@ -108,7 +120,6 @@ export function DocumentAnalytics() {
         </CardContent>
       </Card>
 
-      {/* Distribuição por prioridade */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -138,8 +149,8 @@ export function DocumentAnalytics() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {documents
-                .sort((a, b) => b.downloads - a.downloads)
+              {[...documents]
+                .sort((a, b) => (b.downloads || 0) - (a.downloads || 0))
                 .slice(0, 5)
                 .map((doc, index) => (
                   <div key={doc.id} className="flex justify-between items-center">
@@ -147,7 +158,7 @@ export function DocumentAnalytics() {
                       <span className="text-sm font-medium">#{index + 1}</span>
                       <span className="text-sm truncate">{doc.title}</span>
                     </div>
-                    <Badge variant="outline">{doc.downloads}</Badge>
+                    <Badge variant="outline">{doc.downloads || 0}</Badge>
                   </div>
                 ))}
             </div>

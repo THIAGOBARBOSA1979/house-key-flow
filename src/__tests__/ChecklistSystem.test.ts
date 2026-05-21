@@ -30,7 +30,7 @@ describe('Checklist & Inspection System', () => {
     const template = await checklistService.createTemplate(templateData);
     expect(template.title).toBe(templateData.title);
     
-    const retrieved = checklistService.getTemplateById(template.id);
+    const retrieved = await checklistService.getTemplateById(template.id);
     expect(retrieved?.groups).toHaveLength(1);
   });
 
@@ -54,7 +54,7 @@ describe('Checklist & Inspection System', () => {
       nonConformitiesFound: 0
     });
 
-    const stats = inspectionService.getTechnicalConformityScore();
+    const stats = await inspectionService.getTechnicalConformityScore();
     expect(stats).toBeGreaterThan(0);
   });
 
@@ -73,7 +73,7 @@ describe('Checklist & Inspection System', () => {
       nonConformitiesFound: 2
     });
 
-    const updated = inspectionService.getById(inspection.id);
+    const updated = await inspectionService.getById(inspection.id);
     expect(updated?.nonConformitiesFound).toBe(2);
     expect(updated?.conformityScore).toBe(80);
   });

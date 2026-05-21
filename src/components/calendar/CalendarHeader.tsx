@@ -27,32 +27,32 @@ export function CalendarHeader({ onChangeView }: CalendarHeaderProps) {
         <DropdownMenuContent align="end" className="rounded-xl p-1 shadow-sem-lg border-border/10">
           <DropdownMenuItem 
             className="rounded-lg py-2 cursor-pointer font-medium"
-            onClick={() => {
-              import("@/services").then(({ inspectionService }) => {
-                const data = inspectionService.exportData('csv');
-                const blob = new Blob([data], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `relatorio-agendamentos.csv`;
-                a.click();
-              });
+            onClick={async () => {
+              const { inspectionService } = await import("@/services");
+              const data = await inspectionService.exportData('csv');
+              const blob = new Blob([data], { type: 'text/csv' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `relatorio-agendamentos.csv`;
+              a.click();
+              window.URL.revokeObjectURL(url);
             }}
           >
             Exportar como CSV
           </DropdownMenuItem>
           <DropdownMenuItem 
             className="rounded-lg py-2 cursor-pointer font-medium"
-            onClick={() => {
-              import("@/services").then(({ inspectionService }) => {
-                const data = inspectionService.exportData('json');
-                const blob = new Blob([data], { type: 'application/json' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `relatorio-agendamentos.json`;
-                a.click();
-              });
+            onClick={async () => {
+              const { inspectionService } = await import("@/services");
+              const data = await inspectionService.exportData('json');
+              const blob = new Blob([data], { type: 'application/json' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `relatorio-agendamentos.json`;
+              a.click();
+              window.URL.revokeObjectURL(url);
             }}
           >
             Exportar como JSON

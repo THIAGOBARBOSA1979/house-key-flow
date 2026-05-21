@@ -19,14 +19,8 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
     });
   }
 
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('client_profiles', async () => {
-      await this.sync();
-    });
-  }
-
   getAllProfiles(companyId?: string, isSuperAdmin?: boolean): ClientProfile[] {
-    return [...this.getAll(companyId, isSuperAdmin)];
+    return this.getAllSync(companyId, isSuperAdmin);
   }
 
   getProfilesByUserId(userId: string): ClientProfile[] {
@@ -34,11 +28,11 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   }
 
   getClientProfile(id: string, companyId?: string, isSuperAdmin?: boolean): ClientProfile | undefined {
-    return this.getById(id, companyId, isSuperAdmin);
+    return this.getByIdSync(id, companyId, isSuperAdmin);
   }
 
   async advanceStage(id: string, stage: ClientStage, notes: string = "", changedBy: string = "system", automatic: boolean = false) {
-    const profile = this.getById(id);
+    const profile = this.getByIdSync(id);
     if (!profile) return { success: false, error: "Cliente não encontrado" };
 
     const stageChange: StageChange = {
@@ -59,7 +53,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
     if (updated) {
       await this.addEvent({
         clientId: id,
-        company_id: profile.company_id,
+        company_id: profile.company_id || '',
         eventType: 'stage_changed' as any,
         title: 'Mudança de Etapa',
         description: notes || `Cliente movido para a etapa: ${stage}`,
@@ -87,7 +81,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
       return null;
     }
 
-    this.notify();
+    this.notifyListeners();
     return data;
   }
 
@@ -116,7 +110,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   }
 
   getPermissions(clientId: string): StagePermissions {
-    const profile = this.getById(clientId);
+    const profile = this.getByIdSync(clientId);
     const stage = profile?.currentStage || 'registered';
     return STAGE_PERMISSIONS[stage];
   }
@@ -130,7 +124,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   }
 
   isStageReached(clientId: string, stage: ClientStage): boolean {
-    const profile = this.getById(clientId);
+    const profile = this.getByIdSync(clientId);
     if (!profile) return false;
     
     const stages: ClientStage[] = ['lead', 'registered', 'inspection_enabled', 'warranty_enabled'];

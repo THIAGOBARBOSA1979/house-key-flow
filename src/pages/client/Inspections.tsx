@@ -41,10 +41,11 @@ export default function ClientInspections() {
   const [previewContent, setPreviewContent] = useState("");
 
 
-  const loadInspections = () => {
+  const loadInspections = async () => {
     try {
       setError(null);
-      const raw = inspectionService.getAll().filter(i => i && i.client === (user?.name || "João Silva"));
+      const all = await inspectionService.getAll();
+      const raw = all.filter(i => i && i.client === (user?.name || "João Silva"));
       setInspections(raw.map(i => ({ 
         ...i, 
         title: i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica', 
@@ -217,7 +218,7 @@ export default function ClientInspections() {
                       </div>
                       <CardTitle className="text-3xl font-black tracking-tight leading-tight">{inspection.title} <span className="text-primary">•</span> {inspection.unit}</CardTitle>
                       <CardDescription className="font-bold flex items-center gap-2 mt-2 text-muted-foreground/80">
-                        <MapPin size={16} className="text-primary" /> {inspection.property} {profile?.propertyId && propertyService.getById(profile.propertyId)?.location && ` • ${propertyService.getById(profile.propertyId)?.location}`}
+                        <MapPin size={16} className="text-primary" /> {inspection.property}
                       </CardDescription>
                     </div>
                   </div>

@@ -35,7 +35,7 @@ export const StartInspection = ({
   React.useEffect(() => {
     const loadInspectionAndChecklist = async () => {
       setLoading(true);
-      const inspections = inspectionService.getAll();
+      const inspections = await inspectionService.getAll();
       const inspection = inspections.find(i => i.id === inspectionId);
       
       if (user) {
@@ -48,7 +48,7 @@ export const StartInspection = ({
       }
 
       if (inspection?.checklistId) {
-        const template = checklistService.getTemplateById(inspection.checklistId);
+        const template = await checklistService.getTemplateById(inspection.checklistId);
         if (template && template.groups) {
           setGroups(template.groups.map(g => ({
             ...g,
@@ -141,7 +141,8 @@ export const StartInspection = ({
     const runSubmission = async () => {
       try {
         const nonConformCount = nonConformItems.length;
-        const inspection = inspectionService.getAll().find(i => i.id === inspectionId);
+        const inspections = await inspectionService.getAll();
+        const inspection = inspections.find(i => i.id === inspectionId);
         const totalCount = totalItems || 1;
         const conformityScore = Math.round(((totalCount - nonConformCount) / totalCount) * 100);
         

@@ -16,7 +16,7 @@ export const useTechnicians = () => {
     setIsLoading(true);
     try {
       setError(null);
-      setTechnicians(technicianService.getAll());
+      technicianService.getAll().then(setTechnicians);
     } catch (err) {
       setError(err);
       errorHandler.handle(err, 'useTechnicians:refreshList');

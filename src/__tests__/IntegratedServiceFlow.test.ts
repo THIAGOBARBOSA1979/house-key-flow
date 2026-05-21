@@ -80,14 +80,14 @@ describe('Integrated Technical Flow (E2E Service Logic)', () => {
 
       expect(signed).toBe(true);
       
-      const finalDoc = documentService.getById(report.id);
+      const finalDoc = await documentService.getById(report.id);
       expect(finalDoc?.isSigned).toBe(true);
       expect(finalDoc?.signatures?.[0].status).toBe('signed');
     }
 
     // 6. Close the original ticket
     await supportService.updateTicketStatus(ticket.id, 'closed');
-    const finalTicket = supportService.getById(ticket.id);
+    const finalTicket = await supportService.getById(ticket.id);
     expect(finalTicket?.status).toBe('closed');
   });
 });

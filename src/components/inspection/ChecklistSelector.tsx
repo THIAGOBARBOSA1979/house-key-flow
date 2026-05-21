@@ -1,6 +1,6 @@
 
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, ClipboardList } from "lucide-react";
@@ -13,10 +13,14 @@ export const ChecklistSelector = ({
   onSelect: (id: string) => void 
 }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const templates = useMemo(() => checklistService.getAllTemplates(), []);
-  
-  const handleSelect = (id: string) => {
-    const template = checklistService.getTemplateById(id);
+  const [templates, setTemplates] = useState<any[]>([]);
+
+  useEffect(() => {
+    checklistService.getAllTemplates().then(setTemplates);
+  }, []);
+
+  const handleSelect = async (id: string) => {
+    const template = await checklistService.getTemplateById(id);
     setSelectedId(id);
     onSelect(id);
   };

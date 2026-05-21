@@ -151,8 +151,8 @@ export default function Inspections() {
 
         <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <InspectionAnalytics 
-            statusStats={analyticsStats?.status || {}}
-            technicianStats={analyticsStats?.technician || {}}
+            statusStats={analyticsStats?.status || []}
+            technicianStats={analyticsStats?.technician || []}
             conformityScore={analyticsStats?.conformityScore || 100}
             trend={analyticsStats?.trend || []}
           />

@@ -39,12 +39,15 @@ export const QuickActions = ({
   const [sla, setSla] = useState<{ avgDeliveryTime: string; avgFirstContact: string }>({ avgDeliveryTime: "...", avgFirstContact: "..." });
 
   useEffect(() => {
-    setConflicts(inspectionService.getAllConflicts());
-    setSla(inspectionService.getSLAMetrics());
+    const loadQuickStats = async () => {
+      setConflicts(await inspectionService.getAllConflicts());
+      setSla(inspectionService.getSLAMetrics());
+    };
+    loadQuickStats();
   }, []);
 
-  const handleExport = (format: 'json' | 'csv') => {
-    const data = inspectionService.exportData(format);
+  const handleExport = async (format: 'json' | 'csv') => {
+    const data = await inspectionService.exportData(format);
     const blob = new Blob([data], { type: format === 'json' ? 'application/json' : 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -1,14 +1,9 @@
-import { useMemo, useCallback } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { userService } from "@/services";
 import { useToast, useService, useDataList } from "@/hooks";
-import { errorHandler } from "@/utils/errors/ErrorHandler";
 import { User, UserFiltersData, UserFormData } from "@/types/user";
 
-
-/**
- * Advanced hook for user management logic (Onda 4 Refactor)
- */
 export const useUsers = () => {
   const { toast } = useToast();
   const { user: currentUser } = useAuth();
@@ -25,26 +20,19 @@ export const useUsers = () => {
     error
   } = useService<User>(userService, {
     toastMessages: {
-      create: "Usuário registrado com sucesso no sistema.",
-      update: "Perfil de usuário atualizado conforme protocolo.",
-      delete: "Acesso de usuário revogado com sucesso."
+      create: "Usuário registrado com sucesso.",
+      update: "Perfil atualizado.",
+      delete: "Acesso revogado."
     }
   });
 
   const filterFn = useCallback((user: User, filters: UserFiltersData) => {
     const matchesRole = filters.role === "all" || user.role === filters.role;
     const matchesStatus = filters.status === "all" || user.status === filters.status;
-    
     const searchLower = filters.search?.toLowerCase() || "";
-    const matchesSearch = !searchLower || 
-      user.name.toLowerCase().includes(searchLower) || 
-      user.email?.toLowerCase().includes(searchLower);
-
-    const matchesProperty = filters.property === "all" || 
-      (user.propertyName && user.propertyName.toLowerCase().includes(filters.property.toLowerCase()));
-    
+    const matchesSearch = !searchLower || user.name.toLowerCase().includes(searchLower) || user.email?.toLowerCase().includes(searchLower);
+    const matchesProperty = filters.property === "all" || (user.propertyName && user.propertyName.toLowerCase().includes(filters.property.toLowerCase()));
     const matchesUnit = !filters.unit || (user.unit && user.unit.includes(filters.unit));
-    
     return matchesRole && matchesStatus && matchesSearch && matchesProperty && matchesUnit;
   }, []);
 
@@ -65,10 +53,13 @@ export const useUsers = () => {
     setSearchTerm,
   } = useDataList<User>(userList, listOptions);
 
-  const stats = useMemo(() => 
-    userService.getStats(companyId, currentUser?.is_super_admin), 
-    [companyId, currentUser?.is_super_admin, userList]
-  );
+  const stats = useMemo(() => ({
+    total: userList.length,
+    active: userList.filter(u => u.status === 'active').length,
+    inactive: userList.filter(u => u.status === 'inactive').length,
+    clients: userList.filter(u => u.role === 'client').length,
+    staff: userList.filter(u => u.role !== 'client').length,
+  }), [userList]);
 
   const saveUser = useCallback(async (userData: UserFormData, editingUserId?: string) => {
     try {
@@ -78,7 +69,6 @@ export const useUsers = () => {
         return await create({ ...userData, company_id: companyId });
       }
     } catch (error) {
-      // Error is already handled by useService
       return false;
     }
   }, [create, update, companyId]);
@@ -94,42 +84,27 @@ export const useUsers = () => {
   const handleResendInvite = useCallback(async (user: User) => {
     const success = await userService.sendInvitation(user);
     if (success) {
-      toast({ 
-        title: "Convite Enviado", 
-        description: `Um novo convite foi enviado para ${user.name}.` 
-      });
+      toast({ title: "Convite Enviado" });
     } else {
-      toast({ 
-        title: "Erro ao Enviar", 
-        description: "Não foi possível enviar o convite no momento.",
-        variant: "destructive"
-      });
+      toast({ title: "Erro", variant: "destructive" });
     }
     return success;
   }, [toast]);
 
   const handleBulkAction = useCallback(async (action: string) => {
     if (selectedUsers.length === 0) return;
-    
     switch (action) {
-      case "activate": 
-        await bulkUpdate(selectedUsers, { status: "active" }); 
-        break;
-      case "deactivate": 
-        await bulkUpdate(selectedUsers, { status: "inactive" }); 
-        break;
-      case "delete": 
-        await bulkRemove(selectedUsers); 
-        break;
+      case "activate": await bulkUpdate(selectedUsers, { status: "active" }); break;
+      case "deactivate": await bulkUpdate(selectedUsers, { status: "inactive" }); break;
+      case "delete": await bulkRemove(selectedUsers); break;
     }
-    
     setSelectedUsers([]);
   }, [selectedUsers, bulkUpdate, bulkRemove, setSelectedUsers]);
 
   return {
     userList,
-    isLoading,
     filteredUsers,
+    isLoading,
     selectedUsers,
     stats,
     filters: {
@@ -153,5 +128,3 @@ export const useUsers = () => {
     error
   };
 };
-
-

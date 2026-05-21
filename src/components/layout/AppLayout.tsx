@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,24 +20,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { GlobalSearch } from "./GlobalSearch";
 import { UserMenu } from "./UserMenu";
 
-
 interface AppLayoutProps {
   children?: React.ReactNode;
 }
 
-/**
- * Main Application Layout refactored with Design System tokens.
- */
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user } = useAuth();
   const isMobile = useIsMobile();
   const location = useLocation();
   const { sidebarCollapsed, setSidebarCollapsed } = useUserPreferences();
 
+  const [company, setCompany] = useState<any>(null);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
-  const company = useMemo(() => {
-    return user?.company_id ? companyService.getById(user.company_id, undefined, true) : null;
+  useEffect(() => {
+    if (user?.company_id) {
+      companyService.getById(user.company_id, undefined, true).then(setCompany);
+    }
   }, [user]);
 
   const sidebarWidthClass = sidebarCollapsed ? "md:pl-sidebar-collapsed-width" : "md:pl-sidebar-width";
@@ -67,9 +66,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       <div className={cn(
         "min-h-screen flex flex-col transition-all duration-slow ease-out-sem",
         !isMobile && sidebarWidthClass,
-        isMobile && "pt-0 md:pt-16" // Adjusted for consistent mobile behavior
+        isMobile && "pt-0 md:pt-16"
       )}>
-        {/* Header - Top bar */}
         <header 
           className="border-b border-border/5 bg-background/60 backdrop-blur-3xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
@@ -93,14 +91,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               </Button>
 
               <UserMenu 
-                companyName={company?.settings?.display_name || company?.name} 
+                companyName={company?.settings?.display_name || company?.name || 'A2'} 
                 onOpenShortcuts={() => setIsShortcutsOpen(true)} 
               />
             </div>
           </div>
         </header>
         
-        {/* Main Content Area */}
         <main 
           className="flex-1 p-[var(--content-padding)] transition-all duration-slow overflow-x-hidden w-full"
         >
@@ -119,7 +116,6 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </div>
         </main>
 
-        {/* Footer */}
         <footer 
           className="py-10 px-10 border-t border-border/20 text-center transition-all duration-slow bg-muted/5 backdrop-blur-sm"
         >

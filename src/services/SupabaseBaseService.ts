@@ -61,7 +61,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
 
   async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
     try {
-      const { data, error } = await Supabase.db.findById<any>(this.supabaseTable, id);
+      const { data, error } = await Supabase.db.findOne<any>(this.supabaseTable, id);
       if (error) throw error;
       if (!data) return undefined;
       const mapped = this.mapFromSupabase(data);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { systemSettingsService, SystemSettings } from "@/services";
@@ -7,15 +7,16 @@ import { companyService, CompanySettings } from "@/services";
 export const useSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [settings, setSettings] = useState<SystemSettings>(systemSettingsService.getSettings());
+  const [settings, setSettings] = useState<SystemSettings>(() => systemSettingsService.getSettings());
   const [companySettings, setCompanySettings] = useState<CompanySettings>({});
 
   useEffect(() => {
     if (user?.company_id) {
-      const company = companyService.getById(user.company_id, undefined, true);
-      if (company?.settings) {
-        setCompanySettings(company.settings);
-      }
+      companyService.getById(user.company_id, undefined, true).then(company => {
+        if (company?.settings) {
+          setCompanySettings(company.settings);
+        }
+      });
     }
   }, [user]);
 

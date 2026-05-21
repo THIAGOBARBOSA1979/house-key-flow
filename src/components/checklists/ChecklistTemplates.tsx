@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,8 +22,11 @@ export function ChecklistTemplates({ onSelectTemplate, onCreateNew }: ChecklistT
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
 
-  const templates = checklistService.getAllTemplates();
+  useEffect(() => {
+    checklistService.getAllTemplates().then(setTemplates);
+  }, []);
   const categories = ["all", "vistoria", "garantia", "manutencao", "hidraulica", "eletrica", "entrega"];
 
   const filteredTemplates = templates.filter(template => {

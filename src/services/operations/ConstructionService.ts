@@ -1,5 +1,4 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
-import { Supabase } from "@/integrations/supabase";
 
 export interface ConstructionUpdate {
   id: string;
@@ -13,7 +12,7 @@ export interface ConstructionUpdate {
   isGlobal?: boolean;
   propertyId?: string;
   status: 'published' | 'draft' | 'scheduled';
-  readBy?: string[]; // user IDs
+  readBy?: string[];
 }
 
 class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
@@ -26,12 +25,6 @@ class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
     });
   }
 
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('construction_updates', async () => {
-      await this.sync();
-    });
-  }
-
   protected mapFromSupabase(raw: any): ConstructionUpdate {
     const mapped = super.mapFromSupabase(raw);
     return {
@@ -41,12 +34,14 @@ class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
     };
   }
 
-  getUpdates(companyId?: string, isSuperAdmin?: boolean): ConstructionUpdate[] {
-    return [...this.getAll(companyId, isSuperAdmin)].sort((a, b) => b.date.getTime() - a.date.getTime());
+  async getUpdates(companyId?: string, isSuperAdmin?: boolean): Promise<ConstructionUpdate[]> {
+    const all = await this.getAll(companyId, isSuperAdmin);
+    return [...all].sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
-  getUpdatesByProperty(propertyId: string, companyId?: string, isSuperAdmin?: boolean): ConstructionUpdate[] {
-    return this.getAll(companyId, isSuperAdmin).filter(u => u.isGlobal || u.propertyId === propertyId);
+  async getUpdatesByProperty(propertyId: string, companyId?: string, isSuperAdmin?: boolean): Promise<ConstructionUpdate[]> {
+    const all = await this.getAll(companyId, isSuperAdmin);
+    return all.filter(u => u.isGlobal || u.propertyId === propertyId);
   }
 
   async createUpdate(data: Omit<ConstructionUpdate, 'id'>, companyId?: string) {
@@ -65,8 +60,8 @@ class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
     return await this.delete(id);
   }
 
-  getLatestProgress(propertyId?: string, companyId?: string, isSuperAdmin?: boolean) {
-    const source = propertyId ? this.getUpdatesByProperty(propertyId, companyId, isSuperAdmin) : this.getUpdates(companyId, isSuperAdmin);
+  async getLatestProgress(propertyId?: string, companyId?: string, isSuperAdmin?: boolean) {
+    const source = propertyId ? await this.getUpdatesByProperty(propertyId, companyId, isSuperAdmin) : await this.getUpdates(companyId, isSuperAdmin);
     const updateWithProgress = [...source]
       .sort((a, b) => b.date.getTime() - a.date.getTime())
       .find(u => u.progressItems && u.progressItems.length > 0);
@@ -74,7 +69,7 @@ class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
   }
 
   async markAsRead(updateId: string, userId: string) {
-    const update = this.getById(updateId);
+    const update = this.getByIdSync(updateId);
     if (update) {
       const readBy = update.readBy || [];
       if (!readBy.includes(userId)) {

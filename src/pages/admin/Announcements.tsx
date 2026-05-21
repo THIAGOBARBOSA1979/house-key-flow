@@ -348,7 +348,7 @@ const Announcements = () => {
                   <SelectContent className="rounded-xl border-none shadow-sem-lg">
                     <SelectItem value="all">Todos</SelectItem>
                     {properties.map(p => (
-                      <SelectItem key={p.id} value={p.id!}>{p.name}</SelectItem>
+                      <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
