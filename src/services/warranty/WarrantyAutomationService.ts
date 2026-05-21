@@ -27,17 +27,11 @@ class WarrantyAutomationService {
   ): Promise<void> {
     const request = await warrantyFlowService.getRequest(requestId);
     if (!request) {
-      console.error('[WarrantyAutomation] Request not found:', requestId);
       return;
     }
 
-    console.log('[WarrantyAutomation] Status changed:', {
-      requestId,
-      from: oldStatus,
-      to: newStatus,
-      changedBy,
-      isAutomatic
-    });
+    // Trigger appropriate notification based on new status
+    this.createNotificationForStatus(request, newStatus);
 
     // Trigger appropriate notification based on new status
     this.createNotificationForStatus(request, newStatus);
