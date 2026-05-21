@@ -27,12 +27,12 @@ export const StatsCard = ({
   className
 }: StatsCardProps) => {
   const variantStyles = {
-    default: "bg-card/40 backdrop-blur-md border-border/40 hover:bg-card/60",
-    pending: "bg-status-pending/5 backdrop-blur-md border-status-pending/20 text-status-pending shadow-sem-sm hover:shadow-status-pending/30 hover:bg-status-pending/10",
-    progress: "bg-status-progress/5 backdrop-blur-md border-status-progress/20 text-status-progress shadow-sem-sm hover:shadow-status-progress/30 hover:bg-status-progress/10",
-    complete: "bg-status-complete/5 backdrop-blur-md border-status-complete/20 text-status-complete shadow-sem-sm hover:shadow-status-complete/30 hover:bg-status-complete/10",
-    critical: "bg-status-critical/5 backdrop-blur-md border-status-critical/20 text-status-critical shadow-sem-sm hover:shadow-status-critical/30 hover:bg-status-critical/10",
-    brand: "bg-brand/5 backdrop-blur-md border-brand/20 text-brand shadow-sem-sm hover:shadow-brand/30 hover:bg-brand/10",
+    default: "bg-card/40 backdrop-blur-xl border-border/20 hover:bg-card/60",
+    pending: "bg-status-pending/5 backdrop-blur-xl border-status-pending/20 text-status-pending shadow-sem-md hover:shadow-status-pending/40 hover:bg-status-pending/10 ring-1 ring-status-pending/5",
+    progress: "bg-status-progress/5 backdrop-blur-xl border-status-progress/20 text-status-progress shadow-sem-md hover:shadow-status-progress/40 hover:bg-status-progress/10 ring-1 ring-status-progress/5",
+    complete: "bg-status-complete/5 backdrop-blur-xl border-status-complete/20 text-status-complete shadow-sem-md hover:shadow-status-complete/40 hover:bg-status-complete/10 ring-1 ring-status-complete/5",
+    critical: "bg-status-critical/5 backdrop-blur-xl border-status-critical/20 text-status-critical shadow-sem-md hover:shadow-status-critical/40 hover:bg-status-critical/10 ring-1 ring-status-critical/5",
+    brand: "bg-brand/5 backdrop-blur-xl border-brand/20 text-brand shadow-sem-md hover:shadow-brand/40 hover:bg-brand/10 ring-1 ring-brand/5",
   };
 
   const iconStyles = {

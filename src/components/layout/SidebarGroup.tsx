@@ -91,8 +91,8 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               className={cn(
                 "flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all duration-300 active:scale-95 group",
                 isActive 
-                  ? "bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground shadow-sem-md shadow-sidebar-primary/30 font-black" 
-                  : "hover:bg-sidebar-accent/30 text-sidebar-foreground/60 hover:text-sidebar-foreground font-bold"
+                  ? "bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground shadow-sem-lg shadow-sidebar-primary/40 font-black scale-[1.02] border border-white/10" 
+                  : "hover:bg-sidebar-accent/50 text-sidebar-foreground/60 hover:text-sidebar-foreground font-bold hover:translate-x-1"
               )}
             >
               <div className={cn(

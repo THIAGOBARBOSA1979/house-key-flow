@@ -34,7 +34,7 @@ export function UserMenu({ companyName, onOpenShortcuts }: UserMenuProps) {
           </div>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64 p-2 mt-4 animate-in zoom-in-95 slide-in-from-top-2 duration-slow shadow-sem-xl rounded-2xl border-none">
+      <DropdownMenuContent align="end" className="w-72 p-2 mt-4 animate-in zoom-in-95 slide-in-from-top-2 duration-slow shadow-sem-xl rounded-[2rem] border-none bg-background/80 backdrop-blur-3xl ring-1 ring-black/5">
         <DropdownMenuLabel className="font-normal p-4">
           <div className="flex flex-col space-y-1">
             <p className="text-sem-body-sm font-black leading-none">{user?.name}</p>
