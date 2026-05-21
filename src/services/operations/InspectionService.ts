@@ -145,6 +145,13 @@ class InspectionService extends SupabaseBaseService<Inspection> {
         oldStatus: oldItem?.status,
         newStatus: status
       });
+
+      // Integração com automação de eventos para avançar jornada do cliente
+      if (status === 'complete') {
+        const { eventAutomationService } = await import("../core/EventAutomationService");
+        const profileId = (updated as any).clientId || updated.client; // Ajuste conforme estrutura real
+        eventAutomationService.onInspectionApproved(id, profileId);
+      }
     }
     return updated;
   }

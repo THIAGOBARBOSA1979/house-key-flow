@@ -73,6 +73,13 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
       shouldSyncWithSupabase: true
     }, INITIAL_TEMPLATES);
     this.loadExecutions();
+    this.initializeRealtime();
+  }
+
+  private async initializeRealtime() {
+    Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
+      await this.sync();
+    });
   }
 
 
