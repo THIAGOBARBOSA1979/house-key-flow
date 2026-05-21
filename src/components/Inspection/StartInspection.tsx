@@ -240,9 +240,25 @@ export const StartInspection = ({
           <ChecklistItemCard 
             key={item.id}
             item={item}
+            inspectionId={inspectionId}
             onConformityChange={(val) => handleConformityChange(currentGroup.id, item.id, val)}
             onNotesChange={(notes) => handleNotesChange(currentGroup.id, item.id, notes)}
+            onPhotosChange={(photos) => {
+              setGroups(prevGroups => 
+                prevGroups.map(group => 
+                  group.id === currentGroup.id 
+                    ? {
+                        ...group,
+                        items: group.items.map(i => 
+                          i.id === item.id ? { ...i, photos } : i
+                        )
+                      }
+                    : group
+                )
+              );
+            }}
           />
+
         ))}
       </div>
 
