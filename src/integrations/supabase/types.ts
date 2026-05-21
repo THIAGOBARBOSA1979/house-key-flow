@@ -670,12 +670,15 @@ export type Database = {
           delivery_date: string | null
           description: string | null
           id: string
+          image_url: string | null
           location: string | null
           manager_id: string | null
+          milestones: Json | null
           name: string
           status: string | null
           total_area: number | null
           units_completed: number | null
+          units_list: Json | null
           units_total: number | null
           updated_at: string | null
         }
@@ -685,12 +688,15 @@ export type Database = {
           delivery_date?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           location?: string | null
           manager_id?: string | null
+          milestones?: Json | null
           name: string
           status?: string | null
           total_area?: number | null
           units_completed?: number | null
+          units_list?: Json | null
           units_total?: number | null
           updated_at?: string | null
         }
@@ -700,12 +706,15 @@ export type Database = {
           delivery_date?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           location?: string | null
           manager_id?: string | null
+          milestones?: Json | null
           name?: string
           status?: string | null
           total_area?: number | null
           units_completed?: number | null
+          units_list?: Json | null
           units_total?: number | null
           updated_at?: string | null
         }
@@ -1153,15 +1162,24 @@ export type Database = {
           created_at: string | null
           description: string | null
           estimated_cost: number | null
+          history: Json | null
           id: string
           internal_notes: string | null
+          is_paused: boolean | null
+          materials: Json | null
+          pause_reason: string | null
+          paused_at: string | null
           priority: string
+          problems: Json | null
           property_id: string
           sla_deadline: string | null
+          sla_status: string | null
+          stage_started_at: string | null
           status: string
           title: string
           unit_number: string
           updated_at: string | null
+          updates: Json | null
         }
         Insert: {
           actual_cost?: number | null
@@ -1172,15 +1190,24 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           estimated_cost?: number | null
+          history?: Json | null
           id?: string
           internal_notes?: string | null
+          is_paused?: boolean | null
+          materials?: Json | null
+          pause_reason?: string | null
+          paused_at?: string | null
           priority?: string
+          problems?: Json | null
           property_id: string
           sla_deadline?: string | null
+          sla_status?: string | null
+          stage_started_at?: string | null
           status?: string
           title: string
           unit_number: string
           updated_at?: string | null
+          updates?: Json | null
         }
         Update: {
           actual_cost?: number | null
@@ -1191,15 +1218,24 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           estimated_cost?: number | null
+          history?: Json | null
           id?: string
           internal_notes?: string | null
+          is_paused?: boolean | null
+          materials?: Json | null
+          pause_reason?: string | null
+          paused_at?: string | null
           priority?: string
+          problems?: Json | null
           property_id?: string
           sla_deadline?: string | null
+          sla_status?: string | null
+          stage_started_at?: string | null
           status?: string
           title?: string
           unit_number?: string
           updated_at?: string | null
+          updates?: Json | null
         }
         Relationships: [
           {
