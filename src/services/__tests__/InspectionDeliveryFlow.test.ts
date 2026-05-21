@@ -32,7 +32,7 @@ describe('Integration: Inspection and Delivery Flow', () => {
     expect(template.id).toBeDefined();
 
     // 2. Schedule an inspection using that checklist
-    const inspection = inspectionService.schedule({
+    const inspection = await inspectionService.schedule({
       date: new Date(),
       time: '10:00',
       inspectionType: 'technicalInspection',
@@ -47,6 +47,7 @@ describe('Integration: Inspection and Delivery Flow', () => {
 
     expect(inspection.checklistId).toBe(template.id);
     expect(inspection.status).toBe('pending');
+
 
     // 3. Perform the inspection (log checklist execution)
     const executedGroups = [
@@ -71,16 +72,17 @@ describe('Integration: Inspection and Delivery Flow', () => {
     expect(checklistService.getAllExecutions()).toHaveLength(1);
 
     // 4. Update inspection status to completed
-    const updated = inspectionService.updateStatus(inspection.id, 'completed', 'Vistoria finalizada com sucesso.');
+    const updated = await inspectionService.updateStatus(inspection.id, 'completed', 'Vistoria finalizada com sucesso.');
     expect(updated?.status).toBe('completed');
 
     // 5. Client signs acceptance
-    const signed = inspectionService.signAcceptance(inspection.id, 'client- Maria', { data: 'sig-data' });
+    const signed = await inspectionService.signAcceptance(inspection.id, 'client- Maria', { data: 'sig-data' });
     expect(signed?.status).toBe('accepted');
+
   });
 
-  it('should handle rescheduling requests', () => {
-    const inspection = inspectionService.schedule({
+  it('should handle rescheduling requests', async () => {
+    const inspection = await inspectionService.schedule({
       date: new Date(),
       time: '14:00',
       inspectionType: 'delivery',
@@ -90,7 +92,7 @@ describe('Integration: Inspection and Delivery Flow', () => {
     const newDate = new Date();
     newDate.setDate(newDate.getDate() + 2);
     
-    const rescheduled = inspectionService.requestReschedule(
+    const rescheduled = await inspectionService.requestReschedule(
       inspection.id, 
       'client-1', 
       newDate, 
@@ -101,4 +103,5 @@ describe('Integration: Inspection and Delivery Flow', () => {
     expect(rescheduled?.status).toBe('reschedule_requested');
     expect(rescheduled?.time).toBe('16:00');
   });
+
 });

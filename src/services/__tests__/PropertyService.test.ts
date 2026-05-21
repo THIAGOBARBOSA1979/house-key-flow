@@ -7,8 +7,8 @@ describe('PropertyService', () => {
     (propertyService as any).items = [];
   });
 
-  it('should calculate metrics correctly', () => {
-    propertyService.create({
+  it('should calculate metrics correctly', async () => {
+    await propertyService.create({
       name: "Test Property",
       location: "Test Location",
       units: 10,
@@ -22,8 +22,9 @@ describe('PropertyService', () => {
     expect(metrics.totalUnits).toBe(10);
   });
 
-  it('should update milestone status and log it', () => {
-    const p = propertyService.create({
+
+  it('should update milestone status and log it', async () => {
+    const p = await propertyService.create({
       name: "Test Property 2",
       location: "Test Location 2",
       units: 5,
@@ -38,10 +39,11 @@ describe('PropertyService', () => {
     const milestoneId = "m1";
     
     // Test with isSuperAdmin=true
-    const updated = propertyService.updateMilestone(propertyId, milestoneId, true, true);
+    const updated = await propertyService.updateMilestone(propertyId, milestoneId, true, true);
     
     expect(updated).toBeDefined();
     const milestone = updated?.milestones?.find(m => m.id === milestoneId);
     expect(milestone?.completed).toBe(true);
   });
+
 });

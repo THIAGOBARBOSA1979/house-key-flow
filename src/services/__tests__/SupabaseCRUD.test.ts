@@ -46,7 +46,7 @@ describe('Supabase Sync: User Service', () => {
   });
 
   it('should create a user and sync to Supabase', async () => {
-    const newUser = userService.create({
+    const newUser = await userService.create({
       name: 'John Doe',
       email: 'john@example.com',
       role: 'admin',
@@ -54,26 +54,27 @@ describe('Supabase Sync: User Service', () => {
     }, 'company-1');
 
     expect(newUser.id).toBeDefined();
-    // The create method calls Supabase.db.create in the background
-    // Since it's background/async in the source, we might need a small wait or just check if it was called
+    // The create method calls Supabase.db.create
     const { Supabase } = await import('@/integrations/supabase');
     expect(Supabase.db.create).toHaveBeenCalled();
   });
 
+
   it('should update a user and sync to Supabase', async () => {
-    const user = userService.create({
+    const user = await userService.create({
       name: 'Old Name',
       email: 'old@example.com',
       role: 'client',
       status: 'active'
     });
 
-    userService.update(user.id, { name: 'New Name' });
+    await userService.update(user.id, { name: 'New Name' });
     
     const { Supabase } = await import('@/integrations/supabase');
     expect(Supabase.db.update).toHaveBeenCalledWith('profiles', user.id, expect.objectContaining({
       full_name: 'New Name'
     }));
   });
+
 });
 
