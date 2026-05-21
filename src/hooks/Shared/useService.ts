@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+import { AppError } from '@/utils/errors/AppError';
+
 
 export interface UseServiceOptions<T> {
   onSuccess?: (item: T, action: 'create' | 'update' | 'delete') => void;
@@ -33,6 +36,8 @@ export function useService<T extends { id: string; company_id?: string }>(
   const isSuperAdmin = !!user?.is_super_admin;
   const [items, setItems] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<AppError | null>(null);
+
 
   const optionsRef = useRef(options);
   optionsRef.current = options;
@@ -40,13 +45,18 @@ export function useService<T extends { id: string; company_id?: string }>(
   const fetchItems = useCallback(async () => {
     setIsLoading(true);
     try {
+      setError(null);
       if ('sync' in service && typeof (service as any).sync === 'function') {
+
         await (service as any).sync(companyId, isSuperAdmin);
       }
       const data = await service.getAll(companyId, isSuperAdmin);
       setItems(data);
-    } catch (error) {
-      console.error(`[useService] Failed to fetch items:`, error);
+    } catch (err) {
+      const appError = errorHandler.handle(err, 'useService:fetchItems');
+      setError(appError);
+      optionsRef.current.onError?.(err);
+
     } finally {
       setIsLoading(false);
     }
@@ -166,6 +176,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     items,
     isLoading,
     refresh,
+    error,
+
     create,
     update,
     remove,

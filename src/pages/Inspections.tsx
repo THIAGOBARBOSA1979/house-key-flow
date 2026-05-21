@@ -38,8 +38,12 @@ export default function Inspections() {
     loadData,
     clearFilters,
     handleExport,
-    updateStatus
+    updateStatus,
+    isLoading: isInspectionsLoading,
+    error: inspectionsError
   } = useInspections();
+
+
 
   const [activeTab, setActiveTab] = useState("list");
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
@@ -104,7 +108,15 @@ export default function Inspections() {
 
           <DataView<Inspection>
             items={filteredInspections}
+            isLoading={isInspectionsLoading}
+            isError={!!inspectionsError}
+            error={{
+              message: (inspectionsError as any)?.message
+            }}
             viewMode={viewMode}
+
+
+
             itemsPerPage={6}
             gridClassName="grid-cols-1 xl:grid-cols-2"
             renderGrid={(inspection) => (

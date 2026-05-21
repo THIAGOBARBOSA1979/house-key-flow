@@ -15,7 +15,8 @@ export const useWarranty = () => {
   const companyId = user?.company_id;
   const isSuperAdmin = !!user?.is_super_admin;
   
-  const { items: requests, isLoading: isServiceLoading, refresh: refreshList } = useService<WarrantyRequestFlow>(warrantyFlowService);
+  const { items: requests, isLoading: isServiceLoading, refresh: refreshList, error } = useService<WarrantyRequestFlow>(warrantyFlowService);
+
 
   const filterFn = useCallback((request: WarrantyRequestFlow, currentFilters: any) => {
     if (currentFilters.propertyId && currentFilters.propertyId !== "all" && request.propertyId !== currentFilters.propertyId) return false;
@@ -136,7 +137,9 @@ export const useWarranty = () => {
     exportData,
     clearFilters,
     refresh: refreshList,
-    metrics
+    metrics,
+    error
   };
 };
+
 

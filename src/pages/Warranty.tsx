@@ -9,9 +9,9 @@ import { useWarranty } from "@/hooks";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";
 import { PageTemplate } from "@/components/Layout/PageTemplate";
 import { WarrantyTabsHeader } from "@/components/Warranty/WarrantyTabsHeader";
-import { WarrantyErrorAlert } from "@/components/Warranty/WarrantyErrorAlert";
 import { WarrantyPageActions } from "@/components/Warranty/WarrantyPageActions";
 import { WarrantyDialogsContainer } from "@/components/Warranty/WarrantyDialogsContainer";
+import { ErrorView } from "@/components/Shared/ErrorView";
 
 const Warranty = () => {
   const [activeTab, setActiveTab] = useState("kanban");
@@ -25,7 +25,7 @@ const Warranty = () => {
     assignTechnician, 
     exportData,
     isLoading,
-    // error property removed from useWarranty
+    error: warrantyError,
     refresh
   } = useWarranty();
 
@@ -40,7 +40,14 @@ const Warranty = () => {
       actions={<WarrantyPageActions onExport={exportData} />}
     >
 
-      {/* Error alert removed as error state is now handled globally in useService or not exposed */}
+      {warrantyError && (
+        <div className="mb-8 animate-in slide-in-from-top-4 duration-500">
+           <ErrorView 
+             message={(warrantyError as any)?.message || "Ocorreu um erro técnico no processamento dos protocolos."} 
+             onRetry={refresh} 
+           />
+        </div>
+      )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <WarrantyTabsHeader />
@@ -61,7 +68,7 @@ const Warranty = () => {
         <TabsContent value="sla">
           <SLAConfigurationPanel />
         </TabsContent>
-
+ 
         <TabsContent value="logs">
           <AuditLogViewer entityType="warranty" title="Logs de Auditoria - Garantias" />
         </TabsContent>
@@ -81,5 +88,3 @@ const Warranty = () => {
 };
 
 export default Warranty;
-
-

@@ -3,8 +3,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { warrantyFlowService, warrantyValidationService, eventAutomationService } from "@/services";
 import { WarrantyItem } from "@/types/warranty";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
 
 export const useWarrantyClaims = (clientId: string, userName?: string) => {
+
   const { user } = useAuth();
   const { toast } = useToast();
   const companyId = user?.company_id;
@@ -16,6 +18,8 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     ), [clientId, companyId, isSuperAdmin]);
     
   const [claims, setClaims] = useState<any[]>(allClaims);
+  const [error, setError] = useState<any>(null);
+
 
   const cancelClaim = useCallback((claimId: string) => {
     const success = warrantyFlowService.cancelRequest(claimId, clientId);
@@ -76,13 +80,22 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     return true;
   }, [clientId, toast]);
 
-  const metrics = useMemo(() => warrantyFlowService.calculateMetrics(companyId, isSuperAdmin), [companyId, isSuperAdmin]);
+  const metrics = useMemo(() => {
+    try {
+      return warrantyFlowService.calculateMetrics(companyId, isSuperAdmin);
+    } catch (err) {
+      errorHandler.handle(err, 'useWarrantyClaims:calculateMetrics');
+      return { totalActiveRequests: 0, pendingRequests: 0, averageResolutionDays: 0, slaComplianceRate: 0 };
+    }
+  }, [companyId, isSuperAdmin]);
 
   return {
     claims,
     metrics,
     cancelClaim,
     addInfo,
-    createClaim
+    createClaim,
+    error
   };
 };
+

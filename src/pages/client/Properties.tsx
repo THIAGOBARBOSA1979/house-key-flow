@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from "react";
+import { ErrorView } from "@/components/Shared/ErrorView";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,20 +46,40 @@ const ClientProperties = () => {
   const navigate = useNavigate();
   
   const [propertyData, setPropertyData] = useState<Property | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (profile?.propertyId) {
-      const p = propertyService.getById(profile.propertyId);
-      if (p) {
-        setPropertyData(p);
+
+  const loadPropertyData = () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      if (profile?.propertyId) {
+        const p = propertyService.getById(profile.propertyId);
+        if (p) {
+          setPropertyData(p);
+        } else {
+          setError("Empreendimento não encontrado.");
+        }
+      } else {
+        const all = propertyService.getAll();
+        if (all.length > 0) {
+          setPropertyData(all[0]);
+        } else {
+          setError("Nenhum empreendimento vinculado ao seu perfil.");
+        }
       }
-    } else {
-      const all = propertyService.getAll();
-      if (all.length > 0) setPropertyData(all[0]);
+    } catch (err) {
+      setError("Falha ao carregar dossiê da unidade.");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    loadPropertyData();
   }, [profile?.propertyId]);
+
 
   const propertyDetails = {
     address: propertyData?.location || "Rua das Flores, 1500, Centro",
@@ -89,7 +111,7 @@ const ClientProperties = () => {
     toast({ title: "Abrindo documento", description: `Iniciando visualização de "${title}".` });
   };
 
-  if (isLoading) {
+  if (isLoading || stageLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -97,7 +119,16 @@ const ClientProperties = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="container-responsive py-20 flex items-center justify-center">
+        <ErrorView message={error} onRetry={loadPropertyData} fullScreen />
+      </div>
+    );
+  }
+
   return (
+
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">

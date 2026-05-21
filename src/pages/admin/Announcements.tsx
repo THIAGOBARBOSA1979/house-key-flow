@@ -33,11 +33,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DataTable } from "@/components/Shared/DataTable";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { DataView } from "@/components/Shared/DataView";
+import { ErrorView } from "@/components/Shared/ErrorView";
 
 const Announcements = () => {
   const { 
@@ -46,8 +46,10 @@ const Announcements = () => {
     properties, 
     createAnnouncement, 
     updateAnnouncement, 
-    deleteAnnouncement 
+    deleteAnnouncement,
+    error: announcementError
   } = useAnnouncements();
+
   
   const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -98,31 +100,35 @@ const Announcements = () => {
     deleteAnnouncement(id);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.title || !formData.description) {
       return;
     }
 
-    if (editingId) {
-      updateAnnouncement(editingId, {
-        title: formData.title,
-        description: formData.description,
-        type: formData.type,
-        isGlobal: formData.isGlobal,
-        status: formData.status
-      });
-    } else {
-      createAnnouncement({
-        title: formData.title,
-        description: formData.description,
-        type: formData.type,
-        isGlobal: formData.isGlobal,
-        status: formData.status
-      });
+    try {
+      if (editingId) {
+        await updateAnnouncement(editingId, {
+          title: formData.title,
+          description: formData.description,
+          type: formData.type,
+          isGlobal: formData.isGlobal,
+          status: formData.status
+        });
+      } else {
+        await createAnnouncement({
+          title: formData.title,
+          description: formData.description,
+          type: formData.type,
+          isGlobal: formData.isGlobal,
+          status: formData.status
+        });
+      }
+      setIsDialogOpen(false);
+    } catch (err) {
+      // Error handled by useAnnouncements/useService
     }
-
-    setIsDialogOpen(false);
   };
+
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
@@ -135,6 +141,7 @@ const Announcements = () => {
           <Plus className="mr-2 h-4 w-4" strokeWidth={3} /> Criar Comunicado
         </Button>
       </PageHeader>
+
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="md:col-span-1 rounded-3xl border-none bg-primary/5 shadow-none p-6 space-y-4">
@@ -169,6 +176,10 @@ const Announcements = () => {
           <DataView<ConstructionUpdate>
             items={filteredUpdates}
             isLoading={isLoading}
+            isError={!!announcementError}
+            error={{
+              message: (announcementError as any)?.message
+            }}
             viewMode="table"
             itemsPerPage={10}
             columns={[
@@ -365,5 +376,6 @@ const Announcements = () => {
     </div>
   );
 };
+
 
 export default Announcements;

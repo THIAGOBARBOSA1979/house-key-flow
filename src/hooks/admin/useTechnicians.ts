@@ -1,21 +1,30 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { technicianService, type Technician, exportService } from "@/services";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
 import { useToast } from "../Shared/use-toast";
+
 
 export const useTechnicians = () => {
   const { toast } = useToast();
   const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<any>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
 
   const refreshList = useCallback(() => {
     setIsLoading(true);
     try {
+      setError(null);
       setTechnicians(technicianService.getAll());
+    } catch (err) {
+      setError(err);
+      errorHandler.handle(err, 'useTechnicians:refreshList');
     } finally {
       setIsLoading(false);
     }
   }, []);
+
 
   useEffect(() => {
     refreshList();
@@ -87,6 +96,8 @@ export const useTechnicians = () => {
     toggleSelect,
     clearSelection,
     exportData,
-    refreshList
+    refreshList,
+    error
+
   };
 };
