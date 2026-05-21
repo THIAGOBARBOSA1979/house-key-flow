@@ -59,20 +59,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
 
   protected loadFromStorage() {
-    if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem(this.options.storageKey);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          this.items = parsed
-            .filter(item => item !== null && item !== undefined)
-            .map(item => this.deserializeDates(item));
-        }
-      } catch (e) {
-        console.error(`Failed to load ${this.options.storageKey} from storage`, e);
-      }
-    }
+    // Disabled globally to ensure DB persistence source of truth
   }
 
   protected persist() {
