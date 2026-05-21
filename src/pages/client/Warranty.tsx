@@ -12,13 +12,13 @@ import { WarrantyItem } from "@/types/warranty";
 import { FeatureGate, GatedButton } from "@/components/client-flow/FeatureGate";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
-import { WarrantyRequestTimeline } from "@/components/warranty/ClientTimeline/WarrantyRequestTimeline";
+import { WarrantyRequestTimeline } from "@/components/warranty/clientTimeline/WarrantyRequestTimeline";
 import { cn } from "@/lib/utils";
 
 import { useWarrantyClaims } from "@/hooks/warranty/useWarrantyClaims";
-import { WarrantyGuide } from "@/components/warranty/Client/WarrantyGuide";
-import { WarrantyStatus } from "@/components/warranty/Client/WarrantyStatus";
-import { NewWarrantyRequestDialog } from "@/components/warranty/Client/NewWarrantyRequestDialog";
+import { WarrantyGuide } from "@/components/warranty/client/WarrantyGuide";
+import { WarrantyStatus } from "@/components/warranty/client/WarrantyStatus";
+import { NewWarrantyRequestDialog } from "@/components/warranty/client/NewWarrantyRequestDialog";
 
 const ClientWarranty = () => {
   const { user } = useAuth();

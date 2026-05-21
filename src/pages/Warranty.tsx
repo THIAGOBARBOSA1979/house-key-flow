@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
-import { WarrantyKanban } from "@/components/warranty/Kanban/WarrantyKanban";
-import { WarrantyMetricsDashboard } from "@/components/warranty/Dashboard/WarrantyMetricsDashboard";
-import { SLAConfigurationPanel } from "@/components/warranty/SLA/SLAConfigurationPanel";
+import { WarrantyKanban } from "@/components/warranty/kanban/WarrantyKanban";
+import { WarrantyMetricsDashboard } from "@/components/warranty/dashboard/WarrantyMetricsDashboard";
+import { SLAConfigurationPanel } from "@/components/warranty/sla/SLAConfigurationPanel";
 import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { useWarranty } from "@/hooks";
 import { WarrantyRequestFlow } from "@/types/warrantyFlow";

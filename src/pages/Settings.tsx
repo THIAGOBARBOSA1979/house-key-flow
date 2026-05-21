@@ -6,11 +6,11 @@ import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { useSettings } from "@/hooks/identity/useSettings";
 import { GeneralTab } from "@/components/settings/GeneralTab";
-import { CompanyTab } from "@/components/settings/CompanyTab";
-import { BrandingTab } from "@/components/settings/BrandingTab";
-import { NotificationsTab } from "@/components/settings/NotificationsTab";
+import { CompanyTab } from "@/components/settings/companyTab";
+import { BrandingTab } from "@/components/settings/brandingTab";
+import { NotificationsTab } from "@/components/settings/notificationsTab";
 import { SecurityTab } from "@/components/settings/SecurityTab";
-import { WarrantyTab } from "@/components/settings/WarrantyTab";
+import { WarrantyTab } from "@/components/settings/warrantyTab";
 
 const Settings = () => {
   const {
