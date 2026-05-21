@@ -7,6 +7,8 @@ import {
   ClientEvent
 } from '@/types/clientFlow';
 import { clientStageService } from '@/services';
+import { useUserPreferences } from '@/hooks/core/useUserPreferences';
+
 
 export interface UseClientStageResult {
   profile: ClientProfile | null;
@@ -27,7 +29,7 @@ export interface UseClientStageResult {
 
 export function useClientStage(userId: string): UseClientStageResult {
   const [profiles, setAllProfiles] = useState<ClientProfile[]>([]);
-  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+  const { activeProfileId: selectedProfileId, setActiveProfileId: setSelectedProfileId } = useUserPreferences();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,13 +42,9 @@ export function useClientStage(userId: string): UseClientStageResult {
       setAllProfiles(userProfiles);
       
       if (userProfiles.length > 0 && !selectedProfileId) {
-        // Use the first one by default, or the one stored in session
-        const stored = localStorage.getItem(`active_profile_${userId}`);
-        const initial = stored && userProfiles.some(p => p.id === stored) 
-          ? stored 
-          : userProfiles[0].id;
-        setSelectedProfileId(initial);
+        setSelectedProfileId(userProfiles[0].id);
       }
+
       
       if (userProfiles.length === 0) {
         setError('Nenhuma unidade vinculada encontrada');
@@ -89,8 +87,8 @@ export function useClientStage(userId: string): UseClientStageResult {
 
   const handleSetProfile = (id: string) => {
     setSelectedProfileId(id);
-    localStorage.setItem(`active_profile_${userId}`, id);
   };
+
 
   return {
     profile: activeProfile,

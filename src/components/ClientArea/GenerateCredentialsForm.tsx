@@ -11,6 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { userService } from "@/services";
+import { useService } from "@/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
+
 
 // Form schema with validation
 const formSchema = z.object({
@@ -28,11 +32,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 // Mock client data - will be replaced with real data from API
-const mockClients = [
-  { id: "1", name: "Maria Oliveira", email: "maria.oliveira@email.com" },
-  { id: "2", name: "João Silva", email: "joao.silva@email.com" },
-  { id: "3", name: "Ana Santos", email: "ana.santos@email.com" },
-];
+// Removed mockClients
+
 
 interface GenerateCredentialsFormProps {
   onSubmit?: (data: FormValues) => void;
@@ -41,6 +42,12 @@ interface GenerateCredentialsFormProps {
 
 export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredentialsFormProps) {
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
+  const { items: allUsers, isLoading } = useService(userService);
+  
+  const clients = useMemo(() => 
+    allUsers.filter(u => u.role === 'client' || u.role === 'user'),
+  [allUsers]);
+
   
   // Initialize form with validation
   const form = useForm<FormValues>({
@@ -59,12 +66,13 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
   
   // Update email when client changes
   const handleClientChange = (clientId: string) => {
-    const client = mockClients.find(c => c.id === clientId);
+    const client = clients.find(c => c.id === clientId);
     if (client) {
       form.setValue("email", client.email);
     }
     setSelectedClient(clientId);
   };
+
   
   // Handle form submission
   const handleSubmit = (values: FormValues) => {
@@ -82,7 +90,12 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
     }
   };
   
+  if (isLoading) {
+    return <div className="space-y-4 p-4"><Skeleton className="h-10 w-full" /><Skeleton className="h-10 w-full" /></div>;
+  }
+
   return (
+
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div className="space-y-4">
@@ -105,11 +118,12 @@ export function GenerateCredentialsForm({ onSubmit, onCancel }: GenerateCredenti
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {mockClients.map(client => (
+                    {clients.map(client => (
                       <SelectItem key={client.id} value={client.id}>
                         {client.name}
                       </SelectItem>
                     ))}
+
                   </SelectContent>
                 </Select>
                 <FormMessage />

@@ -192,20 +192,21 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
 });
 
 export const Sidebar = memo(({ className, onCollapseChange }: SidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
+  const { sidebarCollapsed, setSidebarCollapsed } = useUserPreferences();
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const handleToggleCollapse = () => {
-    const newState = !isCollapsed;
-    setIsCollapsed(newState);
+    const newState = !sidebarCollapsed;
+    setSidebarCollapsed(newState);
     onCollapseChange?.(newState);
   };
 
+
   // Notify parent of initial state
   useEffect(() => {
-    onCollapseChange?.(isCollapsed);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onCollapseChange?.(sidebarCollapsed);
+
   }, []);
 
   if (isMobile) {
@@ -231,12 +232,12 @@ export const Sidebar = memo(({ className, onCollapseChange }: SidebarProps) => {
     <div 
       className={cn(
         "fixed inset-y-0 left-0 z-sticky bg-sidebar flex flex-col transition-all duration-normal ease-out-sem border-r border-sidebar-border",
-        isCollapsed ? "w-sidebar-collapsed-width" : "w-sidebar-width",
+        sidebarCollapsed ? "w-sidebar-collapsed-width" : "w-sidebar-width",
         className
       )}
     >
       <SidebarContent 
-        collapsed={isCollapsed} 
+        collapsed={sidebarCollapsed} 
         onToggleCollapse={handleToggleCollapse} 
       />
     </div>
