@@ -11,6 +11,7 @@ import { ConfirmProvider } from "@/contexts/ConfirmContext";
 import { BrandThemeProvider } from "@/components/Shared/BrandThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
+import { AuditProgressOverlay } from "./components/Shared/AuditProgressOverlay";
 
 
 import { lazy, Suspense } from "react";
@@ -19,7 +20,10 @@ import { SkeletonLoader } from "./components/Shared/SkeletonLoader";
 import * as Pages from "./routes/pages";
 
 
+import { useAuditInitializer } from "./hooks/useAuditInitializer";
+
 const App = () => {
+  useAuditInitializer();
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -36,6 +40,7 @@ const App = () => {
         <GlobalErrorBoundary>
           <Toaster />
           <Sonner />
+          <AuditProgressOverlay />
           <BrowserRouter>
             <AuthProvider>
               <BrandThemeProvider>
@@ -46,6 +51,8 @@ const App = () => {
                 {/* Public Routes */}
                 <Route path="/" element={<Pages.Home />} />
                 <Route path="/login" element={<Pages.Login />} />
+                <Route path="/admin/login" element={<Pages.Login />} />
+                <Route path="/client/login" element={<Pages.Login />} />
                 <Route path="/forgot-password" element={<Pages.ForgotPassword />} />
                 
                 {/* Redirect legacy login paths */}

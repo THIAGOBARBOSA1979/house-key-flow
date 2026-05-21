@@ -100,12 +100,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     checkAuth();
     
+    // Handle cross-tab sync via storage event
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'auth_user') {
+        if (e.newValue) {
+          try {
+            setUser(JSON.parse(e.newValue));
+          } catch (error) {
+            console.error('Error parsing auth_user from storage:', error);
+          }
+        } else {
+          setUser(null);
+          navigate('/login');
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    
     // Listen for auth changes
-    const subscription = Supabase.auth.onAuthStateChange((event, session) => {
+    const subscription = Supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         localStorage.removeItem('auth_user');
-      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+        const storedUser = localStorage.getItem('auth_user');
         if (session?.user) {
           const authenticatedUser: User = {
             id: session.user.id,
@@ -116,7 +134,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             company_id: session.user.user_metadata?.company_id,
             is_super_admin: session.user.user_metadata?.role === 'super_admin'
           };
+          
           setUser(authenticatedUser);
+          
+          // Keep localStorage in sync if it was previously set
+          if (storedUser) {
+            localStorage.setItem('auth_user', JSON.stringify(authenticatedUser));
+          }
         }
       }
     });
@@ -125,6 +149,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     return () => {
       subscription.unsubscribe();
+      window.removeEventListener('storage', handleStorageChange);
       cleanup();
     };
   }, [checkAuth, logout]);
