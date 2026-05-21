@@ -152,7 +152,6 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
       shouldSyncWithSupabase: true
     }, initialMockRequests);
 
-    
     this.items = this.items.map(item => ({
       ...item,
       company_id: (item as any).company_id || "comp-1"
