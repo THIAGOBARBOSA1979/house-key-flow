@@ -16,12 +16,12 @@ const INITIAL_ISSUES = [
   { module: 'Warranty', description: 'Validação de garantia no WarrantyValidationService usa mocks estáticos', impact: 'critical', wave: 3 },
   { module: 'Warranty', description: 'Fluxo de abertura de chamado não valida limites de upload de fotos', impact: 'medium', wave: 3 },
   { module: 'Warranty', description: 'SLA de garantia não está sendo calculado corretamente em fins de semana', impact: 'high', wave: 3 },
-  // Wave 5: UX Refinement & Edge Case Handling
-  { module: 'UX', description: 'Modais de criação de vistoria sem feedback visual de progresso durante upload', impact: 'medium', wave: 5 },
-  { module: 'UI', description: 'Dashboards sem estados de fallback "Empty State" para novos usuários/empresas', impact: 'low', wave: 5 },
-  { module: 'Responsive', description: 'Quebra de layout no Kanban de Garantias em telas Ultra-Wide (>2000px)', impact: 'low', wave: 5 },
-  { module: 'Performance', description: 'Re-renderizações excessivas no menu lateral ao alternar rotas', impact: 'medium', wave: 5 },
-  { module: 'Error Handling', description: 'Exceções não tratadas em falhas de rede durante download de documentos', impact: 'high', wave: 5 },
+  // Wave 6: Security (Storage) & Accessibility (WCAG)
+  { module: 'Security', description: 'Assinaturas de Storage (RLS) sem validação de expiração em URLs públicas', impact: 'high', wave: 6 },
+  { module: 'Security', description: 'Vulnerabilidade em metadados de fotos de vistorias (EXIF data sensível)', impact: 'medium', wave: 6 },
+  { module: 'Accessibility', description: 'Contraste insuficiente em badges de status no modo escuro', impact: 'low', wave: 6 },
+  { module: 'Accessibility', description: 'Falta de suporte completo a navegação por teclado (focus rings) em tabelas', impact: 'medium', wave: 6 },
+  { module: 'Accessibility', description: 'Atributos ARIA (aria-labels) ausentes em ícones de ação e botões globais', impact: 'medium', wave: 6 },
 ];
 
 export const useAuditInitializer = () => {
@@ -39,9 +39,10 @@ export const useAuditInitializer = () => {
           { id: 2, status: 'completed', issues: [] },
           { id: 3, status: 'completed', issues: [] },
           { id: 4, status: 'completed', issues: [] },
-          { id: 5, status: 'in_progress', issues: [] }
+          { id: 5, status: 'completed', issues: [] },
+          { id: 6, status: 'in_progress', issues: [] }
         ],
-        currentWave: 5
+        currentWave: 6
       }));
     }
   }, []);

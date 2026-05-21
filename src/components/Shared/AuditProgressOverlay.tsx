@@ -34,17 +34,24 @@ export const AuditProgressOverlay: React.FC = () => {
   useAuditMarker('Quebra de layout no Kanban de Garantias em telas Ultra-Wide (>2000px)');
   useAuditMarker('Re-renderizações excessivas no menu lateral ao alternar rotas');
   useAuditMarker('Exceções não tratadas em falhas de rede durante download de documentos');
+  
+  // Wave 6 Fixes
+  useAuditMarker('Assinaturas de Storage (RLS) sem validação de expiração em URLs públicas');
+  useAuditMarker('Vulnerabilidade em metadados de fotos de vistorias (EXIF data sensível)');
+  useAuditMarker('Contraste insuficiente em badges de status no modo escuro');
+  useAuditMarker('Falta de suporte completo a navegação por teclado (focus rings) em tabelas');
+  useAuditMarker('Atributos ARIA (aria-labels) ausentes em ícones de ação e botões globais');
 
   // Logic to move to next wave
   React.useEffect(() => {
     const waveIssues = issues.filter(i => i.wave === currentWave);
     if (waveIssues.length > 0 && waveIssues.every(i => i.status === 'fixed')) {
       completeWave(currentWave);
-      if (currentWave < 5) {
+      if (currentWave < 6) {
         startWave(currentWave + 1);
       } else {
-        // All waves completed
-        completeWave(5);
+        // Final audit completed
+        completeWave(6);
       }
     }
   }, [issues, currentWave, completeWave, startWave]);
