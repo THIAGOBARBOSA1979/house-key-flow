@@ -327,30 +327,64 @@ export type Database = {
       }
       inspections: {
         Row: {
+          checklist_id: string | null
+          client_id: string | null
           company_id: string
+          conformity_score: number | null
           created_at: string
           date: string | null
           id: string
+          notes: string | null
+          priority: string | null
           property_id: string | null
           status: string | null
+          technician_id: string | null
+          type: string | null
+          unit_number: string | null
+          updated_at: string | null
         }
         Insert: {
+          checklist_id?: string | null
+          client_id?: string | null
           company_id: string
+          conformity_score?: number | null
           created_at?: string
           date?: string | null
           id?: string
+          notes?: string | null
+          priority?: string | null
           property_id?: string | null
           status?: string | null
+          technician_id?: string | null
+          type?: string | null
+          unit_number?: string | null
+          updated_at?: string | null
         }
         Update: {
+          checklist_id?: string | null
+          client_id?: string | null
           company_id?: string
+          conformity_score?: number | null
           created_at?: string
           date?: string | null
           id?: string
+          notes?: string | null
+          priority?: string | null
           property_id?: string | null
           status?: string | null
+          technician_id?: string | null
+          type?: string | null
+          unit_number?: string | null
+          updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inspections_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inspections_company_id_fkey"
             columns: ["company_id"]
@@ -363,6 +397,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspections_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -426,7 +467,11 @@ export type Database = {
           full_name: string | null
           id: string
           is_super_admin: boolean | null
+          last_login: string | null
+          notes: string | null
+          phone: string | null
           role: string | null
+          status: string | null
           updated_at: string
         }
         Insert: {
@@ -436,7 +481,11 @@ export type Database = {
           full_name?: string | null
           id: string
           is_super_admin?: boolean | null
+          last_login?: string | null
+          notes?: string | null
+          phone?: string | null
           role?: string | null
+          status?: string | null
           updated_at?: string
         }
         Update: {
@@ -446,7 +495,11 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_super_admin?: boolean | null
+          last_login?: string | null
+          notes?: string | null
+          phone?: string | null
           role?: string | null
+          status?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -463,26 +516,47 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string
+          delivery_date: string | null
+          description: string | null
           id: string
           location: string | null
+          manager_id: string | null
           name: string
           status: string | null
+          total_area: number | null
+          units_completed: number | null
+          units_total: number | null
+          updated_at: string | null
         }
         Insert: {
           company_id: string
           created_at?: string
+          delivery_date?: string | null
+          description?: string | null
           id?: string
           location?: string | null
+          manager_id?: string | null
           name: string
           status?: string | null
+          total_area?: number | null
+          units_completed?: number | null
+          units_total?: number | null
+          updated_at?: string | null
         }
         Update: {
           company_id?: string
           created_at?: string
+          delivery_date?: string | null
+          description?: string | null
           id?: string
           location?: string | null
+          manager_id?: string | null
           name?: string
           status?: string | null
+          total_area?: number | null
+          units_completed?: number | null
+          units_total?: number | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -490,6 +564,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "properties_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
