@@ -506,8 +506,6 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     return { success: true, request: updatedRequest };
   }
 
-  }
-
   /**
    * Pause or resume a request
    */
