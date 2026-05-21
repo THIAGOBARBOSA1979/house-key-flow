@@ -130,15 +130,17 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
   /**
    * Get all warranty items for a client
    */
-  getWarrantyItemsByClient(clientId: string): WarrantyItem[] {
-    return this.items.filter(item => item.clientId === clientId);
+  async getWarrantyItemsByClient(clientId: string): Promise<WarrantyItem[]> {
+    const items = await this.getAll();
+    return items.filter(item => item.clientId === clientId);
   }
 
   /**
    * Get only eligible warranty items for a client
    */
-  getEligibleWarrantyItems(clientId: string): WarrantyItem[] {
-    return this.items.filter(
+  async getEligibleWarrantyItems(clientId: string): Promise<WarrantyItem[]> {
+    const items = await this.getAll();
+    return items.filter(
       item => item.clientId === clientId && this.isWarrantyActive(item)
     );
   }
@@ -146,7 +148,7 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
   /**
    * Validate and create a warranty request
    */
-  validateAndCreateRequest(
+  async validateAndCreateRequest(
     itemId: string,
     clientId: string,
     data: {
@@ -154,15 +156,15 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       problems: WarrantyProblemData[];
       additionalInfo?: string;
     }
-  ): { success: true; request: WarrantyRequest } | { success: false; error: WarrantyErrorResponse } {
+  ): Promise<{ success: true; request: WarrantyRequest } | { success: false; error: WarrantyErrorResponse }> {
     // Find the item
-    const item = this.items.find(i => i.id === itemId);
+    const item = await this.getById(itemId);
     
     if (!item) {
       return {
         success: false,
         error: {
-          error: "Este item não possui garantia ativa e não pode gerar uma solicitação.",
+          error: "Este item não possui garantia ativa e não pode gerar uma solicitaçao.",
           code: "WARRANTY_INACTIVE",
           details: {
             item_id: itemId,
@@ -179,7 +181,7 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
       return {
         success: false,
         error: {
-          error: "Este item não possui garantia ativa e não pode gerar uma solicitação.",
+          error: "Este item não possui garantia ativa e não pode gerar uma solicitaçao.",
           code: eligibility.reason === "not_owned" ? "WARRANTY_NOT_OWNED" : "WARRANTY_INACTIVE",
           details: {
             item_id: itemId,
@@ -207,7 +209,7 @@ class WarrantyValidationService extends SupabaseBaseService<WarrantyItem> {
     
     // Create the persistent request in WarrantyFlowService
     const profile = clientStageService.getClientProfile(clientId);
-    warrantyFlowService.createRequest({
+    await warrantyFlowService.createRequest({
       clientId,
       clientName: profile?.name || "Cliente",
       propertyId: item.propertyId,

@@ -7,7 +7,7 @@ export const useAuditMarker = (issueDescription: string) => {
   useEffect(() => {
     // Small delay to ensure store stability
     const timer = setTimeout(() => {
-      markFixed(issueDescription);
+      completeTask(issueDescription);
     }, 500);
     return () => clearTimeout(timer);
   }, [issueDescription, markFixed]);
