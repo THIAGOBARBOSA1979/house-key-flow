@@ -39,8 +39,10 @@ export default function Inspections() {
     clearFilters,
     handleExport,
     updateStatus,
+    isLoading: isInspectionsLoading,
     error: inspectionsError
   } = useInspections();
+
 
 
   const [activeTab, setActiveTab] = useState("list");
@@ -106,12 +108,13 @@ export default function Inspections() {
 
           <DataView<Inspection>
             items={filteredInspections}
-            isLoading={isLoading}
+            isLoading={isInspectionsLoading}
             isError={!!inspectionsError}
             error={{
               message: (inspectionsError as any)?.message
             }}
             viewMode={viewMode}
+
 
             itemsPerPage={6}
             gridClassName="grid-cols-1 xl:grid-cols-2"

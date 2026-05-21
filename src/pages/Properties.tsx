@@ -45,6 +45,7 @@ const Properties = () => {
 
 
 
+
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
