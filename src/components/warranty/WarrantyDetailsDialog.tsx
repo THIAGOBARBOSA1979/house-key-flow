@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldCheck, Clock, Printer, UserPlus, AlertCircle, Plus } from "lucide-react";
 import { WarrantyRequestFlow, WARRANTY_STAGES, STAGE_ORDER, WarrantyStage } from "@/types/warrantyFlow";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { WarrantyRequestTimeline } from "@/components/warranty/clientTimeline/WarrantyRequestTimeline";
+import { WarrantyRequestTimeline } from "@/components/warranty/client-timeline/WarrantyRequestTimeline";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
