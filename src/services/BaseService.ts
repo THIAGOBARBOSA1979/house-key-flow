@@ -159,11 +159,12 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   async bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]> {
     const results: T[] = [];
     for (const id of ids) {
-      const updated = this.update(id, data, isSuperAdmin);
+      const updated = await this.update(id, data, isSuperAdmin);
       if (updated) results.push(updated);
     }
     return results;
   }
+
 
   async bulkDelete(ids: string[]): Promise<number> {
     let count = 0;

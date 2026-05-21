@@ -136,7 +136,7 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
 
-  batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
+  async batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
     const property = this.getById(propertyId);
     if (!property) return null;
 
@@ -155,11 +155,12 @@ class PropertyService extends SupabaseBaseService<Property> {
     }
 
     const unitsList = [...(property.unitsList || []), ...newUnits];
-    return this.update(propertyId, { 
+    return await this.update(propertyId, { 
       unitsList,
       units: unitsList.length 
     });
   }
+
 
   getMetrics(companyId?: string, isSuperAdmin?: boolean): PropertyMetrics {
     const relevantItems = this.getAll(companyId, isSuperAdmin);
