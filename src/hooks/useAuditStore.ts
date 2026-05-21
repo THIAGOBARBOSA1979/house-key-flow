@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+// import { persist } from 'zustand/middleware';
 
 export interface AuditIssue {
   id: string;
@@ -34,8 +34,7 @@ interface AuditState {
 }
 
 export const useAuditStore = create<AuditState>()(
-  // persist( // DISABLED persistence for audit store to ensure session-only or DB-only logic if needed
-    (set, get) => ({
+      (set, get) => ({
     (set, get) => ({
       totalIssues: 0,
       fixedIssues: 0,
@@ -83,8 +82,5 @@ export const useAuditStore = create<AuditState>()(
         return Math.round((state.fixedIssues / state.totalIssues) * 100);
       }
     })
-  //  {
-  //    name: 'audit-storage',
-  //  }
-  // )
+);
 );
