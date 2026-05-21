@@ -87,25 +87,26 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="container-responsive py-8 space-y-12 animate-in fade-in duration-slow">
+    <div className=\"container-responsive py-8 space-y-12 animate-in fade-in duration-slow\">
       {/* Welcome Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-             <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Sessão Segura • Portal do Proprietário</span>
+      <div className=\"flex flex-col md:flex-row md:items-end justify-between gap-6\">
+        <div className=\"space-y-2\">
+          <div className=\"flex items-center gap-3\">
+             <span className=\"w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]\" />
+             <span className=\"text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60\">Command Center • Portal do Proprietário</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
-            Olá, {userInfo.name} <span className="text-primary">.</span>
+          <h1 className=\"text-4xl md:text-5xl font-black tracking-tighter leading-tight\">
+            Olá, {userInfo.name} <span className=\"text-primary\">.</span>
           </h1>
+          <p className=\"text-sm text-muted-foreground font-bold uppercase tracking-widest\">Próximos Passos: <span className=\"text-primary\">Acompanhe a evolução do seu sonho</span></p>
         </div>
-        <div className="flex items-center gap-4">
-          <StageIndicator currentStage={stage || 'lead'} showDescription variant="badge" />
+        <div className=\"flex items-center gap-4\">
+          <StageIndicator currentStage={stage || 'lead'} showDescription variant=\"badge\" />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-8\">
+        <div className=\"lg:col-span-2 space-y-8\">
           <PropertyInfoCard 
             property={userInfo.property}
             unit={userInfo.unit}
@@ -115,34 +116,41 @@ const Dashboard = () => {
             contractDate={userInfo.contractDate}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="rounded-[2rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary">
-              <div className="flex justify-between items-start mb-6">
-                <div className="p-3 bg-white rounded-2xl shadow-sm text-primary group-hover:scale-110 transition-transform">
+          <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">
+            <Card className=\"rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden\">
+              <div className=\"absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all\">
+                <ClipboardCheck size={120} />
+              </div>
+              <div className=\"flex justify-between items-start mb-6 relative z-10\">
+                <div className=\"p-3 bg-white rounded-2xl shadow-sm text-primary group-hover:scale-110 transition-transform\">
                   <ClipboardCheck size={24} />
                 </div>
-                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase">Ação Requerida</Badge>
+                <Badge className=\"bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest\">Vistorias</Badge>
               </div>
-              <h3 className="text-xl font-black tracking-tight mb-2">Próxima Vistoria</h3>
-              <p className="text-sm text-muted-foreground font-medium mb-6">Agende ou acompanhe os detalhes técnicos da entrega da sua unidade.</p>
-              <Link to="/client/inspections">
-                <Button className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 shadow-lg shadow-primary/20">
-                  Gerenciar Vistorias <ArrowRight size={14} className="ml-2" />
+              <h3 className=\"text-xl font-black tracking-tight mb-2 relative z-10\">Acompanhamento Técnico</h3>
+              <p className=\"text-sm text-muted-foreground font-medium mb-6 relative z-10\">Gerencie protocolos de vistoria e laudos ABNT da sua unidade.</p>
+              <Link to=\"/client/inspections\" className=\"relative z-10 block\">
+                <Button className=\"w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 shadow-lg shadow-primary/20\">
+                  Ver Vistorias <ArrowRight size={14} className=\"ml-2\" />
                 </Button>
               </Link>
             </Card>
 
-            <Card className="rounded-[2rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500">
-              <div className="flex justify-between items-start mb-6">
-                <div className="p-3 bg-white rounded-2xl shadow-sm text-indigo-500 group-hover:scale-110 transition-transform">
+            <Card className=\"rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden\">
+               <div className=\"absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all\">
+                <ShieldCheck size={120} />
+              </div>
+              <div className=\"flex justify-between items-start mb-6 relative z-10\">
+                <div className=\"p-3 bg-white rounded-2xl shadow-sm text-indigo-500 group-hover:scale-110 transition-transform\">
                   <ShieldCheck size={24} />
                 </div>
+                <Badge className=\"bg-indigo-100 text-indigo-600 border-none font-black text-[10px] uppercase tracking-widest\">Garantias</Badge>
               </div>
-              <h3 className="text-xl font-black tracking-tight mb-2">Assistência Técnica</h3>
-              <p className="text-sm text-muted-foreground font-medium mb-6">Dúvidas ou reparos? Abra um protocolo direto com nossa engenharia.</p>
-              <Link to="/client/warranty">
-                <Button variant="outline" className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 border-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
-                  Novo Chamado <ArrowRight size={14} className="ml-2" />
+              <h3 className=\"text-xl font-black tracking-tight mb-2 relative z-10\">Assistência Técnica</h3>
+              <p className=\"text-sm text-muted-foreground font-medium mb-6 relative z-10\">Abra protocolos de assistência técnica com rastreabilidade total.</p>
+              <Link to=\"/client/warranty\" className=\"relative z-10 block\">
+                <Button variant=\"outline\" className=\"w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 border-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50\">
+                  Gerenciar Garantias <ArrowRight size={14} className=\"ml-2\" />
                 </Button>
               </Link>
             </Card>
@@ -151,17 +159,17 @@ const Dashboard = () => {
           <ConstructionFeed updates={constructionUpdates} />
         </div>
 
-        <div className="lg:col-span-1 space-y-8">
+        <div className=\"lg:col-span-1 space-y-8\">
           <TechnicalSheet />
           
-          <Card className="rounded-[2rem] border-none shadow-sem-lg bg-white p-8 overflow-hidden relative group">
-            <div className="absolute right-[-10%] top-[-10%] opacity-5 group-hover:rotate-12 transition-transform duration-1000">
+          <Card className=\"rounded-[2rem] border-none shadow-sem-lg bg-white p-8 overflow-hidden relative group\">
+            <div className=\"absolute right-[-10%] top-[-10%] opacity-5 group-hover:rotate-12 transition-transform duration-1000\">
               <Activity size={180} />
             </div>
-            <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black tracking-tight">Jornada Digital</CardTitle>
+            <CardHeader className=\"p-0 mb-6\">
+              <CardTitle className=\"text-xl font-black tracking-tight\">Jornada Digital</CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className=\"p-0\">
               <ClientTimeline steps={timeline} />
             </CardContent>
           </Card>
