@@ -96,7 +96,7 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
 
-  updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Property | undefined {
+  async updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Promise<Property | undefined> {
     const property = this.getById(propertyId, undefined, isSuperAdmin);
     if (!property || !property.milestones) return undefined;
 
@@ -104,19 +104,20 @@ class PropertyService extends SupabaseBaseService<Property> {
       m.id === milestoneId ? { ...m, completed, completedAt: completed ? new Date() : undefined } : m
     );
 
-    const updated = this.update(propertyId, { milestones }, isSuperAdmin);
+    const updated = await this.update(propertyId, { milestones }, isSuperAdmin);
     
     if (updated) {
       const milestone = property.milestones.find(m => m.id === milestoneId);
       if (milestone) {
-        this.log('updated', propertyId, `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`);
+        await this.log('updated', propertyId, `Marco "${milestone.title}" do empreendimento ${property.name} marcado como ${completed ? 'concluído' : 'pendente'}.`);
       }
     }
 
     return updated;
   }
 
-  updateUnitStatus(propertyId: string, unitId: string, status: PropertyUnit['status']): Property | undefined {
+
+  async updateUnitStatus(propertyId: string, unitId: string, status: PropertyUnit['status']): Promise<Property | undefined> {
     const property = this.getById(propertyId);
     if (!property || !property.unitsList) return undefined;
 
@@ -125,14 +126,15 @@ class PropertyService extends SupabaseBaseService<Property> {
       u.id === unitId ? { ...u, status } : u
     );
 
-    const updated = this.update(propertyId, { unitsList });
+    const updated = await this.update(propertyId, { unitsList });
 
     if (updated && unit) {
-      this.log('updated', propertyId, `Status da unidade ${unit.number} do empreendimento ${property.name} alterado para ${status}.`);
+      await this.log('updated', propertyId, `Status da unidade ${unit.number} do empreendimento ${property.name} alterado para ${status}.`);
     }
 
     return updated;
   }
+
 
   batchCreateUnits(propertyId: string, floorStart: number, floorEnd: number, unitsPerFloor: number, prefix: string = "") {
     const property = this.getById(propertyId);

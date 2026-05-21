@@ -61,15 +61,15 @@ export class NotificationService extends BaseService<ClientNotification> {
     localStorage.setItem(this.settingsKey, JSON.stringify(settingsObj));
   }
 
-  createNotification(
+  async createNotification(
     clientId: string, 
     type: NotificationType,
     metadata?: ClientNotification['metadata'],
     customMessage?: { title?: string; message?: string }
-  ): ClientNotification {
+  ): Promise<ClientNotification> {
     const template = NOTIFICATION_TEMPLATES[type];
     
-    return this.create({
+    return await this.create({
       clientId,
       type,
       title: customMessage?.title || template.title,
@@ -80,6 +80,7 @@ export class NotificationService extends BaseService<ClientNotification> {
       metadata
     } as any);
   }
+
 
   getNotifications(clientId: string): ClientNotification[] {
     return this.items.filter(n => n.clientId === clientId);
@@ -97,17 +98,18 @@ export class NotificationService extends BaseService<ClientNotification> {
     return this.getUnreadNotifications(clientId).length;
   }
 
-  markAsRead(notificationId: string): boolean {
-    const updated = this.update(notificationId, { read: true } as any);
+  async markAsRead(notificationId: string): Promise<boolean> {
+    const updated = await this.update(notificationId, { read: true } as any);
     return !!updated;
   }
 
-  markAllAsRead(clientId: string): void {
+  async markAllAsRead(clientId: string): Promise<void> {
     const clientNotifs = this.getNotifications(clientId);
-    clientNotifs.forEach(n => {
-      if (!n.read) this.update(n.id!, { read: true } as any);
-    });
+    for (const n of clientNotifs) {
+      if (!n.read) await this.update(n.id!, { read: true } as any);
+    }
   }
+
 
   deleteNotification(notificationId: string): boolean {
     return this.delete(notificationId);
