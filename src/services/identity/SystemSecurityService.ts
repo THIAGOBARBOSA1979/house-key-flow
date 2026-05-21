@@ -1,5 +1,6 @@
 import { auditLogService } from '../core/AuditLogService';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
+import { Supabase } from '@/integrations/supabase';
 
 
 class SystemSecurityService {
@@ -18,21 +19,25 @@ class SystemSecurityService {
     window.addEventListener('click', resetActivity);
     window.addEventListener('scroll', resetActivity);
 
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (Date.now() - this.lastActivity > this.SESSION_TIMEOUT) {
-        const { data: { session } } = await Supabase.auth.getSession();
-        if (session?.user) {
-          auditLogService.log({
-            entityType: 'system',
-            entityId: 'session',
-            action: 'logged_out',
-            performedBy: 'system',
-            performedByName: 'Sistema',
-            performedByRole: 'user',
-            details: 'Sessão encerrada por inatividade.'
-          }).catch(err => errorHandler.handle(err, 'SystemSecurityService:sessionTimeoutLog'));
+        try {
+          const session = await Supabase.auth.getSession();
+          if (session?.user) {
+            auditLogService.log({
+              entityType: 'system',
+              entityId: 'session',
+              action: 'logged_out',
+              performedBy: 'system',
+              performedByName: 'Sistema',
+              performedByRole: 'user',
+              details: 'Sessão encerrada por inatividade.'
+            }).catch(err => errorHandler.handle(err, 'SystemSecurityService:sessionTimeoutLog'));
 
-          logoutFn();
+            logoutFn();
+          }
+        } catch (err) {
+          console.error('[SystemSecurityService] Error checking session timeout:', err);
         }
       }
     }, 60000); // Check every minute

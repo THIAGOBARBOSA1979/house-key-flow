@@ -68,9 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(true);
     try {
       // Source of truth: Supabase session
-      const { data: { session }, error } = await Supabase.auth.getSession();
-      
-      if (error) throw error;
+      const session = await Supabase.auth.getSession();
 
       if (session?.user) {
         const authenticatedUser: User = {
@@ -98,7 +96,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuth();
     
     // Listen for auth changes
-    const { data: { subscription } } = Supabase.auth.onAuthStateChange(async (event, session) => {
+    const subscription = Supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
