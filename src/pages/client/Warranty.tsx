@@ -44,6 +44,16 @@ const ClientWarranty = () => {
     }
   }, [inspectionId, toast]);
 
+  const handleHomologate = (claimId: string) => {
+    const success = addInfo(claimId, "Cliente homologou o recebimento e finalizou o processo estrategicamente.");
+    if (success) {
+      toast({
+        title: "Protocolo Finalizado",
+        description: "A homologação foi registrada com sucesso no histórico técnico."
+      });
+    }
+  };
+
   const selectedClaim = useMemo(() => 
     selectedClaimId ? claims.find(c => c.id === selectedClaimId) : null, 
   [selectedClaimId, claims]);
@@ -224,7 +234,10 @@ const ClientWarranty = () => {
                           <p className="text-sm text-muted-foreground font-medium">O reparo técnico foi homologado. Por favor, confirme o recebimento.</p>
                         </div>
                       </div>
-                      <Button className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-12 shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700">
+                      <Button 
+                        onClick={() => handleHomologate(selectedClaim.id)}
+                        className="rounded-xl font-black uppercase tracking-widest text-[10px] px-8 h-12 shadow-lg shadow-emerald-500/20 bg-emerald-600 hover:bg-emerald-700"
+                      >
                         Homologar Recebimento
                       </Button>
                     </div>

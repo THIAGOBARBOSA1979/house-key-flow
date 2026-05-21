@@ -335,6 +335,62 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   }
 
   /**
+   * Cancel a request
+   */
+  cancelRequest(requestId: string, clientId: string): boolean {
+    const request = this.getById(requestId, undefined, true);
+    if (!request || request.clientId !== clientId) return false;
+    
+    // Only allow canceling if not already in final stages
+    if (isFinalStage(request.currentStage)) return false;
+
+    this.update(requestId, {
+      currentStage: "rejected",
+      rejectionReason: "Cancelado pelo cliente",
+      updatedAt: new Date(),
+      history: [
+        ...request.history,
+        {
+          id: crypto.randomUUID(),
+          requestId,
+          fromStatus: request.currentStage,
+          toStatus: "rejected",
+          changedAt: new Date(),
+          changedBy: clientId,
+          isAutomatic: false,
+          notes: "Protocolo encerrado estrategicamente pelo solicitante"
+        }
+      ]
+    } as any);
+
+    return true;
+  }
+
+  /**
+   * Add update/comment to a request
+   */
+  addUpdate(requestId: string, authorId: string, authorName: string, text: string): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+    const request = this.getById(requestId, undefined, true);
+    if (!request) return { success: false, error: "Solicitação não encontrada" };
+
+    const updateEntry = {
+      id: crypto.randomUUID(),
+      date: new Date(),
+      author: authorName,
+      text
+    };
+
+    const updatedRequest: WarrantyRequestFlow = {
+      ...request,
+      updates: [...(request.updates || []), updateEntry],
+      updatedAt: new Date()
+    };
+
+    this.update(requestId, updatedRequest);
+    return { success: true, request: updatedRequest };
+  }
+
+  /**
    * Change request status (with validation and audit)
    */
   changeStatus(

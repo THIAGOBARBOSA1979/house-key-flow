@@ -35,7 +35,7 @@ interface ClientDocument extends Omit<Document, 'status'> {
 }
 
 const getTypeLabel = (type: string) => {
-  const types = { auto: "Automático", manual: "Manual" };
+  const types = { auto: "Laudo ABNT", manual: "Manual/Projeto" };
   return types[type as keyof typeof types] || type;
 };
 
