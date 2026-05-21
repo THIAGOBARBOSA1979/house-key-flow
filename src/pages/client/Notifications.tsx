@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { notificationService } from "@/services";
 import { useToast } from "@/hooks";
 import { NotificationSettings } from "@/types/clientFlow";
+import { FeatureGate } from "@/components/ClientFlow/FeatureGate";
 
 const getIcon = (type: string) => {
   switch (type) {
