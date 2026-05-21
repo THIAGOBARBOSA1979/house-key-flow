@@ -1,6 +1,5 @@
-import { type AuditAction, type AuditEntityType } from "@/services/core/AuditLogService";
+import { AuditAction, AuditEntityType } from "@/services/core/AuditLogService";
 import { errorHandler } from "@/utils/errors/ErrorHandler";
-
 
 type Listener<T> = (items: T[]) => void;
 
@@ -18,7 +17,6 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   constructor(options: BaseServiceOptions | string, initialData: T[] = []) {
     this.options = typeof options === 'string' ? { storageKey: options } : options;
     this.items = initialData;
-    // this.loadFromStorage(); // DISABLED: Using Supabase as the source of truth
   }
 
   subscribe(listener: Listener<T>) {
@@ -38,7 +36,6 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     const newItem = { ...item };
     for (const key in newItem) {
       const value = newItem[key];
-      // ISO Date pattern: 2026-05-20T...
       if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
         const date = new Date(value);
         if (!isNaN(date.getTime())) {
@@ -55,22 +52,8 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     throw errorHandler.handle(error, `BaseService:${this.options.storageKey}:${context}`);
   }
 
-
-
-
-  protected loadFromStorage() {
-    // Disabled globally to ensure DB persistence source of truth
-  }
-
-  protected persist() {
-    if (typeof window === 'undefined') return;
-    // localStorage.setItem(this.options.storageKey, JSON.stringify(this.items)); // DISABLED
-    this.notify();
-  }
-
   public async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
     if (this.options.auditEntityType) {
-      // Use a safer dynamic check to avoid Vite circularity warnings
       try {
         const services = await import("@/services");
         if (services.auditLogService) {
@@ -89,22 +72,14 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   getAll(companyId?: string, isSuperAdmin?: boolean): T[] {
     if (isSuperAdmin) return [...this.items];
-    
-    if (!companyId) {
-      console.warn(`[BaseService] Attempted to getAll from ${this.options.storageKey} without companyId/isSuperAdmin`);
-      return [];
-    }
-    
+    if (!companyId) return [];
     return this.items.filter(item => item.company_id === companyId);
   }
 
   getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {
     const item = this.items.find(item => item.id === id);
     if (!item) return undefined;
-    
     if (isSuperAdmin || item.company_id === companyId) return item;
-    
-    console.warn(`[BaseService] Tenant Isolation: Access denied to ${this.options.storageKey}:${id}`);
     return undefined;
   }
 
@@ -148,31 +123,6 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
       return true;
     }
     return false;
-  }
-
-
-  async bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]> {
-    const results: T[] = [];
-    for (const id of ids) {
-      const updated = await this.update(id, data, isSuperAdmin);
-      if (updated) results.push(updated);
-    }
-    return results;
-  }
-
-
-
-  async bulkDelete(ids: string[]): Promise<number> {
-    let count = 0;
-    for (const id of ids) {
-      if (this.delete(id)) count++;
-    }
-    return count;
-  }
-
-  count(companyId?: string, isSuperAdmin?: boolean): number {
-
-    return this.getAll(companyId, isSuperAdmin).length;
   }
 
   clearAllData() {
