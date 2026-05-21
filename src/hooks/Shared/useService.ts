@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useTransition } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
