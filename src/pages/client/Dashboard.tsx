@@ -116,8 +116,8 @@ const Dashboard = () => {
           <StageIndicator currentStage={stage || 'lead'} showDescription variant="badge" />
 
           <div className="hidden md:block h-10 w-px bg-border/40 mx-1" />
-          <Card className="bg-primary/5 px-5 py-2.5 rounded-2xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-all hover:scale-105 active:scale-95 group cursor-pointer">
-            <span className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] mb-1 block">Status Geral</span>
+          <Card className="bg-primary/5 px-5 py-2.5 rounded-2xl border border-primary/10 shadow-sm hover:bg-primary/10 transition-all hover:scale-105 active:scale-95 group cursor-pointer border-l-4 border-l-primary">
+            <span className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-[0.2em] mb-1 block">Status Estratégico</span>
             <div className="flex items-center gap-3">
                <span className="text-xl font-black text-primary leading-none tracking-tighter">{Math.round(contractProgress)}%</span>
                <TrendingUp size={16} className="text-primary group-hover:translate-y-[-2px] transition-transform" />
