@@ -107,12 +107,12 @@ export default function Inspections() {
 
 
           <DataView<Inspection>
-            items={filteredInspections}
+            items={filteredInspections || []}
             isLoading={isInspectionsLoading}
             isError={!!inspectionsError}
-            error={{
-              message: (inspectionsError as any)?.message
-            }}
+            error={inspectionsError ? {
+              message: (inspectionsError as any)?.message || 'Erro ao carregar vistorias'
+            } : undefined}
             viewMode={viewMode}
 
 
@@ -151,10 +151,10 @@ export default function Inspections() {
 
         <TabsContent value="analytics" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-normal">
           <InspectionAnalytics 
-            statusStats={analyticsStats.status}
-            technicianStats={analyticsStats.technician}
-            conformityScore={analyticsStats.conformityScore}
-            trend={analyticsStats.trend}
+            statusStats={analyticsStats?.status || {}}
+            technicianStats={analyticsStats?.technician || {}}
+            conformityScore={analyticsStats?.conformityScore || 100}
+            trend={analyticsStats?.trend || []}
           />
         </TabsContent>
 
