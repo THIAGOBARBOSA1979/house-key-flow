@@ -649,12 +649,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Add a problem to a request breakdown
    */
-  addProblemToRequest(
+  async addProblemToRequest(
     requestId: string,
     problemData: Partial<WarrantyProblemDetail>,
     changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const newProblem: WarrantyProblemDetail = {
@@ -694,12 +694,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Toggle problem resolution status
    */
-  toggleProblemStatus(
+  async toggleProblemStatus(
     requestId: string,
     problemId: string,
     changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
     const problemIndex = request.problems.findIndex(p => p.id === problemId);
@@ -741,12 +741,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Add material to request
    */
-  addMaterial(
+  async addMaterial(
     requestId: string,
     material: { name: string; quantity: number; unit: string; cost?: number },
     changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const materials = request.materials || [];
@@ -777,13 +777,13 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Update problem details
    */
-  updateProblem(
+  async updateProblem(
     requestId: string,
     problemId: string,
     data: Partial<WarrantyProblemDetail>,
     changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request || !request.problems) return { success: false, error: "Solicitação ou problema não encontrado" };
 
     const problems = request.problems.map(p => 
@@ -805,8 +805,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get timeline for a request (for client view)
    */
-  getRequestTimeline(requestId: string): WarrantyStatusHistory[] {
-    const request = this.getById(requestId, undefined, true);
+  async getRequestTimeline(requestId: string): Promise<WarrantyStatusHistory[]> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return [];
     
     return [...request.history].sort((a, b) => 
@@ -817,7 +817,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get Kanban card data for all active requests
    */
-  getKanbanData(companyId?: string, isSuperAdmin?: boolean): Map<WarrantyStage, KanbanCardData[]> {
+  async getKanbanData(companyId?: string, isSuperAdmin?: boolean): Promise<Map<WarrantyStage, KanbanCardData[]>> {
     const kanbanData = new Map<WarrantyStage, KanbanCardData[]>();
     
     // Initialize all stages
@@ -827,7 +827,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     kanbanData.set("rejected", []);
     
     // Populate with requests
-    this.getAllRequests(companyId, isSuperAdmin).forEach(request => {
+    (await this.getAllRequests(companyId, isSuperAdmin)).forEach(request => {
       const slaInfo = warrantySLAService.calculateSLADeadlineInfo(request);
       const cardData: KanbanCardData = {
         id: request.id,
@@ -854,8 +854,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Calculate metrics
    */
-  calculateMetrics(companyId?: string, isSuperAdmin?: boolean): WarrantyMetrics {
-    const allRequests = this.getAllRequests(companyId, isSuperAdmin);
+  async calculateMetrics(companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyMetrics> {
+    const allRequests = await this.getAllRequests(companyId, isSuperAdmin);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
