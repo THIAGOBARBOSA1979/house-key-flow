@@ -168,12 +168,12 @@ describe('DataView Component', () => {
       />
     );
     
-    expect(screen.getByTestId('empty-title').textContent).toBe('Error Title');
-    expect(screen.getByTestId('empty-description').textContent).toBe('Error Message');
+    expect(screen.getByText('Error Title')).toBeDefined();
+    expect(screen.getByText('Error Message')).toBeDefined();
     
-    const actionButton = screen.getByTestId('empty-action');
-    expect(actionButton).toBeDefined();
-    fireEvent.click(actionButton);
+    const retryButton = screen.getByRole('button', { name: /Tentar Novamente/i });
+    expect(retryButton).toBeDefined();
+    fireEvent.click(retryButton);
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });
