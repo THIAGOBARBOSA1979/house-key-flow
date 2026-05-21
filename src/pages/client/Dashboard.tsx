@@ -146,10 +146,12 @@ const Dashboard = () => {
             contractProgress={contractProgress}
             deliveryDate={userInfo.deliveryDate}
             contractDate={userInfo.contractDate}
+            location={profile?.propertyName ? propertyService.getAll().find(p => p.id === profile.propertyId)?.location : undefined}
+            block={profile?.block}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+            <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden h-full">
               <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all">
                 <ClipboardCheck size={120} />
               </div>
@@ -168,7 +170,7 @@ const Dashboard = () => {
               </Link>
             </Card>
 
-            <Card className="rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden">
+            <Card className="rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden h-full">
                <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all">
                 <ShieldCheck size={120} />
               </div>
@@ -192,7 +194,10 @@ const Dashboard = () => {
         </div>
 
         <div className="lg:col-span-1 space-y-8">
-          <TechnicalSheet />
+          <TechnicalSheet 
+            propertyArea={profile?.propertyId ? propertyService.getById(profile.propertyId)?.totalArea : undefined}
+            deliveryDate={userInfo.deliveryDate?.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+          />
           
           <Card className="rounded-[2rem] border-none shadow-sem-lg bg-white p-8 overflow-hidden relative group">
             <div className="absolute right-[-10%] top-[-10%] opacity-5 group-hover:rotate-12 transition-transform duration-1000">

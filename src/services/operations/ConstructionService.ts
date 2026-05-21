@@ -57,7 +57,7 @@ class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
   constructor() {
     super({
       storageKey: "a2_construction_updates",
-      supabaseTable: "construction_updates" as any,
+      supabaseTable: "construction_updates",
       auditEntityType: "property",
       shouldSyncWithSupabase: true
     }, []);

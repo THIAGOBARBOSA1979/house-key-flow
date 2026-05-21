@@ -3,14 +3,24 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Download, ShieldCheck, Map, Ruler, Sun, Calendar, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const TechnicalSheet = () => {
+export const TechnicalSheet = ({ 
+  propertyArea, 
+  totalArea, 
+  deliveryDate, 
+  warrantyStatus = "Ativa" 
+}: { 
+  propertyArea?: number; 
+  totalArea?: number; 
+  deliveryDate?: string; 
+  warrantyStatus?: string;
+}) => {
   const specs = [
-    { label: "Área Privativa", value: "85,40 m²", icon: Ruler },
-    { label: "Área Total", value: "112,20 m²", icon: Ruler },
+    { label: "Área Privativa", value: propertyArea ? `${propertyArea} m²` : "85,40 m²", icon: Ruler },
+    { label: "Área Total", value: totalArea ? `${totalArea} m²` : "112,20 m²", icon: Ruler },
     { label: "Vagas", value: "02 (G1)", icon: Map },
     { label: "Solar", value: "Norte/Leste", icon: Sun },
-    { label: "Entrega", value: "Dez/2025", icon: Calendar },
-    { label: "Garantia", value: "Ativa", icon: ShieldCheck },
+    { label: "Entrega", value: deliveryDate || "Dez/2025", icon: Calendar },
+    { label: "Garantia", value: warrantyStatus, icon: ShieldCheck },
   ];
 
   const documents = [

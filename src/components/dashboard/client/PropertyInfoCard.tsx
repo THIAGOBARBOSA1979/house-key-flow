@@ -10,6 +10,8 @@ interface PropertyInfoCardProps {
   contractProgress: number;
   deliveryDate: Date;
   contractDate: Date;
+  location?: string;
+  block?: string;
 }
 
 export const PropertyInfoCard = ({
@@ -18,7 +20,9 @@ export const PropertyInfoCard = ({
   daysToDelivery,
   contractProgress,
   deliveryDate,
-  contractDate
+  contractDate,
+  location,
+  block
 }: PropertyInfoCardProps) => (
   <Card className="bg-gradient-to-br from-background via-background to-primary/5 border-border/40 shadow-sem-lg rounded-[2rem] overflow-hidden relative group">
     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700">
@@ -37,9 +41,11 @@ export const PropertyInfoCard = ({
             <Badge variant="outline" className="bg-background px-3 py-1 font-black uppercase tracking-widest text-[10px]">
               Unidade {unit}
             </Badge>
-            <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-black uppercase tracking-widest text-[10px]">
-              Bloco A
-            </Badge>
+            {block && (
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-black uppercase tracking-widest text-[10px]">
+                {block}
+              </Badge>
+            )}
           </div>
         </div>
         {daysToDelivery > 0 && (
@@ -80,7 +86,7 @@ export const PropertyInfoCard = ({
             </div>
             <div>
               <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest mb-1">Localização</p>
-              <p className="text-xs font-black truncate max-w-[120px]">São Paulo - SP</p>
+              <p className="text-xs font-black truncate max-w-[120px]">{location || "São Paulo - SP"}</p>
             </div>
           </div>
         </div>
