@@ -394,7 +394,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Change request status (with validation and audit)
    */
-  async changeStatus(
+  changeStatus(
     requestId: string,
     newStatus: WarrantyStage,
     changedBy: string,
@@ -402,7 +402,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     notes?: string,
     performedByRole: 'admin' | 'client' = 'admin',
     userName?: string
-  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
     this.internalLog('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
     const request = this.getById(requestId, undefined, true);
     
