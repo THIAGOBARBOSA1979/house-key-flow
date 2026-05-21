@@ -91,7 +91,7 @@ export function DigitalSignatureDialog({
       facialMatchScore: facialStep ? 0.98 : undefined
     };
     
-    const success = documentService.signDocument(documentId, currentUserSignature.id, ipAddress, evidence);
+    const success = await documentService.signDocument(documentId, currentUserSignature.id);
     setIsSigning(false);
     
     if (success) {
@@ -99,19 +99,20 @@ export function DigitalSignatureDialog({
         title: "Documento assinado",
         description: "Sua assinatura digital foi registrada com segurança e validade jurídica.",
       });
-      setSignatures(documentService.getSignatureHistory(documentId));
+      const history = await documentService.getSignatureHistory(documentId);
+      setSignatures(history);
       setActiveTab("history");
       setFacialStep(false);
       setSmsStep(false);
     }
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
     if (!currentUserSignature) return;
     
     const reason = prompt("Por favor, informe o motivo da recusa:");
     if (reason) {
-      const success = documentService.rejectSignature(documentId, currentUserSignature.id, reason);
+      const success = await documentService.rejectSignature(documentId, currentUserSignature.id, reason);
       if (success) {
         toast({
           title: "Assinatura Recusada",
