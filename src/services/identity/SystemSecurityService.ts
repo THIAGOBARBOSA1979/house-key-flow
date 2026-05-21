@@ -37,7 +37,7 @@ class SystemSecurityService {
             logoutFn();
           }
         } catch (err) {
-          console.error('[SystemSecurityService] Error checking session timeout:', err);
+          errorHandler.handle(err, 'SystemSecurityService:sessionTimeout');
         }
       }
     }, 60000); // Check every minute
