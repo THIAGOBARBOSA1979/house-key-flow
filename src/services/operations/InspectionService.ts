@@ -135,8 +135,7 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       status: "pending",
       notes: data.notes,
       request_id: data.request_id,
-      priority: data.priority || "medium",
-      created_at: new Date()
+      priority: data.priority || "medium"
     } as any, propertyInfo?.company_id);
 
     await this.log('scheduled', newInspection.id, `Vistoria agendada para ${newInspection.property}, Unidade ${newInspection.unit_number}.`);

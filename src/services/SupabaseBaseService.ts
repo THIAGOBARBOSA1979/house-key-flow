@@ -2,28 +2,51 @@ import { Supabase, FilterParams } from '@/integrations/supabase';
 import { BaseService, BaseServiceOptions } from './BaseService';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
 import { Database } from '@/integrations/supabase/types';
+import { toSnakeCase, toCamelCase, mapObjectKeys } from '@/utils/caseConverter';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
   supabaseTable: keyof Database['public']['Tables'];
+  fieldMapping?: Record<string, string>; // frontendKey -> backendKey
 }
 
 export abstract class SupabaseBaseService<T extends { id: string; company_id?: string }> extends BaseService<T> {
   protected supabaseTable: keyof Database['public']['Tables'];
+  protected fieldMapping: Record<string, string>;
 
   constructor(options: SupabaseBaseServiceOptions, initialData: T[] = []) {
     super(options, initialData);
     this.supabaseTable = options.supabaseTable;
+    this.fieldMapping = options.fieldMapping || {};
   }
 
   protected mapToSupabase(item: any): any {
     const mapped = { ...item };
     delete (mapped as any).error;
     delete (mapped as any).isLoading;
-    return mapped;
+    
+    // Apply custom field mapping
+    Object.entries(this.fieldMapping).forEach(([frontendKey, backendKey]) => {
+      if (mapped[frontendKey] !== undefined) {
+        mapped[backendKey] = mapped[frontendKey];
+        delete mapped[frontendKey];
+      }
+    });
+
+    return mapObjectKeys(mapped, toSnakeCase);
   }
 
   protected mapFromSupabase(raw: any): T {
-    return raw as T;
+    const mapped = mapObjectKeys(raw, toCamelCase);
+    
+    // Apply reverse custom field mapping
+    Object.entries(this.fieldMapping).forEach(([frontendKey, backendKey]) => {
+      const backendValue = raw[backendKey];
+      if (backendValue !== undefined) {
+        mapped[frontendKey] = backendValue;
+      }
+    });
+
+    return mapped as T;
   }
 
   async sync(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
@@ -40,11 +63,16 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
         return this.items;
       }
 
-      if (data) {
-        this.items = data
+      if (data && data.length > 0) {
+        const newItems = data
           .filter(item => item !== null && item !== undefined)
           .map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
-        this.persist();
+        
+        // Deep compare to avoid unnecessary updates if data hasn't changed
+        if (JSON.stringify(newItems) !== JSON.stringify(this.items)) {
+          this.items = newItems;
+          this.persist();
+        }
       }
       
       return this.items;

@@ -10,18 +10,34 @@ export const AuditProgressOverlay: React.FC = () => {
   const { issues, waves, currentWave, getCompletionPercentage, completeWave, startWave } = useAuditStore();
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // Auto-mark fixes for Wave 1
+  // Auto-mark fixes for previous waves
   useAuditMarker('Menu lateral responsivo no mobile apresenta sobreposição indesejada');
   useAuditMarker('Redirecionamentos de login legados (/admin/login) precisam de validação extra');
   useAuditMarker('Persistência de sessão em abas múltiplas causando logouts inesperados');
+  useAuditMarker('Mocks de dados no ConstructionFeed precisam ser substituídos por dados do Supabase');
+  useAuditMarker('Cards de "Vistorias" e "Garantias" no Dashboard sem fallback de estado vazio');
+  useAuditMarker('Layout do "Command Center" quebra em tablets na orientação vertical');
+  useAuditMarker('Validação de garantia no WarrantyValidationService usa mocks estáticos');
+  useAuditMarker('Fluxo de abertura de chamado não valida limites de upload de fotos');
+  useAuditMarker('SLA de garantia não está sendo calculado corretamente em fins de semana');
+  
+  // Wave 4 Fixes
+  useAuditMarker('Sincronização redundante de sessão no AuthContext causando inconsistência de estado');
+  useAuditMarker('Uso excessivo de mocks em serviços causando "flickering" de dados reais');
+  useAuditMarker('Sanitização de entradas de usuário insuficiente para proteção XSS/SQLi');
+  useAuditMarker('Inconsistência de nomenclatura entre frontend (camelCase) e DB (snake_case)');
+  useAuditMarker('SystemHealthService iterando sincronicamente sobre localStorage impactando a Main Thread');
 
   // Logic to move to next wave
   React.useEffect(() => {
     const waveIssues = issues.filter(i => i.wave === currentWave);
     if (waveIssues.length > 0 && waveIssues.every(i => i.status === 'fixed')) {
       completeWave(currentWave);
-      if (currentWave < 3) {
+      if (currentWave < 4) {
         startWave(currentWave + 1);
+      } else {
+        // All waves completed or awaiting next command
+        completeWave(4);
       }
     }
   }, [issues, currentWave, completeWave, startWave]);

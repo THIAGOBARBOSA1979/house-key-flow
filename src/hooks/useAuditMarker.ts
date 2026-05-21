@@ -7,7 +7,11 @@ export const useAuditMarker = (issueDescription: string) => {
   useEffect(() => {
     const issue = issues.find(i => i.description === issueDescription && i.status === 'pending');
     if (issue) {
-      markAsFixed(issue.id);
+      // Small delay to simulate "fixing" and ensure store stability
+      const timer = setTimeout(() => {
+        markAsFixed(issue.id);
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [issues, issueDescription, markAsFixed]);
 };
