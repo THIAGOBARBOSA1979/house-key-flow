@@ -130,8 +130,7 @@ class WarrantyAutomationService {
   /**
    * Handle start of analysis
    */
-  private onStartAnalysis(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Analysis started for:', request.id);
+  private onStartAnalysis(_request: WarrantyRequestFlow): void {
     // Start SLA timer for analysis phase
   }
 
