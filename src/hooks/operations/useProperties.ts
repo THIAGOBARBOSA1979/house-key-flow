@@ -65,7 +65,7 @@ export const useProperties = () => {
         setSelectedIds([]);
       }
     } catch (err) {
-      console.error("Bulk delete failed", err);
+      errorHandler.handle(err, 'useProperties:bulkDelete');
     }
   }, [selectedIds, refreshList, setSelectedIds]);
 
