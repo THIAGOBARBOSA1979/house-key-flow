@@ -53,48 +53,51 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     }
   }
 
-  private handleSyncError(error: any): T[] {
-    errorHandler.handle(error, `SupabaseBaseService:${this.supabaseTable}:sync`);
+  private handleSyncError(error: any, action: string = 'sync'): T[] {
+    errorHandler.handle(error, `SupabaseBaseService:${this.supabaseTable}:${action}`);
     return this.items;
   }
 
 
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
-    const newItem = super.create(item, companyId);
+    const newItem = await super.create(item, companyId);
     if (this.options.shouldSyncWithSupabase) {
       try {
         const { data, error } = await Supabase.db.create<T>(this.supabaseTable, this.mapToSupabase(newItem));
         if (error) throw error;
         if (data) return this.mapFromSupabase(this.deserializeDates(data as any));
       } catch (err) {
-        console.error(`[SupabaseBaseService] Sync create failed for ${this.supabaseTable}:`, err);
+        this.handleSyncError(err, 'create');
+        throw err;
       }
     }
     return newItem;
   }
 
   async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
-    const updated = super.update(id, data, isSuperAdmin);
+    const updated = await super.update(id, data, isSuperAdmin);
     if (updated && this.options.shouldSyncWithSupabase) {
       try {
         const { data: remoteData, error } = await Supabase.db.update<T>(this.supabaseTable, id, this.mapToSupabase(data));
         if (error) throw error;
         if (remoteData) return this.mapFromSupabase(this.deserializeDates(remoteData as any));
       } catch (err) {
-        console.error(`[SupabaseBaseService] Sync update failed for ${this.supabaseTable}:`, err);
+        this.handleSyncError(err, 'update');
+        throw err;
       }
     }
     return updated;
   }
 
   async delete(id: string): Promise<boolean> {
-    const success = super.delete(id);
+    const success = await super.delete(id);
     if (success && this.options.shouldSyncWithSupabase) {
       try {
         const { error } = await Supabase.db.delete(this.supabaseTable, id);
         if (error) throw error;
       } catch (err) {
-        console.error(`[SupabaseBaseService] Sync delete failed for ${this.supabaseTable}:`, err);
+        this.handleSyncError(err, 'delete');
+        throw err;
       }
     }
     return success;
