@@ -164,4 +164,8 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
     }
     return count;
   }
+
+  count(companyId?: string, isSuperAdmin?: boolean): number {
+    return this.items.length;
+  }
 }

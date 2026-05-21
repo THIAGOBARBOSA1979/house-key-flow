@@ -145,14 +145,23 @@ class PropertyService extends SupabaseBaseService<Property> {
 
   async getMetrics(companyId?: string, isSuperAdmin?: boolean): Promise<PropertyMetrics> {
     const relevantItems = await this.getAll(companyId, isSuperAdmin);
-    const total = relevantItems.length;
-    const byStatus = relevantItems.reduce((acc, p) => {
+    return this.calculateMetrics(relevantItems);
+  }
+
+  getMetricsSync(companyId?: string, isSuperAdmin?: boolean): PropertyMetrics {
+    const relevantItems = this.getAllSync(companyId, isSuperAdmin);
+    return this.calculateMetrics(relevantItems);
+  }
+
+  private calculateMetrics(items: Property[]): PropertyMetrics {
+    const total = items.length;
+    const byStatus = items.reduce((acc, p) => {
       acc[p.status] = (acc[p.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const totalUnits = relevantItems.reduce((acc, p) => acc + (p.units || 0), 0);
-    const totalCompleted = relevantItems.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
+    const totalUnits = items.reduce((acc, p) => acc + (p.units || 0), 0);
+    const totalCompleted = items.reduce((acc, p) => acc + (p.completedUnits || 0), 0);
     
     return {
       total,

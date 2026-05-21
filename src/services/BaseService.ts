@@ -41,7 +41,8 @@ export abstract class BaseService<T extends BaseEntity> {
   }
 
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
-    return { id: crypto.randomUUID(), ...item } as any;
+    const newItem = { id: crypto.randomUUID(), ...item } as any;
+    return newItem;
   }
 
   async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
@@ -83,4 +84,8 @@ export abstract class BaseService<T extends BaseEntity> {
   }
 
   clearAllData() {}
+  
+  count(companyId?: string, isSuperAdmin?: boolean): number {
+    return this.items.length;
+  }
 }
