@@ -587,6 +587,73 @@ export type Database = {
           },
         ]
       }
+      support_tickets: {
+        Row: {
+          category: string
+          client_id: string | null
+          company_id: string | null
+          created_at: string
+          id: string
+          messages: Json
+          priority: string
+          property_id: string | null
+          sla_deadline: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          client_id?: string | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          messages?: Json
+          priority?: string
+          property_id?: string | null
+          sla_deadline?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          client_id?: string | null
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          messages?: Json
+          priority?: string
+          property_id?: string | null
+          sla_deadline?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       technicians: {
         Row: {
           company_id: string
