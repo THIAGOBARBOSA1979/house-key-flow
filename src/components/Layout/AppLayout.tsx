@@ -31,7 +31,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { QuickLauncher } from "@/components/Shared/QuickLauncher";
 import { useDebounce } from "@/hooks";
+import { useUserPreferences } from "@/hooks/core/useUserPreferences";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 interface AppLayoutProps {
   children?: React.ReactNode;
@@ -44,7 +46,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user, logout } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
+  const { sidebarCollapsed, setSidebarCollapsed } = useUserPreferences();
+
   const [searchQuery, setSearchTerm] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
@@ -96,9 +99,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       <Sidebar 
         onCollapseChange={(collapsed) => {
           setSidebarCollapsed(collapsed);
-          localStorage.setItem('sidebar_collapsed', String(collapsed));
         }} 
       />
+
       <div className={cn(
         "min-h-screen flex flex-col transition-all duration-slow ease-out-sem",
         !isMobile && sidebarWidthClass,

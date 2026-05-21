@@ -29,16 +29,8 @@ export const useAuthForm = (activeTab: string) => {
   });
 
   const handleLogin = async (values: LoginFormValues) => {
-    if (rememberMe) {
-      localStorage.setItem("rememberMe", "true");
-      const roleKey = activeTab === "master" ? "rememberMaster" : (activeTab === "admin" ? "rememberAdmin" : "rememberClient");
-      localStorage.setItem(roleKey, "true");
-    } else {
-      localStorage.removeItem("rememberMe");
-      localStorage.removeItem("rememberAdmin");
-      localStorage.removeItem("rememberClient");
-      localStorage.removeItem("rememberMaster");
-    }
+    // Supabase Auth handles persistence automatically based on its session configuration
+
 
     const role = activeTab === 'master' ? 'admin' : (activeTab as 'admin' | 'client');
     await login(values.email, values.password, role);

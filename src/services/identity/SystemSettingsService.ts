@@ -1,3 +1,5 @@
+import { Supabase } from '@/integrations/supabase';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
 
 export interface SystemSettings {
   company: {
@@ -68,35 +70,69 @@ const DEFAULT_SETTINGS: SystemSettings = {
 
 class SystemSettingsService {
   private settings: SystemSettings = DEFAULT_SETTINGS;
-  private storageKey = "a2_system_settings";
+  private currentCompanyId: string | null = null;
 
-  constructor() {
-    // Disabled localStorage persistence for settings to move towards DB settings
-    if (typeof window === 'undefined') return;
+  async loadSettings(companyId: string): Promise<SystemSettings> {
+    this.currentCompanyId = companyId;
+    try {
+      const { data, error } = await Supabase.db.findOne<any>('system_settings', companyId, 'company_id');
+      
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      if (data && data.settings) {
+        this.settings = { ...DEFAULT_SETTINGS, ...(data.settings as any) };
+      } else {
+        await this.initializeDefaultSettings(companyId);
+      }
+      
+      return this.settings;
+    } catch (err) {
+      errorHandler.handle(err, 'SystemSettingsService:loadSettings');
+      return DEFAULT_SETTINGS;
+    }
   }
 
-  private persist() {
-    // localStorage.setItem(this.storageKey, JSON.stringify(this.settings)); // DISABLED
+  private async initializeDefaultSettings(companyId: string) {
+    try {
+      await Supabase.db.create('system_settings', {
+        company_id: companyId,
+        settings: DEFAULT_SETTINGS
+      });
+    } catch (err) {
+      console.error('Failed to initialize default settings', err);
+    }
   }
 
   getSettings(): SystemSettings {
     return { ...this.settings };
   }
 
-  updateSettings(newSettings: Partial<SystemSettings>) {
+  async updateSettings(newSettings: Partial<SystemSettings>): Promise<SystemSettings> {
+    if (!this.currentCompanyId) throw new Error("Company ID not set");
+    
     this.settings = { ...this.settings, ...newSettings };
-    this.persist();
-    return this.settings;
+    
+    try {
+      const { error } = await Supabase.db.update('system_settings', this.currentCompanyId, {
+        settings: this.settings
+      }, 'company_id');
+      
+      if (error) throw error;
+      
+      return this.settings;
+    } catch (err) {
+      throw errorHandler.handle(err, 'SystemSettingsService:updateSettings');
+    }
   }
 
-  updateCompany(company: Partial<SystemSettings['company']>) {
-    this.settings.company = { ...this.settings.company, ...company };
-    this.persist();
+  async updateCompany(company: Partial<SystemSettings['company']>) {
+    return this.updateSettings({ company: { ...this.settings.company, ...company } });
   }
 
-  updateBranding(branding: Partial<SystemSettings['branding']>) {
-    this.settings.branding = { ...this.settings.branding, ...branding };
-    this.persist();
+  async updateBranding(branding: Partial<SystemSettings['branding']>) {
+    return this.updateSettings({ branding: { ...this.settings.branding, ...branding } });
   }
 }
 

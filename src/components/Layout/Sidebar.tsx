@@ -33,6 +33,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { companyService } from "@/services";
 import { AuthGuard } from "@/integrations/supabase/auth-guard";
+import { useUserPreferences } from "@/hooks/core/useUserPreferences";
+
 
 
 interface SidebarProps {
@@ -74,8 +76,10 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
   const { logout, user } = useAuth();
   
   // Load company data using useService for proper state management and sync
-  const { items: companies, isLoading: companyLoading } = useService(companyService);
+  const { items, isLoading: companyLoading } = useService(companyService);
+  const companies = items as any[];
   const company = user?.company_id ? companies.find(c => c.id === user.company_id) : null;
+
 
   const toggleLanguage = () => {
     const nextLng = i18n.language === 'pt' ? 'en' : 'pt';
@@ -192,20 +196,21 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
 });
 
 export const Sidebar = memo(({ className, onCollapseChange }: SidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(() => localStorage.getItem('sidebar_collapsed') === 'true');
+  const { sidebarCollapsed, setSidebarCollapsed } = useUserPreferences();
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const handleToggleCollapse = () => {
-    const newState = !isCollapsed;
-    setIsCollapsed(newState);
+    const newState = !sidebarCollapsed;
+    setSidebarCollapsed(newState);
     onCollapseChange?.(newState);
   };
 
+
   // Notify parent of initial state
   useEffect(() => {
-    onCollapseChange?.(isCollapsed);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onCollapseChange?.(sidebarCollapsed);
+
   }, []);
 
   if (isMobile) {
@@ -231,12 +236,12 @@ export const Sidebar = memo(({ className, onCollapseChange }: SidebarProps) => {
     <div 
       className={cn(
         "fixed inset-y-0 left-0 z-sticky bg-sidebar flex flex-col transition-all duration-normal ease-out-sem border-r border-sidebar-border",
-        isCollapsed ? "w-sidebar-collapsed-width" : "w-sidebar-width",
+        sidebarCollapsed ? "w-sidebar-collapsed-width" : "w-sidebar-width",
         className
       )}
     >
       <SidebarContent 
-        collapsed={isCollapsed} 
+        collapsed={sidebarCollapsed} 
         onToggleCollapse={handleToggleCollapse} 
       />
     </div>

@@ -9,6 +9,9 @@ import { ChecklistProgress } from "./Checklist/ChecklistProgress";
 import { ChecklistGroupTabs } from "./Checklist/ChecklistGroupTabs";
 import { ChecklistItemCard } from "./Checklist/ChecklistItemCard";
 import { InspectionSummary } from "./Checklist/InspectionSummary";
+import { InspectionDraftService } from "@/services/operations/InspectionDraftService";
+import { useAuth } from "@/contexts/AuthContext";
+
 
 export const StartInspection = ({ 
   inspectionId, 
@@ -18,7 +21,9 @@ export const StartInspection = ({
   onComplete?: (data: any) => void;
 }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [signature, setSignature] = useState("");
+
   const [extraNotes, setExtraNotes] = useState("");
   const [groups, setGroups] = useState<ChecklistGroup[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,20 +33,17 @@ export const StartInspection = ({
 
   // Load data
   React.useEffect(() => {
-    const loadInspectionAndChecklist = () => {
+    const loadInspectionAndChecklist = async () => {
       setLoading(true);
       const inspections = inspectionService.getAll();
       const inspection = inspections.find(i => i.id === inspectionId);
       
-      const saved = localStorage.getItem(`inspection_progress_${inspectionId}`);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          setGroups(parsed);
+      if (user) {
+        const saved = await InspectionDraftService.getDraft(inspectionId, user.id);
+        if (saved) {
+          setGroups(saved);
           setLoading(false);
           return;
-        } catch (e) {
-          console.error("Failed to parse saved progress", e);
         }
       }
 
@@ -63,13 +65,15 @@ export const StartInspection = ({
     };
 
     loadInspectionAndChecklist();
+
   }, [inspectionId]);
 
   // Persistent saving
   React.useEffect(() => {
-    if (groups.length > 0) {
-      localStorage.setItem(`inspection_progress_${inspectionId}`, JSON.stringify(groups));
+    if (groups.length > 0 && user) {
+      InspectionDraftService.saveDraft(inspectionId, user.id, groups);
     }
+
   }, [groups, inspectionId]);
   
   // Stats
@@ -115,7 +119,8 @@ export const StartInspection = ({
         ...g,
         items: g.items.map(i => ({ ...i, conformity: "pending", notes: "" }))
       })));
-      localStorage.removeItem(`inspection_progress_${inspectionId}`);
+      if (user) InspectionDraftService.clearDraft(inspectionId, user.id);
+
       setCurrentGroupIndex(0);
       setShowSummary(false);
     }
@@ -168,7 +173,7 @@ export const StartInspection = ({
         }
 
         toast({ title: "Vistoria homologada com sucesso!", description: `Relatório gerado e enviado para assinaturas digitais.` });
-        localStorage.removeItem(`inspection_progress_${inspectionId}`);
+        if (user) await InspectionDraftService.clearDraft(inspectionId, user.id);
         
         if (onComplete) {
           onComplete({ inspectionId, completedAt: new Date(), groups, nonConformCount, signature });
@@ -235,9 +240,25 @@ export const StartInspection = ({
           <ChecklistItemCard 
             key={item.id}
             item={item}
+            inspectionId={inspectionId}
             onConformityChange={(val) => handleConformityChange(currentGroup.id, item.id, val)}
             onNotesChange={(notes) => handleNotesChange(currentGroup.id, item.id, notes)}
+            onPhotosChange={(photos) => {
+              setGroups(prevGroups => 
+                prevGroups.map(group => 
+                  group.id === currentGroup.id 
+                    ? {
+                        ...group,
+                        items: group.items.map(i => 
+                          i.id === item.id ? { ...i, photos } : i
+                        )
+                      }
+                    : group
+                )
+              );
+            }}
           />
+
         ))}
       </div>
 

@@ -48,10 +48,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await Supabase.auth.signOut();
       setUser(null);
       
-      // Cleanup sensitive local storage
-      localStorage.removeItem('rememberMe');
-      localStorage.removeItem('rememberClient');
-      localStorage.removeItem('rememberAdmin');
+      // Clean session
+
       
       toast({
         title: "Logout realizado",
@@ -145,12 +143,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           is_super_admin: data.user.user_metadata?.role === 'super_admin'
         };
       } else {
-        // 2. Fallback to Mocks for demo/dev (ONLY if in dev mode)
-        if (import.meta.env.DEV && (password === '123456' || password === 'admin123')) {
-          const mockEmail = email === 'admin@a2incorporadora.com.br' ? 'admin@exemplo.com' : email;
-          const mock = findMockUser(mockEmail, role);
-          if (mock) authenticatedUser = mock;
-        }
+        // Fallback to mocks removed for production security compliance
+
       }
 
       if (!authenticatedUser) {

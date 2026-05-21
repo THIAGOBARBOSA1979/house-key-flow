@@ -58,21 +58,8 @@ export interface Inspection {
   equipmentUsed?: string[];
 }
 
-const INITIAL_INSPECTIONS: Inspection[] = [
-  { 
-    id: crypto.randomUUID(), 
-    company_id: 'comp-1',
-    property: "Edifício Aurora", 
-    unit: "101", 
-    client: "João Silva", 
-    date: new Date(), 
-    time: "09:00",
-    status: "pending",
-    type: "technicalInspection",
-    technician: "tech-1",
-    createdAt: new Date(Date.now() - 86400000 * 2)
-  },
-];
+// Removed INITIAL_INSPECTIONS mock data
+
 
 class InspectionService extends SupabaseBaseService<Inspection> {
   constructor() {

@@ -34,32 +34,8 @@ export interface SupportTicket {
   updatedAt: Date;
 }
 
-const INITIAL_TICKETS: SupportTicket[] = [
-  {
-    id: crypto.randomUUID(),
-    company_id: 'comp-1',
-    clientId: 'client-1',
-    clientName: 'João Silva',
-    propertyName: 'Edifício Aurora',
-    unitNumber: '101',
-    subject: 'Dúvida sobre manutenção preventiva',
-    status: 'closed',
-    priority: 'medium',
-    category: 'technical',
-    messages: [
-      {
-        id: crypto.randomUUID(),
-        senderId: 'client-1',
-        senderName: 'João Silva',
-        role: 'client',
-        text: 'Gostaria de saber quando será a próxima revisão do condomínio.',
-        createdAt: new Date(2024, 3, 15)
-      },
-    ],
-    createdAt: new Date(2024, 3, 15),
-    updatedAt: new Date(2024, 3, 16)
-  }
-];
+// Removed INITIAL_TICKETS mock data
+
 
 export class SupportService extends SupabaseBaseService<SupportTicket> {
   constructor() {
@@ -68,7 +44,8 @@ export class SupportService extends SupabaseBaseService<SupportTicket> {
       supabaseTable: "support_tickets" as any,
       auditEntityType: "system",
       shouldSyncWithSupabase: true
-    }, INITIAL_TICKETS);
+    }, []);
+
   }
 
   protected mapToSupabase(item: Partial<SupportTicket>): any {

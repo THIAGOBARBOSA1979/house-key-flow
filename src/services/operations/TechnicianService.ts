@@ -20,53 +20,8 @@ export interface Technician {
   notes?: string;
 }
 
-const INITIAL_TECHNICIANS: Technician[] = [
-  {
-    id: "tech-1",
-    company_id: "comp-1",
-    name: "Carlos Andrade",
-    email: "carlos.andrade@a2.com",
-    phone: "(11) 98765-4321",
-    specialty: ["Hidráulica", "Alvenaria"],
-    status: "active",
-    rating: 4.8,
-    completedJobs: 124,
-    activeJobs: 3,
-    joinedAt: new Date(2023, 1, 15),
-    experienceLevel: 'senior',
-    notes: "Especialista em detecção de vazamentos e estrutural."
-  },
-  {
-    id: "tech-2",
-    company_id: "comp-1",
-    name: "Ricardo Souza",
-    email: "ricardo.souza@a2.com",
-    phone: "(11) 97765-4322",
-    specialty: ["Elétrica", "Pintura"],
-    status: "active",
-    rating: 4.9,
-    completedJobs: 89,
-    activeJobs: 1,
-    joinedAt: new Date(2023, 5, 20),
-    experienceLevel: 'mid',
-    notes: "Focado em automação residencial e instalações elétricas complexas."
-  },
-  {
-    id: "tech-3",
-    company_id: "comp-1",
-    name: "Juliana Costa",
-    email: "juliana.costa@a2.com",
-    phone: "(11) 96665-4323",
-    specialty: ["Acabamento", "Gesso"],
-    status: "active",
-    rating: 4.7,
-    completedJobs: 56,
-    activeJobs: 4,
-    joinedAt: new Date(2024, 0, 10),
-    experienceLevel: 'junior',
-    notes: "Agilidade em acabamentos finos e decorações em gesso."
-  }
-];
+// Removed INITIAL_TECHNICIANS mock data
+
 
 class TechnicianService extends SupabaseBaseService<Technician> {
   constructor() {
