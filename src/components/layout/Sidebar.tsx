@@ -168,7 +168,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
         <div className="p-4-sem border-t border-sidebar-border animate-fade-in bg-sidebar-accent/5 mt-auto">
           <div className="flex items-center justify-between gap-3-sem">
             <div className="flex items-center gap-3-sem min-w-0 group cursor-pointer p-1 rounded-xl hover:bg-white/5 transition-all" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary/20 to-sidebar-accent flex items-center justify-center text-sidebar-primary font-black shadow-sem-sm border border-sidebar-border shrink-0 group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-110 transition-transform">
                 {user?.name?.charAt(0) || "A"}
               </div>
               <div className="min-w-0">

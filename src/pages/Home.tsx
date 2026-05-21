@@ -44,7 +44,7 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-background to-indigo-50 dark:from-background dark:to-background">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-background to-indigo-50/50 dark:from-background dark:to-background">
       {/* Header */}
       <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
         <div className="container-responsive py-4">
@@ -101,7 +101,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link to="/login">
-                <Button size="lg" className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-brand/20">
+                <Button size="lg" className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl shadow-brand/30 hover:shadow-brand/40 hover:-translate-y-1 transition-all">
                   Integrar Operação
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>

@@ -68,7 +68,7 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-brand/10 dark:from-background dark:to-background overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-background via-indigo-50/30 to-brand/5 dark:from-background dark:to-background overflow-x-hidden">
       <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
         <div className="container-responsive py-4">
           <div className="flex items-center justify-center">
@@ -145,7 +145,7 @@ export default function Login() {
             </div>
 
             <div className="flex justify-center">
-              <Card className="w-full max-w-md shadow-2xl border-0 bg-white/80 backdrop-blur-sm mx-auto">
+              <Card className="w-full max-w-md shadow-sem-xl border-border/10 bg-white/70 dark:bg-black/70 backdrop-blur-3xl mx-auto rounded-[2.5rem]">
                 <CardHeader className="space-y-4 pb-8">
                   <div className="text-center">
                     <CardTitle className="text-h2 font-black tracking-tight text-foreground">
