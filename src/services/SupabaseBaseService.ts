@@ -1,7 +1,6 @@
 import { Supabase, FilterParams } from '@/integrations/supabase';
 import { BaseService, BaseServiceOptions } from './BaseService';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
-
 import { Database } from '@/integrations/supabase/types';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
@@ -18,7 +17,6 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
 
   protected mapToSupabase(item: any): any {
     const mapped = { ...item };
-    // Remove transient/frontend-only properties
     delete (mapped as any).error;
     delete (mapped as any).isLoading;
     return mapped;
@@ -60,7 +58,6 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     errorHandler.handle(error, `SupabaseBaseService:${this.supabaseTable}:${action}`);
     return this.items;
   }
-
 
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const newItem = await super.create(item, companyId);
@@ -106,4 +103,3 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
     return success;
   }
 }
-
