@@ -4,19 +4,19 @@ import { TimelineItem } from "@/types/clientFlow";
 import { TimelineItemComponent } from "./TimelineItem";
 import { History } from "lucide-react";
 
-interface ClientTimelineProps {
+interface client-timelineProps {
   timeline: TimelineItem[];
   title?: string;
   description?: string;
   compact?: boolean;
 }
 
-export function ClientTimeline({ 
+export function client-timeline({ 
   timeline, 
   title = "Linha do Tempo",
   description = "Acompanhe o progresso do seu imóvel",
   compact = false
-}: ClientTimelineProps) {
+}: client-timelineProps) {
   if (timeline.length === 0) {
     return (
       <Card>

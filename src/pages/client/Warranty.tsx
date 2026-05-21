@@ -12,7 +12,7 @@ import { WarrantyItem } from "@/types/warranty";
 import { FeatureGate, GatedButton } from "@/components/client-flow/FeatureGate";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
-import { WarrantyRequestTimeline } from "@/components/warranty/ClientTimeline/WarrantyRequestTimeline";
+import { WarrantyRequestTimeline } from "@/components/warranty/client-timeline/WarrantyRequestTimeline";
 import { cn } from "@/lib/utils";
 
 import { useWarrantyClaims } from "@/hooks/warranty/useWarrantyClaims";

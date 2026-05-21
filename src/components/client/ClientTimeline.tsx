@@ -10,12 +10,12 @@ export interface TimelineStep {
   status: "completed" | "current" | "pending" | "error";
 }
 
-interface ClientTimelineProps {
+interface client-timelineProps {
   steps: TimelineStep[];
   className?: string;
 }
 
-export function ClientTimeline({ steps, className }: ClientTimelineProps) {
+export function client-timeline({ steps, className }: client-timelineProps) {
   return (
     <div className={cn("space-y-0", className)}>
       {steps.map((step, index) => {

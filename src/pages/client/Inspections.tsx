@@ -23,7 +23,7 @@ import { useToast } from "@/hooks";
 import { useClientStage } from "@/hooks";
 import { useAuth } from "@/contexts/AuthContext";
 import { inspectionService } from "@/services";
-import { ClientTimeline } from "@/components/client-flow/ClientTimeline";
+import { client-timeline } from "@/components/client-flow/client-timeline";
 import { TimelineItem } from "@/types/clientFlow";
 import { cn } from "@/lib/utils";
 import { FeatureGate } from "@/components/client-flow/FeatureGate";
@@ -170,7 +170,7 @@ export default function ClientInspections() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
         <div className="lg:col-span-4 space-y-layout-gap">
-          <ClientTimeline 
+          <client-timeline 
             timeline={timelineItems} 
             title="Evolução Técnica"
             description="Progresso da entrega da unidade"
