@@ -50,9 +50,13 @@ export function DigitalSignatureDialog({
   const [smsCode, setSmsCode] = useState("");
 
   useEffect(() => {
-    if (isOpen && documentId) {
-      setSignatures(documentService.getSignatureHistory(documentId));
-    }
+    const fetchSignatures = async () => {
+      if (isOpen && documentId) {
+        const history = await documentService.getSignatureHistory(documentId);
+        setSignatures(history);
+      }
+    };
+    fetchSignatures();
   }, [isOpen, documentId]);
 
   const currentUserSignature = signatures.find(s => s.email === user?.email);
