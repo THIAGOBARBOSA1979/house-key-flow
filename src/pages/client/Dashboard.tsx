@@ -28,7 +28,7 @@ const Dashboard = () => {
     allInspections,
     warrantyRequests,
     constructionUpdates: serviceUpdates
-  } = useClientDashboardData(profile?.id || userId, user?.name, profile?.propertyId);
+  } = useClientDashboardData(profile?.id || userId, user?.name);
   
   const userInfo = useMemo(() => ({
     name: user?.name?.split(' ')[0] || "Cliente",

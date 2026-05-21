@@ -8,14 +8,17 @@ import {
 
 export const useClientDashboardData = (clientId: string, userName?: string, propertyId?: string) => {
   const [isLoading, setIsLoading] = useState(true);
+  const { profile } = useClientStage(clientId);
+  const propertyId = profile?.propertyId;
 
-  
   const allDocs = useMemo(() => documentService.getDocumentsByClient(userName || "João Silva"), [userName]);
   const allInspections = useMemo(() => 
     inspectionService.getAll().filter(i => i && i.client === (userName || "João Silva")), [userName]);
   const upcomingInspections = useMemo(() => allInspections.filter(i => i.status !== 'complete'), [allInspections]);
   const warrantyRequests = useMemo(() => 
     warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId), [clientId]);
+  const constructionUpdates = useMemo(() => 
+    propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(), [propertyId]);
   const constructionUpdates = useMemo(() => 
     propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(), [propertyId]);
 
