@@ -1,6 +1,5 @@
 import { Supabase, FilterParams } from '@/integrations/supabase';
 import { BaseService, BaseServiceOptions } from './BaseService';
-import { errorHandler } from '@/utils/errors/ErrorHandler';
 import { Database } from '@/integrations/supabase/types';
 import { toSnakeCase, toCamelCase, mapObjectKeys } from '@/utils/caseConverter';
 import { BaseEntity } from '@/types/shared';
@@ -11,6 +10,9 @@ export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
 }
 
 export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseService<T> {
+  protected supabaseTable: keyof Database['public']['Tables'];
+  protected fieldMapping: Record<string, string>;
+
   constructor(options: SupabaseBaseServiceOptions, initialItems: T[] = []) {
     super(options, initialItems);
     this.supabaseTable = options.supabaseTable;
@@ -35,7 +37,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
     const mapped = mapObjectKeys(raw, toCamelCase);
     Object.entries(this.fieldMapping).forEach(([frontendKey, backendKey]) => {
       const backendValue = raw[backendKey];
-      if (backendValue !== undefined) mapped[frontendKey] = backendValue;
+      if (backendValue !== undefined) (mapped as any)[frontendKey] = backendValue;
     });
     return mapped as T;
   }
