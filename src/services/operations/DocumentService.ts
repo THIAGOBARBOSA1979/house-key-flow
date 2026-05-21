@@ -21,6 +21,8 @@ export interface DocumentVersion {
   createdAt: Date;
   createdBy: string;
   changeNotes?: string;
+  changes?: string; // Mantido para compatibilidade com UI
+  template?: string; // Mantido para compatibilidade com UI
 }
 
 export interface ApprovalHistoryEntry {
@@ -29,6 +31,8 @@ export interface ApprovalHistoryEntry {
   by: string;
   at: Date;
   comment?: string;
+  performedBy?: string; // Mantido para compatibilidade com UI
+  performedAt?: Date;   // Mantido para compatibilidade com UI
 }
 
 export interface Document {
