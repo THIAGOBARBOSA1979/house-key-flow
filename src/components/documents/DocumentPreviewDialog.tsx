@@ -159,12 +159,6 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
                       )}
                     </div>
                   </div>
-                </div>
-              </ScrollArea>
-            )}
-          </div>
-        </div>
-
                   {document.signatures && document.signatures.some(s => s.status === 'signed') && (
                     <div className="mt-20 pt-10 border-t-2 border-dashed border-gray-200 w-full max-w-3xl">
                       <div className="flex items-center justify-between mb-8">
@@ -217,7 +211,8 @@ export function DocumentPreviewDialog({ document, isOpen, onClose, generatedCont
                     </div>
                   )}
                 </div>
-            </ScrollArea>
+              </ScrollArea>
+            )}
           </div>
         </div>
         
