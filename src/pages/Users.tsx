@@ -89,7 +89,7 @@ const Users = () => {
       icon={UsersIcon}
       actions={actions}
     >
-      <UserStats stats={stats} />
+      <UserStats stats={stats || { total: 0, active: 0, inactive: 0, clients: 0, staff: 0 }} />
 
       <UserActionBanner stats={stats}>
         <UserBulkActions 

@@ -20,8 +20,8 @@ export const useSaaSAdmin = () => {
 
   const companyUsers = useMemo(() => {
     if (!selectedCompany) return [];
-    return userService.getAll(selectedCompany.id, true);
-  }, [selectedCompany, companies]); // Re-calculate when companies list updates
+    return userService.getAllSync(selectedCompany.id, true);
+  }, [selectedCompany, companies]);
 
   const totalUsers = useMemo(() => 
     companies.reduce((acc, curr) => {
@@ -30,8 +30,9 @@ export const useSaaSAdmin = () => {
     }, 0)
   , [companies]);
 
-  const refreshCompanies = useCallback(() => {
-    setCompanies([...companyService.getAll(undefined, true)]);
+  const refreshCompanies = useCallback(async () => {
+    const data = await companyService.getAll(undefined, true);
+    setCompanies([...data]);
   }, []);
 
   const handleToggleStatus = useCallback((id: string, currentStatus: CompanyStatus) => {

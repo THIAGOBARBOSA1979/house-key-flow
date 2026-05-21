@@ -85,10 +85,15 @@ const Properties = () => {
       description="Gerencie seu ecossistema de ativos com foco em progresso físico, eficiência operacional e vistorias."
       icon={Building}
       actions={actions}
-    >
-      <PropertyStats metrics={metrics} />
+  const [stats, setStats] = useState<any>(null);
 
-      <PropertyFilters 
+  useEffect(() => {
+    const loadStats = async () => {
+      const data = await propertyService.getMetrics(user?.company_id, user?.is_super_admin);
+      setStats(data);
+    };
+    loadStats();
+  }, [user?.company_id, user?.is_super_admin]);
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         statusFilter={filters.status}

@@ -138,7 +138,7 @@ class AuditLogService extends SupabaseBaseService<any> {
   }
 
   getRecentLogs(limit: number = 20): AuditLogEntry[] {
-    return this.items.slice(0, limit);
+    return (this.items || []).slice(0, limit);
   }
 
   getAllLogs(): AuditLogEntry[] {
