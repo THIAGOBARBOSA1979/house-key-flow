@@ -26,7 +26,7 @@ describe('Digital Signature Flow', () => {
     });
 
     expect(signer).not.toBeNull();
-    const updatedDoc = documentService.getById(doc.id);
+    const updatedDoc = await documentService.getById(doc.id);
     expect(updatedDoc?.signatures).toHaveLength(1);
   });
 
@@ -44,7 +44,7 @@ describe('Digital Signature Flow', () => {
       const result = await documentService.signDocument(doc.id, signer.id);
       expect(result).toBe(true);
       
-      const signedDoc = documentService.getById(doc.id);
+      const signedDoc = await documentService.getById(doc.id);
       expect(signedDoc?.isSigned).toBe(true);
       expect(signedDoc?.signatures?.[0].status).toBe('signed');
       expect(signedDoc?.signatures?.[0].signedAt).toBeDefined();
@@ -64,7 +64,7 @@ describe('Digital Signature Flow', () => {
     if (signer) {
       await documentService.rejectSignature(doc.id, signer.id, 'Dados incorretos no termo');
       
-      const rejectedDoc = documentService.getById(doc.id);
+      const rejectedDoc = await documentService.getById(doc.id);
       expect(rejectedDoc?.signatures?.[0].status).toBe('rejected');
       // @ts-expect-error - rejectionReason may not be in base type
       expect(rejectedDoc?.signatures?.[0].rejectionReason).toBe('Dados incorretos no termo');

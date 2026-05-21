@@ -43,12 +43,13 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
 
   useEffect(() => {
     if (isOpen && documentId) {
-      const doc = documentService.getDocumentById(documentId);
-      if (doc?.signatures) {
-        setSignatures([...doc.signatures]);
-      } else {
-        setSignatures([]);
-      }
+      documentService.getById(documentId).then(doc => {
+        if (doc?.signatures) {
+          setSignatures([...doc.signatures]);
+        } else {
+          setSignatures([]);
+        }
+      });
     }
   }, [isOpen, documentId]);
 
@@ -83,11 +84,11 @@ export function SignatureWorkflowDialog({ documentId, isOpen, onClose, onSuccess
     }
   };
 
-  const handleRemoveSigner = (signerId: string) => {
-    const doc = documentService.getDocumentById(documentId);
+  const handleRemoveSigner = async (signerId: string) => {
+    const doc = await documentService.getById(documentId);
     if (doc && doc.signatures) {
       const updatedSignatures = doc.signatures.filter(s => s.id !== signerId);
-      documentService.updateDocument(documentId, { signatures: updatedSignatures });
+      await documentService.update(documentId, { signatures: updatedSignatures });
       setSignatures(updatedSignatures);
     }
   };

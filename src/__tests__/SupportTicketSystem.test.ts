@@ -39,14 +39,14 @@ describe('Support Ticket System (Triagem)', () => {
     // Admin responds -> transitions to waiting_client
     await supportService.addMessageToTicket(ticket.id, 'admin-1', 'Admin', 'admin', 'Favor anexar fotos');
     
-    const updated = supportService.getById(ticket.id);
+    const updated = await supportService.getById(ticket.id);
     expect(updated?.status).toBe('waiting_client');
     
     // Client responds -> transitions back to in_progress
     await supportService.addMessageToTicket(ticket.id, 'c1', 'Client 1', 'client', 'Fotos anexadas');
 
     
-    const final = supportService.getById(ticket.id);
+    const final = await supportService.getById(ticket.id);
     expect(final?.status).toBe('in_progress');
   });
 
