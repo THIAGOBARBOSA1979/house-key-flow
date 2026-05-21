@@ -3,18 +3,19 @@ import { inspectionService } from "@/services";
 import { useService, useDataList } from "@/hooks";
 import { getUnifiedAppointments } from "@/components/calendar/AppointmentData";
 import { Appointment } from "@/types";
+import { Inspection } from "@/services/operations/InspectionService";
 
 export const useCalendar = () => {
-  const { items: inspections, isLoading, refresh: loadData } = useService<any>(inspectionService);
+  const { items: inspections, isLoading, refresh: loadData } = useService<Inspection>(inspectionService);
 
   const appointments = useMemo(() => {
     return getUnifiedAppointments();
   }, [inspections]);
 
-  const filterFn = useCallback((apt: Appointment, filters: any) => {
-    const matchesType = filters.type === "all" || apt.type === filters.type;
-    const matchesStatus = filters.status === "all" || apt.status === filters.status;
-    const matchesProperty = filters.property === "all" || apt.property === filters.property;
+  const filterFn = useCallback((apt: Appointment, currentFilters: { type: string, status: string, property: string }) => {
+    const matchesType = currentFilters.type === "all" || apt.type === currentFilters.type;
+    const matchesStatus = currentFilters.status === "all" || apt.status === currentFilters.status;
+    const matchesProperty = currentFilters.property === "all" || apt.property === currentFilters.property;
     return matchesType && matchesStatus && matchesProperty;
   }, []);
 
@@ -22,10 +23,8 @@ export const useCalendar = () => {
     filteredItems: filteredAppointments,
     filters,
     setFilters,
-    searchTerm,
-    setSearchTerm,
     clearFilters
-  } = useDataList<Appointment>(appointments as any, {
+  } = useDataList<Appointment>(appointments, {
     initialFilters: { type: "all", status: "all", property: "all" },
     filterFn
   });
@@ -63,7 +62,7 @@ export const useCalendar = () => {
     loadData();
   }, [loadData]);
 
-  const handleUpdateAppointment = useCallback(async (id: string, data: any) => {
+  const handleUpdateAppointment = useCallback(async (id: string, data: Partial<Inspection>) => {
     await inspectionService.update(id, data);
     loadData();
   }, [loadData]);
