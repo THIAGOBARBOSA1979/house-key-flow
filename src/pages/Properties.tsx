@@ -39,8 +39,10 @@ const Properties = () => {
     deleteProperty,
     bulkDelete,
     toggleSelect,
-    refreshList
+    refreshList,
+    error: propertiesError
   } = useProperties();
+
 
 
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
@@ -104,7 +106,12 @@ const Properties = () => {
       <DataView<Property>
         items={filteredProperties}
         isLoading={isLoading}
+        isError={!!propertiesError}
+        error={{
+          message: (propertiesError as any)?.message
+        }}
         skeletonType="card"
+
         viewMode={viewMode}
         itemsPerPage={6}
         renderGrid={(property) => (

@@ -25,9 +25,10 @@ const Warranty = () => {
     assignTechnician, 
     exportData,
     isLoading,
-    // error property removed from useWarranty
+    error: warrantyError,
     refresh
   } = useWarranty();
+
 
   const handleSelectRequest = (request: WarrantyRequestFlow) => {
     setSelectedRequestId(request.id);
@@ -39,8 +40,15 @@ const Warranty = () => {
       description="Governança técnica do pós-venda: controle de SLAs, fluxos de assistência e conformidade com normas ABNT."
       actions={<WarrantyPageActions onExport={exportData} />}
     >
+      {warrantyError && (
+        <div className="mb-8 animate-in slide-in-from-top-4 duration-500">
+           <ErrorView 
+             message={(warrantyError as any)?.message || "Ocorreu um erro técnico no processamento dos protocolos."} 
+             onRetry={refresh} 
+           />
+        </div>
+      )}
 
-      {/* Error alert removed as error state is now handled globally in useService or not exposed */}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <WarrantyTabsHeader />
