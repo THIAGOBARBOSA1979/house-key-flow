@@ -17,7 +17,7 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
     super({
       storageKey: "a2_client_profiles",
       supabaseTable: "client_profiles", 
-      auditEntityType: "client_profile",
+      auditEntityType: "user",
       shouldSyncWithSupabase: true
     }, []);
     // this.loadEvents(); // Disabled for DB-first
