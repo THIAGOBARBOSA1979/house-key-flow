@@ -149,7 +149,9 @@ export const useUsers = () => {
     toggleSelectUser,
     selectAll: () => selectAllItems(filteredUsers.map(u => u.id!)),
     handleBulkAction,
-    handleResendInvite
+    handleResendInvite,
+    error
   };
 };
+
 
