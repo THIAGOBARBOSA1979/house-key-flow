@@ -18,7 +18,7 @@ class WarrantySLAService extends SupabaseBaseService<SLAConfig & { id: string }>
     super({
       storageKey: "a2_warranty_sla_configs",
       supabaseTable: "warranty_sla_configs",
-      auditEntityType: "system_settings",
+      auditEntityType: "system",
       shouldSyncWithSupabase: true
     });
   }
@@ -34,7 +34,6 @@ class WarrantySLAService extends SupabaseBaseService<SLAConfig & { id: string }>
       return config;
     }
     
-    // Fallback to defaults if not synced yet or not found
     return {
       warrantyType,
       analysisHours: 48,
@@ -57,10 +56,9 @@ class WarrantySLAService extends SupabaseBaseService<SLAConfig & { id: string }>
    */
   async updateSLAConfig(config: SLAConfig & { id: string }): Promise<void> {
     await this.update(config.id, config);
-    console.log('[WarrantySLAService] SLA config updated in Supabase:', config);
     
     await auditLogService.logAction({
-      entityType: 'system_settings',
+      entityType: 'system',
       entityId: config.id,
       action: 'updated',
       payload: { message: `Configuração de SLA para "${config.warrantyType}" atualizada.` }
@@ -115,7 +113,6 @@ class WarrantySLAService extends SupabaseBaseService<SLAConfig & { id: string }>
         const dayOfWeek = currentDate.getDay();
         const hour = currentDate.getHours();
         
-        // Brazilian Business Hours: Mon-Fri, 08:00 - 18:00 (10h/day)
         if (dayOfWeek !== 0 && dayOfWeek !== 6 && hour >= 8 && hour < 18) {
           hoursRemaining--;
         }
@@ -171,9 +168,6 @@ class WarrantySLAService extends SupabaseBaseService<SLAConfig & { id: string }>
     };
   }
 
-  /**
-   * Get SLA status for a request
-   */
   getSLAStatus(request: WarrantyRequestFlow): SLAStatus {
     const info = this.calculateSLADeadlineInfo(request);
     return info.status;
@@ -188,6 +182,102 @@ class WarrantySLAService extends SupabaseBaseService<SLAConfig & { id: string }>
     
     if (hours === 0) return `${days}d restante${days > 1 ? 's' : ''}`;
     return `${days}d ${hours}h restantes`;
+  }
+
+  // Re-adding missing methods used by other services
+  checkSLAWarnings(
+    requests: WarrantyRequestFlow[], 
+    warningThresholdHours: number = 8
+  ): WarrantyRequestFlow[] {
+    return requests.filter(request => {
+      const info = this.calculateSLADeadlineInfo(request);
+      return info.status === "warning" || 
+             (info.status === "on_track" && info.hoursRemaining <= warningThresholdHours);
+    });
+  }
+
+  checkExpiredSLAs(requests: WarrantyRequestFlow[]): WarrantyRequestFlow[] {
+    return requests.filter(request => {
+      const info = this.calculateSLADeadlineInfo(request);
+      return info.status === "expired";
+    });
+  }
+
+  calculateAverageTimeByType(
+    completedRequests: WarrantyRequestFlow[]
+  ): Record<string, number> {
+    const typeMap: Record<string, { total: number; count: number }> = {};
+    
+    completedRequests.forEach(request => {
+      if (request.completionDate) {
+        const resolutionTime = new Date(request.completionDate).getTime() - new Date(request.createdAt).getTime();
+        const resolutionHours = resolutionTime / (1000 * 60 * 60);
+        
+        if (!typeMap[request.category]) {
+          typeMap[request.category] = { total: 0, count: 0 };
+        }
+        
+        typeMap[request.category].total += resolutionHours;
+        typeMap[request.category].count += 1;
+      }
+    });
+    
+    const result: Record<string, number> = {};
+    Object.entries(typeMap).forEach(([type, data]) => {
+      result[type] = data.count > 0 ? Math.round(data.total / data.count) : 0;
+    });
+    
+    return result;
+  }
+
+  calculateComplianceRate(requests: WarrantyRequestFlow[]): number {
+    const completed = requests.filter(r => r.currentStage === "completed");
+    if (completed.length === 0) return 100;
+    
+    let onTimeCount = 0;
+    completed.forEach(request => {
+      if (request.completionDate) {
+        const totalConfig = this.getSLAConfig(request.category);
+        const deadline = this.calculateDeadline(new Date(request.createdAt), totalConfig.totalHours);
+        
+        if (new Date(request.completionDate) <= deadline) {
+          onTimeCount++;
+        }
+      }
+    });
+    
+    return Math.round((onTimeCount / completed.length) * 100);
+  }
+
+  getPriorityOrder(priority: string): number {
+    const order: Record<string, number> = {
+      critical: 1,
+      high: 2,
+      medium: 3,
+      low: 4
+    };
+    return order[priority] || 5;
+  }
+
+  sortByUrgency(requests: WarrantyRequestFlow[]): WarrantyRequestFlow[] {
+    return [...requests].sort((a, b) => {
+      const slaA = this.calculateSLADeadlineInfo(a);
+      const slaB = this.calculateSLADeadlineInfo(b);
+      
+      const slaOrder: Record<SLAStatus, number> = {
+        expired: 1,
+        warning: 2,
+        on_track: 3
+      };
+      
+      const slaCompare = slaOrder[slaA.status] - slaOrder[slaB.status];
+      if (slaCompare !== 0) return slaCompare;
+      
+      const priorityCompare = this.getPriorityOrder(a.priority) - this.getPriorityOrder(b.priority);
+      if (priorityCompare !== 0) return priorityCompare;
+      
+      return slaA.hoursRemaining - slaB.hoursRemaining;
+    });
   }
 }
 

@@ -59,13 +59,13 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       if (!isSuperAdmin && companyId) {
         filters.push({ column: 'company_id', operator: 'eq', value: companyId });
       }
-      const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, { 
-        filters, 
-        pagination: { page: 1, pageSize: 1000 },
-        order: { column: 'created_at', ascending: false }
-      });
+      
+      const options: any = { filters, pagination: { page: 1, pageSize: 1000 } };
+      
+      const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, options);
       if (error) throw error;
       this.items = (data || []).map(item => this.mapFromSupabase(item));
+      this.notifyListeners();
       return this.items;
     } catch (err) {
       this.handleError(err, 'getAll');
