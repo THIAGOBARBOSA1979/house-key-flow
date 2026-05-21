@@ -1,31 +1,36 @@
-import { Supabase } from './index';
 import { Role, Permission } from '@/types/auth';
 
+const getInternalSession = () => {
+  const stored = localStorage.getItem('sb-ugwfvbctonbnkzxmdydp-auth-token');
+  if (!stored) return null;
+  try {
+    const parsed = JSON.parse(stored);
+    return parsed.user?.user_metadata || null;
+  } catch {
+    return null;
+  }
+};
 
 export const AuthGuard = {
-  // Simple check for now, can be expanded with real Supabase RBAC
   hasRole(role: Role | Role[]): boolean {
-    const userJson = localStorage.getItem('auth_user');
-    if (!userJson) return false;
-    const user = JSON.parse(userJson);
+    const session = getInternalSession();
+    if (!session) return false;
     
-    if (user.is_super_admin) return true;
+    if (session.is_super_admin) return true;
     
     const roles = Array.isArray(role) ? role : [role];
-    const userRole = this.mapInternalRole(user.role);
+    const userRole = this.mapInternalRole(session.role);
     
     return roles.includes(userRole);
   },
 
   hasPermission(permission: Permission): boolean {
-    const userJson = localStorage.getItem('auth_user');
-    if (!userJson) return false;
-    const user = JSON.parse(userJson);
+    const session = getInternalSession();
+    if (!session) return false;
     
-    if (user.is_super_admin) return true;
+    if (session.is_super_admin) return true;
     
-    // Simple permission mapping
-    const role = this.mapInternalRole(user.role);
+    const role = this.mapInternalRole(session.role);
     
     const rolePermissions: Record<Role, Permission[]> = {
       super_admin: ['view_dashboard', 'manage_users', 'manage_properties', 'manage_inspections', 'manage_warranty', 'view_reports', 'system_settings'],
@@ -40,17 +45,14 @@ export const AuthGuard = {
   },
 
   isAdmin(): boolean {
-    const userJson = localStorage.getItem('auth_user');
-    if (!userJson) return false;
-    const user = JSON.parse(userJson);
-    return user.role === 'admin' || user.role === 'manager' || user.is_super_admin;
+    const session = getInternalSession();
+    if (!session) return false;
+    return session.role === 'admin' || session.role === 'manager' || session.is_super_admin;
   },
 
   isSuperAdmin(): boolean {
-    const userJson = localStorage.getItem('auth_user');
-    if (!userJson) return false;
-    const user = JSON.parse(userJson);
-    return !!user.is_super_admin;
+    const session = getInternalSession();
+    return !!session?.is_super_admin;
   },
 
   mapInternalRole(internalRole: string): Role {

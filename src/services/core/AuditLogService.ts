@@ -1,6 +1,6 @@
 import { Supabase, FilterParams } from "@/integrations/supabase";
 import { Database } from "@/integrations/supabase/types";
-import { BaseService } from "@/services/BaseService";
+import { SupabaseBaseService } from "@/services/SupabaseBaseService";
 
 export type AuditEntityType = 'inspection' | 'warranty' | 'document' | 'user' | 'property' | 'checklist' | 'system' | 'financial' | 'auth';
 export type AuditAction = 
@@ -49,15 +49,20 @@ export interface AuditLogEntry {
   metadata?: any;
 }
 
-class AuditLogService extends BaseService<any> {
+class AuditLogService extends SupabaseBaseService<any> {
   constructor() {
-    super({ storageKey: "audit_logs", shouldSyncWithSupabase: false }, []);
+    super({ 
+      storageKey: "audit_logs", 
+      supabaseTable: "audit_logs",
+      shouldSyncWithSupabase: true 
+    }, []);
   }
 
-  private mapToEntry(raw: any): AuditLogEntry {
+  protected mapFromSupabase(raw: any): AuditLogEntry {
+    const mapped = super.mapFromSupabase(raw);
     const profiles = raw.profiles;
     return {
-      ...raw,
+      ...mapped,
       details: raw.payload?.message || `${raw.action} em ${raw.entity_type}`,
       timestamp: new Date(raw.created_at),
       performedByName: profiles?.full_name || 'Sistema',
@@ -66,6 +71,10 @@ class AuditLogService extends BaseService<any> {
       entityId: raw.entity_id || '',
       metadata: raw.payload
     };
+  }
+
+  private mapToEntry(raw: any): AuditLogEntry {
+    return this.mapFromSupabase(raw);
   }
 
   async getLogs(params: {
@@ -97,7 +106,7 @@ class AuditLogService extends BaseService<any> {
     });
 
     if (error) return [];
-    return (data || []).map(raw => this.mapToEntry(raw));
+    return (data || []).map(raw => this.mapFromSupabase(raw));
   }
 
   async log(entry: any): Promise<void> {
@@ -187,7 +196,10 @@ class AuditLogService extends BaseService<any> {
   }
 
   async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
-    return this.getLogs({ pageSize: limit });
+    const logs = await this.getLogs({ pageSize: limit });
+    this.items = logs;
+    this.notify();
+    return logs;
   }
 
   async getAuditStats(companyId?: string, isSuperAdmin?: boolean) {

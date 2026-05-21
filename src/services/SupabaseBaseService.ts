@@ -63,15 +63,15 @@ export abstract class SupabaseBaseService<T extends { id: string; company_id?: s
         return this.items;
       }
 
-      if (data && data.length > 0) {
+      if (data) {
         const newItems = data
           .filter(item => item !== null && item !== undefined)
           .map(item => this.mapFromSupabase(this.deserializeDates(item as any)));
         
-        // Deep compare to avoid unnecessary updates if data hasn't changed
+        // Use functional state update logic if items were actually changed
         if (JSON.stringify(newItems) !== JSON.stringify(this.items)) {
           this.items = newItems;
-          this.persist();
+          this.notify();
         }
       }
       

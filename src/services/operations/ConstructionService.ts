@@ -60,7 +60,7 @@ class ConstructionService extends SupabaseBaseService<ConstructionUpdate> {
       supabaseTable: "construction_updates" as any,
       auditEntityType: "property",
       shouldSyncWithSupabase: true
-    }, INITIAL_UPDATES);
+    }, []);
     this.initializeRealtime();
   }
 

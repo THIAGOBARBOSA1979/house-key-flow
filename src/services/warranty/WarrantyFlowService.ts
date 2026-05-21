@@ -155,7 +155,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
         assignedTo: 'assigned_technician_id',
         currentStage: 'status'
       }
-    }, initialMockRequests);
+    }, []);
 
     this.items = this.items.map(item => ({
       ...item,

@@ -18,7 +18,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   constructor(options: BaseServiceOptions | string, initialData: T[] = []) {
     this.options = typeof options === 'string' ? { storageKey: options } : options;
     this.items = initialData;
-    this.loadFromStorage();
+    // this.loadFromStorage(); // DISABLED: Using Supabase as the source of truth
   }
 
   subscribe(listener: Listener<T>) {
@@ -59,25 +59,12 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
 
   protected loadFromStorage() {
-    if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem(this.options.storageKey);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          this.items = parsed
-            .filter(item => item !== null && item !== undefined)
-            .map(item => this.deserializeDates(item));
-        }
-      } catch (e) {
-        console.error(`Failed to load ${this.options.storageKey} from storage`, e);
-      }
-    }
+    // Disabled globally to ensure DB persistence source of truth
   }
 
   protected persist() {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(this.options.storageKey, JSON.stringify(this.items));
+    // localStorage.setItem(this.options.storageKey, JSON.stringify(this.items)); // DISABLED
     this.notify();
   }
 
@@ -130,7 +117,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     } as T;
     
     this.items.push(newItem);
-    this.persist();
+    this.notify();
     await this.log('created', id, `Registro criado em ${this.options.storageKey}`);
     return newItem;
   }
@@ -141,7 +128,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     
     const oldItem = { ...this.items[index] };
     this.items[index] = { ...this.items[index], ...data };
-    this.persist();
+    this.notify();
     
     await this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, {
       changes: data,
@@ -156,7 +143,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.items = this.items.filter(item => item.id !== id);
     
     if (this.items.length !== initialLength) {
-      this.persist();
+      this.notify();
       await this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
       return true;
     }
@@ -190,6 +177,6 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   clearAllData() {
     this.items = [];
-    this.persist();
+    this.notify();
   }
 }

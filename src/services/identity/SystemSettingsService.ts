@@ -71,19 +71,12 @@ class SystemSettingsService {
   private storageKey = "a2_system_settings";
 
   constructor() {
+    // Disabled localStorage persistence for settings to move towards DB settings
     if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem(this.storageKey);
-    if (stored) {
-      try {
-        this.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
-      } catch (e) {
-        console.error("Failed to load settings", e);
-      }
-    }
   }
 
   private persist() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.settings));
+    // localStorage.setItem(this.storageKey, JSON.stringify(this.settings)); // DISABLED
   }
 
   getSettings(): SystemSettings {

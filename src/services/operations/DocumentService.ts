@@ -111,7 +111,7 @@ class DocumentService extends SupabaseBaseService<Document> {
       supabaseTable: "documents",
       auditEntityType: "document",
       shouldSyncWithSupabase: true
-    }, INITIAL_DOCUMENTS);
+    }, []);
 
   }
 

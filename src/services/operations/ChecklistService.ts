@@ -72,8 +72,8 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
       supabaseTable: "checklist_templates",
       auditEntityType: "checklist",
       shouldSyncWithSupabase: true
-    }, INITIAL_TEMPLATES);
-    this.loadExecutions();
+    }, []);
+    // this.loadExecutions(); // Disabled for DB-first
     this.initializeRealtime();
   }
 
@@ -85,24 +85,11 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
 
 
   private loadExecutions() {
-    if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem("a2_checklist_executions");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        this.executions = parsed.map((e: any) => ({ 
-          ...e, 
-          date: new Date(e.date) 
-        }));
-      } catch (e) {
-        console.error("Error loading executions", e);
-      }
-    }
+    // Disabled
   }
 
   private persistExecutions() {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem("a2_checklist_executions", JSON.stringify(this.executions));
+    // Disabled
   }
 
   getAllTemplates() { return this.getAll(); }
@@ -137,7 +124,8 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
       conformityRate: 100
     };
     this.executions.unshift(record);
-    this.persistExecutions();
+    // this.persistExecutions(); // Disabled
+    this.notify();
     return record;
   }
 }
