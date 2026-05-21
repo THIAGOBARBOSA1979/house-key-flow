@@ -34,7 +34,7 @@ describe('Architectural Regression - BaseService', () => {
     const spy = vi.spyOn(Supabase.db, 'create');
     const newItem = { name: 'Test Item' };
     
-    service.create(newItem, 'tenant-1');
+    await service.create(newItem, 'tenant-1');
     
     expect(spy).toHaveBeenCalledWith('audit_logs', expect.objectContaining({
       name: 'Test Item',
@@ -44,9 +44,9 @@ describe('Architectural Regression - BaseService', () => {
 
   it('should sync update operation to Supabase when enabled', async () => {
     const spy = vi.spyOn(Supabase.db, 'update');
-    const item = service.create({ name: 'Original' }, 'tenant-1');
+    const item = await service.create({ name: 'Original' }, 'tenant-1');
     
-    service.update(item.id, { name: 'Updated' }, true);
+    await service.update(item.id, { name: 'Updated' }, true);
     
     expect(spy).toHaveBeenCalledWith('audit_logs', item.id, expect.objectContaining({
       name: 'Updated'
@@ -55,27 +55,29 @@ describe('Architectural Regression - BaseService', () => {
 
   it('should sync delete operation to Supabase when enabled', async () => {
     const spy = vi.spyOn(Supabase.db, 'delete');
-    const item = service.create({ name: 'To Delete' }, 'tenant-1');
+    const item = await service.create({ name: 'To Delete' }, 'tenant-1');
     
-    service.delete(item.id);
+    await service.delete(item.id);
     
     expect(spy).toHaveBeenCalledWith('audit_logs', item.id);
   });
 
-  it('should enforce tenant isolation in getAll', () => {
-    service.create({ name: 'Tenant 1 Item' }, 'tenant-1');
-    service.create({ name: 'Tenant 2 Item' }, 'tenant-2');
+
+  it('should enforce tenant isolation in getAll', async () => {
+    await service.create({ name: 'Tenant 1 Item' }, 'tenant-1');
+    await service.create({ name: 'Tenant 2 Item' }, 'tenant-2');
     
     const results = service.getAll('tenant-1', false);
     expect(results).toHaveLength(1);
     expect(results[0].name).toBe('Tenant 1 Item');
   });
 
-  it('should allow super admin to see all items', () => {
-    service.create({ name: 'Tenant 1 Item' }, 'tenant-1');
-    service.create({ name: 'Tenant 2 Item' }, 'tenant-2');
+  it('should allow super admin to see all items', async () => {
+    await service.create({ name: 'Tenant 1 Item' }, 'tenant-1');
+    await service.create({ name: 'Tenant 2 Item' }, 'tenant-2');
     
     const results = service.getAll(undefined, true);
     expect(results).toHaveLength(2);
   });
+
 });

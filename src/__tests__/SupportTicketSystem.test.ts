@@ -9,8 +9,8 @@ describe('Support Ticket System (Triagem)', () => {
     vi.clearAllMocks();
   });
 
-  it('should open a new technical ticket with SLA correctly', () => {
-    const ticket = supportService.createTicket(
+  it('should open a new technical ticket with SLA correctly', async () => {
+    const ticket = await supportService.createTicket(
       'client-123',
       'Roberto Justos',
       {
@@ -25,6 +25,7 @@ describe('Support Ticket System (Triagem)', () => {
       }
     );
 
+
     expect(ticket.status).toBe('pending');
     expect(ticket.priority).toBe('high');
     expect(ticket.category).toBe('technical');
@@ -32,26 +33,28 @@ describe('Support Ticket System (Triagem)', () => {
     expect(ticket.unitNumber).toBe('1501');
   });
 
-  it('should transition ticket status and update SLA state', () => {
-    const ticket = supportService.createTicket('c1', 'Client 1', { subject: 'Test' });
+  it('should transition ticket status and update SLA state', async () => {
+    const ticket = await supportService.createTicket('c1', 'Client 1', { subject: 'Test' });
     
     // Admin responds -> transitions to waiting_client
-    supportService.addMessageToTicket(ticket.id, 'admin-1', 'Admin', 'admin', 'Favor anexar fotos');
+    await supportService.addMessageToTicket(ticket.id, 'admin-1', 'Admin', 'admin', 'Favor anexar fotos');
     
     const updated = supportService.getById(ticket.id);
     expect(updated?.status).toBe('waiting_client');
     
     // Client responds -> transitions back to in_progress
-    supportService.addMessageToTicket(ticket.id, 'c1', 'Client 1', 'client', 'Fotos anexadas');
+    await supportService.addMessageToTicket(ticket.id, 'c1', 'Client 1', 'client', 'Fotos anexadas');
+
     
     const final = supportService.getById(ticket.id);
     expect(final?.status).toBe('in_progress');
   });
 
-  it('should filter tickets by status correctly for screening', () => {
-    supportService.createTicket('c1', 'Client 1', { subject: 'P1' });
-    const t2 = supportService.createTicket('c2', 'Client 2', { subject: 'P2' });
-    supportService.updateTicketStatus(t2.id, 'closed');
+  it('should filter tickets by status correctly for screening', async () => {
+    await supportService.createTicket('c1', 'Client 1', { subject: 'P1' });
+    const t2 = await supportService.createTicket('c2', 'Client 2', { subject: 'P2' });
+    await supportService.updateTicketStatus(t2.id, 'closed');
+
 
     const all = supportService.getAllTickets();
     const pending = all.filter(t => t.status === 'pending');
