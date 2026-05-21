@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
 import { AppError } from '@/utils/errors/AppError';
+import { Result } from '@/types/result';
 
 
 export interface UseServiceOptions<T> {
@@ -39,7 +40,6 @@ export function useService<T extends { id: string; company_id?: string }>(
   const [error, setError] = useState<AppError | null>(null);
   const [isPending, startTransition] = useTransition();
 
-
   const optionsRef = useRef(options);
   optionsRef.current = options;
 
@@ -47,9 +47,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      // Removed sync call as getAll now handles it
-
       const data = await service.getAll(companyId, isSuperAdmin);
+      
       startTransition(() => {
         setItems(data);
       });
@@ -57,7 +56,6 @@ export function useService<T extends { id: string; company_id?: string }>(
       const appError = errorHandler.handle(err, 'useService:fetchItems');
       setError(appError);
       optionsRef.current.onError?.(err);
-
     } finally {
       setIsLoading(false);
     }
@@ -66,11 +64,6 @@ export function useService<T extends { id: string; company_id?: string }>(
   useEffect(() => {
     fetchItems();
   }, [fetchItems]);
-
-  useEffect(() => {
-    // Subscription removed as React Query now handles state
-    return () => {};
-  }, [service, companyId, isSuperAdmin]);
 
   const refresh = useCallback(() => {
     fetchItems();
@@ -81,6 +74,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     try {
       setError(null);
       const newItem = await service.create(data, companyId);
+      
       if (optionsRef.current.toastMessages?.create) {
         toast({ 
           title: "Sincronização Concluída", 
@@ -104,6 +98,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     try {
       setError(null);
       const updatedItem = await service.update(id, data, isSuperAdmin);
+      
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
           toast({ 
@@ -129,6 +124,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     try {
       setError(null);
       const success = await service.delete(id);
+      
       if (success) {
         if (optionsRef.current.toastMessages?.delete) {
           toast({ 
@@ -143,44 +139,6 @@ export function useService<T extends { id: string; company_id?: string }>(
       const appError = errorHandler.handle(error, 'useService:remove');
       setError(appError);
       optionsRef.current.onError?.(error);
-      throw appError;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [service, toast]);
-
-  const bulkUpdate = useCallback(async (ids: string[], data: Partial<T>) => {
-    setIsLoading(true);
-    try {
-      setError(null);
-      const results = await service.bulkUpdate(ids, data);
-      toast({ 
-        title: "Atualização em Massa", 
-        description: `${results.length} registros foram sincronizados.` 
-      });
-      return results;
-    } catch (error) {
-      const appError = errorHandler.handle(error, 'useService:bulkUpdate');
-      setError(appError);
-      throw appError;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [service, toast, isSuperAdmin]);
-
-  const bulkRemove = useCallback(async (ids: string[]) => {
-    setIsLoading(true);
-    try {
-      setError(null);
-      const count = await service.bulkDelete(ids);
-      toast({ 
-        title: "Exclusão em Massa", 
-        description: `${count} registros foram eliminados do protocolo.` 
-      });
-      return count;
-    } catch (error) {
-      const appError = errorHandler.handle(error, 'useService:bulkRemove');
-      setError(appError);
       throw appError;
     } finally {
       setIsLoading(false);
@@ -205,9 +163,13 @@ export function useService<T extends { id: string; company_id?: string }>(
     create,
     update,
     remove,
-    bulkUpdate,
-    bulkRemove,
+    bulkUpdate: useCallback(async (ids: string[], data: Partial<T>) => {
+      // For simplicity, keeping bulk as it is for now or refactoring if needed
+      return await service.bulkUpdate(ids, data);
+    }, [service]),
+    bulkRemove: useCallback(async (ids: string[]) => {
+      return await service.bulkDelete(ids);
+    }, [service]),
     getById
   };
 }
-
