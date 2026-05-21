@@ -145,7 +145,6 @@ class WarrantyAutomationService {
    * Handle inspection completed
    */
   private onInspectionCompleted(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Inspection completed for:', request.id);
     // Notify admin to make decision
     this.notifyAdminForDecision(request);
   }
