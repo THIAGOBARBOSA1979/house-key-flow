@@ -33,8 +33,9 @@ interface DataTableProps<T> {
   emptyState?: {
     title: string;
     description: string;
-    icon?: LucideIcon;
+    icon?: React.ReactNode;
   };
+
   className?: string;
 }
 

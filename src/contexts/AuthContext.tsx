@@ -9,6 +9,9 @@ import { companyService } from '@/services';
 import { AuthGuard } from '@/integrations/supabase/auth-guard';
 import { Supabase } from '@/integrations/supabase';
 import { findMockUser } from '@/mocks/users';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+import { ErrorCode } from '@/utils/errors/AppError';
+
 
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -154,15 +157,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       
     } catch (error) {
-      toast({
-        title: "❌ Erro ao fazer login",
-        description: error instanceof Error ? error.message : "Erro desconhecido",
-        variant: "destructive",
-      });
+      errorHandler.handle(error, 'AuthContext:login');
       throw error;
     } finally {
       setIsLoading(false);
     }
+
   };
 
   const value: AuthContextType = {
