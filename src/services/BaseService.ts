@@ -1,7 +1,6 @@
 import { AuditAction, AuditEntityType } from "@/services/core/AuditLogService";
 import { errorHandler } from "@/utils/errors/ErrorHandler";
-
-type Listener<T> = (items: T[]) => void;
+import { BaseEntity, Listener } from "@/types/shared";
 
 export interface BaseServiceOptions {
   storageKey: string;
@@ -9,7 +8,10 @@ export interface BaseServiceOptions {
   shouldSyncWithSupabase?: boolean;
 }
 
-export abstract class BaseService<T extends { id: string; company_id?: string }> {
+/**
+ * Generic BaseService handling state, listeners, and basic CRUD operations.
+ */
+export abstract class BaseService<T extends BaseEntity> {
   protected items: T[] = [];
   protected options: BaseServiceOptions;
   protected listeners: Listener<T>[] = [];
@@ -19,6 +21,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.items = initialData;
   }
 
+  /**
+   * Subscribe to state changes.
+   */
   subscribe(listener: Listener<T>) {
     this.listeners.push(listener);
     return () => {
@@ -26,32 +31,23 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     };
   }
 
+  /**
+   * Notify all subscribers of state changes.
+   */
   protected notify() {
     this.listeners.forEach(listener => listener([...this.items]));
   }
 
-  protected deserializeDates(item: any): T {
-    if (!item || typeof item !== 'object') return item;
-    
-    const newItem = { ...item };
-    for (const key in newItem) {
-      const value = newItem[key];
-      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
-        const date = new Date(value);
-        if (!isNaN(date.getTime())) {
-          newItem[key] = date;
-        }
-      } else if (value && typeof value === 'object' && !(value instanceof Date)) {
-        newItem[key] = this.deserializeDates(value);
-      }
-    }
-    return newItem;
-  }
-
+  /**
+   * Centralized error handling.
+   */
   protected handleError(error: any, context: string): never {
     throw errorHandler.handle(error, `BaseService:${this.options.storageKey}:${context}`);
   }
 
+  /**
+   * Log administrative actions to the audit log.
+   */
   public async log(action: AuditAction, entityId: string, details: string, metadata?: any) {
     if (this.options.auditEntityType) {
       try {
@@ -70,12 +66,18 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     }
   }
 
+  /**
+   * Get all items, filtered by company isolation rules.
+   */
   getAll(companyId?: string, isSuperAdmin?: boolean): T[] {
     if (isSuperAdmin) return [...this.items];
     if (!companyId) return [];
     return this.items.filter(item => item.company_id === companyId);
   }
 
+  /**
+   * Get a single item by ID with isolation checks.
+   */
   getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined {
     const item = this.items.find(item => item.id === id);
     if (!item) return undefined;
@@ -83,6 +85,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return undefined;
   }
 
+  /**
+   * Create a new item.
+   */
   async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const id = (item as any).id || crypto.randomUUID();
     const newItem = {
@@ -97,6 +102,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return newItem;
   }
 
+  /**
+   * Update an existing item.
+   */
   async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
     const index = this.items.findIndex(item => item.id === id);
     if (index === -1) return undefined;
@@ -113,6 +121,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return this.items[index];
   }
 
+  /**
+   * Delete an item.
+   */
   async delete(id: string): Promise<boolean> {
     const initialLength = this.items.length;
     this.items = this.items.filter(item => item.id !== id);
@@ -125,6 +136,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return false;
   }
 
+  /**
+   * Batch update multiple items.
+   */
   async bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]> {
     const results: T[] = [];
     for (const id of ids) {
@@ -134,6 +148,9 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return results;
   }
 
+  /**
+   * Batch delete multiple items.
+   */
   async bulkDelete(ids: string[]): Promise<number> {
     let count = 0;
     for (const id of ids) {
@@ -142,14 +159,23 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return count;
   }
 
+  /**
+   * Count items with isolation rules.
+   */
   count(companyId?: string, isSuperAdmin?: boolean): number {
     return this.getAll(companyId, isSuperAdmin).length;
   }
 
+  /**
+   * Placeholder for persistence logic.
+   */
   protected persist() {
     this.notify();
   }
 
+  /**
+   * Clear all items from state.
+   */
   clearAllData() {
     this.items = [];
     this.notify();
