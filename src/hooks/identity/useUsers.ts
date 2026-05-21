@@ -24,11 +24,10 @@ export const useUsers = () => {
     bulkRemove,
     error
   } = useService<User>(userService, {
-
     toastMessages: {
-      create: "Novo usuário criado com sucesso.",
-      update: "Usuário atualizado com sucesso.",
-      delete: "Usuário removido com sucesso."
+      create: "Usuário registrado com sucesso no sistema.",
+      update: "Perfil de usuário atualizado conforme protocolo.",
+      delete: "Acesso de usuário revogado com sucesso."
     }
   });
 
