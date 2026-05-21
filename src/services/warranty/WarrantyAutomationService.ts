@@ -152,8 +152,7 @@ class WarrantyAutomationService {
   /**
    * Handle warranty approved
    */
-  private onApproved(request: WarrantyRequestFlow): void {
-    console.log('[WarrantyAutomation] Warranty approved:', request.id);
+  private onApproved(_request: WarrantyRequestFlow): void {
     // Start execution SLA timer
   }
 
