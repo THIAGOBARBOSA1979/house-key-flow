@@ -1232,6 +1232,53 @@ export type Database = {
           },
         ]
       }
+      warranty_sla_configs: {
+        Row: {
+          analysis_hours: number
+          company_id: string | null
+          created_at: string | null
+          decision_hours: number
+          execution_hours: number
+          id: string
+          inspection_hours: number
+          total_hours: number
+          updated_at: string | null
+          warranty_type: string
+        }
+        Insert: {
+          analysis_hours?: number
+          company_id?: string | null
+          created_at?: string | null
+          decision_hours?: number
+          execution_hours?: number
+          id?: string
+          inspection_hours?: number
+          total_hours?: number
+          updated_at?: string | null
+          warranty_type: string
+        }
+        Update: {
+          analysis_hours?: number
+          company_id?: string | null
+          created_at?: string | null
+          decision_hours?: number
+          execution_hours?: number
+          id?: string
+          inspection_hours?: number
+          total_hours?: number
+          updated_at?: string | null
+          warranty_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warranty_sla_configs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       warranty_status_history: {
         Row: {
           changed_by: string | null
