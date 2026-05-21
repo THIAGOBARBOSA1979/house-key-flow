@@ -22,11 +22,16 @@ class UserService extends SupabaseBaseService<User> {
   }
 
   protected mapToSupabase(user: Partial<User>): Partial<Tables<'profiles'>> {
-    const mapped: any = {};
+    const mapped: any = { ...user };
     if (user.name) mapped.full_name = user.name;
-    if (user.role) mapped.role = user.role;
-    if (user.company_id) mapped.company_id = user.company_id;
     if (user.avatar) mapped.avatar_url = user.avatar;
+    
+    // Delete frontend-only fields
+    delete mapped.name;
+    delete mapped.avatar;
+    delete mapped.createdAt;
+    delete mapped.email; // email is in auth.users, usually not updated in profiles
+    
     return mapped;
   }
 
@@ -36,9 +41,9 @@ class UserService extends SupabaseBaseService<User> {
       name: raw.full_name || "Sem Nome",
       email: raw.email || "",
       role: (raw.role as User['role']) || "client",
-      status: "active", // Default status as 'profiles' table doesn't have it yet
+      status: (raw.status as any) || "active",
       company_id: raw.company_id || undefined,
-      avatar: (raw as any).avatar || raw.avatar_url || undefined,
+      avatar: raw.avatar_url || undefined,
       createdAt: raw.created_at ? new Date(raw.created_at) : undefined
     };
   }

@@ -51,7 +51,11 @@ export interface AuditLogEntry {
 
 class AuditLogService extends BaseService<any> {
   constructor() {
-    super({ storageKey: "audit_logs", shouldSyncWithSupabase: false }, []);
+    super({ 
+      storageKey: "audit_logs", 
+      supabaseTable: "audit_logs",
+      shouldSyncWithSupabase: true 
+    }, []);
   }
 
   private mapToEntry(raw: any): AuditLogEntry {

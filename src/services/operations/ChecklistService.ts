@@ -72,8 +72,8 @@ class ChecklistService extends SupabaseBaseService<ChecklistTemplate> {
       supabaseTable: "checklist_templates",
       auditEntityType: "checklist",
       shouldSyncWithSupabase: true
-    }, INITIAL_TEMPLATES);
-    this.loadExecutions();
+    }, []);
+    // this.loadExecutions(); // Disabled for DB-first
     this.initializeRealtime();
   }
 

@@ -13,31 +13,12 @@ export class NotificationService extends BaseService<ClientNotification> {
   private settingsKey = "a2_notification_settings";
 
   constructor() {
-    super({ storageKey: "a2_notifications", shouldSyncWithSupabase: false }, []);
-    this.loadSettings();
-    
-    // Initialize with mock data if empty
-    if (this.items.length === 0) {
-      const defaultSettings: NotificationSettings = {
-        email: { inspections: true, warranty: true, updates: true, reminders: true },
-        sms: { inspections: true, warranty: true, updates: true, reminders: true }
-      };
-      this.settingsMap.set('client-1', defaultSettings);
-      this.settingsMap.set('2', defaultSettings);
-      
-      this.create({
-        clientId: '2',
-        type: 'stage_changed',
-        title: 'Bem-vindo ao Portal',
-        message: 'Seu acesso foi liberado com sucesso!',
-        createdAt: new Date(),
-        read: false,
-        urgent: false,
-        metadata: { relatedEntityType: 'stage' }
-      } as any);
-      
-      this.persistSettings();
-    }
+    super({ 
+      storageKey: "a2_notifications", 
+      supabaseTable: "notifications",
+      shouldSyncWithSupabase: true 
+    }, []);
+    // this.loadSettings(); // Disabled for DB-first
   }
 
   private loadSettings() {

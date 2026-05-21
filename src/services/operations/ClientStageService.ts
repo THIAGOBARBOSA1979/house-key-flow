@@ -16,38 +16,11 @@ class ClientStageService extends SupabaseBaseService<ClientProfile> {
   constructor() {
     super({
       storageKey: "a2_client_profiles",
-      supabaseTable: "audit_logs" as keyof Database['public']['Tables'], // Dummy table
+      supabaseTable: "client_profiles" as any, 
       auditEntityType: "user",
-      shouldSyncWithSupabase: false
-    }, [
-      { 
-        id: "profile-1", 
-        userId: "client-1",
-        company_id: "comp-1",
-        name: "João Silva", 
-        email: "joao@email.com", 
-        propertyName: "Edifício Aurora", 
-        propertyId: "1",
-        unitNumber: "204", 
-        currentStage: "inspection_enabled",
-        createdAt: new Date(),
-        stageHistory: []
-      },
-      { 
-        id: "profile-2", 
-        userId: "client-1",
-        company_id: "comp-1",
-        name: "João Silva", 
-        email: "joao@email.com", 
-        propertyName: "Residencial Bosque Verde", 
-        propertyId: "2",
-        unitNumber: "102", 
-        currentStage: "warranty_enabled",
-        createdAt: new Date(),
-        stageHistory: []
-      }
-    ]);
-    this.loadEvents();
+      shouldSyncWithSupabase: true
+    }, []);
+    // this.loadEvents(); // Disabled for DB-first
   }
 
   private loadEvents() {
