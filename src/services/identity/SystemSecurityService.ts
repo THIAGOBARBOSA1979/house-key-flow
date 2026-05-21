@@ -1,4 +1,6 @@
 import { auditLogService } from '../core/AuditLogService';
+import { errorHandler } from '@/utils/errors/ErrorHandler';
+
 
 class SystemSecurityService {
   private static SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
@@ -28,7 +30,8 @@ class SystemSecurityService {
             performedByName: 'Sistema',
             performedByRole: 'user',
             details: 'Sessão encerrada por inatividade.'
-          });
+          }).catch(err => errorHandler.handle(err, 'SystemSecurityService:sessionTimeoutLog'));
+
           logoutFn();
         }
       }
