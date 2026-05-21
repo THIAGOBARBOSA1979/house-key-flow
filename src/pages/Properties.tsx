@@ -81,8 +81,8 @@ const Properties = () => {
 
   return (
     <PageTemplate
-      title="Inteligência de Portfólio"
-      description="Gerencie seu ecossistema de empreendimentos com foco em progresso físico e eficiência operacional."
+      title="Gestão de Empreendimentos"
+      description="Gerencie seu ecossistema de ativos com foco em progresso físico, eficiência operacional e vistorias."
       icon={Building}
       actions={actions}
     >
