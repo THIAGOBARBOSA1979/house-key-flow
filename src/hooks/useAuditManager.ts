@@ -10,5 +10,5 @@ export const useAuditManager = () => {
     }
   };
 
-  return { completeTask };
+  return { completeTask, issues };
 };

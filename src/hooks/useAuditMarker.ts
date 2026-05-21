@@ -1,17 +1,14 @@
-import { useEffect, useCallback } from 'react';
-import { useAuditStore } from './useAuditStore';
+import { useEffect } from 'react';
+import { useAuditManager } from './useAuditManager';
 
 export const useAuditMarker = (issueDescription: string) => {
-  const { issues, markAsFixed } = useAuditStore();
+  const { completeTask } = useAuditManager();
 
   useEffect(() => {
-    const issue = issues.find(i => i.description === issueDescription && i.status === 'pending');
-    if (issue) {
-      // Small delay to simulate "fixing" and ensure store stability
-      const timer = setTimeout(() => {
-        markAsFixed(issue.id);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [issues, issueDescription, markAsFixed]);
+    // Pequeno delay para garantir estabilidade do store
+    const timer = setTimeout(() => {
+      completeTask(issueDescription);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [issueDescription, completeTask]);
 };

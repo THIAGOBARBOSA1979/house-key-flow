@@ -6,7 +6,6 @@ import { WarrantyItem } from "@/types/warranty";
 import { errorHandler } from "@/utils/errors/ErrorHandler";
 
 export const useWarrantyClaims = (clientId: string, userName?: string) => {
-
   const { user } = useAuth();
   const { toast } = useToast();
   const companyId = user?.company_id;
@@ -30,8 +29,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     fetchClaims();
   }, [fetchClaims]);
 
-
-  const cancelClaim = useCallback((claimId: string) => {
+  const cancelClaim = useCallback(async (claimId: string) => {
     const success = warrantyFlowService.cancelRequest(claimId, clientId);
     if (success) {
       setClaims(prev => prev.filter(c => c.id !== claimId));
@@ -41,7 +39,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     return false;
   }, [clientId, toast]);
 
-  const addInfo = useCallback((claimId: string, info: string) => {
+  const addInfo = useCallback(async (claimId: string, info: string) => {
     const result = warrantyFlowService.addUpdate(
       claimId, 
       clientId, 
@@ -56,8 +54,8 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     return false;
   }, [clientId, userName, toast]);
 
-  const createClaim = useCallback((selectedItem: WarrantyItem, data: any) => {
-    const result = warrantyValidationService.validateAndCreateRequest(
+  const createClaim = useCallback(async (selectedItem: WarrantyItem, data: any) => {
+    const result = await warrantyValidationService.validateAndCreateRequest(
       selectedItem.id,
       clientId,
       {
@@ -108,4 +106,3 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     error
   };
 };
-

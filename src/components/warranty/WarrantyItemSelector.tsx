@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { WarrantyItem } from "@/types/warranty";
 import { warrantyValidationService } from "@/services";
 import { WarrantyItemCard } from "./WarrantyItemCard";
@@ -24,14 +24,19 @@ export function WarrantyItemSelector({
   showIneligible = true,
 }: WarrantyItemSelectorProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [allItems, setAllItems] = useState<WarrantyItem[]>([]);
   
-  // Get all warranty items for the client
-  const allItems = useMemo(() => {
-    return warrantyValidationService.getWarrantyItemsByClient(clientId);
+  useEffect(() => {
+    const fetchItems = async () => {
+      setIsLoading(true);
+      const items = await warrantyValidationService.getWarrantyItemsByClient(clientId);
+      setAllItems(items);
+      setIsLoading(false);
+    };
+    fetchItems();
   }, [clientId]);
   
-  // Separate eligible and ineligible items
   const { eligibleItems, ineligibleItems } = useMemo(() => {
     const eligible: WarrantyItem[] = [];
     const ineligible: WarrantyItem[] = [];
@@ -48,7 +53,6 @@ export function WarrantyItemSelector({
     return { eligibleItems: eligible, ineligibleItems: ineligible };
   }, [allItems, clientId]);
   
-  // Filter items by search query
   const filteredEligible = useMemo(() => {
     if (!searchQuery) return eligibleItems;
     const query = searchQuery.toLowerCase();
@@ -71,7 +75,6 @@ export function WarrantyItemSelector({
     );
   }, [ineligibleItems, searchQuery]);
   
-  // Handle item selection
   const handleSelect = (item: WarrantyItem) => {
     if (selectedItemId === item.id) {
       onSelectItem(null);
@@ -90,7 +93,6 @@ export function WarrantyItemSelector({
     );
   }
   
-  // No items at all
   if (allItems.length === 0) {
     return (
       <Alert>
@@ -103,14 +105,13 @@ export function WarrantyItemSelector({
     );
   }
   
-  // No eligible items
-  if (eligibleItems.length === 0) {
+  if (eligibleItems.length === 0 && !showIneligible) {
     return (
       <Alert variant="destructive">
         <ShieldX className="h-4 w-4" />
         <AlertTitle>Nenhum item elegível</AlertTitle>
         <AlertDescription>
-          Você não possui itens com garantia ativa no momento. Apenas itens com garantia ativa podem gerar novas solicitações.
+          Você não possui itens com garantia ativa no momento.
         </AlertDescription>
       </Alert>
     );
@@ -118,7 +119,6 @@ export function WarrantyItemSelector({
   
   return (
     <div className="space-y-4">
-      {/* Search */}
       <div className="relative group">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
         <Input

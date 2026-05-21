@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Folder, FileText, Plus, FolderPlus, Upload, ClipboardCheck, LayoutGrid, ShieldCheck, Zap, Grid, CheckCircle2 } from "lucide-react";
 import { documentService } from "@/services";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,15 @@ export interface FolderItem {
 
 export function FolderManager({ onFolderSelect }: { onFolderSelect: (id: string | null) => void }) {
   const { toast } = useToast();
-  const folders = documentService.getFolderStructure();
+  const [folders, setFolders] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchFolders = async () => {
+      const data = await documentService.getFolderStructure();
+      setFolders(data);
+    };
+    fetchFolders();
+  }, []);
 
   const getFolderIcon = (iconName: string) => {
     switch(iconName) {

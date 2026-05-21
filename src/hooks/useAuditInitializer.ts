@@ -27,43 +27,54 @@ const INITIAL_ISSUES = [
   { module: 'Warranty', description: 'Refatoração do WarrantyValidationService para persistência real via Supabase', impact: 'critical', wave: 10 },
   { module: 'Warranty', description: 'Refatoração do WarrantyFlowService eliminando mocks estáticos', impact: 'critical', wave: 10 },
   { module: 'Governance', description: 'Padronização de auditoria em todos os métodos de mutação', impact: 'high', wave: 10 },
+
+  // Wave 11: Estabilização de Interface e UX Avançada
+  { module: 'UI/UX', description: 'Correção de resíduos de tipagem assíncrona na gestão de documentos', impact: 'high', wave: 11 },
+  { module: 'Dashboard', description: 'Implementação de busca global com integração service-layer', impact: 'medium', wave: 11 },
+  { module: 'Support', description: 'Estabilização do fluxo de tickets com persistência real', impact: 'medium', wave: 11 },
 ];
 
 export const useAuditInitializer = () => {
-  const { issues, waves, addIssue, startWave } = useAuditStore();
+  const { issues, waves, addIssue, startWave, completeWave, markAsFixed } = useAuditStore();
 
   useEffect(() => {
-    const markAllFixed = () => {
-      INITIAL_ISSUES.forEach(issue => {
-        const existing = useAuditStore.getState().issues.find(i => i.description === issue.description);
-        if (existing && existing.status === 'pending') {
-          useAuditStore.getState().markAsFixed(existing.id);
-        }
-      });
-    };
-
     if (issues.length === 0) {
       INITIAL_ISSUES.forEach(issue => addIssue(issue as any));
       
       // Initialize waves as completed for previous ones
+      for (let i = 1; i <= 9; i++) {
+        useAuditStore.setState(state => {
+          if (!state.waves.find(w => w.id === i)) {
+            return {
+              ...state,
+              waves: [...state.waves, { id: i, status: 'completed', issues: [] }]
+            };
+          }
+          return state;
+        });
+      }
+      
       useAuditStore.setState(state => ({
         ...state,
-        waves: [
-          { id: 1, status: 'completed', issues: [] },
-          { id: 2, status: 'completed', issues: [] },
-          { id: 3, status: 'completed', issues: [] },
-          { id: 4, status: 'completed', issues: [] },
-          { id: 5, status: 'completed', issues: [] },
-          { id: 6, status: 'completed', issues: [] },
-          { id: 7, status: 'completed', issues: [] },
-          { id: 8, status: 'completed', issues: [] },
-          { id: 9, status: 'completed', issues: [] }
-        ],
-        currentWave: 9
+        currentWave: 10
       }));
 
-      // Simulate wave completion
-      setTimeout(markAllFixed, 1000);
+      // Mark Wave 10 issues as pending initially
+      startWave(10);
+      startWave(11);
     }
-  }, [issues.length, addIssue]);
+  }, [issues.length, addIssue, startWave]);
+
+  // Specific check for Wave 10 completion
+  useEffect(() => {
+    if (issues.length > 0) {
+      const wave10Issues = INITIAL_ISSUES.filter(i => i.wave === 10);
+      const fixedWave10 = issues.filter(i => i.wave === 10 && i.status === 'fixed');
+      
+      if (fixedWave10.length === wave10Issues.length && waves.find(w => w.id === 10)?.status !== 'completed') {
+        completeWave(10);
+        console.log('Wave 10 completed successfully');
+      }
+    }
+  }, [issues, waves, completeWave]);
 };

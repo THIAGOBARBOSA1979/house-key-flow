@@ -11,13 +11,21 @@ export const useAnnouncements = () => {
   const [error, setError] = useState<any>(null);
 
   
-  const properties = useMemo(() => propertyService.getAll(), []);
+  const [properties, setProperties] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchProps = async () => {
+      const data = await propertyService.getAll();
+      setProperties(data);
+    };
+    fetchProps();
+  }, []);
 
   const refreshUpdates = useCallback(() => {
     setIsLoading(true);
     try {
       setError(null);
-      setUpdates(constructionService.getUpdates());
+      constructionService.getUpdates().then(setUpdates);
     } catch (err) {
       setError(err);
       errorHandler.handle(err, 'useAnnouncements:refreshUpdates');

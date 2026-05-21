@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -48,7 +48,15 @@ export function UploadDocumentDialog({ isOpen, onClose, onSuccess }: UploadDocum
     expiresAt: ""
   });
 
-  const categories = documentService.getCategories();
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
+
+  useEffect(() => {
+    const fetchCats = async () => {
+      const data = await documentService.getCategories();
+      setCategories(data.map(c => ({ id: c, name: c })));
+    };
+    fetchCats();
+  }, []);
 
   const handleUpload = async () => {
     if (!formData.title) {
