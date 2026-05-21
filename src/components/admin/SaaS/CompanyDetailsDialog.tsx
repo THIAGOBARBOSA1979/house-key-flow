@@ -37,13 +37,13 @@ interface CompanyDetailsDialogProps {
   setEditData: (data: any) => void;
   slugError: string | null;
   isSaving: boolean;
-  onSave: () => void;
+  onSave: (data: Partial<Company>) => void;
   onStartEditing: () => void;
   isUpdatingSub: boolean;
   setIsUpdatingSub: (val: boolean) => void;
   expiryDate: string;
   setExpiryDate: (val: string) => void;
-  onUpdateSub: () => void;
+  onUpdateSub: (plan: SubscriptionPlan, expiresAt: string) => void;
   onToggleStatus: (id: string, status: any) => void;
   onDelete: (id: string) => void;
   companyUsers: User[];
