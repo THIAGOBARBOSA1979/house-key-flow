@@ -33,11 +33,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DataTable } from "@/components/Shared/DataTable";
 import { StatusBadge } from "@/components/Shared/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { DataView } from "@/components/Shared/DataView";
+import { ErrorView } from "@/components/Shared/ErrorView";
+
 
 const Announcements = () => {
   const { 
@@ -132,8 +133,6 @@ const Announcements = () => {
 
   return (
     <div className="space-y-8 pb-10 animate-in fade-in duration-500">
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-
       <PageHeader
         icon={Megaphone}
         title="Comunicados e Notícias"
@@ -143,6 +142,7 @@ const Announcements = () => {
           <Plus className="mr-2 h-4 w-4" strokeWidth={3} /> Criar Comunicado
         </Button>
       </PageHeader>
+
 
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -272,6 +272,7 @@ const Announcements = () => {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 
+
         <DialogContent className="max-w-dialog-md rounded-3xl border-none shadow-sem-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
@@ -381,5 +382,5 @@ const Announcements = () => {
   );
 };
 
-
 export default Announcements;
+
