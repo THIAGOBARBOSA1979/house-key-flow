@@ -75,25 +75,26 @@ class PropertyService extends SupabaseBaseService<Property> {
     });
   }
 
-  create(property: Omit<Property, "id">, companyId?: string): Property {
-    return super.create({
+  async create(property: Omit<Property, "id">, companyId?: string): Promise<Property> {
+    return await super.create({
       ...property,
       createdAt: property.createdAt || new Date(),
     }, companyId);
   }
 
-  update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Property | undefined {
+  async update(id: string, property: Partial<Property>, isSuperAdmin?: boolean): Promise<Property | undefined> {
     const oldItem = this.getById(id, undefined, isSuperAdmin);
-    const updated = super.update(id, property, isSuperAdmin);
+    const updated = await super.update(id, property, isSuperAdmin);
 
     if (updated && property.status && property.status !== oldItem?.status) {
-      this.log('stage_changed', id, `Status do empreendimento ${updated.name} alterado para ${property.status}.`, {
+      await this.log('stage_changed', id, `Status do empreendimento ${updated.name} alterado para ${property.status}.`, {
         oldStatus: oldItem?.status,
         newStatus: property.status
       });
     }
     return updated;
   }
+
 
   updateMilestone(propertyId: string, milestoneId: string, completed: boolean, isSuperAdmin?: boolean): Property | undefined {
     const property = this.getById(propertyId, undefined, isSuperAdmin);

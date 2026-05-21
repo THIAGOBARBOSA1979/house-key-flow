@@ -79,8 +79,8 @@ class TechnicianService extends SupabaseBaseService<Technician> {
   }
 
 
-  create(technician: Omit<Technician, "id" | "joinedAt" | "completedJobs" | "activeJobs" | "rating">): Technician {
-    const newTechnician = super.create({
+  async create(technician: Omit<Technician, "id" | "joinedAt" | "completedJobs" | "activeJobs" | "rating">): Promise<Technician> {
+    const newTechnician = await super.create({
       ...technician,
       joinedAt: new Date(),
       completedJobs: 0,
@@ -88,7 +88,7 @@ class TechnicianService extends SupabaseBaseService<Technician> {
       rating: 5.0
     } as any);
 
-    auditLogService.logAction({
+    await auditLogService.logAction({
       entityType: 'user',
       entityId: newTechnician.id,
       action: 'created',
@@ -96,6 +96,7 @@ class TechnicianService extends SupabaseBaseService<Technician> {
     });
     return newTechnician;
   }
+
 }
 
 export const technicianService = new TechnicianService();

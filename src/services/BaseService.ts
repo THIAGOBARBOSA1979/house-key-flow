@@ -113,7 +113,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return undefined;
   }
 
-  create(item: Omit<T, "id">, companyId?: string): T {
+  async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
     const id = (item as any).id || crypto.randomUUID();
     const newItem = {
       ...item,
@@ -123,11 +123,11 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     
     this.items.push(newItem);
     this.persist();
-    this.log('created', id, `Registro criado em ${this.options.storageKey}`);
+    await this.log('created', id, `Registro criado em ${this.options.storageKey}`);
     return newItem;
   }
 
-  update(id: string, data: Partial<T>, isSuperAdmin?: boolean): T | undefined {
+  async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
     const index = this.items.findIndex(item => item.id === id);
     if (index === -1) return undefined;
     
@@ -135,7 +135,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     this.items[index] = { ...this.items[index], ...data };
     this.persist();
     
-    this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, {
+    await this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, {
       changes: data,
       previous: oldItem
     });
@@ -143,17 +143,18 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
     return this.items[index];
   }
 
-  delete(id: string): boolean {
+  async delete(id: string): Promise<boolean> {
     const initialLength = this.items.length;
     this.items = this.items.filter(item => item.id !== id);
     
     if (this.items.length !== initialLength) {
       this.persist();
-      this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
+      await this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
       return true;
     }
     return false;
   }
+
 
   async bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]> {
     const results: T[] = [];
