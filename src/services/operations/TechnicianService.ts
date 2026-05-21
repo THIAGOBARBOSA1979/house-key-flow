@@ -30,8 +30,7 @@ class TechnicianService extends SupabaseBaseService<Technician> {
       supabaseTable: "technicians",
       auditEntityType: "user",
       shouldSyncWithSupabase: true
-
-    }, []);
+    });
   }
 
 

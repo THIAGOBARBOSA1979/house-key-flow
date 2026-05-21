@@ -48,7 +48,7 @@ class CompanyService extends SupabaseBaseService<Company> {
       supabaseTable: "companies",
       auditEntityType: "system",
       shouldSyncWithSupabase: true
-    }, []);
+    });
   }
 
   getCompanyBySlug(slug: string): Company | undefined {

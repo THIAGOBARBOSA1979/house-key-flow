@@ -11,13 +11,6 @@ class UserService extends SupabaseBaseService<User> {
       supabaseTable: "profiles",
       auditEntityType: "user",
       shouldSyncWithSupabase: true
-    }, []);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable('profiles', async () => {
-      await this.sync();
     });
   }
 

@@ -54,18 +54,6 @@ class PropertyService extends SupabaseBaseService<Property> {
         totalArea: 'total_area',
         manager: 'manager_id'
       }
-    }, []);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    let syncTimeout: any = null;
-    Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
-      // Debounce sync to avoid multiple rapid requests
-      if (syncTimeout) clearTimeout(syncTimeout);
-      syncTimeout = setTimeout(async () => {
-        await this.sync();
-      }, 500);
     });
   }
 
