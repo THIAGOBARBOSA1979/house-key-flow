@@ -16,12 +16,12 @@ const INITIAL_ISSUES = [
   { module: 'Warranty', description: 'Validação de garantia no WarrantyValidationService usa mocks estáticos', impact: 'critical', wave: 3 },
   { module: 'Warranty', description: 'Fluxo de abertura de chamado não valida limites de upload de fotos', impact: 'medium', wave: 3 },
   { module: 'Warranty', description: 'SLA de garantia não está sendo calculado corretamente em fins de semana', impact: 'high', wave: 3 },
-  // Wave 4: Deep Technical Audit & Systems Hardening
-  { module: 'Auth', description: 'Sincronização redundante de sessão no AuthContext causando inconsistência de estado', impact: 'high', wave: 4 },
-  { module: 'Data', description: 'Uso excessivo de mocks em serviços causando "flickering" de dados reais', impact: 'medium', wave: 4 },
-  { module: 'Security', description: 'Sanitização de entradas de usuário insuficiente para proteção XSS/SQLi', impact: 'critical', wave: 4 },
-  { module: 'DB', description: 'Inconsistência de nomenclatura entre frontend (camelCase) e DB (snake_case)', impact: 'medium', wave: 4 },
-  { module: 'Performance', description: 'SystemHealthService iterando sincronicamente sobre localStorage impactando a Main Thread', impact: 'low', wave: 4 },
+  // Wave 5: UX Refinement & Edge Case Handling
+  { module: 'UX', description: 'Modais de criação de vistoria sem feedback visual de progresso durante upload', impact: 'medium', wave: 5 },
+  { module: 'UI', description: 'Dashboards sem estados de fallback "Empty State" para novos usuários/empresas', impact: 'low', wave: 5 },
+  { module: 'Responsive', description: 'Quebra de layout no Kanban de Garantias em telas Ultra-Wide (>2000px)', impact: 'low', wave: 5 },
+  { module: 'Performance', description: 'Re-renderizações excessivas no menu lateral ao alternar rotas', impact: 'medium', wave: 5 },
+  { module: 'Error Handling', description: 'Exceções não tratadas em falhas de rede durante download de documentos', impact: 'high', wave: 5 },
 ];
 
 export const useAuditInitializer = () => {
@@ -38,9 +38,10 @@ export const useAuditInitializer = () => {
           { id: 1, status: 'completed', issues: [] },
           { id: 2, status: 'completed', issues: [] },
           { id: 3, status: 'completed', issues: [] },
-          { id: 4, status: 'in_progress', issues: [] }
+          { id: 4, status: 'completed', issues: [] },
+          { id: 5, status: 'in_progress', issues: [] }
         ],
-        currentWave: 4
+        currentWave: 5
       }));
     }
   }, []);
