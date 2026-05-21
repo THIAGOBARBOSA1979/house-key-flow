@@ -29,7 +29,7 @@ import { useAuditMarker } from "@/hooks/useAuditMarker";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const userId = user?.id || "client-1";
+  const userId = user?.id || "";
   const { profile, stage, isLoading: stageLoading, error: stageError, refreshProfile } = useClientStage(userId);
   
   useAuditMarker('Mocks de dados no ConstructionFeed precisam ser substituídos por dados do Supabase');
@@ -39,7 +39,9 @@ const Dashboard = () => {
   const {
     isLoading: dashboardLoading,
     error: dashboardError,
-    constructionUpdates: serviceUpdates
+    constructionUpdates: serviceUpdates,
+    upcomingInspections,
+    warrantyRequests
   } = useClientDashboardData(profile?.id || userId, user?.name);
 
   
@@ -121,7 +123,7 @@ const Dashboard = () => {
   return (
     <div className="container-responsive py-8 space-y-12 animate-in fade-in duration-slow">
       {/* Welcome Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
              <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
@@ -146,10 +148,12 @@ const Dashboard = () => {
             contractProgress={contractProgress}
             deliveryDate={userInfo.deliveryDate}
             contractDate={userInfo.contractDate}
+            location={profile?.propertyName ? propertyService.getAll().find(p => p.id === profile.propertyId)?.location : undefined}
+            block={profile?.block}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+            <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden h-full">
               <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all">
                 <ClipboardCheck size={120} />
               </div>
@@ -157,10 +161,18 @@ const Dashboard = () => {
                 <div className="p-3 bg-white rounded-2xl shadow-sm text-primary group-hover:scale-110 transition-transform">
                   <ClipboardCheck size={24} />
                 </div>
-                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest">Vistorias</Badge>
+                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest">
+                  {upcomingInspections && upcomingInspections.length > 0 ? `${upcomingInspections.length} Agendadas` : "Vistorias"}
+                </Badge>
               </div>
-              <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">Acompanhamento Técnico</h3>
-              <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">Gerencie protocolos de vistoria e laudos ABNT da sua unidade.</p>
+              <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">
+                {upcomingInspections && upcomingInspections.length > 0 ? "Vistoria em Andamento" : "Acompanhamento Técnico"}
+              </h3>
+              <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
+                {upcomingInspections && upcomingInspections.length > 0 
+                  ? `Você possui ${upcomingInspections.length} vistorias programadas para sua unidade.` 
+                  : "Gerencie protocolos de vistoria e laudos ABNT da sua unidade."}
+              </p>
               <Link to="/client/inspections" className="relative z-10 block">
                 <Button className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 shadow-lg shadow-primary/20">
                   Ver Vistorias <ArrowRight size={14} className="ml-2" />
@@ -168,7 +180,7 @@ const Dashboard = () => {
               </Link>
             </Card>
 
-            <Card className="rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden">
+            <Card className="rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden h-full">
                <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all">
                 <ShieldCheck size={120} />
               </div>
@@ -176,10 +188,16 @@ const Dashboard = () => {
                 <div className="p-3 bg-white rounded-2xl shadow-sm text-indigo-500 group-hover:scale-110 transition-transform">
                   <ShieldCheck size={24} />
                 </div>
-                <Badge className="bg-indigo-100 text-indigo-600 border-none font-black text-[10px] uppercase tracking-widest">Garantias</Badge>
+                <Badge className="bg-indigo-100 text-indigo-600 border-none font-black text-[10px] uppercase tracking-widest">
+                  {warrantyRequests && warrantyRequests.length > 0 ? `${warrantyRequests.length} Ativas` : "Garantias"}
+                </Badge>
               </div>
               <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">Assistência Técnica</h3>
-              <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">Abra protocolos de assistência técnica com rastreabilidade total.</p>
+              <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
+                {warrantyRequests && warrantyRequests.length > 0 
+                  ? `Existem ${warrantyRequests.length} solicitações de assistência técnica em processamento.` 
+                  : "Abra protocolos de assistência técnica com rastreabilidade total."}
+              </p>
               <Link to="/client/warranty" className="relative z-10 block">
                 <Button variant="outline" className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 border-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
                   Gerenciar Garantias <ArrowRight size={14} className="ml-2" />
@@ -192,7 +210,10 @@ const Dashboard = () => {
         </div>
 
         <div className="lg:col-span-1 space-y-8">
-          <TechnicalSheet />
+          <TechnicalSheet 
+            propertyArea={profile?.propertyId ? propertyService.getById(profile.propertyId)?.totalArea : undefined}
+            deliveryDate={userInfo.deliveryDate?.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+          />
           
           <Card className="rounded-[2rem] border-none shadow-sem-lg bg-white p-8 overflow-hidden relative group">
             <div className="absolute right-[-10%] top-[-10%] opacity-5 group-hover:rotate-12 transition-transform duration-1000">
