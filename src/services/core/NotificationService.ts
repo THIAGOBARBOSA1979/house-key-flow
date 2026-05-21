@@ -79,6 +79,7 @@ export class NotificationService extends BaseService<ClientNotification> {
       urgent: template.urgent,
       metadata
     } as any);
+
   }
 
 

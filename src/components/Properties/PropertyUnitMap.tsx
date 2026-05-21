@@ -39,8 +39,8 @@ export function PropertyUnitMap({ propertyId, units, onUnitClick, onUpdate }: Pr
     prefix: ""
   });
 
-  const handleBatchCreate = () => {
-    const result = propertyService.batchCreateUnits(
+  const handleBatchCreate = async () => {
+    const result = await propertyService.batchCreateUnits(
       propertyId,
       batchData.floorStart,
       batchData.floorEnd,
@@ -58,8 +58,9 @@ export function PropertyUnitMap({ propertyId, units, onUnitClick, onUpdate }: Pr
     }
   };
 
-  const handleUpdateStatus = (unitId: string, status: PropertyUnit['status']) => {
-    const result = propertyService.updateUnitStatus(propertyId, unitId, status);
+
+  const handleUpdateStatus = async (unitId: string, status: PropertyUnit['status']) => {
+    const result = await propertyService.updateUnitStatus(propertyId, unitId, status);
     if (result) {
       toast({
         title: "Status atualizado",
@@ -68,6 +69,7 @@ export function PropertyUnitMap({ propertyId, units, onUnitClick, onUpdate }: Pr
       onUpdate?.();
     }
   };
+
 
   const statusColors = {
     available: "bg-muted hover:bg-muted/80 text-muted-foreground",

@@ -163,6 +163,7 @@ class PropertyService extends SupabaseBaseService<Property> {
   }
 
 
+
   getMetrics(companyId?: string, isSuperAdmin?: boolean): PropertyMetrics {
     const relevantItems = this.getAll(companyId, isSuperAdmin);
     const total = relevantItems.length;

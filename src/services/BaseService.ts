@@ -166,6 +166,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   }
 
 
+
   async bulkDelete(ids: string[]): Promise<number> {
     let count = 0;
     for (const id of ids) {
