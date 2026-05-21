@@ -16,12 +16,12 @@ export interface UseServiceOptions<T> {
 }
 
 export interface IService<T> {
-  getAll(companyId?: string, isSuperAdmin?: boolean): T[] | Promise<T[]>;
-  getById(id: string, companyId?: string, isSuperAdmin?: boolean): T | undefined | Promise<T | undefined>;
+  getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]>;
+  getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined>;
   create(data: Omit<T, "id">, companyId?: string): Promise<T>;
   update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined>;
   delete(id: string): Promise<boolean>;
-  bulkUpdate(ids: string[], data: Partial<T>, isSuperAdmin?: boolean): Promise<T[]>;
+  bulkUpdate(ids: string[], data: Partial<T>): Promise<T[]>;
   bulkDelete(ids: string[]): Promise<number>;
   subscribe(listener: (items: T[]) => void): () => void;
 }

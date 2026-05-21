@@ -68,13 +68,6 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       supabaseTable: "inspections",
       auditEntityType: "inspection",
       shouldSyncWithSupabase: true
-    }, []);
-    this.initializeRealtime();
-  }
-
-  private async initializeRealtime() {
-    Supabase.realtime.subscribeToTable(this.supabaseTable, async () => {
-      await this.sync();
     });
   }
 
