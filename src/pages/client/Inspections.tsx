@@ -68,6 +68,14 @@ export default function ClientInspections() {
     { id: '3', title: 'Assinatura do Termo', status: inspection?.signed ? 'completed' : 'pending', eventType: 'inspection_approved' }
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       <DigitalSignatureDialog
@@ -93,15 +101,16 @@ export default function ClientInspections() {
             Vistorias & Entrega <span className="text-primary">.</span>
           </h1>
         </div>
-        {(stage !== 'inspection_enabled' && stage !== 'warranty_enabled') && (
-          <div className="flex items-center gap-4 p-5 bg-amber-50 rounded-[1.5rem] border border-amber-200/50 shadow-sm animate-in slide-in-from-right-8 duration-slow">
-            <div className="p-2 bg-amber-100 rounded-xl text-amber-600">
-              <AlertTriangle className="h-5 w-5" strokeWidth={3} />
-            </div>
-            <p className="text-xs text-amber-900 font-bold leading-tight max-w-[240px]">Aguardando liberação estratégica pela incorporadora para agendamento.</p>
-          </div>
-        )}
       </div>
+
+      <FeatureGate
+        isAllowed={canScheduleInspection}
+        requiredStage="inspection_enabled"
+        featureName="O módulo de vistorias"
+        message="Aguardando liberação estratégica pela incorporadora para agendamento técnico da unidade."
+        redirectTo="/client"
+        redirectLabel="Voltar para Dashboard"
+      >
 
 
       <ResponsiveGrid columns={4} gap="layout">
