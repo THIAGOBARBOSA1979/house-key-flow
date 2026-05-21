@@ -381,6 +381,7 @@ const ClientNotifications = () => {
           </div>
         </TabsContent>
       </Tabs>
+      </FeatureGate>
     </div>
   );
 };
