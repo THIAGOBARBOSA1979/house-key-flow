@@ -5,7 +5,8 @@ import {
   WarrantyRequestFlow, 
   WarrantyFilters, 
   WarrantyStage,
-  KanbanCardData
+  KanbanCardData,
+  WarrantyMetrics
 } from "@/types/warrantyFlow";
 import { useToast, useService, useDataList } from "@/hooks";
 
