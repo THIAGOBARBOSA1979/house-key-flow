@@ -34,7 +34,8 @@ interface AuditState {
 }
 
 export const useAuditStore = create<AuditState>()(
-  persist(
+  // persist( // DISABLED persistence for audit store to ensure session-only or DB-only logic if needed
+    (set, get) => ({
     (set, get) => ({
       totalIssues: 0,
       fixedIssues: 0,
@@ -81,9 +82,9 @@ export const useAuditStore = create<AuditState>()(
         if (state.totalIssues === 0) return 0;
         return Math.round((state.fixedIssues / state.totalIssues) * 100);
       }
-    }),
-    {
-      name: 'audit-storage',
-    }
-  )
+    })
+  //  {
+  //    name: 'audit-storage',
+  //  }
+  // )
 );

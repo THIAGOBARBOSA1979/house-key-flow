@@ -18,7 +18,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
   constructor(options: BaseServiceOptions | string, initialData: T[] = []) {
     this.options = typeof options === 'string' ? { storageKey: options } : options;
     this.items = initialData;
-    // this.loadFromStorage(); // Disabled for DB-first persistence
+    // this.loadFromStorage(); // DISABLED: Using Supabase as the source of truth
   }
 
   subscribe(listener: Listener<T>) {
@@ -64,7 +64,7 @@ export abstract class BaseService<T extends { id: string; company_id?: string }>
 
   protected persist() {
     if (typeof window === 'undefined') return;
-    // localStorage.setItem(this.options.storageKey, JSON.stringify(this.items)); // Disabled
+    // localStorage.setItem(this.options.storageKey, JSON.stringify(this.items)); // DISABLED
     this.notify();
   }
 
