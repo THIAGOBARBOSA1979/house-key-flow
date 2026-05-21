@@ -47,15 +47,11 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      const result = await service.getAll(companyId, isSuperAdmin);
+      const data = await service.getAll(companyId, isSuperAdmin);
       
-      if (result.success) {
-        startTransition(() => {
-          setItems(result.data);
-        });
-      } else {
-        throw new Error(result.error);
-      }
+      startTransition(() => {
+        setItems(data);
+      });
     } catch (err) {
       const appError = errorHandler.handle(err, 'useService:fetchItems');
       setError(appError);
@@ -77,11 +73,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      const result = await service.create(data, companyId);
+      const newItem = await service.create(data, companyId);
       
-      if (!result.success) throw new Error(result.error);
-      
-      const newItem = result.data;
       if (optionsRef.current.toastMessages?.create) {
         toast({ 
           title: "Sincronização Concluída", 
@@ -104,11 +97,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      const result = await service.update(id, data, isSuperAdmin);
+      const updatedItem = await service.update(id, data, isSuperAdmin);
       
-      if (!result.success) throw new Error(result.error);
-      
-      const updatedItem = result.data;
       if (updatedItem) {
         if (optionsRef.current.toastMessages?.update) {
           toast({ 
@@ -133,11 +123,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      const result = await service.delete(id);
+      const success = await service.delete(id);
       
-      if (!result.success) throw new Error(result.error);
-      
-      const success = result.data;
       if (success) {
         if (optionsRef.current.toastMessages?.delete) {
           toast({ 
@@ -160,9 +147,7 @@ export function useService<T extends { id: string; company_id?: string }>(
 
   const getById = useCallback(async (id: string) => {
     try {
-      const result = await service.getById(id, companyId, isSuperAdmin);
-      if (result.success) return result.data;
-      throw new Error(result.error);
+      return await service.getById(id, companyId, isSuperAdmin);
     } catch (error) {
       errorHandler.handle(error, 'useService:getById');
       return undefined;
