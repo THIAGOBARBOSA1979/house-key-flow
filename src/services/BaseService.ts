@@ -28,10 +28,48 @@ export abstract class BaseService<T extends BaseEntity> {
   }
 
   /**
-   * Notify all subscribers of state changes.
-   * @deprecated
+   * Get all items, filtered by company isolation rules.
+   * Now primarily a proxy for API calls, as state is managed by TanStack Query.
    */
-  protected notify() {}
+  async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
+    return [];
+  }
+
+  /**
+   * Get a single item by ID with isolation checks.
+   */
+  async getById(id: string, companyId?: string, isSuperAdmin?: boolean): Promise<T | undefined> {
+    return undefined;
+  }
+
+  /**
+   * Create a new item.
+   */
+  async create(item: Omit<T, "id">, companyId?: string): Promise<T> {
+    return { id: crypto.randomUUID(), ...item } as any;
+  }
+
+  /**
+   * Update an existing item.
+   */
+  async update(id: string, data: Partial<T>, isSuperAdmin?: boolean): Promise<T | undefined> {
+    return undefined;
+  }
+
+  /**
+   * Delete an item.
+   */
+  async delete(id: string): Promise<boolean> {
+    return true;
+  }
+
+  async bulkUpdate(ids: string[], data: Partial<T>): Promise<T[]> {
+    return [];
+  }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    return 0;
+  }
 
   /**
    * Get a single item by ID with isolation checks.

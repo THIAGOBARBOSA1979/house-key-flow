@@ -47,10 +47,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      if ('sync' in service && typeof (service as any).sync === 'function') {
+      // Removed sync call as getAll now handles it
 
-        await (service as any).sync(companyId, isSuperAdmin);
-      }
       const data = await service.getAll(companyId, isSuperAdmin);
       startTransition(() => {
         setItems(data);
@@ -164,7 +162,7 @@ export function useService<T extends { id: string; company_id?: string }>(
     setIsLoading(true);
     try {
       setError(null);
-      const results = await service.bulkUpdate(ids, data, isSuperAdmin);
+      const results = await service.bulkUpdate(ids, data);
       toast({ 
         title: "Atualização em Massa", 
         description: `${results.length} registros foram sincronizados.` 
