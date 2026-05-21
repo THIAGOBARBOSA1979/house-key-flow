@@ -11,13 +11,21 @@ export interface BaseServiceOptions {
 export abstract class BaseService<T extends BaseEntity> {
   protected options: BaseServiceOptions;
   protected items: T[] = [];
+  protected listeners: Listener<T>[] = [];
 
   constructor(options: BaseServiceOptions | string) {
     this.options = typeof options === 'string' ? { storageKey: options } : options;
   }
 
   subscribe(listener: Listener<T>) {
-    return () => {};
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  }
+
+  protected notifyListeners() {
+    this.listeners.forEach(listener => listener(this.items));
   }
 
   getAllSync(companyId?: string, isSuperAdmin?: boolean): T[] {
@@ -45,6 +53,7 @@ export abstract class BaseService<T extends BaseEntity> {
     const id = (item as any).id || crypto.randomUUID();
     const newItem = { ...item, id, company_id: companyId || (item as any).company_id } as T;
     this.items.push(newItem);
+    this.notifyListeners();
     await this.log('created', id, `Registro criado em ${this.options.storageKey}`, newItem);
     return newItem;
   }
@@ -54,6 +63,7 @@ export abstract class BaseService<T extends BaseEntity> {
     if (index === -1) return undefined;
     const oldItem = { ...this.items[index] };
     this.items[index] = { ...this.items[index], ...data };
+    this.notifyListeners();
     await this.log('updated', id, `Registro atualizado em ${this.options.storageKey}`, { changes: data, previous: oldItem });
     return this.items[index];
   }
@@ -62,6 +72,7 @@ export abstract class BaseService<T extends BaseEntity> {
     const initialLength = this.items.length;
     this.items = this.items.filter(item => item.id !== id);
     if (this.items.length !== initialLength) {
+      this.notifyListeners();
       await this.log('deleted', id, `Registro removido de ${this.options.storageKey}`);
       return true;
     }
@@ -113,5 +124,6 @@ export abstract class BaseService<T extends BaseEntity> {
 
   clearAllData() {
     this.items = [];
+    this.notifyListeners();
   }
 }

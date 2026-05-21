@@ -91,7 +91,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               </Button>
 
               <UserMenu 
-                companyName={company?.settings?.display_name || company?.name} 
+                companyName={company?.settings?.display_name || company?.name || 'A2'} 
                 onOpenShortcuts={() => setIsShortcutsOpen(true)} 
               />
             </div>
