@@ -30,21 +30,27 @@ export interface Inspection {
   company_id?: string;
   property: string;
   unit: string;
+  unit_number?: string; // Standardized field
   client: string;
+  client_id?: string; // Standardized field
   date: Date;
   time: string;
   status: string;
   type: string;
   technician: string;
+  technician_id?: string; // Standardized field
   checklistId?: string;
+  checklist_id?: string; // Standardized field
   notes?: string;
   requestId?: string;
+  request_id?: string; // Standardized field
   priority?: "low" | "medium" | "high";
   createdAt?: Date;
   firstContactAt?: Date;
   // Novos campos ABNT
   technicalStandards?: string[]; // Ex: ["ABNT NBR 15575", "ABNT NBR 5674"]
   conformityScore?: number;
+  conformity_score?: number; // Standardized field
   nonConformitiesFound?: number;
   reportUrl?: string;
   weatherConditions?: string; // Importante para vistorias externas
