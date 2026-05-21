@@ -43,8 +43,10 @@ const Users = () => {
     toggleUserStatus,
     toggleSelectUser,
     handleBulkAction,
-    handleResendInvite
+    handleResendInvite,
+    error: usersError
   } = useUsers();
+
   
   const [viewMode, setViewMode] = useState<DataViewMode>("grid");
   const [isUserFormOpen, setIsUserFormOpen] = useState(false);
@@ -112,7 +114,12 @@ const Users = () => {
       <DataView<UserType>
         items={filteredUsers}
         isLoading={isLoading}
+        isError={!!usersError}
+        error={{
+          message: (usersError as any)?.message
+        }}
         skeletonType="table"
+
         viewMode={viewMode}
         itemsPerPage={8}
         renderGrid={(user) => (

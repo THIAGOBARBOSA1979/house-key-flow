@@ -2,7 +2,9 @@ import { useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { userService } from "@/services";
 import { useToast, useService, useDataList } from "@/hooks";
+import { errorHandler } from "@/utils/errors/ErrorHandler";
 import { User, UserFiltersData, UserFormData } from "@/types/user";
+
 
 /**
  * Advanced hook for user management logic (Onda 4 Refactor)
@@ -19,8 +21,10 @@ export const useUsers = () => {
     update, 
     remove, 
     bulkUpdate, 
-    bulkRemove 
+    bulkRemove,
+    error
   } = useService<User>(userService, {
+
     toastMessages: {
       create: "Novo usuário criado com sucesso.",
       update: "Usuário atualizado com sucesso.",
