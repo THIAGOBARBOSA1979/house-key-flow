@@ -27,18 +27,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Mapping existing legacy roles to RBAC roles
-  let userRole: Role = 'user';
-  if (user.is_super_admin) {
-    userRole = 'super_admin';
-  } else if (user.role === 'admin' || user.role === 'manager') {
-    userRole = 'admin';
-  } else if (user.role === 'staff') {
-    userRole = 'staff';
-  } else if (user.role === 'technical') {
-    userRole = 'technical';
-  } else {
-    userRole = 'user';
-  }
+  const userRole: Role = useMemo(() => {
+    if (user.is_super_admin) return 'super_admin';
+    if (user.role === 'admin' || user.role === 'manager') return 'admin';
+    if (user.role === 'staff') return 'staff';
+    if (user.role === 'technical') return 'technical';
+    return 'user';
+  }, [user]);
 
 
   if (requiredRole) {
