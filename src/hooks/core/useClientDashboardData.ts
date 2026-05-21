@@ -16,6 +16,8 @@ export const useClientDashboardData = (clientId: string, userName?: string, prop
   const upcomingInspections = useMemo(() => allInspections.filter(i => i.status !== 'complete'), [allInspections]);
   const warrantyRequests = useMemo(() => 
     warrantyFlowService.getAllRequests().filter(r => r.clientId === clientId), [clientId]);
+  const constructionUpdates = useMemo(() => 
+    propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(), [propertyId]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
