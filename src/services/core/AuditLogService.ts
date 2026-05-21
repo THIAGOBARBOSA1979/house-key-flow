@@ -186,7 +186,7 @@ class AuditLogService extends SupabaseBaseService<any> {
   async getRecentLogsAsync(limit: number = 50): Promise<AuditLogEntry[]> {
     const logs = await this.getLogs({ pageSize: limit });
     this.items = logs;
-    this.notify();
+    this.notifyListeners();
     return logs;
   }
 
