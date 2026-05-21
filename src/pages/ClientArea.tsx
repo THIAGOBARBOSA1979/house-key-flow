@@ -67,8 +67,8 @@ const ClientArea = () => {
   return (
     <div className="container-responsive py-layout-gap animate-fade-in">
       <PageHeader 
-        title="Gestão de Proprietários" 
-        description="Governança completa da jornada do cliente, do lead ao ecossistema de garantias."
+        title="Gestão de Clientes" 
+        description="Governança completa da jornada do cliente e proprietário."
       >
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" className="hidden sm:flex rounded-xl h-10 px-4">

@@ -95,10 +95,7 @@ class UserService extends SupabaseBaseService<User> {
           }]
         };
 
-        const newStageProfile = await clientStageService.create(stageData, newUser.company_id);
-        if (newStageProfile.id !== newUser.id) {
-          await (clientStageService as any).update(newStageProfile.id, { id: newUser.id }, true);
-        }
+        await clientStageService.create(stageData, newUser.company_id);
       }
 
       return { data: newUser };
