@@ -82,8 +82,30 @@ class InspectionService extends SupabaseBaseService<Inspection> {
     }));
   }
 
+  getTechniciansSync() {
+    return technicianService.getAllSync().map(t => ({
+      id: t.id,
+      name: t.name,
+      specialty: t.specialty.join(", "),
+      contact: t.phone,
+      active: t.status === "active"
+    }));
+  }
+
   async getTechnicianById(id: string) {
     const t = await technicianService.getById(id);
+    if (!t) return undefined;
+    return {
+      id: t.id,
+      name: t.name,
+      specialty: t.specialty.join(", "),
+      contact: t.phone,
+      active: t.status === "active"
+    };
+  }
+
+  getTechnicianByIdSync(id: string) {
+    const t = technicianService.getByIdSync(id);
     if (!t) return undefined;
     return {
       id: t.id,

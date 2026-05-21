@@ -152,7 +152,7 @@ export default function Checklist() {
       </PageHeader>
 
       <ResponsiveGrid columns={4} gap="md">
-        <StatsCard label="Modelos" value={checklistService.getAllTemplates().length.toString()} icon={FileText} variant="brand" description="Templates ativos" />
+        <StatsCard label="Modelos" value={checklistService.getAllTemplatesSync().length.toString()} icon={FileText} variant="brand" description="Templates ativos" />
         <StatsCard label="Vistorias" value={checklistService.getAllExecutions().length.toString()} icon={PlayCircle} variant="progress" description="Execuções totais" />
         <StatsCard label="Conformidade" value="88.5%" icon={CheckCircle2} variant="complete" description="Média técnica" />
         <StatsCard label="Pendências" value="14" icon={AlertCircle} variant="critical" description="Itens não conformes" />

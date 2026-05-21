@@ -61,6 +61,10 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
   /**
    * Fetch all items from Supabase.
    */
+  getAllSync(companyId?: string, isSuperAdmin?: boolean): T[] {
+    return this.items; // Fallback to current items array if sync hasn't happened
+  }
+
   async getAll(companyId?: string, isSuperAdmin?: boolean): Promise<T[]> {
     try {
       const filters: FilterParams[] = [];
@@ -74,11 +78,20 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       });
       
       if (error) throw error;
-      return (data || []).map(item => this.mapFromSupabase(item));
+      const mappedItems = (data || []).map(item => this.mapFromSupabase(item));
+      this.items = mappedItems; // Maintain backward compatibility for sync calls
+      return mappedItems;
     } catch (err) {
       this.handleError(err, 'getAll');
       return [];
     }
+  }
+
+  /**
+   * Fetch a single item by ID.
+   */
+  getByIdSync(id: string): T | undefined {
+    return this.items.find(i => i.id === id);
   }
 
   /**
