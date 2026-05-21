@@ -34,7 +34,8 @@ export interface DataViewProps<T> {
   emptyState?: {
     title: string;
     description: string;
-    icon?: LucideIcon;
+    icon?: React.ReactNode;
+
     action?: {
       label: string;
       onClick: () => void;
@@ -121,7 +122,8 @@ function DataViewComponent<T>({
           title={emptyState?.title || t('common.empty_title', 'Repositório Digital Vazio')}
           description={emptyState?.description || t('common.empty_description', 'Nenhum protocolo ou registro estratégico foi localizado nesta coordenada.')}
           icon={emptyState?.icon}
-          action={emptyState?.action}
+          action={emptyState?.action ? <Button onClick={emptyState.action.onClick} variant="outline" className="rounded-xl font-bold uppercase tracking-widest text-[10px]">{emptyState.action.label}</Button> : undefined}
+
         />
       </div>
     );
