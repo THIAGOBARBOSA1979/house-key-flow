@@ -1,7 +1,5 @@
-import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 import { User, UserStats } from "@/types/user";
-import { Supabase } from "@/integrations/supabase";
 import { Tables } from "@/integrations/supabase/types";
 
 class UserService extends SupabaseBaseService<User> {
@@ -14,7 +12,7 @@ class UserService extends SupabaseBaseService<User> {
     });
   }
 
-  protected mapToSupabase(user: Partial<User>): Partial<Tables<'profiles'>> {
+  protected mapToSupabase(user: Partial<User>): Record<string, any> {
     const mapped: any = super.mapToSupabase(user);
     if (user.name) mapped.full_name = user.name;
     if (user.avatar) mapped.avatar_url = user.avatar;
@@ -30,7 +28,7 @@ class UserService extends SupabaseBaseService<User> {
   }
 
   protected mapFromSupabase(raw: Tables<'profiles'> & { email?: string }): User {
-    const mapped = super.mapFromSupabase(raw) as User;
+    const mapped = super.mapFromSupabase(raw);
     return {
       ...mapped,
       name: raw.full_name || mapped.name || "Sem Nome",
@@ -40,9 +38,6 @@ class UserService extends SupabaseBaseService<User> {
     };
   }
 
-  /**
-   * Extends the base getAll to include specific logic if needed
-   */
   public async getStats(companyId?: string, isSuperAdmin?: boolean): Promise<UserStats> {
     const relevant = await this.getAll(companyId, isSuperAdmin);
     const clients = relevant.filter(u => u.role === 'client').length;
@@ -69,25 +64,25 @@ class UserService extends SupabaseBaseService<User> {
     };
   }
 
-  public async createProfile(data: any): Promise<{ data?: User, error?: any }> {
+  public async createProfile(data: Omit<User, 'id'>): Promise<{ data?: User, error?: Error }> {
     try {
       const newUser = await this.create({
         ...data,
         status: data.status || 'active',
-        createdAt: new Date()
+        createdAt: data.createdAt || new Date()
       }, data.company_id);
 
       // If it's a client, also initialize their journey stage
       if (newUser.role === 'client' || newUser.role === 'user') {
         const { clientStageService } = await import("@/services/operations/ClientStageService");
         
-        const stageData: any = {
+        await clientStageService.create({
           name: newUser.name,
           email: newUser.email,
           phone: newUser.phone,
-          propertyId: data.propertyId || "",
-          propertyName: data.propertyName || "",
-          unitNumber: data.unit || "",
+          propertyId: newUser.propertyId || "",
+          propertyName: newUser.propertyName || "",
+          unitNumber: newUser.unit || "",
           currentStage: 'registered',
           createdAt: new Date(),
           stageHistory: [{
@@ -99,24 +94,17 @@ class UserService extends SupabaseBaseService<User> {
             changedBy: 'Sistema',
             isAutomatic: true
           }]
-        };
-
-        await clientStageService.create(stageData, newUser.company_id);
+        }, newUser.company_id);
       }
 
       return { data: newUser };
-    } catch (error) {
+    } catch (error: any) {
       return { error };
     }
   }
 
-
-  /**
-   * Mock method for sending invitations
-   */
   public async sendInvitation(user: User): Promise<boolean> {
     console.log(`Sending invitation to ${user.email || user.name}`);
-    // In a real scenario, this would call an Edge Function
     return true;
   }
 }
