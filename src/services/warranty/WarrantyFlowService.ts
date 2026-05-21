@@ -169,8 +169,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Get requests filtered
    */
-  getFilteredRequests(filters: WarrantyFilters, companyId?: string, isSuperAdmin?: boolean): WarrantyRequestFlow[] {
-    let requests = this.getAllRequests(companyId, isSuperAdmin);
+  async getFilteredRequests(filters: WarrantyFilters, companyId?: string, isSuperAdmin?: boolean): Promise<WarrantyRequestFlow[]> {
+    let requests = await this.getAllRequests(companyId, isSuperAdmin);
     
     if (filters.search) {
       const search = filters.search.toLowerCase();
@@ -202,11 +202,11 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     }
     
     if (filters.dateFrom) {
-      requests = requests.filter(r => r.createdAt >= filters.dateFrom!);
+      requests = requests.filter(r => new Date(r.createdAt) >= filters.dateFrom!);
     }
     
     if (filters.dateTo) {
-      requests = requests.filter(r => r.createdAt <= filters.dateTo!);
+      requests = requests.filter(r => new Date(r.createdAt) <= filters.dateTo!);
     }
 
     if (filters.isPaused !== undefined) {
@@ -219,8 +219,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Cancel a request
    */
-  cancelRequest(requestId: string, clientId: string): boolean {
-    const request = this.getById(requestId, undefined, true);
+  async cancelRequest(requestId: string, clientId: string): Promise<boolean> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request || request.clientId !== clientId) return false;
     
     // Only allow canceling if not already in final stages
@@ -254,8 +254,8 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Add update/comment to a request
    */
-  addUpdate(requestId: string, authorId: string, authorName: string, text: string): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  async addUpdate(requestId: string, authorId: string, authorName: string, text: string): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updateEntry = {
@@ -278,7 +278,7 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Change request status (with validation and audit)
    */
-  changeStatus(
+  async changeStatus(
     requestId: string,
     newStatus: WarrantyStage,
     changedBy: string,
@@ -286,9 +286,9 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     notes?: string,
     performedByRole: 'admin' | 'client' = 'admin',
     userName?: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
     this.internalLog('info', `Attempting status change for ${requestId} to ${newStatus}`, { changedBy, performedByRole });
-    const request = this.getById(requestId, undefined, true);
+    const request = await this.getById(requestId, undefined, true);
     
     if (!request) {
       this.internalLog('error', `Request ${requestId} not found for status change`);
@@ -388,14 +388,14 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Pause or resume a request
    */
-  togglePause(
+  async togglePause(
     requestId: string,
     isPaused: boolean,
     reason: string,
     changedBy: string,
     performedByRole: 'admin' | 'client' = 'admin'
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -435,12 +435,12 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
     return { success: true, request: updatedRequest };
   }
 
-  updateCosts(
+  async updateCosts(
     requestId: string,
     data: { estimatedCost?: number; actualCost?: number; materials?: WarrantyRequestFlow["materials"] },
     changedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {
@@ -467,13 +467,13 @@ class WarrantyFlowService extends SupabaseBaseService<WarrantyRequestFlow> {
   /**
    * Assign or change technician
    */
-  assignTechnician(
+  async assignTechnician(
     requestId: string,
     technicianId: string,
     technicianName: string,
     assignedBy: string
-  ): { success: boolean; error?: string; request?: WarrantyRequestFlow } {
-    const request = this.getById(requestId, undefined, true);
+  ): Promise<{ success: boolean; error?: string; request?: WarrantyRequestFlow }> {
+    const request = await this.getById(requestId, undefined, true);
     if (!request) return { success: false, error: "Solicitação não encontrada" };
 
     const updatedRequest: WarrantyRequestFlow = {

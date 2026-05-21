@@ -12,7 +12,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
   const isSuperAdmin = !!user?.is_super_admin;
   
   const [claims, setClaims] = useState<any[]>([]);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<unknown>(null);
 
   const fetchClaims = useCallback(async () => {
     try {

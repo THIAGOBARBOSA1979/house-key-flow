@@ -6,15 +6,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import * as AuthContext from '../contexts/AuthContext';
 
 // Mock useAuth
-vi.mock('../contexts/AuthContext', async () => {
-  const actual = await vi.importActual('../contexts/AuthContext');
+vi.mock('../contexts/AuthContext', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../contexts/AuthContext')>();
   return {
-    ...actual as any,
+    ...actual,
     useAuth: vi.fn(),
   };
 });
 
-const mockUseAuth = AuthContext.useAuth as any;
+const mockUseAuth = AuthContext.useAuth as vi.Mock;
 
 describe('ProtectedRoute', () => {
   it('should redirect to login if not authenticated', () => {
