@@ -84,9 +84,9 @@ const Users = () => {
       icon={UsersIcon}
       actions={actions}
     >
-      <UserStats stats={stats} />
+      <UserStats stats={statsSync} />
 
-      <UserActionBanner stats={stats}>
+      <UserActionBanner stats={statsSync}>
         <UserBulkActions 
           selectedCount={selectedUsers.length} 
           onBulkAction={handleBulkAction} 

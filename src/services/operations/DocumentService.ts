@@ -56,19 +56,45 @@ class DocumentService extends SupabaseBaseService<Document> {
     });
   }
 
-  async getAllDocuments() { return await this.getAll(undefined, true); }
-  async getDocumentById(id: string) { return await this.getById(id, undefined, true); }
-  getDocumentsByClient(clientName: string) { return this.items.filter(doc => doc?.associatedTo?.client === clientName); }
+  async getAllDocuments() { return await this.getAll(); }
+  async getDocumentById(id: string) { return await this.getById(id); }
+  
+  getDocumentsByClient(clientName: string) { 
+    return this.items.filter(doc => doc?.associatedTo?.client === clientName); 
+  }
+  
   getFavoriteDocuments() { return this.items.filter(doc => doc.isFavorite); }
   
   async getSignatureHistory(id: string) { 
-    const doc = await this.getById(id, undefined, true);
+    const doc = await this.getById(id);
     return doc?.signatures || []; 
   }
   
   async createDocument(data: any) { return await this.create(data); }
-  async updateDocument(id: string, data: any) { return await this.update(id, data, true); }
+  async updateDocument(id: string, data: any) { return await this.update(id, data); }
+  async deleteDocument(id: string) { return await this.delete(id); }
+  async deleteMultipleDocuments(ids: string[]) { return await this.bulkDelete(ids); }
   
+  async restoreDocument(id: string) {
+    return await this.update(id, { status: 'published' });
+  }
+
+  async logView(id: string) {
+    const doc = this.getByIdSync(id);
+    if (doc) await this.update(id, { viewCount: (doc.viewCount || 0) + 1 });
+  }
+
+  async downloadDocument(id: string) {
+    const doc = await this.getById(id);
+    if (!doc) throw new Error("Documento não encontrado");
+    await this.update(id, { downloads: (doc.downloads || 0) + 1 });
+    return doc.fileUrl;
+  }
+
+  shareDocument(id: string) {
+    return `${window.location.origin}/share/doc/${id}`;
+  }
+
   async searchDocuments(term: string, filters: { category?: string; companyId?: string; isSuperAdmin?: boolean }): Promise<Document[]> {
     const allDocs = await this.getAll(filters.companyId, filters.isSuperAdmin);
     return allDocs.filter(doc => {
@@ -91,56 +117,42 @@ class DocumentService extends SupabaseBaseService<Document> {
     }, companyId);
   }
 
-  async duplicateDocument(id: string) {
-    const doc = await this.getById(id, undefined, true);
-    if (!doc) return null;
-    const { id: _, ...rest } = doc;
-    return await this.create({
-      ...rest,
-      title: `${doc.title} (Cópia)`,
-      status: "draft"
-    }, doc.company_id);
-  }
-
-  async toggleFavorite(id: string) {
-    const doc = await this.getById(id, undefined, true);
-    if (!doc) return false;
-    return await this.update(id, { isFavorite: !doc.isFavorite }, true);
-  }
-
   async getDocumentStats(companyId?: string, isSuperAdmin?: boolean) { 
     const items = await this.getAll(companyId, isSuperAdmin);
-    const stats = { 
+    return { 
       total: items.length, 
       pending: items.filter(d => d.approvalStatus === 'pending').length,
       published: items.filter(d => d.status === 'published').length,
       draft: items.filter(d => d.status === 'draft').length,
       archived: items.filter(d => d.status === 'archived').length,
       favorites: items.filter(d => d.isFavorite).length,
-      expiring: 0
+      expiring: 0,
+      byCategory: items.reduce((acc, doc) => {
+        acc[doc.category] = (acc[doc.category] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>)
     };
-    return stats;
   }
   
   async signDocument(id: string, signerId: string) { 
-    const doc = await this.getById(id, undefined, true);
+    const doc = await this.getById(id);
     if (!doc) return false;
     const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "signed" as const, signedAt: new Date() } : s);
-    return await this.update(id, { signatures, isSigned: true }, true);
+    return !!(await this.update(id, { signatures, isSigned: true }));
   }
 
   async rejectSignature(id: string, signerId: string, reason: string) { 
-    const doc = await this.getById(id, undefined, true);
+    const doc = await this.getById(id);
     if (!doc) return false;
-    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: (reason as any) } : s);
-    return await this.update(id, { signatures }, true);
+    const signatures = doc.signatures?.map(s => s.id === signerId ? { ...s, status: "rejected" as const, rejectionReason: reason } : s);
+    return !!(await this.update(id, { signatures }));
   }
 
   async addSigner(id: string, signer: Omit<DocumentSignature, "id" | "status">): Promise<DocumentSignature | null> { 
-    const doc = await this.getById(id, undefined, true);
+    const doc = await this.getById(id);
     if (!doc) return null;
     const newSigner: DocumentSignature = { ...signer, id: crypto.randomUUID(), status: "pending" };
-    await this.update(id, { signatures: [...(doc.signatures || []), newSigner] }, true);
+    await this.update(id, { signatures: [...(doc.signatures || []), newSigner] });
     return newSigner;
   }
 }
