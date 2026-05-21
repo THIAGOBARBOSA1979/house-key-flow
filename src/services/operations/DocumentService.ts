@@ -11,7 +11,8 @@ export interface DocumentSignature {
   order?: number;
   ipAddress?: string;
   documentHash?: string;
-  evidence?: any;
+  evidence?: Record<string, unknown>;
+  rejectionReason?: string;
 }
 
 export interface DocumentVersion {
@@ -65,7 +66,7 @@ export interface Document {
   expiresAt?: Date;
   isSigned?: boolean;
   isFavorite?: boolean;
-  technical_metadata?: any;
+  technical_metadata?: Record<string, unknown>;
   versionHistory?: DocumentVersion[];
   approvalHistory?: ApprovalHistoryEntry[];
   approvedBy?: string;
@@ -100,8 +101,8 @@ class DocumentService extends SupabaseBaseService<Document> {
     return doc?.signatures || []; 
   }
   
-  async createDocument(data: any) { return await this.create(data); }
-  async updateDocument(id: string, data: any) { return await this.update(id, data); }
+  async createDocument(data: Omit<Document, "id">) { return await this.create(data); }
+  async updateDocument(id: string, data: Partial<Document>) { return await this.update(id, data); }
   async deleteDocument(id: string) { return await this.delete(id); }
   async deleteMultipleDocuments(ids: string[]) { return await this.bulkDelete(ids); }
   
@@ -227,7 +228,7 @@ class DocumentService extends SupabaseBaseService<Document> {
     return !!(await this.update(id, { category: newCategory }));
   }
 
-  async generateDocument(type: string, data: any) {
+  async generateDocument(type: string, data: Partial<Document>) {
     // Placeholder for document generation logic
     return await this.create({
       title: `Documento Gerado - ${type}`,
@@ -235,8 +236,15 @@ class DocumentService extends SupabaseBaseService<Document> {
       type: "auto",
       status: "published",
       visible: true,
+      associatedTo: {},
+      version: 1,
+      approvalStatus: "approved",
+      downloads: 0,
+      viewCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
       ...data
-    } as any);
+    } as Omit<Document, "id">);
   }
 }
 
