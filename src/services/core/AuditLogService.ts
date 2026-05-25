@@ -181,13 +181,17 @@ class AuditLogService extends SupabaseBaseService<any> {
         
         if (filters.action && filters.action !== 'all' && log.action !== filters.action) return false;
         if (filters.entityType && filters.entityType !== 'all' && log.entityType !== filters.entityType) return false;
+        if (filters.severity && filters.severity !== 'all' && log.severity !== filters.severity) return false;
         
         if (filters.searchTerm) {
           const s = filters.searchTerm.toLowerCase();
           const matches = 
             log.details?.toLowerCase().includes(s) ||
             log.performedByName?.toLowerCase().includes(s) ||
-            log.entityId?.toLowerCase().includes(s);
+            log.entityId?.toLowerCase().includes(s) ||
+            log.correlation_id?.toLowerCase().includes(s) ||
+            log.trace_id?.toLowerCase().includes(s) ||
+            log.event_hash?.toLowerCase().includes(s);
           if (!matches) return false;
         }
 
