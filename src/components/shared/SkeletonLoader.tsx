@@ -17,21 +17,21 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
     return (
       <div className={cn("grid-layout", className)}>
         {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="card-standard p-6-sem space-y-5-sem rounded-2xl bg-card/20 border-none shadow-none">
-            <div className="flex items-center gap-4-sem">
-              <Skeleton className="h-14 w-14 rounded-xl" />
-              <div className="space-y-2-sem flex-1">
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-3 w-1/3" />
+          <div key={i} className="card-standard p-8 space-y-6 rounded-[2rem] bg-card/30 border-none shadow-none ring-1 ring-black/[0.02] dark:ring-white/[0.02]">
+            <div className="flex items-center gap-5">
+              <Skeleton className="h-16 w-16 rounded-2xl" />
+              <div className="space-y-3 flex-1">
+                <Skeleton className="h-5 w-1/2 rounded-lg" />
+                <Skeleton className="h-3.5 w-1/3 rounded-lg" />
               </div>
             </div>
-            <div className="space-y-3-sem">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-4/5" />
+            <div className="space-y-4">
+              <Skeleton className="h-5 w-full rounded-lg" />
+              <Skeleton className="h-5 w-4/5 rounded-lg" />
             </div>
-            <div className="flex justify-between items-center pt-4-sem border-t border-border/10">
-              <Skeleton className="h-10 w-24 rounded-xl" />
-              <Skeleton className="h-6 w-16 rounded-full" />
+            <div className="flex justify-between items-center pt-6 border-t border-border/10">
+              <Skeleton className="h-12 w-28 rounded-xl" />
+              <Skeleton className="h-7 w-20 rounded-full" />
             </div>
           </div>
         ))}
@@ -41,27 +41,27 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
 
   if (type === 'table') {
     return (
-      <div className={cn("space-y-6-sem", className)}>
-        <div className="flex justify-between items-center mb-6-sem">
-          <Skeleton className="h-12 w-64 rounded-xl" />
-          <Skeleton className="h-12 w-32 rounded-xl" />
+      <div className={cn("space-y-8", className)}>
+        <div className="flex justify-between items-center mb-8">
+          <Skeleton className="h-14 w-80 rounded-2xl" />
+          <Skeleton className="h-14 w-40 rounded-2xl" />
         </div>
-        <div className="border border-border/20 rounded-2xl overflow-hidden shadow-none bg-card/10 backdrop-blur-sm">
-          <div className="bg-muted/30 p-5-sem border-b border-border/10">
-            <div className="grid grid-cols-4 gap-6-sem">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
+        <div className="border border-border/20 rounded-[2rem] overflow-hidden shadow-none bg-card/10 backdrop-blur-sm">
+          <div className="bg-muted/30 p-6 border-b border-border/10">
+            <div className="grid grid-cols-4 gap-8">
+              <Skeleton className="h-5 w-32 rounded-lg" />
+              <Skeleton className="h-5 w-32 rounded-lg" />
+              <Skeleton className="h-5 w-32 rounded-lg" />
+              <Skeleton className="h-5 w-32 rounded-lg" />
             </div>
           </div>
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="p-5-sem border-b border-border/5 last:border-0">
-              <div className="grid grid-cols-4 gap-6-sem">
-                <Skeleton className="h-5 w-40" />
-                <Skeleton className="h-5 w-24" />
-                <Skeleton className="h-6 w-20 rounded-full" />
-                <Skeleton className="h-10 w-28 rounded-xl ml-auto" />
+            <div key={i} className="p-6 border-b border-border/5 last:border-0">
+              <div className="grid grid-cols-4 gap-8 items-center">
+                <Skeleton className="h-6 w-48 rounded-lg" />
+                <Skeleton className="h-6 w-28 rounded-lg" />
+                <Skeleton className="h-8 w-24 rounded-full" />
+                <Skeleton className="h-12 w-32 rounded-xl ml-auto" />
               </div>
             </div>
           ))}
@@ -72,15 +72,15 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
 
   if (type === 'list') {
     return (
-      <div className={cn("space-y-4-sem", className)}>
+      <div className={cn("space-y-5", className)}>
         {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="flex items-center gap-5-sem p-5-sem card-standard rounded-2xl bg-card/20 border-none shadow-none">
-            <Skeleton className="h-12 w-12 rounded-xl" />
-            <div className="flex-1 space-y-2-sem">
-              <Skeleton className="h-4 w-1/5" />
-              <Skeleton className="h-3 w-1/3" />
+          <div key={i} className="flex items-center gap-6 p-6 card-standard rounded-[2rem] bg-card/30 border-none shadow-none ring-1 ring-black/[0.02] dark:ring-white/[0.02]">
+            <Skeleton className="h-14 w-14 rounded-2xl" />
+            <div className="flex-1 space-y-3">
+              <Skeleton className="h-5 w-1/5 rounded-lg" />
+              <Skeleton className="h-4 w-1/3 rounded-lg" />
             </div>
-            <Skeleton className="h-10 w-24 rounded-xl" />
+            <Skeleton className="h-12 w-28 rounded-xl" />
           </div>
         ))}
       </div>
@@ -89,17 +89,17 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
 
   if (type === 'page') {
     return (
-      <div className={cn("space-y-10-sem animate-in fade-in duration-500", className)} aria-label={t('common.loading', 'Carregando protocolo...')}>
-        <div className="space-y-4-sem">
-          <Skeleton className="h-14 w-1/4 rounded-2xl" />
-          <Skeleton className="h-7 w-1/2 rounded-xl" />
+      <div className={cn("space-y-12 animate-in fade-in duration-700", className)} aria-label={t('common.loading', 'Carregando...')}>
+        <div className="space-y-5">
+          <Skeleton className="h-16 w-1/3 rounded-2xl" />
+          <Skeleton className="h-8 w-1/2 rounded-xl" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-layout-gap">
-          <Skeleton className="h-36 rounded-2xl" />
-          <Skeleton className="h-36 rounded-2xl" />
-          <Skeleton className="h-36 rounded-2xl" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Skeleton className="h-48 rounded-[2rem]" />
+          <Skeleton className="h-48 rounded-[2rem]" />
+          <Skeleton className="h-48 rounded-[2rem]" />
         </div>
-        <Skeleton className="h-[500px] rounded-3xl w-full" />
+        <Skeleton className="h-[600px] rounded-[3.5rem] w-full" />
       </div>
     );
   }
