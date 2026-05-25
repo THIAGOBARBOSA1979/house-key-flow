@@ -95,13 +95,13 @@ const Dashboard = () => {
           <ScheduledInspections inspections={inspections} />
           
           <section className="animate-in fade-in slide-up duration-slow delay-100">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-layout-gap">
               <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black uppercase tracking-tighter">
                 <Layers className="text-primary h-5 w-5" />
                 Matriz de Não Conformidades (NCs)
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
               <div className="p-8 bg-gradient-to-br from-red-500/[0.04] to-transparent border border-red-500/10 rounded-[2.5rem] transition-all hover:bg-red-500/[0.06] hover:border-red-500/20 group/nc">
                 <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-3 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
@@ -132,7 +132,7 @@ const Dashboard = () => {
             inspectionsCompletedPercent={inspections.length > 0 ? Math.round((inspections.filter(i => i.status === 'completed' || i.status === 'complete').length / inspections.length) * 100) : 0}
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-layout-gap">
             <PendingDocuments />
           </div>
 

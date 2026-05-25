@@ -248,7 +248,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
 
 
   return (
-    <div className="space-y-4">
+    <div className="layout-stack">
       {/* Filters */}
       <KanbanFilters
         filters={filters}
@@ -367,7 +367,7 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
       {/* Main View Area */}
       {viewMode === "kanban" ? (
         <ScrollArea className="w-full whitespace-nowrap rounded-xl touch-pan-x">
-          <div className="flex gap-4 sm:gap-6 pb-6 min-h-[600px] p-1">
+          <div className="flex gap-layout-gap pb-6 min-h-[600px] p-1">
             {KANBAN_COLUMNS.map(stage => (
               <KanbanColumn
                 key={stage}
@@ -388,8 +388,8 @@ export function WarrantyKanban({ onSelectRequest }: WarrantyKanbanProps) {
           <ScrollBar orientation="horizontal" className="bg-muted/30" />
         </ScrollArea>
       ) : (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="layout-stack">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-layout-gap">
             {Array.from(filteredKanbanData.values()).flat().sort((a, b) => {
               // Sort by urgency in list view
               const urgencyA = a.slaInfo.status === "expired" ? 0 : a.slaInfo.status === "warning" ? 1 : 2;

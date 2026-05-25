@@ -21,15 +21,15 @@ export function PageHeader({
   showBreadcrumbs = true
 }: PageHeaderProps) {
   return (
-    <div className={cn("space-y-4 mb-layout-gap-lg", className)}>
+    <div className={cn("layout-stack mb-layout-gap-lg", className)}>
       {showBreadcrumbs && (
         <div className="animate-in fade-in slide-in-from-top-1 duration-300">
           <Breadcrumbs />
         </div>
       )}
       
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 py-4 px-2 bg-white/40 backdrop-blur-xl rounded-[2rem] border border-border/10 shadow-sem-sm">
-        <div className="space-y-4 max-w-full xl:max-w-4xl px-2">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-4 px-2 bg-white/40 backdrop-blur-xl rounded-[2rem] border border-border/10 shadow-sem-sm">
+        <div className="layout-stack max-w-full xl:max-w-4xl px-2">
           <div className="flex items-center gap-5 md:gap-8">
             {Icon && (
               <div className="flex items-center justify-center h-16 w-16 md:h-20 md:w-20 rounded-[1.75rem] md:rounded-[2.25rem] bg-gradient-to-br from-primary to-primary/60 shadow-sem-xl shadow-primary/20 animate-in zoom-in duration-700 shrink-0 ring-8 ring-primary/5">

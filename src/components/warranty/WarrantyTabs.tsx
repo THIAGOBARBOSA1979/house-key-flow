@@ -21,7 +21,7 @@ interface WarrantyTabsProps {
 
 export const WarrantyTabs = ({ getFilteredClaims, onAtender, onGerenciarProblemas }: WarrantyTabsProps) => {
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="all" className="layout-stack">
       <TabsList>
         <TabsTrigger value="all">Todas</TabsTrigger>
         <TabsTrigger value="critical">Críticas</TabsTrigger>
@@ -30,7 +30,7 @@ export const WarrantyTabs = ({ getFilteredClaims, onAtender, onGerenciarProblema
         <TabsTrigger value="completed">Concluídas</TabsTrigger>
       </TabsList>
       
-      <TabsContent value="all" className="space-y-4 pt-4">
+      <TabsContent value="all" className="layout-stack pt-4">
         <WarrantyList
           claims={getFilteredClaims("all")}
           onAtender={onAtender}
@@ -38,7 +38,7 @@ export const WarrantyTabs = ({ getFilteredClaims, onAtender, onGerenciarProblema
         />
       </TabsContent>
       
-      <TabsContent value="critical" className="space-y-4 pt-4">
+      <TabsContent value="critical" className="layout-stack pt-4">
         <WarrantyList
           claims={getFilteredClaims("critical")}
           onAtender={onAtender}
@@ -46,7 +46,7 @@ export const WarrantyTabs = ({ getFilteredClaims, onAtender, onGerenciarProblema
         />
       </TabsContent>
       
-      <TabsContent value="pending" className="space-y-4 pt-4">
+      <TabsContent value="pending" className="layout-stack pt-4">
         <WarrantyList
           claims={getFilteredClaims("pending")}
           onAtender={onAtender}
@@ -54,7 +54,7 @@ export const WarrantyTabs = ({ getFilteredClaims, onAtender, onGerenciarProblema
         />
       </TabsContent>
       
-      <TabsContent value="in-progress" className="space-y-4 pt-4">
+      <TabsContent value="in-progress" className="layout-stack pt-4">
         <WarrantyList
           claims={getFilteredClaims("progress")}
           onAtender={onAtender}
@@ -62,7 +62,7 @@ export const WarrantyTabs = ({ getFilteredClaims, onAtender, onGerenciarProblema
         />
       </TabsContent>
       
-      <TabsContent value="completed" className="space-y-4 pt-4">
+      <TabsContent value="completed" className="layout-stack pt-4">
         <WarrantyList
           claims={getFilteredClaims("complete")}
           onAtender={onAtender}

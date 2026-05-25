@@ -125,11 +125,11 @@ function DataTableComponent<T>({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-layout-gap lg:hidden">
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-5 space-y-4 interactive-active border border-border/40 bg-card/60 backdrop-blur-md shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
+            className="card-standard p-layout-gap space-y-4-sem interactive-active border border-border/40 bg-card/60 backdrop-blur-md shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
             onClick={() => onRowClick?.(item)}
             tabIndex={onRowClick ? 0 : -1}
             onKeyDown={(e) => {

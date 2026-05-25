@@ -81,11 +81,11 @@ export const DashboardCharts = memo(({
 
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap-lg">
       <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden lg:col-span-1 rounded-[2rem] shadow-sem-sm">
 
 
-        <CardHeader className="pb-4 border-b border-border/10">
+        <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg md:text-h4 font-black">Conformidade Global de SLAs</CardTitle>
             <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black text-[10px]">
@@ -93,7 +93,7 @@ export const DashboardCharts = memo(({
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="pt-8 flex flex-col items-center justify-center h-72">
+        <CardContent className="pt-layout-gap flex flex-col items-center justify-center h-72">
           <div className="relative w-48 h-48">
              <svg className="w-full h-full transform -rotate-90">
                <circle
@@ -130,10 +130,10 @@ export const DashboardCharts = memo(({
       </Card>
 
       <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden lg:col-span-1 rounded-[2rem] shadow-sem-sm">
-        <CardHeader className="pb-4 border-b border-border/10">
+        <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Fluxo por Ciclo Técnico</CardTitle>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-layout-gap">
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
@@ -168,10 +168,10 @@ export const DashboardCharts = memo(({
 
       <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-sm">
 
-        <CardHeader className="pb-4 border-b border-border/10">
+        <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Entregas Técnicas Homologadas</CardTitle>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-layout-gap">
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={inspectionChartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
@@ -213,10 +213,10 @@ export const DashboardCharts = memo(({
       </Card>
 
       <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-sm">
-        <CardHeader className="pb-4 border-b border-border/10">
+        <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Incidências por Matriz Técnica</CardTitle>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-layout-gap">
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

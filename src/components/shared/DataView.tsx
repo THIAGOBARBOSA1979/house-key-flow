@@ -112,7 +112,7 @@ function DataViewComponent<T>({
   if (isLoading) {
     const effectiveSkeletonType = skeletonType || (viewMode === 'table' ? 'table' : viewMode === 'list' ? 'list' : 'card');
     return (
-      <div className="space-y-4 animate-in fade-in duration-500">
+      <div className="layout-stack animate-in fade-in duration-500">
         <SkeletonLoader type={effectiveSkeletonType} count={itemsPerPage || 6} />
       </div>
     );
@@ -152,7 +152,7 @@ function DataViewComponent<T>({
           return <div className="animate-fade-in">{renderList(displayedItems)}</div>;
         }
         return (
-          <div className={cn("flex flex-col gap-4 animate-fade-in", gridClassName)}>
+          <div className={cn("flex flex-col gap-layout-gap animate-fade-in", gridClassName)}>
             {displayedItems.map((item, index) => (
               <React.Fragment key={index}>
                 {renderGrid ? renderGrid(item) : (
@@ -175,7 +175,7 @@ function DataViewComponent<T>({
           return <div className="animate-fade-in">{renderTimeline(displayedItems)}</div>;
         }
         return (
-          <div className="space-y-4 animate-fade-in">
+          <div className="layout-stack animate-fade-in">
             {displayedItems.map((item, index) => (
               <div key={index} className="flex gap-4">
                 <div className="flex flex-col items-center">
@@ -261,7 +261,7 @@ function DataViewComponent<T>({
   };
 
   return (
-    <div ref={containerRef} className="space-y-6">
+    <div ref={containerRef} className="layout-stack">
       {renderContent()}
       
       {isPaginationEnabled && (
