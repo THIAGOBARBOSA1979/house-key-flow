@@ -9,7 +9,9 @@ export const ClientLayout = lazy(() => import("@/components/layout/ClientLayout"
 export const Home = lazy(() => import("@/pages/Home"));
 export const Login = lazy(() => import("@/pages/Login"));
 export const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+export const Register = lazy(() => import("@/pages/Register"));
 export const NotFound = lazy(() => import("@/pages/NotFound"));
+
 
 // Admin Pages
 export const AdminIndex = lazy(() => import("@/pages/Index"));

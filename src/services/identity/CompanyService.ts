@@ -20,6 +20,7 @@ export interface Company {
   slug: string;
   status: CompanyStatus;
   owner_id: string;
+  subscription_plan: SubscriptionPlan; // Mantendo para retrocompatibilidade temporária
   plan_id?: string;
   subscription_status?: 'trial' | 'active' | 'past_due' | 'canceled' | 'suspended';
   trial_ends_at?: Date;
@@ -29,6 +30,7 @@ export interface Company {
   updated_at: Date;
   company_id?: string;
 }
+
 
 
 class CompanyService extends SupabaseBaseService<Company> {

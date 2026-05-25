@@ -54,6 +54,8 @@ const App = () => {
                 <Route path="/admin/login" element={<Pages.Login />} />
                 <Route path="/client/login" element={<Pages.Login />} />
                 <Route path="/forgot-password" element={<Pages.ForgotPassword />} />
+                <Route path="/register" element={<Pages.Register />} />
+
                 
                 {/* Redirect legacy login paths */}
                 <Route path="/admin/login" element={<Navigate to="/login" replace />} />
