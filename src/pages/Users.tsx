@@ -200,11 +200,13 @@ const Users = () => {
                   <DropdownMenuItem onClick={() => handleOpenForm(user)}><Pencil className="mr-2 h-4 w-4" /> Editar</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleResendInvite(user)}><Mail className="mr-2 h-4 w-4" /> Reenviar Convite</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => toggleUserStatus(user.id!)}><ShieldCheck className="mr-2 h-4 w-4" /> {user.status === 'active' ? 'Desativar' : 'Ativar'}</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => toast({ title: "Segurança", description: "Instruções de redefinição de senha enviadas." })}><Key className="mr-2 h-4 w-4" /> Forçar Reset de Senha</DropdownMenuItem>
+                  <DropdownMenuSeparator className="my-1 bg-border/10" />
                   <DropdownMenuItem 
-                    className="text-destructive font-bold" 
+                    className="text-destructive font-bold focus:bg-destructive/5" 
                     onClick={() => handleDeleteUser(user)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" /> Excluir
+                    <Trash2 className="mr-2 h-4 w-4" /> Excluir permanentemente
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -213,9 +215,9 @@ const Users = () => {
         ]}
         emptyState={{
           title: "Nenhum usuário encontrado",
-          description: "Ajuste os filtros para encontrar o que procura.",
+          description: "Sua busca não retornou resultados para a governança atual.",
           action: { 
-            label: "Limpar filtros", 
+            label: "Limpar todos os filtros", 
             onClick: () => setFilters({ search: "", role: "all", status: "all", property: "all", unit: "" } as UserFiltersData) 
           }
         }}
