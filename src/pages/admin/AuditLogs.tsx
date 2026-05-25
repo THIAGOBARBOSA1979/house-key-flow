@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Activity, Shield, Download, Trash2, Filter, Search, RotateCw } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
@@ -57,6 +58,18 @@ const AuditLogs = () => {
 
 
 
+      <div className="p-6 bg-muted/5 rounded-[2rem] border border-border/10 flex items-start gap-4">
+        <div className="h-10 w-10 rounded-xl bg-background flex items-center justify-center text-primary shadow-sm shrink-0">
+          <Activity size={20} />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-foreground mb-1">Integridade de Dados</p>
+          <p className="text-xs text-muted-foreground leading-relaxed font-medium">
+            Todos os logs são assinados digitalmente e armazenados em infraestrutura de alta disponibilidade. 
+            Este registro constitui a prova técnica imutável de todas as transações de dados na governança A2.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
