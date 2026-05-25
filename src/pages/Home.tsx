@@ -72,10 +72,11 @@ export default function Home() {
                 </div>
               </div>
               <Link to="/login">
-                <Button className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 text-brand-foreground">
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground h-11 px-6 rounded-xl font-bold transition-all shadow-sem-md shadow-primary/20 border-none">
                   Acessar Sistema
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
+
               </Link>
             </div>
           </div>
