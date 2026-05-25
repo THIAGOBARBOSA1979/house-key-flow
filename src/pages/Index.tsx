@@ -1,10 +1,10 @@
 import { memo, useState, useEffect } from "react";
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { AppLayout as DashboardLayout } from "@/components/layout/AppLayout";
 import { Stats } from "@/components/dashboard/Stats";
 import { ActiveProperties } from "@/components/dashboard/ActiveProperties";
 import { ScheduledInspections } from "@/components/dashboard/ScheduledInspections";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { LayoutGrid, Layers } from "lucide-react";
 import { inspectionService, warrantyFlowService } from "@/services";
 import { cn } from "@/lib/utils";
