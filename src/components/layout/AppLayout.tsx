@@ -71,7 +71,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <header 
           className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
-          <div className="w-full flex items-center justify-between px-header-padding-x lg:px-layout-gap-lg transition-all duration-slow max-w-container-2xl mx-auto">
+          <div className="w-full flex items-center justify-between px-header-padding-x lg:px-layout-gap-lg transition-all duration-slow max-w-container mx-auto">
             <div className="flex items-center gap-component-gap-md md:gap-stack-gap flex-1">
               <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4 group cursor-default">
                 <HomeIcon size={14} className="group-hover:text-primary transition-colors" />
@@ -101,7 +101,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <main 
           className="flex-1 p-layout-gap lg:p-layout-gap-lg transition-all duration-slow overflow-x-hidden w-full bg-gradient-to-br from-indigo-50/20 via-background to-brand/[0.02] dark:from-background dark:to-background"
         >
-          <div className="container-responsive max-w-container-xl mx-auto min-h-[calc(100vh-20rem)]">
+          <div className="container-responsive max-w-container mx-auto min-h-[calc(100vh-20rem)]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
@@ -120,7 +120,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <footer 
           className="mt-layout-gap-xl py-footer-padding-y px-footer-padding-x border-t border-border/5 transition-all duration-slow"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-layout-gap-lg max-w-container-xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-layout-gap-lg max-w-container mx-auto">
             <div className="space-y-3 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 opacity-60">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-xs">
