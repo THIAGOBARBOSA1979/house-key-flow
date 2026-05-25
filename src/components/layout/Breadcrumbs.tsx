@@ -46,20 +46,20 @@ export function Breadcrumbs({ className }: BreadcrumbsProps) {
   return (
     <nav 
       aria-label="Breadcrumb" 
-      className={cn("flex items-center text-sem-body-xs font-bold uppercase tracking-widest text-muted-foreground/80 overflow-x-auto no-scrollbar whitespace-nowrap pb-1", className)}
+      className={cn("flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 overflow-x-auto no-scrollbar whitespace-nowrap pb-2 px-4", className)}
     >
       <Link 
         to="/" 
         className="flex items-center hover:text-foreground transition-colors"
       >
-        <Home className="h-4 w-4" />
+        <Home className="h-3.5 w-3.5" />
       </Link>
       
       {breadcrumbs.map((crumb, index) => (
         <div key={crumb.path} className="flex items-center">
-          <ChevronRight className="h-4 w-4 mx-2" />
+          <ChevronRight className="h-3 w-3 mx-2 opacity-30" />
           {crumb.isLast ? (
-            <span className="font-black text-primary">{crumb.label}</span>
+            <span className="font-black text-primary transition-all scale-105">{crumb.label}</span>
           ) : (
             <Link 
               to={crumb.path}

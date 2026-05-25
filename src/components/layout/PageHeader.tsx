@@ -28,18 +28,19 @@ export function PageHeader({
         </div>
       )}
       
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 py-2 px-1">
-        <div className="space-y-4 max-w-full xl:max-w-3xl">
-          <div className="flex items-center gap-4 md:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 py-4 px-2 bg-white/40 backdrop-blur-xl rounded-[2rem] border border-border/10 shadow-sem-sm">
+        <div className="space-y-4 max-w-full xl:max-w-4xl px-2">
+          <div className="flex items-center gap-5 md:gap-8">
             {Icon && (
-              <div className="flex items-center justify-center h-14 w-14 md:h-18 md:w-18 rounded-2xl md:rounded-[1.75rem] bg-gradient-to-br from-primary to-primary/60 shadow-sem-lg shadow-primary/20 animate-in zoom-in duration-700 shrink-0 ring-4 ring-primary/5">
-                <Icon className="h-7 w-7 md:h-9 md:w-9 text-white" strokeWidth={2.5} />
+              <div className="flex items-center justify-center h-16 w-16 md:h-20 md:w-20 rounded-[1.75rem] md:rounded-[2.25rem] bg-gradient-to-br from-primary to-primary/60 shadow-sem-xl shadow-primary/20 animate-in zoom-in duration-700 shrink-0 ring-8 ring-primary/5">
+                <Icon className="h-8 w-8 md:h-10 md:w-10 text-white" strokeWidth={2.5} />
               </div>
             )}
-            <h1 className="text-sem-h1 tracking-tighter font-black text-gradient leading-[1.1] text-2xl sm:text-3xl md:text-4xl lg:text-5xl truncate">
+            <h1 className="text-sem-h1 tracking-tighter font-black text-gradient leading-[1] text-3xl sm:text-4xl md:text-5xl lg:text-6xl truncate pb-1">
               {title}
             </h1>
           </div>
+
           {description && (
             <p className="text-sem-body-sm md:text-sem-body-base text-muted-foreground/60 animate-in slide-in-from-left-4 duration-700 max-w-2xl font-medium leading-relaxed">
               {description}
