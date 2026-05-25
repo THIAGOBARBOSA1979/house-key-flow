@@ -53,10 +53,10 @@ export const StatsCard = ({
       {/* Background Decor */}
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
       
-      <CardContent className="p-6 md:p-8 cursor-pointer relative z-10">
-        <div className="flex items-start justify-between gap-6">
+      <CardContent className="p-card-padding md:p-card-padding-lg cursor-pointer relative z-10">
+        <div className="flex items-start justify-between gap-layout-gap">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-component-gap-md mb-card-gap">
               <p className="text-[10px] uppercase font-black tracking-[0.25em] text-muted-foreground/60 leading-none">
                 {label}
               </p>
