@@ -1,16 +1,17 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
 export type MessageSenderType = 'staff' | 'client' | 'system' | 'ia';
 
 export interface TicketMessage {
   id: string;
-  ticket_id: string;
-  sender_id?: string;
-  sender_type: MessageSenderType;
+  ticketId: string;
+  senderId?: string;
+  senderType: MessageSenderType;
   content: string;
-  whatsapp_message_id?: string;
+  whatsappMessageId?: string;
   metadata?: any;
-  created_at?: Date;
+  createdAt?: Date;
 }
 
 class TicketMessageService extends SupabaseBaseService<TicketMessage> {
@@ -18,20 +19,18 @@ class TicketMessageService extends SupabaseBaseService<TicketMessage> {
     super({
       storageKey: "a2_ticket_messages",
       supabaseTable: "ticket_messages",
-      auditEntityType: "support",
+      auditEntityType: "system",
       shouldSyncWithSupabase: true
     });
   }
 
   async getByTicketId(ticketId: string): Promise<TicketMessage[]> {
-    const { data, error } = await this.supabase
-      .from(this.supabaseTable)
-      .select('*')
-      .eq('ticket_id', ticketId)
-      .order('created_at', { ascending: true });
+    const { data, error } = await Supabase.db.findMany<any>(this.supabaseTable, {
+      filters: [{ column: 'ticket_id', operator: 'eq', value: ticketId }]
+    });
     
     if (error) return [];
-    return data;
+    return (data || []).map(item => this.mapFromSupabase(item));
   }
 }
 

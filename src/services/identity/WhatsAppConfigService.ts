@@ -1,17 +1,18 @@
 import { SupabaseBaseService } from "../SupabaseBaseService";
+import { Supabase } from "@/integrations/supabase";
 
 export type WhatsAppProvider = 'evolution' | 'meta';
 
 export interface WhatsAppConfig {
   id: string;
-  company_id: string;
+  companyId: string;
   provider: WhatsAppProvider;
-  api_url?: string;
-  api_key?: string;
-  instance_name?: string;
-  phone_number_id?: string;
-  verify_token?: string;
-  is_active: boolean;
+  apiUrl?: string;
+  apiKey?: string;
+  instanceName?: string;
+  phoneNumberId?: string;
+  verifyToken?: string;
+  isActive: boolean;
 }
 
 class WhatsAppConfigService extends SupabaseBaseService<WhatsAppConfig> {
@@ -25,14 +26,10 @@ class WhatsAppConfigService extends SupabaseBaseService<WhatsAppConfig> {
   }
 
   async getConfigByCompany(companyId: string): Promise<WhatsAppConfig | null> {
-    const { data, error } = await this.supabase
-      .from(this.supabaseTable)
-      .select('*')
-      .eq('company_id', companyId)
-      .single();
+    const { data, error } = await Supabase.db.findOne<any>(this.supabaseTable, companyId, 'company_id');
     
     if (error) return null;
-    return data;
+    return this.mapFromSupabase(data);
   }
 }
 
