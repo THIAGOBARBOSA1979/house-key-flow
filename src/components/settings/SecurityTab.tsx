@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -77,6 +78,39 @@ export const SecurityTab = ({ onSave }: SecurityTabProps) => {
           </div>
         </Card>
       </div>
+      <Card className="card-standard border-none bg-card/40 backdrop-blur-md shadow-sem-lg rounded-[2rem]">
+        <CardHeader className="p-8 pb-4 flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+              <ShieldCheck className="text-primary" /> Rastreabilidade de Acessos
+            </CardTitle>
+            <CardDescription>Monitoramento de logins e eventos de segurança recentes na sua conta.</CardDescription>
+          </div>
+          <Button variant="ghost" className="text-primary font-bold text-xs uppercase tracking-widest">Ver Log Completo</Button>
+        </CardHeader>
+        <CardContent className="p-8 pt-0">
+          <div className="space-y-4">
+             {[
+               { user: "Admin Master", event: "Login via Web-App", time: "Há 12 min", ip: "189.122.45.10", status: "success" },
+               { user: "Técnico Silva", event: "Troca de Senha", time: "Há 4 horas", ip: "177.34.21.192", status: "success" },
+               { user: "Desconhecido", event: "Tentativa de Login Falha", time: "Há 6 horas", ip: "201.55.12.8", status: "blocked" }
+             ].map((log, i) => (
+               <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-muted/20 border border-border/5 group hover:bg-muted/30 transition-all">
+                 <div className="flex items-center gap-4">
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shadow-sm", log.status === 'success' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600')}>
+                      {log.user.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold leading-none mb-1">{log.user}</p>
+                      <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{log.event} • {log.ip}</p>
+                    </div>
+                 </div>
+                 <span className="text-[10px] font-bold text-muted-foreground/60 uppercase">{log.time}</span>
+               </div>
+             ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
