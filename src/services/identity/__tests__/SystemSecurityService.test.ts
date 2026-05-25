@@ -1,13 +1,24 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { securityService } from '../SystemSecurityService';
+import { Supabase } from '@/integrations/supabase';
 
-// Mock auditLogService to avoid circular dependency
+// Mock auditLogService
 vi.mock('../../core/AuditLogService', () => ({
   auditLogService: {
     log: vi.fn().mockResolvedValue(true)
   }
 }));
+
+// Mock Supabase
+vi.mock('@/integrations/supabase', () => ({
+  Supabase: {
+    auth: {
+      getSession: vi.fn()
+    }
+  }
+}));
+
 
 describe('SystemSecurityService', () => {
   beforeEach(() => {
@@ -37,7 +48,8 @@ describe('SystemSecurityService', () => {
     const onTimeout = vi.fn();
     
     // Simulate being logged in
-    localStorage.setItem('auth_user', JSON.stringify({ id: '1', name: 'Test' }));
+    (Supabase.auth.getSession as any).mockResolvedValue({ user: { id: '1' } });
+
     
     const cleanup = securityService.initialize(onTimeout);
     
@@ -51,7 +63,7 @@ describe('SystemSecurityService', () => {
 
   it('should reset inactivity timer on user interaction', () => {
     const onTimeout = vi.fn();
-    localStorage.setItem('auth_user', JSON.stringify({ id: '1', name: 'Test' }));
+    (Supabase.auth.getSession as any).mockResolvedValue({ user: { id: '1' } });
     
     const cleanup = securityService.initialize(onTimeout);
     
