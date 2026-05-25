@@ -238,10 +238,13 @@ const AdminSupport = () => {
                  {/* Visualização de Timeline/Mensagens simplificada para Admin */}
                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground space-y-4">
                     <p className="text-sm font-medium">Histórico de mensagens sincronizado com a Central de Atendimento.</p>
-                    <Button variant="outline" asChild className="rounded-xl">
-                      <a href="/admin/inbox">Ir para Inbox WhatsApp</a>
-                    </Button>
+                    <div className="flex gap-4">
+                      <Button variant="outline" asChild className="rounded-xl">
+                        <a href="/admin/inbox">Ir para Inbox WhatsApp</a>
+                      </Button>
+                    </div>
                  </div>
+
               </ScrollArea>
 
               <div className="p-6 bg-card border-t">
