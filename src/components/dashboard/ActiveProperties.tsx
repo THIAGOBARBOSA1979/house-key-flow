@@ -33,7 +33,7 @@ export const ActiveProperties = () => {
       <DataView
         items={activeProperties}
         viewMode="grid"
-        gridClassName="animate-in fade-in slide-in-from-left-4 duration-slow"
+        gridClassName="animate-in fade-in slide-in-from-left-4 duration-slow grid-layout !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-2 xl:!grid-cols-2 gap-8"
         renderGrid={(property) => (
           <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
         )}
