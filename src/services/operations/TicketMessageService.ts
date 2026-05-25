@@ -12,12 +12,12 @@ export interface TicketMessage {
   role?: 'admin' | 'client';
   content: string;
   text?: string;
+  attachments?: string[];
   whatsappMessageId?: string;
   metadata?: any;
   createdAt?: Date;
   created_at?: Date;
 }
-
 
 class TicketMessageService extends SupabaseBaseService<TicketMessage> {
   constructor() {
