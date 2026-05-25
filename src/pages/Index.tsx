@@ -27,7 +27,7 @@ const Index = () => {
     <DashboardLayout>
       <PageHeader 
         title="Painel Estratégico" 
-        subtitle="Gestão de Ativos & Conformidade Técnica"
+        description="Gestão de Ativos & Conformidade Técnica"
         icon={LayoutGrid}
       />
       
