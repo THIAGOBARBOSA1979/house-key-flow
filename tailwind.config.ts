@@ -149,6 +149,10 @@ export default {
 				'dialog-xl': 'var(--dialog-xl)',
 				'dialog-full': 'var(--dialog-full)',
 				'content-padding': 'var(--content-padding)',
+				'content-padding-lg': 'var(--content-padding-lg)',
+				'layout-gap-lg': 'var(--layout-gap-lg)',
+				'layout-gap-xl': 'var(--layout-gap-xl)',
+				'layout-gap': 'var(--layout-gap)',
 			},
 			maxWidth: {
 				'container': 'var(--container-max-width)',

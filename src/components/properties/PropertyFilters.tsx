@@ -30,8 +30,8 @@ export const PropertyFilters = ({
   const hasActiveFilters = searchTerm || statusFilter !== "all" || managerFilter !== "all";
 
   return (
-    <FilterBar searchPlaceholder="Buscar empreendimento..." searchValue={searchTerm} onSearchChange={onSearchChange} className="mb-10">
-      <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 w-full sm:w-auto">
+    <FilterBar searchPlaceholder="Buscar empreendimento..." searchValue={searchTerm} onSearchChange={onSearchChange} className="mb-layout-gap-lg">
+      <div className="flex flex-col sm:flex-row flex-wrap items-center gap-layout-gap w-full sm:w-auto">
         <Select value={statusFilter} onValueChange={onStatusChange}>
           <SelectTrigger className="w-full sm:w-[180px] rounded-xl h-11 bg-background/60 backdrop-blur-md shadow-sem-sm border-border/40 hover:border-primary/20">
             <SelectValue placeholder="Status" />

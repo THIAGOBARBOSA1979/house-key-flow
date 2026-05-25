@@ -43,12 +43,12 @@ const Dashboard = () => {
 
 
   return (
-    <div className="space-y-12 pb-16 animate-in fade-in duration-1000">
+    <div className="layout-stack pb-16 animate-in fade-in duration-1000">
       <PageHeader
         icon={Home}
         title={`Bem-vindo, ${user?.name?.split(' ')[0] || 'Administrador'}`}
         description="Acompanhe a saúde operacional, o progresso das obras e os indicadores de performance da sua incorporadora."
-        className="mb-10"
+        className="mb-layout-gap-lg"
       >
 
         <div className="flex items-center gap-3">
@@ -89,8 +89,8 @@ const Dashboard = () => {
       
       <QuickActions />
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-7 xl:col-span-8 space-y-12">
+      <div className="grid-dashboard">
+        <div className="lg:col-span-7 xl:col-span-8 layout-stack">
           <ActiveProperties />
           <ScheduledInspections inspections={inspections} />
           
@@ -124,7 +124,7 @@ const Dashboard = () => {
           </section>
         </div>
 
-        <div className="lg:col-span-5 xl:col-span-4 space-y-12">
+        <div className="lg:col-span-5 xl:col-span-4 layout-stack">
           <SystemHealth metrics={healthMetrics} />
           
           <GeneralSummary 

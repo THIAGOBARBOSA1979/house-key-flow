@@ -56,7 +56,7 @@ export const QuickActions = () => {
         <h2 className="text-xl font-black uppercase tracking-tighter">Ações Rápidas</h2>
 
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4-sem md:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-layout-gap">
         {actions.map((action, index) => (
           <Button
             key={index}
