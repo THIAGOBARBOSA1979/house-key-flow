@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -52,13 +53,24 @@ export const WarrantyTab = ({ settings, updateSection, onSave }: WarrantyTabProp
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { label: "Prioridade Crítica", defaultValue: 24 },
-                { label: "Prioridade Média", defaultValue: 72 },
-                { label: "Consultas Gerais", defaultValue: 120 }
+                { label: "Emergência (Crítico)", key: "emergencySla", color: "text-status-critical", bg: "bg-status-critical/5" },
+                { label: "Urgente (Alta)", key: "urgentSla", color: "text-status-pending", bg: "bg-status-pending/5" },
+                { label: "Normal (Rotina)", key: "normalSla", color: "text-status-progress", bg: "bg-status-progress/5" }
               ].map((sla) => (
-                <div key={sla.label} className="space-y-2">
-                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{sla.label}</Label>
-                   <Input type="number" defaultValue={sla.defaultValue} className="h-11 rounded-xl bg-muted/20 border-none" />
+                <div key={sla.key} className={cn("space-y-3 p-6 rounded-3xl border border-border/5", sla.bg)}>
+                   <div className="flex items-center justify-between">
+                     <Label className={cn("text-[10px] font-black uppercase tracking-widest", sla.color)}>{sla.label}</Label>
+                     <Clock className={cn("w-3.5 h-3.5 opacity-50", sla.color)} />
+                   </div>
+                   <div className="relative">
+                    <Input 
+                      type="number" 
+                      className="h-14 rounded-2xl bg-background border-none shadow-sm font-black text-2xl pl-6" 
+                      value={settings.warranty[sla.key]} 
+                      onChange={e => updateSection('warranty', { [sla.key]: parseInt(e.target.value) })}
+                    />
+                    <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase text-muted-foreground/40 tracking-widest">horas</span>
+                   </div>
                 </div>
               ))}
             </div>
