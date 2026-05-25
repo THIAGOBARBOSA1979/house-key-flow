@@ -10,6 +10,8 @@ import {
   Star,
   Award
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -161,11 +163,13 @@ export default function Login() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                       <TabsTrigger value="client">Portal do Cliente</TabsTrigger>
                       <TabsTrigger value="admin">Área Administrativa</TabsTrigger>
+                      <TabsTrigger value="register">Cadastro</TabsTrigger>
                       <TabsTrigger value="master">SaaS Master</TabsTrigger>
                     </TabsList>
+
 
                     <TabsContent value="client" className="mt-6">
                       <LoginForm 
@@ -186,7 +190,17 @@ export default function Login() {
                       />
                     </TabsContent>
 
+                    <TabsContent value="register" className="mt-6">
+                      <div className="space-y-4 text-center">
+                        <p className="text-gray-600">Comece hoje mesmo a transformar sua incorporadora.</p>
+                        <Button asChild className="w-full h-12 bg-brand hover:bg-brand/90">
+                          <Link to="/register">Criar conta grátis</Link>
+                        </Button>
+                      </div>
+                    </TabsContent>
+
                     <TabsContent value="master" className="mt-6">
+
                       <LoginForm 
                         {...authForm} 
                         onSubmit={authForm.handleLogin}

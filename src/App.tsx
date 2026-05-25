@@ -7,8 +7,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { ConfirmProvider } from "@/contexts/ConfirmContext";
 import { BrandThemeProvider } from "@/components/shared/BrandThemeProvider";
+
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
 import { AuditProgressOverlay } from "./components/shared/AuditProgressOverlay";
@@ -44,7 +46,9 @@ const App = () => {
           <BrowserRouter>
             <AuthProvider>
               <BrandThemeProvider>
-                <ConfirmProvider>
+                <SubscriptionProvider>
+                  <ConfirmProvider>
+
 
                 <Suspense fallback={<SkeletonLoader type="page" />}>
                 <Routes>
@@ -54,6 +58,8 @@ const App = () => {
                 <Route path="/admin/login" element={<Pages.Login />} />
                 <Route path="/client/login" element={<Pages.Login />} />
                 <Route path="/forgot-password" element={<Pages.ForgotPassword />} />
+                <Route path="/register" element={<Pages.Register />} />
+
                 
                 {/* Redirect legacy login paths */}
                 <Route path="/admin/login" element={<Navigate to="/login" replace />} />
@@ -110,8 +116,10 @@ const App = () => {
                 <Route path="*" element={<Pages.NotFound />} />
               </Routes>
                 </Suspense>
-                </ConfirmProvider>
+                  </ConfirmProvider>
+                </SubscriptionProvider>
               </BrandThemeProvider>
+
             </AuthProvider>
 
           </BrowserRouter>
