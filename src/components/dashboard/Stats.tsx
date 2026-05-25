@@ -58,7 +58,7 @@ export const Stats = memo(({ className }: { className?: string }) => {
       "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-layout-gap md:gap-layout-gap-lg",
       className
     )}>
-      {stats.map((stat) => (
+      {stats.map((stat, index) => (
         <StatsCard 
           key={stat.title}
           label={stat.title}
@@ -67,7 +67,10 @@ export const Stats = memo(({ className }: { className?: string }) => {
           description={stat.description}
           variant={stat.variant}
           trend={stat.trend}
-          className="animate-in fade-in slide-in-from-bottom-2 duration-normal"
+          className={cn(
+            "animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both",
+            index === 0 ? "delay-[0ms]" : index === 1 ? "delay-[100ms]" : index === 2 ? "delay-[200ms]" : "delay-[300ms]"
+          )}
         />
       ))}
     </div>

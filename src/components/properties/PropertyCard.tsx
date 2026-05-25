@@ -33,7 +33,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
   return (
     <Card 
       onClick={onClick}
-      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/60 dark:bg-card/30 backdrop-blur-3xl flex flex-col h-full cursor-pointer group rounded-3xl shadow-sem-lg hover:shadow-sem-xl ring-1 ring-black/[0.02] dark:ring-white/[0.02]", className)}
+      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/60 dark:bg-card/30 backdrop-blur-3xl flex flex-col h-full cursor-pointer group rounded-[2.5rem] shadow-sem-lg hover:shadow-sem-xl ring-1 ring-black/[0.02] dark:ring-white/[0.02] transition-all duration-500 hover:-translate-y-2", className)}
     >
 
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
