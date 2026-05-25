@@ -18,6 +18,18 @@ export function GlobalSearch({ onClose }: { onClose?: () => void }) {
   const [searchResults, setSearchResults] = useState<{ properties: any[], users: any[], documents: any[] }>({ properties: [], users: [], documents: [] });
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const input = document.querySelector('input[placeholder*="Sincronização global"]') as HTMLInputElement;
+        input?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  useEffect(() => {
     if (!debouncedSearchQuery || debouncedSearchQuery.length < 2) {
       setSearchResults({ properties: [], users: [], documents: [] });
       return;
