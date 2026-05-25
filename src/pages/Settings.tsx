@@ -85,7 +85,8 @@ const Settings = () => {
           <GeneralTab 
             settings={settings} 
             updateSection={updateSection} 
-            onSave={saveSystemSettings} 
+            onSave={async () => saveSystemSettings()} 
+
           />
         </TabsContent>
 
