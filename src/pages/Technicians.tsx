@@ -181,8 +181,8 @@ const Technicians = () => {
         skeletonType="card"
         renderGrid={(tech) => (
           <Card key={tech.id} className={cn(
-            "card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md hover:shadow-sem-lg transition-all group relative",
-            selectedIds.includes(tech.id) && "ring-2 ring-primary"
+            "card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md hover:shadow-sem-lg transition-all duration-500 group relative",
+            selectedIds.includes(tech.id) && "ring-2 ring-primary shadow-lg shadow-primary/10"
           )}>
             <div className="absolute top-card-padding left-card-padding z-10">
               <Checkbox 
@@ -248,15 +248,20 @@ const Technicians = () => {
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 gap-layout-gap pt-card-padding border-t border-border/10 pl-card-padding">
-                <div>
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Concluídos</p>
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/10 pl-card-padding">
+                <div className="p-3 bg-muted/10 rounded-2xl flex flex-col justify-center">
+                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1 flex items-center gap-1.5"><CheckCircle2 size={10} /> Concluídos</p>
                   <p className="text-xl font-black">{tech.completedJobs}</p>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Ativos</p>
+                <div className="p-3 bg-primary/5 rounded-2xl flex flex-col justify-center">
+                  <p className="text-[9px] font-black text-primary uppercase tracking-widest mb-1 flex items-center gap-1.5"><TrendingUp size={10} /> Ativos</p>
                   <p className="text-xl font-black text-primary">{tech.activeJobs}</p>
                 </div>
+              </div>
+              
+              <div className="mt-4 pl-card-padding pt-2 flex items-center justify-between text-[10px] font-black uppercase tracking-tighter text-muted-foreground/40">
+                <span className="flex items-center gap-1"><MapPin size={10} /> Unidade Principal</span>
+                <span className="flex items-center gap-1"><CalendarDays size={10} /> Desde 2024</span>
               </div>
             </CardContent>
           </Card>
