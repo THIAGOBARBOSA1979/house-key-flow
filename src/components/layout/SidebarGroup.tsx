@@ -40,7 +40,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               end={item.end}
               title={item.label}
               className={cn(
-                "flex items-center justify-center h-13 w-13 rounded-2xl transition-all duration-500 active:scale-90 group relative",
+                "flex items-center justify-center h-13 w-13 rounded-xl transition-all duration-500 active:scale-90 group relative",
                 isActive 
                   ? "bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground shadow-sem-xl shadow-sidebar-primary/40 scale-110 border border-white/20" 
                   : "hover:bg-sidebar-accent/40 text-sidebar-foreground/40 hover:text-sidebar-foreground"
@@ -48,7 +48,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
             >
               <Icon size={22} className={cn("transition-all duration-500", isActive && "rotate-[10deg]")} />
               
-              <div className="absolute left-full ml-4 px-card-padding py-2 bg-sidebar-foreground text-sidebar-background rounded-2xl text-[11px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 -translate-x-2 group-hover:translate-x-0 whitespace-nowrap z-tooltip shadow-sem-2xl border border-sidebar-border/20 backdrop-blur-xl">
+              <div className="absolute left-full ml-4 px-card-padding py-2 bg-sidebar-foreground text-sidebar-background rounded-xl text-[11px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 -translate-x-2 group-hover:translate-x-0 whitespace-nowrap z-tooltip shadow-sem-2xl border border-sidebar-border/20 backdrop-blur-xl">
                 {item.label}
               </div>
             </NavLink>
@@ -81,14 +81,14 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               end={item.end}
               onClick={onItemClick}
               className={cn(
-                "flex items-center gap-stack-gap px-stack-gap-lg py-stack-gap rounded-2xl transition-all duration-500 active:scale-95 group relative overflow-hidden",
+                "flex items-center gap-stack-gap px-stack-gap-lg py-stack-gap rounded-xl transition-all duration-500 active:scale-95 group relative overflow-hidden",
                 isActive 
                   ? "bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground shadow-sem-lg shadow-sidebar-primary/30 font-black scale-[1.02] border border-white/10" 
                   : "hover:bg-sidebar-accent/50 text-sidebar-foreground/60 hover:text-sidebar-foreground font-bold hover:translate-x-1.5"
               )}
             >
               {isActive && (
-                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-2xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-xl"></div>
               )}
               <div className={cn(
                 "transition-all duration-500 relative z-10",
