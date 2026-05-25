@@ -82,58 +82,56 @@ export const DashboardCharts = memo(({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap-lg">
-      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden lg:col-span-1 rounded-[2rem] shadow-sem-sm">
-
-
-        <CardHeader className="pb-layout-gap-sm border-b border-border/10">
+      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-xl overflow-hidden lg:col-span-1 rounded-[2.5rem] shadow-sem-md hover:shadow-sem-lg transition-shadow duration-500">
+        <CardHeader className="pb-layout-gap-sm border-b border-border/5">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg md:text-h4 font-black">Conformidade Global de SLAs</CardTitle>
-            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black text-[10px]">
-              {metrics?.slaComplianceRate || 0}% META
+            <CardTitle className="text-lg md:text-h4 font-black tracking-tight">Conformidade de SLAs</CardTitle>
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-black text-[10px] tracking-widest px-2.5 py-1">
+              {metrics?.slaComplianceRate || 0}% META GLOBAL
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="pt-layout-gap flex flex-col items-center justify-center h-72">
-          <div className="relative w-48 h-48">
+        <CardContent className="pt-layout-gap flex flex-col items-center justify-center h-80">
+          <div className="relative w-56 h-56 group">
              <svg className="w-full h-full transform -rotate-90">
                <circle
-                 cx="96"
-                 cy="96"
-                 r="80"
+                 cx="112"
+                 cy="112"
+                 r="96"
                  stroke="currentColor"
-                 strokeWidth="16"
+                 strokeWidth="14"
                  fill="transparent"
-                 className="text-muted/20"
+                 className="text-muted/10"
                />
                <circle
-                 cx="96"
-                 cy="96"
-                 r="80"
+                 cx="112"
+                 cy="112"
+                 r="96"
                  stroke="currentColor"
-                 strokeWidth="16"
+                 strokeWidth="14"
                  fill="transparent"
-                 strokeDasharray={2 * Math.PI * 80}
-                 strokeDashoffset={2 * Math.PI * 80 * (1 - (metrics?.slaComplianceRate || 0) / 100)}
-                 className="text-primary transition-all duration-1000 ease-out"
+                 strokeDasharray={2 * Math.PI * 96}
+                 strokeDashoffset={2 * Math.PI * 96 * (1 - (metrics?.slaComplianceRate || 0) / 100)}
+                 className="text-primary transition-all duration-[1500ms] ease-out"
                  strokeLinecap="round"
                />
              </svg>
              <div className="absolute inset-0 flex flex-col items-center justify-center">
-               <span className="text-4xl font-black tracking-tighter text-foreground font-sans">{metrics?.slaComplianceRate || 0}%</span>
-               <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Sincronização Ativa</span>
+               <span className="text-5xl font-black tracking-tighter text-foreground group-hover:scale-110 transition-transform duration-500">{metrics?.slaComplianceRate || 0}%</span>
+               <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mt-1">Sincronização</span>
              </div>
           </div>
-          <p className="text-xs font-bold text-muted-foreground mt-4 italic text-center">
-            {metrics?.onTrackCount || 0} protocolos técnicos em conformidade com o cronograma.
+          <p className="text-[11px] font-bold text-muted-foreground/80 mt-6 text-center max-w-[240px] leading-relaxed">
+            <span className="text-primary">{metrics?.onTrackCount || 0} protocolos técnicos</span> operando em conformidade com o cronograma estratégico.
           </p>
         </CardContent>
       </Card>
 
-      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden lg:col-span-1 rounded-[2rem] shadow-sem-sm">
-        <CardHeader className="pb-layout-gap-sm border-b border-border/10">
-          <CardTitle className="text-lg md:text-h4 font-black">Fluxo por Ciclo Técnico</CardTitle>
+      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-xl overflow-hidden lg:col-span-1 rounded-[2.5rem] shadow-sem-md hover:shadow-sem-lg transition-shadow duration-500">
+        <CardHeader className="pb-layout-gap-sm border-b border-border/5">
+          <CardTitle className="text-lg md:text-h4 font-black tracking-tight">Fluxo por Ciclo Técnico</CardTitle>
         </CardHeader>
-        <CardContent className="pt-layout-gap">
+        <CardContent className="pt-layout-gap px-4">
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 

@@ -15,23 +15,35 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
 
   if (type === 'card') {
     return (
-      <div className={cn("grid-layout", className)}>
+      <div className={cn("grid-layout gap-layout-gap-lg", className)}>
         {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="card-standard p-8 space-y-6 rounded-[2rem] bg-card/30 border-none shadow-none ring-1 ring-black/[0.02] dark:ring-white/[0.02]">
+          <div key={i} className="card-standard p-8 space-y-6 rounded-[2.5rem] bg-card/40 border-none shadow-none ring-1 ring-black/[0.02] dark:ring-white/[0.02] overflow-hidden">
+            <div className="relative -mt-8 -mx-8 mb-6 h-40">
+              <Skeleton className="h-full w-full rounded-none opacity-50" />
+            </div>
             <div className="flex items-center gap-5">
-              <Skeleton className="h-16 w-16 rounded-2xl" />
+              <Skeleton className="h-14 w-14 rounded-2xl opacity-60" />
               <div className="space-y-3 flex-1">
-                <Skeleton className="h-5 w-1/2 rounded-lg" />
-                <Skeleton className="h-3.5 w-1/3 rounded-lg" />
+                <Skeleton className="h-5 w-3/4 rounded-lg" />
+                <Skeleton className="h-3.5 w-1/2 rounded-lg opacity-50" />
               </div>
             </div>
-            <div className="space-y-4">
-              <Skeleton className="h-5 w-full rounded-lg" />
-              <Skeleton className="h-5 w-4/5 rounded-lg" />
+            <div className="space-y-4 pt-2">
+              <div className="grid grid-cols-2 gap-4">
+                <Skeleton className="h-14 rounded-2xl opacity-40" />
+                <Skeleton className="h-14 rounded-2xl opacity-40" />
+              </div>
+              <div className="space-y-2 pt-4">
+                <div className="flex justify-between items-center mb-1">
+                  <Skeleton className="h-3 w-20 rounded-lg opacity-40" />
+                  <Skeleton className="h-3 w-10 rounded-lg opacity-40" />
+                </div>
+                <Skeleton className="h-2 w-full rounded-full opacity-30" />
+              </div>
             </div>
-            <div className="flex justify-between items-center pt-6 border-t border-border/10">
-              <Skeleton className="h-12 w-28 rounded-xl" />
-              <Skeleton className="h-7 w-20 rounded-full" />
+            <div className="flex gap-3 pt-6 border-t border-border/5">
+              <Skeleton className="h-11 flex-1 rounded-xl opacity-60" />
+              <Skeleton className="h-11 w-11 rounded-xl opacity-50" />
             </div>
           </div>
         ))}
