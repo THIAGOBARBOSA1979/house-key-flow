@@ -66,7 +66,7 @@ function DataTableComponent<T>({
 
   return (
     <div className={cn("w-full animate-fade-in group/table-container", className)}>
-      <div className="hidden lg:block rounded-card border border-border/40 shadow-sem-md bg-card/60 backdrop-blur-xl overflow-hidden relative transition-all duration-500 hover:shadow-sem-lg group/table-wrapper">
+      <div className="hidden lg:block rounded-[2rem] border border-border/40 shadow-sem-md bg-card/60 backdrop-blur-3xl overflow-hidden relative transition-all duration-500 hover:shadow-sem-lg group/table-wrapper">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
           <Table className="min-w-[800px] lg:min-w-full">
           <TableHeader className="bg-muted/5 transition-colors group-hover/table-container:bg-muted/10">
@@ -76,7 +76,7 @@ function DataTableComponent<T>({
                 <TableHead 
                   key={idx} 
                   className={cn(
-                    "text-sem-tiny uppercase tracking-widest text-muted-foreground py-5-sem px-6-sem h-auto whitespace-nowrap font-black",
+                    "text-sem-tiny uppercase tracking-[0.25em] text-muted-foreground py-6 px-6-sem h-auto whitespace-nowrap font-black",
                     column.className
                   )}
                 >
@@ -84,7 +84,7 @@ function DataTableComponent<T>({
                     <Button 
                       variant="ghost" 
                       onClick={() => handleSort(column.accessorKey as string)}
-                      className="h-auto p-0 hover:bg-transparent font-black text-sem-tiny uppercase tracking-widest text-muted-foreground flex items-center gap-1"
+                      className="h-auto p-0 hover:bg-transparent font-black text-sem-tiny uppercase tracking-[0.25em] text-muted-foreground flex items-center gap-1"
                     >
                       {column.header}
                       <ArrowUpDown className="h-3 w-3" />
@@ -108,7 +108,7 @@ function DataTableComponent<T>({
                   <TableCell 
                     key={colIdx} 
                     className={cn(
-                      "py-4.5-sem px-6-sem text-sem-body-sm font-medium text-foreground/90 group-hover:text-primary transition-colors",
+                      "py-6 px-6-sem text-sem-body-sm font-medium text-foreground/90 group-hover:text-primary transition-colors",
                       column.className
                     )}
                   >
@@ -129,7 +129,7 @@ function DataTableComponent<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-layout-gap space-y-4-sem interactive-active border border-border/40 bg-card/60 backdrop-blur-xl shadow-sem-sm rounded-card transition-all duration-500 hover:shadow-sem-lg hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
+            className="card-standard p-layout-gap space-y-4-sem interactive-active border border-border/40 bg-card/60 backdrop-blur-3xl shadow-sem-sm rounded-[1.5rem] transition-all duration-500 hover:shadow-sem-lg hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
             onClick={() => onRowClick?.(item)}
             tabIndex={onRowClick ? 0 : -1}
             onKeyDown={(e) => {
@@ -144,7 +144,7 @@ function DataTableComponent<T>({
                 "flex justify-between items-start gap-4-sem pb-3-sem border-b border-border/10 last:border-0 last:pb-0",
                 column.hideOnMobile && "hidden"
               )}>
-                <span className="text-sem-tiny uppercase tracking-widest text-muted-foreground font-black shrink-0">
+                <span className="text-sem-tiny uppercase tracking-[0.25em] text-muted-foreground/40 font-black shrink-0">
                   {column.header}
                 </span>
                 <div className="text-sem-body-sm font-medium text-right text-foreground/90">
