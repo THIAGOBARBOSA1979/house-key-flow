@@ -40,10 +40,10 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               end={item.end}
               title={item.label}
               className={cn(
-                "flex items-center justify-center h-13 w-13 rounded-xl transition-all duration-500 active:scale-90 group relative",
+                "flex items-center justify-center h-14 w-14 rounded-2xl transition-all duration-500 active:scale-90 group relative",
                 isActive 
                   ? "bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground shadow-sem-xl shadow-sidebar-primary/40 scale-110 border border-white/20" 
-                  : "hover:bg-sidebar-accent/40 text-sidebar-foreground/40 hover:text-sidebar-foreground"
+                  : "hover:bg-sidebar-accent/60 text-sidebar-foreground/30 hover:text-sidebar-foreground"
               )}
             >
               <Icon size={22} className={cn("transition-all duration-500", isActive && "rotate-[10deg]")} />
