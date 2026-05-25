@@ -1,7 +1,7 @@
 import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 
-export type CompanyStatus = 'active' | 'suspended' | 'cancelled';
+export type CompanyStatus = 'active' | 'suspended' | 'cancelled' | 'trial' | 'past_due';
 export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise';
 
 export interface CompanySettings {
@@ -20,13 +20,16 @@ export interface Company {
   slug: string;
   status: CompanyStatus;
   owner_id: string;
-  subscription_plan: SubscriptionPlan;
+  plan_id?: string;
+  subscription_status?: 'trial' | 'active' | 'past_due' | 'canceled' | 'suspended';
+  trial_ends_at?: Date;
   subscription_expires_at?: Date;
   settings?: CompanySettings;
   created_at: Date;
   updated_at: Date;
   company_id?: string;
 }
+
 
 class CompanyService extends SupabaseBaseService<Company> {
   constructor() {
