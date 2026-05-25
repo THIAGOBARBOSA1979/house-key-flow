@@ -116,9 +116,9 @@
     --content-padding-xl: var(--space-8);
     
     /* --- Specific Layout Spacing --- */
-    --header-height: 4.5rem;
-    --header-padding-x: var(--layout-gap);
-    --header-padding-y: var(--space-4);
+    --header-height: 4rem;
+    --header-padding-x: var(--space-4);
+    --header-padding-y: var(--space-3);
     --sidebar-width: 17rem;
     --sidebar-collapsed-width: 5rem;
     --card-padding: var(--space-4);
