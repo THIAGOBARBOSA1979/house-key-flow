@@ -76,7 +76,7 @@ export default function Login() {
 
           <div className="flex items-center justify-center">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-primary to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-2xl shadow-xl shadow-brand/20 group-hover:rotate-6 transition-all duration-500">
                 A2
               </div>
               <div>
@@ -97,16 +97,16 @@ export default function Login() {
                   <Shield className="h-4 w-4" />
                   {activeTab === "admin" ? "Área Administrativa" : "Portal do Cliente"}
                 </div>
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground leading-[1.1] tracking-tighter">
+                <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black text-foreground leading-[1] tracking-tighter">
                   {activeTab === "admin" ? (
                     <>
                       Domine sua operação com
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> inteligência estratégica</span>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand via-primary to-indigo-600"> inteligência estratégica</span>
                     </>
                   ) : (
                     <>
                       Experiência premium para o
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> seu novo lar</span>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand via-primary to-indigo-600"> seu novo lar</span>
                     </>
                   )}
                 </h2>

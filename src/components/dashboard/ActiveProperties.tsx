@@ -14,7 +14,7 @@ export const ActiveProperties = () => {
   return (
     <section>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl md:text-h2 flex items-center gap-2.5 font-black uppercase tracking-tighter">
+        <h2 className="text-xl md:text-h3 flex items-center gap-3 font-black uppercase tracking-tighter">
           <Building className="text-primary h-5 w-5" />
           Portfólio Estratégico
         </h2>

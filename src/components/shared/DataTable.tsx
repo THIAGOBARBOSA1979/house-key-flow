@@ -66,7 +66,7 @@ function DataTableComponent<T>({
 
   return (
     <div className={cn("w-full animate-fade-in group/table-container", className)}>
-      <div className="hidden lg:block rounded-card border border-border/10 shadow-sem-md bg-white/40 backdrop-blur-3xl overflow-hidden relative transition-all duration-500 hover:shadow-sem-xl hover:border-border/20">
+      <div className="hidden lg:block rounded-[2rem] border border-border/10 shadow-sem-md bg-white/40 backdrop-blur-3xl overflow-hidden relative transition-all duration-500 hover:shadow-sem-xl hover:border-border/20 group/table-wrapper">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
           <Table className="min-w-[800px] lg:min-w-full">
           <TableHeader className="bg-muted/5 transition-colors group-hover/table-container:bg-muted/10">
@@ -99,8 +99,8 @@ function DataTableComponent<T>({
               <TableRow 
                 key={rowIdx}
                 className={cn(
-                  "group transition-all duration-300 border-b-border/20 outline-none focus-within:ring-2 focus-within:ring-primary/20",
-                  onRowClick ? "cursor-pointer hover:bg-primary/5 active:bg-primary/10" : "cursor-default hover:bg-muted/10"
+                  "group transition-all duration-300 border-b-border/10 outline-none focus-within:ring-2 focus-within:ring-primary/20",
+                  onRowClick ? "cursor-pointer hover:bg-primary/[0.03] active:bg-primary/[0.08]" : "cursor-default hover:bg-muted/[0.03]"
                 )}
                 onClick={() => onRowClick?.(item)}
               >
@@ -129,7 +129,7 @@ function DataTableComponent<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-layout-gap space-y-4-sem interactive-active border border-border/40 bg-card/60 backdrop-blur-md shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
+            className="card-standard p-layout-gap space-y-4-sem interactive-active border border-border/10 bg-card/40 backdrop-blur-3xl shadow-sem-sm rounded-[2rem] transition-all duration-500 hover:shadow-sem-xl hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
             onClick={() => onRowClick?.(item)}
             tabIndex={onRowClick ? 0 : -1}
             onKeyDown={(e) => {

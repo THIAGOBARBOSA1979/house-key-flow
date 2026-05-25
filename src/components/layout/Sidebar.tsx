@@ -88,10 +88,10 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex flex-col items-center justify-center py-layout-gap-xl px-layout-gap border-b border-sidebar-border/5">
         {!collapsed ? (
-          <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-700">
+          <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in duration-700">
             <div className="relative group">
               <div className="absolute -inset-2 bg-sidebar-primary/20 rounded-card blur-xl group-hover:bg-sidebar-primary/30 transition-all duration-700"></div>
-              <div className="relative w-22 h-22 rounded-xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
+              <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
                 {company?.settings?.logo_url ? (
                   <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />
                 ) : (
@@ -100,7 +100,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
               </div>
             </div>
             <div className="text-center space-y-2.5">
-              <h1 className="text-2xl font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[200px] leading-tight">
+              <h1 className="text-3xl font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[220px] leading-tight">
                 {company?.settings?.display_name || company?.name || "A2 GESTÃO"}
               </h1>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sidebar-primary/10 border border-sidebar-primary/20 backdrop-blur-md">
@@ -173,7 +173,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
           <div className="flex items-center justify-between gap-card-gap">
             <div className="flex items-center gap-card-gap min-w-0 group cursor-pointer p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
               <div className="relative">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-slow">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black text-xl shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-slow">
                   {user?.name?.charAt(0) || "A"}
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-status-complete border-2 border-sidebar-background rounded-full shadow-lg"></div>

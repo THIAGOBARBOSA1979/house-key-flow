@@ -38,8 +38,8 @@ export function ResponsiveGrid({
   const columnClasses = {
     1: "lg:grid-cols-1",
     2: "lg:grid-cols-2",
-    3: "xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2", // Unified 3 cols
-    4: "xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2", // Unified 4 cols
+    3: "xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1", // Responsive mobile/tablet/desktop
+    4: "xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1", // Responsive mobile/tablet/desktop
     5: "xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2",
     6: "xl:grid-cols-6 lg:grid-cols-3 md:grid-cols-2",
     'auto': "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",

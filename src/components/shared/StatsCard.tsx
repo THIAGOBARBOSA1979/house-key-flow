@@ -46,12 +46,12 @@ export const StatsCard = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden group transition-all duration-700 border border-border/40 shadow-sem-sm hover:shadow-sem-2xl rounded-card hover:-translate-y-2 active:scale-[0.98] relative", 
+      "overflow-hidden group transition-all duration-700 border border-border/10 shadow-sem-sm hover:shadow-sem-xl rounded-[2.5rem] hover:-translate-y-2 active:scale-[0.98] relative", 
       variantStyles[variant], 
       className
     )}>
       {/* Background Decor */}
-      <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+      <div className="absolute -top-10 -right-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
       
       <CardContent className="p-card-padding md:p-card-padding-lg cursor-pointer relative z-10">
         <div className="flex items-start justify-between gap-layout-gap">
@@ -72,7 +72,7 @@ export const StatsCard = ({
             </div>
             
             <div className="space-y-1">
-              <h3 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter leading-none group-hover:scale-105 transition-transform duration-700 origin-left">
+              <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tighter leading-none group-hover:scale-105 transition-transform duration-700 origin-left">
                 {value}
               </h3>
               {description && (

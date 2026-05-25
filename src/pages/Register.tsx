@@ -113,7 +113,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-indigo-50/20 to-brand/5 dark:from-background dark:to-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-xl shadow-sem-xl border-border/10 bg-white/60 dark:bg-black/60 backdrop-blur-3xl rounded-[3rem] overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <Card className="w-full max-w-xl shadow-sem-2xl border-border/10 bg-white/40 dark:bg-black/40 backdrop-blur-3xl rounded-[3.5rem] overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <CardHeader className="text-center space-y-4 pt-10 pb-8">
           <div className="flex justify-center mb-2">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-primary/20">
