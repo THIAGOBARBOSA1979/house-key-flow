@@ -32,7 +32,7 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
         </Button>
       </div>
       <div className="layout-stack animate-in fade-in slide-in-from-left-4 duration-slow">
-        {inspections.length > 0 ? (
+        {inspections && inspections.length > 0 ? (
           inspections.map((inspection) => (
             <Card key={inspection.id} className="card-standard overflow-hidden border border-border/20 bg-card/30 backdrop-blur-md card-hover-effect rounded-[1.75rem] shadow-sem-sm hover:shadow-sem-lg transition-all border-l-4 border-l-primary/70">
               <CardContent className="p-0">

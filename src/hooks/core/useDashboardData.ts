@@ -42,7 +42,7 @@ export const useDashboardData = () => {
         recentActivities,
         recentTickets: recentTickets.filter((t: any) => t.status !== 'closed').slice(0, 3),
         propertyMetrics: propertyService.getMetricsSync(companyId, isSuperAdmin),
-        technicalConformity: 100, // Score assíncrono removido do sync para evitar erro de build, deve ser carregado separadamente se necessário
+        technicalConformity: await inspectionService.getTechnicalConformityScore(companyId, isSuperAdmin),
       });
 
       setHealthMetrics(hMetrics);

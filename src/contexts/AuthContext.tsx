@@ -38,6 +38,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     if (user) {
       AuthGuard.initialize();
+      // Auto-check session periodically
+      const interval = setInterval(() => checkAuth(), 5 * 60 * 1000);
+      return () => clearInterval(interval);
     }
   }, [user]);
 
