@@ -138,8 +138,8 @@ const Support = () => {
                   {tickets.map((ticket) => (
                     <div key={ticket.id} className="p-6 rounded-[1.5rem] bg-muted/30 hover:bg-primary/5 transition-all border border-transparent hover:border-primary/20 cursor-pointer" onClick={() => setSelectedTicketId(ticket.id)}>
                       <div className="flex items-center justify-between mb-3">
-                         <span className="text-[10px] font-black uppercase tracking-widest text-brand">{ticket.protocol}</span>
-                         <StatusBadge status={ticket.status === 'resolved' ? 'complete' : 'progress'} label={ticket.status} size="sm" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-brand">{ticket.protocol}</span>
+                          <StatusBadge status={ticket.status === 'resolved' ? 'complete' : (ticket.status === 'open' ? 'progress' : 'pending')} label={ticket.status === 'resolved' ? 'Resolvido' : (ticket.status === 'open' ? 'Em Aberto' : 'Em Análise')} size="sm" />
                       </div>
                       <h4 className="font-black text-sm mb-2">{ticket.subject}</h4>
                       <p className="text-[10px] text-muted-foreground font-bold">Protocolo gerado em: {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ''}</p>
