@@ -34,10 +34,11 @@ export function FilterBar({
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={(e) => onSearchChange?.(e.target.value)}
-            className="pl-12 h-12 bg-card/50 backdrop-blur-md border-border/30 shadow-sem-sm hover:border-primary/40 focus-visible:ring-primary/20 transition-all rounded-xl font-bold placeholder:font-medium placeholder:text-muted-foreground/40 hover:shadow-sem-md focus:bg-card w-full"
+            className="pl-12 h-12 bg-card/40 backdrop-blur-md border-border/30 shadow-sem-sm hover:border-primary/20 focus-visible:ring-primary/10 focus-visible:border-primary/40 transition-all rounded-xl font-bold placeholder:font-medium placeholder:text-muted-foreground/30 hover:shadow-sem-md focus:bg-card w-full"
             autoComplete="off"
             spellCheck={false}
           />
+
         </div>
         
         {children && (
