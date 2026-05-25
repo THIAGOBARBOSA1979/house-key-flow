@@ -123,6 +123,7 @@
     --sidebar-collapsed-width: 5rem;
     --card-padding: var(--space-6);
     --card-padding-lg: var(--space-8);
+    --card-radius: var(--radius-2xl);
     --card-gap: var(--space-4);
     --stack-gap: var(--space-4);
     --stack-gap-lg: var(--space-8);
@@ -349,7 +350,7 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-[2rem] border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
+    @apply bg-card text-card-foreground rounded-card border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
   }
 
   .card-hover-effect {

@@ -90,8 +90,8 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
         {!collapsed ? (
           <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-700">
             <div className="relative group">
-              <div className="absolute -inset-2 bg-sidebar-primary/20 rounded-[2.5rem] blur-xl group-hover:bg-sidebar-primary/30 transition-all duration-700"></div>
-              <div className="relative w-22 h-22 rounded-[2.2rem] bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
+              <div className="absolute -inset-2 bg-sidebar-primary/20 rounded-card blur-xl group-hover:bg-sidebar-primary/30 transition-all duration-700"></div>
+              <div className="relative w-22 h-22 rounded-xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
                 {company?.settings?.logo_url ? (
                   <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />
                 ) : (
@@ -112,7 +112,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
         ) : (
           <div className="relative group">
             <div className="absolute -inset-1 bg-sidebar-primary/40 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative w-12 h-12 rounded-xl bg-sidebar-primary flex items-center justify-center shadow-sem-lg animate-in fade-in zoom-in duration-500 hover:scale-110 transition-transform cursor-pointer">
+            <div className="relative w-12 h-12 rounded-lg bg-sidebar-primary flex items-center justify-center shadow-sem-lg animate-in fade-in zoom-in duration-500 hover:scale-110 transition-transform cursor-pointer">
               <Building className="text-sidebar-primary-foreground h-7 w-7" />
             </div>
           </div>

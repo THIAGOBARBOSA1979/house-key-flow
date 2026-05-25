@@ -96,6 +96,7 @@ export default {
 				xl: 'var(--radius-xl)',
 				'2xl': 'var(--radius-2xl)',
 				full: 'var(--radius-full)',
+				'card': 'var(--card-radius)',
 			},
 			zIndex: {
 				hide: 'var(--z-hide)',
