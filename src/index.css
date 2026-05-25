@@ -121,8 +121,8 @@
     --header-padding-y: var(--space-4);
     --sidebar-width: 17rem;
     --sidebar-collapsed-width: 5rem;
-    --card-padding: var(--space-6);
-    --card-padding-lg: var(--space-8);
+    --card-padding: var(--space-4);
+    --card-padding-lg: var(--space-6);
     --card-radius: var(--radius-2xl);
     --card-gap: var(--space-4);
     --stack-gap: var(--space-4);
@@ -265,18 +265,18 @@
 
 @media (max-width: 768px) {
   :root {
-    --layout-gap: 1rem;
-    --layout-gap-lg: 1.5rem;
-    --layout-gap-xl: 2rem;
-    --section-gap: 2rem;
-    --content-padding: 1rem;
-    --content-padding-lg: 1.25rem;
+    --layout-gap: var(--space-3);
+    --layout-gap-lg: var(--space-4);
+    --layout-gap-xl: var(--space-6);
+    --section-gap: var(--space-8);
+    --content-padding: var(--space-3);
+    --content-padding-lg: var(--space-4);
   }
 }
 
 @media (max-width: 1024px) {
   :root {
-    --sidebar-width: 14rem;
+    --sidebar-width: 16rem;
   }
 }
 
