@@ -103,11 +103,11 @@ export const GovernanceManager = () => {
         </CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Recurso / Ação</TableHead>
+            <TableHeader className="bg-muted/30">
+              <TableRow className="hover:bg-transparent border-border/10">
+                <TableHead className="font-black uppercase text-[10px] tracking-widest">Recurso / Módulo Operacional</TableHead>
                 {roles.map(role => (
-                  <TableHead key={role} className="text-center font-bold uppercase text-[10px]">
+                  <TableHead key={role} className="text-center font-black uppercase text-[10px] tracking-widest">
                     {role.replace('_', ' ')}
                   </TableHead>
                 ))}
@@ -115,19 +115,35 @@ export const GovernanceManager = () => {
             </TableHeader>
             <TableBody>
               {/* Simplified for now until permissions are fully mapped in new guard */}
-              <TableRow>
-                <TableCell className="font-medium text-sm">Gestão de Garantias</TableCell>
+              <TableRow className="hover:bg-primary/[0.02] border-border/5">
+                <TableCell className="font-bold text-sm">Gestão de Garantias & Assistência</TableCell>
                 {roles.map(role => (
                   <TableCell key={role} className="text-center">
-                    {['super_admin', 'admin', 'manager', 'technical'].includes(role) ? <CheckCircle2 className="h-4 w-4 text-status-complete mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
+                    {['super_admin', 'admin', 'manager', 'technical'].includes(role) ? <CheckCircle2 className="h-5 w-5 text-status-complete mx-auto drop-shadow-sm" /> : <XCircle className="h-5 w-5 text-muted-foreground/20 mx-auto" />}
                   </TableCell>
                 ))}
               </TableRow>
-              <TableRow>
-                <TableCell className="font-medium text-sm">Vistorias Técnicas</TableCell>
+              <TableRow className="hover:bg-primary/[0.02] border-border/5">
+                <TableCell className="font-bold text-sm">Vistorias Técnicas & Entrega de Chaves</TableCell>
                 {roles.map(role => (
                   <TableCell key={role} className="text-center">
-                    {['super_admin', 'admin', 'technical'].includes(role) ? <CheckCircle2 className="h-4 w-4 text-status-complete mx-auto" /> : <XCircle className="h-4 w-4 text-muted-foreground/30 mx-auto" />}
+                    {['super_admin', 'admin', 'technical'].includes(role) ? <CheckCircle2 className="h-5 w-5 text-status-complete mx-auto drop-shadow-sm" /> : <XCircle className="h-5 w-5 text-muted-foreground/20 mx-auto" />}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow className="hover:bg-primary/[0.02] border-border/5">
+                <TableCell className="font-bold text-sm">Empreendimentos & Unidades</TableCell>
+                {roles.map(role => (
+                  <TableCell key={role} className="text-center">
+                    {['super_admin', 'admin', 'manager'].includes(role) ? <CheckCircle2 className="h-5 w-5 text-status-complete mx-auto drop-shadow-sm" /> : <XCircle className="h-5 w-5 text-muted-foreground/20 mx-auto" />}
+                  </TableCell>
+                ))}
+              </TableRow>
+              <TableRow className="hover:bg-primary/[0.02] border-border/5">
+                <TableCell className="font-bold text-sm">Configurações SaaS & Command Center</TableCell>
+                {roles.map(role => (
+                  <TableCell key={role} className="text-center">
+                    {['super_admin'].includes(role) ? <CheckCircle2 className="h-5 w-5 text-status-complete mx-auto drop-shadow-sm" /> : <XCircle className="h-5 w-5 text-muted-foreground/20 mx-auto" />}
                   </TableCell>
                 ))}
               </TableRow>
