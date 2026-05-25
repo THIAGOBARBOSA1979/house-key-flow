@@ -99,7 +99,7 @@ export default function SupportInbox() {
         </div>
 
         {/* Área de Conversa */}
-        <div className="flex-1 flex flex-col rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm overflow-hidden">
+        <div className="flex-1 flex flex-col rounded-card border border-border/50 bg-card/30 backdrop-blur-sm overflow-hidden">
           {selectedTicket ? (
             <>
               {/* Header do Chat */}
@@ -166,7 +166,7 @@ export default function SupportInbox() {
 
               {/* Input */}
               <div className="p-6 bg-muted/20 border-t border-border/50">
-                <div className="flex gap-4 items-center bg-background/50 border border-border/50 p-2 rounded-2xl focus-within:ring-2 ring-brand/20 transition-all">
+                <div className="flex gap-4 items-center bg-background/50 border border-border/50 p-2 rounded-xl focus-within:ring-2 ring-brand/20 transition-all">
                   <Input 
                     placeholder="Digite sua resposta..." 
                     className="border-none bg-transparent focus-visible:ring-0 h-12 text-sm"
@@ -182,7 +182,7 @@ export default function SupportInbox() {
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground p-12 text-center space-y-4">
-              <div className="w-20 h-20 rounded-3xl bg-muted/20 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-2xl bg-muted/20 flex items-center justify-center">
                 <MessageSquare size={40} className="opacity-20" />
               </div>
               <div>
