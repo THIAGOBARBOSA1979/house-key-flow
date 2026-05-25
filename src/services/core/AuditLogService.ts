@@ -34,8 +34,8 @@ export interface AuditLogEntry {
   id: string;
   company_id: string | null;
   user_id: string;
-  action: string;
-  entity_type: string;
+  action: AuditAction;
+  entity_type: AuditEntityType;
   entity_id: string | null;
   payload: any;
   previous_values: any;
@@ -47,6 +47,19 @@ export interface AuditLogEntry {
   entityType: string;
   entityId: string;
   metadata?: any;
+  // Enterprise Fields
+  correlation_id?: string;
+  trace_id?: string;
+  category?: string;
+  severity?: 'info' | 'warning' | 'critical' | 'debug';
+  environment?: string;
+  service_name?: string;
+  module_name?: string;
+  origin?: 'web' | 'mobile' | 'api' | 'system';
+  device_id?: string;
+  location?: any;
+  event_hash?: string;
+  is_system_event?: boolean;
 }
 
 class AuditLogService extends SupabaseBaseService<any> {
@@ -85,10 +98,14 @@ class AuditLogService extends SupabaseBaseService<any> {
     searchTerm?: string;
     action?: string;
     entityType?: string;
+    correlationId?: string;
+    traceId?: string;
   }): Promise<AuditLogEntry[]> {
     const filters: any[] = [];
     if (params.action && params.action !== 'all') filters.push({ column: 'action', operator: 'eq', value: params.action });
     if (params.entityType && params.entityType !== 'all') filters.push({ column: 'entity_type', operator: 'eq', value: params.entityType });
+    if (params.correlationId) filters.push({ column: 'correlation_id', operator: 'eq', value: params.correlationId });
+    if (params.traceId) filters.push({ column: 'trace_id', operator: 'eq', value: params.traceId });
 
     if (!params.isSuperAdmin && params.companyId) {
       filters.push({ column: 'company_id', operator: 'eq', value: params.companyId });
@@ -98,7 +115,7 @@ class AuditLogService extends SupabaseBaseService<any> {
       filters,
       pagination: {
         page: params.page || 1,
-        pageSize: params.pageSize || 50,
+        pageSize: params.pageSize || 100,
         orderBy: 'created_at',
         orderDirection: 'desc'
       },
@@ -125,13 +142,25 @@ class AuditLogService extends SupabaseBaseService<any> {
     payload?: any;
     previousValues?: any;
     companyId?: string;
+    category?: string;
+    severity?: 'info' | 'warning' | 'critical' | 'debug';
+    moduleName?: string;
+    correlationId?: string;
+    traceId?: string;
+    origin?: string;
   }): Promise<void> {
     const { error } = await Supabase.db.rpc('log_audit_action', {
       p_action: data.action,
       p_entity_type: data.entityType,
       p_entity_id: data.entityId || null,
       p_payload: data.payload || null,
-      p_previous_values: data.previousValues || null
+      p_previous_values: data.previousValues || null,
+      p_category: data.category || null,
+      p_severity: data.severity || 'info',
+      p_module_name: data.moduleName || null,
+      p_correlation_id: data.correlationId || null,
+      p_trace_id: data.traceId || null,
+      p_origin: data.origin || 'web'
     });
 
     if (error) console.error('Failed to log audit action:', error);
