@@ -22,8 +22,9 @@ describe('Warranty Page', () => {
       </QueryClientProvider>
     );
     
-    expect(screen.getByText(/Garantias & Assistência/i)).toBeDefined();
-    expect(screen.getByText(/Governança completa do pós-venda/i)).toBeDefined();
+    expect(screen.getByText(/Engenharia de Diagnóstico & Assistência/i)).toBeDefined();
+    expect(screen.getByText(/Governança técnica do pós-venda/i)).toBeDefined();
+
 
   });
 });

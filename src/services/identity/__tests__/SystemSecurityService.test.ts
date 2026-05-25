@@ -1,13 +1,24 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { securityService } from '../SystemSecurityService';
+import { Supabase } from '@/integrations/supabase';
 
-// Mock auditLogService to avoid circular dependency
+// Mock auditLogService
 vi.mock('../../core/AuditLogService', () => ({
   auditLogService: {
     log: vi.fn().mockResolvedValue(true)
   }
 }));
+
+// Mock Supabase
+vi.mock('@/integrations/supabase', () => ({
+  Supabase: {
+    auth: {
+      getSession: vi.fn()
+    }
+  }
+}));
+
 
 describe('SystemSecurityService', () => {
   beforeEach(() => {
@@ -33,25 +44,30 @@ describe('SystemSecurityService', () => {
     expect(sanitized).not.toContain('>');
   });
 
-  it('should handle session timeouts', () => {
+  it('should handle session timeouts', async () => {
     const onTimeout = vi.fn();
     
     // Simulate being logged in
-    localStorage.setItem('auth_user', JSON.stringify({ id: '1', name: 'Test' }));
+    (Supabase.auth.getSession as any).mockResolvedValue({ user: { id: '1' } });
+
     
     const cleanup = securityService.initialize(onTimeout);
     
     // Advance time by 31 minutes (timeout is 30m)
     vi.advanceTimersByTime(31 * 60 * 1000);
     
-    expect(onTimeout).toHaveBeenCalled();
+    // Since the check is async, we need to wait a bit
+    await vi.waitFor(() => {
+      expect(onTimeout).toHaveBeenCalled();
+    });
+
     
     if (cleanup) cleanup();
   });
 
-  it('should reset inactivity timer on user interaction', () => {
+  it('should reset inactivity timer on user interaction', async () => {
     const onTimeout = vi.fn();
-    localStorage.setItem('auth_user', JSON.stringify({ id: '1', name: 'Test' }));
+    (Supabase.auth.getSession as any).mockResolvedValue({ user: { id: '1' } });
     
     const cleanup = securityService.initialize(onTimeout);
     
@@ -68,7 +84,10 @@ describe('SystemSecurityService', () => {
     
     // Advance another 15 minutes (total 35m since interaction)
     vi.advanceTimersByTime(15 * 60 * 1000);
-    expect(onTimeout).toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(onTimeout).toHaveBeenCalled();
+    });
+
 
     if (cleanup) cleanup();
   });

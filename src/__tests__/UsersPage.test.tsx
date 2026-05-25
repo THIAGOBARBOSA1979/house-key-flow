@@ -22,7 +22,7 @@ describe('Users Page', () => {
       </QueryClientProvider>
     );
     
-    expect(screen.getByText(/Governança de Usuários/i)).toBeDefined();
+    expect(screen.getByText(/Governança de Equipe/i)).toBeDefined();
     expect(screen.getByText(/Novo Usuário/i)).toBeDefined();
 
   });

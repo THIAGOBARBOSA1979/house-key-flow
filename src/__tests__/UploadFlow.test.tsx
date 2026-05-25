@@ -13,7 +13,7 @@ vi.mock('@/services', async (importOriginal) => {
     documentService: {
       ...actual.documentService,
       createDocument: vi.fn(),
-      getCategories: vi.fn(() => [{ id: 'contrato', name: 'Contratos' }])
+      getCategories: vi.fn(() => ['contrato', 'manuais', 'plantas', 'financeiro'])
     },
   };
 });

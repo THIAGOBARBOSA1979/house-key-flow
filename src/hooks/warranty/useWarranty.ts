@@ -14,6 +14,7 @@ export const useWarranty = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const companyId = user?.company_id;
+  const userId = user?.id || "unknown-user";
   const isSuperAdmin = !!user?.is_super_admin;
   
   const { items: requests, isLoading: isServiceLoading, refresh: refreshList, error } = useService<WarrantyRequestFlow>(warrantyFlowService, {
@@ -24,6 +25,7 @@ export const useWarranty = () => {
     }
   });
 
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
 
   const filterFn = useCallback((request: WarrantyRequestFlow, currentFilters: Partial<WarrantyFilters>) => {
     if (currentFilters.propertyId && currentFilters.propertyId !== "all" && request.propertyId !== currentFilters.propertyId) return false;
@@ -31,15 +33,6 @@ export const useWarranty = () => {
     if (currentFilters.priority && currentFilters.priority !== "all" && request.priority !== currentFilters.priority) return false;
     if (currentFilters.slaStatus && (currentFilters.slaStatus as string) !== "all" && request.slaStatus !== currentFilters.slaStatus) return false;
     if (currentFilters.isPaused !== undefined && request.isPaused !== currentFilters.isPaused) return false;
-    
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      return (
-        request.title.toLowerCase().includes(term) ||
-        request.clientName?.toLowerCase().includes(term) ||
-        request.id.toLowerCase().includes(term)
-      );
-    }
     
     return true;
   }, []);
@@ -86,7 +79,7 @@ export const useWarranty = () => {
 
   const changeStatus = useCallback(async (requestId: string, newStage: WarrantyStage, notes?: string) => {
     try {
-      const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, "admin-1", false, notes));
+      const result = await Promise.resolve(warrantyFlowService.changeStatus(requestId, newStage, userId, false, notes));
       if (result.success) {
         toast({ title: "Status atualizado", description: `Solicitação movida para ${newStage}.` });
         refreshList();
@@ -100,25 +93,25 @@ export const useWarranty = () => {
       toast({ title: "Erro inesperado", description: errorMessage, variant: "destructive" });
       return { success: false, error: errorMessage };
     }
-  }, [toast, refreshList]);
+  }, [toast, refreshList, userId]);
 
   const togglePause = useCallback(async (requestId: string, isPaused: boolean, reason: string) => {
-    const result = await warrantyFlowService.togglePause(requestId, isPaused, reason, "admin-1");
+    const result = await warrantyFlowService.togglePause(requestId, isPaused, reason, userId);
     if (result.success) {
       toast({ title: isPaused ? "SLA Pausado" : "SLA Retomado", description: isPaused ? `Motivo: ${reason}` : "O cronômetro do SLA foi retomado." });
       refreshList();
     }
     return result;
-  }, [toast, refreshList]);
+  }, [toast, refreshList, userId]);
 
   const assignTechnician = useCallback(async (requestId: string, techId: string, techName: string) => {
-    const result = await warrantyFlowService.assignTechnician(requestId, techId, techName, "admin-1");
+    const result = await warrantyFlowService.assignTechnician(requestId, techId, techName, userId);
     if (result.success) {
       toast({ title: "Técnico atribuído", description: `O profissional ${techName} agora é o responsável.` });
       refreshList();
     }
     return result;
-  }, [toast, refreshList]);
+  }, [toast, refreshList, userId]);
 
   const exportData = useCallback(() => {
     exportService.exportToCSV(filteredRequests, "garantias_a2");
