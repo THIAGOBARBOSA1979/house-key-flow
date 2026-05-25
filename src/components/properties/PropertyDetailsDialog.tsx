@@ -148,6 +148,15 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
                 onUpdate={onUpdate}
               />
             </TabsContent>
+
+            <TabsContent value="logs" className="animate-in fade-in duration-300">
+              <AuditLogViewer 
+                entityType="property" 
+                entityId={property.id} 
+                compact 
+                title={`Rastreabilidade: ${property.name}`} 
+              />
+            </TabsContent>
           </Tabs>
         </div>
       </DialogContent>
