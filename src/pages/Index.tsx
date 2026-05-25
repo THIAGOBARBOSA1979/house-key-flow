@@ -43,15 +43,14 @@ const Dashboard = () => {
 
 
   return (
-    <div className="layout-stack pb-16 animate-in fade-in duration-1000">
+    <div className="layout-stack pb-layout-gap-xl animate-in fade-in duration-1000">
       <PageHeader
         icon={Home}
         title={`Bem-vindo, ${user?.name?.split(' ')[0] || 'Administrador'}`}
         description="Acompanhe a saúde operacional, o progresso das obras e os indicadores de performance da sua incorporadora."
         className="mb-layout-gap-lg"
       >
-
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-component-gap-md">
           <Button 
             variant="outline" 
             size="icon" 
