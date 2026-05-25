@@ -122,10 +122,10 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
       {!collapsed && (
         <div className="px-layout-gap py-layout-gap-sm">
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="sm" 
             onClick={toggleLanguage}
-            className="w-full rounded-xl text-[9px] font-black uppercase tracking-widest h-9 border border-sidebar-border/10 hover:bg-sidebar-accent/50 text-sidebar-foreground/40 hover:text-sidebar-foreground transition-all backdrop-blur-sm"
+            className="w-full rounded-xl text-[9px] font-black uppercase tracking-widest h-9 border-sidebar-border/20 hover:bg-sidebar-accent/50 text-sidebar-foreground/60 hover:text-sidebar-foreground transition-all backdrop-blur-sm"
           >
             {i18n.language === 'pt' ? 'Switch to English' : 'Mudar para Português'}
           </Button>

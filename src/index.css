@@ -116,19 +116,19 @@
     --content-padding-xl: var(--space-8);
     
     /* --- Specific Layout Spacing --- */
-    --header-height: 4rem;
-    --header-padding-x: var(--space-4);
-    --header-padding-y: var(--space-3);
-    --sidebar-width: 17rem;
-    --sidebar-collapsed-width: 5rem;
-    --card-padding: var(--space-4);
-    --card-padding-lg: var(--space-6);
+    --header-height: 4.5rem;
+    --header-padding-x: var(--space-6);
+    --header-padding-y: var(--space-4);
+    --sidebar-width: 18rem;
+    --sidebar-collapsed-width: 5.5rem;
+    --card-padding: var(--space-6);
+    --card-padding-lg: var(--space-8);
     --card-radius: var(--radius-2xl);
-    --card-gap: var(--space-4);
-    --stack-gap: var(--space-4);
-    --stack-gap-lg: var(--space-8);
-    --footer-padding-y: var(--space-12);
-    --footer-padding-x: var(--space-10);
+    --card-gap: var(--space-6);
+    --stack-gap: var(--space-6);
+    --stack-gap-lg: var(--space-10);
+    --footer-padding-y: var(--space-16);
+    --footer-padding-x: var(--space-12);
     
     /* --- Grid Tokens --- */
     --grid-gap: var(--layout-gap);
