@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { 
   Wrench, 
   Plus, 
@@ -15,7 +15,10 @@ import {
   CheckCircle2,
   Clock,
   Briefcase,
-  Settings
+  Settings,
+  TrendingUp,
+  MapPin,
+  CalendarDays
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
