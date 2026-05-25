@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 interface ResponsiveGridProps {
   children: React.ReactNode;
   columns?: 1 | 2 | 3 | 4 | 5 | 6 | 'auto' | '2-wide';
-  gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'layout' | 'xs-sem' | 'sm-sem' | 'md-sem' | 'lg-sem' | '4-sem' | 'layout-gap';
+  gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'layout' | 'xs-sem' | 'sm-sem' | 'md-sem' | 'lg-sem' | '4-sem' | 'layout-gap' | 'layout-lg' | 'layout-xl';
   className?: string;
   mobileCols?: 1 | 2;
   tabletCols?: 1 | 2 | 3;
@@ -19,17 +19,19 @@ export function ResponsiveGrid({
   tabletCols
 }: ResponsiveGridProps) {
   const gapClasses = {
-    xs: "gap-1",
-    sm: "gap-2",
-    md: "gap-6",
-    lg: "gap-12",
-    xl: "gap-16",
+    xs: "gap-1-sem",
+    sm: "gap-2-sem",
+    md: "gap-layout-gap",
+    lg: "gap-layout-gap-lg",
+    xl: "gap-layout-gap-xl",
     layout: "gap-layout-gap",
     'layout-gap': "gap-layout-gap",
-    'xs-sem': "gap-1",
-    'sm-sem': "gap-2",
-    'md-sem': "gap-6",
-    'lg-sem': "gap-12",
+    'layout-lg': "gap-layout-gap-lg",
+    'layout-xl': "gap-layout-gap-xl",
+    'xs-sem': "gap-1-sem",
+    'sm-sem': "gap-2-sem",
+    'md-sem': "gap-layout-gap",
+    'lg-sem': "gap-layout-gap-lg",
     '4-sem': "gap-4-sem"
   };
 
