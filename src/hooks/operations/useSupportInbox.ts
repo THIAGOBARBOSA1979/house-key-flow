@@ -8,7 +8,8 @@ import {
   whatsappConfigService,
   WhatsAppConfig
 } from '@/services';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
+
 import { Supabase } from '@/integrations/supabase';
 
 export const useSupportInbox = () => {

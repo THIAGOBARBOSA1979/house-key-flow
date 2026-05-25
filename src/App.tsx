@@ -82,8 +82,10 @@ const App = () => {
                   
                   <Route path="announcements" element={<Pages.Announcements />} />
                   <Route path="technicians" element={<Pages.Technicians />} />
-                  <Route path="support" element={<Pages.AdminSupport />} />
-                  <Route path="saas" element={<ProtectedRoute requiredRole="super_admin"><Pages.SaaSAdmin /></ProtectedRoute>} />
+                   <Route path="support" element={<Pages.AdminSupport />} />
+                   <Route path="inbox" element={<Pages.SupportInbox />} />
+                   <Route path="saas" element={<ProtectedRoute requiredRole="super_admin"><Pages.SaaSAdmin /></ProtectedRoute>} />
+
                 </Route>
 
 

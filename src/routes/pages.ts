@@ -30,7 +30,9 @@ export const AuditLogs = lazy(() => import("@/pages/admin/AuditLogs"));
 export const Announcements = lazy(() => import("@/pages/admin/Announcements"));
 export const Technicians = lazy(() => import("@/pages/Technicians"));
 export const AdminSupport = lazy(() => import("@/pages/admin/Support"));
+export const SupportInbox = lazy(() => import("@/pages/admin/SupportInbox"));
 export const SaaSAdmin = lazy(() => import("@/pages/admin/SaaSAdmin"));
+
 
 // Client Pages
 export const ClientDashboard = lazy(() => import("@/pages/client/Dashboard"));

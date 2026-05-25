@@ -17,7 +17,6 @@ export * from './operations/ConstructionService';
 export * from './operations/ClientStageService';
 export * from './operations/DocumentService';
 export * from './operations/ChecklistService';
-export * from './operations/SupportService';
 export * from './operations/InspectionDraftService';
 export * from './operations/SupportTicketService';
 export * from './operations/TicketMessageService';
@@ -36,4 +35,3 @@ export * from './core/SyncService';
 export * from './core/SystemHealthService';
 export * from './core/EventAutomationService';
 export * from './core/FileService';
-

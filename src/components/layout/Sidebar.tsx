@@ -48,6 +48,8 @@ const operationalItems = [
   { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas" },
   { to: "/admin/warranty", icon: ShieldCheck, label: "Assistência Técnica" },
   { to: "/admin/support", icon: MessageSquare, label: "Suporte Técnico" },
+  { to: "/admin/inbox", icon: MessageSquare, label: "Inbox WhatsApp", adminOnly: true },
+
 ];
 
 const managementItems = [
