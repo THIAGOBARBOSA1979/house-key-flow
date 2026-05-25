@@ -17,40 +17,76 @@ export type Database = {
       audit_logs: {
         Row: {
           action: string
+          category: string | null
           company_id: string | null
+          correlation_id: string | null
           created_at: string | null
+          device_id: string | null
           entity_id: string | null
           entity_type: string
+          environment: string | null
+          event_hash: string | null
           id: string
           ip_address: string | null
+          is_system_event: boolean | null
+          location: Json | null
+          module_name: string | null
+          origin: string | null
           payload: Json | null
           previous_values: Json | null
+          service_name: string | null
+          severity: string | null
+          trace_id: string | null
           user_agent: string | null
           user_id: string | null
         }
         Insert: {
           action: string
+          category?: string | null
           company_id?: string | null
+          correlation_id?: string | null
           created_at?: string | null
+          device_id?: string | null
           entity_id?: string | null
           entity_type: string
+          environment?: string | null
+          event_hash?: string | null
           id?: string
           ip_address?: string | null
+          is_system_event?: boolean | null
+          location?: Json | null
+          module_name?: string | null
+          origin?: string | null
           payload?: Json | null
           previous_values?: Json | null
+          service_name?: string | null
+          severity?: string | null
+          trace_id?: string | null
           user_agent?: string | null
           user_id?: string | null
         }
         Update: {
           action?: string
+          category?: string | null
           company_id?: string | null
+          correlation_id?: string | null
           created_at?: string | null
+          device_id?: string | null
           entity_id?: string | null
           entity_type?: string
+          environment?: string | null
+          event_hash?: string | null
           id?: string
           ip_address?: string | null
+          is_system_event?: boolean | null
+          location?: Json | null
+          module_name?: string | null
+          origin?: string | null
           payload?: Json | null
           previous_values?: Json | null
+          service_name?: string | null
+          severity?: string | null
+          trace_id?: string | null
           user_agent?: string | null
           user_id?: string | null
         }
@@ -1631,16 +1667,33 @@ export type Database = {
     Functions: {
       get_auth_company_id: { Args: never; Returns: string }
       get_auth_user_role: { Args: never; Returns: string }
-      log_audit_action: {
-        Args: {
-          p_action: string
-          p_entity_id: string
-          p_entity_type: string
-          p_payload?: Json
-          p_previous_values?: Json
-        }
-        Returns: undefined
-      }
+      log_audit_action:
+        | {
+            Args: {
+              p_action: string
+              p_category?: string
+              p_correlation_id?: string
+              p_entity_id?: string
+              p_entity_type: string
+              p_module_name?: string
+              p_origin?: string
+              p_payload?: Json
+              p_previous_values?: Json
+              p_severity?: string
+              p_trace_id?: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_action: string
+              p_entity_id: string
+              p_entity_type: string
+              p_payload?: Json
+              p_previous_values?: Json
+            }
+            Returns: undefined
+          }
     }
     Enums: {
       [_ in never]: never

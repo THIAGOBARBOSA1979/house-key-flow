@@ -11,10 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Property, propertyService } from "@/services";
 import { PropertyMilestones } from "./PropertyMilestones";
 import { PropertyUnitMap } from "./PropertyUnitMap";
-import { Building, MapPin, User, Ruler, Calendar, LayoutGrid, ListChecks, Info } from "lucide-react";
+import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
+import { Building, MapPin, User, Ruler, Calendar, LayoutGrid, ListChecks, Info, Shield } from "lucide-react";
 import { safeFormat } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks";
 
 interface PropertyDetailsDialogProps {
   property: Property | null;
@@ -63,7 +64,7 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
 
         <div className="flex-1 overflow-y-auto p-10">
           <Tabs defaultValue="overview" className="space-y-10">
-            <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1.5 rounded-2xl max-w-xl mx-auto border border-border/5">
+            <TabsList className="grid w-full grid-cols-4 bg-muted/50 p-1.5 rounded-2xl max-w-2xl mx-auto border border-border/5">
               <TabsTrigger value="overview" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md font-bold transition-all py-2.5">
                 <Info size={18} className="mr-2" /> Visão Geral
               </TabsTrigger>
@@ -72,6 +73,9 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
               </TabsTrigger>
               <TabsTrigger value="units" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md font-bold transition-all py-2.5">
                 <LayoutGrid size={18} className="mr-2" /> Unidades
+              </TabsTrigger>
+              <TabsTrigger value="logs" className="rounded-xl data-[state=active]:bg-background data-[state=active]:shadow-sem-md font-bold transition-all py-2.5">
+                <Shield size={18} className="mr-2" /> Auditoria
               </TabsTrigger>
             </TabsList>
 
@@ -142,6 +146,15 @@ export function PropertyDetailsDialog({ property, open, onOpenChange, onUpdate }
                   });
                 }}
                 onUpdate={onUpdate}
+              />
+            </TabsContent>
+
+            <TabsContent value="logs" className="animate-in fade-in duration-300">
+              <AuditLogViewer 
+                entityType="property" 
+                entityId={property.id} 
+                compact 
+                title={`Rastreabilidade: ${property.name}`} 
               />
             </TabsContent>
           </Tabs>

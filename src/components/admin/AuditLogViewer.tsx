@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Info, Fingerprint, Globe, Monitor, Terminal, MapPin, Share2, Link } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,8 @@ import {
   Database,
   Calendar,
   Clock as ClockIcon,
-  Tag
+  Tag,
+  Hash
 } from "lucide-react";
 import { isValid } from "date-fns";
 import { cn, safeFormat } from "@/lib/utils";
@@ -36,6 +37,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AuditLogViewerProps {
   entityType?: AuditEntityType;
@@ -100,10 +102,25 @@ const ACTION_COLORS: Record<AuditAction, string> = {
 
 const ITEMS_PER_PAGE = 10;
 
+const SEVERITY_LABELS = {
+  info: "Informativo",
+  warning: "Aviso",
+  critical: "Crítico",
+  debug: "Debug"
+};
+
+const SEVERITY_COLORS = {
+  info: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  warning: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  critical: "bg-red-500/10 text-red-600 border-red-500/20",
+  debug: "bg-slate-500/10 text-slate-600 border-slate-500/20"
+};
+
 export const AuditLogViewer = ({ entityType, entityId, title, compact = false, className }: AuditLogViewerProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAction, setFilterAction] = useState<string>("all");
   const [filterRole, setFilterRole] = useState<string>("all");
+  const [filterSeverity, setFilterSeverity] = useState<string>("all");
   const [filterEntityType, setFilterEntityType] = useState<string>(entityType || "all");
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
@@ -128,12 +145,13 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
       role: filterRole,
       entityType: filterEntityType,
       entityId,
+      severity: filterSeverity === 'all' ? undefined : filterSeverity,
       dateFrom: dateFrom ? new Date(dateFrom) : undefined,
       dateTo: dateTo ? new Date(dateTo) : undefined,
       companyId: user?.company_id,
       isSuperAdmin: user?.is_super_admin
     });
-  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, dateFrom, dateTo, user?.company_id, user?.is_super_admin]);
+  }, [searchTerm, filterAction, filterRole, filterEntityType, entityId, filterSeverity, dateFrom, dateTo, user?.company_id, user?.is_super_admin]);
 
   const totalPages = Math.max(1, Math.ceil(filteredLogs.length / ITEMS_PER_PAGE));
   const paginatedLogs = filteredLogs.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
@@ -217,6 +235,17 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                     ))}
                   </SelectContent>
                 </Select>
+                <Select value={filterSeverity} onValueChange={setFilterSeverity}>
+                  <SelectTrigger className="w-full sm:w-[130px] h-11 bg-background font-bold shadow-sem-sm">
+                    <SelectValue placeholder="Severidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Severidades</SelectItem>
+                    <SelectItem value="info">Info</SelectItem>
+                    <SelectItem value="warning">Aviso</SelectItem>
+                    <SelectItem value="critical">Crítico</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Select value={filterRole} onValueChange={setFilterRole}>
                   <SelectTrigger className="w-full sm:w-[130px] h-11 bg-background font-bold shadow-sem-sm">
                     <SelectValue placeholder="Perfil" />
@@ -298,9 +327,16 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                     accessorKey: "action",
                     sortable: true,
                     cell: (log: AuditLogEntry) => (
-                      <Badge variant="secondary" className={cn("rounded-lg px-3 py-1 font-black uppercase tracking-widest text-[10px] border shadow-none", ACTION_COLORS[log.action])}>
-                        {ACTION_LABELS[log.action]}
-                      </Badge>
+                      <div className="flex flex-col gap-1">
+                        <Badge variant="secondary" className={cn("rounded-lg px-2 py-0.5 font-black uppercase tracking-widest text-[8px] border shadow-none", ACTION_COLORS[log.action as AuditAction])}>
+                          {ACTION_LABELS[log.action as AuditAction] || log.action}
+                        </Badge>
+                        {log.severity && log.severity !== 'info' && (
+                          <Badge variant="outline" className={cn("rounded-lg px-2 py-0.5 font-black uppercase tracking-widest text-[7px] border", SEVERITY_COLORS[log.severity])}>
+                            {SEVERITY_LABELS[log.severity]}
+                          </Badge>
+                        )}
+                      </div>
                     )
                   },
                   { 
@@ -407,12 +443,19 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
       </Card>
 
       <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
+        <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
           <DialogHeader className="px-10 pt-10 pb-8 bg-primary/5 border-b border-border/10">
             <div className="flex items-center justify-between mb-4">
-              <Badge variant="outline" className={cn("rounded-lg px-3 py-1 font-black uppercase tracking-widest text-[10px]", selectedLog && ACTION_COLORS[selectedLog.action])}>
-                {selectedLog && ACTION_LABELS[selectedLog.action]}
-              </Badge>
+              <div className="flex gap-2">
+                <Badge variant="outline" className={cn("rounded-lg px-3 py-1 font-black uppercase tracking-widest text-[10px]", selectedLog && ACTION_COLORS[selectedLog.action as AuditAction])}>
+                  {selectedLog && (ACTION_LABELS[selectedLog.action as AuditAction] || selectedLog.action)}
+                </Badge>
+                {selectedLog?.severity && (
+                   <Badge variant="outline" className={cn("rounded-lg px-3 py-1 font-black uppercase tracking-widest text-[10px]", SEVERITY_COLORS[selectedLog.severity])}>
+                    {SEVERITY_LABELS[selectedLog.severity]}
+                  </Badge>
+                )}
+              </div>
               <div className="flex items-center gap-2 text-muted-foreground font-bold text-xs uppercase tracking-widest">
                 <ClockIcon size={14} className="opacity-50" />
                 {selectedLog && safeFormat(selectedLog.timestamp, "dd/MM/yyyy HH:mm:ss")}
@@ -427,50 +470,159 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
           </DialogHeader>
 
           <div className="p-10 space-y-8">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                  <User size={12} /> Responsável
-                </span>
-                <div className="flex items-center gap-3 p-4 bg-muted/20 rounded-2xl border border-border/10">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-black text-primary">
-                    {selectedLog?.performedByName.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-bold text-foreground">{selectedLog?.performedByName}</p>
-                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">{selectedLog?.performedByRole}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                  <Tag size={12} /> Entidade Afetada
-                </span>
-                <div className="flex items-center gap-3 p-4 bg-muted/20 rounded-2xl border border-border/10">
-                  <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center font-black text-muted-foreground">
-                    <Database size={16} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-foreground uppercase tracking-tight">{selectedLog?.entityType}</p>
-                    <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">ID: {selectedLog?.entityId}</p>
-                  </div>
-                </div>
-              </div>
+          <Tabs defaultValue="overview" className="w-full">
+            <div className="px-10 border-b border-border/10">
+              <TabsList className="bg-transparent gap-6 h-14">
+                <TabsTrigger value="overview" className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 h-14 font-black uppercase tracking-widest text-[10px]">Visão Geral</TabsTrigger>
+                <TabsTrigger value="trace" className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 h-14 font-black uppercase tracking-widest text-[10px]">Rastreabilidade</TabsTrigger>
+                <TabsTrigger value="raw" className="data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 h-14 font-black uppercase tracking-widest text-[10px]">Dados Brutos</TabsTrigger>
+              </TabsList>
             </div>
 
-            {selectedLog?.metadata && (
-              <div className="space-y-4">
+            <TabsContent value="overview" className="p-10 m-0 space-y-8 animate-in fade-in duration-500">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
+                    <User size={12} /> Responsável
+                  </span>
+                  <div className="flex items-center gap-3 p-4 bg-muted/20 rounded-2xl border border-border/10">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-black text-primary">
+                      {selectedLog?.performedByName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-foreground">{selectedLog?.performedByName}</p>
+                      <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest">{selectedLog?.performedByRole}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
+                    <Tag size={12} /> Entidade Afetada
+                  </span>
+                  <div className="flex items-center gap-3 p-4 bg-muted/20 rounded-2xl border border-border/10">
+                    <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center font-black text-muted-foreground">
+                      <Database size={16} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-foreground uppercase tracking-tight">{selectedLog?.entityType}</p>
+                      <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest truncate max-w-[150px]">ID: {selectedLog?.entityId}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-4 bg-muted/10 rounded-xl border border-border/5 space-y-1">
+                   <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 flex items-center gap-1.5"><Globe size={10} /> Origem</p>
+                   <p className="text-xs font-bold uppercase">{selectedLog?.origin || 'Web-App'}</p>
+                </div>
+                <div className="p-4 bg-muted/10 rounded-xl border border-border/5 space-y-1">
+                   <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 flex items-center gap-1.5"><Terminal size={10} /> Ambiente</p>
+                   <p className="text-xs font-bold uppercase text-emerald-600">{selectedLog?.environment || 'Production'}</p>
+                </div>
+                <div className="p-4 bg-muted/10 rounded-xl border border-border/5 space-y-1">
+                   <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 flex items-center gap-1.5"><Fingerprint size={10} /> Integridade</p>
+                   <p className="text-[10px] font-mono truncate text-muted-foreground" title={selectedLog?.event_hash}>{selectedLog?.event_hash?.substring(0, 16)}...</p>
+                </div>
+              </div>
+
+              {selectedLog?.previous_values && (
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
+                    <Activity size={12} /> Alteração Detectada
+                  </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-red-500/60 ml-2">Estado Anterior</p>
+                      <ScrollArea className="h-[120px] w-full rounded-xl border border-red-500/10 bg-red-500/5 p-4">
+                        <pre className="text-[10px] font-mono text-red-600/80">
+                          {JSON.stringify(selectedLog.previous_values, null, 2)}
+                        </pre>
+                      </ScrollArea>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-emerald-500/60 ml-2">Novo Estado</p>
+                      <ScrollArea className="h-[120px] w-full rounded-xl border border-emerald-500/10 bg-emerald-500/5 p-4">
+                        <pre className="text-[10px] font-mono text-emerald-600/80">
+                          {JSON.stringify(selectedLog.payload, null, 2)}
+                        </pre>
+                      </ScrollArea>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="trace" className="p-10 m-0 space-y-6 animate-in fade-in duration-500">
+               <div className="space-y-6">
+                  <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10 flex items-start gap-4">
+                    <div className="p-3 bg-primary/10 rounded-xl text-primary">
+                      <Share2 size={24} strokeWidth={2.5} />
+                    </div>
+                    <div className="space-y-2 flex-1">
+                      <h4 className="font-black uppercase tracking-tight text-lg">Cadeia de Correlação</h4>
+                      <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                        Este evento faz parte de uma sequência operacional maior. Use os IDs abaixo para reconstruir o fluxo completo.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="group flex items-center justify-between p-4 bg-muted/20 rounded-xl border border-border/10 hover:border-primary/30 transition-all">
+                      <div className="space-y-1">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Correlation ID</p>
+                        <p className="text-xs font-mono font-bold text-foreground/80">{selectedLog?.correlation_id || 'N/A'}</p>
+                      </div>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
+                        if (selectedLog?.correlation_id) {
+                          setSearchTerm(selectedLog.correlation_id);
+                          setIsDetailOpen(false);
+                        }
+                      }}>
+                        <Link size={14} />
+                      </Button>
+                    </div>
+
+                    <div className="group flex items-center justify-between p-4 bg-muted/20 rounded-xl border border-border/10 hover:border-primary/30 transition-all">
+                      <div className="space-y-1">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">Trace ID</p>
+                        <p className="text-xs font-mono font-bold text-foreground/80">{selectedLog?.trace_id || 'N/A'}</p>
+                      </div>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
+                        if (selectedLog?.trace_id) {
+                          setSearchTerm(selectedLog.trace_id);
+                          setIsDetailOpen(false);
+                        }
+                      }}>
+                        <Link size={14} />
+                      </Button>
+                    </div>
+
+                    <div className="p-4 bg-muted/20 rounded-xl border border-border/10">
+                      <div className="space-y-1">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">IP de Origem / User Agent</p>
+                        <p className="text-xs font-mono font-bold text-foreground/80">{selectedLog?.ip_address || '127.0.0.1'}</p>
+                        <p className="text-[10px] text-muted-foreground truncate">{selectedLog?.user_agent}</p>
+                      </div>
+                    </div>
+                  </div>
+               </div>
+            </TabsContent>
+
+            <TabsContent value="raw" className="p-10 m-0 animate-in fade-in duration-500">
+               <div className="space-y-4">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                  <Database size={12} /> Metadados do Sistema
+                  <Database size={12} /> Payload JSON Estruturado
                 </span>
-                <ScrollArea className="h-[200px] w-full rounded-2xl border border-border/10 bg-muted/10 p-6">
+                <ScrollArea className="h-[350px] w-full rounded-2xl border border-border/10 bg-muted/10 p-6">
                   <pre className="text-xs font-mono leading-relaxed text-muted-foreground/80">
-                    {JSON.stringify(selectedLog.metadata, null, 2)}
+                    {JSON.stringify(selectedLog, null, 2)}
                   </pre>
                 </ScrollArea>
               </div>
-            )}
+            </TabsContent>
+          </Tabs>
           </div>
 
           <div className="p-10 pt-0 flex justify-end">
