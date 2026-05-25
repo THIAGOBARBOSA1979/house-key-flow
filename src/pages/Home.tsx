@@ -154,16 +154,17 @@ export default function Home() {
 
             <div className="grid-layout">
               {benefits.map((benefit, index) => (
-                <Card key={index} className="card-standard p-3-sem hover:shadow-sem-xl hover:-translate-y-2 transition-all duration-500 rounded-[2.5rem]">
-                  <CardContent className="p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand/10 to-indigo-100 dark:to-indigo-900/20 flex items-center justify-center mx-auto mb-6">
-                      <benefit.icon className="h-8 w-8 text-brand" />
+                <Card key={index} className="card-standard p-4-sem hover:shadow-sem-xl hover:-translate-y-3 transition-all duration-700 rounded-[3rem] border-none bg-white/40 dark:bg-white/[0.02] group">
+                  <CardContent className="p-10 text-center flex flex-col items-center">
+                    <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-primary/10 to-primary/5 dark:to-white/[0.05] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 shadow-sem-sm">
+                      <benefit.icon className="h-10 w-10 text-primary" strokeWidth={2.5} />
                     </div>
-                    <h4 className="text-h4 mb-4">{benefit.title}</h4>
-                    <p className="text-body-base">{benefit.description}</p>
+                    <h4 className="text-xl font-black tracking-tight mb-4 uppercase">{benefit.title}</h4>
+                    <p className="text-sem-body-sm font-medium leading-relaxed opacity-70">{benefit.description}</p>
                   </CardContent>
                 </Card>
               ))}
+
             </div>
           </div>
         </div>
@@ -171,10 +172,12 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="section-padding bg-gradient-to-r from-gray-900 to-brand dark:from-black dark:to-brand/20">
-        <div className="container-responsive">
-          <div className="max-w-4xl mx-auto text-center text-white space-y-8">
-            <h3 className="text-display font-black leading-tight">
-              Pronto para escalar sua operação imobiliária?
+        <div className="container-responsive py-24 md:py-32">
+          <div className="max-w-4xl mx-auto text-center text-white space-y-10">
+            <h3 className="text-5xl md:text-7xl font-black leading-[0.95] tracking-tighter">
+              Pronto para escalar sua <br /> operação imobiliária?
+            </h3>
+
             </h3>
             <p className="text-body-lg text-blue-100/70 max-w-2xl mx-auto font-medium">
               Domine seus processos, reduza gargalos operacionais e ofereça a melhor experiência de entrega aos seus clientes.

@@ -102,22 +102,23 @@ const Dashboard = () => {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-8 bg-red-500/[0.03] border border-red-500/10 rounded-3xl transition-all hover:bg-red-500/[0.05]">
-                <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              <div className="p-8 bg-gradient-to-br from-red-500/[0.04] to-transparent border border-red-500/10 rounded-[2.5rem] transition-all hover:bg-red-500/[0.06] hover:border-red-500/20 group/nc">
+                <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   NCs Estruturais
                 </p>
-                <p className="text-4xl font-black text-red-700 tracking-tighter">0</p>
-                <p className="text-xs text-red-600/60 font-semibold mt-3">Nenhuma patologia de alto risco detectada</p>
+                <p className="text-5xl font-black text-red-700 tracking-tighter group-hover/nc:scale-110 transition-transform origin-left">0</p>
+                <p className="text-[11px] text-red-600/60 font-semibold mt-4">Nenhuma patologia de alto risco detectada no ciclo atual</p>
               </div>
-              <div className="p-8 bg-amber-500/[0.03] border border-amber-500/10 rounded-3xl transition-all hover:bg-amber-500/[0.05]">
-                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <div className="p-8 bg-gradient-to-br from-amber-500/[0.04] to-transparent border border-amber-500/10 rounded-[2.5rem] transition-all hover:bg-amber-500/[0.06] hover:border-amber-500/20 group/nc">
+                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                   NCs de Acabamento
                 </p>
-                <p className="text-4xl font-black text-amber-700 tracking-tighter">14</p>
-                <p className="text-xs text-amber-600/60 font-semibold mt-3">8 em processo de correção imediata</p>
+                <p className="text-5xl font-black text-amber-700 tracking-tighter group-hover/nc:scale-110 transition-transform origin-left">14</p>
+                <p className="text-[11px] text-amber-600/60 font-semibold mt-4">8 em processo de homologação e correção imediata</p>
               </div>
+
 
             </div>
           </section>
