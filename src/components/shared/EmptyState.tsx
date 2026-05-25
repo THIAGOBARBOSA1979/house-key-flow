@@ -22,20 +22,23 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center py-12 px-6 text-center animate-in fade-in zoom-in duration-500",
+      "flex flex-col items-center justify-center py-20 px-6 text-center animate-in fade-in zoom-in duration-700",
       className
     )}>
-      <div className="w-20 h-20 rounded-3xl bg-primary/5 flex items-center justify-center mb-6 ring-8 ring-primary/2">
-        <Icon className="w-10 h-10 text-primary/40" />
+      <div className="relative mb-8">
+        <div className="absolute -inset-4 bg-primary/5 rounded-full blur-2xl animate-pulse"></div>
+        <div className="relative w-24 h-24 rounded-[2.5rem] bg-gradient-to-br from-background to-muted flex items-center justify-center border border-border/50 shadow-sem-lg ring-1 ring-black/[0.02] dark:ring-white/[0.02]">
+          <Icon className="w-10 h-10 text-primary/40" />
+        </div>
       </div>
-      <h3 className="text-xl font-black text-foreground tracking-tight mb-2">
+      <h3 className="text-2xl font-black text-foreground tracking-tighter mb-3">
         {title}
       </h3>
-      <p className="text-muted-foreground text-sm max-w-[280px] mb-8 leading-relaxed">
+      <p className="text-muted-foreground text-base max-w-[320px] mb-10 leading-relaxed font-medium">
         {description}
       </p>
       {action && (
-        <div className="animate-in slide-in-from-bottom-2 duration-700 delay-200 fill-mode-both">
+        <div className="animate-in slide-in-from-bottom-4 duration-1000 delay-300 fill-mode-both">
           {action}
         </div>
       )}
