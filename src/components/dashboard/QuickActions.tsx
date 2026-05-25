@@ -61,7 +61,7 @@ export const QuickActions = () => {
           <Button
             key={index}
             variant="outline"
-            className="h-auto py-5 md:py-8 flex flex-col gap-4 md:gap-5 border border-border/20 bg-card/30 backdrop-blur-md shadow-sem-sm hover:shadow-sem-xl hover:bg-primary/5 hover:border-primary/20 transition-all group active:scale-[0.97] rounded-3xl"
+            className="h-auto py-5 md:py-8 flex flex-col gap-4 md:gap-5 border border-border/20 bg-card/30 backdrop-blur-md shadow-sem-sm hover:shadow-sem-xl hover:bg-primary/5 hover:border-primary/20 transition-all group active:scale-[0.97] rounded-card"
             onClick={action.onClick}
           >
             <div className={`p-4 md:p-5 rounded-2xl ${action.bgColor} ${action.color} group-hover:scale-110 transition-all duration-500 shadow-sem-sm group-hover:shadow-sem-md border border-white/5`}>

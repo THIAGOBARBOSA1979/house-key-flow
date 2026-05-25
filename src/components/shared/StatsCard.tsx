@@ -46,7 +46,7 @@ export const StatsCard = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden group transition-all duration-700 border border-border/40 shadow-sem-sm hover:shadow-sem-lg rounded-card hover:-translate-y-1.5 active:scale-[0.98] relative", 
+      "card-standard card-hover-effect relative group", 
       variantStyles[variant], 
       className
     )}>

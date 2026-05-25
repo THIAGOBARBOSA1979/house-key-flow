@@ -350,15 +350,15 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-card border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
+    @apply bg-card/60 backdrop-blur-xl text-card-foreground rounded-card border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
   }
 
   .card-hover-effect {
-    @apply hover:-translate-y-1.5 hover:border-primary/20 hover:shadow-sem-xl;
+    @apply hover:-translate-y-1.5 hover:border-primary/20 hover:shadow-sem-xl transition-all duration-500;
   }
 
   .card-glass {
-    @apply bg-white/40 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-sem-xl rounded-card;
+    @apply bg-white/30 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-sem-xl rounded-card;
   }
 
 

@@ -163,7 +163,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
               variant="ghost" 
               size="icon" 
               onClick={onToggleCollapse}
-              className="absolute -top-6 right-6 h-12 w-12 rounded-full bg-sidebar-primary text-sidebar-primary-foreground shadow-sem-2xl hover:scale-110 active:scale-90 transition-all z-10 border border-white/20"
+              className="absolute -top-6 right-6 h-12 w-12 rounded-full bg-sidebar-primary text-sidebar-primary-foreground shadow-sem-xl hover:scale-110 active:scale-90 transition-all z-10 border border-white/20"
               aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
             >
               {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}

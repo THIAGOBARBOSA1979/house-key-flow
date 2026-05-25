@@ -85,7 +85,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             </div>
 
             <div className="flex items-center gap-3 lg:gap-layout-gap-lg shrink-0">
-              <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group border border-transparent hover:border-primary/10">
+              <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-card hover:bg-primary/5 active:scale-90 transition-all group border border-transparent hover:border-primary/10">
                 <Bell size={20} className="text-muted-foreground group-hover:text-primary transition-all duration-slow group-hover:rotate-12" strokeWidth={2.5} />
                 <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-status-critical rounded-full border-2 border-background animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
               </Button>

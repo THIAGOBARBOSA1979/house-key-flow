@@ -82,7 +82,7 @@ export const DashboardCharts = memo(({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap-lg">
-      <Card className="card-standard border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden lg:col-span-1 rounded-card shadow-sem-md hover:shadow-sem-lg transition-all duration-500">
+      <Card className="card-standard lg:col-span-1 shadow-sem-md hover:shadow-sem-lg group">
         <CardHeader className="pb-layout-gap-sm border-b border-border/5">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg md:text-h4 font-black tracking-tight">Conformidade de SLAs</CardTitle>
@@ -127,7 +127,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden lg:col-span-1 rounded-card shadow-sem-md hover:shadow-sem-lg transition-all duration-500">
+      <Card className="card-standard lg:col-span-1 shadow-sem-md hover:shadow-sem-lg group">
         <CardHeader className="pb-layout-gap-sm border-b border-border/5">
           <CardTitle className="text-lg md:text-h4 font-black tracking-tight">Fluxo por Ciclo Técnico</CardTitle>
         </CardHeader>
@@ -164,7 +164,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden rounded-card shadow-sem-md hover:shadow-sem-lg transition-all duration-500">
+      <Card className="card-standard shadow-sem-md hover:shadow-sem-lg group">
 
         <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Entregas Técnicas Homologadas</CardTitle>
@@ -210,7 +210,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden rounded-card shadow-sem-md hover:shadow-sem-lg transition-all duration-500">
+      <Card className="card-standard shadow-sem-md hover:shadow-sem-lg group">
         <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Incidências por Matriz Técnica</CardTitle>
         </CardHeader>
