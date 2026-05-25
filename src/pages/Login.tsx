@@ -97,16 +97,16 @@ export default function Login() {
                   <Shield className="h-4 w-4" />
                   {activeTab === "admin" ? "Área Administrativa" : "Portal do Cliente"}
                 </div>
-                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground leading-[1.1] tracking-tighter">
+                <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black text-foreground leading-[1] tracking-tighter">
                   {activeTab === "admin" ? (
                     <>
                       Domine sua operação com
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> inteligência estratégica</span>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand via-primary to-indigo-600"> inteligência estratégica</span>
                     </>
                   ) : (
                     <>
                       Experiência premium para o
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> seu novo lar</span>
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand via-primary to-indigo-600"> seu novo lar</span>
                     </>
                   )}
                 </h2>

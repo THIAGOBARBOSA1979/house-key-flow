@@ -91,9 +91,9 @@ export default function Home() {
               Plataforma de Alta Performance
             </Badge>
             
-            <h2 className="text-5xl md:text-7xl font-black leading-[0.95] tracking-tighter">
+            <h2 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-[0.9] tracking-tighter">
               A inteligência definitiva para a <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-indigo-600"> gestão da sua incorporadora</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand via-primary to-indigo-600 animate-gradient-x"> gestão da sua incorporadora</span>
             </h2>
             
             <p className="text-body-lg max-w-3xl mx-auto font-medium text-muted-foreground/80 leading-relaxed">
@@ -168,7 +168,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="section-padding bg-gradient-to-r from-gray-900 to-brand dark:from-black dark:to-brand/20 relative overflow-hidden">
+      <section className="section-padding bg-gradient-to-br from-gray-950 via-gray-900 to-brand/40 dark:from-black dark:to-brand/20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
         <div className="container-responsive py-24 md:py-32 relative z-10">
           <div className="max-w-4xl mx-auto text-center text-white space-y-10">
