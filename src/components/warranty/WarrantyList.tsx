@@ -31,7 +31,7 @@ export const WarrantyList = ({ claims, onAtender, onGerenciarProblemas }: Warran
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
       {claims.map((claim) => (
         <WarrantyClaim 
           key={claim.id} 
