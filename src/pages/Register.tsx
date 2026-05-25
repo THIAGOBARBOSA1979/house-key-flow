@@ -55,41 +55,43 @@ export default function Register() {
       const slug = values.companyName.toLowerCase().replace(/[^a-z0-9]/g, '-');
       
       // 1. Criar empresa usando Supabase direto ou Service
-      const { data: company, error: companyError } = await Supabase.db
-        .from('companies')
-        .insert({
+      const { data: company, error: companyError } = await Supabase.db.create<any>(
+        'companies',
+        {
           name: values.companyName,
           slug: slug,
           status: 'active' as any
-        })
-        .select()
-        .single();
+        }
+      );
 
       if (companyError) throw companyError;
 
       // 2. Criar usuário no Auth (com metadados)
-      const { data: authData, error: authError } = await Supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-        options: {
+      const { data: authData, error: authError } = await Supabase.auth.signUp(
+        values.email,
+        values.password,
+        {
           data: {
             full_name: values.fullName,
             role: 'admin',
-            company_id: company.id
+            company_id: (company as any).id
           }
         }
-      });
+      );
+
 
 
       if (authError) throw authError;
 
       // 3. Atualizar owner da empresa
-      if (authData.user) {
-        await Supabase.db
-          .from('companies')
-          .update({ owner_id: authData.user.id })
-          .eq('id', company.id);
+      if (authData?.user) {
+        await Supabase.db.update(
+          'companies',
+          (company as any).id,
+          { owner_id: authData.user.id }
+        );
       }
+
 
 
       toast({
