@@ -23,12 +23,12 @@ export function PageHeader({
   return (
     <div className={cn("layout-stack mb-layout-gap-lg", className)}>
       {showBreadcrumbs && (
-        <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+        <div className="animate-in fade-in slide-in-from-top-1 duration-300 mb-2">
           <Breadcrumbs />
         </div>
       )}
       
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-card-padding px-card-padding bg-white/40 dark:bg-black/40 backdrop-blur-3xl rounded-card border border-border/10 shadow-sem-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-card-padding px-card-padding bg-white/60 dark:bg-black/40 backdrop-blur-3xl rounded-card border border-border/10 shadow-sem-sm">
         <div className="layout-stack max-w-full xl:max-w-4xl px-2">
           <div className="flex items-center gap-stack-gap md:gap-layout-gap">
             {Icon && (

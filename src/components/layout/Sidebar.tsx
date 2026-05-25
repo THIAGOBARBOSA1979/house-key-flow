@@ -86,7 +86,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex flex-col items-center justify-center py-layout-gap-lg px-layout-gap border-b border-sidebar-border/5">
+      <div className="flex flex-col items-center justify-center py-layout-gap-xl px-layout-gap border-b border-sidebar-border/5">
         {!collapsed ? (
           <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-700">
             <div className="relative group">
