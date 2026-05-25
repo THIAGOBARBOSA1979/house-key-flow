@@ -72,6 +72,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
 
+
           <div className="w-full flex items-center justify-between px-4 lg:px-8 transition-all duration-slow max-w-[1600px] mx-auto">
             <div className="flex items-center gap-2 md:gap-4 flex-1">
               <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4 group cursor-default">
@@ -118,18 +119,23 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         </main>
 
         <footer 
-          className="py-10 px-10 border-t border-border/20 text-center transition-all duration-slow bg-muted/5 backdrop-blur-sm"
+          className="py-12 px-10 border-t border-border/10 text-center transition-all duration-slow bg-muted/[0.02] backdrop-blur-sm"
         >
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 max-w-7xl mx-auto">
-            <p className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground/30">
-              A2 Gestão de Propriedades • Enterprise Suite 2026
-            </p>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 max-w-7xl mx-auto">
+            <div className="flex flex-col lg:items-start items-center gap-2">
+              <p className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground/30">
+                A2 Gestão de Propriedades • Enterprise Suite 2026
+              </p>
+              <p className="text-[9px] font-bold text-muted-foreground/20 uppercase tracking-widest">Tecnologia para Incorporadoras de Alta Performance</p>
+            </div>
             <div className="flex items-center gap-6">
-              <span className="text-[9px] font-black text-primary/40 uppercase tracking-widest">Versão 3.1.2 STABLE</span>
-              <div className="h-1 w-8 bg-primary/20 rounded-full" />
+              <span className="text-[9px] font-black text-primary/30 uppercase tracking-widest">Versão 3.1.2 STABLE</span>
+              <div className="h-1.5 w-1.5 rounded-full bg-primary/20" />
             </div>
           </div>
         </footer>
+
+
       </div>
 
       <Dialog open={isShortcutsOpen} onOpenChange={setIsShortcutsOpen}>

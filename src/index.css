@@ -157,11 +157,12 @@
     --opacity-full: 1;
 
     /* --- Shadows & Elevations --- */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.05);
     --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
 
     /* --- Animation & Transitions --- */
     --duration-fast: 150ms;
@@ -312,16 +313,17 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-3xl border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
+    @apply bg-card text-card-foreground rounded-[2rem] border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
   }
 
   .card-hover-effect {
-    @apply hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-sem-xl;
+    @apply hover:-translate-y-1.5 hover:border-primary/20 hover:shadow-sem-xl;
   }
 
   .card-glass {
-    @apply bg-white/[0.03] dark:bg-black/[0.03] backdrop-blur-3xl border border-white/10 dark:border-white/5 shadow-sem-xl rounded-3xl;
+    @apply bg-white/40 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-sem-xl rounded-[2rem];
   }
+
 
 
   /* Status Badges */
