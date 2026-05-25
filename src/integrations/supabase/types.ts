@@ -952,48 +952,58 @@ export type Database = {
       }
       support_tickets: {
         Row: {
-          category: string
+          assigned_to: string | null
           client_id: string | null
-          company_id: string | null
-          created_at: string
+          company_id: string
+          created_at: string | null
+          description: string | null
           id: string
-          messages: Json
-          priority: string
+          metadata: Json | null
+          priority: string | null
           property_id: string | null
-          sla_deadline: string | null
+          protocol: string
           status: string
           subject: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          category?: string
+          assigned_to?: string | null
           client_id?: string | null
-          company_id?: string | null
-          created_at?: string
+          company_id: string
+          created_at?: string | null
+          description?: string | null
           id?: string
-          messages?: Json
-          priority?: string
+          metadata?: Json | null
+          priority?: string | null
           property_id?: string | null
-          sla_deadline?: string | null
+          protocol: string
           status?: string
           subject: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
-          category?: string
+          assigned_to?: string | null
           client_id?: string | null
-          company_id?: string | null
-          created_at?: string
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
           id?: string
-          messages?: Json
-          priority?: string
+          metadata?: Json | null
+          priority?: string | null
           property_id?: string | null
-          sla_deadline?: string | null
+          protocol?: string
           status?: string
           subject?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "support_tickets_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "support_tickets_client_id_fkey"
             columns: ["client_id"]
@@ -1092,6 +1102,54 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ticket_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          sender_id: string | null
+          sender_type: string
+          ticket_id: string
+          whatsapp_message_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          sender_id?: string | null
+          sender_type: string
+          ticket_id: string
+          whatsapp_message_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          sender_id?: string | null
+          sender_type?: string
+          ticket_id?: string
+          whatsapp_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
             referencedColumns: ["id"]
           },
         ]
@@ -1474,6 +1532,94 @@ export type Database = {
             columns: ["request_id"]
             isOneToOne: false
             referencedRelation: "warranty_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      webhook_endpoints: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          events: string[] | null
+          id: string
+          is_active: boolean | null
+          secret: string | null
+          url: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          events?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          secret?: string | null
+          url: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          events?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          secret?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_endpoints_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_configs: {
+        Row: {
+          api_key: string | null
+          api_url: string | null
+          company_id: string
+          created_at: string | null
+          id: string
+          instance_name: string | null
+          is_active: boolean | null
+          phone_number_id: string | null
+          provider: string
+          updated_at: string | null
+          verify_token: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          api_url?: string | null
+          company_id: string
+          created_at?: string | null
+          id?: string
+          instance_name?: string | null
+          is_active?: boolean | null
+          phone_number_id?: string | null
+          provider: string
+          updated_at?: string | null
+          verify_token?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          api_url?: string | null
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          instance_name?: string | null
+          is_active?: boolean | null
+          phone_number_id?: string | null
+          provider?: string
+          updated_at?: string | null
+          verify_token?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_configs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
