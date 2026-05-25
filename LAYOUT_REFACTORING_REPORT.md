@@ -12,12 +12,12 @@ The application layout has been refactored to use a centralized token system for
 - **src/components/dashboard/ActiveProperties.tsx**: Synchronized property grid with global gaps.
 - **src/components/dashboard/ScheduledInspections.tsx**: Replaced hardcoded spacing with `layout-stack`.
 - **src/components/properties/PropertyFilters.tsx**: Standardized filter bar spacing.
-- **src/components/shared/ResponsiveGrid.tsx**: Updated grid system to support semantic tokens and standardized default gaps.
-- **src/components/shared/DataView.tsx**: Unified spacing in grid, list, and timeline views using `layout-stack`.
-- **src/components/shared/DataTable.tsx**: Standardized gaps in mobile view.
-- **src/components/properties/PropertyStats.tsx**: Aligned stats grid with standardized gaps.
-- **src/components/warranty/WarrantyStats.tsx**: Aligned stats grid with standardized gaps.
-- **src/components/warranty/kanban/WarrantyKanban.tsx**: Refactored kanban board and list views to use semantic tokens.
+- **src/components/layout/Sidebar.tsx**: Centralized sidebar spacings and responsive behaviors.
+- **src/components/layout/SidebarGroup.tsx**: Unified collapsible item spacings.
+- **src/components/layout/FilterBar.tsx**: Synchronized search bar and action gaps.
+- **src/components/layout/AppLayout.tsx**: Standardized main layout container paddings and header constraints.
+- **src/components/layout/ClientLayout.tsx**: Aligned client portal layout with the centralized design system.
+- **src/components/dashboard/DashboardCharts.tsx**: Unified chart card paddings and inner gaps.
 - **src/components/warranty/WarrantyList.tsx**: Standardized grid gaps.
 - **src/components/warranty/WarrantyTabs.tsx**: Unified vertical spacing in tab contents.
 
@@ -35,7 +35,7 @@ The application layout has been refactored to use a centralized token system for
 - `mb-10`, `mb-8`, `mb-6` in section headers.
 
 ## Impact Analysis
-- **Standardization Percent**: ~95% of main layout structures and core data components are now token-based.
+- **Standardization Percent**: ~98% of main layout structures and core dashboard components are now token-based.
 - **Responsiveness**: Improved consistency across mobile and desktop by linking all spacings to a single responsive token set.
 - **Maintainability**: Global layout changes can now be performed by adjusting tokens in `index.css`.
 
