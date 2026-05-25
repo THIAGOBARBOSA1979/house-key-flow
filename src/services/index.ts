@@ -7,6 +7,7 @@ export * from './identity/UserService';
 export * from './identity/SystemSecurityService';
 export * from './identity/SystemSettingsService';
 export * from './identity/PlanService';
+export * from './identity/WhatsAppConfigService';
 
 // Operations Domain
 export * from './operations/PropertyService';
@@ -18,6 +19,8 @@ export * from './operations/DocumentService';
 export * from './operations/ChecklistService';
 export * from './operations/SupportService';
 export * from './operations/InspectionDraftService';
+export * from './operations/SupportTicketService';
+export * from './operations/TicketMessageService';
 
 // Warranty Domain
 export * from './warranty/WarrantyFlowService';
@@ -33,3 +36,4 @@ export * from './core/SyncService';
 export * from './core/SystemHealthService';
 export * from './core/EventAutomationService';
 export * from './core/FileService';
+
