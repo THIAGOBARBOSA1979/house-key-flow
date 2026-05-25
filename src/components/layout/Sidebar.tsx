@@ -90,7 +90,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
         {!collapsed ? (
           <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-700">
             <div className="relative group">
-              <div className="absolute -inset-2 bg-sidebar-primary/20 rounded-card-radius blur-xl group-hover:bg-sidebar-primary/30 transition-all duration-700"></div>
+              <div className="absolute -inset-2 bg-sidebar-primary/20 rounded-card blur-xl group-hover:bg-sidebar-primary/30 transition-all duration-700"></div>
               <div className="relative w-22 h-22 rounded-xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
                 {company?.settings?.logo_url ? (
                   <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />

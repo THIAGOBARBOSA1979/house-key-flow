@@ -350,7 +350,7 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-card-radius border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
+    @apply bg-card text-card-foreground rounded-card border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
   }
 
   .card-hover-effect {

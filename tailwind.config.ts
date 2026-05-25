@@ -96,6 +96,7 @@ export default {
 				xl: 'var(--radius-xl)',
 				'2xl': 'var(--radius-2xl)',
 				full: 'var(--radius-full)',
+				'card': 'var(--card-radius)',
 			},
 			zIndex: {
 				hide: 'var(--z-hide)',
@@ -161,7 +162,6 @@ export default {
 				'header-padding-y': 'var(--header-padding-y)',
 				'card-padding': 'var(--card-padding)',
 				'card-padding-lg': 'var(--card-padding-lg)',
-				'card-radius': 'var(--card-radius)',
 				'card-gap': 'var(--card-gap)',
 				'stack-gap': 'var(--stack-gap)',
 				'stack-gap-lg': 'var(--stack-gap-lg)',
