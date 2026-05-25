@@ -79,7 +79,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <span className="group-hover:text-primary group-hover:tracking-[0.35em] transition-all duration-slow">Painel Estratégico</span>
               </div>
 
-              {isMobile ? <div className="w-10" /> : (
+              {isMobile ? <div className="flex-1 px-4 flex justify-center"><div className="font-black text-xs uppercase tracking-[0.3em] text-primary/40">A2 Portal</div></div> : (
                 <GlobalSearch />
               )}
             </div>
@@ -136,10 +136,10 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             
             <div className="flex items-center gap-layout-gap-lg">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/20 mb-1">Status do Ecossistema</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/20 mb-1">Ecossistema Operacional</p>
                 <div className="flex items-center gap-2 justify-end">
                   <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600/60">Operacional</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600/60">V.4.2.0-ENTERPRISE • ONLINE</span>
                 </div>
               </div>
             </div>
