@@ -33,7 +33,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
   return (
     <Card 
       onClick={onClick}
-      className={cn("card-standard overflow-hidden border border-border/40 bg-card/60 dark:bg-card/30 backdrop-blur-xl flex flex-col h-full cursor-pointer group rounded-card shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 hover:-translate-y-1.5", className)}
+      className={cn("card-standard overflow-hidden border border-border/40 bg-card/60 dark:bg-card/30 backdrop-blur-3xl flex flex-col h-full cursor-pointer group rounded-[2rem] shadow-sem-lg hover:shadow-sem-xl transition-all duration-700 hover:-translate-y-2", className)}
     >
 
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
@@ -53,10 +53,10 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         </div>
       </div>
 
-      <CardHeader className="pb-3 space-y-1.5 px-6">
-        <div className="flex justify-between items-start gap-2">
+      <CardHeader className="pb-4 space-y-2 px-8">
+        <div className="flex justify-between items-start gap-3">
           <div className="min-w-0">
-            <CardTitle className="text-lg font-bold truncate leading-tight group-hover:text-primary transition-colors">
+            <CardTitle className="text-xl font-black truncate tracking-tight group-hover:text-primary transition-colors">
               {property.name}
             </CardTitle>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
@@ -67,10 +67,10 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6 pt-2 flex-1 px-6">
+      <CardContent className="space-y-8 pt-2 flex-1 px-8">
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-muted/[0.03] p-3 rounded-xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-primary/20">
-            <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
+          <div className="bg-muted/[0.04] p-4 rounded-2xl border border-border/10 flex flex-col justify-center transition-all group-hover:bg-primary/[0.04] group-hover:border-primary/20 group-hover:translate-y-[-2px] duration-500">
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.25em] mb-2 opacity-50">Unidades</p>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Home size={12} className="text-primary" />
@@ -78,8 +78,8 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
               <span className="text-sm font-black">{property.units}</span>
             </div>
           </div>
-          <div className="bg-muted/[0.03] p-3 rounded-xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-emerald-500/20">
-            <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Gerente</p>
+          <div className="bg-muted/[0.04] p-4 rounded-2xl border border-border/10 flex flex-col justify-center transition-all group-hover:bg-emerald-500/[0.04] group-hover:border-emerald-500/20 group-hover:translate-y-[-2px] duration-500">
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.25em] mb-2 opacity-50">Gerente</p>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center">
                 <Users size={12} className="text-emerald-500" />
@@ -129,11 +129,11 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         )}
       </CardContent>
 
-      <CardFooter className="flex-col sm:flex-row gap-3 pt-5 border-t border-border/10 bg-muted/5 px-6">
+      <CardFooter className="flex-col sm:flex-row gap-4 pt-6 border-t border-border/10 bg-muted/5 px-8">
         <Button 
           variant="default" 
           size="sm" 
-          className="flex-1 text-[10px] font-black uppercase tracking-widest h-10 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none active:scale-95 transition-all rounded-xl"
+          className="flex-1 text-[11px] font-black uppercase tracking-[0.2em] h-12 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none active:scale-95 transition-all rounded-2xl"
 
           onClick={(e) => {
             e.stopPropagation();
