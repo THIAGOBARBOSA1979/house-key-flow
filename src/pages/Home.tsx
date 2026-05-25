@@ -46,9 +46,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-background to-indigo-50/50 dark:from-background dark:to-background">
       {/* Header */}
-      <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
-        <div className="container-responsive py-4">
+      <header className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky transition-all duration-500">
+        <div className="container-responsive py-5">
           <div className="flex items-center justify-between">
+
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
                 A2
@@ -71,10 +72,11 @@ export default function Home() {
                 </div>
               </div>
               <Link to="/login">
-                <Button className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 text-brand-foreground">
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground h-11 px-6 rounded-xl font-bold transition-all shadow-sem-md shadow-primary/20 border-none">
                   Acessar Sistema
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
+
               </Link>
             </div>
           </div>
@@ -101,15 +103,16 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Link to="/register">
-                <Button size="lg" className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl shadow-brand/30 hover:shadow-brand/40 hover:-translate-y-1 transition-all">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-2xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-1 transition-all">
                   Criar Conta Grátis
-                  <ArrowRight className="h-5 w-5 ml-2" />
+                  <ArrowRight className="h-5 w-5 ml-2" strokeWidth={3} />
                 </Button>
               </Link>
               <Link to="/login">
-                <Button size="lg" variant="outline" className="h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-2">
+                <Button size="lg" variant="outline" className="h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-[11px] border-2 border-border/40 hover:border-primary/20 hover:bg-primary/[0.02] transition-all">
                   Acessar Sistema
                 </Button>
+
               </Link>
             </div>
 
@@ -119,7 +122,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="section-padding bg-muted/30">
+      <section className="section-padding bg-muted/[0.03] border-y border-border/5">
         <div className="container-responsive">
           <div className="grid-layout max-w-4xl mx-auto">
             {stats.map((stat, index) => (
@@ -151,7 +154,7 @@ export default function Home() {
 
             <div className="grid-layout">
               {benefits.map((benefit, index) => (
-                <Card key={index} className="card-standard p-3-sem hover:shadow-xl hover:-translate-y-1 transition-all">
+                <Card key={index} className="card-standard p-3-sem hover:shadow-sem-xl hover:-translate-y-2 transition-all duration-500 rounded-[2.5rem]">
                   <CardContent className="p-8 text-center">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand/10 to-indigo-100 dark:to-indigo-900/20 flex items-center justify-center mx-auto mb-6">
                       <benefit.icon className="h-8 w-8 text-brand" />
@@ -178,7 +181,7 @@ export default function Home() {
             </p>
 
             <Link to="/register">
-              <Button size="lg" variant="secondary" className="h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl">
+              <Button size="lg" variant="secondary" className="h-16 px-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-2xl bg-white text-black hover:bg-white/90">
                 Começar Teste Grátis
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>

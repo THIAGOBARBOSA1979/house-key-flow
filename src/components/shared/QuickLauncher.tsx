@@ -163,16 +163,17 @@ export const QuickLauncher = () => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
-          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 h-12 w-12 sm:h-14 sm:w-14 rounded-2xl shadow-sem-xl bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all duration-300 z-modal group"
+          className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 h-14 w-14 sm:h-16 sm:w-16 rounded-[1.75rem] shadow-sem-xl bg-primary text-primary-foreground hover:scale-110 active:scale-95 transition-all duration-500 z-modal group border-none"
           size="icon"
         >
           <Zap className="h-6 w-6 group-hover:rotate-12 transition-transform" />
-          <span className="absolute right-full mr-4 px-3 py-1.5 bg-card text-foreground text-[10px] font-black uppercase tracking-widest rounded-2xl border shadow-sem-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap hidden sm:block">
-            {t('common.quick_actions', 'Ações Rápidas')} (Ctrl+Q)
+          <span className="absolute right-full mr-6 px-4 py-2 bg-card/80 backdrop-blur-xl text-foreground text-[10px] font-black uppercase tracking-widest rounded-2xl border border-border/20 shadow-sem-xl opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap hidden sm:block">
+            {t('common.quick_actions', 'Centro de Comando')} (Ctrl+Q)
+
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-[650px] p-0 overflow-hidden rounded-[2rem] sm:rounded-[3rem] border-none shadow-sem-xl bg-background/80 backdrop-blur-3xl">
+      <DialogContent className="w-[95vw] sm:max-w-[700px] p-0 overflow-hidden rounded-[2.5rem] sm:rounded-[3.5rem] border-none shadow-sem-xl bg-background/60 backdrop-blur-3xl">
         <DialogHeader className="p-6 md:p-8 border-b border-border/10 bg-primary/5">
           <DialogTitle className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-3">
             <Zap className="text-primary h-5 w-5 md:h-6 md:w-6" />
@@ -183,7 +184,7 @@ export const QuickLauncher = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
             <Input 
               placeholder={t('common.quick_launcher_placeholder', 'Defina sua próxima ação operacional...')} 
-              className="pl-10 md:pl-12 h-12 md:h-14 bg-background border-none rounded-2xl font-bold text-base md:text-lg shadow-sem-sm"
+              className="pl-10 md:pl-12 h-14 md:h-16 bg-background border-none rounded-[1.25rem] font-bold text-lg md:text-xl shadow-sem-md placeholder:text-muted-foreground/30 focus-visible:ring-primary/10"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               autoFocus

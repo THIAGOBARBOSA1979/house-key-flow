@@ -28,11 +28,12 @@ export const StatsCard = ({
 }: StatsCardProps) => {
   const variantStyles = {
     default: "bg-card/40 backdrop-blur-xl border-border/20 hover:bg-card/60",
-    pending: "bg-status-pending/5 backdrop-blur-xl border-status-pending/20 text-status-pending shadow-sem-md hover:shadow-status-pending/40 hover:bg-status-pending/10 ring-1 ring-status-pending/5",
-    progress: "bg-status-progress/5 backdrop-blur-xl border-status-progress/20 text-status-progress shadow-sem-md hover:shadow-status-progress/40 hover:bg-status-progress/10 ring-1 ring-status-progress/5",
-    complete: "bg-status-complete/5 backdrop-blur-xl border-status-complete/20 text-status-complete shadow-sem-md hover:shadow-status-complete/40 hover:bg-status-complete/10 ring-1 ring-status-complete/5",
-    critical: "bg-status-critical/5 backdrop-blur-xl border-status-critical/20 text-status-critical shadow-sem-md hover:shadow-status-critical/40 hover:bg-status-critical/10 ring-1 ring-status-critical/5",
-    brand: "bg-brand/5 backdrop-blur-xl border-brand/20 text-brand shadow-sem-md hover:shadow-brand/40 hover:bg-brand/10 ring-1 ring-brand/5",
+    pending: "bg-status-pending/[0.03] backdrop-blur-xl border-status-pending/20 text-status-pending shadow-sem-sm hover:shadow-status-pending/20 hover:bg-status-pending/[0.06] ring-1 ring-status-pending/5",
+    progress: "bg-status-progress/[0.03] backdrop-blur-xl border-status-progress/20 text-status-progress shadow-sem-sm hover:shadow-status-progress/20 hover:bg-status-progress/[0.06] ring-1 ring-status-progress/5",
+    complete: "bg-status-complete/[0.03] backdrop-blur-xl border-status-complete/20 text-status-complete shadow-sem-sm hover:shadow-status-complete/20 hover:bg-status-complete/[0.06] ring-1 ring-status-complete/5",
+    critical: "bg-status-critical/[0.03] backdrop-blur-xl border-status-critical/20 text-status-critical shadow-sem-sm hover:shadow-status-critical/20 hover:bg-status-critical/[0.06] ring-1 ring-status-critical/5",
+    brand: "bg-brand/[0.03] backdrop-blur-xl border-brand/20 text-brand shadow-sem-sm hover:shadow-brand/20 hover:bg-brand/[0.06] ring-1 ring-brand/5",
+
   };
 
   const iconStyles = {
@@ -46,7 +47,7 @@ export const StatsCard = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden group transition-all duration-500 border border-border/40 shadow-sem-sm hover:shadow-sem-lg rounded-2xl hover:-translate-y-1 active:scale-[0.98]", 
+      "overflow-hidden group transition-all duration-500 border border-border/40 shadow-sem-sm hover:shadow-sem-xl rounded-3xl hover:-translate-y-1.5 active:scale-[0.98]", 
       variantStyles[variant], 
       className
     )}>

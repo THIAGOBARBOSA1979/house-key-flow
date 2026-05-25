@@ -33,8 +33,9 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
   return (
     <Card 
       onClick={onClick}
-      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/60 dark:bg-card/30 backdrop-blur-3xl flex flex-col h-full cursor-pointer group rounded-2xl shadow-sem-lg hover:shadow-sem-xl ring-1 ring-black/5 dark:ring-white/10", className)}
+      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/60 dark:bg-card/30 backdrop-blur-3xl flex flex-col h-full cursor-pointer group rounded-3xl shadow-sem-lg hover:shadow-sem-xl ring-1 ring-black/[0.02] dark:ring-white/[0.02]", className)}
     >
+
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
         {property.imageUrl ? (
           <img 
@@ -67,22 +68,27 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
       </CardHeader>
 
       <CardContent className="space-y-6 pt-2 flex-1 px-6">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-muted/20 p-2.5-sem rounded-lg border border-border/10 flex flex-col justify-center">
-            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-muted/[0.03] p-3 rounded-2xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-primary/20">
+            <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
             <div className="flex items-center gap-2">
-              <Home size={13} className="text-primary opacity-70" />
+              <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Home size={12} className="text-primary" />
+              </div>
               <span className="text-sm font-black">{property.units}</span>
             </div>
           </div>
-          <div className="bg-muted/20 p-2.5-sem rounded-lg border border-border/10 flex flex-col justify-center">
-            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Gerente</p>
+          <div className="bg-muted/[0.03] p-3 rounded-2xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-emerald-500/20">
+            <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Gerente</p>
             <div className="flex items-center gap-2">
-              <Users size={13} className="text-emerald-500 opacity-70" />
+              <div className="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                <Users size={12} className="text-emerald-500" />
+              </div>
               <span className="text-sm font-black truncate">{property.manager || "N/A"}</span>
             </div>
           </div>
         </div>
+
         
         <div className="space-y-2 pt-1">
           <div className="flex justify-between items-center text-[10px] font-black tracking-tighter">
@@ -127,7 +133,8 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
         <Button 
           variant="default" 
           size="sm" 
-          className="flex-1 text-xs font-black uppercase tracking-widest h-9 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none active:scale-95 transition-all"
+          className="flex-1 text-[10px] font-black uppercase tracking-widest h-10 bg-primary/10 text-primary hover:bg-primary/20 border-none shadow-none active:scale-95 transition-all rounded-xl"
+
           onClick={(e) => {
             e.stopPropagation();
             onClick?.();

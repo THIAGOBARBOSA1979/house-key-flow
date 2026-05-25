@@ -13,25 +13,27 @@ export const ActiveProperties = () => {
 
   return (
     <section>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
-          <Building className="text-primary h-5 w-5 md:h-6 md:w-6" />
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl md:text-h2 flex items-center gap-2.5 font-black uppercase tracking-tighter">
+          <Building className="text-primary h-5 w-5" />
           Portfólio Estratégico
         </h2>
+
         <Button 
           variant="ghost" 
           size="sm" 
-          className="gap-1 font-bold text-primary" 
+          className="gap-1 font-bold text-primary hover:bg-primary/5 rounded-xl" 
           onClick={() => navigate("/admin/properties")}
         >
-          Ver todos
-          <ChevronRight size={16} />
+          Explorar Ativos
+          <ChevronRight size={14} />
         </Button>
       </div>
+
       <DataView
         items={activeProperties}
         viewMode="grid"
-        gridClassName="animate-in fade-in slide-in-from-left-4 duration-slow"
+        gridClassName="animate-in fade-in slide-in-from-left-4 duration-slow grid-layout !grid-cols-1 sm:!grid-cols-2 lg:!grid-cols-2 xl:!grid-cols-2 gap-8"
         renderGrid={(property) => (
           <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
         )}

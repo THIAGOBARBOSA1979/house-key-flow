@@ -117,8 +117,10 @@
     --dialog-full: 95vw;
     
     --card-min-height: 12rem;
-    --input-height-base: 3rem;
-    --input-height-lg: 3.5rem;
+    --input-height-base: 3.25rem;
+    --input-height-lg: 3.75rem;
+    --button-height-base: 3rem;
+
 
     /* --- Typography Tokens (Fluid with clamp) --- */
     --font-display: clamp(2rem, 5vw + 1rem, 4.5rem);
@@ -175,44 +177,44 @@
 
   .dark {
     /* --- Semantic Colors - Dark Theme --- */
-    --background: 222 47% 6%;
+    --background: 222 47% 4%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 10%;
+    --card: 222 47% 7%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 10%;
+    --popover: 222 47% 7%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 6%;
+    --primary-foreground: 222 47% 4%;
 
-    --secondary: 217.2 32.6% 15%;
+    --secondary: 217.2 32.6% 12%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 15%;
+    --muted: 217.2 32.6% 12%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 15%;
+    --accent: 217.2 32.6% 12%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 18%;
-    --input: 217.2 32.6% 18%;
+    --border: 217.2 32.6% 15%;
+    --input: 217.2 32.6% 15%;
     --ring: 224.3 76.3% 48%;
 
     --brand: 217 91% 60%;
-    --brand-foreground: 222 47% 6%;
+    --brand-foreground: 222 47% 4%;
 
-    --sidebar-background: 222 47% 4%;
+    --sidebar-background: 222 47% 2%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217.2 32.6% 12%;
+    --sidebar-accent: 217.2 32.6% 10%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217.2 32.6% 15%;
+    --sidebar-border: 217.2 32.6% 12%;
     --sidebar-ring: 224.3 76.3% 48%;
 
     /* --- Layout Dark Tokens --- */
@@ -220,11 +222,12 @@
     --section-gap: var(--space-14);
 
     /* --- Refined Dark Shadows --- */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+    --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.4);
+    --shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 12px 20px -3px rgb(0 0 0 / 0.6), 0 4px 10px -4px rgb(0 0 0 / 0.6);
+    --shadow-xl: 0 25px 40px -5px rgb(0 0 0 / 0.7), 0 12px 15px -6px rgb(0 0 0 / 0.7);
   }
+
 
   :root {
     --header-height: 4rem;
@@ -309,16 +312,17 @@
 
   /* Component Tokens: Card */
   .card-standard {
-    @apply bg-card text-card-foreground rounded-2xl border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/5 dark:ring-white/5;
+    @apply bg-card text-card-foreground rounded-3xl border border-border/40 shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 overflow-hidden ring-1 ring-black/[0.02] dark:ring-white/[0.02];
   }
 
   .card-hover-effect {
-    @apply hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-sem-lg;
+    @apply hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-sem-xl;
   }
 
   .card-glass {
-    @apply bg-background/40 backdrop-blur-xl border border-white/10 dark:border-white/5 shadow-sem-xl rounded-2xl;
+    @apply bg-white/[0.03] dark:bg-black/[0.03] backdrop-blur-3xl border border-white/10 dark:border-white/5 shadow-sem-xl rounded-3xl;
   }
+
 
   /* Status Badges */
   .badge-status {

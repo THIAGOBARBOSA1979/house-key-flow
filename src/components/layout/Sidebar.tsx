@@ -101,26 +101,30 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
     <div className="flex flex-col h-full">
       <div className="flex flex-col items-center justify-center py-8 px-5 border-b border-sidebar-border/10">
         {!collapsed ? (
-          <div className="flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-500">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-4 ring-sidebar-primary/10 border border-white/10 group cursor-pointer hover:rotate-3 transition-transform">
+          <div className="flex flex-col items-center gap-5 animate-in fade-in zoom-in duration-500">
+            <div className="w-18 h-18 rounded-[1.75rem] bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-4 ring-sidebar-primary/10 border border-white/10 group cursor-pointer hover:rotate-3 transition-all duration-slow">
                {company?.settings?.logo_url ? (
                  <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />
                ) : (
-                 <Building className="text-sidebar-primary-foreground h-8 w-8" />
+                 <Building className="text-sidebar-primary-foreground h-9 w-9" />
                )}
             </div>
-            <div className="text-center">
-              <h1 className="text-xl font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[180px] leading-tight">
+            <div className="text-center space-y-1">
+              <h1 className="text-xl font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[200px] leading-tight">
                 {company?.settings?.display_name || company?.name || "A2 GESTÃO"}
               </h1>
-              <p className="text-[10px] font-black text-sidebar-primary uppercase tracking-[0.2em] mt-1 opacity-70">Enterprise v3.1</p>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sidebar-primary/10 border border-sidebar-primary/20">
+                <span className="w-1 h-1 rounded-full bg-sidebar-primary animate-pulse" />
+                <p className="text-[9px] font-black text-sidebar-primary uppercase tracking-[0.15em] opacity-90">Enterprise v3.1</p>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="w-10 h-10 rounded-xl bg-sidebar-primary flex items-center justify-center shadow-sem-lg animate-in fade-in zoom-in duration-500">
-            <Building className="text-sidebar-primary-foreground h-5 w-5" />
+          <div className="w-11 h-11 rounded-2xl bg-sidebar-primary flex items-center justify-center shadow-sem-lg animate-in fade-in zoom-in duration-500 hover:scale-110 transition-transform cursor-pointer">
+            <Building className="text-sidebar-primary-foreground h-6 w-6" />
           </div>
         )}
+
       </div>
 
       {!collapsed && (
@@ -176,18 +180,19 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
           )}
 
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4 min-w-0 group cursor-pointer p-1 rounded-2xl hover:bg-white/5 transition-all" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-110 transition-transform">
+            <div className="flex items-center gap-4 min-w-0 group cursor-pointer p-1.5 rounded-2xl hover:bg-white/5 transition-all" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
+              <div className="w-12 h-12 rounded-[1.25rem] bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-110 transition-transform duration-slow">
                 {user?.name?.charAt(0) || "A"}
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-black text-sidebar-foreground truncate group-hover:text-primary transition-colors leading-tight">{user?.name || "Administrador"}</p>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-status-complete animate-pulse" />
+                <p className="text-sm font-black text-sidebar-foreground truncate group-hover:text-sidebar-primary transition-colors leading-tight">{user?.name || "Administrador"}</p>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-status-complete animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                   <p className="text-[9px] text-sidebar-foreground/40 truncate font-black uppercase tracking-widest">Sessão ativa</p>
                 </div>
               </div>
             </div>
+
             <Button 
               variant="ghost" 
               size="icon" 

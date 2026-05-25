@@ -81,8 +81,10 @@ export const DashboardCharts = memo(({
 
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden lg:col-span-1 rounded-[2rem] shadow-sem-sm">
+
+
         <CardHeader className="pb-4 border-b border-border/10">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg md:text-h4 font-black">Conformidade Global de SLAs</CardTitle>
@@ -127,7 +129,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden lg:col-span-1">
+      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden lg:col-span-1 rounded-[2rem] shadow-sem-sm">
         <CardHeader className="pb-4 border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Fluxo por Ciclo Técnico</CardTitle>
         </CardHeader>
@@ -164,7 +166,8 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-sm">
+
         <CardHeader className="pb-4 border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Entregas Técnicas Homologadas</CardTitle>
         </CardHeader>
@@ -209,7 +212,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border-none bg-card/50 backdrop-blur-sm overflow-hidden">
+      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-sm">
         <CardHeader className="pb-4 border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Incidências por Matriz Técnica</CardTitle>
         </CardHeader>

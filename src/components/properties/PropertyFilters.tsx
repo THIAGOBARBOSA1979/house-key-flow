@@ -30,12 +30,13 @@ export const PropertyFilters = ({
   const hasActiveFilters = searchTerm || statusFilter !== "all" || managerFilter !== "all";
 
   return (
-    <FilterBar searchPlaceholder="Buscar..." searchValue={searchTerm} onSearchChange={onSearchChange}>
+    <FilterBar searchPlaceholder="Buscar empreendimento..." searchValue={searchTerm} onSearchChange={onSearchChange} className="mb-10">
       <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 w-full sm:w-auto">
         <Select value={statusFilter} onValueChange={onStatusChange}>
-          <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
+          <SelectTrigger className="w-full sm:w-[180px] rounded-xl h-11 bg-background/60 backdrop-blur-md shadow-sem-sm border-border/40 hover:border-primary/20">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
+
           <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
             <SelectItem value="all" className="rounded-lg font-medium">Todos os status</SelectItem>
             <SelectItem value="pending" className="rounded-lg font-medium">⏳ Pendentes</SelectItem>
@@ -45,9 +46,10 @@ export const PropertyFilters = ({
         </Select>
 
         <Select value={managerFilter} onValueChange={onManagerChange}>
-          <SelectTrigger className="w-full sm:w-[170px] rounded-xl h-11 bg-background shadow-sem-sm">
-            <SelectValue placeholder="Gerente" />
+          <SelectTrigger className="w-full sm:w-[180px] rounded-xl h-11 bg-background/60 backdrop-blur-md shadow-sem-sm border-border/40 hover:border-primary/20">
+            <SelectValue placeholder="Gerente Responsável" />
           </SelectTrigger>
+
           <SelectContent className="rounded-xl border-none shadow-sem-xl animate-in zoom-in-95">
             <SelectItem value="all" className="rounded-lg font-medium">Todos Gerentes</SelectItem>
             {managers.map(manager => (
