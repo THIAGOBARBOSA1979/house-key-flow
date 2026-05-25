@@ -11,7 +11,7 @@ export const PropertyStats = ({ metrics }: PropertyStatsProps) => {
   if (!metrics) return null;
   
   return (
-    <div className="mb-10 animate-in fade-in slide-in-from-bottom-2 duration-700">
+    <div className="mb-layout-gap-lg animate-in fade-in slide-in-from-bottom-2 duration-700">
       <ResponsiveGrid columns={4} mobileCols={1} tabletCols={2} gap="layout">
         <StatsCard 
           label="Total de Projetos" 
