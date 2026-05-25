@@ -70,7 +70,7 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-indigo-50/30 to-brand/5 dark:from-background dark:to-background overflow-x-hidden">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-indigo-50/50 via-background to-brand/5 dark:from-background dark:to-background overflow-x-hidden">
       <header className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky transition-all duration-500">
         <div className="container-responsive py-5">
 
@@ -93,11 +93,11 @@ export default function Login() {
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-medium">
+                <div className="inline-flex items-center gap-2 bg-primary/5 text-primary px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border border-primary/10">
                   <Shield className="h-4 w-4" />
                   {activeTab === "admin" ? "Área Administrativa" : "Portal do Cliente"}
                 </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tight">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground leading-[1.1] tracking-tighter">
                   {activeTab === "admin" ? (
                     <>
                       Domine sua operação com
@@ -122,11 +122,12 @@ export default function Login() {
                 <div className="grid grid-cols-3 gap-6">
                   {stats.map((stat, index) => (
                     <div key={index} className="text-center">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
-                        <stat.icon className="h-6 w-6 text-blue-600" />
+                      <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center mx-auto mb-3 border border-primary/10 shadow-sem-sm transition-transform hover:scale-110">
+                        <stat.icon className="h-6 w-6 text-primary" />
                       </div>
-                      <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                      <div className="text-sm text-gray-600">{stat.label}</div>
+                      <div className="text-2xl font-black text-foreground tracking-tighter">{stat.value}</div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{stat.label}</div>
+
                     </div>
                   ))}
                 </div>
@@ -134,21 +135,22 @@ export default function Login() {
 
               <div className="space-y-6">
                 {(activeTab === "admin" ? adminFeatures : clientBenefits).map((item, index) => (
-                  <div key={index} className="flex items-start gap-4 p-4 rounded-xl hover:bg-white/50 transition-colors">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center flex-shrink-0">
-                      <item.icon className="h-7 w-7 text-blue-600" />
+                  <div key={index} className="flex items-start gap-5 p-5 rounded-[1.5rem] hover:bg-white/60 transition-all duration-300 border border-transparent hover:border-border/10 hover:shadow-sem-md group">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-indigo-50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-sem-sm">
+                      <item.icon className="h-7 w-7 text-primary" strokeWidth={2.5} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2 text-lg">{item.title}</h3>
-                      <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                      <h3 className="font-black text-foreground mb-1 text-lg tracking-tight group-hover:text-primary transition-colors">{item.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed text-sem-body-sm">{item.description}</p>
                     </div>
                   </div>
+
                 ))}
               </div>
             </div>
 
             <div className="flex justify-center animate-in fade-in slide-in-from-right-8 duration-1000">
-              <Card className="w-full max-w-md shadow-sem-xl border-border/10 bg-white/60 dark:bg-black/60 backdrop-blur-3xl mx-auto rounded-[3rem] overflow-hidden">
+              <Card className="w-full max-w-md shadow-sem-2xl border border-border/20 bg-white/70 dark:bg-black/60 backdrop-blur-3xl mx-auto rounded-[2.5rem] overflow-hidden">
 
                 <CardHeader className="space-y-4 pb-8">
                   <div className="text-center">
@@ -165,12 +167,13 @@ export default function Login() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4 bg-muted/30 p-1 rounded-2xl h-12">
-                      <TabsTrigger value="client" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Portal</TabsTrigger>
-                      <TabsTrigger value="admin" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Admin</TabsTrigger>
-                      <TabsTrigger value="register" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Adesão</TabsTrigger>
-                      <TabsTrigger value="master" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Master</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-4 bg-muted/50 p-1.5 rounded-2xl h-14">
+                      <TabsTrigger value="client" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Portal</TabsTrigger>
+                      <TabsTrigger value="admin" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Admin</TabsTrigger>
+                      <TabsTrigger value="register" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Adesão</TabsTrigger>
+                      <TabsTrigger value="master" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Master</TabsTrigger>
                     </TabsList>
+
 
 
 
@@ -196,7 +199,7 @@ export default function Login() {
                     <TabsContent value="register" className="mt-6">
                       <div className="space-y-4 text-center">
                         <p className="text-gray-600">Comece hoje mesmo a transformar sua incorporadora.</p>
-                        <Button asChild className="w-full h-12 bg-primary hover:bg-primary/90 rounded-xl font-bold">
+                        <Button asChild className="w-full h-14 bg-primary hover:bg-primary/90 rounded-2xl font-black uppercase tracking-widest text-xs shadow-sem-lg shadow-primary/20">
                           <Link to="/register">CRIAR CONTA AGORA</Link>
                         </Button>
 
