@@ -63,7 +63,17 @@ export function useService<T extends { id: string; company_id?: string }>(
 
   useEffect(() => {
     fetchItems();
-  }, [fetchItems]);
+    
+    // Subscribe to service updates (Real-time sync)
+    const unsubscribe = service.subscribe((updatedItems) => {
+      startTransition(() => {
+        setItems([...updatedItems]);
+      });
+    });
+    
+    return () => unsubscribe();
+  }, [fetchItems, service]);
+
 
   const refresh = useCallback(() => {
     fetchItems();
