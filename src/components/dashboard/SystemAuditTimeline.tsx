@@ -29,8 +29,9 @@ export const SystemAuditTimeline = ({ activities }: SystemAuditTimelineProps) =>
           <ChevronRight size={16} />
         </Button>
       </div>
-      <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-lg animate-in fade-in slide-in-from-right-4 duration-slow">
-        <CardContent className="p-6">
+      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden rounded-[2.5rem] shadow-sem-sm animate-in fade-in slide-in-from-right-4 duration-slow">
+        <CardContent className="p-8">
+
           <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 md:before:ml-0 md:before:left-1/2 before:-translate-x-px md:before:-translate-x-1/2 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border/50 before:to-transparent">
             {activities.map((activity, idx) => (
               <div key={activity.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
@@ -40,7 +41,7 @@ export const SystemAuditTimeline = ({ activities }: SystemAuditTimelineProps) =>
                     idx === 0 ? "bg-primary animate-pulse" : "bg-muted-foreground/30"
                   )} />
                 </div>
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl bg-white/50 border border-border/50 shadow-sem-sm group-hover:shadow-sem-md transition-all">
+                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-[1.5rem] bg-white/[0.03] border border-border/40 shadow-sem-sm group-hover:shadow-sem-md group-hover:border-primary/20 transition-all duration-500">
                   <div className="flex items-center justify-between space-x-2 mb-1">
                     <div className="font-black text-foreground text-xs uppercase tracking-widest">{activity.performedByName}</div>
                     <time className="text-[10px] font-bold text-muted-foreground/60 uppercase">
