@@ -95,7 +95,8 @@ const Settings = () => {
             <CompanyTab 
               companySettings={companySettings} 
               setCompanySettings={setCompanySettings} 
-              onSave={saveCompanySettings} 
+              onSave={async () => saveCompanySettings()} 
+
             />
           </TabsContent>
         )}
