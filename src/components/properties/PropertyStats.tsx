@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Building, TrendingUp, PieChart, BarChart3 } from "lucide-react";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
@@ -9,40 +8,41 @@ interface PropertyStatsProps {
 }
 
 export const PropertyStats = ({ metrics }: PropertyStatsProps) => {
+  if (!metrics) return null;
+  
   return (
-    <ResponsiveGrid columns={4} mobileCols={1} tabletCols={2} gap="layout">
-      <StatsCard 
-        label="Total de Projetos" 
-        value={metrics.total} 
-        icon={Building} 
-        description="Ativos no portfólio" 
-        trend={{ value: "12%", isPositive: true }} 
-        className="rounded-3xl" 
-      />
-      <StatsCard 
-        label="Em Andamento" 
-        value={metrics.byStatus.progress || 0} 
-        icon={TrendingUp} 
-        variant="progress" 
-        description="Obras em execução" 
-        className="rounded-3xl" 
-      />
-      <StatsCard 
-        label="Total de Unidades" 
-        value={metrics.totalUnits} 
-        icon={PieChart} 
-        variant="brand" 
-        description="Apartamentos cadastrados" 
-        className="rounded-3xl" 
-      />
-      <StatsCard 
-        label="Eficiência Média" 
-        value={`${metrics.averageProgress}%`} 
-        icon={BarChart3} 
-        variant="complete" 
-        description="Progresso consolidado" 
-        className="rounded-3xl" 
-      />
-    </ResponsiveGrid>
+    <div className="mb-10 animate-in fade-in slide-in-from-bottom-2 duration-700">
+      <ResponsiveGrid columns={4} mobileCols={1} tabletCols={2} gap="layout">
+        <StatsCard 
+          label="Total de Projetos" 
+          value={metrics.total || 0} 
+          icon={Building} 
+          description="Ativos no portfólio" 
+          trend={{ value: "12%", isPositive: true }} 
+        />
+        <StatsCard 
+          label="Em Andamento" 
+          value={metrics.byStatus?.progress || 0} 
+          icon={TrendingUp} 
+          variant="progress" 
+          description="Obras em execução" 
+        />
+        <StatsCard 
+          label="Total de Unidades" 
+          value={metrics.totalUnits || 0} 
+          icon={PieChart} 
+          variant="brand" 
+          description="Unidades cadastradas" 
+        />
+        <StatsCard 
+          label="Eficiência Média" 
+          value={`${metrics.averageProgress || 0}%`} 
+          icon={BarChart3} 
+          variant="complete" 
+          description="Progresso consolidado" 
+        />
+      </ResponsiveGrid>
+    </div>
   );
 };
+
