@@ -112,19 +112,21 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-indigo-50/30 to-brand/5 dark:from-background dark:to-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg shadow-sem-xl border-border/10 bg-white/70 backdrop-blur-3xl rounded-[2.5rem]">
-        <CardHeader className="text-center space-y-2">
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-background via-indigo-50/20 to-brand/5 dark:from-background dark:to-background flex items-center justify-center p-4">
+      <Card className="w-full max-w-xl shadow-sem-xl border-border/10 bg-white/60 dark:bg-black/60 backdrop-blur-3xl rounded-[3rem] overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <CardHeader className="text-center space-y-4 pt-10 pb-8">
+          <div className="flex justify-center mb-2">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-primary/20">
               A2
             </div>
           </div>
-          <CardTitle className="text-3xl font-black tracking-tight">Começar teste grátis</CardTitle>
-          <CardDescription>Crie sua conta em menos de 1 minuto</CardDescription>
+          <CardTitle className="text-3xl md:text-4xl font-black tracking-tighter">Começar Teste Grátis</CardTitle>
+          <CardDescription className="text-base font-medium">Crie seu ecossistema de gestão em menos de 1 minuto</CardDescription>
         </CardHeader>
-        <CardContent>
+
+        <CardContent className="px-8 md:px-12 pb-12">
           <Form {...form}>
+
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
@@ -208,20 +210,21 @@ export default function Register() {
                   )}
                 />
               </div>
-              <Button type="submit" className="w-full h-12 text-lg font-bold bg-brand hover:bg-brand/90" disabled={isLoading}>
-                {isLoading ? "Criando conta..." : (
+              <Button type="submit" className="w-full h-14 text-sm font-black uppercase tracking-widest bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 rounded-2xl mt-4" disabled={isLoading}>
+                {isLoading ? "Provisionando Ambiente..." : (
                   <div className="flex items-center gap-2">
-                    Criar meu acesso
-                    <ArrowRight className="h-5 w-5" />
+                    Criar Meu Acesso Estratégico
+                    <ArrowRight className="h-4 w-4" strokeWidth={3} />
                   </div>
                 )}
               </Button>
-              <p className="text-center text-sm text-muted-foreground mt-4">
-                Já tem uma conta?{" "}
-                <Link to="/login" className="text-brand font-bold hover:underline">
-                  Fazer login
+              <p className="text-center text-xs font-bold text-muted-foreground mt-6 uppercase tracking-widest">
+                Já possui uma licença ativa?{" "}
+                <Link to="/login" className="text-primary font-black hover:underline underline-offset-4">
+                  Fazer Login
                 </Link>
               </p>
+
             </form>
           </Form>
         </CardContent>
