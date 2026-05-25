@@ -51,7 +51,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
 
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-primary to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-2xl shadow-xl shadow-brand/20 hover:rotate-6 transition-all duration-500">
                 A2
               </div>
               <div>
