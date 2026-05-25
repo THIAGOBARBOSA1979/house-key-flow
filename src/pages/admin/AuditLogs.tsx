@@ -32,18 +32,31 @@ const AuditLogs = () => {
 
   return (
     <div className="space-y-8 animate-fade-in pb-10">
-      <PageHeader
-        icon={Shield}
-        title="Logs de Auditoria"
-        description="Rastreabilidade completa e imutável de todas as ações administrativas e de clientes."
-      >
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 transition-all" onClick={handleExport} disabled={isExporting}>
-            {isExporting ? <RotateCw className="mr-2 h-4 w-4 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-            Exportar Auditoria (CSV)
-          </Button>
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1">
+          <PageHeader
+            icon={Shield}
+            title="Logs de Auditoria"
+            description="Rastreabilidade completa e imutável de todas as ações administrativas e de clientes."
+          >
+            <div className="flex items-center gap-3">
+              <Button variant="outline" className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 transition-all" onClick={handleExport} disabled={isExporting}>
+                {isExporting ? <RotateCw className="mr-2 h-4 w-4 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+                Exportar Auditoria (CSV)
+              </Button>
+            </div>
+          </PageHeader>
         </div>
-      </PageHeader>
+        
+        <Card className="lg:w-80 rounded-[2rem] border-none bg-primary/5 shadow-inner p-6 flex flex-col justify-center gap-2">
+           <div className="flex items-center gap-3">
+             <div className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600">Monitoramento Ativo</span>
+           </div>
+           <p className="text-2xl font-black text-foreground tracking-tighter">Real-Time</p>
+           <p className="text-[10px] text-muted-foreground font-bold uppercase">Sincronização com Ledger Digital</p>
+        </Card>
+      </div>
 
 
       <div className="grid grid-cols-1 gap-8 animate-in slide-in-from-bottom-4 duration-700">
