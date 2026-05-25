@@ -100,17 +100,19 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link to="/login">
+              <Link to="/register">
                 <Button size="lg" className="bg-gradient-to-r from-brand to-indigo-600 hover:from-brand/90 hover:to-indigo-700 h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl shadow-brand/30 hover:shadow-brand/40 hover:-translate-y-1 transition-all">
-                  Integrar Operação
+                  Criar Conta Grátis
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-2">
-                Análise Técnica de Portfólio
-
-              </Button>
+              <Link to="/login">
+                <Button size="lg" variant="outline" className="h-16 px-10 rounded-2xl font-black uppercase tracking-widest text-xs border-2">
+                  Acessar Sistema
+                </Button>
+              </Link>
             </div>
+
 
           </div>
         </div>
@@ -175,12 +177,13 @@ export default function Home() {
               Domine seus processos, reduza gargalos operacionais e ofereça a melhor experiência de entrega aos seus clientes.
             </p>
 
-            <Link to="/login">
-              <Button size="lg" variant="secondary">
-                Começar Agora
+            <Link to="/register">
+              <Button size="lg" variant="secondary" className="h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl">
+                Começar Teste Grátis
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </Link>
+
           </div>
         </div>
       </section>
