@@ -54,17 +54,26 @@ export const AuditProgressOverlay: React.FC = () => {
   useAuditMarker('Queries Supabase sem filtragem no lado do servidor em listas de notificações antigas');
   useAuditMarker('Falta de feedback visual em operações de "Sincronização em Segundo Plano"');
 
+  // Wave 16 Fixes
+  useAuditMarker('Otimização de re-renderizações no useService via memoização profunda');
+  useAuditMarker('Correção do cálculo assíncrono de Conformidade Técnica no dashboard');
+  useAuditMarker('Implementação de auto-refresh de sessão no AuthContext');
+  useAuditMarker('Correção de tipagem flexível (companyId/company_id) em hooks compartilhados');
+  useAuditMarker('Adição de null-checks preventivos em listas do Dashboard');
+
   // Logic to move to next wave
+
   React.useEffect(() => {
     const waveIssues = issues.filter(i => i.wave === currentWave);
     if (waveIssues.length > 0 && waveIssues.every(i => i.status === 'fixed')) {
       completeWave(currentWave);
-      if (currentWave < 8) {
+      if (currentWave < 16) {
         startWave(currentWave + 1);
       } else {
         // Final audit completed
-        completeWave(8);
+        completeWave(16);
       }
+
     }
   }, [issues, currentWave, completeWave, startWave]);
 

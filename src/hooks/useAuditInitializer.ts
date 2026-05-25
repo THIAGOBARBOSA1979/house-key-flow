@@ -35,13 +35,25 @@ const INITIAL_ISSUES = [
 
 export const useAuditInitializer = () => {
   const { issues, waves, addIssue, startWave, completeWave, markAsFixed } = useAuditStore();
+  
+  // Wave 16: Audit final e estabilização
+  const FINAL_AUDIT_ISSUES = [
+    { module: 'Performance', description: 'Otimização de re-renderizações no useService via memoização profunda', impact: 'medium', wave: 16 },
+    { module: 'Logic', description: 'Correção do cálculo assíncrono de Conformidade Técnica no dashboard', impact: 'high', wave: 16 },
+    { module: 'Security', description: 'Implementação de auto-refresh de sessão no AuthContext', impact: 'medium', wave: 16 },
+    { module: 'Stability', description: 'Correção de tipagem flexível (companyId/company_id) em hooks compartilhados', impact: 'low', wave: 16 },
+    { module: 'UX', description: 'Adição de null-checks preventivos em listas do Dashboard', impact: 'low', wave: 16 },
+  ];
+
 
   useEffect(() => {
     if (issues.length === 0) {
-      INITIAL_ISSUES.forEach(issue => addIssue(issue as any));
+      const allIssues = [...INITIAL_ISSUES, ...FINAL_AUDIT_ISSUES];
+      allIssues.forEach(issue => addIssue(issue as any));
       
       // Initialize waves as completed for previous ones
-      for (let i = 1; i <= 15; i++) {
+      for (let i = 1; i <= 16; i++) {
+
         useAuditStore.setState(state => {
           if (!state.waves.find(w => w.id === i)) {
             return {
@@ -54,21 +66,22 @@ export const useAuditInitializer = () => {
       }
       useAuditStore.setState(state => ({
         ...state,
-        currentWave: 15
+        currentWave: 16
       }));
+
     }
   }, [issues.length, addIssue, startWave]);
 
   // Specific check for waves completion
   useEffect(() => {
     if (issues.length > 0) {
-      [12, 13, 14, 15].forEach(waveId => {
+      [12, 13, 14, 15, 16].forEach(waveId => {
         const waveIssues = INITIAL_ISSUES.filter(i => i.wave === waveId);
         const fixedIssues = issues.filter(i => i.wave === waveId && i.status === 'fixed');
         
         if (waveIssues.length > 0 && fixedIssues.length === waveIssues.length && waves.find(w => w.id === waveId)?.status !== 'completed') {
           completeWave(waveId);
-          if (waveId < 15) startWave(waveId + 1);
+          if (waveId < 16) startWave(waveId + 1);
         }
       });
     }

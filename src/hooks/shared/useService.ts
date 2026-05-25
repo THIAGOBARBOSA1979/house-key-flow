@@ -27,7 +27,7 @@ export interface IService<T> {
   subscribe(listener: (items: T[]) => void): () => void;
 }
 
-export function useService<T extends { id: string; company_id?: string }>(
+export function useService<T extends { id: string; company_id?: string; companyId?: string }>(
   service: IService<T>,
   options: UseServiceOptions<T> = {}
 ) {
@@ -50,7 +50,7 @@ export function useService<T extends { id: string; company_id?: string }>(
       const data = await service.getAll(companyId, isSuperAdmin);
       
       startTransition(() => {
-        setItems(data);
+        setItems(prev => JSON.stringify(prev) === JSON.stringify(data) ? prev : data);
       });
     } catch (err) {
       const appError = errorHandler.handle(err, 'useService:fetchItems');
@@ -67,7 +67,8 @@ export function useService<T extends { id: string; company_id?: string }>(
     // Subscribe to service updates (Real-time sync)
     const unsubscribe = service.subscribe((updatedItems) => {
       startTransition(() => {
-        setItems([...updatedItems]);
+        setItems(prev => JSON.stringify(prev) === JSON.stringify(updatedItems) ? prev : [...updatedItems]);
+
       });
     });
     
