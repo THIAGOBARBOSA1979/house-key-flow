@@ -70,7 +70,7 @@ const Properties = () => {
   };
 
   const actions = (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-component-gap-md">
       <PropertyBulkActions 
         selectedCount={selectedIds.length} 
         onBulkAction={(action) => {
@@ -173,7 +173,7 @@ const Properties = () => {
                 cell: (p) => {
                   const percentage = p.units ? Math.round((p.completedUnits / p.units) * 100) : 0;
                   return (
-                    <div className="flex items-center gap-3 min-w-[120px]">
+                    <div className="flex items-center gap-component-gap-md min-w-[120px]">
                       <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden border border-border/10">
                         <div 
                           className={cn(

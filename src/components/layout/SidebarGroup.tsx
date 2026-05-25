@@ -26,7 +26,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
   
   if (collapsed) {
     return (
-      <div className="layout-stack py-6 flex flex-col items-center">
+      <div className="layout-stack py-layout-gap flex flex-col items-center">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = item.end 
@@ -48,7 +48,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
             >
               <Icon size={22} className={cn("transition-all duration-500", isActive && "rotate-[10deg]")} />
               
-              <div className="absolute left-full ml-4 px-5 py-2.5 bg-sidebar-foreground text-sidebar-background rounded-2xl text-[11px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 -translate-x-2 group-hover:translate-x-0 whitespace-nowrap z-tooltip shadow-sem-2xl border border-sidebar-border/20 backdrop-blur-xl">
+              <div className="absolute left-full ml-4 px-card-padding py-2 bg-sidebar-foreground text-sidebar-background rounded-2xl text-[11px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 -translate-x-2 group-hover:translate-x-0 whitespace-nowrap z-tooltip shadow-sem-2xl border border-sidebar-border/20 backdrop-blur-xl">
                 {item.label}
               </div>
             </NavLink>
@@ -60,7 +60,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="mb-layout-gap">
-      <CollapsibleTrigger className="flex items-center justify-between w-full px-5 py-3 text-[10px] text-sidebar-foreground/30 hover:text-sidebar-foreground/80 transition-all duration-300 group uppercase font-black tracking-[0.25em]">
+      <CollapsibleTrigger className="flex items-center justify-between w-full px-card-padding py-stack-gap text-[10px] text-sidebar-foreground/30 hover:text-sidebar-foreground/80 transition-all duration-300 group uppercase font-black tracking-[0.25em]">
         <span>{title}</span>
         <ChevronDown className={cn(
           "h-3.5 w-3.5 transition-all duration-500 opacity-0 group-hover:opacity-100",
@@ -81,7 +81,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
               end={item.end}
               onClick={onItemClick}
               className={cn(
-                "flex items-center gap-3.5 px-4 py-3.5 rounded-2xl transition-all duration-500 active:scale-95 group relative overflow-hidden",
+                "flex items-center gap-stack-gap px-stack-gap-lg py-stack-gap rounded-2xl transition-all duration-500 active:scale-95 group relative overflow-hidden",
                 isActive 
                   ? "bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground shadow-sem-lg shadow-sidebar-primary/30 font-black scale-[1.02] border border-white/10" 
                   : "hover:bg-sidebar-accent/50 text-sidebar-foreground/60 hover:text-sidebar-foreground font-bold hover:translate-x-1.5"

@@ -105,13 +105,13 @@ const Technicians = () => {
   };
 
   return (
-    <div className="space-y-8 pb-10 animate-in fade-in duration-500">
+    <div className="layout-stack pb-layout-gap-xl animate-in fade-in duration-500">
       <PageHeader 
         icon={Wrench} 
         title="Gestão de Técnicos" 
         description="Gerenciamento de prestadores de serviço, especialidades e avaliações de desempenho."
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-component-gap-md">
           <Button variant="outline" className="hidden sm:flex rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" onClick={exportData}>
             <Download className="mr-2 h-4 w-4" /> Exportar
           </Button>
@@ -130,9 +130,9 @@ const Technicians = () => {
       </ResponsiveGrid>
 
       {selectedIds.length > 0 && (
-        <Card className="p-4 bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="bg-primary text-white p-2 rounded-xl">
+        <Card className="p-card-padding bg-primary/5 border-primary/20 animate-in zoom-in-95 duration-200 rounded-2xl border flex items-center justify-between">
+          <div className="flex items-center gap-layout-gap">
+            <div className="bg-primary text-white p-2-sem rounded-xl">
               <Settings className="w-5 h-5 animate-spin-slow" />
             </div>
             <div>
@@ -140,7 +140,7 @@ const Technicians = () => {
               <p className="text-xs text-muted-foreground font-bold">{selectedIds.length} técnicos selecionados</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-component-gap-md">
              <Button variant="outline" size="sm" className="rounded-xl h-10 px-4 font-bold" onClick={clearSelection}>
                Cancelar
              </Button>
@@ -151,7 +151,7 @@ const Technicians = () => {
         </Card>
       )}
 
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-card/40 backdrop-blur-md p-4 rounded-2xl border border-border/10">
+      <div className="flex flex-col md:flex-row gap-layout-gap items-center justify-between bg-card/40 backdrop-blur-md p-card-padding rounded-2xl border border-border/10">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
@@ -184,16 +184,16 @@ const Technicians = () => {
             "card-standard overflow-hidden border-none bg-card/40 backdrop-blur-md hover:shadow-sem-lg transition-all group relative",
             selectedIds.includes(tech.id) && "ring-2 ring-primary"
           )}>
-            <div className="absolute top-4 left-4 z-10">
+            <div className="absolute top-card-padding left-card-padding z-10">
               <Checkbox 
                 checked={selectedIds.includes(tech.id)}
                 onCheckedChange={() => handleSelect(tech.id)}
                 className="rounded-md"
               />
             </div>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-4 pl-6">
+            <CardContent className="p-card-padding">
+              <div className="flex justify-between items-start mb-card-padding">
+                <div className="flex items-center gap-layout-gap pl-card-padding">
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:scale-110 transition-transform">
                     <Wrench size={24} />
                   </div>
@@ -229,18 +229,18 @@ const Technicians = () => {
                 </DropdownMenu>
               </div>
 
-              <div className="space-y-3 mb-6 pl-6">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
+              <div className="space-y-component-gap-md mb-card-padding pl-card-padding">
+                <div className="flex items-center gap-component-gap-md text-sm text-muted-foreground font-medium">
                   <Mail size={16} className="text-primary/60" />
                   <span className="truncate">{tech.email}</span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
+                <div className="flex items-center gap-component-gap-md text-sm text-muted-foreground font-medium">
                   <Phone size={16} className="text-primary/60" />
                   <span>{tech.phone}</span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 mb-6 pl-6">
+              <div className="flex flex-wrap gap-component-gap-sm mb-card-padding pl-card-padding">
                 {tech.specialty.map((s) => (
                   <Badge key={s} variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold px-3 py-1 rounded-lg">
                     {s}
@@ -248,7 +248,7 @@ const Technicians = () => {
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border/10 pl-6">
+              <div className="grid grid-cols-2 gap-layout-gap pt-card-padding border-t border-border/10 pl-card-padding">
                 <div>
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Concluídos</p>
                   <p className="text-xl font-black">{tech.completedJobs}</p>

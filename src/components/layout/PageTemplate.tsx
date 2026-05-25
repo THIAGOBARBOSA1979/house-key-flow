@@ -23,7 +23,7 @@ export function PageTemplate({
 }: PageTemplateProps) {
   return (
     <div className="animate-in fade-in duration-500">
-      <div className={cn("layout-stack pb-10 px-content-padding md:px-0", className)}>
+      <div className={cn("layout-stack pb-layout-gap-xl px-content-padding md:px-0", className)}>
         <SubscriptionBanner />
         <PageHeader 
           title={title} 

@@ -28,9 +28,9 @@ export function PageHeader({
         </div>
       )}
       
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-4 px-2 bg-white/40 backdrop-blur-xl rounded-[2rem] border border-border/10 shadow-sem-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-header-padding-y px-card-padding bg-white/40 backdrop-blur-xl rounded-[2rem] border border-border/10 shadow-sem-sm">
         <div className="layout-stack max-w-full xl:max-w-4xl px-2">
-          <div className="flex items-center gap-5 md:gap-8">
+          <div className="flex items-center gap-stack-gap md:gap-layout-gap">
             {Icon && (
               <div className="flex items-center justify-center h-16 w-16 md:h-20 md:w-20 rounded-[1.75rem] md:rounded-[2.25rem] bg-gradient-to-br from-primary to-primary/60 shadow-sem-xl shadow-primary/20 animate-in zoom-in duration-700 shrink-0 ring-8 ring-primary/5">
                 <Icon className="h-8 w-8 md:h-10 md:w-10 text-white" strokeWidth={2.5} />
@@ -49,7 +49,7 @@ export function PageHeader({
         </div>
 
         {children && (
-          <div className="flex flex-wrap items-center gap-3 md:gap-4 animate-in slide-in-from-right-4 duration-700 w-full lg:w-auto">
+          <div className="flex flex-wrap items-center gap-component-gap-md md:gap-card-gap animate-in slide-in-from-right-4 duration-700 w-full lg:w-auto">
             {children}
           </div>
         )}

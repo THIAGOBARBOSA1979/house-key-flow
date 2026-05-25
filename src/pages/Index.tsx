@@ -43,15 +43,14 @@ const Dashboard = () => {
 
 
   return (
-    <div className="layout-stack pb-16 animate-in fade-in duration-1000">
+    <div className="layout-stack pb-layout-gap-xl animate-in fade-in duration-1000">
       <PageHeader
         icon={Home}
         title={`Bem-vindo, ${user?.name?.split(' ')[0] || 'Administrador'}`}
         description="Acompanhe a saúde operacional, o progresso das obras e os indicadores de performance da sua incorporadora."
         className="mb-layout-gap-lg"
       >
-
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-component-gap-md">
           <Button 
             variant="outline" 
             size="icon" 
@@ -102,21 +101,21 @@ const Dashboard = () => {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
-              <div className="p-8 bg-gradient-to-br from-red-500/[0.04] to-transparent border border-red-500/10 rounded-[2.5rem] transition-all hover:bg-red-500/[0.06] hover:border-red-500/20 group/nc">
-                <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <div className="p-card-padding-lg bg-gradient-to-br from-red-500/[0.04] to-transparent border border-red-500/10 rounded-[2.5rem] transition-all hover:bg-red-500/[0.06] hover:border-red-500/20 group/nc">
+                <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-component-gap-md flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   NCs Estruturais
                 </p>
                 <p className="text-5xl font-black text-red-700 tracking-tighter group-hover/nc:scale-110 transition-transform origin-left">0</p>
-                <p className="text-[11px] text-red-600/60 font-semibold mt-4">Nenhuma patologia de alto risco detectada no ciclo atual</p>
+                <p className="text-[11px] text-red-600/60 font-semibold mt-card-gap">Nenhuma patologia de alto risco detectada no ciclo atual</p>
               </div>
-              <div className="p-8 bg-gradient-to-br from-amber-500/[0.04] to-transparent border border-amber-500/10 rounded-[2.5rem] transition-all hover:bg-amber-500/[0.06] hover:border-amber-500/20 group/nc">
-                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <div className="p-card-padding-lg bg-gradient-to-br from-amber-500/[0.04] to-transparent border border-amber-500/10 rounded-[2.5rem] transition-all hover:bg-amber-500/[0.06] hover:border-amber-500/20 group/nc">
+                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-component-gap-md flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                   NCs de Acabamento
                 </p>
                 <p className="text-5xl font-black text-amber-700 tracking-tighter group-hover/nc:scale-110 transition-transform origin-left">14</p>
-                <p className="text-[11px] text-amber-600/60 font-semibold mt-4">8 em processo de homologação e correção imediata</p>
+                <p className="text-[11px] text-amber-600/60 font-semibold mt-card-gap">8 em processo de homologação e correção imediata</p>
               </div>
 
 
