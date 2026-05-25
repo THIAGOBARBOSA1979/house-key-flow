@@ -104,9 +104,9 @@
     --space-32: 8rem;       /* 128px */
 
     /* --- Layout Tokens --- */
-    --layout-gap: var(--space-6);
-    --layout-gap-lg: var(--space-10);
-    --layout-gap-xl: var(--space-12);
+    --layout-gap: var(--space-4);
+    --layout-gap-lg: var(--space-6);
+    --layout-gap-xl: var(--space-8);
     --section-gap: var(--space-12);
     --container-max-width: 80rem; /* 1280px */
     --container-max-width-xl: 90rem; /* 1440px */
@@ -312,7 +312,7 @@
 @layer components {
   /* Layout Containers */
   .container-responsive {
-    @apply w-full max-w-container mx-auto px-content-padding lg:px-content-padding-lg;
+    @apply w-full max-w-container mx-auto px-content-padding;
   }
 
   .grid-layout {
