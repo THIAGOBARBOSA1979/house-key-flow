@@ -66,11 +66,12 @@ function DataTableComponent<T>({
 
   return (
     <div className={cn("w-full animate-fade-in group/table-container", className)}>
-      <div className="hidden lg:block rounded-2xl border border-border/50 shadow-sem-sm bg-card/40 backdrop-blur-sm overflow-hidden relative">
+      <div className="hidden lg:block rounded-[2rem] border border-border/10 shadow-sem-md bg-white/40 backdrop-blur-3xl overflow-hidden relative transition-all duration-500 hover:shadow-sem-xl hover:border-border/20">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
           <Table className="min-w-[800px] lg:min-w-full">
-          <TableHeader className="bg-muted/10">
-            <TableRow className="hover:bg-transparent border-b-border/40">
+          <TableHeader className="bg-muted/5 transition-colors group-hover/table-container:bg-muted/10">
+            <TableRow className="hover:bg-transparent border-b-border/10">
+
               {columns.map((column, idx) => (
                 <TableHead 
                   key={idx} 
