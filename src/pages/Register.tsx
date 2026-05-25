@@ -15,8 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Supabase } from "@/integrations/supabase";
+import { companyService } from "@/services";
+
 
 const registerSchema = z.object({
   companyName: z.string().min(3, "Nome da empresa deve ter pelo menos 3 caracteres"),
@@ -52,13 +54,13 @@ export default function Register() {
     try {
       const slug = values.companyName.toLowerCase().replace(/[^a-z0-9]/g, '-');
       
-      // 1. Criar empresa
-      const { data: company, error: companyError } = await Supabase
+      // 1. Criar empresa usando Supabase direto ou Service
+      const { data: company, error: companyError } = await Supabase.db
         .from('companies')
         .insert({
           name: values.companyName,
           slug: slug,
-          status: 'active'
+          status: 'active' as any
         })
         .select()
         .single();
@@ -78,15 +80,17 @@ export default function Register() {
         }
       });
 
+
       if (authError) throw authError;
 
       // 3. Atualizar owner da empresa
       if (authData.user) {
-        await Supabase
+        await Supabase.db
           .from('companies')
           .update({ owner_id: authData.user.id })
           .eq('id', company.id);
       }
+
 
       toast({
         title: "Conta criada com sucesso!",

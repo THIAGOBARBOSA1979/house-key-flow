@@ -6,6 +6,7 @@ export * from './identity/CompanyService';
 export * from './identity/UserService';
 export * from './identity/SystemSecurityService';
 export * from './identity/SystemSettingsService';
+export * from './identity/PlanService';
 
 // Operations Domain
 export * from './operations/PropertyService';
