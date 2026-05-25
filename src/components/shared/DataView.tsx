@@ -138,7 +138,7 @@ function DataViewComponent<T>({
           title={emptyState?.title || t('common.empty_title', 'Repositório Digital Vazio')}
           description={emptyState?.description || t('common.empty_description', 'Nenhum protocolo ou registro estratégico foi localizado nesta coordenada.')}
           icon={emptyState?.icon || Ghost}
-          action={emptyState?.action ? <Button onClick={emptyState.action.onClick} variant="outline" className="rounded-xl font-bold uppercase tracking-widest text-[10px]">{emptyState.action.label}</Button> : undefined}
+          action={emptyState?.action ? <Button onClick={emptyState.action.onClick} variant="outline" className="rounded-xl font-black uppercase tracking-[0.2em] text-[10px]">{emptyState.action.label}</Button> : undefined}
 
         />
       </div>
@@ -157,7 +157,7 @@ function DataViewComponent<T>({
               <React.Fragment key={index}>
                 {renderGrid ? renderGrid(item) : (
                   <div className="p-4 card-standard flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
                       <LayoutGrid size={20} />
                     </div>
                     <div>
@@ -183,7 +183,7 @@ function DataViewComponent<T>({
                   <div className="w-0.5 flex-1 bg-border" />
                 </div>
                 <div className="pb-8 flex-1">
-                  <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">
+                  <p className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.3em]">
                     {(item as any)?.date ? new Date((item as any).date).toLocaleDateString('pt-BR') : 'Sem data'}
                   </p>
                   <div className="mt-2 p-4 card-standard">
@@ -213,7 +213,7 @@ function DataViewComponent<T>({
         return (
           <div className="animate-fade-in border rounded-xl overflow-hidden">
              <table className="w-full text-sm text-left">
-               <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] font-black">
+               <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] font-black tracking-[0.25em]">
                  <tr><th className="p-4">Registro</th><th className="p-4">Detalhes</th></tr>
                </thead>
                <tbody>
@@ -293,7 +293,7 @@ function DataViewComponent<T>({
                       variant={effectivePage === page ? "default" : "ghost"}
                       size="sm"
                       className={cn(
-                        "h-9 w-9 rounded-lg text-xs font-bold transition-all shrink-0",
+                        "h-10 w-10 rounded-xl text-xs font-black uppercase tracking-tighter transition-all shrink-0",
                         effectivePage === page 
                           ? "shadow-sm bg-primary text-primary-foreground" 
                           : "text-muted-foreground/60 hover:bg-primary/5 hover:text-primary"

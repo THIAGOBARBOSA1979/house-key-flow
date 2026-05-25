@@ -40,8 +40,8 @@ const Index = () => {
           
           <section className="animate-in fade-in slide-up duration-slow delay-100 p-card-padding-lg bg-card/60 backdrop-blur-xl rounded-card border border-border/40 shadow-sem-md hover:shadow-sem-lg transition-all duration-500">
             <div className="flex items-center justify-between mb-layout-gap">
-              <h2 className="text-xl md:text-h4 flex items-center gap-3 font-black uppercase tracking-tighter">
-                <Layers className="text-primary h-6 w-6" />
+              <h2 className="text-xl md:text-h4 flex items-center gap-4 font-black uppercase tracking-tighter group/title">
+                <Layers className="text-primary h-7 w-7 group-hover/title:rotate-12 transition-transform duration-slow" strokeWidth={2.5} />
                 Matriz de Não Conformidades (NCs)
               </h2>
             </div>

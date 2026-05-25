@@ -147,7 +147,7 @@ export const AuditProgressOverlay: React.FC = () => {
       
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-black text-white p-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group"
+        className="bg-primary text-white p-4 lg:p-5 rounded-3xl shadow-sem-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 group border border-white/20 shadow-primary/20"
       >
         <div className="relative">
           <Activity size={20} className="group-hover:text-primary transition-colors" />
@@ -155,7 +155,7 @@ export const AuditProgressOverlay: React.FC = () => {
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-ping" />
           )}
         </div>
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] pr-2">
+        <span className="text-[10px] font-black uppercase tracking-[0.25em] pr-2">
           {percentage}% Concluído
         </span>
       </button>

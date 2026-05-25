@@ -152,10 +152,10 @@
 
     /* --- Typography Tokens (Fluid with clamp) --- */
     --font-display: clamp(2.25rem, 6vw + 1rem, 5rem);
-    --font-h1: clamp(1.75rem, 4vw + 1rem, 3.25rem);
-    --font-h2: clamp(1.5rem, 3vw + 1rem, 2.5rem);
-    --font-h3: clamp(1.25rem, 2vw + 0.75rem, 2rem);
-    --font-h4: clamp(1.125rem, 1.5vw + 0.5rem, 1.5rem);
+    --font-h1: clamp(2rem, 5vw + 1rem, 3.5rem);
+    --font-h2: clamp(1.75rem, 4vw + 1rem, 2.75rem);
+    --font-h3: clamp(1.5rem, 3vw + 1rem, 2.25rem);
+    --font-h4: clamp(1.25rem, 2vw + 0.5rem, 1.75rem);
     --font-body-lg: clamp(1.125rem, 0.5vw + 0.75rem, 1.25rem);
     --font-body-base: clamp(1rem, 0.25vw + 0.75rem, 1.125rem);
     --font-body-sm: clamp(0.875rem, 0.15vw + 0.75rem, 1rem);
@@ -396,14 +396,14 @@
   .text-display { @apply text-sem-display text-foreground font-black tracking-tighter; }
   .text-h1 { @apply text-sem-h1 text-foreground font-black tracking-tight; }
   .text-h2 { @apply text-sem-h2 text-foreground font-bold tracking-tight; }
-  .text-h3 { @apply text-sem-h3 text-foreground font-bold; }
-  .text-h4 { @apply text-sem-h4 text-foreground font-semibold; }
-  .text-body-lg { @apply text-sem-body-lg text-foreground/90 leading-relaxed; }
-  .text-body-base { @apply text-sem-body-base text-foreground/80 leading-normal; }
-  .text-body-sm { @apply text-sem-body-sm text-muted-foreground leading-snug; }
-  .text-label { @apply text-sem-label font-bold text-foreground uppercase tracking-wider; }
-  .text-caption { @apply text-sem-caption text-muted-foreground font-black uppercase tracking-widest text-[10px]; }
-  .text-tiny { @apply text-sem-tiny text-muted-foreground/60 font-black uppercase tracking-widest text-[8px]; }
+  .text-h3 { @apply text-sem-h3 text-foreground font-bold tracking-tight; }
+  .text-h4 { @apply text-sem-h4 text-foreground font-semibold tracking-tight; }
+  .text-body-lg { @apply text-sem-body-lg text-foreground/90 leading-relaxed font-medium; }
+  .text-body-base { @apply text-sem-body-base text-foreground/80 leading-normal font-medium; }
+  .text-body-sm { @apply text-sem-body-sm text-muted-foreground leading-snug font-medium; }
+  .text-label { @apply text-sem-label font-black text-foreground uppercase tracking-widest text-[11px]; }
+  .text-caption { @apply text-sem-caption text-muted-foreground font-black uppercase tracking-[0.2em] text-[10px]; }
+  .text-tiny { @apply text-sem-tiny text-muted-foreground/60 font-black uppercase tracking-[0.2em] text-[8px]; }
 
   /* Animations */
   .animate-fade-in {

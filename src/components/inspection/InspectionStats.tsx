@@ -19,27 +19,27 @@ export const InspectionStats = memo(({ stats }: InspectionStatsProps) => {
     : 100;
 
   return (
-    <ResponsiveGrid columns={4} gap="layout">
+    <ResponsiveGrid columns={4} gap="layout" className="mb-layout-gap-xl">
       <StatsCard
         label="Vistorias em Aberto"
         value={stats.pending}
         icon={Clock}
         variant="progress"
-        className="rounded-3xl border-none shadow-sem-sm bg-amber-500/5"
+        className="rounded-[2rem] border-none shadow-sem-md bg-amber-500/5 hover:bg-amber-500/10 transition-all duration-500"
       />
       <StatsCard
         label="Vistorias Finalizadas"
         value={stats.complete}
         icon={CheckCircle}
         variant="complete"
-        className="rounded-3xl border-none shadow-sem-sm bg-emerald-500/5"
+        className="rounded-[2rem] border-none shadow-sem-md bg-emerald-500/5 hover:bg-emerald-500/10 transition-all duration-500"
       />
       <StatsCard
         label="Índice de Conformidade"
         value={`${complianceRate}%`}
         icon={TrendingUp}
         variant="brand"
-        className="rounded-3xl border-none shadow-sem-sm bg-primary/5"
+        className="rounded-[2rem] border-none shadow-sem-md bg-primary/5 hover:bg-primary/10 transition-all duration-500"
         description="Adesão técnica ABNT"
       />
       <StatsCard
@@ -47,7 +47,7 @@ export const InspectionStats = memo(({ stats }: InspectionStatsProps) => {
         value={stats.delayed}
         icon={AlertTriangle}
         variant="default"
-        className={stats.delayed > 0 ? "rounded-3xl border-none shadow-sem-sm bg-red-500/5 text-red-600" : "rounded-3xl border-none shadow-sem-sm bg-muted/20 opacity-60"}
+        className={stats.delayed > 0 ? "rounded-[2rem] border-none shadow-sem-md bg-red-500/5 text-red-600 hover:bg-red-500/10 transition-all duration-500" : "rounded-[2rem] border-none shadow-sem-md bg-muted/20 opacity-60 hover:opacity-100 transition-all duration-500"}
       />
     </ResponsiveGrid>
   );

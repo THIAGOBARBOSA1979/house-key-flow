@@ -22,14 +22,14 @@ export function UserMenu({ companyName, onOpenShortcuts }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-10 lg:h-12 rounded-2xl gap-2 lg:gap-3 pl-1.5 lg:pl-2 pr-2 lg:pr-4 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10">
-          <div className="w-7 h-7 lg:w-9 lg:h-9 rounded-lg lg:rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center font-black text-[10px] lg:text-xs uppercase group-hover:scale-105 transition-all shrink-0">
+        <Button variant="ghost" className="h-11 lg:h-13 rounded-2xl gap-3 lg:gap-4 pl-2 lg:pl-2.5 pr-3 lg:pr-5 hover:bg-primary/5 group active:scale-95 transition-all border border-transparent hover:border-primary/10 shadow-sem-sm">
+          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 text-primary flex items-center justify-center font-black text-xs lg:text-sm uppercase group-hover:rotate-6 transition-all shrink-0 border border-primary/20 shadow-inner">
             {user?.name?.charAt(0) || "U"}
           </div>
-          <div className="hidden sm:flex flex-col items-start leading-tight gap-0">
-            <span className="text-sem-label font-black truncate max-w-[100px] lg:max-w-[140px] tracking-tight">{user?.name}</span>
-            <span className="text-[8px] md:text-[9px] text-muted-foreground/40 uppercase font-black tracking-widest">
-              {user?.is_super_admin ? "SaaS Master Admin" : (companyName || "Administrador")}
+          <div className="hidden sm:flex flex-col items-start leading-tight gap-0.5">
+            <span className="text-sem-label font-black truncate max-w-[100px] lg:max-w-[140px] tracking-tight group-hover:text-primary transition-colors">{user?.name}</span>
+            <span className="text-[9px] text-muted-foreground/30 uppercase font-black tracking-[0.2em]">
+              {user?.is_super_admin ? "SaaS Master" : (companyName || "Administrador")}
             </span>
           </div>
         </Button>
