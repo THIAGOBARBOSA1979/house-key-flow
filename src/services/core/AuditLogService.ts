@@ -60,6 +60,8 @@ export interface AuditLogEntry {
   location?: any;
   event_hash?: string;
   is_system_event?: boolean;
+  ip_address?: string;
+  user_agent?: string;
 }
 
 class AuditLogService extends SupabaseBaseService<any> {
