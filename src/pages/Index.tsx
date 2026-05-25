@@ -32,7 +32,7 @@ const Index = () => {
     <DashboardLayout>
       <PageHeader 
         title="Painel Estratégico" 
-        description="Gestão de Ativos & Conformidade Técnica"
+        description="Gestão de Ativos & Governança Operacional"
         icon={LayoutGrid}
       />
       
