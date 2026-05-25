@@ -101,9 +101,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         </header>
         
         <main 
-          className="flex-1 p-[var(--content-padding)] transition-all duration-slow overflow-x-hidden w-full"
+          className="flex-1 p-6 lg:p-12 transition-all duration-slow overflow-x-hidden w-full bg-gradient-to-br from-indigo-50/20 via-background to-brand/[0.02] dark:from-background dark:to-background"
         >
-          <div className="container-responsive">
+          <div className="container-responsive max-w-7xl mx-auto min-h-[calc(100vh-20rem)]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
@@ -118,22 +118,36 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </div>
         </main>
 
+
         <footer 
-          className="py-12 px-10 border-t border-border/10 text-center transition-all duration-slow bg-muted/[0.02] backdrop-blur-sm"
+          className="mt-12 py-12 px-10 border-t border-border/5 transition-all duration-slow"
         >
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 max-w-7xl mx-auto">
-            <div className="flex flex-col lg:items-start items-center gap-2">
-              <p className="text-[10px] uppercase font-black tracking-[0.3em] text-muted-foreground/30">
-                A2 Gestão de Propriedades • Enterprise Suite 2026
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 max-w-7xl mx-auto">
+            <div className="space-y-3 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-3 opacity-60">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-xs">
+                  A2
+                </div>
+                <span className="font-black tracking-tighter text-foreground text-lg italic">A2 Incorporadora</span>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 leading-relaxed">
+                © {new Date().getFullYear()} A2 Gestão de Portfólio Estratégico.<br />
+                Tecnologia de Alta Performance para o Setor Imobiliário.
               </p>
-              <p className="text-[9px] font-bold text-muted-foreground/20 uppercase tracking-widest">Tecnologia para Incorporadoras de Alta Performance</p>
             </div>
-            <div className="flex items-center gap-6">
-              <span className="text-[9px] font-black text-primary/30 uppercase tracking-widest">Versão 3.1.2 STABLE</span>
-              <div className="h-1.5 w-1.5 rounded-full bg-primary/20" />
+            
+            <div className="flex items-center gap-10">
+              <div className="text-right hidden sm:block">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/20 mb-1">Status do Ecossistema</p>
+                <div className="flex items-center gap-2 justify-end">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600/60">Operacional</span>
+                </div>
+              </div>
             </div>
           </div>
         </footer>
+
 
 
       </div>
