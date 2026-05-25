@@ -126,8 +126,9 @@ const Settings = () => {
         </TabsContent>
 
         <TabsContent value="security">
-          <SecurityTab onSave={saveSystemSettings} />
+          <SecurityTab onSave={async () => saveSystemSettings()} />
         </TabsContent>
+
 
         <TabsContent value="integrations">
           <WebhooksConfig />
