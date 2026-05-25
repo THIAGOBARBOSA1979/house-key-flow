@@ -92,13 +92,14 @@ export default function SaaSAdmin() {
     },
     { 
       header: "Plano", 
-      accessorKey: "subscription_plan",
+      accessorKey: "plan_id",
       cell: (c: Company) => (
         <Badge variant="outline" className="capitalize">
           <CreditCard className="w-3 h-3 mr-1" />
-          {c.subscription_plan}
+          {c.plan_id || 'Free'}
         </Badge>
       )
+
     },
     { 
       header: "Status", 

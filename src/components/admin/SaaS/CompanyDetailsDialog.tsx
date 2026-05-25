@@ -117,20 +117,21 @@ export const CompanyDetailsDialog: React.FC<CompanyDetailsDialogProps> = ({
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Plano de Assinatura</Label>
                 <Select 
-                  value={editData.subscription_plan} 
-                  onValueChange={v => setEditData({...editData, subscription_plan: v as SubscriptionPlan})}
+                  value={editData.plan_id || ''} 
+                  onValueChange={v => setEditData({...editData, plan_id: v})}
                 >
                   <SelectTrigger className="h-11 rounded-xl">
-                    <SelectValue />
+                    <SelectValue placeholder="Selecione um plano" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="free">Free</SelectItem>
-                    <SelectItem value="basic">Basic</SelectItem>
-                    <SelectItem value="pro">Pro</SelectItem>
+                    <SelectItem value="trial">Trial (Cortesia)</SelectItem>
+                    <SelectItem value="essencial">Essencial</SelectItem>
+                    <SelectItem value="profissional">Profissional</SelectItem>
                     <SelectItem value="enterprise">Enterprise</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
               <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">E-mail de Suporte</Label>
                 <Input 
@@ -166,9 +167,10 @@ export const CompanyDetailsDialog: React.FC<CompanyDetailsDialogProps> = ({
                   <CreditCard className="w-3 h-3" /> Plano
                 </p>
                 <Badge variant="outline" className="font-black uppercase text-[10px]">
-                  {selectedCompany?.subscription_plan}
+                  {selectedCompany?.plan_id || 'Free'}
                 </Badge>
               </div>
+
               <div className="p-4 bg-muted/30 rounded-2xl border border-border/50">
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3" /> Status
@@ -302,7 +304,7 @@ export const CompanyDetailsDialog: React.FC<CompanyDetailsDialogProps> = ({
                     <Label className="text-[10px] font-bold uppercase">Nova Data de Expiração</Label>
                     <Input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} className="h-11 rounded-xl" />
                   </div>
-                  <Button className="h-11 rounded-xl font-black uppercase tracking-widest text-xs" onClick={() => onUpdateSub(selectedCompany.subscription_plan, expiryDate)}>
+                  <Button className="h-11 rounded-xl font-black uppercase tracking-widest text-xs" onClick={() => onUpdateSub(selectedCompany.plan_id as any, expiryDate)}>
                     Confirmar Nova Data
                   </Button>
                 </div>
