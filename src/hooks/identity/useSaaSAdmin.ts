@@ -12,7 +12,7 @@ export const useSaaSAdmin = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<Partial<Company>>({});
-  const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'basic' as SubscriptionPlan });
+  const [newCompany, setNewCompany] = useState({ name: '', slug: '', plan: 'trial' as SubscriptionPlan });
   const [isUpdatingSub, setIsUpdatingSub] = useState(false);
   const [expiryDate, setExpiryDate] = useState<string>('');
   const [slugError, setSlugError] = useState<string | null>(null);
@@ -68,7 +68,7 @@ export const useSaaSAdmin = () => {
       });
       refreshCompanies();
       setIsAddOpen(false);
-      setNewCompany({ name: '', slug: '', plan: 'basic' });
+      setNewCompany({ name: '', slug: '', plan: 'trial' });
       toast({ title: "Empresa cadastrada" });
     } finally {
       setIsSaving(false);

@@ -68,10 +68,11 @@ export const AddCompanyDialog: React.FC<AddCompanyDialogProps> = ({
                 <SelectValue placeholder="Selecione o plano" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="free">Free (Gratuito)</SelectItem>
-                <SelectItem value="basic">Basic (Essencial)</SelectItem>
-                <SelectItem value="pro">Pro (Profissional)</SelectItem>
-                <SelectItem value="enterprise">Enterprise (Corporativo)</SelectItem>
+                <SelectItem value="trial">Trial (Grátis 14 dias)</SelectItem>
+                <SelectItem value="essencial">Essencial</SelectItem>
+                <SelectItem value="profissional">Profissional</SelectItem>
+                <SelectItem value="enterprise">Enterprise</SelectItem>
+
               </SelectContent>
             </Select>
           </div>

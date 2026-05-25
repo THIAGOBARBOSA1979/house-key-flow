@@ -22,15 +22,14 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const eventTypes = [
+  { id: "ticket_created", name: "Novo protocolo de garantia aberto" },
+  { id: "message_received", name: "Nova mensagem de cliente recebida" },
+  { id: "ticket_status_updated", name: "Atualização de status do protocolo" },
+  { id: "ia_response_generated", name: "Resposta de IA orquestrada" },
   { id: "property_created", name: "Criação de novo empreendimento" },
-  { id: "warranty_created", name: "Nova solicitação de garantia registrada" },
-  { id: "client_created", name: "Novo cliente cadastrado" },
-  { id: "inspection_scheduled", name: "Vistoria agendada" },
-  { id: "inspection_completed", name: "Vistoria concluída" },
-  { id: "warranty_status_updated", name: "Atualização de status de garantia" },
-  { id: "warranty_in_progress", name: "Garantia em atendimento" },
-  { id: "warranty_completed", name: "Garantia concluída" },
+  { id: "inspection_completed", name: "Vistoria técnica concluída" },
 ];
+
 
 const httpMethods = ["POST", "PUT"];
 

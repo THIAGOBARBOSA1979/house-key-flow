@@ -7,7 +7,7 @@ import { CompanySettings } from "@/services";
 interface CompanyTabProps {
   companySettings: CompanySettings;
   setCompanySettings: (settings: CompanySettings) => void;
-  onSave: () => void;
+  onSave: () => Promise<void>;
 }
 
 export const CompanyTab = ({ companySettings, setCompanySettings, onSave }: CompanyTabProps) => (

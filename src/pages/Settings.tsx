@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook, FileText, Activity, Layers, CreditCard } from "lucide-react";
+import { Settings as SettingsIcon, Building, Bell, ShieldCheck, User, Lock, Webhook, FileText, Activity, Layers, CreditCard, MessageSquare } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import WebhooksConfig from "@/components/settings/WebhooksConfig";
 import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
@@ -12,6 +12,8 @@ import { NotificationsTab } from "@/components/settings/NotificationsTab";
 import { SecurityTab } from "@/components/settings/SecurityTab";
 import { WarrantyTab } from "@/components/settings/WarrantyTab";
 import { SubscriptionTab } from "@/components/settings/SubscriptionTab";
+import { WhatsAppConfigTab } from "@/components/settings/WhatsAppConfigTab";
+
 
 
 
@@ -65,12 +67,16 @@ const Settings = () => {
             <TabsTrigger value="integrations" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
               <Webhook size={14} /> Integrações
             </TabsTrigger>
+            <TabsTrigger value="whatsapp" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
+              <MessageSquare size={14} /> WhatsApp
+            </TabsTrigger>
             <TabsTrigger value="subscription" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
               <CreditCard size={14} /> Assinatura
             </TabsTrigger>
             <TabsTrigger value="audit" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
               <Activity size={14} /> Auditoria
             </TabsTrigger>
+
 
           </TabsList>
         </div>
@@ -79,7 +85,8 @@ const Settings = () => {
           <GeneralTab 
             settings={settings} 
             updateSection={updateSection} 
-            onSave={saveSystemSettings} 
+            onSave={async () => saveSystemSettings()} 
+
           />
         </TabsContent>
 
@@ -88,7 +95,8 @@ const Settings = () => {
             <CompanyTab 
               companySettings={companySettings} 
               setCompanySettings={setCompanySettings} 
-              onSave={saveCompanySettings} 
+              onSave={async () => saveCompanySettings()} 
+
             />
           </TabsContent>
         )}
@@ -97,7 +105,8 @@ const Settings = () => {
           <BrandingTab 
             settings={settings} 
             updateSection={updateSection} 
-            onSave={saveSystemSettings} 
+            onSave={async () => saveSystemSettings()} 
+
           />
         </TabsContent>
 
@@ -112,21 +121,28 @@ const Settings = () => {
           <WarrantyTab 
             settings={settings} 
             updateSection={updateSection} 
-            onSave={saveSystemSettings} 
+            onSave={async () => saveSystemSettings()} 
+
           />
         </TabsContent>
 
         <TabsContent value="security">
-          <SecurityTab onSave={saveSystemSettings} />
+          <SecurityTab onSave={async () => saveSystemSettings()} />
         </TabsContent>
+
 
         <TabsContent value="integrations">
           <WebhooksConfig />
         </TabsContent>
 
+        <TabsContent value="whatsapp">
+          <WhatsAppConfigTab />
+        </TabsContent>
+
         <TabsContent value="subscription">
           <SubscriptionTab />
         </TabsContent>
+
 
         <TabsContent value="audit">
 

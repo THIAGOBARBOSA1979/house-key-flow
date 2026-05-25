@@ -1,74 +1,89 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { SystemSettings } from "@/services";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Save, Globe, Shield } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface GeneralTabProps {
-  settings: SystemSettings;
-  updateSection: (section: keyof SystemSettings, data: any) => void;
-  onSave: () => void;
+  settings: any;
+  updateSection: (section: string, data: any) => void;
+  onSave: () => Promise<void>;
 }
 
-export const GeneralTab = ({ settings, updateSection, onSave }: GeneralTabProps) => (
-  <Card className="card-standard border-none bg-card/50 backdrop-blur-sm">
-    <CardHeader>
-      <CardTitle>Informações da Empresa</CardTitle>
-      <CardDescription>Dados básicos que aparecem em documentos e relatórios gerados pelo sistema.</CardDescription>
-    </CardHeader>
-    <CardContent className="space-y-4">
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="company-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome da Empresa</Label>
-          <Input 
-            id="company-name" 
-            value={settings.company.name} 
-            className="h-11 rounded-xl"
-            onChange={e => updateSection('company', { name: e.target.value })}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="company-cnpj" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">CNPJ</Label>
-          <Input 
-            id="company-cnpj" 
-            value={settings.company.cnpj} 
-            className="h-11 rounded-xl"
-            onChange={e => updateSection('company', { cnpj: e.target.value })}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="company-email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">E-mail de Contato</Label>
-          <Input 
-            id="company-email" 
-            type="email" 
-            value={settings.company.email} 
-            className="h-11 rounded-xl"
-            onChange={e => updateSection('company', { email: e.target.value })}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="company-phone" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Telefone</Label>
-          <Input 
-            id="company-phone" 
-            value={settings.company.phone} 
-            className="h-11 rounded-xl"
-            onChange={e => updateSection('company', { phone: e.target.value })}
-          />
-        </div>
+export const GeneralTab: React.FC<GeneralTabProps> = ({ settings, updateSection, onSave }) => {
+  const { toast } = useToast();
+
+  const handleSave = async () => {
+    await onSave();
+    toast({ title: "Configurações salvas", description: "As preferências globais foram atualizadas." });
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500 focus-visible:outline-none">
+      <Card className="border-border/10 shadow-sem-lg rounded-3xl overflow-hidden">
+        <CardHeader className="bg-muted/30 border-b">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+              <Globe size={24} />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-black uppercase tracking-tight">Regionalização e Idioma</CardTitle>
+              <CardDescription>Configure o fuso horário e a localização padrão do sistema.</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Idioma do Painel</Label>
+              <Input value="Português (Brasil)" disabled className="h-11 rounded-xl bg-muted/50" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Fuso Horário</Label>
+              <Input value="GMT-3 (Brasília)" disabled className="h-11 rounded-xl bg-muted/50" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/10 shadow-sem-lg rounded-3xl overflow-hidden focus-visible:outline-none">
+        <CardHeader className="bg-muted/30 border-b">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+              <Shield size={24} />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-black uppercase tracking-tight">Privacidade e Dados</CardTitle>
+              <CardDescription>Gerencie como as informações são tratadas na plataforma.</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-6 focus-visible:outline-none">
+          <div className="flex items-center justify-between p-4 bg-muted/20 rounded-2xl border border-border/5">
+            <div className="space-y-0.5">
+              <Label className="font-bold">Anonimizar logs de auditoria antigos</Label>
+              <p className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground">Logs com mais de 12 meses serão anonimizados</p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+          <div className="flex items-center justify-between p-4 bg-muted/20 rounded-2xl border border-border/5">
+            <div className="space-y-0.5">
+              <Label className="font-bold">Compartilhar dados técnicos com matriz</Label>
+              <p className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground">Permite análise de tendências de engenharia</p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end pt-4 focus-visible:outline-none">
+        <Button onClick={handleSave} className="h-12 px-10 rounded-2xl font-black uppercase tracking-widest text-[11px] gap-2 shadow-lg shadow-primary/20">
+          <Save size={16} /> Salvar Preferências
+        </Button>
       </div>
-      <div className="space-y-2 pt-2">
-        <Label htmlFor="company-address" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Endereço Administrativo</Label>
-        <Input 
-          id="company-address" 
-          value={settings.company.address} 
-          className="h-11 rounded-xl"
-          onChange={e => updateSection('company', { address: e.target.value })}
-        />
-      </div>
-    </CardContent>
-    <CardFooter className="flex justify-end gap-3 pt-6 border-t border-border/10 bg-muted/5">
-      <Button variant="outline" className="h-11 px-6 rounded-xl font-bold">Descartar</Button>
-      <Button onClick={onSave} className="h-11 px-8 rounded-xl font-black uppercase tracking-widest text-xs bg-primary hover:bg-primary/90 shadow-sem-md">Salvar Alterações</Button>
-    </CardFooter>
-  </Card>
-);
+    </div>
+  );
+};
