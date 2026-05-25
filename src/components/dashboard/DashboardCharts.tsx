@@ -130,7 +130,7 @@ export const DashboardCharts = memo(({
       </Card>
 
       <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden lg:col-span-1 rounded-[2rem] shadow-sem-sm">
-        <CardHeader className="pb-4 border-b border-border/10">
+        <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Fluxo por Ciclo Técnico</CardTitle>
         </CardHeader>
         <CardContent className="pt-layout-gap">
