@@ -22,9 +22,9 @@ export const RecentTickets = ({ tickets }: RecentTicketsProps) => {
           variant="ghost" 
           size="sm" 
           className="gap-1 font-bold text-primary" 
-          onClick={() => navigate("/admin/support")}
+          onClick={() => navigate("/admin/inbox")}
         >
-          Ver todos
+          Ver Inbox
           <ChevronRight size={16} />
         </Button>
       </div>
@@ -34,25 +34,25 @@ export const RecentTickets = ({ tickets }: RecentTicketsProps) => {
             <div 
               key={ticket.id} 
               className="card-standard p-5 interactive-active border-none bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-primary/30 rounded-2xl shadow-sem-sm transition-all" 
-              onClick={() => navigate("/admin/support")}
+              onClick={() => navigate("/admin/inbox")}
             >
               <div className="flex justify-between items-start mb-3">
                 <StatusBadge 
-                  status={ticket.status === 'pending' ? 'pending' : 'progress'} 
-                  label={ticket.status === 'pending' ? 'Aguardando' : 'Em Atendimento'}
+                  status={ticket.status === 'open' ? 'pending' : 'progress'} 
+                  label={ticket.status}
                   size="sm"
                 />
-                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest bg-muted/30 px-2 py-0.5 rounded-lg">#{ticket.id.substring(0, 8)}</span>
+                <span className="text-[10px] font-black text-brand uppercase tracking-widest bg-muted/30 px-2 py-0.5 rounded-lg">{ticket.protocol}</span>
               </div>
               <h4 className="text-label group-hover:text-primary transition-colors font-black leading-tight">{ticket.subject}</h4>
               <p className="text-[11px] text-muted-foreground mt-2 font-bold uppercase tracking-tighter">
-                {ticket.messages[0]?.senderName} • {ticket.category}
+                {ticket.metadata?.client_name || 'Cliente'}
               </p>
             </div>
           ))
         ) : (
           <div className="text-center py-8 bg-muted/10 rounded-2xl border border-dashed">
-            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Sem atendimentos pendentes</p>
+            <p className="text-xs text-muted-foreground font-black uppercase tracking-widest opacity-40">Sem atendimentos ativos</p>
           </div>
         )}
       </div>
