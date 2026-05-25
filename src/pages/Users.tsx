@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Users as UsersIcon, Plus, Upload, MoreHorizontal, Pencil, Trash2, ShieldCheck, Mail } from "lucide-react";
+import { Users as UsersIcon, Plus, Upload, MoreHorizontal, Pencil, Trash2, ShieldCheck, Mail, Key, ShieldAlert } from "lucide-react";
 import { PageTemplate } from "@/components/layout/PageTemplate";
 import { Button } from "@/components/ui/button";
 import { UserFilters } from "@/components/identity/UserFilters";
@@ -16,11 +16,13 @@ import { UserActionBanner } from "@/components/identity/UserActionBanner";
 import { UserBulkActions } from "@/components/identity/UserBulkActions";
 import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 
 const Users = () => {
@@ -156,12 +158,33 @@ const Users = () => {
               </div>
             )
           },
-          { header: "Perfil", accessorKey: "role", cell: (user: UserType) => (
-            <span className="text-xs font-medium uppercase tracking-wider">{user.role}</span>
-          )},
-          { header: "Status", accessorKey: "status", cell: (user: UserType) => (
-            <StatusBadge status={user.status === 'active' ? 'complete' : 'pending'} size="sm" />
-          )},
+          { 
+            header: "Perfil", 
+            accessorKey: "role", 
+            className: "hidden md:table-cell",
+            cell: (user: UserType) => (
+              <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-primary/20 bg-primary/5 text-primary">
+                {user.role}
+              </Badge>
+            )
+          },
+          { 
+            header: "Último Acesso", 
+            accessorKey: "lastLogin", 
+            className: "hidden lg:table-cell",
+            cell: (user: UserType) => (
+              <span className="text-[10px] font-bold text-muted-foreground uppercase">
+                {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Nunca'}
+              </span>
+            )
+          },
+          { 
+            header: "Status", 
+            accessorKey: "status", 
+            cell: (user: UserType) => (
+              <StatusBadge status={user.status === 'active' ? 'complete' : 'pending'} size="sm" />
+            )
+          },
           {
             header: "Ações",
             accessorKey: "id",
