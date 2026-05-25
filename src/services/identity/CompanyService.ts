@@ -2,7 +2,7 @@ import { BaseService } from "../BaseService";
 import { SupabaseBaseService } from "../SupabaseBaseService";
 
 export type CompanyStatus = 'active' | 'suspended' | 'cancelled' | 'trial' | 'past_due';
-export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise';
+export type SubscriptionPlan = 'trial' | 'essencial' | 'profissional' | 'enterprise' | 'free' | 'basic' | 'pro';
 
 export interface CompanySettings {
   display_name?: string;
