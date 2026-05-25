@@ -5,13 +5,16 @@ import { ActiveProperties } from "@/components/dashboard/ActiveProperties";
 import { ScheduledInspections } from "@/components/dashboard/ScheduledInspections";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { LayoutGrid, Layers } from "lucide-react";
-import { inspectionService, warrantyFlowService } from "@/services";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { LayoutGrid, Layers, Activity, Users, ShieldAlert, History } from "lucide-react";
+import { inspectionService, warrantyFlowService, auditLogService } from "@/services";
 import { cn } from "@/lib/utils";
 
 const Index = () => {
   const [inspections, setInspections] = useState<any[]>([]);
   const [warranties, setWarranties] = useState<any[]>([]);
+  const [recentLogs, setRecentLogs] = useState<any[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -19,6 +22,8 @@ const Index = () => {
       setInspections(inspData);
       const warData = await warrantyFlowService.getAll();
       setWarranties(warData);
+      const logs = auditLogService.getAllLogs().slice(0, 5);
+      setRecentLogs(logs);
     };
     loadData();
   }, []);
@@ -70,10 +75,67 @@ const Index = () => {
               </div>
             </div>
           </section>
+
+          <section className="animate-in fade-in slide-up duration-slow delay-200 p-card-padding-lg bg-card/60 backdrop-blur-xl rounded-card border border-border/40 shadow-sem-md">
+            <div className="flex items-center justify-between mb-layout-gap">
+              <h2 className="text-xl md:text-h4 flex items-center gap-4 font-black uppercase tracking-tighter">
+                <History className="text-primary h-7 w-7" strokeWidth={2.5} />
+                Rastreabilidade de Segurança Recente
+              </h2>
+            </div>
+            <div className="space-y-3">
+              {recentLogs.map((log) => (
+                <div key={log.id} className="flex items-center justify-between p-4 rounded-2xl bg-muted/20 border border-border/5 hover:bg-muted/30 transition-all group">
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-background flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors shadow-sm">
+                      <Activity size={18} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold leading-none mb-1">{log.details}</p>
+                      <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{log.performedByName} • {new Date(log.timestamp).toLocaleTimeString()}</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-[9px] font-black uppercase tracking-tighter opacity-60 group-hover:opacity-100 transition-opacity">
+                    {log.action}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
         
-        <div className="lg:col-span-5 xl:col-span-4">
+        <div className="lg:col-span-5 xl:col-span-4 space-y-layout-gap-lg">
           <DashboardCharts inspections={inspections} warranties={warranties} />
+          
+          <Card className="rounded-card border-none bg-primary/5 dark:bg-primary/10 backdrop-blur-xl overflow-hidden shadow-sem-lg border border-primary/10">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-black tracking-tight flex items-center gap-3">
+                <ShieldAlert className="text-primary h-5 w-5" />
+                Alertas de Governança
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 rounded-2xl bg-status-critical/5 border border-status-critical/10 flex items-start gap-3">
+                <div className="h-8 w-8 rounded-full bg-status-critical/10 flex items-center justify-center text-status-critical shrink-0">
+                  <Activity size={14} />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-black uppercase tracking-widest text-status-critical">Backup Pendente</p>
+                  <p className="text-[11px] text-status-critical/70 font-bold leading-relaxed">Último backup completo realizado há 18 horas. Recomenda-se sincronização manual.</p>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-2xl bg-status-pending/5 border border-status-pending/10 flex items-start gap-3">
+                <div className="h-8 w-8 rounded-full bg-status-pending/10 flex items-center justify-center text-status-pending shrink-0">
+                  <Users size={14} />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-black uppercase tracking-widest text-status-pending">Novos Registros</p>
+                  <p className="text-[11px] text-status-pending/70 font-bold leading-relaxed">4 novos usuários aguardando homologação de acesso no módulo staff.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </DashboardLayout>
