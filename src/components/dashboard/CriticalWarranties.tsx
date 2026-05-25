@@ -13,18 +13,19 @@ export const CriticalWarranties = () => {
 
   return (
     <section>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
-          <ShieldCheck className="text-status-critical h-5 w-5 md:h-6 md:w-6" />
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl md:text-h2 flex items-center gap-2.5 font-black uppercase tracking-tighter">
+          <ShieldCheck className="text-status-critical h-5 w-5" />
           Patologias Críticas
         </h2>
       </div>
+
       <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-slow">
         {criticalClaims.length > 0 ? (
           criticalClaims.map((claim) => (
             <div 
               key={claim.id} 
-              className="card-standard p-5 interactive-active border-none bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-status-critical/30 rounded-2xl shadow-sem-sm transition-all" 
+              className="card-standard p-6 interactive-active border border-border/20 bg-card/30 backdrop-blur-md group hover:ring-2 hover:ring-status-critical/20 rounded-[1.75rem] shadow-sem-sm transition-all" 
               onClick={() => navigate("/admin/warranty")}
             >
               <div className="flex justify-between items-start mb-3">
