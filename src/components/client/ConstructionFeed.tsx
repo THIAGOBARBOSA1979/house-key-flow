@@ -32,12 +32,12 @@ export function ConstructionFeed({ updates }: ConstructionFeedProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
         {updates.length > 0 ? updates.map((update) => (
-          <Card key={update.id} className="overflow-hidden border-none shadow-sem-lg group hover:translate-y-[-6px] transition-all duration-700 rounded-[2.5rem] bg-white hover:shadow-2xl">
+          <Card key={update.id} className="overflow-hidden border-none shadow-sem-lg group hover:translate-y-[-6px] transition-all duration-700 rounded-[2.5rem] bg-white hover:shadow-2xl flex flex-col">
             <div className="aspect-video relative overflow-hidden">
               <img 
                 src={update.imageUrl || "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=800&q=80"} 
                 alt={update.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
               />
               <div className="absolute top-4 left-4">
                 <Badge className="bg-primary/90 backdrop-blur-md border-none font-black px-3 py-1 rounded-xl shadow-lg">

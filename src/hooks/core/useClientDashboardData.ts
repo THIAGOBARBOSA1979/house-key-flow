@@ -57,11 +57,11 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
     isLoading: isLoading || profileLoading,
     error,
 
-    allDocs: data?.allDocs || [],
-    allInspections: data?.allInspections || [],
-    upcomingInspections: data?.allInspections?.filter(i => i.status !== 'complete') || [],
-    warrantyRequests: data?.warrantyRequests || [],
-    constructionUpdates: data?.constructionUpdates || []
+    allDocs: (data?.allDocs || []).sort((a: any, b: any) => b.createdAt.getTime() - a.createdAt.getTime()),
+    allInspections: (data?.allInspections || []).sort((a: any, b: any) => b.createdAt.getTime() - a.createdAt.getTime()),
+    upcomingInspections: (data?.allInspections?.filter((i: any) => i.status !== 'complete') || []).sort((a: any, b: any) => a.date?.getTime() - b.date?.getTime()),
+    warrantyRequests: (data?.warrantyRequests || []).sort((a: any, b: any) => b.createdAt.getTime() - a.createdAt.getTime()),
+    constructionUpdates: (data?.constructionUpdates || []).sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
   };
 };
 

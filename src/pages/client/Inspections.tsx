@@ -169,7 +169,7 @@ export default function ClientInspections() {
 
       </ResponsiveGrid>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap items-start">
         <div className="lg:col-span-4 space-y-layout-gap">
           <ClientTimeline 
             timeline={timelineItems} 

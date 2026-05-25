@@ -80,12 +80,18 @@ const Support = () => {
     <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
+          <div className="flex items-center gap-3 mb-2">
+             <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Suporte ao Proprietário • Central de SLA</span>
+          </div>
           <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-3">
-            <div className="p-2.5 bg-primary/10 rounded-2xl">
-              <LifeBuoy className="h-7 w-7 text-primary" strokeWidth={3} />
-            </div>
-            Central de Garantia e Suporte
+            Garantia & Suporte <span className="text-primary">.</span>
           </h1>
+        </div>
+        <div className="flex items-center gap-4">
+          <Badge className="bg-primary/5 text-primary border-primary/10 font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-xl">
+            SLA de Resposta: 24h
+          </Badge>
         </div>
       </div>
 
@@ -114,7 +120,7 @@ const Support = () => {
                   className="min-h-[150px] rounded-xl resize-none" required 
                 />
               </div>
-              <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px]">
+              <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px] rounded-2xl shadow-lg shadow-primary/10 active:scale-95 transition-all">
                 Abrir Protocolo de Garantia
               </Button>
             </form>
@@ -132,11 +138,11 @@ const Support = () => {
                   {tickets.map((ticket) => (
                     <div key={ticket.id} className="p-6 rounded-[1.5rem] bg-muted/30 hover:bg-primary/5 transition-all border border-transparent hover:border-primary/20 cursor-pointer" onClick={() => setSelectedTicketId(ticket.id)}>
                       <div className="flex items-center justify-between mb-3">
-                         <span className="text-[10px] font-black uppercase tracking-widest text-brand">{ticket.protocol}</span>
-                         <StatusBadge status={ticket.status === 'resolved' ? 'complete' : 'progress'} label={ticket.status} size="sm" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-brand">{ticket.protocol}</span>
+                          <StatusBadge status={ticket.status === 'resolved' ? 'complete' : (ticket.status === 'open' ? 'progress' : 'pending')} label={ticket.status === 'resolved' ? 'Resolvido' : (ticket.status === 'open' ? 'Em Aberto' : 'Em Análise')} size="sm" />
                       </div>
                       <h4 className="font-black text-sm mb-2">{ticket.subject}</h4>
-                      <p className="text-[10px] text-muted-foreground font-bold">Atualizado em: {ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleDateString() : ''}</p>
+                      <p className="text-[10px] text-muted-foreground font-bold">Protocolo gerado em: {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ''}</p>
                     </div>
                   ))}
                 </div>
