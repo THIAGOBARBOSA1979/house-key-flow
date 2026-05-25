@@ -153,11 +153,12 @@ export default function SupportInbox() {
                           </div>
                           <div className="flex items-center gap-2 text-[9px] text-muted-foreground font-black uppercase tracking-widest px-1">
                             {isIA && <Badge variant="outline" className="text-[8px] h-4 bg-purple-500/5 text-purple-600 border-purple-500/20">IA</Badge>}
-                            <span>{msg.createdAt || msg.created_at ? format(new Date(msg.createdAt || msg.created_at || new Date()), 'HH:mm', { locale: ptBR }) : ''}</span>
+                            <span>{format(new Date(msg.createdAt || msg.created_at || new Date()), 'HH:mm', { locale: ptBR })}</span>
                           </div>
                         </div>
                       </div>
                     );
+
 
                   })}
                 </div>
