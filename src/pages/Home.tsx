@@ -44,7 +44,7 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-background to-indigo-50/50 dark:from-background dark:to-background">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/50 via-background to-indigo-50/50 dark:from-background dark:to-background">
       {/* Header */}
       <header className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky transition-all duration-500">
         <div className="container-responsive py-5">
@@ -124,11 +124,12 @@ export default function Home() {
           <div className="grid-layout max-w-4xl mx-auto">
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="w-16 h-16 rounded-2xl bg-brand/10 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <stat.icon className="h-8 w-8 text-brand" />
+                <div className="w-20 h-20 rounded-[2rem] bg-brand/5 border border-brand/10 flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 shadow-sem-md">
+                  <stat.icon className="h-10 w-10 text-brand" strokeWidth={2.5} />
                 </div>
-                <div className="text-4xl font-black mb-2 tracking-tighter">{stat.value}</div>
-                <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{stat.label}</div>
+                <div className="text-5xl font-black mb-2 tracking-tighter text-gradient">{stat.value}</div>
+                <div className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">{stat.label}</div>
+
               </div>
             ))}
           </div>
@@ -151,7 +152,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {benefits.map((benefit, index) => (
-                <Card key={index} className="card-standard p-4-sem hover:shadow-sem-xl hover:-translate-y-3 transition-all duration-700 rounded-[3rem] border-none bg-white/40 dark:bg-white/[0.02] group">
+                <Card key={index} className="card-standard p-4-sem hover:shadow-sem-2xl hover:-translate-y-5 transition-all duration-700 rounded-[3.5rem] border border-border/10 bg-white/50 dark:bg-white/[0.02] group overflow-hidden">
                   <CardContent className="p-10 text-center flex flex-col items-center">
                     <div className="w-20 h-20 rounded-[2rem] bg-gradient-to-br from-primary/10 to-primary/5 dark:to-white/[0.05] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 shadow-sem-sm">
                       <benefit.icon className="h-10 w-10 text-primary" strokeWidth={2.5} />
@@ -179,7 +180,7 @@ export default function Home() {
             </p>
 
             <Link to="/register">
-              <Button size="lg" variant="secondary" className="h-16 px-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-2xl bg-white text-black hover:bg-white/90 border-none">
+              <Button size="lg" variant="secondary" className="h-18 px-16 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl bg-white text-black hover:bg-white/90 border-none hover:-translate-y-2 transition-all">
                 Começar Teste Grátis
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
