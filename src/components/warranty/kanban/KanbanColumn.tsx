@@ -80,7 +80,7 @@ export function KanbanColumn({
   return (
     <div 
       className={cn(
-        "flex flex-col bg-muted/20 rounded-xl border-t-4 min-w-[280px] sm:min-w-[300px] max-w-[340px] shadow-sm select-none touch-none",
+        "flex flex-col bg-card/40 backdrop-blur-md rounded-[2rem] border-t-4 min-w-[300px] sm:min-w-[320px] max-w-[360px] shadow-sem-sm select-none touch-none transition-all duration-300 ring-1 ring-border/5",
         columnColors[config.color] || "border-t-muted"
       )}
       onDragOver={handleDragOver}
@@ -88,7 +88,7 @@ export function KanbanColumn({
       onDrop={handleDrop}
     >
       {/* Header */}
-      <div className="p-3 border-b">
+      <div className="p-5 border-b border-border/5">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-sm">{config.label}</h3>
           <Badge variant="secondary" className="text-xs">
