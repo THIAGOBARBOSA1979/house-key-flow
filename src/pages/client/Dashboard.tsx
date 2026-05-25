@@ -156,8 +156,8 @@ const Dashboard = () => {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch">
-            <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden h-full">
-              <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all">
+            <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden h-full flex flex-col">
+              <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all duration-700">
                 <ClipboardCheck size={120} />
               </div>
               <div className="flex justify-between items-start mb-6 relative z-10">
@@ -183,8 +183,8 @@ const Dashboard = () => {
               </Link>
             </Card>
 
-            <Card className="rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden h-full">
-               <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all">
+            <Card className="rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden h-full flex flex-col">
+               <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all duration-700">
                 <ShieldCheck size={120} />
               </div>
               <div className="flex justify-between items-start mb-6 relative z-10">

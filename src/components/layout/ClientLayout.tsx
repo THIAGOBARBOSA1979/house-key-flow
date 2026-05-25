@@ -121,12 +121,13 @@ const ClientLayout = () => {
             </Link>
           </div>
 
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar py-2">
             <ClientNavLink to="/client" icon={Home}>Resumo</ClientNavLink>
             <ClientNavLink to="/client/properties" icon={Building}>Meu Imóvel</ClientNavLink>
             <ClientNavLink to="/client/documents" icon={FileText}>Documentos</ClientNavLink>
             <ClientNavLink to="/client/inspections" icon={ClipboardCheck}>Vistorias</ClientNavLink>
             <ClientNavLink to="/client/warranty" icon={ShieldCheck}>Garantias</ClientNavLink>
+            <ClientNavLink to="/client/notifications" icon={Bell} badgeCount={unreadCount}>Notificações</ClientNavLink>
             <ClientNavLink to="/client/support" icon={HelpCircle}>Suporte</ClientNavLink>
           </nav>
 
