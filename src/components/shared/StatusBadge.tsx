@@ -125,8 +125,8 @@ export const StatusBadge = ({
         "badge-status transition-all duration-300",
         config.badgeClass,
         "shadow-sm hover:shadow-md hover:scale-105 cursor-default border-none",
-        size === "sm" && "px-3 py-1.5 text-[9px] gap-1.5 font-black uppercase tracking-tighter rounded-xl",
-        size === "lg" && "px-5 py-2.5 text-sem-body-sm gap-2.5 font-black uppercase tracking-widest rounded-2xl",
+        size === "sm" && "px-3 py-1.5 text-[9px] gap-1.5 font-black uppercase tracking-tighter rounded-lg",
+        size === "lg" && "px-5 py-2.5 text-sem-body-sm gap-2.5 font-black uppercase tracking-widest rounded-xl",
         "bg-opacity-20 dark:bg-opacity-30 backdrop-blur-md text-foreground dark:text-white contrast-125",
         className
       )}
