@@ -91,8 +91,8 @@ const ClientLayout = () => {
         "fixed inset-y-0 left-0 z-50 w-80 bg-white border-r border-border/40 transition-transform duration-500 lg:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <div className="h-full flex flex-col p-8 pt-10">
-          <div className="flex items-center justify-between mb-12">
+        <div className="h-full flex flex-col p-layout-gap pt-layout-gap-lg">
+          <div className="flex items-center justify-between mb-layout-gap-lg">
             <Link to="/client" className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white font-black text-xl shadow-xl shadow-primary/20 rotate-3 group-hover:rotate-0 transition-transform">
                 A2
@@ -130,7 +130,7 @@ const ClientLayout = () => {
             <ClientNavLink to="/client/support" icon={HelpCircle}>Suporte</ClientNavLink>
           </nav>
 
-          <div className="pt-8 mt-8 border-t space-y-4">
+          <div className="pt-layout-gap mt-layout-gap border-t layout-stack">
             <Button 
               variant="ghost" 
               className="w-full justify-start gap-4 rounded-2xl h-14 text-destructive hover:bg-destructive/5 font-black uppercase tracking-widest text-[10px]"
@@ -145,7 +145,7 @@ const ClientLayout = () => {
 
       {/* Main Content */}
       <main className="lg:ml-80 min-h-screen">
-        <div className="p-4 sm:p-8 lg:p-12 max-w-[1600px] mx-auto overflow-x-hidden">
+        <div className="p-layout-gap sm:p-layout-gap-lg lg:p-layout-gap-xl max-w-[1600px] mx-auto overflow-x-hidden">
           <Outlet />
         </div>
       </main>

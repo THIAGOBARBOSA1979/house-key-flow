@@ -73,7 +73,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         >
 
 
-          <div className="w-full flex items-center justify-between px-4 lg:px-8 transition-all duration-slow max-w-[1600px] mx-auto">
+          <div className="w-full flex items-center justify-between px-layout-gap lg:px-layout-gap-lg transition-all duration-slow max-w-[1600px] mx-auto">
             <div className="flex items-center gap-2 md:gap-4 flex-1">
               <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4 group cursor-default">
                 <HomeIcon size={14} className="group-hover:text-primary transition-colors" />
@@ -101,7 +101,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         </header>
         
         <main 
-          className="flex-1 p-6 lg:p-12 transition-all duration-slow overflow-x-hidden w-full bg-gradient-to-br from-indigo-50/20 via-background to-brand/[0.02] dark:from-background dark:to-background"
+          className="flex-1 p-layout-gap lg:p-layout-gap-lg transition-all duration-slow overflow-x-hidden w-full bg-gradient-to-br from-indigo-50/20 via-background to-brand/[0.02] dark:from-background dark:to-background"
         >
           <div className="container-responsive max-w-7xl mx-auto min-h-[calc(100vh-20rem)]">
             <AnimatePresence mode="wait">

@@ -24,7 +24,7 @@ export function FilterBar({
 }: FilterBarProps) {
   return (
     <div className={cn(
-      "flex flex-col lg:flex-row gap-4 md:gap-layout-gap p-1 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-slow",
+      "flex flex-col lg:flex-row gap-layout-gap md:gap-layout-gap p-1 mb-layout-gap-lg animate-in fade-in slide-in-from-bottom-2 duration-slow",
       className
     )}>
       <div className="flex-1 flex flex-col lg:flex-row gap-4 min-w-0">

@@ -86,7 +86,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex flex-col items-center justify-center py-10 px-6 border-b border-sidebar-border/5">
+      <div className="flex flex-col items-center justify-center py-layout-gap-lg px-layout-gap border-b border-sidebar-border/5">
         {!collapsed ? (
           <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-700">
             <div className="relative group">
@@ -120,7 +120,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
       </div>
 
       {!collapsed && (
-        <div className="px-6 py-4">
+        <div className="px-layout-gap py-layout-gap-sm">
           <Button 
             variant="ghost" 
             size="sm" 
@@ -132,7 +132,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
         </div>
       )}
 
-      <nav className="flex-1 overflow-y-auto px-4 space-y-2 scrollbar-hide pb-24">
+      <nav className="flex-1 overflow-y-auto px-4-sem space-y-2-sem scrollbar-hide pb-24">
         <SidebarGroup 
           title="Operacional" 
           items={filterItems(operationalItems)} 
@@ -157,7 +157,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
       </nav>
       
       {!collapsed && (
-        <div className="p-6 border-t border-sidebar-border/5 animate-fade-in bg-sidebar-accent/5 mt-auto relative backdrop-blur-md">
+        <div className="p-layout-gap border-t border-sidebar-border/5 animate-fade-in bg-sidebar-accent/5 mt-auto relative backdrop-blur-md">
           {onToggleCollapse && (
             <Button 
               variant="ghost" 
