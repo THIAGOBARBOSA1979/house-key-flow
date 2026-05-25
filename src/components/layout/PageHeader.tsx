@@ -28,7 +28,7 @@ export function PageHeader({
         </div>
       )}
       
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-header-padding-y px-card-padding bg-white/40 backdrop-blur-xl rounded-[2rem] border border-border/10 shadow-sem-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-header-padding-y px-card-padding bg-white/40 dark:bg-black/40 backdrop-blur-xl rounded-2xl border border-border/10 shadow-sem-sm">
         <div className="layout-stack max-w-full xl:max-w-4xl px-2">
           <div className="flex items-center gap-stack-gap md:gap-layout-gap">
             {Icon && (

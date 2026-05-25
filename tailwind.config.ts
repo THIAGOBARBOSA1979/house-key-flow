@@ -166,6 +166,8 @@ export default {
 				'stack-gap-lg': 'var(--stack-gap-lg)',
 				'footer-padding-y': 'var(--footer-padding-y)',
 				'footer-padding-x': 'var(--footer-padding-x)',
+				'grid-gap': 'var(--grid-gap)',
+				'grid-gap-lg': 'var(--grid-gap-lg)',
 			},
 			maxWidth: {
 				'container': 'var(--container-max-width)',

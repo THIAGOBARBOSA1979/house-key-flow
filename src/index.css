@@ -129,6 +129,13 @@
     --footer-padding-y: var(--space-12);
     --footer-padding-x: var(--space-10);
     
+    /* --- Grid Tokens --- */
+    --grid-gap: var(--layout-gap);
+    --grid-gap-lg: var(--layout-gap-lg);
+    --grid-cols-mobile: 1;
+    --grid-cols-tablet: 2;
+    --grid-cols-desktop: 3;
+    
     /* --- Component Sizing Tokens --- */
     --dialog-sm: 28rem;   /* 448px */
     --dialog-md: 40rem;   /* 640px */

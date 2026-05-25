@@ -21,17 +21,17 @@ export function ResponsiveGrid({
   const gapClasses = {
     xs: "gap-1-sem",
     sm: "gap-2-sem",
-    md: "gap-layout-gap",
-    lg: "gap-layout-gap-lg",
+    md: "gap-grid-gap",
+    lg: "gap-grid-gap-lg",
     xl: "gap-layout-gap-xl",
-    layout: "gap-layout-gap",
-    'layout-gap': "gap-layout-gap",
-    'layout-lg': "gap-layout-gap-lg",
+    layout: "gap-grid-gap",
+    'layout-gap': "gap-grid-gap",
+    'layout-lg': "gap-grid-gap-lg",
     'layout-xl': "gap-layout-gap-xl",
     'xs-sem': "gap-1-sem",
     'sm-sem': "gap-2-sem",
-    'md-sem': "gap-layout-gap",
-    'lg-sem': "gap-layout-gap-lg",
+    'md-sem': "gap-grid-gap",
+    'lg-sem': "gap-grid-gap-lg",
     '4-sem': "gap-4-sem"
   };
 
