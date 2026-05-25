@@ -289,7 +289,7 @@
 @layer components {
   /* Layout Containers */
   .container-responsive {
-    @apply w-full max-w-container mx-auto px-content-padding md:px-content-padding-lg;
+    @apply w-full max-w-container mx-auto px-content-padding lg:px-content-padding-lg;
   }
 
   .grid-layout {
