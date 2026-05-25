@@ -44,7 +44,7 @@ describe('SystemSecurityService', () => {
     expect(sanitized).not.toContain('>');
   });
 
-  it('should handle session timeouts', () => {
+  it('should handle session timeouts', async () => {
     const onTimeout = vi.fn();
     
     // Simulate being logged in
@@ -65,7 +65,7 @@ describe('SystemSecurityService', () => {
     if (cleanup) cleanup();
   });
 
-  it('should reset inactivity timer on user interaction', () => {
+  it('should reset inactivity timer on user interaction', async () => {
     const onTimeout = vi.fn();
     (Supabase.auth.getSession as any).mockResolvedValue({ user: { id: '1' } });
     
