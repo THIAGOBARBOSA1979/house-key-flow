@@ -163,8 +163,8 @@ export default function SaaSAdmin() {
 
   return (
     <PageTemplate 
-      title="SaaS Master Admin" 
-      description="Painel de controle multi-tenant para governança de empresas e assinaturas."
+      title="Sistema Operacional SaaS" 
+      description="Centro de Comando Multi-tenant para Governança Estratégica e Rastreabilidade Total."
       icon={Building}
       actions={
         <Button onClick={() => setIsAddOpen(true)} className="rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
