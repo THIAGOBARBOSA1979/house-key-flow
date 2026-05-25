@@ -13,13 +13,14 @@ export const GeneralSummary = memo(({
 }: GeneralSummaryProps) => {
   return (
     <section>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
-          <Activity className="text-primary h-5 w-5 md:h-6 md:w-6" />
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl md:text-h2 flex items-center gap-2.5 font-black uppercase tracking-tighter">
+          <Activity className="text-primary h-5 w-5" />
           Indicadores Técnicos
         </h2>
       </div>
-      <Card className="card-standard border-none bg-card/40 backdrop-blur-md overflow-hidden p-6 rounded-3xl shadow-sem-md border border-primary/5">
+      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden p-8 rounded-[2rem] shadow-sem-sm">
+
         <div className="space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
