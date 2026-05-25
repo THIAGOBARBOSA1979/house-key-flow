@@ -111,7 +111,7 @@ export function SkeletonLoader({ type, count = 3, className }: SkeletonLoaderPro
           <Skeleton className="h-48 rounded-[2rem]" />
           <Skeleton className="h-48 rounded-[2rem]" />
         </div>
-        <Skeleton className="h-[600px] rounded-[3.5rem] w-full" />
+        <Skeleton className="h-[600px] rounded-[3rem] w-full opacity-40" />
       </div>
     );
   }
