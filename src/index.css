@@ -104,25 +104,25 @@
     --space-32: 8rem;       /* 128px */
 
     /* --- Layout Tokens --- */
-    --layout-gap: var(--space-6);
-    --layout-gap-lg: var(--space-10);
-    --layout-gap-xl: var(--space-12);
+    --layout-gap: var(--space-4);
+    --layout-gap-lg: var(--space-6);
+    --layout-gap-xl: var(--space-8);
     --section-gap: var(--space-12);
     --container-max-width: 80rem; /* 1280px */
     --container-max-width-xl: 90rem; /* 1440px */
     --container-max-width-2xl: 100rem; /* 1600px */
-    --content-padding: var(--space-6);
-    --content-padding-lg: var(--space-8);
-    --content-padding-xl: var(--space-10);
+    --content-padding: var(--space-4);
+    --content-padding-lg: var(--space-6);
+    --content-padding-xl: var(--space-8);
     
     /* --- Specific Layout Spacing --- */
-    --header-height: 4.5rem;
-    --header-padding-x: var(--layout-gap);
-    --header-padding-y: var(--space-4);
+    --header-height: 4rem;
+    --header-padding-x: var(--space-4);
+    --header-padding-y: var(--space-3);
     --sidebar-width: 17rem;
     --sidebar-collapsed-width: 5rem;
-    --card-padding: var(--space-6);
-    --card-padding-lg: var(--space-8);
+    --card-padding: var(--space-4);
+    --card-padding-lg: var(--space-6);
     --card-radius: var(--radius-2xl);
     --card-gap: var(--space-4);
     --stack-gap: var(--space-4);
@@ -265,18 +265,18 @@
 
 @media (max-width: 768px) {
   :root {
-    --layout-gap: 1rem;
-    --layout-gap-lg: 1.5rem;
-    --layout-gap-xl: 2rem;
-    --section-gap: 2rem;
-    --content-padding: 1rem;
-    --content-padding-lg: 1.25rem;
+    --layout-gap: var(--space-3);
+    --layout-gap-lg: var(--space-4);
+    --layout-gap-xl: var(--space-6);
+    --section-gap: var(--space-8);
+    --content-padding: var(--space-3);
+    --content-padding-lg: var(--space-4);
   }
 }
 
 @media (max-width: 1024px) {
   :root {
-    --sidebar-width: 14rem;
+    --sidebar-width: 16rem;
   }
 }
 
@@ -312,7 +312,7 @@
 @layer components {
   /* Layout Containers */
   .container-responsive {
-    @apply w-full max-w-container mx-auto px-content-padding lg:px-content-padding-lg;
+    @apply w-full max-w-container mx-auto px-content-padding;
   }
 
   .grid-layout {
@@ -358,7 +358,7 @@
   }
 
   .card-glass {
-    @apply bg-white/40 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-sem-xl rounded-[2rem];
+    @apply bg-white/40 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-sem-xl rounded-card;
   }
 
 

@@ -85,7 +85,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             </div>
 
             <div className="flex items-center gap-2 lg:gap-layout-gap shrink-0">
-              <Button variant="ghost" size="icon" className="relative h-10 w-10 lg:h-11 lg:w-11 rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group">
+              <Button variant="ghost" size="icon" className="relative h-10 w-10 lg:h-11 lg:w-11 rounded-xl hover:bg-primary/5 active:scale-90 transition-all group">
                 <Bell size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-status-critical rounded-full border-2 border-background animate-pulse" />
               </Button>
@@ -151,7 +151,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
       </div>
 
       <Dialog open={isShortcutsOpen} onOpenChange={setIsShortcutsOpen}>
-        <DialogContent className="sm:max-w-[500px] rounded-[2rem] border-none shadow-sem-xl">
+        <DialogContent className="sm:max-w-[500px] rounded-card border-none shadow-sem-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
               <Keyboard className="text-primary" />
@@ -169,7 +169,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             ].map(shortcut => (
               <div key={shortcut.key} className="flex items-center justify-between">
                 <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{shortcut.desc}</span>
-                <Badge variant="outline" className="h-8 px-3 rounded-2xl font-black bg-muted/20 border-border/50">{shortcut.key}</Badge>
+                <Badge variant="outline" className="h-8 px-3 rounded-xl font-black bg-muted/20 border-border/50">{shortcut.key}</Badge>
               </div>
             ))}
           </div>

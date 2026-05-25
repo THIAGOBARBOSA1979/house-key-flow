@@ -43,7 +43,7 @@ const Settings = () => {
 
       <Tabs defaultValue="general" className="space-y-6">
         <div className="overflow-x-auto pb-2">
-          <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 border border-border/10 inline-flex min-w-full lg:min-w-0">
+          <TabsList className="bg-muted/50 p-1.5 rounded-xl h-14 border border-border/10 inline-flex min-w-full lg:min-w-0">
             <TabsTrigger value="general" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
               <Building size={14} /> Geral
             </TabsTrigger>
