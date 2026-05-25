@@ -34,7 +34,7 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
       <div className="layout-stack animate-in fade-in slide-in-from-left-4 duration-slow">
         {inspections && inspections.length > 0 ? (
           inspections.map((inspection) => (
-            <Card key={inspection.id} className="card-standard overflow-hidden border border-border/10 bg-card/40 backdrop-blur-3xl card-hover-effect rounded-3xl shadow-sem-sm hover:shadow-sem-xl transition-all duration-500 group/item relative">
+            <Card key={inspection.id} className="card-standard overflow-hidden border border-border/40 bg-card/60 backdrop-blur-xl rounded-card shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 group/item relative">
               <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary/40 group-hover/item:bg-primary transition-colors"></div>
               <CardContent className="p-0">
                 <InspectionItem inspection={inspection as any} onUpdate={() => navigate("/admin/inspections")} />
