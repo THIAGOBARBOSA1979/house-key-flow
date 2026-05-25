@@ -56,7 +56,11 @@ describe('SystemSecurityService', () => {
     // Advance time by 31 minutes (timeout is 30m)
     vi.advanceTimersByTime(31 * 60 * 1000);
     
-    expect(onTimeout).toHaveBeenCalled();
+    // Since the check is async, we need to wait a bit
+    await vi.waitFor(() => {
+      expect(onTimeout).toHaveBeenCalled();
+    });
+
     
     if (cleanup) cleanup();
   });
@@ -80,7 +84,10 @@ describe('SystemSecurityService', () => {
     
     // Advance another 15 minutes (total 35m since interaction)
     vi.advanceTimersByTime(15 * 60 * 1000);
-    expect(onTimeout).toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(onTimeout).toHaveBeenCalled();
+    });
+
 
     if (cleanup) cleanup();
   });
