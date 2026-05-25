@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -33,6 +34,7 @@ export const SystemHealth = () => {
   ];
 
   return (
+    <div className="space-y-6">
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <Card className="lg:col-span-2 rounded-[2.5rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
         <CardHeader className="p-8">
@@ -125,6 +127,49 @@ export const SystemHealth = () => {
           </div>
         </CardContent>
       </Card>
+    </div>
+
+    <Card className="rounded-[2.5rem] border-none bg-card/40 backdrop-blur-md shadow-sem-lg overflow-hidden">
+      <CardHeader className="p-8">
+        <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+          <Database className="text-primary" /> Alocação de Recursos por Tenant
+        </CardTitle>
+        <CardDescription>Monitoramento granular de consumo de armazenamento e banco de dados por empresa.</CardDescription>
+      </CardHeader>
+      <CardContent className="p-8 pt-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { name: "A2 Incorporadora", usage: 78, type: "Storage", limit: "50GB", current: "39GB" },
+            { name: "Residencial Jardins", usage: 32, type: "Storage", limit: "10GB", current: "3.2GB" },
+            { name: "Construtora Horizonte", usage: 91, type: "Database", limit: "10k Rows", current: "9.1k Rows" },
+            { name: "A2 Portfolio VIP", usage: 12, type: "Storage", limit: "100GB", current: "12GB" }
+          ].map((tenant) => (
+            <div key={tenant.name} className="p-6 rounded-[2rem] bg-muted/20 border border-border/5 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-black uppercase tracking-widest truncate">{tenant.name}</p>
+                <Badge variant={tenant.usage > 90 ? "destructive" : "outline"} className="text-[9px] font-black uppercase">
+                  {tenant.usage}%
+                </Badge>
+              </div>
+              <div className="space-y-2">
+                <Progress value={tenant.usage} className={cn("h-1.5 rounded-full", tenant.usage > 90 ? "bg-red-500/20" : "bg-muted/40")} />
+                <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                  <span>{tenant.type}</span>
+                  <span>{tenant.current} / {tenant.limit}</span>
+                </div>
+              </div>
+              {tenant.usage > 90 && (
+                 <div className="pt-2">
+                   <p className="text-[9px] font-black text-status-critical uppercase flex items-center gap-1.5 animate-pulse">
+                     <AlertTriangle size={10} /> Quota Crítica
+                   </p>
+                 </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
     </div>
   );
 };

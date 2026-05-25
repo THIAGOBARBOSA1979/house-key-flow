@@ -16,7 +16,8 @@ import {
   Activity,
   Trash2,
   Shield,
-  RefreshCw
+  RefreshCw,
+  Megaphone
 } from "lucide-react";
 import { 
   DropdownMenu, 
@@ -40,6 +41,7 @@ import { CompanyDetailsDialog } from "@/components/admin/SaaS/CompanyDetailsDial
 import { GovernanceManager } from "@/components/admin/GovernanceManager";
 import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { SystemHealth } from "@/components/admin/SaaS/SystemHealth";
+import { GlobalBroadcaster } from "@/components/admin/SaaS/GlobalBroadcaster";
 
 import { propertyService } from "@/services";
 import { inspectionService } from "@/services";
@@ -161,8 +163,8 @@ export default function SaaSAdmin() {
 
   return (
     <PageTemplate 
-      title="SaaS Master Admin" 
-      description="Painel de controle multi-tenant para governança de empresas e assinaturas."
+      title="Sistema Operacional SaaS" 
+      description="Centro de Comando Multi-tenant para Governança Estratégica e Rastreabilidade Total."
       icon={Building}
       actions={
         <Button onClick={() => setIsAddOpen(true)} className="rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
@@ -189,7 +191,10 @@ export default function SaaSAdmin() {
             <Activity className="h-4 w-4" /> Auditoria Global
           </TabsTrigger>
           <TabsTrigger value="health" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
-            <RefreshCw className="h-4 w-4" /> Saúde do Sistema
+            <RefreshCw className="h-4 w-4" /> Saúde
+          </TabsTrigger>
+          <TabsTrigger value="broadcast" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
+            <Megaphone className="h-4 w-4" /> Broadcaster
           </TabsTrigger>
         </TabsList>
 
@@ -211,6 +216,10 @@ export default function SaaSAdmin() {
 
         <TabsContent value="health">
           <SystemHealth />
+        </TabsContent>
+
+        <TabsContent value="broadcast">
+          <GlobalBroadcaster />
         </TabsContent>
       </Tabs>
 

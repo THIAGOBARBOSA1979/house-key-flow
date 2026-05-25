@@ -38,6 +38,8 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { Code, Eye, FileJson, Copy, Check } from "lucide-react";
 
 interface AuditLogViewerProps {
   entityType?: AuditEntityType;
@@ -340,9 +342,20 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                     )
                   },
                   { 
+                    header: "Entidade", 
+                    accessorKey: "entityType",
+                    className: "hidden lg:table-cell",
+                    cell: (log: AuditLogEntry) => (
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{log.entityType}</span>
+                        <span className="text-[9px] font-mono text-muted-foreground truncate max-w-[80px]">{log.entityId || '-'}</span>
+                      </div>
+                    )
+                  },
+                  { 
                     header: "Detalhes", 
                     accessorKey: "details",
-                    className: "hidden md:table-cell max-w-[300px]",
+                    className: "hidden md:table-cell max-w-[250px]",
                     cell: (log: AuditLogEntry) => (
                       <span className="text-muted-foreground truncate block italic font-medium">
                         {log.details}
