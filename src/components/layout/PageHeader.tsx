@@ -28,7 +28,7 @@ export function PageHeader({
         </div>
       )}
       
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-card-padding px-card-padding bg-white/60 dark:bg-black/40 backdrop-blur-3xl rounded-card border border-border/10 shadow-sem-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-card-padding px-card-padding bg-white/40 dark:bg-black/20 backdrop-blur-2xl rounded-card border border-border/10 shadow-sem-md hover:shadow-sem-xl hover:border-border/20 transition-all duration-500">
         <div className="layout-stack max-w-full xl:max-w-4xl px-2">
           <div className="flex items-center gap-stack-gap md:gap-layout-gap">
             {Icon && (
@@ -36,7 +36,7 @@ export function PageHeader({
                 <Icon className="h-8 w-8 md:h-10 md:w-10 text-white" strokeWidth={2.5} />
               </div>
             )}
-            <h1 className="text-sem-h1 tracking-tighter font-black text-gradient leading-[1] text-3xl sm:text-4xl md:text-5xl lg:text-6xl truncate pb-1">
+            <h1 className="text-sem-h1 tracking-tighter font-black text-gradient leading-[1.1] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl truncate pb-1">
               {title}
             </h1>
           </div>

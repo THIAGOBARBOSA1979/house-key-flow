@@ -72,7 +72,7 @@ export const StatsCard = ({
             </div>
             
             <div className="space-y-1">
-              <h3 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter leading-none group-hover:scale-105 transition-transform duration-700 origin-left">
+              <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tighter leading-none group-hover:scale-105 transition-transform duration-700 origin-left">
                 {value}
               </h3>
               {description && (

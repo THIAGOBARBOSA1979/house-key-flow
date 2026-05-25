@@ -56,7 +56,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-50/50 via-background to-background dark:from-indigo-950/20 dark:via-background dark:to-background">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background to-background dark:from-primary/10 dark:via-background dark:to-background">
       <Sidebar 
         onCollapseChange={(collapsed) => {
           setSidebarCollapsed(collapsed);
@@ -123,10 +123,10 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-layout-gap-lg max-w-container mx-auto">
             <div className="space-y-3 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 opacity-60">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-xs">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-sm shadow-brand/20 shadow-lg">
                   A2
                 </div>
-                <span className="font-black tracking-tighter text-foreground text-lg italic">A2 Incorporadora</span>
+                <span className="font-black tracking-tighter text-foreground text-xl italic">A2 Incorporadora</span>
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 leading-relaxed">
                 © {new Date().getFullYear()} A2 Gestão de Portfólio Estratégico.<br />
