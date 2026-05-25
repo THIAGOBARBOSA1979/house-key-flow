@@ -125,7 +125,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
             variant="ghost" 
             size="sm" 
             onClick={toggleLanguage}
-            className="w-full rounded-2xl text-[9px] font-black uppercase tracking-widest h-9 border border-sidebar-border/10 hover:bg-sidebar-accent/50 text-sidebar-foreground/40 hover:text-sidebar-foreground transition-all backdrop-blur-sm"
+            className="w-full rounded-xl text-[9px] font-black uppercase tracking-widest h-9 border border-sidebar-border/10 hover:bg-sidebar-accent/50 text-sidebar-foreground/40 hover:text-sidebar-foreground transition-all backdrop-blur-sm"
           >
             {i18n.language === 'pt' ? 'Switch to English' : 'Mudar para Português'}
           </Button>
@@ -171,7 +171,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
           )}
 
           <div className="flex items-center justify-between gap-card-gap">
-            <div className="flex items-center gap-card-gap min-w-0 group cursor-pointer p-2 rounded-2xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
+            <div className="flex items-center gap-card-gap min-w-0 group cursor-pointer p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
               <div className="relative">
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-slow">
                   {user?.name?.charAt(0) || "A"}
@@ -191,7 +191,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-sidebar-foreground/30 hover:text-status-critical hover:bg-status-critical/10 rounded-2xl h-12 w-12 transition-all active:scale-90 border border-transparent hover:border-status-critical/20"
+              className="text-sidebar-foreground/30 hover:text-status-critical hover:bg-status-critical/10 rounded-xl h-12 w-12 transition-all active:scale-90 border border-transparent hover:border-status-critical/20"
               aria-label="Sair"
               onClick={logout}
             >
