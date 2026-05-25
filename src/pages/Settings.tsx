@@ -104,7 +104,8 @@ const Settings = () => {
           <BrandingTab 
             settings={settings} 
             updateSection={updateSection} 
-            onSave={saveSystemSettings} 
+            onSave={async () => saveSystemSettings()} 
+
           />
         </TabsContent>
 
@@ -119,7 +120,8 @@ const Settings = () => {
           <WarrantyTab 
             settings={settings} 
             updateSection={updateSection} 
-            onSave={saveSystemSettings} 
+            onSave={async () => saveSystemSettings()} 
+
           />
         </TabsContent>
 
