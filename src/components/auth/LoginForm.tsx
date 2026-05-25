@@ -54,10 +54,11 @@ export const LoginForm = ({
             <FormLabel className="text-base font-medium">Email</FormLabel>
             <FormControl>
               <div className="relative">
-                <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 transition-colors group-focus-within:text-primary" />
                 <Input 
                   placeholder={emailPlaceholder}
-                  className="pl-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
+                  className="pl-12 h-14 bg-white/50 border-border/20 focus:bg-white transition-all shadow-none focus:shadow-sem-md" 
+
                   {...field} 
                 />
               </div>
@@ -74,11 +75,12 @@ export const LoginForm = ({
             <FormLabel className="text-base font-medium">Senha</FormLabel>
             <FormControl>
               <div className="relative">
-                <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 transition-colors group-focus-within:text-primary" />
                 <Input 
                   type={showPassword ? "text" : "password"} 
-                  className="pl-11 pr-11 h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500" 
+                  className="pl-12 pr-12 h-14 bg-white/50 border-border/20 focus:bg-white transition-all shadow-none focus:shadow-sem-md" 
                   placeholder="••••••••"
+
                   {...field} 
                 />
                 <Button
@@ -114,7 +116,8 @@ export const LoginForm = ({
 
       <Button 
         type="submit" 
-        className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200" 
+        className="w-full h-14 text-sem-label uppercase tracking-widest font-black bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-sem-lg shadow-primary/20" 
+
         disabled={isLoading}
       >
         {isLoading ? (

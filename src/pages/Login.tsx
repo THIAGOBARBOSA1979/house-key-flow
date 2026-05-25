@@ -70,7 +70,7 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-indigo-50/30 to-brand/5 dark:from-background dark:to-background overflow-x-hidden">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-indigo-50/50 via-background to-brand/5 dark:from-background dark:to-background overflow-x-hidden">
       <header className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky transition-all duration-500">
         <div className="container-responsive py-5">
 
@@ -93,11 +93,11 @@ export default function Login() {
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-medium">
+                <div className="inline-flex items-center gap-2 bg-primary/5 text-primary px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border border-primary/10">
                   <Shield className="h-4 w-4" />
                   {activeTab === "admin" ? "Área Administrativa" : "Portal do Cliente"}
                 </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight tracking-tight">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground leading-[1.1] tracking-tighter">
                   {activeTab === "admin" ? (
                     <>
                       Domine sua operação com
@@ -148,7 +148,7 @@ export default function Login() {
             </div>
 
             <div className="flex justify-center animate-in fade-in slide-in-from-right-8 duration-1000">
-              <Card className="w-full max-w-md shadow-sem-xl border-border/10 bg-white/60 dark:bg-black/60 backdrop-blur-3xl mx-auto rounded-[3rem] overflow-hidden">
+              <Card className="w-full max-w-md shadow-sem-2xl border border-border/20 bg-white/70 dark:bg-black/60 backdrop-blur-3xl mx-auto rounded-[2.5rem] overflow-hidden">
 
                 <CardHeader className="space-y-4 pb-8">
                   <div className="text-center">
