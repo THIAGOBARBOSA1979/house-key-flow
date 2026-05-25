@@ -123,7 +123,7 @@
     --sidebar-collapsed-width: 5.5rem;
     --card-padding: var(--space-6);
     --card-padding-lg: var(--space-8);
-    --card-radius: var(--radius-2xl);
+    --card-radius: var(--radius-xl);
     --card-gap: var(--space-6);
     --stack-gap: var(--space-6);
     --stack-gap-lg: var(--space-10);
