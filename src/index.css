@@ -105,9 +105,12 @@
 
     /* --- Layout Tokens --- */
     --layout-gap: var(--space-6);
+    --layout-gap-lg: var(--space-10);
+    --layout-gap-xl: var(--space-12);
     --section-gap: var(--space-12);
     --container-max-width: 80rem; /* 1280px */
-    --content-padding: var(--space-8);
+    --content-padding: var(--space-6);
+    --content-padding-lg: var(--space-8);
     
     /* --- Component Sizing Tokens --- */
     --dialog-sm: 28rem;   /* 448px */
@@ -240,8 +243,11 @@
 @media (max-width: 768px) {
   :root {
     --layout-gap: 1rem;
+    --layout-gap-lg: 1.5rem;
+    --layout-gap-xl: 2rem;
     --section-gap: 2rem;
     --content-padding: 1rem;
+    --content-padding-lg: 1.25rem;
   }
 }
 
@@ -283,11 +289,19 @@
 @layer components {
   /* Layout Containers */
   .container-responsive {
-    @apply w-full max-w-container mx-auto px-content-padding;
+    @apply w-full max-w-container mx-auto px-content-padding md:px-content-padding-lg;
   }
 
   .grid-layout {
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-layout-gap;
+  }
+
+  .grid-dashboard {
+    @apply grid grid-cols-1 lg:grid-cols-12 gap-layout-gap md:gap-layout-gap-lg;
+  }
+
+  .layout-stack {
+    @apply space-y-layout-gap md:space-y-layout-gap-lg lg:space-y-layout-gap-xl;
   }
 
   .section-padding {

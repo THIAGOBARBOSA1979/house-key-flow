@@ -21,7 +21,7 @@ export function PageHeader({
   showBreadcrumbs = true
 }: PageHeaderProps) {
   return (
-    <div className={cn("space-y-4 mb-8", className)}>
+    <div className={cn("space-y-4 mb-layout-gap-lg", className)}>
       {showBreadcrumbs && (
         <div className="animate-in fade-in slide-in-from-top-1 duration-300">
           <Breadcrumbs />
