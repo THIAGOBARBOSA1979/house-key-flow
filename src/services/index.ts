@@ -19,7 +19,6 @@ export * from './operations/DocumentService';
 export * from './operations/ChecklistService';
 export * from './operations/InspectionDraftService';
 export * from './operations/SupportTicketService';
-export * from './operations/TicketMessageService';
 
 // Warranty Domain
 export * from './warranty/WarrantyFlowService';

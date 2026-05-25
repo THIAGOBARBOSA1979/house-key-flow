@@ -52,6 +52,11 @@ class SupportTicketService extends SupabaseBaseService<SupportTicket> {
     });
   }
 
+  async create(item: Omit<SupportTicket, "id" | "protocol">, companyId?: string): Promise<SupportTicket> {
+    return super.create(item as any, companyId);
+  }
+
+
   async getByProtocol(protocol: string): Promise<SupportTicket | null> {
     const { data, error } = await Supabase.db.findOne<any>(this.supabaseTable, protocol, 'protocol');
     if (error) return null;
