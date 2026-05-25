@@ -161,6 +161,7 @@ export default {
 				'header-padding-y': 'var(--header-padding-y)',
 				'card-padding': 'var(--card-padding)',
 				'card-padding-lg': 'var(--card-padding-lg)',
+				'card-radius': 'var(--card-radius)',
 				'card-gap': 'var(--card-gap)',
 				'stack-gap': 'var(--stack-gap)',
 				'stack-gap-lg': 'var(--stack-gap-lg)',

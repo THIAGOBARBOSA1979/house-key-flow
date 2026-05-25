@@ -28,11 +28,11 @@ export function PageHeader({
         </div>
       )}
       
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-header-padding-y px-card-padding bg-white/40 dark:bg-black/40 backdrop-blur-xl rounded-2xl border border-border/10 shadow-sem-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-layout-gap-lg py-header-padding-y px-card-padding bg-white/40 dark:bg-black/40 backdrop-blur-xl rounded-card-radius border border-border/10 shadow-sem-sm">
         <div className="layout-stack max-w-full xl:max-w-4xl px-2">
           <div className="flex items-center gap-stack-gap md:gap-layout-gap">
             {Icon && (
-              <div className="flex items-center justify-center h-16 w-16 md:h-20 md:w-20 rounded-[1.75rem] md:rounded-[2.25rem] bg-gradient-to-br from-primary to-primary/60 shadow-sem-xl shadow-primary/20 animate-in zoom-in duration-700 shrink-0 ring-8 ring-primary/5">
+              <div className="flex items-center justify-center h-16 w-16 md:h-20 md:w-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary to-primary/60 shadow-sem-xl shadow-primary/20 animate-in zoom-in duration-700 shrink-0 ring-8 ring-primary/5">
                 <Icon className="h-8 w-8 md:h-10 md:w-10 text-white" strokeWidth={2.5} />
               </div>
             )}
