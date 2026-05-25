@@ -142,7 +142,7 @@ const Support = () => {
                          <StatusBadge status={ticket.status === 'resolved' ? 'complete' : 'progress'} label={ticket.status} size="sm" />
                       </div>
                       <h4 className="font-black text-sm mb-2">{ticket.subject}</h4>
-                      <p className="text-[10px] text-muted-foreground font-bold">Atualizado em: {ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleDateString() : ''}</p>
+                      <p className="text-[10px] text-muted-foreground font-bold">Protocolo gerado em: {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ''}</p>
                     </div>
                   ))}
                 </div>
