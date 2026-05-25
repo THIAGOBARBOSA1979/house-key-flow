@@ -116,7 +116,7 @@
     --content-padding-xl: var(--space-8);
     
     /* --- Specific Layout Spacing --- */
-    --header-height: 4.5rem;
+    --header-height: 4rem;
     --header-padding-x: var(--space-6);
     --header-padding-y: var(--space-4);
     --sidebar-width: 18rem;
@@ -282,7 +282,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-none transition-colors duration-200;
+    @apply border-border/40 outline-none transition-colors duration-200;
   }
 
   body {
