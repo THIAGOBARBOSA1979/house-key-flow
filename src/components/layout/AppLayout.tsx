@@ -56,7 +56,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-50/50 via-background to-background dark:from-indigo-950/20 dark:via-background dark:to-background">
       <Sidebar 
         onCollapseChange={(collapsed) => {
           setSidebarCollapsed(collapsed);
@@ -99,7 +99,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         </header>
         
         <main 
-          className="flex-1 p-layout-gap lg:p-layout-gap-lg transition-all duration-slow overflow-x-hidden w-full bg-gradient-to-br from-indigo-50/20 via-background to-brand/[0.02] dark:from-background dark:to-background"
+          className="flex-1 p-layout-gap lg:p-layout-gap-lg transition-all duration-slow overflow-x-hidden w-full"
         >
           <div className="container-responsive max-w-container mx-auto min-h-[calc(100vh-20rem)]">
             <AnimatePresence mode="wait">
