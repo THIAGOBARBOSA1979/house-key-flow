@@ -46,7 +46,7 @@ export const StatsCard = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden group transition-all duration-700 border border-border/40 shadow-sem-sm hover:shadow-sem-2xl rounded-[2.5rem] hover:-translate-y-2 active:scale-[0.98] relative", 
+      "overflow-hidden group transition-all duration-700 border border-border/40 shadow-sem-sm hover:shadow-sem-2xl rounded-2xl hover:-translate-y-2 active:scale-[0.98] relative", 
       variantStyles[variant], 
       className
     )}>
