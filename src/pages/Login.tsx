@@ -71,8 +71,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-indigo-50/30 to-brand/5 dark:from-background dark:to-background overflow-x-hidden">
-      <header className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-sticky">
-        <div className="container-responsive py-4">
+      <header className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky transition-all duration-500">
+        <div className="container-responsive py-5">
+
           <div className="flex items-center justify-center">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-bold text-xl shadow-lg">
@@ -146,8 +147,9 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex justify-center">
-              <Card className="w-full max-w-md shadow-sem-xl border-border/10 bg-white/70 dark:bg-black/70 backdrop-blur-3xl mx-auto rounded-[2.5rem]">
+            <div className="flex justify-center animate-in fade-in slide-in-from-right-8 duration-1000">
+              <Card className="w-full max-w-md shadow-sem-xl border-border/10 bg-white/60 dark:bg-black/60 backdrop-blur-3xl mx-auto rounded-[3rem] overflow-hidden">
+
                 <CardHeader className="space-y-4 pb-8">
                   <div className="text-center">
                     <CardTitle className="text-h2 font-black tracking-tight text-foreground">
@@ -163,12 +165,13 @@ export default function Login() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                      <TabsTrigger value="client">Portal do Cliente</TabsTrigger>
-                      <TabsTrigger value="admin">Área Administrativa</TabsTrigger>
-                      <TabsTrigger value="register">Cadastro</TabsTrigger>
-                      <TabsTrigger value="master">SaaS Master</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-4 bg-muted/30 p-1 rounded-2xl h-12">
+                      <TabsTrigger value="client" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Portal</TabsTrigger>
+                      <TabsTrigger value="admin" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Admin</TabsTrigger>
+                      <TabsTrigger value="register" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Adesão</TabsTrigger>
+                      <TabsTrigger value="master" className="rounded-xl text-[10px] font-black uppercase tracking-widest">Master</TabsTrigger>
                     </TabsList>
+
 
 
                     <TabsContent value="client" className="mt-6">
@@ -193,9 +196,10 @@ export default function Login() {
                     <TabsContent value="register" className="mt-6">
                       <div className="space-y-4 text-center">
                         <p className="text-gray-600">Comece hoje mesmo a transformar sua incorporadora.</p>
-                        <Button asChild className="w-full h-12 bg-brand hover:bg-brand/90">
-                          <Link to="/register">Criar conta grátis</Link>
+                        <Button asChild className="w-full h-12 bg-primary hover:bg-primary/90 rounded-xl font-bold">
+                          <Link to="/register">CRIAR CONTA AGORA</Link>
                         </Button>
+
                       </div>
                     </TabsContent>
 
