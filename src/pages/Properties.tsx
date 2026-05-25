@@ -80,8 +80,9 @@ const Properties = () => {
       />
       <Button 
         onClick={() => { setEditingProperty(null); setIsFormOpen(true); }} 
-        className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95"
+        className="h-11 px-8 rounded-[1.125rem] font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 border-none"
       >
+
         <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
         Novo Ativo Imobiliário
       </Button>
@@ -157,10 +158,11 @@ const Properties = () => {
                 header: "Nome", 
                 accessorKey: "name",
                 cell: (p) => (
-                  <div className="flex flex-col">
-                    <span className="text-label group-hover:text-primary transition-colors">{p.name}</span>
-                    <span className="md:hidden text-caption mt-0.5 text-muted-foreground">{p.location}</span>
+                  <div className="flex flex-col py-1">
+                    <span className="text-label group-hover:text-primary transition-colors font-black">{p.name}</span>
+                    <span className="md:hidden text-[10px] uppercase font-bold tracking-wider mt-1 text-muted-foreground/60">{p.location}</span>
                   </div>
+
                 )
               },
               { header: "Localização", accessorKey: "location", className: "hidden md:table-cell text-muted-foreground" },
