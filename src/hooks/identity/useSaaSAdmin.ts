@@ -60,7 +60,8 @@ export const useSaaSAdmin = () => {
         name: newCompany.name,
         slug: newCompany.slug,
         status: 'active',
-        subscription_plan: newCompany.plan,
+        plan_id: newCompany.plan.toLowerCase(), // Usando o novo campo
+        subscription_plan: newCompany.plan, // Mantendo por compatibilidade
         owner_id: user?.id || "system",
         created_at: new Date(),
         updated_at: new Date()
@@ -74,10 +75,18 @@ export const useSaaSAdmin = () => {
     }
   }, [newCompany, refreshCompanies, toast, user]);
 
+
   const handleUpdateSubscription = useCallback(async (id: string, plan: SubscriptionPlan, expiresAt: string) => {
     setIsSaving(true);
     try {
-      await companyService.updateSubscription(id, plan, expiresAt ? new Date(expiresAt) : undefined);
+      // Atualizar ambos os campos para manter sincronia
+      await companyService.update(id, {
+        plan_id: plan.toLowerCase(),
+        subscription_plan: plan,
+        subscription_expires_at: expiresAt ? new Date(expiresAt) : undefined,
+        updated_at: new Date()
+      }, true);
+      
       refreshCompanies();
       setIsUpdatingSub(false);
       toast({ title: "Assinatura atualizada" });
@@ -85,6 +94,7 @@ export const useSaaSAdmin = () => {
       setIsSaving(false);
     }
   }, [refreshCompanies, toast]);
+
 
   const handleSaveEdit = useCallback(async (id: string, data: Partial<Company>) => {
     setIsSaving(true);
