@@ -91,7 +91,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
           <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in duration-700">
             <div className="relative group">
               <div className="absolute -inset-2 bg-sidebar-primary/20 rounded-card blur-xl group-hover:bg-sidebar-primary/30 transition-all duration-700"></div>
-              <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
+              <div className="relative w-24 h-24 rounded-card bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
                 {company?.settings?.logo_url ? (
                   <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />
                 ) : (
@@ -112,7 +112,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
         ) : (
           <div className="relative group">
             <div className="absolute -inset-1 bg-sidebar-primary/40 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative w-12 h-12 rounded-lg bg-sidebar-primary flex items-center justify-center shadow-sem-lg animate-in fade-in zoom-in duration-500 hover:scale-110 transition-transform cursor-pointer">
+            <div className="relative w-12 h-12 rounded-xl bg-sidebar-primary flex items-center justify-center shadow-sem-lg animate-in fade-in zoom-in duration-500 hover:scale-110 transition-transform cursor-pointer">
               <Building className="text-sidebar-primary-foreground h-7 w-7" />
             </div>
           </div>
@@ -173,7 +173,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
           <div className="flex items-center justify-between gap-card-gap">
             <div className="flex items-center gap-card-gap min-w-0 group cursor-pointer p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
               <div className="relative">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black text-xl shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-slow">
+                <div className="w-16 h-16 rounded-card bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black text-xl shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-slow">
                   {user?.name?.charAt(0) || "A"}
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-status-complete border-2 border-sidebar-background rounded-full shadow-lg"></div>

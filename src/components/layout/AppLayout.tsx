@@ -56,7 +56,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background to-background dark:from-primary/10 dark:via-background dark:to-background">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background to-background dark:from-primary/5 dark:via-background dark:to-background">
       <Sidebar 
         onCollapseChange={(collapsed) => {
           setSidebarCollapsed(collapsed);
