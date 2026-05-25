@@ -17,7 +17,7 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl md:text-h2 flex items-center gap-2 font-black">
+        <h2 className="text-xl md:text-h3 flex items-center gap-3 font-black uppercase tracking-tighter">
           <ClipboardCheck className="text-primary h-5 w-5 md:h-6 md:w-6" />
           Vistorias Agendadas
         </h2>
@@ -34,7 +34,8 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
       <div className="layout-stack animate-in fade-in slide-in-from-left-4 duration-slow">
         {inspections && inspections.length > 0 ? (
           inspections.map((inspection) => (
-            <Card key={inspection.id} className="card-standard overflow-hidden border border-border/20 bg-card/30 backdrop-blur-md card-hover-effect rounded-[1.75rem] shadow-sem-sm hover:shadow-sem-lg transition-all border-l-4 border-l-primary/70">
+            <Card key={inspection.id} className="card-standard overflow-hidden border border-border/10 bg-card/40 backdrop-blur-3xl card-hover-effect rounded-3xl shadow-sem-sm hover:shadow-sem-xl transition-all duration-500 group/item relative">
+              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary/40 group-hover/item:bg-primary transition-colors"></div>
               <CardContent className="p-0">
                 <InspectionItem inspection={inspection as any} onUpdate={() => navigate("/admin/inspections")} />
               </CardContent>

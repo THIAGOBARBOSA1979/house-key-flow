@@ -82,7 +82,7 @@ export const DashboardCharts = memo(({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap-lg">
-      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-xl overflow-hidden lg:col-span-1 rounded-[2.5rem] shadow-sem-md hover:shadow-sem-lg transition-shadow duration-500">
+      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-3xl overflow-hidden lg:col-span-1 rounded-[3rem] shadow-sem-md hover:shadow-sem-xl transition-all duration-500">
         <CardHeader className="pb-layout-gap-sm border-b border-border/5">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg md:text-h4 font-black tracking-tight">Conformidade de SLAs</CardTitle>
@@ -127,7 +127,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-xl overflow-hidden lg:col-span-1 rounded-[2.5rem] shadow-sem-md hover:shadow-sem-lg transition-shadow duration-500">
+      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-3xl overflow-hidden lg:col-span-1 rounded-[3rem] shadow-sem-md hover:shadow-sem-xl transition-all duration-500">
         <CardHeader className="pb-layout-gap-sm border-b border-border/5">
           <CardTitle className="text-lg md:text-h4 font-black tracking-tight">Fluxo por Ciclo Técnico</CardTitle>
         </CardHeader>
@@ -164,7 +164,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-sm">
+      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-3xl overflow-hidden rounded-[3rem] shadow-sem-md hover:shadow-sem-xl transition-all duration-500">
 
         <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Entregas Técnicas Homologadas</CardTitle>
@@ -210,7 +210,7 @@ export const DashboardCharts = memo(({
         </CardContent>
       </Card>
 
-      <Card className="card-standard border border-border/20 bg-card/30 backdrop-blur-md overflow-hidden rounded-[2rem] shadow-sem-sm">
+      <Card className="card-standard border border-border/10 bg-card/40 backdrop-blur-3xl overflow-hidden rounded-[3rem] shadow-sem-md hover:shadow-sem-xl transition-all duration-500">
         <CardHeader className="pb-layout-gap-sm border-b border-border/10">
           <CardTitle className="text-lg md:text-h4 font-black">Incidências por Matriz Técnica</CardTitle>
         </CardHeader>
