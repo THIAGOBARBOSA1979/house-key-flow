@@ -94,7 +94,7 @@ export const InspectionItem = ({ inspection, onUpdate, onCancel }: InspectionIte
 
   return (
     <div className="relative group">
-      <div className="p-5 lg:p-6 flex flex-col lg:flex-row gap-5 lg:items-center justify-between transition-all duration-500 group-hover:bg-primary/[0.02] rounded-[1.5rem] ring-1 ring-transparent group-hover:ring-primary/10">
+      <div className="p-5 lg:p-6 flex flex-col lg:flex-row gap-5 lg:items-center justify-between transition-all duration-500 group-hover:bg-primary/[0.04] rounded-card">
         <div className="flex flex-col gap-3 min-w-0 flex-1">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-xl text-primary shrink-0 group-hover:scale-110 transition-transform duration-500">
