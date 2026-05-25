@@ -60,8 +60,8 @@ const systemItems = [
   { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists", adminOnly: true },
   { to: "/admin/settings", icon: Settings, label: "Configurações", adminOnly: true },
   { to: "/admin/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
-  { to: "/admin/audit-logs", icon: FileSearch, label: "Auditoria Técnica", superAdminOnly: true },
-  { to: "/admin/saas", icon: Building, label: "SaaS Admin", superAdminOnly: true },
+  { to: "/admin/audit-logs", icon: FileSearch, label: "Audit & Compliance", superAdminOnly: true },
+  { to: "/admin/saas", icon: ShieldCheck, label: "Command Center", superAdminOnly: true },
 ];
 
 const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) => {
