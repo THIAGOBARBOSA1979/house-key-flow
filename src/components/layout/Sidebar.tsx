@@ -99,13 +99,13 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
                 )}
               </div>
             </div>
-            <div className="text-center space-y-2.5">
+            <div className="text-center space-y-3">
               <h1 className="text-3xl font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[220px] leading-tight">
                 {company?.settings?.display_name || company?.name || "A2 GESTÃO"}
               </h1>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sidebar-primary/10 border border-sidebar-primary/20 backdrop-blur-md">
-                <span className="w-1.5 h-1.5 rounded-full bg-sidebar-primary animate-pulse" />
-                <p className="text-[10px] font-black text-sidebar-primary uppercase tracking-[0.25em] opacity-90 leading-none">Enterprise Elite</p>
+              <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-sidebar-primary/10 border border-sidebar-primary/20 backdrop-blur-md shadow-inner">
+                <span className="w-2 h-2 rounded-full bg-sidebar-primary animate-pulse shadow-[0_0_8px_rgba(var(--sidebar-primary),0.6)]" />
+                <p className="text-[10px] font-black text-sidebar-primary uppercase tracking-[0.3em] opacity-90 leading-none">Enterprise Elite</p>
               </div>
             </div>
           </div>

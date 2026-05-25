@@ -71,12 +71,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <header 
           className="border-b border-border/20 bg-background/60 backdrop-blur-xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
-          <div className="w-full flex items-center justify-between px-header-padding-x lg:px-layout-gap-lg transition-all duration-slow max-w-container mx-auto">
+          <div className="w-full flex items-center justify-between px-header-padding-x lg:px-layout-gap-xl transition-all duration-slow max-w-container mx-auto">
             <div className="flex items-center gap-component-gap-md md:gap-stack-gap flex-1">
-              <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4 group cursor-default">
-                <HomeIcon size={14} className="group-hover:text-primary transition-colors" />
-                <ChevronRight size={12} />
-                <span className="text-primary/60 group-hover:text-primary transition-colors">Painel Administrativo</span>
+              <div className="hidden lg:flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground/30 mr-6 group cursor-default">
+                <HomeIcon size={14} className="group-hover:text-primary transition-all duration-slow" strokeWidth={3} />
+                <ChevronRight size={12} className="opacity-40" strokeWidth={3} />
+                <span className="group-hover:text-primary group-hover:tracking-[0.35em] transition-all duration-slow">Painel Estratégico</span>
               </div>
 
               {isMobile ? <div className="w-10" /> : (
@@ -84,10 +84,10 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               )}
             </div>
 
-            <div className="flex items-center gap-2 lg:gap-layout-gap shrink-0">
-              <Button variant="ghost" size="icon" className="relative h-10 w-10 lg:h-11 lg:w-11 rounded-xl hover:bg-primary/5 active:scale-90 transition-all group">
-                <Bell size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-status-critical rounded-full border-2 border-background animate-pulse" />
+            <div className="flex items-center gap-3 lg:gap-layout-gap-lg shrink-0">
+              <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-2xl hover:bg-primary/5 active:scale-90 transition-all group border border-transparent hover:border-primary/10">
+                <Bell size={20} className="text-muted-foreground group-hover:text-primary transition-all duration-slow group-hover:rotate-12" strokeWidth={2.5} />
+                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-status-critical rounded-full border-2 border-background animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
               </Button>
 
               <UserMenu 
