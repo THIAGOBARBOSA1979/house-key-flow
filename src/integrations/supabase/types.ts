@@ -1484,6 +1484,7 @@ export type Database = {
     }
     Functions: {
       get_auth_company_id: { Args: never; Returns: string }
+      get_auth_user_role: { Args: never; Returns: string }
       log_audit_action: {
         Args: {
           p_action: string
