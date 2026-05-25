@@ -72,6 +72,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
 
+
           <div className="w-full flex items-center justify-between px-4 lg:px-8 transition-all duration-slow max-w-[1600px] mx-auto">
             <div className="flex items-center gap-2 md:gap-4 flex-1">
               <div className="hidden lg:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground/40 mr-4 group cursor-default">
@@ -133,6 +134,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             </div>
           </div>
         </footer>
+
 
       </div>
 
