@@ -1,5 +1,5 @@
 
-import { LogOut, User, Keyboard } from "lucide-react";
+import { LogOut, User, Keyboard, BookOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +45,13 @@ export function UserMenu({ companyName, onOpenShortcuts }: UserMenuProps) {
         <DropdownMenuItem className="py-3 px-4 rounded-2xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all">
           <User className="mr-3 h-4 w-4 opacity-50" />
           <span className="text-sem-body-sm">Perfil do Sistema</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          className="py-3 px-4 rounded-2xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all"
+          onClick={() => window.open('https://docs.a2incorporadora.com', '_blank')}
+        >
+          <BookOpen className="mr-3 h-4 w-4 opacity-50" />
+          <span className="text-sem-body-sm">Documentação Técnica</span>
         </DropdownMenuItem>
         <DropdownMenuItem 
           className="py-3 px-4 rounded-2xl font-bold cursor-pointer focus:bg-primary/5 focus:text-primary transition-all"
