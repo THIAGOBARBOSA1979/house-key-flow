@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/50 via-background to-indigo-50/50 dark:from-background dark:to-background">
       {/* Header */}
-      <header className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky transition-all duration-500">
+      <header className="border-b border-border/20 bg-background/60 backdrop-blur-xl sticky top-0 z-sticky transition-all duration-500">
         <div className="container-responsive py-5">
           <div className="flex items-center justify-between">
 
@@ -119,7 +119,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="section-padding bg-muted/[0.03] border-y border-border/5">
+      <section className="section-padding bg-muted/[0.03] border-y border-border/20">
         <div className="container-responsive">
           <div className="grid-layout max-w-4xl mx-auto">
             {stats.map((stat, index) => (
@@ -152,7 +152,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {benefits.map((benefit, index) => (
-                <Card key={index} className="card-standard p-4-sem hover:shadow-sem-2xl hover:-translate-y-5 transition-all duration-700 rounded-card border border-border/10 bg-white/50 dark:bg-white/[0.02] group overflow-hidden">
+                <Card key={index} className="card-standard p-4-sem hover:shadow-sem-lg hover:-translate-y-2 transition-all duration-700 rounded-card border border-border/40 bg-white/60 dark:bg-white/[0.02] group overflow-hidden">
                   <CardContent className="p-10 text-center flex flex-col items-center">
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 dark:to-white/[0.05] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-700 shadow-sem-sm">
                       <benefit.icon className="h-10 w-10 text-primary" strokeWidth={2.5} />

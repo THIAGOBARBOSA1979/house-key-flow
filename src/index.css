@@ -116,14 +116,14 @@
     --content-padding-xl: var(--space-8);
     
     /* --- Specific Layout Spacing --- */
-    --header-height: 4.5rem;
+    --header-height: 4rem;
     --header-padding-x: var(--space-6);
     --header-padding-y: var(--space-4);
     --sidebar-width: 18rem;
     --sidebar-collapsed-width: 5.5rem;
     --card-padding: var(--space-6);
     --card-padding-lg: var(--space-8);
-    --card-radius: var(--radius-2xl);
+    --card-radius: var(--radius-xl);
     --card-gap: var(--space-6);
     --stack-gap: var(--space-6);
     --stack-gap-lg: var(--space-10);
@@ -282,7 +282,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-none transition-colors duration-200;
+    @apply border-border/40 outline-none transition-colors duration-200;
   }
 
   body {

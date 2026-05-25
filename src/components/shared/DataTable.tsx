@@ -66,7 +66,7 @@ function DataTableComponent<T>({
 
   return (
     <div className={cn("w-full animate-fade-in group/table-container", className)}>
-      <div className="hidden lg:block rounded-[2rem] border border-border/10 shadow-sem-md bg-white/40 backdrop-blur-3xl overflow-hidden relative transition-all duration-500 hover:shadow-sem-xl hover:border-border/20 group/table-wrapper">
+      <div className="hidden lg:block rounded-card border border-border/40 shadow-sem-md bg-card/60 backdrop-blur-xl overflow-hidden relative transition-all duration-500 hover:shadow-sem-lg group/table-wrapper">
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
           <Table className="min-w-[800px] lg:min-w-full">
           <TableHeader className="bg-muted/5 transition-colors group-hover/table-container:bg-muted/10">
@@ -129,7 +129,7 @@ function DataTableComponent<T>({
         {data.map((item, idx) => (
           <div 
             key={idx}
-            className="card-standard p-layout-gap space-y-4-sem interactive-active border border-border/10 bg-card/40 backdrop-blur-3xl shadow-sem-sm rounded-[2rem] transition-all duration-500 hover:shadow-sem-xl hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
+            className="card-standard p-layout-gap space-y-4-sem interactive-active border border-border/40 bg-card/60 backdrop-blur-xl shadow-sem-sm rounded-card transition-all duration-500 hover:shadow-sem-lg hover:border-primary/20 outline-none focus:ring-2 focus:ring-primary/40 active:scale-[0.98]"
             onClick={() => onRowClick?.(item)}
             tabIndex={onRowClick ? 0 : -1}
             onKeyDown={(e) => {

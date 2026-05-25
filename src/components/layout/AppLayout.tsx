@@ -56,7 +56,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background to-background dark:from-primary/10 dark:via-background dark:to-background">
+    <div className="min-h-screen bg-background font-sans selection:bg-primary/20 transition-colors duration-slower bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-background to-background dark:from-primary/5 dark:via-background dark:to-background">
       <Sidebar 
         onCollapseChange={(collapsed) => {
           setSidebarCollapsed(collapsed);
@@ -69,7 +69,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         isMobile && "pt-0 md:pt-header-height"
       )}>
         <header 
-          className="border-b border-border/5 bg-background/40 backdrop-blur-3xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
+          className="border-b border-border/20 bg-background/60 backdrop-blur-xl sticky top-0 z-sticky h-header-height flex items-center shadow-sem-sm w-full transition-all duration-300"
         >
           <div className="w-full flex items-center justify-between px-header-padding-x lg:px-layout-gap-lg transition-all duration-slow max-w-container mx-auto">
             <div className="flex items-center gap-component-gap-md md:gap-stack-gap flex-1">
@@ -118,7 +118,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
 
 
         <footer 
-          className="mt-layout-gap-xl py-footer-padding-y px-footer-padding-x border-t border-border/5 transition-all duration-slow"
+          className="mt-layout-gap-xl py-footer-padding-y px-footer-padding-x border-t border-border/20 transition-all duration-slow"
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-layout-gap-lg max-w-container mx-auto">
             <div className="space-y-3 text-center md:text-left">

@@ -33,7 +33,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
   return (
     <Card 
       onClick={onClick}
-      className={cn("card-standard card-hover-effect overflow-hidden border-none bg-card/60 dark:bg-card/30 backdrop-blur-3xl flex flex-col h-full cursor-pointer group rounded-[2.5rem] shadow-sem-lg hover:shadow-sem-xl ring-1 ring-black/[0.02] dark:ring-white/[0.02] transition-all duration-500 hover:-translate-y-2", className)}
+      className={cn("card-standard overflow-hidden border border-border/40 bg-card/60 dark:bg-card/30 backdrop-blur-xl flex flex-col h-full cursor-pointer group rounded-card shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 hover:-translate-y-1.5", className)}
     >
 
       <div className="h-40 bg-muted/30 relative group overflow-hidden">
@@ -69,7 +69,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
 
       <CardContent className="space-y-6 pt-2 flex-1 px-6">
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-muted/[0.03] p-3 rounded-2xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-primary/20">
+          <div className="bg-muted/[0.03] p-3 rounded-xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-primary/20">
             <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Unidades</p>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -78,7 +78,7 @@ export const PropertyCard = memo(({ property, onEdit, onDelete, onClick, classNa
               <span className="text-sm font-black">{property.units}</span>
             </div>
           </div>
-          <div className="bg-muted/[0.03] p-3 rounded-2xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-emerald-500/20">
+          <div className="bg-muted/[0.03] p-3 rounded-xl border border-border/10 flex flex-col justify-center transition-colors group-hover:border-emerald-500/20">
             <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest mb-1 opacity-70">Gerente</p>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center">

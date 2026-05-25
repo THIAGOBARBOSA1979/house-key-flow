@@ -27,12 +27,12 @@ export const StatsCard = ({
   className
 }: StatsCardProps) => {
   const variantStyles = {
-    default: "bg-card/40 backdrop-blur-2xl border-border/20 hover:bg-card/60 shadow-sem-lg",
-    pending: "bg-status-pending/[0.04] backdrop-blur-2xl border-status-pending/30 text-status-pending shadow-sem-md hover:shadow-status-pending/30 hover:bg-status-pending/[0.08] ring-1 ring-status-pending/10",
-    progress: "bg-status-progress/[0.04] backdrop-blur-2xl border-status-progress/30 text-status-progress shadow-sem-md hover:shadow-status-progress/30 hover:bg-status-progress/[0.08] ring-1 ring-status-progress/10",
-    complete: "bg-status-complete/[0.04] backdrop-blur-2xl border-status-complete/30 text-status-complete shadow-sem-md hover:shadow-status-complete/30 hover:bg-status-complete/[0.08] ring-1 ring-status-complete/10",
-    critical: "bg-status-critical/[0.04] backdrop-blur-2xl border-status-critical/30 text-status-critical shadow-sem-md hover:shadow-status-critical/30 hover:bg-status-critical/[0.08] ring-1 ring-status-critical/10",
-    brand: "bg-brand/[0.04] backdrop-blur-2xl border-brand/30 text-brand shadow-sem-md hover:shadow-brand/30 hover:bg-brand/[0.08] ring-1 ring-brand/10",
+    default: "bg-card/60 backdrop-blur-xl border-border/40 hover:bg-card/80 shadow-sem-md",
+    pending: "bg-status-pending/[0.04] backdrop-blur-xl border-status-pending/40 text-status-pending shadow-sem-sm hover:bg-status-pending/[0.08]",
+    progress: "bg-status-progress/[0.04] backdrop-blur-xl border-status-progress/40 text-status-progress shadow-sem-sm hover:bg-status-progress/[0.08]",
+    complete: "bg-status-complete/[0.04] backdrop-blur-xl border-status-complete/40 text-status-complete shadow-sem-sm hover:bg-status-complete/[0.08]",
+    critical: "bg-status-critical/[0.04] backdrop-blur-xl border-status-critical/40 text-status-critical shadow-sem-sm hover:bg-status-critical/[0.08]",
+    brand: "bg-brand/[0.04] backdrop-blur-xl border-brand/40 text-brand shadow-sem-sm hover:bg-brand/[0.08]",
   };
 
   const iconStyles = {
@@ -46,7 +46,7 @@ export const StatsCard = ({
 
   return (
     <Card className={cn(
-      "overflow-hidden group transition-all duration-700 border border-border/10 shadow-sem-sm hover:shadow-sem-xl rounded-[2.5rem] hover:-translate-y-2 active:scale-[0.98] relative", 
+      "overflow-hidden group transition-all duration-700 border border-border/40 shadow-sem-sm hover:shadow-sem-lg rounded-card hover:-translate-y-1.5 active:scale-[0.98] relative", 
       variantStyles[variant], 
       className
     )}>
