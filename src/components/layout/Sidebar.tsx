@@ -181,15 +181,19 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
           )}
 
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4 min-w-0 group cursor-pointer p-2 rounded-2xl hover:bg-white/5 transition-all" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
-              <div className="w-14 h-14 rounded-[1.5rem] bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-110 transition-transform duration-slow">
-                {user?.name?.charAt(0) || "A"}
+            <div className="flex items-center gap-4 min-w-0 group cursor-pointer p-2.5 rounded-2xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
+              <div className="relative">
+                <div className="w-14 h-14 rounded-[1.5rem] bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-slow">
+                  {user?.name?.charAt(0) || "A"}
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-status-complete border-2 border-sidebar-background rounded-full shadow-lg"></div>
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-black text-sidebar-foreground truncate group-hover:text-sidebar-primary transition-colors leading-tight">{user?.name || "Administrador"}</p>
-                <div className="flex items-center gap-1.5 mt-2">
-                  <span className="w-2 h-2 rounded-full bg-status-complete animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]" />
-                  <p className="text-[10px] text-sidebar-foreground/40 truncate font-black uppercase tracking-widest leading-none">Sessão ativa</p>
+                <p className="text-sm font-black text-sidebar-foreground truncate group-hover:text-sidebar-primary transition-colors leading-tight">
+                  {user?.name || "Administrador"}
+                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <p className="text-[10px] text-sidebar-foreground/40 truncate font-black uppercase tracking-[0.2em] leading-none">Online</p>
                 </div>
               </div>
             </div>
@@ -198,11 +202,11 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
             <Button 
               variant="ghost" 
               size="icon" 
-              className="text-sidebar-foreground/20 hover:text-status-critical hover:bg-status-critical/10 rounded-2xl h-11 w-11 transition-all active:scale-90 focus-visible:ring-2 focus-visible:ring-status-critical"
+              className="text-sidebar-foreground/30 hover:text-status-critical hover:bg-status-critical/10 rounded-2xl h-12 w-12 transition-all active:scale-90 border border-transparent hover:border-status-critical/20"
               aria-label="Sair do sistema"
               onClick={logout}
             >
-              <LogOut size={20} />
+              <LogOut size={22} />
             </Button>
           </div>
         </div>
