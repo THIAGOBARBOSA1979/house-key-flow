@@ -26,7 +26,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
   
   if (collapsed) {
     return (
-      <div className="space-y-4 py-6 flex flex-col items-center">
+      <div className="layout-stack py-6 flex flex-col items-center">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = item.end 
@@ -59,7 +59,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
   }
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="mb-6">
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="mb-layout-gap">
       <CollapsibleTrigger className="flex items-center justify-between w-full px-5 py-3 text-[10px] text-sidebar-foreground/30 hover:text-sidebar-foreground/80 transition-all duration-300 group uppercase font-black tracking-[0.25em]">
         <span>{title}</span>
         <ChevronDown className={cn(
@@ -67,7 +67,7 @@ export function SidebarGroup({ title, items, defaultOpen = true, collapsed = fal
           isOpen && "rotate-180 opacity-100 text-sidebar-primary"
         )} />
       </CollapsibleTrigger>
-      <CollapsibleContent className="space-y-1.5 px-3 pb-2 animate-in fade-in slide-in-from-top-2 duration-slow">
+      <CollapsibleContent className="space-y-1.5-sem px-3 pb-2 animate-in fade-in slide-in-from-top-2 duration-slow">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = item.end 
