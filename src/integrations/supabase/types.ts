@@ -113,6 +113,7 @@ export type Database = {
       checklist_items: {
         Row: {
           abnt_reference: string | null
+          company_id: string | null
           description: string | null
           group_name: string
           id: string
@@ -123,6 +124,7 @@ export type Database = {
         }
         Insert: {
           abnt_reference?: string | null
+          company_id?: string | null
           description?: string | null
           group_name: string
           id?: string
@@ -133,6 +135,7 @@ export type Database = {
         }
         Update: {
           abnt_reference?: string | null
+          company_id?: string | null
           description?: string | null
           group_name?: string
           id?: string
@@ -142,6 +145,13 @@ export type Database = {
           template_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "checklist_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "checklist_items_template_id_fkey"
             columns: ["template_id"]
@@ -584,6 +594,7 @@ export type Database = {
       }
       inspection_drafts: {
         Row: {
+          company_id: string | null
           created_at: string | null
           data: Json
           id: string
@@ -592,6 +603,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          company_id?: string | null
           created_at?: string | null
           data?: Json
           id?: string
@@ -600,6 +612,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          company_id?: string | null
           created_at?: string | null
           data?: Json
           id?: string
@@ -608,6 +621,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inspection_drafts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inspection_drafts_inspection_id_fkey"
             columns: ["inspection_id"]
@@ -1222,6 +1242,7 @@ export type Database = {
       }
       ticket_messages: {
         Row: {
+          company_id: string | null
           content: string
           created_at: string | null
           id: string
@@ -1232,6 +1253,7 @@ export type Database = {
           whatsapp_message_id: string | null
         }
         Insert: {
+          company_id?: string | null
           content: string
           created_at?: string | null
           id?: string
@@ -1242,6 +1264,7 @@ export type Database = {
           whatsapp_message_id?: string | null
         }
         Update: {
+          company_id?: string | null
           content?: string
           created_at?: string | null
           id?: string
@@ -1252,6 +1275,13 @@ export type Database = {
           whatsapp_message_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "ticket_messages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "ticket_messages_sender_id_fkey"
             columns: ["sender_id"]
@@ -1295,6 +1325,7 @@ export type Database = {
       warranty_history: {
         Row: {
           changed_by: string | null
+          company_id: string | null
           created_at: string | null
           from_status: string | null
           id: string
@@ -1304,6 +1335,7 @@ export type Database = {
         }
         Insert: {
           changed_by?: string | null
+          company_id?: string | null
           created_at?: string | null
           from_status?: string | null
           id?: string
@@ -1313,6 +1345,7 @@ export type Database = {
         }
         Update: {
           changed_by?: string | null
+          company_id?: string | null
           created_at?: string | null
           from_status?: string | null
           id?: string
@@ -1326,6 +1359,13 @@ export type Database = {
             columns: ["changed_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
           {
@@ -1612,6 +1652,7 @@ export type Database = {
       warranty_status_history: {
         Row: {
           changed_by: string | null
+          company_id: string | null
           created_at: string | null
           from_status: string | null
           id: string
@@ -1622,6 +1663,7 @@ export type Database = {
         }
         Insert: {
           changed_by?: string | null
+          company_id?: string | null
           created_at?: string | null
           from_status?: string | null
           id?: string
@@ -1632,6 +1674,7 @@ export type Database = {
         }
         Update: {
           changed_by?: string | null
+          company_id?: string | null
           created_at?: string | null
           from_status?: string | null
           id?: string
@@ -1641,6 +1684,13 @@ export type Database = {
           to_status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "warranty_status_history_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "warranty_status_history_request_id_fkey"
             columns: ["request_id"]
@@ -1745,6 +1795,7 @@ export type Database = {
     Functions: {
       get_auth_company_id: { Args: never; Returns: string }
       get_auth_user_role: { Args: never; Returns: string }
+      is_super_admin: { Args: never; Returns: boolean }
       log_audit_action:
         | {
             Args: {
