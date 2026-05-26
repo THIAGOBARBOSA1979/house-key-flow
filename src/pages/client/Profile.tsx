@@ -106,6 +106,23 @@ const ClientProfile = () => {
 
         {/* Right Column: Form and Settings */}
         <div className="md:col-span-2 space-y-layout-gap">
+          <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden bg-gradient-to-r from-primary/5 to-transparent">
+            <CardContent className="p-8 flex items-center justify-between gap-6">
+              <div className="flex-1 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black uppercase tracking-widest text-primary">Completude do Perfil</span>
+                  <span className="text-sm font-black text-primary">85%</span>
+                </div>
+                <div className="h-2 w-full bg-primary/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary w-[85%] rounded-full shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" />
+                </div>
+              </div>
+              <p className="text-[10px] font-bold text-muted-foreground leading-tight max-w-[150px]">
+                Complete seu endereço para facilitar vistorias técnicas.
+              </p>
+            </CardContent>
+          </Card>
+
           <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden">
             <CardHeader className="bg-muted/30 pb-6">
               <CardTitle className="flex items-center gap-3 text-xl font-black tracking-tight">
