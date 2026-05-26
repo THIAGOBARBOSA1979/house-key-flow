@@ -39,6 +39,21 @@ class NonConformityService extends SupabaseBaseService<NonConformity> {
       updated_at: new Date()
     });
   }
+
+  async getMetrics(companyId?: string, isSuperAdmin?: boolean) {
+    const items = await this.getAll(companyId, isSuperAdmin);
+    const total = items.length;
+    const open = items.filter(n => n.status === 'open').length;
+    const closed = items.filter(n => n.status === 'closed').length;
+    const corrective = items.filter(n => n.status === 'corrective_action').length;
+    
+    return {
+      total,
+      open,
+      closed,
+      corrective
+    };
+  }
 }
 
 export const nonConformityService = new NonConformityService();
