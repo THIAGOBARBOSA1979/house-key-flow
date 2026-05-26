@@ -121,6 +121,7 @@ export type Database = {
           required: boolean | null
           sort_order: number | null
           template_id: string
+          tenant_id: string | null
         }
         Insert: {
           abnt_reference?: string | null
@@ -132,6 +133,7 @@ export type Database = {
           required?: boolean | null
           sort_order?: number | null
           template_id: string
+          tenant_id?: string | null
         }
         Update: {
           abnt_reference?: string | null
@@ -143,6 +145,7 @@ export type Database = {
           required?: boolean | null
           sort_order?: number | null
           template_id?: string
+          tenant_id?: string | null
         }
         Relationships: [
           {
@@ -157,6 +160,13 @@ export type Database = {
             columns: ["template_id"]
             isOneToOne: false
             referencedRelation: "checklist_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_items_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -221,6 +231,7 @@ export type Database = {
           event_type: string
           id: string
           metadata: Json | null
+          tenant_id: string | null
           title: string
         }
         Insert: {
@@ -231,6 +242,7 @@ export type Database = {
           event_type: string
           id?: string
           metadata?: Json | null
+          tenant_id?: string | null
           title: string
         }
         Update: {
@@ -241,12 +253,20 @@ export type Database = {
           event_type?: string
           id?: string
           metadata?: Json | null
+          tenant_id?: string | null
           title?: string
         }
         Relationships: [
           {
             foreignKeyName: "client_events_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_events_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -480,6 +500,7 @@ export type Database = {
           progress_data: Json | null
           property_id: string | null
           status: string
+          tenant_id: string | null
           title: string
           update_type: string
         }
@@ -493,6 +514,7 @@ export type Database = {
           progress_data?: Json | null
           property_id?: string | null
           status?: string
+          tenant_id?: string | null
           title: string
           update_type: string
         }
@@ -506,6 +528,7 @@ export type Database = {
           progress_data?: Json | null
           property_id?: string | null
           status?: string
+          tenant_id?: string | null
           title?: string
           update_type?: string
         }
@@ -522,6 +545,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "construction_updates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -975,6 +1005,7 @@ export type Database = {
           phone: string | null
           role: string | null
           status: string | null
+          tenant_id: string | null
           updated_at: string
         }
         Insert: {
@@ -989,6 +1020,7 @@ export type Database = {
           phone?: string | null
           role?: string | null
           status?: string | null
+          tenant_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -1003,12 +1035,20 @@ export type Database = {
           phone?: string | null
           role?: string | null
           status?: string | null
+          tenant_id?: string | null
           updated_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "profiles_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -1220,6 +1260,7 @@ export type Database = {
           is_internal: boolean | null
           receiver_id: string | null
           sender_id: string
+          tenant_id: string | null
         }
         Insert: {
           company_id: string
@@ -1231,6 +1272,7 @@ export type Database = {
           is_internal?: boolean | null
           receiver_id?: string | null
           sender_id: string
+          tenant_id?: string | null
         }
         Update: {
           company_id?: string
@@ -1242,6 +1284,7 @@ export type Database = {
           is_internal?: boolean | null
           receiver_id?: string | null
           sender_id?: string
+          tenant_id?: string | null
         }
         Relationships: [
           {
@@ -1265,6 +1308,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "support_messages_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
         ]
       }
       support_tickets: {
@@ -1281,6 +1331,7 @@ export type Database = {
           protocol: string
           status: string
           subject: string
+          tenant_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1296,6 +1347,7 @@ export type Database = {
           protocol: string
           status?: string
           subject: string
+          tenant_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1311,6 +1363,7 @@ export type Database = {
           protocol?: string
           status?: string
           subject?: string
+          tenant_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -1340,6 +1393,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
