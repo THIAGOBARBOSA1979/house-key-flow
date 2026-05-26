@@ -168,6 +168,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: string
+          tenant_id: string | null
           title: string
           updated_at: string | null
           version: number | null
@@ -178,6 +179,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          tenant_id?: string | null
           title: string
           updated_at?: string | null
           version?: number | null
@@ -188,6 +190,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          tenant_id?: string | null
           title?: string
           updated_at?: string | null
           version?: number | null
@@ -196,6 +199,13 @@ export type Database = {
           {
             foreignKeyName: "checklist_templates_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -259,6 +269,7 @@ export type Database = {
           property_id: string | null
           property_name: string | null
           stage_history: Json | null
+          tenant_id: string | null
           unit_number: string | null
           updated_at: string | null
           user_id: string | null
@@ -278,6 +289,7 @@ export type Database = {
           property_id?: string | null
           property_name?: string | null
           stage_history?: Json | null
+          tenant_id?: string | null
           unit_number?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -297,6 +309,7 @@ export type Database = {
           property_id?: string | null
           property_name?: string | null
           stage_history?: Json | null
+          tenant_id?: string | null
           unit_number?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -314,6 +327,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -519,6 +539,7 @@ export type Database = {
           id: string
           property_id: string | null
           status: string
+          tenant_id: string | null
           title: string
           unit_number: string | null
           updated_at: string | null
@@ -537,6 +558,7 @@ export type Database = {
           id?: string
           property_id?: string | null
           status?: string
+          tenant_id?: string | null
           title: string
           unit_number?: string | null
           updated_at?: string | null
@@ -555,6 +577,7 @@ export type Database = {
           id?: string
           property_id?: string | null
           status?: string
+          tenant_id?: string | null
           title?: string
           unit_number?: string | null
           updated_at?: string | null
@@ -588,6 +611,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -651,6 +681,7 @@ export type Database = {
           property_id: string | null
           status: string | null
           technician_id: string | null
+          tenant_id: string | null
           type: string | null
           unit_number: string | null
           updated_at: string | null
@@ -668,6 +699,7 @@ export type Database = {
           property_id?: string | null
           status?: string | null
           technician_id?: string | null
+          tenant_id?: string | null
           type?: string | null
           unit_number?: string | null
           updated_at?: string | null
@@ -685,6 +717,7 @@ export type Database = {
           property_id?: string | null
           status?: string | null
           technician_id?: string | null
+          tenant_id?: string | null
           type?: string | null
           unit_number?: string | null
           updated_at?: string | null
@@ -718,6 +751,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "inspections_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
         ]
       }
       non_conformities: {
@@ -735,6 +775,7 @@ export type Database = {
           root_cause: string | null
           severity: string
           status: string
+          tenant_id: string | null
           title: string
           updated_at: string | null
         }
@@ -752,6 +793,7 @@ export type Database = {
           root_cause?: string | null
           severity?: string
           status?: string
+          tenant_id?: string | null
           title: string
           updated_at?: string | null
         }
@@ -769,6 +811,7 @@ export type Database = {
           root_cause?: string | null
           severity?: string
           status?: string
+          tenant_id?: string | null
           title?: string
           updated_at?: string | null
         }
@@ -776,6 +819,13 @@ export type Database = {
           {
             foreignKeyName: "non_conformities_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "non_conformities_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -790,6 +840,7 @@ export type Database = {
           id: string
           link: string | null
           read_at: string | null
+          tenant_id: string | null
           title: string
           type: string | null
           user_id: string
@@ -801,6 +852,7 @@ export type Database = {
           id?: string
           link?: string | null
           read_at?: string | null
+          tenant_id?: string | null
           title: string
           type?: string | null
           user_id: string
@@ -812,6 +864,7 @@ export type Database = {
           id?: string
           link?: string | null
           read_at?: string | null
+          tenant_id?: string | null
           title?: string
           type?: string | null
           user_id?: string
@@ -820,6 +873,13 @@ export type Database = {
           {
             foreignKeyName: "notifications_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -968,6 +1028,7 @@ export type Database = {
           milestones: Json | null
           name: string
           status: string | null
+          tenant_id: string | null
           total_area: number | null
           units_completed: number | null
           units_list: Json | null
@@ -986,6 +1047,7 @@ export type Database = {
           milestones?: Json | null
           name: string
           status?: string | null
+          tenant_id?: string | null
           total_area?: number | null
           units_completed?: number | null
           units_list?: Json | null
@@ -1004,6 +1066,7 @@ export type Database = {
           milestones?: Json | null
           name?: string
           status?: string | null
+          tenant_id?: string | null
           total_area?: number | null
           units_completed?: number | null
           units_list?: Json | null
@@ -1025,6 +1088,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "properties_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
         ]
       }
       quality_indicators: {
@@ -1037,6 +1107,7 @@ export type Database = {
           period_end: string
           period_start: string
           target_value: number | null
+          tenant_id: string | null
         }
         Insert: {
           company_id: string
@@ -1047,6 +1118,7 @@ export type Database = {
           period_end: string
           period_start: string
           target_value?: number | null
+          tenant_id?: string | null
         }
         Update: {
           company_id?: string
@@ -1057,11 +1129,19 @@ export type Database = {
           period_end?: string
           period_start?: string
           target_value?: number | null
+          tenant_id?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "quality_indicators_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quality_indicators_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -1613,6 +1693,7 @@ export type Database = {
           sla_status: string | null
           stage_started_at: string | null
           status: string
+          tenant_id: string | null
           title: string
           unit_number: string
           updated_at: string | null
@@ -1641,6 +1722,7 @@ export type Database = {
           sla_status?: string | null
           stage_started_at?: string | null
           status?: string
+          tenant_id?: string | null
           title: string
           unit_number: string
           updated_at?: string | null
@@ -1669,6 +1751,7 @@ export type Database = {
           sla_status?: string | null
           stage_started_at?: string | null
           status?: string
+          tenant_id?: string | null
           title?: string
           unit_number?: string
           updated_at?: string | null
@@ -1701,6 +1784,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_requests_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -1896,7 +1986,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_tenant_isolation: {
+        Args: { p_table_name: string }
+        Returns: undefined
+      }
       get_auth_company_id: { Args: never; Returns: string }
+      get_auth_tenant: { Args: never; Returns: string }
       get_auth_user_role: { Args: never; Returns: string }
       is_super_admin: { Args: never; Returns: boolean }
       log_audit_action:
