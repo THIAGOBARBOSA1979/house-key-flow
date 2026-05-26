@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { TenantProvider } from "@/contexts/TenantContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { ConfirmProvider } from "@/contexts/ConfirmContext";
 import { BrandThemeProvider } from "@/components/shared/BrandThemeProvider";
@@ -45,7 +46,8 @@ const App = () => {
           <AuditProgressOverlay />
           <BrowserRouter>
             <AuthProvider>
-              <BrandThemeProvider>
+              <TenantProvider>
+                <BrandThemeProvider>
                 <SubscriptionProvider>
                   <ConfirmProvider>
 
@@ -120,7 +122,8 @@ const App = () => {
                 </Suspense>
                   </ConfirmProvider>
                 </SubscriptionProvider>
-              </BrandThemeProvider>
+              </TenantProvider>
+            </BrandThemeProvider>
 
             </AuthProvider>
 

@@ -1,33 +1,32 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { companyService } from '@/services';
+import { useTenant } from '@/contexts/TenantContext';
 
 export const BrandThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
+  const { tenant } = useTenant();
 
   useEffect(() => {
     const root = document.documentElement;
+    // Prioritize tenant settings (pre-login) or user company settings (post-login)
+    const activeSettings = user?.company_id === tenant?.id ? tenant?.settings : (tenant?.settings || null);
     
-    if (user?.company_id) {
-      companyService.getById(user.company_id, undefined, true).then(company => {
-        if (company?.settings?.primary_color) {
-          // Update primary color (HSL components needed for some shadcn-ui components)
-          // For now we set the raw property
-          root.style.setProperty('--primary', company.settings.primary_color);
-          root.style.setProperty('--brand', company.settings.primary_color);
-        } else {
-          root.style.removeProperty('--primary');
-          root.style.removeProperty('--brand');
-        }
-        
-        if (company?.settings?.is_dark_mode_forced) {
-          root.classList.add('dark');
-        } else if (company?.settings?.is_dark_mode_forced === false) {
-          root.classList.remove('dark');
-        }
-      });
+    if (activeSettings) {
+      if (activeSettings.primary_color) {
+        root.style.setProperty('--primary', activeSettings.primary_color);
+        root.style.setProperty('--brand', activeSettings.primary_color);
+      }
+      
+      if (activeSettings.is_dark_mode_forced) {
+        root.classList.add('dark');
+      } else if (activeSettings.is_dark_mode_forced === false) {
+        root.classList.remove('dark');
+      }
+    } else {
+      root.style.removeProperty('--primary');
+      root.style.removeProperty('--brand');
     }
-  }, [user]);
+  }, [user, tenant]);
 
   return <>{children}</>;
 };
