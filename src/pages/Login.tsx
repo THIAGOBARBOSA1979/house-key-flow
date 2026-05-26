@@ -85,12 +85,20 @@ export default function Login() {
 
           <div className="flex items-center justify-center">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-primary to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-2xl shadow-xl shadow-brand/20 group-hover:rotate-6 transition-all duration-500">
-                A2
-              </div>
+              {tenant?.logo_url ? (
+                <img src={tenant.logo_url} alt={tenant.brand_name || tenant.name} className="h-14 object-contain" />
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-primary to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-2xl shadow-xl shadow-brand/20 group-hover:rotate-6 transition-all duration-500">
+                  {tenant?.name?.substring(0, 2).toUpperCase() || "A2"}
+                </div>
+              )}
               <div>
-                <h1 className="text-h2 font-black tracking-tighter text-foreground">A2 Incorporadora</h1>
-                <p className="text-label text-brand uppercase tracking-widest">Sistema de Gestão</p>
+                <h1 className="text-h2 font-black tracking-tighter text-foreground">
+                  {tenant?.brand_name || tenant?.name || "A2 Incorporadora"}
+                </h1>
+                <p className="text-label text-brand uppercase tracking-widest">
+                  {tenant ? "Portal do Parceiro" : "Sistema de Gestão"}
+                </p>
               </div>
             </Link>
           </div>
