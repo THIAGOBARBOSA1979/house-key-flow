@@ -252,7 +252,7 @@ const ClientNotifications = () => {
                 </div>
               )}
             </CardContent>
-          </div>
+          </Card>
         </TabsContent>
 
         <TabsContent value="settings" className="outline-none">
