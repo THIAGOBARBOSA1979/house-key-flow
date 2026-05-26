@@ -19,6 +19,8 @@ import { useWarrantyClaims } from "@/hooks/warranty/useWarrantyClaims";
 import { WarrantyGuide } from "@/components/warranty/client/WarrantyGuide";
 import { WarrantyStatus } from "@/components/warranty/client/WarrantyStatus";
 import { NewWarrantyRequestDialog } from "@/components/warranty/client/NewWarrantyRequestDialog";
+import { SatisfactionSurvey } from "@/components/shared/SatisfactionSurvey";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const ClientWarranty = () => {
   const { user } = useAuth();
@@ -35,6 +37,7 @@ const ClientWarranty = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedWarrantyItem, setSelectedWarrantyItem] = useState<WarrantyItem | null>(null);
   const [requestStep, setRequestStep] = useState<"select_item" | "fill_form">("select_item");
+  const [showSurvey, setShowSurvey] = useState(false);
 
   useEffect(() => {
     if (inspectionId) {
@@ -54,6 +57,7 @@ const ClientWarranty = () => {
         title: "Protocolo Finalizado",
         description: "A homologação foi registrada com sucesso no histórico técnico."
       });
+      setShowSurvey(true);
     }
   };
 
@@ -271,6 +275,23 @@ const ClientWarranty = () => {
           </div>
         </div>
       </FeatureGate>
+
+      <Dialog open={showSurvey} onOpenChange={setShowSurvey}>
+        <DialogContent className="max-w-md p-0 border-none bg-transparent shadow-none">
+          <SatisfactionSurvey 
+            onDismiss={() => setShowSurvey(false)}
+            onSubmit={(data) => {
+              console.log("Warranty Feedback:", data);
+              toast({
+                title: "Feedback registrado",
+                description: "Obrigado pela sua avaliação técnica.",
+              });
+            }}
+            title="Avaliação da Assistência Técnica"
+            description="Como você avalia a resolução deste chamado de garantia?"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

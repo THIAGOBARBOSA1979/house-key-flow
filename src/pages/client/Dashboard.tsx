@@ -20,6 +20,7 @@ import { useClientDashboardData } from "@/hooks/core/useClientDashboardData";
 import { PropertyInfoCard } from "@/components/dashboard/client/PropertyInfoCard";
 import { ReferralCard } from "@/components/dashboard/client/ReferralCard";
 import { TechnicalSheet } from "@/components/dashboard/client/TechnicalSheet";
+import { RecentDocumentsCard } from "@/components/dashboard/client/RecentDocumentsCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -213,6 +214,7 @@ const Dashboard = () => {
           </div>
 
           <ConstructionFeed updates={constructionUpdates} />
+          <RecentDocumentsCard />
         </div>
 
         <div className="lg:col-span-1 space-y-8">

@@ -106,6 +106,23 @@ const ClientProfile = () => {
 
         {/* Right Column: Form and Settings */}
         <div className="md:col-span-2 space-y-layout-gap">
+          <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden bg-gradient-to-r from-primary/5 to-transparent">
+            <CardContent className="p-8 flex items-center justify-between gap-6">
+              <div className="flex-1 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black uppercase tracking-widest text-primary">Completude do Perfil</span>
+                  <span className="text-sm font-black text-primary">85%</span>
+                </div>
+                <div className="h-2 w-full bg-primary/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary w-[85%] rounded-full shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" />
+                </div>
+              </div>
+              <p className="text-[10px] font-bold text-muted-foreground leading-tight max-w-[150px]">
+                Complete seu endereço para facilitar vistorias técnicas.
+              </p>
+            </CardContent>
+          </Card>
+
           <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden">
             <CardHeader className="bg-muted/30 pb-6">
               <CardTitle className="flex items-center gap-3 text-xl font-black tracking-tight">
@@ -194,29 +211,88 @@ const ClientProfile = () => {
                   <p className="font-black text-sm group-hover/sec:text-primary transition-colors">Alterar Senha de Acesso</p>
                   <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Protocolo sugerido a cada 90 dias</p>
                 </div>
-                <Button variant="outline" size="sm" className="rounded-xl font-black uppercase tracking-widest text-[9px] h-9 px-4 border-2">Sincronizar</Button>
+                <Button variant="outline" size="sm" className="rounded-xl font-black uppercase tracking-widest text-[9px] h-9 px-4 border-2">Redefinir</Button>
               </div>
               
               <div className="flex items-center justify-between p-5 bg-muted/20 rounded-2xl border border-border/5 group/2fa hover:bg-emerald-500/5 transition-all">
                 <div className="space-y-1">
                   <p className="font-black text-sm group-hover/2fa:text-emerald-600 transition-colors">Autenticação MFA</p>
-                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Camada extra de proteção via SMS</p>
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Camada extra de proteção via SMS/App</p>
                 </div>
                 <Badge className="bg-emerald-500 text-white border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">Ativo</Badge>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/10 shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-4">
+              <CardTitle className="flex items-center gap-3 text-lg font-black tracking-tight">
                 <BellRing className="h-5 w-5 text-primary" />
-                Preferências de Notificação
+                Canais de Comunicação
               </CardTitle>
-              <CardDescription>Defina como você quer receber alertas do sistema.</CardDescription>
+              <CardDescription className="font-medium">Defina como deseja ser notificado sobre vistorias e obras.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 text-sm text-muted-foreground font-medium">
-              <p>Gerencie estas preferências na <Button variant="link" className="p-0 h-auto font-bold text-primary">Central de Notificações</Button>.</p>
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted/20 rounded-2xl">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-bold">E-mail Transacional</span>
+                </div>
+                <Badge variant="outline" className="text-primary border-primary/20">Sempre Ativo</Badge>
+              </div>
+              <div className="flex items-center justify-between p-4 bg-muted/20 rounded-2xl">
+                <div className="flex items-center gap-3">
+                  <Phone className="h-4 w-4 text-emerald-500" />
+                  <span className="text-sm font-bold">WhatsApp Business</span>
+                </div>
+                <div className="w-10 h-6 bg-primary rounded-full p-1 flex justify-end cursor-pointer">
+                  <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-4">
+              <CardTitle className="flex items-center gap-3 text-lg font-black tracking-tight">
+                <Shield className="h-5 w-5 text-primary" />
+                Registro de Atividades (Audit Log)
+              </CardTitle>
+              <CardDescription className="font-medium">Histórico de acessos e ações críticas para sua segurança.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/10">
+                <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <div>
+                      <p className="text-sm font-bold">Login realizado</p>
+                      <p className="text-[10px] text-muted-foreground font-medium">Browser: Chrome (macOS) • IP: 187.64.XX.XX</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black uppercase text-muted-foreground whitespace-nowrap">Hoje, 09:42</span>
+                </div>
+                <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
+                    <div>
+                      <p className="text-sm font-bold">Download de Documento</p>
+                      <p className="text-[10px] text-muted-foreground font-medium">Planta Humanizada Unidade 402.pdf</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black uppercase text-muted-foreground whitespace-nowrap">Ontem, 14:15</span>
+                </div>
+                <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors opacity-50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-amber-500" />
+                    <div>
+                      <p className="text-sm font-bold">Alteração de Senha</p>
+                      <p className="text-[10px] text-muted-foreground font-medium">Sucesso na atualização</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black uppercase text-muted-foreground whitespace-nowrap">12 Abr 2024</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

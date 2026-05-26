@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage, useNotifications } from "@/hooks";
+import { useCompany } from "@/hooks/core/useCompany";
 import { 
   Select, 
   SelectContent, 
@@ -64,6 +65,7 @@ const ClientLayout = () => {
   const clientId = user?.id || "client-1";
   const { profile, allProfiles, selectedProfileId, setSelectedProfileId } = useClientStage(clientId);
   const { unreadCount } = useNotifications(clientId);
+  const { company } = useCompany();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -76,10 +78,16 @@ const ClientLayout = () => {
       {/* Header Mobile - Enhanced with modern branding */}
       <div className="lg:hidden h-20 px-6 flex items-center justify-between border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg shadow-primary/20">
-            A2
-          </div>
-          <span className="font-black tracking-tighter text-lg uppercase text-foreground">Portal</span>
+          {company?.settings?.logo_url ? (
+            <img src={company.settings.logo_url} alt={company.settings.display_name || "Logo"} className="h-10 w-auto object-contain" />
+          ) : (
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg shadow-primary/20">
+              {company?.settings?.display_name?.substring(0, 2).toUpperCase() || "A2"}
+            </div>
+          )}
+          <span className="font-black tracking-tighter text-lg uppercase text-foreground">
+            {company?.settings?.display_name || "Portal"}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="rounded-xl relative">
@@ -99,12 +107,18 @@ const ClientLayout = () => {
       )}>
         <div className="h-full flex flex-col p-layout-gap pt-layout-gap-lg">
           <div className="flex items-center justify-between mb-layout-gap-lg">
-            <Link to="/client" className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white font-black text-xl shadow-xl shadow-primary/20 rotate-3 group-hover:rotate-0 transition-transform">
-                A2
-              </div>
+            <Link to="/client" className="flex items-center gap-4 group">
+              {company?.settings?.logo_url ? (
+                <img src={company.settings.logo_url} alt={company.settings.display_name || "Logo"} className="h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+              ) : (
+                <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white font-black text-xl shadow-xl shadow-primary/20 rotate-3 group-hover:rotate-0 transition-transform">
+                  {company?.settings?.display_name?.substring(0, 2).toUpperCase() || "A2"}
+                </div>
+              )}
               <div>
-                <span className="block font-black tracking-tighter text-xl leading-none">PORTAL</span>
+                <span className="block font-black tracking-tighter text-xl leading-none uppercase truncate max-w-[150px]">
+                  {company?.settings?.display_name || "PORTAL"}
+                </span>
                 <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Exclusividade</span>
               </div>
             </Link>
