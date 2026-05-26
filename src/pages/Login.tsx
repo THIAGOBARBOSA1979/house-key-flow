@@ -128,10 +128,15 @@ export default function Login() {
                   )}
                 </h2>
                 <p className="text-body-lg text-muted-foreground leading-relaxed font-medium">
-                  {activeTab === "admin" 
-                    ? "O centro de comando definitivo para gerir incorporadoras de alta performance com segurança e agilidade."
-                    : "Acesse seu ecossistema exclusivo e gerencie seu imóvel, vistorias e garantias com o padrão A2 de excelência."
-                  }
+                  {tenant ? (
+                    activeTab === "admin" 
+                      ? `Acesso administrativo para colaboradores da ${tenant.brand_name || tenant.name}.`
+                      : `Portal de serviços exclusivo para proprietários da ${tenant.brand_name || tenant.name}.`
+                  ) : (
+                    activeTab === "admin" 
+                      ? "O centro de comando definitivo para gerir incorporadoras de alta performance com segurança e agilidade."
+                      : "Acesse seu ecossistema exclusivo e gerencie seu imóvel, vistorias e garantias com o padrão de excelência."
+                  )}
                 </p>
               </div>
 
