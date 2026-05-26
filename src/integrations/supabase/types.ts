@@ -327,7 +327,7 @@ export type Database = {
           id: string
           logo_url: string | null
           name: string
-          owner_id: string
+          owner_id: string | null
           plan_id: string | null
           slug: string
           status: string
@@ -347,7 +347,7 @@ export type Database = {
           id?: string
           logo_url?: string | null
           name: string
-          owner_id: string
+          owner_id?: string | null
           plan_id?: string | null
           slug: string
           status?: string
@@ -367,7 +367,7 @@ export type Database = {
           id?: string
           logo_url?: string | null
           name?: string
-          owner_id?: string
+          owner_id?: string | null
           plan_id?: string | null
           slug?: string
           status?: string

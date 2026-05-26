@@ -63,7 +63,7 @@ export default function Register() {
           slug: slug,
           subdomain: subdomain,
           status: 'active'
-        })
+        } as any)
         .select()
         .single();
 
