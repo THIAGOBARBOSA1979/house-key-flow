@@ -3,19 +3,20 @@ import { PageTemplate } from "@/components/layout/PageTemplate";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { qualityService } from "@/services/operations/QualityService";
+import { useAuth } from "@/contexts/AuthContext";
+import { SkeletonLoader } from "@/components/shared/SkeletonLoader";
+import { ErrorView } from "@/components/shared/ErrorView";
 
 const QualityIndicators = () => {
-  const { data: metrics = [] } = useQuery({
-    queryKey: ['quality-metrics'],
+  const { user } = useAuth();
+  
+  const { data: metrics = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['quality-metrics', user?.company_id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('quality_indicators')
-        .select('*')
-        .order('period_end', { ascending: false });
-      if (error) throw error;
-      return data;
-    }
+      return await qualityService.getAll(user?.company_id, user?.is_super_admin);
+    },
+    enabled: !!user
   });
 
   const cards = [
@@ -52,6 +53,9 @@ const QualityIndicators = () => {
       color: "text-orange-500"
     }
   ];
+
+  if (isLoading) return <SkeletonLoader type="page" />;
+  if (error) return <ErrorView message={(error as any)?.message} onRetry={() => refetch()} />;
 
   return (
     <PageTemplate
