@@ -224,7 +224,7 @@ const AdminDocuments = () => {
                   </div>
                 </div>
 
-                <DataView<Document>
+                <DataView
                   items={documents}
                   viewMode={viewMode}
                   itemsPerPage={12}

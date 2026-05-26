@@ -171,7 +171,7 @@ const Technicians = () => {
         )}
       </div>
 
-      <DataView<Technician>
+      <DataView
         items={filteredTechnicians}
         isLoading={isLoading}
         isError={!!techniciansError}

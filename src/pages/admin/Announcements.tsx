@@ -173,7 +173,7 @@ const Announcements = () => {
             />
           </div>
 
-          <DataView<ConstructionUpdate>
+          <DataView
             items={filteredUpdates}
             isLoading={isLoading}
             isError={!!announcementError}
