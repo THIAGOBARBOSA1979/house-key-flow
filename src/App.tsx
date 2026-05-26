@@ -61,7 +61,7 @@ const App = () => {
                 <Route path="/register" element={<Pages.Register />} />
 
                 {/* Redirect legacy login paths to global login */}
-                <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+                <Route path="/app/login" element={<Navigate to="/login" replace />} />
                 <Route path="/client/login" element={<Navigate to="/login" replace />} />
                 <Route path="/app/login" element={<Navigate to="/login" replace />} />
                 
@@ -103,8 +103,8 @@ const App = () => {
                 </Route>
 
                 {/* Legacy redirects for top-level paths and /admin */}
-                <Route path="/admin" element={<Navigate to="/app" replace />} />
-                <Route path="/admin/*" element={<Navigate to="/app" replace />} />
+                <Route path="/app" element={<Navigate to="/app" replace />} />
+                <Route path="/app/*" element={<Navigate to="/app" replace />} />
                 <Route path="/properties" element={<Navigate to="/app/properties" replace />} />
                 <Route path="/inspections" element={<Navigate to="/app/inspections" replace />} />
                 <Route path="/warranty" element={<Navigate to="/app/warranty" replace />} />

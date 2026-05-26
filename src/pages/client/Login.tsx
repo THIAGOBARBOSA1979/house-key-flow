@@ -71,7 +71,7 @@ export default function ClientLogin() {
                   <span>Seg-Sex 8h-18h</span>
                 </div>
               </div>
-              <Link to="/admin/login" className="text-sm text-muted-foreground hover:text-brand transition-colors">
+              <Link to="/app/login" className="text-sm text-muted-foreground hover:text-brand transition-colors">
                 Área Administrativa
               </Link>
             </div>

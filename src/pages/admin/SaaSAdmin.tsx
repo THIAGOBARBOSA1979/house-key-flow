@@ -78,7 +78,7 @@ export default function SaaSAdmin() {
   } = useSaaSAdmin();
 
   if (!user?.is_super_admin) {
-    return <Navigate to="/admin" replace />;
+    return <Navigate to="/app" replace />;
   }
 
   const columns = [

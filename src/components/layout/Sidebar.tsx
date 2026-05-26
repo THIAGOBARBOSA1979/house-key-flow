@@ -39,29 +39,29 @@ interface SidebarProps {
 }
 
 const operationalItems = [
-  { to: "/admin", icon: Home, label: "Painel Estratégico", end: true },
-  { to: "/admin/calendar", icon: Calendar, label: "Cronograma Técnico" },
-  { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas" },
-  { to: "/admin/warranty", icon: ShieldCheck, label: "Assistência Técnica" },
-  { to: "/admin/support", icon: MessageSquare, label: "Suporte Técnico" },
-  { to: "/admin/inbox", icon: MessageSquare, label: "Inbox WhatsApp", adminOnly: true },
+  { to: "/app", icon: Home, label: "Painel Estratégico", end: true },
+  { to: "/app/calendar", icon: Calendar, label: "Cronograma Técnico" },
+  { to: "/app/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas" },
+  { to: "/app/warranty", icon: ShieldCheck, label: "Assistência Técnica" },
+  { to: "/app/support", icon: MessageSquare, label: "Suporte Técnico" },
+  { to: "/app/inbox", icon: MessageSquare, label: "Inbox WhatsApp", adminOnly: true },
 ];
 
 const managementItems = [
-  { to: "/admin/properties", icon: Building, label: "Empreendimentos" },
-  { to: "/admin/announcements", icon: Megaphone, label: "Comunicados" },
-  { to: "/admin/ClientArea", icon: User, label: "Clientes" },
-  { to: "/admin/documents", icon: FileText, label: "Documentos" },
-  { to: "/admin/users", icon: Users, label: "Usuários" },
-  { to: "/admin/technicians", icon: Wrench, label: "Técnicos" },
+  { to: "/app/properties", icon: Building, label: "Empreendimentos" },
+  { to: "/app/announcements", icon: Megaphone, label: "Comunicados" },
+  { to: "/app/ClientArea", icon: User, label: "Clientes" },
+  { to: "/app/documents", icon: FileText, label: "Documentos" },
+  { to: "/app/users", icon: Users, label: "Usuários" },
+  { to: "/app/technicians", icon: Wrench, label: "Técnicos" },
 ];
 
 const systemItems = [
-  { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists", adminOnly: true },
-  { to: "/admin/settings", icon: Settings, label: "Configurações", adminOnly: true },
-  { to: "/admin/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
-  { to: "/admin/audit-logs", icon: FileSearch, label: "Audit & Compliance", superAdminOnly: true },
-  { to: "/admin/saas", icon: ShieldCheck, label: "Command Center", superAdminOnly: true },
+  { to: "/app/checklist", icon: ClipboardCheck, label: "Checklists", adminOnly: true },
+  { to: "/app/settings", icon: Settings, label: "Configurações", adminOnly: true },
+  { to: "/app/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
+  { to: "/app/audit-logs", icon: FileSearch, label: "Audit & Compliance", superAdminOnly: true },
+  { to: "/app/saas", icon: ShieldCheck, label: "Command Center", superAdminOnly: true },
 ];
 
 const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) => {

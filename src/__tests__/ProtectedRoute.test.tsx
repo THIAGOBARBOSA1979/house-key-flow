@@ -65,7 +65,7 @@ describe('ProtectedRoute', () => {
     render(
       <BrowserRouter>
         <Routes>
-          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
+          <Route path="/app" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
           <Route path="/client" element={<div>Client Area</div>} />
         </Routes>
       </BrowserRouter>
@@ -78,7 +78,7 @@ describe('ProtectedRoute', () => {
     render(
       <BrowserRouter>
         <Routes>
-          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
+          <Route path="/app" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
           <Route path="/client" element={<div>Client Area</div>} />
         </Routes>
       </BrowserRouter>

@@ -209,7 +209,7 @@ export default function AdminLogin() {
                       />
                       <span className="text-muted-foreground font-bold uppercase tracking-tight group-hover:text-foreground transition-colors">Lembrar acesso</span>
                     </label>
-                    <Link to="/admin/forgot-password" virtual-link="true" className="text-primary font-black uppercase tracking-tight hover:underline">
+                    <Link to="/app/forgot-password" virtual-link="true" className="text-primary font-black uppercase tracking-tight hover:underline">
                       Esqueci a senha
                     </Link>
                   </div>

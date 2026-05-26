@@ -23,7 +23,7 @@ export const ActiveProperties = () => {
           variant="ghost" 
           size="sm" 
           className="gap-1 font-bold text-primary hover:bg-primary/5 rounded-xl" 
-          onClick={() => navigate("/admin/properties")}
+          onClick={() => navigate("/app/properties")}
         >
           Explorar Ativos
           <ChevronRight size={14} />
@@ -35,7 +35,7 @@ export const ActiveProperties = () => {
         viewMode="grid"
         gridClassName="animate-in fade-in slide-in-from-left-4 duration-slow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-layout-gap"
         renderGrid={(property) => (
-          <PropertyCard key={property.id} property={property} onClick={() => navigate("/admin/properties")} />
+          <PropertyCard key={property.id} property={property} onClick={() => navigate("/app/properties")} />
         )}
       />
 
