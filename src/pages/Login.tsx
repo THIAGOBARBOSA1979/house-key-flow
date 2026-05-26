@@ -184,11 +184,15 @@ export default function Login() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4 bg-muted/50 p-1.5 rounded-2xl h-14">
+                    <TabsList className={`grid w-full ${tenant ? 'grid-cols-2' : 'grid-cols-4'} bg-muted/50 p-1.5 rounded-2xl h-14`}>
                       <TabsTrigger value="client" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Portal</TabsTrigger>
                       <TabsTrigger value="admin" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Admin</TabsTrigger>
-                      <TabsTrigger value="register" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Adesão</TabsTrigger>
-                      <TabsTrigger value="master" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Master</TabsTrigger>
+                      {!tenant && (
+                        <>
+                          <TabsTrigger value="register" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Adesão</TabsTrigger>
+                          <TabsTrigger value="master" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Master</TabsTrigger>
+                        </>
+                      )}
                     </TabsList>
 
 
