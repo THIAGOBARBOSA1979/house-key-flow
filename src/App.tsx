@@ -57,18 +57,23 @@ const App = () => {
                 {/* Public Routes */}
                 <Route path="/" element={<Pages.Home />} />
                 <Route path="/login" element={<Pages.Login />} />
-                <Route path="/admin/login" element={<Pages.Login />} />
-                <Route path="/client/login" element={<Pages.Login />} />
                 <Route path="/forgot-password" element={<Pages.ForgotPassword />} />
                 <Route path="/register" element={<Pages.Register />} />
 
-                
-                {/* Redirect legacy login paths */}
+                {/* Redirect legacy login paths to global login */}
                 <Route path="/admin/login" element={<Navigate to="/login" replace />} />
                 <Route path="/client/login" element={<Navigate to="/login" replace />} />
+                <Route path="/app/login" element={<Navigate to="/login" replace />} />
                 
-                {/* Protected Admin Routes */}
-                <Route path="/admin" element={<ProtectedRoute requiredRole={['admin', 'super_admin']}><Pages.AppLayout /></ProtectedRoute>}>
+                {/* Protected Super Admin Routes */}
+                <Route path="/super-admin" element={<ProtectedRoute requiredRole="super_admin"><Pages.AppLayout /></ProtectedRoute>}>
+                  <Route index element={<Pages.SaaSAdmin />} />
+                  <Route path="audit-logs" element={<Pages.AuditLogs />} />
+                  <Route path="design-system" element={<Pages.DesignSystem />} />
+                </Route>
+
+                {/* Protected Tenant/App Routes */}
+                <Route path="/app" element={<ProtectedRoute requiredRole={['admin', 'manager', 'staff', 'technical']}><Pages.AppLayout /></ProtectedRoute>}>
                   <Route index element={<Pages.AdminIndex />} />
                   <Route path="properties" element={<Pages.Properties />} />
                   <Route path="inspections" element={<Pages.Inspections />} />
@@ -79,21 +84,14 @@ const App = () => {
                   <Route path="ClientArea" element={<Pages.ClientArea />} />
                   <Route path="checklist" element={<Pages.Checklist />} />
                   <Route path="settings" element={<Pages.Settings />} />
-                  <Route path="design-system" element={<Pages.DesignSystem />} />
-                  <Route path="audit-logs" element={<Pages.AuditLogs />} />
-                  
                   <Route path="announcements" element={<Pages.Announcements />} />
                   <Route path="technicians" element={<Pages.Technicians />} />
-                   <Route path="support" element={<Pages.AdminSupport />} />
-                   <Route path="inbox" element={<Pages.SupportInbox />} />
-                   <Route path="saas" element={<ProtectedRoute requiredRole="super_admin"><Pages.SaaSAdmin /></ProtectedRoute>} />
-
+                  <Route path="support" element={<Pages.AdminSupport />} />
+                  <Route path="inbox" element={<Pages.SupportInbox />} />
                 </Route>
 
-
-
                 {/* Protected Client Routes */}
-                <Route path="/client" element={<ProtectedRoute requiredRole={['user', 'admin', 'super_admin']}><Pages.ClientLayout /></ProtectedRoute>}>
+                <Route path="/client" element={<ProtectedRoute requiredRole={['user', 'admin', 'super_admin', 'manager', 'staff', 'technical']}><Pages.ClientLayout /></ProtectedRoute>}>
                   <Route index element={<Pages.ClientDashboard />} />
                   <Route path="documents" element={<Pages.ClientDocuments />} />
                   <Route path="inspections" element={<Pages.ClientInspections />} />
@@ -101,20 +99,20 @@ const App = () => {
                   <Route path="properties" element={<Pages.ClientProperties />} />
                   <Route path="notifications" element={<Pages.ClientNotifications />} />
                   <Route path="profile" element={<Pages.ClientProfile />} />
-                  
                   <Route path="support" element={<Pages.ClientSupport />} />
                 </Route>
 
-
-                {/* Legacy redirects for top-level paths */}
-                <Route path="/properties" element={<Navigate to="/admin/properties" replace />} />
-                <Route path="/inspections" element={<Navigate to="/admin/inspections" replace />} />
-                <Route path="/warranty" element={<Navigate to="/admin/warranty" replace />} />
-                <Route path="/calendar" element={<Navigate to="/admin/calendar" replace />} />
-                <Route path="/users" element={<Navigate to="/admin/users" replace />} />
-                <Route path="/ClientArea" element={<Navigate to="/admin/ClientArea" replace />} />
-                <Route path="/checklist" element={<Navigate to="/admin/checklist" replace />} />
-                <Route path="/settings" element={<Navigate to="/admin/settings" replace />} />
+                {/* Legacy redirects for top-level paths and /admin */}
+                <Route path="/admin" element={<Navigate to="/app" replace />} />
+                <Route path="/admin/*" element={<Navigate to="/app" replace />} />
+                <Route path="/properties" element={<Navigate to="/app/properties" replace />} />
+                <Route path="/inspections" element={<Navigate to="/app/inspections" replace />} />
+                <Route path="/warranty" element={<Navigate to="/app/warranty" replace />} />
+                <Route path="/calendar" element={<Navigate to="/app/calendar" replace />} />
+                <Route path="/users" element={<Navigate to="/app/users" replace />} />
+                <Route path="/ClientArea" element={<Navigate to="/app/ClientArea" replace />} />
+                <Route path="/checklist" element={<Navigate to="/app/checklist" replace />} />
+                <Route path="/settings" element={<Navigate to="/app/settings" replace />} />
 
                 {/* Catch-all route */}
                 <Route path="*" element={<Pages.NotFound />} />
