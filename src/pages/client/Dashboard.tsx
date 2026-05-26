@@ -221,12 +221,17 @@ const Dashboard = () => {
             deliveryDate={userInfo.deliveryDate?.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
           />
           
-          <Card className="rounded-[2rem] border-none shadow-sem-lg bg-white p-8 overflow-hidden relative group">
+          <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white p-8 overflow-hidden relative group">
             <div className="absolute right-[-10%] top-[-10%] opacity-5 group-hover:rotate-12 transition-transform duration-1000">
-              <Activity size={180} />
+              <Activity size={240} />
             </div>
-            <CardHeader className="p-0 mb-6">
-              <CardTitle className="text-xl font-black tracking-tight">Jornada Digital</CardTitle>
+            <CardHeader className="p-0 mb-8">
+              <CardTitle className="text-xl font-black tracking-tighter flex items-center gap-3">
+                <div className="p-3 bg-primary/10 rounded-xl text-primary">
+                  <Activity size={20} strokeWidth={3} />
+                </div>
+                Jornada do Sonho
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <ClientTimeline steps={timeline} />
