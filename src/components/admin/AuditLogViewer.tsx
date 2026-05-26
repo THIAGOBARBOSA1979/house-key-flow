@@ -396,7 +396,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
                     )}>
                       {log.performedByRole === "admin" ? <Shield className="h-4 w-4" /> : <User className="h-4 w-4" />}
                     </div>
-                    <div className="p-4 bg-muted/5 rounded-2xl border border-border/10 group-hover:bg-muted/10 transition-all cursor-pointer" onClick={() => {
+                    <div className="p-4 bg-muted/5 rounded-2xl border border-border/10 group-hover:bg-muted/10 group-hover:border-primary/30 group-hover:shadow-sem-md transition-all cursor-pointer" onClick={() => {
                       setSelectedLog(log);
                       setIsDetailOpen(true);
                     }}>
@@ -458,7 +458,7 @@ export const AuditLogViewer = ({ entityType, entityId, title, compact = false, c
       <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
         <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden rounded-[2rem] border-none shadow-sem-xl bg-background/95 backdrop-blur-2xl">
           <DialogHeader className="px-10 pt-10 pb-8 bg-primary/5 border-b border-border/10">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <div className="flex gap-2">
                 <Badge variant="outline" className={cn("rounded-lg px-3 py-1 font-black uppercase tracking-widest text-[10px]", selectedLog && ACTION_COLORS[selectedLog.action as AuditAction])}>
                   {selectedLog && (ACTION_LABELS[selectedLog.action as AuditAction] || selectedLog.action)}

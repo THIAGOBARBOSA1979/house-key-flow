@@ -46,28 +46,42 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
           if (tenantSlug) {
             query = query.eq('slug', tenantSlug);
           } else {
-            // Se não houver nada, pega a primeira empresa para não quebrar o layout
-            const { data: firstCompany } = await supabase.from('companies').select('*').limit(1).maybeSingle();
-            if (firstCompany) {
-              setTenant(firstCompany as unknown as Company);
-              setIsLoading(false);
-              return;
+            // Se não houver nada, tenta pegar do localStorage como último recurso de sessão anterior
+            const storedTenantId = localStorage.getItem('last_tenant_id');
+            if (storedTenantId) {
+              query = query.eq('id', storedTenantId);
+            } else {
+              // Se ainda não houver nada, pega a primeira empresa para não quebrar o layout
+              const { data: firstCompany } = await supabase.from('companies').select('*').limit(1).maybeSingle();
+              if (firstCompany) {
+                setTenant(firstCompany as unknown as Company);
+                setIsLoading(false);
+                return;
+              }
             }
           }
         }
 
-        const { data, error } = await query.maybeSingle();
+        const { data, error: fetchError } = await query.maybeSingle();
         
         if (data) {
           setTenant(data as unknown as Company);
+          localStorage.setItem('last_tenant_id', data.id);
           
           // Apply White Label Dynamic Settings
           const root = document.documentElement;
           const settings = (data as any).theme_settings;
+          const brandName = (data as any).brand_name || data.name;
+          
+          // Atualiza o título da página
+          document.title = `${brandName} | Gestão de Manutenção`;
+          
           if (settings) {
             if (settings.primary) {
               root.style.setProperty('--primary', settings.primary);
               root.style.setProperty('--brand', settings.primary);
+              // Gerar variações para foco e estados
+              root.style.setProperty('--primary-foreground', '#ffffff');
             }
             if (settings.secondary) {
               root.style.setProperty('--secondary', settings.secondary);
@@ -77,7 +91,6 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
             }
           }
         } else if (!isLocal && !isLovablePreview) {
-           // Se estamos em um domínio/subdomínio e não achou a empresa, é 404 de tenant
            console.warn('Tenant não encontrado para o host:', hostname);
            setError('Tenant não encontrado');
         }
@@ -94,11 +107,10 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <TenantContext.Provider value={{ tenant, isLoading, isCustomDomain, error }}>
-      {isLoading ? null : children}
+      {children}
     </TenantContext.Provider>
   );
 };
-
 
 export const useTenant = () => {
   const context = useContext(TenantContext);

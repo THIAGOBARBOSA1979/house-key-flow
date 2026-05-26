@@ -78,7 +78,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <span className="group-hover:text-primary group-hover:tracking-[0.35em] transition-all duration-slow">Painel Estratégico</span>
               </div>
 
-              {isMobile ? <div className="flex-1 px-4 flex justify-center"><div className="font-black text-xs uppercase tracking-[0.3em] text-primary/40">A2 Portal</div></div> : (
+              {isMobile ? <div className="flex-1 px-4 flex justify-center"><div className="font-black text-xs uppercase tracking-[0.3em] text-primary/40">{company?.brand_name || 'A2 Portal'}</div></div> : (
                 <GlobalSearch />
               )}
             </div>
@@ -119,18 +119,22 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <footer 
           className="mt-layout-gap-xl py-footer-padding-y px-footer-padding-x border-t border-border/20 transition-all duration-slow"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-layout-gap-lg max-w-container mx-auto">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-layout-gap-lg max-w-container mx-auto">
             <div className="space-y-3 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 opacity-60">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-sm shadow-brand/20 shadow-lg">
-                  {company?.name?.charAt(0) || 'A2'}
-                </div>
+                {company?.logo_url ? (
+                  <img src={company.logo_url} alt={company.brand_name || company.name} className="h-9 w-auto object-contain" />
+                ) : (
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-sm shadow-brand/20 shadow-lg">
+                    {company?.name?.charAt(0) || 'A2'}
+                  </div>
+                )}
                 <span className="font-black tracking-tighter text-foreground text-xl italic">
                   {company?.brand_name || company?.name || 'A2 Incorporadora'}
                 </span>
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 leading-relaxed">
-                © {new Date().getFullYear()} A2 Gestão de Portfólio Estratégico.<br />
+                © {new Date().getFullYear()} {company?.brand_name || company?.name || 'A2'} Gestão de Portfólio Estratégico.<br />
                 Tecnologia de Alta Performance para o Setor Imobiliário.
               </p>
             </div>

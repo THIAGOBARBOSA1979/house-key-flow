@@ -38,6 +38,7 @@ const AuditLogs = () => {
             icon={Shield}
             title="Logs de Auditoria"
             description="Rastreabilidade completa e imutável de todas as ações administrativas e de clientes."
+            showBreadcrumbs={true}
           >
             <div className="flex items-center gap-3">
               <Button variant="outline" className="rounded-xl h-11 px-5 font-bold border-primary/20 hover:bg-primary/5 transition-all" onClick={handleExport} disabled={isExporting}>
