@@ -122,10 +122,9 @@ const App = () => {
                 </Suspense>
                   </ConfirmProvider>
                 </SubscriptionProvider>
-              </TenantProvider>
-            </BrandThemeProvider>
-
-            </AuthProvider>
+              </BrandThemeProvider>
+            </TenantProvider>
+          </AuthProvider>
 
           </BrowserRouter>
         </GlobalErrorBoundary>
