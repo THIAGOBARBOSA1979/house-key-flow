@@ -43,6 +43,7 @@ import { GovernanceManager } from "@/components/admin/GovernanceManager";
 import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { SystemHealth } from "@/components/admin/SaaS/SystemHealth";
 import { GlobalBroadcaster } from "@/components/admin/SaaS/GlobalBroadcaster";
+import { GlobalOperationalMetrics } from "@/components/admin/SaaS/GlobalOperationalMetrics";
 
 import { propertyService } from "@/services";
 import { inspectionService } from "@/services";
