@@ -18,7 +18,8 @@ import {
   Shield,
   RefreshCw,
   Megaphone,
-  Globe
+  Globe,
+  BarChart3
 } from "lucide-react";
 import { 
   DropdownMenu, 
