@@ -36,6 +36,7 @@ export type Database = {
           previous_values: Json | null
           service_name: string | null
           severity: string | null
+          tenant_id: string | null
           trace_id: string | null
           user_agent: string | null
           user_id: string | null
@@ -61,6 +62,7 @@ export type Database = {
           previous_values?: Json | null
           service_name?: string | null
           severity?: string | null
+          tenant_id?: string | null
           trace_id?: string | null
           user_agent?: string | null
           user_id?: string | null
@@ -86,6 +88,7 @@ export type Database = {
           previous_values?: Json | null
           service_name?: string | null
           severity?: string | null
+          tenant_id?: string | null
           trace_id?: string | null
           user_agent?: string | null
           user_id?: string | null
@@ -94,6 +97,13 @@ export type Database = {
           {
             foreignKeyName: "audit_logs_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -300,44 +310,62 @@ export type Database = {
       }
       companies: {
         Row: {
+          brand_name: string | null
           created_at: string
+          custom_domain: string | null
+          favicon_url: string | null
           id: string
+          logo_url: string | null
           name: string
           owner_id: string
           plan_id: string | null
           slug: string
           status: string
+          subdomain: string | null
           subscription_expires_at: string | null
           subscription_plan: string
           subscription_status: string | null
+          theme_settings: Json | null
           trial_ends_at: string | null
           updated_at: string
         }
         Insert: {
+          brand_name?: string | null
           created_at?: string
+          custom_domain?: string | null
+          favicon_url?: string | null
           id?: string
+          logo_url?: string | null
           name: string
           owner_id: string
           plan_id?: string | null
           slug: string
           status?: string
+          subdomain?: string | null
           subscription_expires_at?: string | null
           subscription_plan?: string
           subscription_status?: string | null
+          theme_settings?: Json | null
           trial_ends_at?: string | null
           updated_at?: string
         }
         Update: {
+          brand_name?: string | null
           created_at?: string
+          custom_domain?: string | null
+          favicon_url?: string | null
           id?: string
+          logo_url?: string | null
           name?: string
           owner_id?: string
           plan_id?: string | null
           slug?: string
           status?: string
+          subdomain?: string | null
           subscription_expires_at?: string | null
           subscription_plan?: string
           subscription_status?: string | null
+          theme_settings?: Json | null
           trial_ends_at?: string | null
           updated_at?: string
         }
@@ -723,6 +751,30 @@ export type Database = {
           },
         ]
       }
+      permissions: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          module: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          module: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          module?: string
+          name?: string
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
           created_at: string | null
@@ -889,6 +941,32 @@ export type Database = {
             columns: ["manager_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      role_permissions: {
+        Row: {
+          id: string
+          permission_id: string | null
+          role: string
+        }
+        Insert: {
+          id?: string
+          permission_id?: string | null
+          role: string
+        }
+        Update: {
+          id?: string
+          permission_id?: string | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
             referencedColumns: ["id"]
           },
         ]
