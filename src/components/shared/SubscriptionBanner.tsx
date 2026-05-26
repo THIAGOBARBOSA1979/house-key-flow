@@ -7,9 +7,6 @@ import { Button } from '@/components/ui/button';
 
 export const SubscriptionBanner = () => {
   const { user } = useAuth();
-  
-  if (!user?.company_id || user.is_super_admin) return null;
-  
   const [company, setCompany] = useState<any>(null);
 
   useEffect(() => {
@@ -18,11 +15,12 @@ export const SubscriptionBanner = () => {
     }
   }, [user]);
 
+  if (!user?.company_id || user.is_super_admin) return null;
   if (!company) return null;
   
   if (company.status === 'suspended') {
     return (
-      <Alert variant="destructive" className="mb-6 border-2 animate-pulse">
+      <Alert variant="destructive" className="mb-6 border-2 animate-pulse rounded-2xl">
         <AlertTriangle className="h-4 w-4" />
         <AlertTitle className="font-black uppercase tracking-tighter">Acesso Suspenso</AlertTitle>
         <AlertDescription className="font-medium text-xs">
@@ -39,12 +37,12 @@ export const SubscriptionBanner = () => {
     
     if (diffDays <= 7 && diffDays > 0) {
       return (
-        <Alert className="mb-6 border-amber-500 bg-amber-500/10 text-amber-700">
+        <Alert className="mb-6 border-amber-500 bg-amber-500/10 text-amber-700 rounded-2xl">
           <Clock className="h-4 w-4 text-amber-600" />
           <AlertTitle className="font-black uppercase tracking-tighter">Renovação Próxima</AlertTitle>
-          <AlertDescription className="font-medium text-xs flex items-center justify-between">
+          <AlertDescription className="font-medium text-xs flex items-center justify-between gap-4">
             <span>Sua assinatura expira em {diffDays} {diffDays === 1 ? 'dia' : 'dias'}.</span>
-            <Button size="sm" variant="outline" className="h-7 text-[10px] font-black uppercase border-amber-500/50 hover:bg-amber-500/20">Renovar Agora</Button>
+            <Button size="sm" variant="outline" className="h-8 text-[10px] font-black uppercase border-amber-500/50 hover:bg-amber-500/20 rounded-xl shrink-0">Renovar Agora</Button>
           </AlertDescription>
         </Alert>
       );
