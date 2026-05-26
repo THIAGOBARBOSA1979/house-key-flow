@@ -17,7 +17,8 @@ import {
   Trash2,
   Shield,
   RefreshCw,
-  Megaphone
+  Megaphone,
+  Globe
 } from "lucide-react";
 import { 
   DropdownMenu, 

@@ -14,6 +14,7 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
   const [tenant, setTenant] = useState<Company | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCustomDomain, setIsCustomDomain] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const resolveTenant = async () => {
@@ -91,7 +92,7 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <TenantContext.Provider value={{ tenant, isLoading, isCustomDomain }}>
-      {children}
+      {isLoading ? null : children}
     </TenantContext.Provider>
   );
 };
