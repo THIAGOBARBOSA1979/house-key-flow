@@ -182,17 +182,45 @@ const Support = () => {
       </div>
 
       <Dialog open={!!selectedTicketId} onOpenChange={(open) => !open && setSelectedTicketId(null)}>
-        <DialogContent className="max-w-2xl h-[70vh] flex flex-col p-8 overflow-hidden rounded-[2rem]">
-          <DialogHeader>
-            <DialogTitle>{selectedTicket?.subject}</DialogTitle>
-            <DialogDescription>Protocolo: {selectedTicket?.protocol}</DialogDescription>
-          </DialogHeader>
-          <div className="mt-6 flex-1 bg-muted/20 rounded-2xl p-6 overflow-y-auto">
-             <p className="text-sm font-medium leading-relaxed">{selectedTicket?.description}</p>
-             <div className="mt-8 border-t pt-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Acompanhe pelo WhatsApp</p>
-                <p className="text-xs font-bold mt-2">Você receberá atualizações automáticas sobre este protocolo diretamente no seu celular.</p>
-             </div>
+        <DialogContent className="max-w-2xl h-[80vh] flex flex-col p-0 overflow-hidden rounded-[3rem] border-none shadow-2xl">
+          <div className="h-2 w-full bg-primary" />
+          <div className="p-10 flex-1 flex flex-col">
+            <DialogHeader className="mb-8">
+              <div className="flex items-center gap-4 mb-4">
+                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-xl">
+                  Protocolo: {selectedTicket?.protocol}
+                </Badge>
+                <StatusBadge 
+                  status={selectedTicket?.status === 'resolved' ? 'complete' : (selectedTicket?.status === 'open' ? 'progress' : 'pending')} 
+                  size="sm" 
+                />
+              </div>
+              <DialogTitle className="text-3xl font-black tracking-tighter leading-tight">{selectedTicket?.subject}</DialogTitle>
+              <DialogDescription className="font-bold text-muted-foreground/60 text-base">Abertura: {selectedTicket?.createdAt ? new Date(selectedTicket.createdAt).toLocaleDateString() : ''}</DialogDescription>
+            </DialogHeader>
+            <div className="flex-1 bg-muted/10 rounded-[2rem] p-8 overflow-y-auto border border-border/5">
+               <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">Relato do Proprietário</h5>
+               <p className="text-base font-medium leading-relaxed text-foreground/80">{selectedTicket?.description}</p>
+               
+               <div className="mt-12 pt-8 border-t border-border/10">
+                  <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4">Próximos Passos & SLA</h5>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-5 bg-white rounded-2xl shadow-sm border border-border/5">
+                      <div className="p-2 bg-primary/5 text-primary rounded-lg"><Clock size={16} strokeWidth={2.5} /></div>
+                      <p className="text-xs font-bold leading-relaxed">Nossa equipe técnica analisará sua solicitação em até <span className="text-primary">24 horas úteis</span>.</p>
+                    </div>
+                    <div className="flex items-start gap-4 p-5 bg-white rounded-2xl shadow-sm border border-border/5">
+                      <div className="p-2 bg-emerald-500/5 text-emerald-600 rounded-lg"><Smartphone size={16} strokeWidth={2.5} /></div>
+                      <p className="text-xs font-bold leading-relaxed">Você receberá atualizações automáticas via <span className="text-emerald-600">WhatsApp</span> para cada mudança de status.</p>
+                    </div>
+                  </div>
+               </div>
+            </div>
+            <div className="mt-8">
+              <Button className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl" onClick={() => setSelectedTicketId(null)}>
+                Fechar Protocolo
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
