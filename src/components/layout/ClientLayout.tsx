@@ -73,17 +73,23 @@ const ClientLayout = () => {
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
-      {/* Header Móvel */}
-      <div className="lg:hidden h-20 px-6 flex items-center justify-between border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      {/* Header Mobile - Enhanced with modern branding */}
+      <div className="lg:hidden h-20 px-6 flex items-center justify-between border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg shadow-primary/20">
             A2
           </div>
-          <span className="font-black tracking-tighter text-lg uppercase">Portal</span>
+          <span className="font-black tracking-tighter text-lg uppercase text-foreground">Portal</span>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="rounded-xl">
-          <Menu size={24} className="text-primary" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="rounded-xl relative">
+            <Bell size={20} className="text-muted-foreground" />
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="rounded-xl">
+            <Menu size={24} className="text-primary" />
+          </Button>
+        </div>
       </div>
 
       {/* Sidebar Desktop */}

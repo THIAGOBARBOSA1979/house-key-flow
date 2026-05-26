@@ -125,17 +125,16 @@ const Dashboard = () => {
 
   return (
     <div className="container-responsive py-8 space-y-12 animate-in fade-in duration-slow">
-      {/* Welcome Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div className="space-y-2">
+      {/* Welcome Header - Refined Hierarchy */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-border/10">
+        <div className="space-y-1">
           <div className="flex items-center gap-3">
              <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Command Center • Portal do Proprietário</span>
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Command Center • Status: {stage === 'warranty_enabled' ? 'Operacional' : 'Em Construção'}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
-            Olá, {userInfo.name} <span className="text-primary">.</span>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">
+            Olá, <span className="text-primary">{userInfo.name}</span>
           </h1>
-          <p className="text-sm text-muted-foreground font-bold uppercase tracking-widest">Próximos Passos: <span className="text-primary">Acompanhe a evolução do seu sonho</span></p>
         </div>
         <div className="flex items-center gap-4">
           <StageIndicator currentStage={stage || 'lead'} showDescription variant="badge" />
