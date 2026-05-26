@@ -154,55 +154,59 @@ const Dashboard = () => {
             block={profile?.block}
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch">
-            <Card className="rounded-[2.5rem] border-none bg-primary/5 hover:bg-primary/10 transition-all p-8 group cursor-pointer border-l-4 border-l-primary shadow-sem-lg relative overflow-hidden h-full flex flex-col">
-              <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all duration-700">
-                <ClipboardCheck size={120} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-stretch">
+            <Card className="rounded-[3rem] border-none bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/20 transition-all p-10 group cursor-pointer border-l-8 border-l-primary shadow-2xl relative overflow-hidden h-full flex flex-col justify-between">
+              <div className="absolute right-[-10%] top-[-10%] p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all duration-700">
+                <ClipboardCheck size={240} />
               </div>
-              <div className="flex justify-between items-start mb-6 relative z-10">
-                <div className="p-3 bg-white rounded-2xl shadow-sm text-primary group-hover:scale-110 transition-transform">
-                  <ClipboardCheck size={24} />
+              <div className="relative z-10">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="p-4 bg-white rounded-2xl shadow-xl text-primary group-hover:scale-110 transition-transform duration-500">
+                    <ClipboardCheck size={32} strokeWidth={2.5} />
+                  </div>
+                  <Badge className="bg-primary text-white border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-lg shadow-primary/20">
+                    {upcomingInspections && upcomingInspections.length > 0 ? `${upcomingInspections.length} Pendentes` : "Atualizado"}
+                  </Badge>
                 </div>
-                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest">
-                  {upcomingInspections && upcomingInspections.length > 0 ? `${upcomingInspections.length} Agendadas` : "Aguardando"}
-                </Badge>
+                <h3 className="text-2xl font-black tracking-tighter mb-4 text-foreground">
+                  Vistorias ABNT
+                </h3>
+                <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-8">
+                  {upcomingInspections && upcomingInspections.length > 0 
+                    ? `Existem vistorias técnicas programadas para validar a conformidade da sua unidade.` 
+                    : "Sua unidade está em conformidade com os protocolos técnicos ABNT vigentes."}
+                </p>
               </div>
-              <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">
-                {upcomingInspections && upcomingInspections.length > 0 ? "Vistoria em Andamento" : "Vistorias Técnicas"}
-              </h3>
-              <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
-                {upcomingInspections && upcomingInspections.length > 0 
-                  ? `Você possui ${upcomingInspections.length} vistorias programadas para sua unidade.` 
-                  : "Nenhum protocolo de vistoria agendado no momento para sua unidade."}
-              </p>
-              <Link to="/client/inspections" className="relative z-10 block mt-auto">
-                <Button className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 shadow-lg shadow-primary/20">
-                  {upcomingInspections && upcomingInspections.length > 0 ? "Ver Vistorias" : "Acessar Módulo"} <ArrowRight size={14} className="ml-2" />
+              <Link to="/client/inspections" className="relative z-10 block w-full mt-auto">
+                <Button className="w-full rounded-2xl font-black uppercase tracking-widest text-[11px] h-14 shadow-2xl shadow-primary/30 group-hover:translate-y-[-2px] transition-transform">
+                  {upcomingInspections && upcomingInspections.length > 0 ? "Acessar Protocolos" : "Ver Histórico"} <ArrowRight size={16} className="ml-2" />
                 </Button>
               </Link>
             </Card>
 
-            <Card className="rounded-[2.5rem] border-none bg-indigo-50/50 hover:bg-indigo-50 transition-all p-8 group cursor-pointer border-l-4 border-l-indigo-500 shadow-sem-lg relative overflow-hidden h-full flex flex-col">
-               <div className="absolute right-0 top-0 p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all duration-700">
-                <ShieldCheck size={120} />
+            <Card className="rounded-[3rem] border-none bg-gradient-to-br from-indigo-50/50 to-indigo-100/50 hover:from-indigo-100 hover:to-indigo-200 transition-all p-10 group cursor-pointer border-l-8 border-l-indigo-600 shadow-2xl relative overflow-hidden h-full flex flex-col justify-between">
+               <div className="absolute right-[-10%] top-[-10%] p-12 opacity-5 pointer-events-none rotate-12 group-hover:rotate-0 transition-all duration-700">
+                <ShieldCheck size={240} />
               </div>
-              <div className="flex justify-between items-start mb-6 relative z-10">
-                <div className="p-3 bg-white rounded-2xl shadow-sm text-indigo-500 group-hover:scale-110 transition-transform">
-                  <ShieldCheck size={24} />
+              <div className="relative z-10">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="p-4 bg-white rounded-2xl shadow-xl text-indigo-600 group-hover:scale-110 transition-transform duration-500">
+                    <ShieldCheck size={32} strokeWidth={2.5} />
+                  </div>
+                  <Badge className="bg-indigo-600 text-white border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-lg shadow-indigo-600/20">
+                    {warrantyRequests && warrantyRequests.length > 0 ? `${warrantyRequests.length} Chamados` : "Protegido"}
+                  </Badge>
                 </div>
-                <Badge className="bg-indigo-100 text-indigo-600 border-none font-black text-[10px] uppercase tracking-widest">
-                  {warrantyRequests && warrantyRequests.length > 0 ? `${warrantyRequests.length} Ativas` : "Protegido"}
-                </Badge>
+                <h3 className="text-2xl font-black tracking-tighter mb-4 text-foreground">Assistência Técnica</h3>
+                <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-8">
+                  {warrantyRequests && warrantyRequests.length > 0 
+                    ? `Sua unidade possui protocolos de assistência técnica ativos em fase de execução.` 
+                    : "Aproveite a segurança da nossa garantia premium com suporte especializado 24/7."}
+                </p>
               </div>
-              <h3 className="text-xl font-black tracking-tight mb-2 relative z-10">Assistência Técnica</h3>
-              <p className="text-sm text-muted-foreground font-medium mb-6 relative z-10">
-                {warrantyRequests && warrantyRequests.length > 0 
-                  ? `Existem ${warrantyRequests.length} solicitações de assistência técnica em processamento.` 
-                  : "Seu imóvel está coberto. Nenhuma solicitação de reparo ativa no momento."}
-              </p>
-              <Link to="/client/warranty" className="relative z-10 block mt-auto">
-                <Button variant="outline" className="w-full rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 border-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50">
-                  {warrantyRequests && warrantyRequests.length > 0 ? "Gerenciar Garantias" : "Solicitar Suporte"} <ArrowRight size={14} className="ml-2" />
+              <Link to="/client/warranty" className="relative z-10 block w-full mt-auto">
+                <Button variant="outline" className="w-full rounded-2xl font-black uppercase tracking-widest text-[11px] h-14 border-2 border-indigo-200 text-indigo-600 hover:bg-white/80 group-hover:translate-y-[-2px] transition-transform">
+                  {warrantyRequests && warrantyRequests.length > 0 ? "Monitorar Garantias" : "Solicitar Reparo"} <ArrowRight size={16} className="ml-2" />
                 </Button>
               </Link>
             </Card>
