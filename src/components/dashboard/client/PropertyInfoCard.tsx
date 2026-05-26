@@ -29,29 +29,34 @@ export const PropertyInfoCard = ({
       <Home className="h-40 w-40" />
     </div>
     <CardHeader className="relative z-10 p-8 pb-4">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <CardTitle className="text-2xl font-black tracking-tighter flex items-center gap-3">
-            <div className="p-3 bg-primary/10 rounded-2xl">
-              <Building2 className="h-6 w-6 text-primary" />
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+        <div className="space-y-4">
+          <CardTitle className="text-3xl font-black tracking-tighter flex items-center gap-4">
+            <div className="p-4 bg-primary text-white rounded-[1.5rem] shadow-xl shadow-primary/20">
+              <Building2 className="h-8 w-8" strokeWidth={2.5} />
             </div>
             {property}
           </CardTitle>
-          <div className="flex items-center gap-2 mt-4">
-            <Badge variant="outline" className="bg-background px-3 py-1 font-black uppercase tracking-widest text-[10px]">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="bg-background px-4 py-1.5 font-black uppercase tracking-widest text-[10px] rounded-xl border-2">
               Unidade {unit}
             </Badge>
             {block && (
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-black uppercase tracking-widest text-[10px]">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-black uppercase tracking-widest text-[10px] px-4 py-1.5 rounded-xl">
                 {block}
               </Badge>
             )}
+            <Badge className="bg-emerald-500 text-white border-none font-black uppercase tracking-widest text-[10px] px-4 py-1.5 rounded-xl shadow-lg shadow-emerald-500/10">
+              Ativo
+            </Badge>
           </div>
         </div>
         {daysToDelivery > 0 && (
-          <Badge className="bg-primary text-primary-foreground font-black uppercase tracking-tighter text-[10px] px-4 py-1.5 shadow-lg rounded-full">
-            {daysToDelivery} dias para entrega
-          </Badge>
+          <div className="bg-white/80 backdrop-blur-md p-6 rounded-[2rem] border border-primary/10 shadow-xl flex flex-col items-center justify-center min-w-[140px] group-hover:scale-105 transition-transform duration-700">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Contagem Regressiva</p>
+            <p className="text-3xl font-black text-primary tracking-tighter">{daysToDelivery}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-primary">Dias para chaves</p>
+          </div>
         )}
       </div>
     </CardHeader>

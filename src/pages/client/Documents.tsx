@@ -225,9 +225,9 @@ export default function ClientDocuments() {
       </Card>
 
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
             {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="group border-none h-full rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col overflow-hidden bg-card/50 backdrop-blur-sm">
+              <Card key={doc.id} className="group border-none h-full rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-700 flex flex-col overflow-hidden bg-white border border-border/5">
                 <div className="h-2 w-full bg-gradient-to-r from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <CardHeader className="p-8">
                   <div className="flex justify-between items-start mb-4">

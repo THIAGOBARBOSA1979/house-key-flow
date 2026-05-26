@@ -9,7 +9,9 @@ import {
   HelpCircle,
   ChevronRight,
   Download,
-  FileQuestion
+  FileQuestion,
+  Clock,
+  Smartphone
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -127,30 +129,53 @@ const Support = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg border-none bg-white rounded-[2.5rem]">
-          <CardHeader>
-            <CardTitle className="text-xl font-black tracking-tight">Meus Protocolos</CardTitle>
+        <Card className="shadow-lg border-none bg-white rounded-[2.5rem] flex flex-col overflow-hidden">
+          <CardHeader className="p-10 pb-4">
+            <CardTitle className="text-xl font-black tracking-tight">Meus Protocolos Ativos</CardTitle>
+            <CardDescription className="font-bold">Acompanhe a evolução do seu suporte</CardDescription>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 flex-1">
             {tickets.length > 0 ? (
-              <ScrollArea className="h-[400px] p-4">
-                <div className="space-y-4">
+              <ScrollArea className="h-[450px]">
+                <div className="p-6 pt-0 space-y-4">
                   {tickets.map((ticket) => (
-                    <div key={ticket.id} className="p-6 rounded-[1.5rem] bg-muted/30 hover:bg-primary/5 transition-all border border-transparent hover:border-primary/20 cursor-pointer" onClick={() => setSelectedTicketId(ticket.id)}>
-                      <div className="flex items-center justify-between mb-3">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-brand">{ticket.protocol}</span>
-                          <StatusBadge status={ticket.status === 'resolved' ? 'complete' : (ticket.status === 'open' ? 'progress' : 'pending')} label={ticket.status === 'resolved' ? 'Resolvido' : (ticket.status === 'open' ? 'Em Aberto' : 'Em Análise')} size="sm" />
+                    <div 
+                      key={ticket.id} 
+                      className={cn(
+                        "p-6 rounded-3xl transition-all duration-300 border-2 cursor-pointer group",
+                        selectedTicketId === ticket.id 
+                          ? "border-primary bg-primary/5 shadow-md" 
+                          : "border-muted/20 bg-muted/10 hover:border-primary/20 hover:bg-white"
+                      )} 
+                      onClick={() => setSelectedTicketId(ticket.id)}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                          <Badge className="bg-white px-3 py-1 border border-border/50 text-brand font-black text-[9px] uppercase tracking-widest">
+                            {ticket.protocol}
+                          </Badge>
+                          <StatusBadge 
+                            status={ticket.status === 'resolved' ? 'complete' : (ticket.status === 'open' ? 'progress' : 'pending')} 
+                            label={ticket.status === 'resolved' ? 'Finalizado' : (ticket.status === 'open' ? 'Em Fila' : 'Em Análise')} 
+                            size="sm" 
+                          />
                       </div>
-                      <h4 className="font-black text-sm mb-2">{ticket.subject}</h4>
-                      <p className="text-[10px] text-muted-foreground font-bold">Protocolo gerado em: {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ''}</p>
+                      <h4 className="font-black text-base text-foreground mb-2 group-hover:text-primary transition-colors">{ticket.subject}</h4>
+                      <div className="flex items-center justify-between mt-4">
+                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
+                          <Clock size={12} /> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ''}
+                        </p>
+                        <ChevronRight size={14} className={cn("transition-transform", selectedTicketId === ticket.id ? "rotate-90" : "")} />
+                      </div>
                     </div>
                   ))}
                 </div>
               </ScrollArea>
             ) : (
               <div className="p-20 text-center opacity-40">
-                <MessageSquare size={48} className="mx-auto mb-4" />
-                <p className="font-black uppercase tracking-widest text-[10px]">Sem protocolos abertos</p>
+                <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <MessageSquare size={32} />
+                </div>
+                <p className="font-black uppercase tracking-widest text-[10px]">Sem protocolos registrados</p>
               </div>
             )}
           </CardContent>
@@ -158,17 +183,45 @@ const Support = () => {
       </div>
 
       <Dialog open={!!selectedTicketId} onOpenChange={(open) => !open && setSelectedTicketId(null)}>
-        <DialogContent className="max-w-2xl h-[70vh] flex flex-col p-8 overflow-hidden rounded-[2rem]">
-          <DialogHeader>
-            <DialogTitle>{selectedTicket?.subject}</DialogTitle>
-            <DialogDescription>Protocolo: {selectedTicket?.protocol}</DialogDescription>
-          </DialogHeader>
-          <div className="mt-6 flex-1 bg-muted/20 rounded-2xl p-6 overflow-y-auto">
-             <p className="text-sm font-medium leading-relaxed">{selectedTicket?.description}</p>
-             <div className="mt-8 border-t pt-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Acompanhe pelo WhatsApp</p>
-                <p className="text-xs font-bold mt-2">Você receberá atualizações automáticas sobre este protocolo diretamente no seu celular.</p>
-             </div>
+        <DialogContent className="max-w-2xl h-[80vh] flex flex-col p-0 overflow-hidden rounded-[3rem] border-none shadow-2xl">
+          <div className="h-2 w-full bg-primary" />
+          <div className="p-10 flex-1 flex flex-col">
+            <DialogHeader className="mb-8">
+              <div className="flex items-center gap-4 mb-4">
+                <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-xl">
+                  Protocolo: {selectedTicket?.protocol}
+                </Badge>
+                <StatusBadge 
+                  status={selectedTicket?.status === 'resolved' ? 'complete' : (selectedTicket?.status === 'open' ? 'progress' : 'pending')} 
+                  size="sm" 
+                />
+              </div>
+              <DialogTitle className="text-3xl font-black tracking-tighter leading-tight">{selectedTicket?.subject}</DialogTitle>
+              <DialogDescription className="font-bold text-muted-foreground/60 text-base">Abertura: {selectedTicket?.createdAt ? new Date(selectedTicket.createdAt).toLocaleDateString() : ''}</DialogDescription>
+            </DialogHeader>
+            <div className="flex-1 bg-muted/10 rounded-[2rem] p-8 overflow-y-auto border border-border/5">
+               <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4">Relato do Proprietário</h5>
+               <p className="text-base font-medium leading-relaxed text-foreground/80">{selectedTicket?.description}</p>
+               
+               <div className="mt-12 pt-8 border-t border-border/10">
+                  <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-4">Próximos Passos & SLA</h5>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-5 bg-white rounded-2xl shadow-sm border border-border/5">
+                      <div className="p-2 bg-primary/5 text-primary rounded-lg"><Clock size={16} strokeWidth={2.5} /></div>
+                      <p className="text-xs font-bold leading-relaxed">Nossa equipe técnica analisará sua solicitação em até <span className="text-primary">24 horas úteis</span>.</p>
+                    </div>
+                    <div className="flex items-start gap-4 p-5 bg-white rounded-2xl shadow-sm border border-border/5">
+                      <div className="p-2 bg-emerald-500/5 text-emerald-600 rounded-lg"><Smartphone size={16} strokeWidth={2.5} /></div>
+                      <p className="text-xs font-bold leading-relaxed">Você receberá atualizações automáticas via <span className="text-emerald-600">WhatsApp</span> para cada mudança de status.</p>
+                    </div>
+                  </div>
+               </div>
+            </div>
+            <div className="mt-8">
+              <Button className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl" onClick={() => setSelectedTicketId(null)}>
+                Fechar Protocolo
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

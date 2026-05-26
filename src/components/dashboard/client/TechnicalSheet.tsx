@@ -31,47 +31,50 @@ export const TechnicalSheet = ({
   ];
 
   return (
-    <Card className="border-none shadow-sem-lg rounded-[2.5rem] bg-white/70 backdrop-blur-md overflow-hidden group">
-      <CardHeader className="p-8 pb-4">
+    <Card className="border-none shadow-2xl rounded-[3rem] bg-white overflow-hidden group">
+      <CardHeader className="p-10 pb-6">
         <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-xl font-black tracking-tight">Ficha Técnica</CardTitle>
-            <CardDescription className="font-bold">Especificações da unidade</CardDescription>
+          <div className="space-y-1">
+            <CardTitle className="text-2xl font-black tracking-tighter">Ficha Técnica</CardTitle>
+            <CardDescription className="font-bold text-muted-foreground/60 uppercase text-[10px] tracking-widest">Protocolo da Unidade</CardDescription>
           </div>
-          <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 transition-transform">
-            <Info className="h-6 w-6" />
+          <div className="p-4 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+            <Info className="h-7 w-7" strokeWidth={2.5} />
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-8 space-y-8">
-        <div className="grid grid-cols-2 gap-4">
+      <CardContent className="p-10 pt-4 space-y-10">
+        <div className="grid grid-cols-2 gap-6">
           {specs.map((spec) => (
-            <div key={spec.label} className="p-4 rounded-2xl bg-muted/20 border border-border/5 hover:bg-muted/40 transition-all">
-              <div className="flex items-center gap-2 mb-1">
-                <spec.icon className="h-3 w-3 text-primary" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">{spec.label}</span>
+            <div key={spec.label} className="p-5 rounded-3xl bg-muted/20 border border-border/5 hover:bg-muted/40 transition-all group/item">
+              <div className="flex items-center gap-2 mb-2">
+                <spec.icon className="h-3.5 w-3.5 text-primary group-hover/item:scale-110 transition-transform" strokeWidth={3} />
+                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">{spec.label}</span>
               </div>
-              <p className="font-black text-sm">{spec.value}</p>
+              <p className="font-black text-base text-foreground tracking-tight">{spec.value}</p>
             </div>
           ))}
         </div>
 
-        <div className="space-y-4">
-          <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 px-1">Acesso Rápido</h4>
-          <div className="space-y-2">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground">Documentação Vital</h4>
+            <Badge variant="outline" className="rounded-full text-[9px] font-black">4 Arquivos</Badge>
+          </div>
+          <div className="space-y-3">
             {documents.map((doc) => (
-              <div key={doc.name} className="flex items-center justify-between p-4 rounded-2xl bg-background/50 border border-border/10 hover:border-primary/30 transition-all group/doc">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/5 rounded-xl text-primary">
-                    <FileText className="h-4 w-4" />
+              <div key={doc.name} className="flex items-center justify-between p-5 rounded-3xl bg-muted/10 border border-transparent hover:border-primary/20 hover:bg-white transition-all group/doc shadow-sm hover:shadow-md">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-primary/5 rounded-2xl text-primary group-hover/doc:bg-primary group-hover/doc:text-white transition-all duration-300">
+                    <FileText className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-black group-hover/doc:text-primary transition-colors">{doc.name}</p>
-                    <p className="text-[9px] font-black uppercase text-muted-foreground/40">{doc.category} • {doc.size}</p>
+                    <p className="text-sm font-black group-hover/doc:text-primary transition-colors tracking-tight">{doc.name}</p>
+                    <p className="text-[9px] font-black uppercase text-muted-foreground/40 mt-0.5">{doc.category} • {doc.size}</p>
                   </div>
                 </div>
-                <Button size="icon" variant="ghost" className="h-8 w-8 rounded-lg hover:bg-primary hover:text-white transition-all">
-                  <Download className="h-4 w-4" />
+                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-xl hover:bg-primary hover:text-white transition-all">
+                  <Download className="h-5 w-5" />
                 </Button>
               </div>
             ))}

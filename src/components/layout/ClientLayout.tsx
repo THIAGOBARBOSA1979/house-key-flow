@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { 
   Home, Building, LogOut, Menu, X, User, Bell, 
   MessageSquare, FileText, ClipboardCheck, ShieldCheck, 
-  HelpCircle, ChevronRight, Moon, Sun, Settings 
+  HelpCircle, ChevronRight, Moon, Sun, Settings, LayoutDashboard 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -73,17 +73,23 @@ const ClientLayout = () => {
 
   return (
     <div className="min-h-screen bg-[#FDFDFD]">
-      {/* Header Móvel */}
-      <div className="lg:hidden h-20 px-6 flex items-center justify-between border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      {/* Header Mobile - Enhanced with modern branding */}
+      <div className="lg:hidden h-20 px-6 flex items-center justify-between border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-black shadow-lg shadow-primary/20">
             A2
           </div>
-          <span className="font-black tracking-tighter text-lg uppercase">Portal</span>
+          <span className="font-black tracking-tighter text-lg uppercase text-foreground">Portal</span>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="rounded-xl">
-          <Menu size={24} className="text-primary" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="rounded-xl relative">
+            <Bell size={20} className="text-muted-foreground" />
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="rounded-xl">
+            <Menu size={24} className="text-primary" />
+          </Button>
+        </div>
       </div>
 
       {/* Sidebar Desktop */}
@@ -122,12 +128,12 @@ const ClientLayout = () => {
           </div>
 
           <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar py-2">
-            <ClientNavLink to="/client" icon={Home}>Resumo</ClientNavLink>
+            <ClientNavLink to="/client" icon={LayoutDashboard}>Resumo</ClientNavLink>
             <ClientNavLink to="/client/properties" icon={Building}>Meu Imóvel</ClientNavLink>
             <ClientNavLink to="/client/documents" icon={FileText}>Documentos</ClientNavLink>
             <ClientNavLink to="/client/inspections" icon={ClipboardCheck}>Vistorias</ClientNavLink>
             <ClientNavLink to="/client/warranty" icon={ShieldCheck}>Garantias</ClientNavLink>
-            <ClientNavLink to="/client/notifications" icon={Bell} badgeCount={unreadCount}>Notificações</ClientNavLink>
+            <ClientNavLink to="/client/notifications" icon={Bell} badgeCount={unreadCount}>Radar</ClientNavLink>
             <ClientNavLink to="/client/support" icon={HelpCircle}>Suporte</ClientNavLink>
           </nav>
 
