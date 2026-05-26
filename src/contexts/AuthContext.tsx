@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
           email: session.user.email || '',
           role: (profile?.role as any) || (session.user.user_metadata?.role as any) || 'client',
-          status: profile?.status || 'active',
+          status: (profile?.status as any) || 'active',
           company_id: profile?.tenant_id || profile?.company_id || session.user.user_metadata?.company_id,
           is_super_admin: profile?.is_super_admin || session.user.user_metadata?.role === 'super_admin'
         };
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
             email: session.user.email || '',
             role: (profile?.role as any) || (session.user.user_metadata?.role as any) || 'client',
-            status: profile?.status || 'active',
+            status: (profile?.status as any) || 'active',
             company_id: profile?.tenant_id || profile?.company_id || session.user.user_metadata?.company_id,
             is_super_admin: profile?.is_super_admin || session.user.user_metadata?.role === 'super_admin'
           };
@@ -160,7 +160,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           name: profile?.full_name || data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Usuário',
           email: data.user.email || '',
           role: (profile?.role as any) || (data.user.user_metadata?.role as any) || 'client',
-          status: profile?.status || 'active',
+          status: (profile?.status as any) || 'active',
           company_id: profile?.tenant_id || profile?.company_id || data.user.user_metadata?.company_id,
           is_super_admin: profile?.is_super_admin || data.user.user_metadata?.role === 'super_admin'
         };
@@ -175,7 +175,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       // Check company status if user belongs to one
       if (authenticatedUser.company_id && !authenticatedUser.is_super_admin) {
-        const company = await companyService.getById(authenticatedUser.company_id, undefined, true);
+        const { data: company } = await supabase.from('companies').select('*').eq('id', authenticatedUser.company_id).single();
         if (company) {
           if (company.status !== 'active') {
             throw new Error(`Empresa ${company.status === 'suspended' ? 'suspensa' : 'cancelada'}. Entre em contato com o suporte.`);
