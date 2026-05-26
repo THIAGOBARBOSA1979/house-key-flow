@@ -129,7 +129,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.invalidateCache();
       return created;
     } catch (err) {
-      this.handleError(err, 'create');
+      throw AppError.fromError(err, `${this.constructor.name}.create`);
     }
   }
 
