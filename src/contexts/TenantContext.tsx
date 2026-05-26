@@ -58,7 +58,27 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
         
         if (data) {
           setTenant(data as unknown as Company);
+          
+          // Apply White Label Dynamic Settings
+          const root = document.documentElement;
+          const settings = (data as any).theme_settings;
+          if (settings) {
+            if (settings.primary) {
+              root.style.setProperty('--primary', settings.primary);
+              root.style.setProperty('--brand', settings.primary);
+            }
+            if (settings.secondary) {
+              root.style.setProperty('--secondary', settings.secondary);
+            }
+            if (settings.radius) {
+              root.style.setProperty('--radius', settings.radius);
+            }
+          }
+        } else if (!isLocal && !isLovablePreview) {
+           // Se estamos em um domínio/subdomínio e não achou a empresa, é 404 de tenant
+           console.warn('Tenant não encontrado para o host:', hostname);
         }
+
       } catch (err) {
         console.error('Erro ao resolver tenant:', err);
       } finally {

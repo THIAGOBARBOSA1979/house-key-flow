@@ -83,12 +83,21 @@ export default function SaaSAdmin() {
 
   const columns = [
     { 
-      header: "Empresa", 
+      header: "Empresa / Tenant", 
       accessorKey: "name",
       cell: (c: Company) => (
         <div className="flex flex-col">
           <span className="font-bold">{c.name}</span>
-          <span className="text-[10px] text-muted-foreground uppercase">{c.slug}</span>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded uppercase font-black tracking-wider">
+              {c.subdomain || 'no-subdomain'}
+            </span>
+            {c.custom_domain && (
+              <span className="text-[9px] bg-blue-500/10 text-blue-600 px-1.5 py-0.5 rounded uppercase font-black tracking-wider flex items-center gap-1">
+                <Globe className="h-2 w-2" /> {c.custom_domain}
+              </span>
+            )}
+          </div>
         </div>
       )
     },
