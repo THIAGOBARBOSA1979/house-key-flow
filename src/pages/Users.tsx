@@ -108,7 +108,7 @@ const Users = () => {
         </div>
       </div>
       
-      <DataView<UserType>
+      <DataView
         items={filteredUsers}
         isLoading={isLoading}
         isError={!!usersError}

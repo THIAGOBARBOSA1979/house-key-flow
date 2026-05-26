@@ -111,7 +111,7 @@ const Properties = () => {
         <PropertyViewTabs viewMode={viewMode} onViewModeChange={(m) => setViewMode(m as DataViewMode)} />
       </PropertyFilters>
       
-      <DataView<Property>
+      <DataView
         items={filteredProperties}
         isLoading={isLoading}
         isError={!!propertiesError}

@@ -106,7 +106,7 @@ export default function Inspections() {
           />
 
 
-          <DataView<Inspection>
+          <DataView
             items={filteredInspections || []}
             isLoading={isInspectionsLoading}
             isError={!!inspectionsError}
