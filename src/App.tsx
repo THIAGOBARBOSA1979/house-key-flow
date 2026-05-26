@@ -83,6 +83,8 @@ const App = () => {
                   <Route path="users" element={<Pages.Users />} />
                   <Route path="ClientArea" element={<Pages.ClientArea />} />
                   <Route path="checklist" element={<Pages.Checklist />} />
+                  <Route path="non-conformities" element={<Pages.NonConformities />} />
+                  <Route path="quality" element={<Pages.QualityIndicators />} />
                   <Route path="settings" element={<Pages.Settings />} />
                   <Route path="announcements" element={<Pages.Announcements />} />
                   <Route path="technicians" element={<Pages.Technicians />} />
