@@ -127,30 +127,53 @@ const Support = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg border-none bg-white rounded-[2.5rem]">
-          <CardHeader>
-            <CardTitle className="text-xl font-black tracking-tight">Meus Protocolos</CardTitle>
+        <Card className="shadow-lg border-none bg-white rounded-[2.5rem] flex flex-col overflow-hidden">
+          <CardHeader className="p-10 pb-4">
+            <CardTitle className="text-xl font-black tracking-tight">Meus Protocolos Ativos</CardTitle>
+            <CardDescription className="font-bold">Acompanhe a evolução do seu suporte</CardDescription>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 flex-1">
             {tickets.length > 0 ? (
-              <ScrollArea className="h-[400px] p-4">
-                <div className="space-y-4">
+              <ScrollArea className="h-[450px]">
+                <div className="p-6 pt-0 space-y-4">
                   {tickets.map((ticket) => (
-                    <div key={ticket.id} className="p-6 rounded-[1.5rem] bg-muted/30 hover:bg-primary/5 transition-all border border-transparent hover:border-primary/20 cursor-pointer" onClick={() => setSelectedTicketId(ticket.id)}>
-                      <div className="flex items-center justify-between mb-3">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-brand">{ticket.protocol}</span>
-                          <StatusBadge status={ticket.status === 'resolved' ? 'complete' : (ticket.status === 'open' ? 'progress' : 'pending')} label={ticket.status === 'resolved' ? 'Resolvido' : (ticket.status === 'open' ? 'Em Aberto' : 'Em Análise')} size="sm" />
+                    <div 
+                      key={ticket.id} 
+                      className={cn(
+                        "p-6 rounded-3xl transition-all duration-300 border-2 cursor-pointer group",
+                        selectedTicketId === ticket.id 
+                          ? "border-primary bg-primary/5 shadow-md" 
+                          : "border-muted/20 bg-muted/10 hover:border-primary/20 hover:bg-white"
+                      )} 
+                      onClick={() => setSelectedTicketId(ticket.id)}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                          <Badge className="bg-white px-3 py-1 border border-border/50 text-brand font-black text-[9px] uppercase tracking-widest">
+                            {ticket.protocol}
+                          </Badge>
+                          <StatusBadge 
+                            status={ticket.status === 'resolved' ? 'complete' : (ticket.status === 'open' ? 'progress' : 'pending')} 
+                            label={ticket.status === 'resolved' ? 'Finalizado' : (ticket.status === 'open' ? 'Em Fila' : 'Em Análise')} 
+                            size="sm" 
+                          />
                       </div>
-                      <h4 className="font-black text-sm mb-2">{ticket.subject}</h4>
-                      <p className="text-[10px] text-muted-foreground font-bold">Protocolo gerado em: {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ''}</p>
+                      <h4 className="font-black text-base text-foreground mb-2 group-hover:text-primary transition-colors">{ticket.subject}</h4>
+                      <div className="flex items-center justify-between mt-4">
+                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
+                          <Clock size={12} /> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : ''}
+                        </p>
+                        <ChevronRight size={14} className={cn("transition-transform", selectedTicketId === ticket.id ? "rotate-90" : "")} />
+                      </div>
                     </div>
                   ))}
                 </div>
               </ScrollArea>
             ) : (
               <div className="p-20 text-center opacity-40">
-                <MessageSquare size={48} className="mx-auto mb-4" />
-                <p className="font-black uppercase tracking-widest text-[10px]">Sem protocolos abertos</p>
+                <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <MessageSquare size={32} />
+                </div>
+                <p className="font-black uppercase tracking-widest text-[10px]">Sem protocolos registrados</p>
               </div>
             )}
           </CardContent>
