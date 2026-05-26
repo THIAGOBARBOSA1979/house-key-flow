@@ -238,7 +238,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <ReferralCard />
+          <div className="lg:col-span-1">
+            <ReferralCard />
+          </div>
         </div>
       </div>
     </div>
