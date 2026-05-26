@@ -11,7 +11,8 @@ import {
   Download,
   FileQuestion,
   Clock,
-  Smartphone
+  Smartphone,
+  Star
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
