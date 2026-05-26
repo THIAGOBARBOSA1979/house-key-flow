@@ -60,25 +60,25 @@ const NonConformities = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <Card className="border-none bg-primary/5 shadow-none">
           <CardContent className="pt-6">
-            <div className="text-3xl font-black">{nonConformities.length}</div>
+            <div className="text-3xl font-black">{metrics?.total || 0}</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Total de Registros</div>
           </CardContent>
         </Card>
         <Card className="border-none bg-orange-500/10 shadow-none">
           <CardContent className="pt-6">
-            <div className="text-3xl font-black text-orange-600">{nonConformities.filter((n: any) => n.status === 'open').length}</div>
+            <div className="text-3xl font-black text-orange-600">{metrics?.open || 0}</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-orange-600">Em Aberto</div>
           </CardContent>
         </Card>
         <Card className="border-none bg-blue-500/10 shadow-none">
           <CardContent className="pt-6">
-            <div className="text-3xl font-black text-blue-600">{nonConformities.filter((n: any) => n.status === 'corrective_action').length}</div>
+            <div className="text-3xl font-black text-blue-600">{metrics?.corrective || 0}</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-blue-600">Ação Corretiva</div>
           </CardContent>
         </Card>
         <Card className="border-none bg-emerald-500/10 shadow-none">
           <CardContent className="pt-6">
-            <div className="text-3xl font-black text-emerald-600">{nonConformities.filter((n: any) => n.status === 'closed').length}</div>
+            <div className="text-3xl font-black text-emerald-600">{metrics?.closed || 0}</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Concluídas</div>
           </CardContent>
         </Card>
