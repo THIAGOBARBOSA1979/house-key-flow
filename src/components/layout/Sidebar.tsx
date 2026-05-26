@@ -32,6 +32,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { companyService } from "@/services";
 import { AuthGuard } from "@/integrations/supabase/auth-guard";
 import { useUserPreferences } from "@/hooks/core/useUserPreferences";
+import { usePermission } from "@/hooks/usePermission";
 
 interface SidebarProps {
   className?: string;
