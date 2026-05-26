@@ -198,15 +198,20 @@ export default function ClientInspections() {
 
         <div className="lg:col-span-8 space-y-layout-gap">
           {inspection ? (
-            <Card className="rounded-[3rem] border-none shadow-sem-lg overflow-hidden group bg-white/70 backdrop-blur-md">
-              <div className="h-32 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent w-full relative">
+            <Card className="rounded-[3rem] border-none shadow-2xl overflow-hidden group bg-white">
+              <div className="h-40 bg-gradient-to-br from-primary/30 via-primary/10 to-transparent w-full relative">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
+                <div className="absolute top-8 right-8">
+                  <Badge className="bg-white/80 backdrop-blur-md text-primary border-none font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-xl shadow-xl">
+                    Ref: #{inspection.id.slice(0, 6)}
+                  </Badge>
+                </div>
               </div>
-              <CardHeader className="relative -mt-16 px-8 sm:px-10 pb-4">
-                <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-                  <div className="flex items-center gap-6">
-                    <div className="p-5 bg-white rounded-[2rem] shadow-sem-lg border border-border/50 text-primary group-hover:scale-110 transition-transform duration-500">
-                      <ClipboardCheck className="h-10 w-10" strokeWidth={2.5} />
+              <CardHeader className="relative -mt-20 px-8 sm:px-12 pb-6">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+                  <div className="flex items-center gap-8">
+                    <div className="p-6 bg-white rounded-[2.5rem] shadow-2xl border border-border/50 text-primary group-hover:scale-110 group-hover:rotate-3 transition-transform duration-700">
+                      <ClipboardCheck className="h-12 w-12" strokeWidth={2.5} />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
