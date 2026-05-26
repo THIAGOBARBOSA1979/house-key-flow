@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Supabase } from "@/integrations/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { companyService } from "@/services";
 
 
