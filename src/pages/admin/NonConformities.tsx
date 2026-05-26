@@ -4,28 +4,25 @@ import { PageTemplate } from "@/components/layout/PageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { DataView } from "@/components/shared/DataView";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { nonConformityService } from "@/services/operations/NonConformityService";
+import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 const NonConformities = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: nonConformities = [], isLoading } = useQuery({
-    queryKey: ['non-conformities'],
+  const { data: nonConformities = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['non-conformities', user?.company_id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('non_conformities')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data;
-    }
+      return await nonConformityService.getAll(user?.company_id, user?.is_super_admin);
+    },
+    enabled: !!user
   });
 
   const getSeverityColor = (severity: string) => {
@@ -61,19 +58,19 @@ const NonConformities = () => {
         </Card>
         <Card className="border-none bg-orange-500/10 shadow-none">
           <CardContent className="pt-6">
-            <div className="text-3xl font-black text-orange-600">{nonConformities.filter(n => n.status === 'open').length}</div>
+            <div className="text-3xl font-black text-orange-600">{nonConformities.filter((n: any) => n.status === 'open').length}</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-orange-600">Em Aberto</div>
           </CardContent>
         </Card>
         <Card className="border-none bg-blue-500/10 shadow-none">
           <CardContent className="pt-6">
-            <div className="text-3xl font-black text-blue-600">{nonConformities.filter(n => n.status === 'corrective_action').length}</div>
+            <div className="text-3xl font-black text-blue-600">{nonConformities.filter((n: any) => n.status === 'corrective_action').length}</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-blue-600">Ação Corretiva</div>
           </CardContent>
         </Card>
         <Card className="border-none bg-emerald-500/10 shadow-none">
           <CardContent className="pt-6">
-            <div className="text-3xl font-black text-emerald-600">{nonConformities.filter(n => n.status === 'closed').length}</div>
+            <div className="text-3xl font-black text-emerald-600">{nonConformities.filter((n: any) => n.status === 'closed').length}</div>
             <div className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Concluídas</div>
           </CardContent>
         </Card>
@@ -95,17 +92,19 @@ const NonConformities = () => {
       </div>
 
       <DataView
-        items={nonConformities.filter(n => 
+        items={nonConformities.filter((n: any) => 
           n.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
           n.description?.toLowerCase().includes(searchTerm.toLowerCase())
         )}
         isLoading={isLoading}
+        isError={!!error}
+        error={error ? { message: (error as any).message, retry: () => refetch() } : undefined}
         viewMode="table"
         columns={[
           {
             header: "ID / Identificação",
             accessorKey: "title",
-            cell: (n) => (
+            cell: (n: any) => (
               <div className="flex flex-col">
                 <span className="font-bold">{n.title}</span>
                 <span className="text-[10px] text-muted-foreground uppercase tracking-widest">#{n.id.substring(0, 8)}</span>
@@ -115,7 +114,7 @@ const NonConformities = () => {
           {
             header: "Origem",
             accessorKey: "origin",
-            cell: (n) => (
+            cell: (n: any) => (
               <Badge variant="outline" className="text-[10px] font-bold uppercase border-primary/20 bg-primary/5">
                 {n.origin === 'inspection' ? 'Vistoria' : 
                  n.origin === 'warranty' ? 'Garantia' : 
@@ -126,7 +125,7 @@ const NonConformities = () => {
           {
             header: "Severidade",
             accessorKey: "severity",
-            cell: (n) => (
+            cell: (n: any) => (
               <Badge className={`text-[10px] font-black uppercase tracking-widest ${getSeverityColor(n.severity)}`}>
                 {n.severity}
               </Badge>
@@ -135,11 +134,11 @@ const NonConformities = () => {
           {
             header: "Data Identificada",
             accessorKey: "identified_at",
-            cell: (n) => (
+            cell: (n: any) => (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <CalendarIcon className="h-3 w-3" />
                 <span className="text-[11px] font-bold">
-                  {format(new Date(n.identified_at), "dd MMM yyyy", { locale: ptBR })}
+                  {n.identifiedAt ? format(new Date(n.identifiedAt), "dd MMM yyyy", { locale: ptBR }) : 'N/A'}
                 </span>
               </div>
             )
@@ -147,7 +146,7 @@ const NonConformities = () => {
           {
             header: "Status",
             accessorKey: "status",
-            cell: (n) => (
+            cell: (n: any) => (
               <StatusBadge status={n.status === 'closed' ? 'complete' : n.status === 'corrective_action' ? 'in_progress' : 'pending'} />
             )
           },
@@ -155,7 +154,7 @@ const NonConformities = () => {
             header: "Ações",
             accessorKey: "id",
             className: "text-right",
-            cell: (n) => (
+            cell: (n: any) => (
               <Button variant="ghost" size="sm" className="font-bold text-primary">
                 Ver Detalhes <ArrowRight className="ml-2 h-3 w-3" />
               </Button>
