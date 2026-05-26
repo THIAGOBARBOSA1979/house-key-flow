@@ -25,6 +25,14 @@ const NonConformities = () => {
     enabled: !!user
   });
 
+  const { data: metrics } = useQuery({
+    queryKey: ['non-conformities-metrics', user?.company_id],
+    queryFn: async () => {
+      return await nonConformityService.getMetrics(user?.company_id, user?.is_super_admin);
+    },
+    enabled: !!user && nonConformities.length > 0
+  });
+
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'critical': return 'bg-red-500 text-white';
