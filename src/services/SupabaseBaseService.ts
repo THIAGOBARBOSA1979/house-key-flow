@@ -5,6 +5,7 @@ import { toSnakeCase, toCamelCase, mapObjectKeys } from '@/utils/caseConverter';
 import { BaseEntity } from '@/types/shared';
 import { z } from 'zod';
 import { Result, success, failure } from '@/types/result';
+import { AppError, ErrorCode } from '@/utils/errors/AppError';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
   supabaseTable: keyof Database['public']['Tables'];
@@ -93,8 +94,8 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.notifyListeners();
       
       return mappedData;
-    } catch (err) {
-      this.handleError(err, 'getAll');
+    } catch (err: any) {
+      throw AppError.fromError(err, `${this.constructor.name}.getAll`);
     }
   }
 
@@ -111,7 +112,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       return mapped;
     } catch (err) {
-      this.handleError(err, 'getById');
+      throw AppError.fromError(err, `${this.constructor.name}.getById`);
     }
   }
 
@@ -128,7 +129,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.invalidateCache();
       return created;
     } catch (err) {
-      this.handleError(err, 'create');
+      throw AppError.fromError(err, `${this.constructor.name}.create`);
     }
   }
 
@@ -142,7 +143,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.invalidateCache();
       return updated;
     } catch (err) {
-      this.handleError(err, 'update');
+      throw AppError.fromError(err, `${this.constructor.name}.update`);
     }
   }
 
@@ -155,7 +156,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.invalidateCache();
       return true;
     } catch (err) {
-      this.handleError(err, 'delete');
+      throw AppError.fromError(err, `${this.constructor.name}.delete`);
     }
   }
 

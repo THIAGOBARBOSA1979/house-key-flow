@@ -78,7 +78,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                 <span className="group-hover:text-primary group-hover:tracking-[0.35em] transition-all duration-slow">Painel Estratégico</span>
               </div>
 
-              {isMobile ? <div className="flex-1 px-4 flex justify-center"><div className="font-black text-xs uppercase tracking-[0.3em] text-primary/40">{company?.brand_name || 'A2 Portal'}</div></div> : (
+              {isMobile ? <div className="flex-1 px-4 flex justify-center"><div className="font-black text-[10px] uppercase tracking-[0.3em] text-primary/40 truncate max-w-[150px]">{company?.brand_name || 'A2 Portal'}</div></div> : (
                 <GlobalSearch />
               )}
             </div>
@@ -100,7 +100,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <main 
           className="flex-1 p-layout-gap lg:p-layout-gap-lg transition-all duration-slow overflow-x-hidden w-full"
         >
-          <div className="container-responsive max-w-container mx-auto min-h-[calc(100vh-20rem)]">
+          <div className="container-responsive max-w-container mx-auto min-h-[calc(100vh-16rem)] sm:min-h-[calc(100vh-20rem)] pb-20 sm:pb-0">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
