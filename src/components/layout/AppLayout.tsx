@@ -100,7 +100,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <main 
           className="flex-1 p-layout-gap lg:p-layout-gap-lg transition-all duration-slow overflow-x-hidden w-full"
         >
-          <div className="container-responsive max-w-container mx-auto min-h-[calc(100vh-20rem)]">
+          <div className="container-responsive max-w-container mx-auto min-h-[calc(100vh-16rem)] sm:min-h-[calc(100vh-20rem)] pb-20 sm:pb-0">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
