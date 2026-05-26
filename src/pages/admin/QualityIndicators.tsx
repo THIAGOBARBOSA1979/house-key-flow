@@ -102,7 +102,7 @@ const QualityIndicators = () => {
                   <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{item.label}</span>
                   <span className="text-xs font-black">{item.value}%</span>
                 </div>
-                <Progress value={item.value} className="h-2 bg-muted/40" indicatorClassName="bg-gradient-to-r from-primary to-indigo-600" />
+                <Progress value={item.value} className="h-2 bg-muted/40" />
               </div>
             ))}
           </CardContent>
