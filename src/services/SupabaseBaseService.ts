@@ -5,6 +5,7 @@ import { toSnakeCase, toCamelCase, mapObjectKeys } from '@/utils/caseConverter';
 import { BaseEntity } from '@/types/shared';
 import { z } from 'zod';
 import { Result, success, failure } from '@/types/result';
+import { AppError, ErrorCode } from '@/utils/errors/AppError';
 
 export interface SupabaseBaseServiceOptions extends BaseServiceOptions {
   supabaseTable: keyof Database['public']['Tables'];
