@@ -19,35 +19,41 @@ interface ConstructionFeedProps {
 
 export function ConstructionFeed({ updates }: ConstructionFeedProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <HardHat className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-black tracking-tight">Diário de Obra</h2>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between pb-4 border-b border-border/10">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-primary text-white rounded-2xl shadow-lg">
+            <HardHat className="h-6 w-6" strokeWidth={2.5} />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-2xl font-black tracking-tighter">Diário de Obra</h2>
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Acompanhamento Estrutural em Tempo Real</p>
+          </div>
         </div>
-        <Button variant="ghost" size="sm" className="font-bold gap-2">
-          Ver histórico completo <ArrowRight className="h-4 w-4" />
+        <Button variant="ghost" className="font-black uppercase tracking-widest text-[10px] gap-2 rounded-xl hover:bg-primary/5">
+          Linha do Tempo <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
         {updates.length > 0 ? updates.map((update) => (
-          <Card key={update.id} className="overflow-hidden border-none shadow-sem-lg group hover:translate-y-[-6px] transition-all duration-700 rounded-[2.5rem] bg-white hover:shadow-2xl flex flex-col">
-            <div className="aspect-video relative overflow-hidden">
+          <Card key={update.id} className="overflow-hidden border-none shadow-2xl group hover:translate-y-[-8px] transition-all duration-700 rounded-[3rem] bg-white flex flex-col h-full">
+            <div className="aspect-[16/10] relative overflow-hidden">
               <img 
                 src={update.imageUrl || "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=800&q=80"} 
                 alt={update.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-slow"
               />
-              <div className="absolute top-4 left-4">
-                <Badge className="bg-primary/90 backdrop-blur-md border-none font-black px-3 py-1 rounded-xl shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60" />
+              <div className="absolute top-6 left-6">
+                <Badge className="bg-white text-primary border-none font-black px-4 py-1.5 rounded-xl shadow-2xl uppercase tracking-widest text-[10px]">
                   {update.percentage}% Concluído
                 </Badge>
               </div>
-              <div className="absolute bottom-4 right-4">
-                <div className="bg-white/90 backdrop-blur-md p-2 rounded-xl shadow-lg flex items-center gap-2">
-                  <Camera className="h-4 w-4 text-primary" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">3 fotos novas</span>
+              <div className="absolute bottom-6 right-6">
+                <div className="bg-white/10 backdrop-blur-xl p-3 rounded-2xl shadow-xl flex items-center gap-3 border border-white/20">
+                  <Camera className="h-5 w-5 text-white" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Relatório Visual</span>
                 </div>
               </div>
             </div>
