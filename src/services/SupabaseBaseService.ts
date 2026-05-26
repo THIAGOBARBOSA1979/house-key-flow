@@ -156,7 +156,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.invalidateCache();
       return true;
     } catch (err) {
-      this.handleError(err, 'delete');
+      throw AppError.fromError(err, `${this.constructor.name}.delete`);
     }
   }
 
