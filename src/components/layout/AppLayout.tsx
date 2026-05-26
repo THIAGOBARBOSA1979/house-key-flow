@@ -124,9 +124,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             <div className="space-y-3 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 opacity-60">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-sm shadow-brand/20 shadow-lg">
-                  A2
+                  {company?.name?.charAt(0) || 'A2'}
                 </div>
-                <span className="font-black tracking-tighter text-foreground text-xl italic">A2 Incorporadora</span>
+                <span className="font-black tracking-tighter text-foreground text-xl italic">
+                  {company?.settings?.display_name || company?.name || 'A2 Incorporadora'}
+                </span>
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 leading-relaxed">
                 © {new Date().getFullYear()} A2 Gestão de Portfólio Estratégico.<br />
