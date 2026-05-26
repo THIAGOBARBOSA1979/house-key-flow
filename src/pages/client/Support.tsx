@@ -27,7 +27,9 @@ import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ClientFAQ } from "@/components/client-flow/ClientFAQ";
+import { SatisfactionSurvey } from "@/components/shared/SatisfactionSurvey";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Support = () => {
   const { toast } = useToast();
@@ -40,6 +42,7 @@ const Support = () => {
     priority: "medium" as TicketPriority,
     category: "warranty" as TicketCategory
   });
+  const [showSurvey, setShowSurvey] = useState(false);
 
   const fetchTickets = async () => {
     if (!user?.company_id) return;
@@ -104,22 +107,41 @@ const Support = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Assunto</label>
-                <Input 
-                  value={formState.subject} 
-                  onChange={e => setFormState(prev => ({...prev, subject: e.target.value}))} 
-                  placeholder="Ex: Vazamento na cozinha" 
-                  className="h-12 rounded-xl" required 
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Assunto</label>
+                  <Input 
+                    value={formState.subject} 
+                    onChange={e => setFormState(prev => ({...prev, subject: e.target.value}))} 
+                    placeholder="Ex: Vazamento na cozinha" 
+                    className="h-12 rounded-xl" required 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Categoria</label>
+                  <Select 
+                    value={formState.category} 
+                    onValueChange={(val: TicketCategory) => setFormState(prev => ({...prev, category: val}))}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl">
+                      <SelectValue placeholder="Selecione..." />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="warranty" className="font-bold">Assistência Técnica</SelectItem>
+                      <SelectItem value="financial" className="font-bold">Financeiro</SelectItem>
+                      <SelectItem value="document" className="font-bold">Documentação</SelectItem>
+                      <SelectItem value="other" className="font-bold">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Descrição</label>
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Descrição detalhada</label>
                 <Textarea 
                   value={formState.message} 
                   onChange={e => setFormState(prev => ({...prev, message: e.target.value}))} 
-                  placeholder="Detalhe o ocorrido..." 
-                  className="min-h-[150px] rounded-xl resize-none" required 
+                  placeholder="Descreva o ocorrido com o máximo de detalhes para agilizarmos seu atendimento..." 
+                  className="min-h-[120px] rounded-xl resize-none" required 
                 />
               </div>
               <Button type="submit" className="w-full h-14 font-black uppercase tracking-widest text-[11px] rounded-2xl shadow-lg shadow-primary/10 active:scale-95 transition-all">
@@ -217,12 +239,42 @@ const Support = () => {
                   </div>
                </div>
             </div>
-            <div className="mt-8">
-              <Button className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl" onClick={() => setSelectedTicketId(null)}>
-                Fechar Protocolo
+            <div className="mt-8 flex gap-4">
+              {selectedTicket?.status === 'resolved' && (
+                <Button 
+                  variant="outline" 
+                  className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] border-2 border-primary text-primary hover:bg-primary/5"
+                  onClick={() => {
+                    setShowSurvey(true);
+                    setSelectedTicketId(null);
+                  }}
+                >
+                  <Star size={14} className="mr-2" /> Avaliar Atendimento
+                </Button>
+              )}
+              <Button 
+                className={cn("h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl", selectedTicket?.status === 'resolved' ? "w-1/3" : "w-full")} 
+                onClick={() => setSelectedTicketId(null)}
+              >
+                Fechar Detalhes
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showSurvey} onOpenChange={setShowSurvey}>
+        <DialogContent className="max-w-md p-0 border-none bg-transparent shadow-none">
+          <SatisfactionSurvey 
+            onDismiss={() => setShowSurvey(false)}
+            onSubmit={(data) => {
+              console.log("Feedback enviado:", data);
+              toast({
+                title: "Feedback recebido",
+                description: "Obrigado por nos ajudar a melhorar nossos processos.",
+              });
+            }}
+          />
         </DialogContent>
       </Dialog>
     </div>
