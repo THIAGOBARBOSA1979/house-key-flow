@@ -22,8 +22,8 @@ class QualityService extends SupabaseBaseService<QualityIndicator> {
   }
 
   async getMetricsForPeriod(start: Date, end: Date) {
-    const { Supabase } = await import("@/integrations/supabase");
-    const { data, error } = await Supabase.db.findMany<QualityIndicator>('quality_indicators', {
+    const { SupabaseDatabase } = await import("@/integrations/supabase");
+    const { data, error } = await SupabaseDatabase.findMany<QualityIndicator>('quality_indicators', {
       filters: [
         { column: 'period_start', operator: 'gte', value: start.toISOString() },
         { column: 'period_end', operator: 'lte', value: end.toISOString() }

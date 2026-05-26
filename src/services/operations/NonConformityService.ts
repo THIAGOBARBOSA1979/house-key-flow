@@ -29,8 +29,8 @@ class NonConformityService extends SupabaseBaseService<NonConformity> {
   }
 
   async close(id: string, data: { root_cause: string; corrective_action: string; prevention_plan: string }) {
-    const { Supabase } = await import("@/integrations/supabase");
-    const { data: { user } } = await Supabase.auth.getUser();
+    const { SupabaseAuth } = await import("@/integrations/supabase");
+    const user = await SupabaseAuth.getCurrentUser();
     return this.update(id, {
       ...data,
       status: 'closed',
