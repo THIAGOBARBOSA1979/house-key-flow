@@ -18,7 +18,8 @@ import {
   Shield,
   RefreshCw,
   Megaphone,
-  Globe
+  Globe,
+  BarChart3
 } from "lucide-react";
 import { 
   DropdownMenu, 
@@ -43,6 +44,7 @@ import { GovernanceManager } from "@/components/admin/GovernanceManager";
 import { AuditLogViewer } from "@/components/admin/AuditLogViewer";
 import { SystemHealth } from "@/components/admin/SaaS/SystemHealth";
 import { GlobalBroadcaster } from "@/components/admin/SaaS/GlobalBroadcaster";
+import { GlobalOperationalMetrics } from "@/components/admin/SaaS/GlobalOperationalMetrics";
 
 import { propertyService } from "@/services";
 import { inspectionService } from "@/services";
@@ -197,6 +199,9 @@ export default function SaaSAdmin() {
           <TabsTrigger value="governance" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
             <Shield className="h-4 w-4" /> Governança
           </TabsTrigger>
+          <TabsTrigger value="metrics" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
+            <BarChart3 className="h-4 w-4" /> Métricas Globais
+          </TabsTrigger>
           <TabsTrigger value="audit" className="rounded-lg px-6 font-bold text-xs uppercase tracking-widest gap-2">
             <Activity className="h-4 w-4" /> Auditoria Global
           </TabsTrigger>
@@ -218,6 +223,10 @@ export default function SaaSAdmin() {
 
         <TabsContent value="governance">
           <GovernanceManager />
+        </TabsContent>
+
+        <TabsContent value="metrics">
+          <GlobalOperationalMetrics />
         </TabsContent>
 
         <TabsContent value="audit">
