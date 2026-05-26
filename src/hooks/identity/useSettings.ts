@@ -9,12 +9,24 @@ export const useSettings = () => {
   const { toast } = useToast();
   const [settings, setSettings] = useState<SystemSettings>(() => systemSettingsService.getSettings());
   const [companySettings, setCompanySettings] = useState<CompanySettings>({});
+  const [tenantBranding, setTenantBranding] = useState<Partial<Company>>({});
+
 
   useEffect(() => {
     if (user?.company_id) {
       companyService.getById(user.company_id, undefined, true).then(company => {
-        if (company?.settings) {
-          setCompanySettings(company.settings);
+        if (company) {
+          if (company.settings) {
+            setCompanySettings(company.settings);
+          }
+          setTenantBranding({
+            subdomain: company.subdomain,
+            custom_domain: company.custom_domain,
+            brand_name: company.brand_name,
+            logo_url: company.logo_url,
+            favicon_url: company.favicon_url,
+            theme_settings: company.theme_settings
+          });
         }
       });
     }
@@ -35,7 +47,7 @@ export const useSettings = () => {
     });
   }, [settings, toast]);
 
-  const saveCompanySettings = useCallback(() => {
+  const saveCompanySettings = useCallback(async () => {
     if (user?.company_id) {
       const updatedSettings = {
         ...companySettings,
@@ -43,18 +55,22 @@ export const useSettings = () => {
         is_dark_mode_forced: settings.branding.darkMode,
       };
       
-      companyService.updateSettings(user.company_id, updatedSettings);
+      await companyService.updateSettings(user.company_id, updatedSettings);
+      await companyService.updateTenantBranding(user.company_id, tenantBranding);
+      
       toast({
         title: "Empresa atualizada",
         description: "As configurações do seu tenant foram salvas."
       });
     }
-  }, [user?.company_id, companySettings, settings.branding.primaryColor, settings.branding.darkMode, toast]);
+  }, [user?.company_id, companySettings, tenantBranding, settings.branding.primaryColor, settings.branding.darkMode, toast]);
 
   return {
     settings,
     companySettings,
     setCompanySettings,
+    tenantBranding,
+    setTenantBranding,
     updateSection,
     saveSystemSettings,
     saveCompanySettings,
