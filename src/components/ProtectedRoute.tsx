@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePermission } from '@/hooks/usePermission';
+import { useTenant } from '@/contexts/TenantContext';
 import { SkeletonLoader } from '@/components/shared/SkeletonLoader';
 import { Role } from '@/types';
 
@@ -19,11 +20,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   permission
 }) => {
   const { user, isLoading } = useAuth();
+  const { tenant, isLoading: isLoadingTenant } = useTenant();
   const { hasPermission, isLoading: loadingPermissions } = usePermission();
   const location = useLocation();
 
-  if (isLoading || loadingPermissions) {
+  if (isLoading || loadingPermissions || isLoadingTenant) {
     return <SkeletonLoader type="page" />;
+  }
+
+  // Tenant access security check
+  if (user && !user.is_super_admin && tenant && user.company_id !== tenant.id) {
+    console.error('[Security] Tenant mismatch detected. Access denied.');
+    return <Navigate to="/login?error=tenant_mismatch" replace />;
   }
 
   if (!user) {

@@ -36,7 +36,7 @@ const Warranty = () => {
   return (
     <PageTemplate
       title="Engenharia de Diagnóstico & Assistência"
-      description="Governança técnica do pós-venda: controle de SLAs, fluxos de assistência e conformidade com normas ABNT."
+      description="Governança técnica do pós-venda em total conformidade com ABNT NBR 15575 e ISO 9001."
       actions={<WarrantyPageActions onExport={exportData} />}
     >
 
@@ -70,7 +70,7 @@ const Warranty = () => {
         </TabsContent>
  
         <TabsContent value="logs">
-          <AuditLogViewer entityType="warranty" title="Logs de Auditoria - Garantias" />
+          <AuditLogViewer entityType="warranty" title="Rastreabilidade de Garantia (Audit Trail)" />
         </TabsContent>
       </Tabs>
 

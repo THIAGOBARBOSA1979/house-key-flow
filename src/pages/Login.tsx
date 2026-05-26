@@ -239,7 +239,7 @@ export default function Login() {
                         onSubmit={authForm.handleLogin}
                         forgotPasswordLink="/forgot-password"
                         submitButtonText="Acesso Master"
-                        emailPlaceholder="master@a2incorporadora.com"
+                        emailPlaceholder="master@sistema.com"
                       />
                     </TabsContent>
                   </Tabs>
