@@ -79,9 +79,12 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
     i18n.changeLanguage(nextLng);
   };
 
+  const { hasPermission } = usePermission();
+
   const filterItems = (items: any[]) => items.filter(item => {
     if (item.superAdminOnly && !AuthGuard.isSuperAdmin()) return false;
     if (item.adminOnly && !AuthGuard.isAdmin() && !AuthGuard.isSuperAdmin()) return false;
+    if (item.permission && !hasPermission(item.permission)) return false;
     return true;
   });
 
