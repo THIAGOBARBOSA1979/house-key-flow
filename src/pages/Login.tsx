@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Building2, 
   Shield, 
@@ -17,10 +17,19 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthForm } from "@/hooks/identity/useAuthForm";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { useTenant } from "@/contexts/TenantContext";
 
 export default function Login() {
+  const { tenant, isLoading: isTenantLoading } = useTenant();
   const [activeTab, setActiveTab] = useState("client");
   const authForm = useAuthForm(activeTab);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (tenant && activeTab === 'master') {
+      setActiveTab('client');
+    }
+  }, [tenant]);
 
   const adminFeatures = [
     {
