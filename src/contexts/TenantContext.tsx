@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Supabase } from '@/integrations/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Company } from '@/services/identity/CompanyService';
 
 interface TenantContextType {
@@ -21,20 +21,24 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
       const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
       
       try {
-        let query = Supabase.from('companies').select('*');
+        let query = supabase.from('companies').select('*');
         
-        // Se for Lovable Preview ou Localhost, podemos usar um tenant de teste ou slug da URL
-        // Em prod: empresa.plataforma.com (subdomain) ou custom.domain.com
         const parts = hostname.split('.');
         
         if (parts.length > 2 && !isLocal) {
-          // Detectar subdomínio (ex: empresa.sistema.com)
           const subdomain = parts[0];
           query = query.eq('subdomain', subdomain);
-        } else {
-          // Tentar por custom domain
+        } else if (!isLocal) {
           query = query.eq('custom_domain', hostname);
           setIsCustomDomain(true);
+        } else {
+          // No localhost, se não houver subdomínio, podemos pegar a primeira empresa para testes
+          const { data: firstCompany } = await supabase.from('companies').select('*').limit(1).single();
+          if (firstCompany) {
+            setTenant(firstCompany as unknown as Company);
+            setIsLoading(false);
+            return;
+          }
         }
 
         const { data, error } = await query.single();
@@ -58,6 +62,7 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
     </TenantContext.Provider>
   );
 };
+
 
 export const useTenant = () => {
   const context = useContext(TenantContext);

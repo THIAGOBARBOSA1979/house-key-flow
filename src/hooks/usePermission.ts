@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Permission } from "@/types/auth";
 import { useQuery } from "@tanstack/react-query";
-import { Supabase } from "@/integrations/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 export const usePermission = () => {
   const { user } = useAuth();
@@ -11,10 +11,9 @@ export const usePermission = () => {
     queryFn: async () => {
       if (!user) return [];
       
-      // Super Admin tem todas as permissões
       if (user.is_super_admin) return ['*'];
 
-      const { data, error } = await Supabase
+      const { data, error } = await supabase
         .from('role_permissions')
         .select(`
           permissions (
@@ -24,7 +23,7 @@ export const usePermission = () => {
         .eq('role', user.role);
 
       if (error) throw error;
-      return data.map((rp: any) => rp.permissions.name);
+      return (data as any[]).map((rp: any) => rp.permissions.name);
     },
     enabled: !!user,
   });

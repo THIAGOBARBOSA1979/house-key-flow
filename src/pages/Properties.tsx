@@ -112,7 +112,6 @@ const Properties = () => {
       </PropertyFilters>
       
       <DataView
-        type="properties"
         items={filteredProperties}
         isLoading={isLoading}
         isError={!!propertiesError}
