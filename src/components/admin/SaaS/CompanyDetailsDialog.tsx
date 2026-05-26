@@ -115,6 +115,46 @@ export const CompanyDetailsDialog: React.FC<CompanyDetailsDialogProps> = ({
               </div>
 
               <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Subdomínio (empresa.sistema.com)</Label>
+                <Input 
+                  value={editData.subdomain || ''} 
+                  onChange={e => setEditData({...editData, subdomain: e.target.value})}
+                  className="h-11 rounded-xl"
+                  placeholder="ex: construtora-a"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Domínio Customizado (opcional)</Label>
+                <Input 
+                  value={editData.custom_domain || ''} 
+                  onChange={e => setEditData({...editData, custom_domain: e.target.value})}
+                  className="h-11 rounded-xl"
+                  placeholder="ex: suporte.construtora.com.br"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">URL do Logotipo</Label>
+                <Input 
+                  value={editData.logo_url || ''} 
+                  onChange={e => setEditData({...editData, logo_url: e.target.value})}
+                  className="h-11 rounded-xl"
+                  placeholder="https://exemplo.com/logo.png"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Nome da Marca (White Label)</Label>
+                <Input 
+                  value={editData.brand_name || ''} 
+                  onChange={e => setEditData({...editData, brand_name: e.target.value})}
+                  className="h-11 rounded-xl"
+                  placeholder="Ex: Construtora Elite"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Plano de Assinatura</Label>
                 <Select 
                   value={editData.plan_id || ''} 
@@ -141,6 +181,19 @@ export const CompanyDetailsDialog: React.FC<CompanyDetailsDialogProps> = ({
                     settings: { ...editData.settings, support_email: e.target.value }
                   })}
                   className="h-11 rounded-xl"
+                />
+              </div>
+
+              <div className="space-y-2 col-span-1 md:col-span-2">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Configurações de Tema (JSON)</Label>
+                <textarea 
+                  className="w-full min-h-[100px] p-3 rounded-xl border bg-background text-xs font-mono"
+                  value={JSON.stringify(editData.theme_settings || { primary: "#1E293B", secondary: "#64748B", radius: "0.5rem" }, null, 2)}
+                  onChange={e => {
+                    try {
+                      setEditData({...editData, theme_settings: JSON.parse(e.target.value)});
+                    } catch(err) {}
+                  }}
                 />
               </div>
             </div>
