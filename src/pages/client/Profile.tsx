@@ -180,29 +180,29 @@ const ClientProfile = () => {
             )}
           </Card>
 
-          <Card className="border-primary/10 shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <Card className="border-primary/10 shadow-xl rounded-3xl overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-4">
+              <CardTitle className="flex items-center gap-3 text-lg font-black tracking-tight">
                 <Lock className="h-5 w-5 text-primary" />
-                Segurança
+                Governança de Segurança
               </CardTitle>
-              <CardDescription>Gerencie sua senha e acessos.</CardDescription>
+              <CardDescription className="font-medium">Gerencie sua senha e protocolos de acesso.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center justify-between p-5 bg-muted/20 rounded-2xl border border-border/5 group/sec hover:bg-primary/5 transition-all">
                 <div className="space-y-1">
-                  <p className="font-bold text-sm">Alterar Senha</p>
-                  <p className="text-xs text-muted-foreground">Recomendamos trocar sua senha a cada 90 dias.</p>
+                  <p className="font-black text-sm group-hover/sec:text-primary transition-colors">Alterar Senha de Acesso</p>
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Protocolo sugerido a cada 90 dias</p>
                 </div>
-                <Button variant="outline" size="sm" className="font-bold uppercase tracking-tighter text-[10px]">Alterar</Button>
+                <Button variant="outline" size="sm" className="rounded-xl font-black uppercase tracking-widest text-[9px] h-9 px-4 border-2">Sincronizar</Button>
               </div>
               
-              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border">
+              <div className="flex items-center justify-between p-5 bg-muted/20 rounded-2xl border border-border/5 group/2fa hover:bg-emerald-500/5 transition-all">
                 <div className="space-y-1">
-                  <p className="font-bold text-sm">Autenticação em Duas Etapas</p>
-                  <p className="text-xs text-muted-foreground">Adicione uma camada extra de segurança via SMS.</p>
+                  <p className="font-black text-sm group-hover/2fa:text-emerald-600 transition-colors">Autenticação MFA</p>
+                  <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Camada extra de proteção via SMS</p>
                 </div>
-                <Button variant="outline" size="sm" className="font-bold uppercase tracking-tighter text-[10px]">Ativar</Button>
+                <Badge className="bg-emerald-500 text-white border-none font-black text-[9px] uppercase tracking-widest px-3 py-1">Ativo</Badge>
               </div>
             </CardContent>
           </Card>
