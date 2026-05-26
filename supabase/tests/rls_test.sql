@@ -1,7 +1,16 @@
 -- Test script for Multi-tenant RLS isolation
 BEGIN;
 
+-- Disable triggers temporarily to avoid side effects during test setup
+SET session_replication_role = 'replica';
+
 -- 1. Setup test data
+-- Insert into auth.users first to satisfy foreign keys
+INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
+VALUES ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'user-a@example.com', 'pwd', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), '', '', '', ''),
+       ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'user-b@example.com', 'pwd', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), '', '', '', '')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO public.companies (id, name, slug, status) 
 VALUES ('00000000-0000-0000-0000-000000000001', 'Tenant A', 'tenant-a', 'active'),
        ('00000000-0000-0000-0000-000000000002', 'Tenant B', 'tenant-b', 'active')
@@ -17,7 +26,12 @@ VALUES ('11111111-1111-1111-1111-111111111111', 'Property A', '00000000-0000-000
        ('22222222-2222-2222-2222-222222222222', 'Property B', '00000000-0000-0000-0000-000000000002')
 ON CONFLICT (id) DO NOTHING;
 
+-- Re-enable triggers
+SET session_replication_role = 'origin';
+
 -- 2. Test User A (Tenant A)
+-- We simulate the auth context using a transaction-local setting
+-- and then checking the policies
 SET LOCAL auth.uid = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 SET LOCAL role = 'authenticated';
 
