@@ -261,24 +261,24 @@ export default function ClientInspections() {
                 </div>
 
                 {inspection.status === 'complete' && !inspection.signed && (
-                  <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-emerald-500/5 border-2 border-primary/20 rounded-[2.5rem] p-8 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-700 shadow-xl shadow-primary/5 relative overflow-hidden group/sign">
-                    <div className="absolute right-[-2%] top-[-10%] opacity-5 pointer-events-none group-hover/sign:rotate-12 transition-transform duration-1000">
-                      <PenTool size={120} />
+                  <div className="bg-gradient-to-br from-primary via-indigo-600 to-indigo-800 border-none rounded-[2.5rem] p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-700 shadow-2xl shadow-primary/20 relative overflow-hidden group/sign">
+                    <div className="absolute right-[-2%] top-[-10%] opacity-10 pointer-events-none group-hover/sign:rotate-12 transition-transform duration-1000 text-white">
+                      <PenTool size={180} />
                     </div>
-                    <div className="flex items-center gap-6 relative z-10">
-                      <div className="p-5 bg-primary text-white rounded-[1.5rem] shadow-xl shadow-primary/30 group-hover/sign:scale-110 group-hover/sign:rotate-3 transition-all duration-500">
-                         <PenTool size={32} strokeWidth={2.5} />
+                    <div className="flex items-center gap-8 relative z-10">
+                      <div className="p-6 bg-white/10 backdrop-blur-xl text-white rounded-[2rem] border border-white/20 shadow-inner group-hover/sign:scale-110 group-hover/sign:rotate-3 transition-all duration-500">
+                         <PenTool size={40} strokeWidth={2.5} />
                       </div>
-                      <div>
-                        <h5 className="text-xl font-black tracking-tight text-foreground">Assinatura do Termo Pendente</h5>
-                        <p className="text-sm text-muted-foreground font-bold leading-relaxed mt-1">Formalize o recebimento do laudo técnico com validade jurídica e segurança digital.</p>
+                      <div className="space-y-2">
+                        <h5 className="text-2xl font-black tracking-tight text-white leading-tight">Formalização Digital Pendente</h5>
+                        <p className="text-sm text-white/70 font-bold leading-relaxed max-w-md">Sua vistoria foi aprovada pela equipe técnica. Assine o termo digital para oficializar a conformidade da unidade.</p>
                       </div>
                     </div>
                     <Button 
-                      className="rounded-2xl font-black uppercase tracking-widest text-[11px] px-12 h-14 shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all w-full lg:w-auto relative z-10"
+                      className="bg-white text-primary hover:bg-white/90 rounded-2xl font-black uppercase tracking-widest text-xs px-12 h-16 shadow-2xl hover:scale-105 active:scale-95 transition-all w-full lg:w-auto relative z-10"
                       onClick={handleOpenSignature}
                     >
-                      Assinar Protocolo Digital
+                      Assinar Protocolo Agora
                     </Button>
                   </div>
                 )}

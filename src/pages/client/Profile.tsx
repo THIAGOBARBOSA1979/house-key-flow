@@ -7,11 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks";
-import { User, Mail, Phone, MapPin, Shield, Lock, BellRing } from "lucide-react";
+import { User, Mail, Phone, MapPin, Shield, Lock, BellRing, Clock, CheckCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { ResponsiveGrid } from "@/components/shared/ResponsiveGrid";
-import { CheckCircle, Clock } from "lucide-react";
 
 const ClientProfile = () => {
   const { user } = useAuth();
