@@ -112,7 +112,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       return mapped;
     } catch (err) {
-      this.handleError(err, 'getById');
+      throw AppError.fromError(err, `${this.constructor.name}.getById`);
     }
   }
 
