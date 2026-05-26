@@ -99,7 +99,7 @@ export default function Register() {
         description: "Você já pode começar a usar o sistema.",
       });
 
-      navigate('/admin');
+      navigate('/app');
     } catch (error: any) {
       toast({
         title: "Erro ao criar conta",

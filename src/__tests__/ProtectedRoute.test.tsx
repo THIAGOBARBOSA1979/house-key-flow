@@ -73,7 +73,7 @@ describe('ProtectedRoute', () => {
 
     // Initial render of / results in matching route, but Navigate takes effect
     // In this test setup we need to navigate to /admin
-    window.history.pushState({}, 'Test', '/admin');
+    window.history.pushState({}, 'Test', '/app');
     
     render(
       <BrowserRouter>
