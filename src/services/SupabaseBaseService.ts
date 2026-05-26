@@ -95,8 +95,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       
       return mappedData;
     } catch (err: any) {
-      const code = err.code === 'PGRST116' ? ErrorCode.NOT_FOUND : ErrorCode.INTERNAL_ERROR;
-      throw new AppError(err.message || 'Erro ao buscar registros', code, { originalError: err });
+      throw AppError.fromError(err, `${this.constructor.name}.getAll`);
     }
   }
 
