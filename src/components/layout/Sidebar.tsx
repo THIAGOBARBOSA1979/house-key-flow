@@ -40,25 +40,25 @@ interface SidebarProps {
 
 const operationalItems = [
   { to: "/app", icon: Home, label: "Painel Estratégico", end: true },
-  { to: "/app/calendar", icon: Calendar, label: "Cronograma Técnico" },
-  { to: "/app/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas" },
-  { to: "/app/warranty", icon: ShieldCheck, label: "Assistência Técnica" },
-  { to: "/app/support", icon: MessageSquare, label: "Suporte Técnico" },
-  { to: "/app/inbox", icon: MessageSquare, label: "Inbox WhatsApp", adminOnly: true },
+  { to: "/app/calendar", icon: Calendar, label: "Cronograma Técnico", permission: "maintenance.view" },
+  { to: "/app/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas", permission: "maintenance.view" },
+  { to: "/app/warranty", icon: ShieldCheck, label: "Assistência Técnica", permission: "maintenance.view" },
+  { to: "/app/support", icon: MessageSquare, label: "Suporte Técnico", permission: "maintenance.view" },
+  { to: "/app/inbox", icon: MessageSquare, label: "Inbox WhatsApp", permission: "maintenance.manage" },
 ];
 
 const managementItems = [
-  { to: "/app/properties", icon: Building, label: "Empreendimentos" },
-  { to: "/app/announcements", icon: Megaphone, label: "Comunicados" },
-  { to: "/app/ClientArea", icon: User, label: "Clientes" },
-  { to: "/app/documents", icon: FileText, label: "Documentos" },
-  { to: "/app/users", icon: Users, label: "Usuários" },
-  { to: "/app/technicians", icon: Wrench, label: "Técnicos" },
+  { to: "/app/properties", icon: Building, label: "Empreendimentos", permission: "properties.view" },
+  { to: "/app/announcements", icon: Megaphone, label: "Comunicados", permission: "announcements.view" },
+  { to: "/app/ClientArea", icon: User, label: "Clientes", permission: "users.view" },
+  { to: "/app/documents", icon: FileText, label: "Documentos", permission: "documents.view" },
+  { to: "/app/users", icon: Users, label: "Usuários", permission: "users.manage" },
+  { to: "/app/technicians", icon: Wrench, label: "Técnicos", permission: "users.manage" },
 ];
 
 const systemItems = [
-  { to: "/app/checklist", icon: ClipboardCheck, label: "Checklists", adminOnly: true },
-  { to: "/app/settings", icon: Settings, label: "Configurações", adminOnly: true },
+  { to: "/app/checklist", icon: ClipboardCheck, label: "Checklists", permission: "settings.manage" },
+  { to: "/app/settings", icon: Settings, label: "Configurações", permission: "settings.manage" },
   { to: "/app/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
   { to: "/app/audit-logs", icon: FileSearch, label: "Audit & Compliance", superAdminOnly: true },
   { to: "/app/saas", icon: ShieldCheck, label: "Command Center", superAdminOnly: true },
