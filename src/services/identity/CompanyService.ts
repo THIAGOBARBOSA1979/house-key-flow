@@ -87,6 +87,13 @@ class CompanyService extends SupabaseBaseService<Company> {
       updated_at: new Date()
     });
   }
+
+  async updateTenantBranding(id: string, data: Partial<Company>) {
+    return this.update(id, {
+      ...data,
+      updated_at: new Date()
+    });
+  }
 }
 
 export const companyService = new CompanyService();

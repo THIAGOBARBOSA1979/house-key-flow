@@ -26,6 +26,8 @@ const Settings = () => {
     updateSection,
     saveSystemSettings,
     saveCompanySettings,
+    tenantBranding,
+    setTenantBranding,
     user
   } = useSettings();
 
@@ -95,7 +97,10 @@ const Settings = () => {
             <CompanyTab 
               companySettings={companySettings} 
               setCompanySettings={setCompanySettings} 
-              onSave={async () => saveCompanySettings()} 
+              onSave={saveCompanySettings} 
+              tenantBranding={tenantBranding}
+              setTenantBranding={setTenantBranding}
+
 
             />
           </TabsContent>

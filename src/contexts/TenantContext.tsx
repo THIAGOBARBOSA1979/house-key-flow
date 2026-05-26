@@ -18,30 +18,43 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const resolveTenant = async () => {
       const hostname = window.location.hostname;
-      const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+      const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.includes('.lovableproject.com');
       
       try {
         let query = supabase.from('companies').select('*');
         
+        // Se estiver num subdomínio (ex: empresa.sistema.com)
         const parts = hostname.split('.');
         
-        if (parts.length > 2 && !isLocal) {
+        // Lógica para detectar subdomínio ignorando domínios de desenvolvimento do Lovable
+        const isLovablePreview = hostname.includes('.lovableproject.com');
+        
+        if (parts.length > 2 && !isLovablePreview) {
           const subdomain = parts[0];
           query = query.eq('subdomain', subdomain);
-        } else if (!isLocal) {
+        } else if (!isLocal && !isLovablePreview) {
+          // Domínio customizado (ex: suporte.cliente.com.br)
           query = query.eq('custom_domain', hostname);
           setIsCustomDomain(true);
         } else {
-          // No localhost, se não houver subdomínio, podemos pegar a primeira empresa para testes
-          const { data: firstCompany } = await supabase.from('companies').select('*').limit(1).single();
-          if (firstCompany) {
-            setTenant(firstCompany as unknown as Company);
-            setIsLoading(false);
-            return;
+          // Fallback para localhost ou preview do Lovable: tenta pegar via query param 'tenant' para debug
+          const urlParams = new URLSearchParams(window.location.search);
+          const tenantSlug = urlParams.get('tenant');
+          
+          if (tenantSlug) {
+            query = query.eq('slug', tenantSlug);
+          } else {
+            // Se não houver nada, pega a primeira empresa para não quebrar o layout
+            const { data: firstCompany } = await supabase.from('companies').select('*').limit(1).maybeSingle();
+            if (firstCompany) {
+              setTenant(firstCompany as unknown as Company);
+              setIsLoading(false);
+              return;
+            }
           }
         }
 
-        const { data, error } = await query.single();
+        const { data, error } = await query.maybeSingle();
         
         if (data) {
           setTenant(data as unknown as Company);

@@ -720,6 +720,68 @@ export type Database = {
           },
         ]
       }
+      non_conformities: {
+        Row: {
+          closed_at: string | null
+          closed_by: string | null
+          company_id: string
+          corrective_action: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          identified_at: string | null
+          origin: string
+          prevention_plan: string | null
+          root_cause: string | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          closed_at?: string | null
+          closed_by?: string | null
+          company_id: string
+          corrective_action?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          identified_at?: string | null
+          origin: string
+          prevention_plan?: string | null
+          root_cause?: string | null
+          severity?: string
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          closed_at?: string | null
+          closed_by?: string | null
+          company_id?: string
+          corrective_action?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          identified_at?: string | null
+          origin?: string
+          prevention_plan?: string | null
+          root_cause?: string | null
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "non_conformities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           company_id: string
@@ -961,6 +1023,47 @@ export type Database = {
             columns: ["manager_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quality_indicators: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          id: string
+          metric_name: string
+          metric_value: number
+          period_end: string
+          period_start: string
+          target_value: number | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          id?: string
+          metric_name: string
+          metric_value: number
+          period_end: string
+          period_start: string
+          target_value?: number | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          metric_name?: string
+          metric_value?: number
+          period_end?: string
+          period_start?: string
+          target_value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quality_indicators_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]

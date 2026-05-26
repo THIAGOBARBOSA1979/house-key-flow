@@ -20,7 +20,9 @@ import {
   Megaphone,
   Wrench,
   MessageSquare,
-  FileSearch
+  FileSearch,
+  BarChart3,
+  AlertTriangle
 } from "lucide-react";
 
 import { SidebarGroup } from "./SidebarGroup";
@@ -29,6 +31,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile, useService } from "@/hooks";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTenant } from "@/contexts/TenantContext";
 import { companyService } from "@/services";
 import { AuthGuard } from "@/integrations/supabase/auth-guard";
 import { useUserPreferences } from "@/hooks/core/useUserPreferences";
@@ -50,6 +53,8 @@ const operationalItems = [
 
 const managementItems = [
   { to: "/app/properties", icon: Building, label: "Empreendimentos", permission: "properties.view" },
+  { to: "/app/non-conformities", icon: AlertTriangle, label: "Não Conformidades", permission: "maintenance.manage" },
+  { to: "/app/quality", icon: BarChart3, label: "Indicadores Qualidade", permission: "reports.view" },
   { to: "/app/announcements", icon: Megaphone, label: "Comunicados", permission: "announcements.view" },
   { to: "/app/ClientArea", icon: User, label: "Clientes", permission: "users.view" },
   { to: "/app/documents", icon: FileText, label: "Documentos", permission: "documents.view" },
@@ -69,10 +74,9 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { logout, user } = useAuth();
+  const { tenant } = useTenant();
   
-  const { items, isLoading: companyLoading } = useService(companyService);
-  const companies = items as any[];
-  const company = user?.company_id ? companies.find(c => c.id === user.company_id) : null;
+  const company = tenant;
 
   const toggleLanguage = () => {
     const nextLng = i18n.language === 'pt' ? 'en' : 'pt';
@@ -96,8 +100,8 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
             <div className="relative group">
               <div className="absolute -inset-2 bg-sidebar-primary/20 rounded-xl blur-xl group-hover:bg-sidebar-primary/30 transition-all duration-700"></div>
               <div className="relative w-24 h-24 rounded-card bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center shadow-sem-xl overflow-hidden ring-1 ring-white/20 border border-white/10 cursor-pointer hover:rotate-2 transition-all duration-slow">
-                {company?.settings?.logo_url ? (
-                  <img src={company.settings.logo_url} alt="Logo" className="w-full h-full object-cover" />
+                {company?.logo_url ? (
+                  <img src={company.logo_url} alt="Logo" className="w-full h-full object-cover" />
                 ) : (
                   <Building className="text-sidebar-primary-foreground h-11 w-11" />
                 )}
@@ -105,7 +109,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
             </div>
             <div className="text-center space-y-3">
               <h1 className="text-3xl font-black text-sidebar-foreground tracking-tighter uppercase truncate max-w-[220px] leading-tight">
-                {company?.settings?.display_name || company?.name || "A2 GESTÃO"}
+                {company?.brand_name || company?.name || "A2 GESTÃO"}
               </h1>
               <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-sidebar-primary/10 border border-sidebar-primary/20 backdrop-blur-md shadow-inner">
                 <span className="w-2 h-2 rounded-full bg-sidebar-primary animate-pulse shadow-[0_0_8px_rgba(var(--sidebar-primary),0.6)]" />

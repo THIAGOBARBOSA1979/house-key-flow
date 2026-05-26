@@ -1,24 +1,28 @@
 import React, { useMemo } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePermission } from '@/hooks/usePermission';
 import { SkeletonLoader } from '@/components/shared/SkeletonLoader';
 import { Role } from '@/types';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requiredRole?: Role | Role[];
+  permission?: string;
 }
 
 
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
-  requiredRole 
+  requiredRole,
+  permission
 }) => {
   const { user, isLoading } = useAuth();
+  const { hasPermission, isLoading: loadingPermissions } = usePermission();
   const location = useLocation();
 
-  if (isLoading) {
+  if (isLoading || loadingPermissions) {
     return <SkeletonLoader type="page" />;
   }
 
@@ -51,6 +55,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       }
       return <Navigate to="/" replace />;
     }
+  }
+
+  if (permission && !hasPermission(permission)) {
+    return <Navigate to="/" replace />;
   }
 
   // Final check for super-admin routes if not caught above

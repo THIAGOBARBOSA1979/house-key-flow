@@ -17,7 +17,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+import { useTenant } from "@/contexts/TenantContext";
+
 export default function Home() {
+  const { tenant } = useTenant();
+  const brandName = tenant?.brand_name || tenant?.name || "A2 Incorporadora";
+  const logoUrl = tenant?.logo_url;
+  const isCustomTenant = !!tenant;
+
   const benefits = [
     {
       icon: Building2,
@@ -196,10 +203,14 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 mb-16">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white font-bold text-xl">
-                  A2
-                </div>
-                <span className="text-2xl font-black tracking-tighter">A2 Incorporadora</span>
+                {logoUrl ? (
+                  <img src={logoUrl} alt={brandName} className="h-10 w-auto brightness-0 invert" />
+                ) : (
+                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white font-bold text-xl">
+                    {brandName.substring(0, 2).toUpperCase()}
+                  </div>
+                )}
+                <span className="text-2xl font-black tracking-tighter">{brandName}</span>
               </div>
               <p className="text-gray-400 leading-relaxed font-medium">
                 Construindo sonhos e entregando qualidade há mais de 15 anos no mercado imobiliário com tecnologia de ponta.
