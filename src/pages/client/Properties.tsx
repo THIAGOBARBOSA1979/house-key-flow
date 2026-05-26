@@ -158,25 +158,25 @@ const ClientProperties = () => {
         redirectTo="/client"
       >
       {/* Hero Property Card */}
-      <Card className="bg-white border-none shadow-2xl overflow-hidden rounded-[2.5rem] group border border-border/10">
-        <div className="flex flex-col lg:flex-row min-h-[500px]">
-          <div className="lg:w-1/2 relative h-[350px] lg:h-auto overflow-hidden">
+      <Card className="bg-white border-none shadow-2xl overflow-hidden rounded-[3rem] group">
+        <div className="flex flex-col lg:flex-row min-h-[550px]">
+          <div className="lg:w-3/5 relative h-[400px] lg:h-auto overflow-hidden">
              <img 
                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80" 
                alt="Property facade"
-               className="w-full h-full object-cover transition-transform duration-slow group-hover:scale-105"
+               className="w-full h-full object-cover transition-transform duration-slower group-hover:scale-105"
              />
-             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-             <div className="absolute bottom-10 left-10 text-white">
-                <Badge className="bg-primary border-none font-black text-[10px] uppercase mb-4 shadow-lg shadow-primary/20">Imóvel A2 Exclusive</Badge>
-                <h2 className="text-4xl font-black tracking-tight leading-tight">{propertyData?.name || "Edifício Aurora"}</h2>
-                <div className="flex items-center gap-3 mt-4 text-white/80 font-bold bg-white/10 backdrop-blur-md w-fit px-4 py-2 rounded-full border border-white/20">
-                  <MapPin size={18} className="text-primary" />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+             <div className="absolute bottom-12 left-12 right-12 text-white">
+                <Badge className="bg-primary border-none font-black text-[10px] uppercase mb-6 px-4 py-1.5 shadow-xl shadow-primary/20 tracking-[0.2em]">Imóvel A2 Exclusive</Badge>
+                <h2 className="text-5xl font-black tracking-tighter leading-[0.9] mb-6">{propertyData?.name || "Edifício Aurora"}</h2>
+                <div className="flex items-center gap-4 text-white/90 font-bold bg-white/10 backdrop-blur-xl w-fit px-6 py-3 rounded-2xl border border-white/20 shadow-2xl">
+                  <MapPin size={20} className="text-primary" strokeWidth={3} />
                   <span className="text-sm tracking-wide">{propertyDetails.address}</span>
                 </div>
              </div>
           </div>
-          <div className="lg:w-1/2 p-10 lg:p-14 flex flex-col justify-between">
+          <div className="lg:w-2/5 p-12 lg:p-16 flex flex-col justify-between bg-white">
             <div className="grid grid-cols-2 gap-x-10 gap-y-12">
                {specifications.map((spec, i) => {
                  const Icon = spec.icon;

@@ -168,34 +168,36 @@ const ClientNotifications = () => {
           <Card className="border-none shadow-sm overflow-hidden bg-transparent">
             <CardContent className="p-0">
               {filteredNotifications.length > 0 ? (
-                <div className="divide-y border rounded-2xl overflow-hidden bg-card">
+                <div className="space-y-4">
                   {filteredNotifications.map((notification) => {
                     const Icon = getIcon(notification.type);
                     return (
                       <div 
                         key={notification.id} 
                         className={cn(
-                          "p-4 md:p-6 transition-all duration-300 group relative hover:bg-muted/10",
-                          !notification.read ? "bg-primary/5 border-l-4 border-l-primary" : "border-l-4 border-l-transparent"
+                          "p-6 md:p-8 transition-all duration-500 group relative rounded-[2.5rem] border-2 shadow-sm hover:shadow-xl",
+                          !notification.read 
+                            ? "bg-primary/[0.03] border-primary/20" 
+                            : "bg-white border-transparent"
                         )}
                       >
-                        <div className="flex gap-4">
-                          <div className={cn("p-3 rounded-2xl h-fit shadow-sm", getIconColor(notification.type))}>
-                            <Icon className="h-6 w-6" />
+                        <div className="flex flex-col sm:flex-row gap-6">
+                          <div className={cn("p-5 rounded-2xl h-fit shadow-lg group-hover:scale-110 transition-transform duration-500", getIconColor(notification.type))}>
+                            <Icon className="h-7 w-7" strokeWidth={2.5} />
                           </div>
                           
-                          <div className="flex-1 space-y-2">
-                            <div className="flex items-center justify-between">
-                              <h3 className={cn("font-black text-lg tracking-tight", !notification.read ? "text-primary" : "text-foreground/80")}>
+                          <div className="flex-1 space-y-3">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                              <h3 className={cn("font-black text-xl tracking-tight leading-none", !notification.read ? "text-primary" : "text-foreground")}>
                                 {notification.title}
                               </h3>
                               <div className="flex items-center gap-3">
-                                <span className="text-[11px] font-black uppercase text-muted-foreground flex items-center gap-1.5 bg-muted/30 px-2 py-1 rounded">
-                                  <Clock className="h-3 w-3" />
+                                <span className="text-[10px] font-black uppercase text-muted-foreground/60 flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-xl border border-border/5">
+                                  <Clock className="h-3 w-3" strokeWidth={3} />
                                   {formatRelativeTime(notification.createdAt)}
                                 </span>
                                 {notification.urgent && !notification.read && (
-                                  <Badge variant="destructive" className="animate-pulse text-[10px] font-black uppercase">Urgente</Badge>
+                                  <Badge className="bg-destructive text-white animate-pulse text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-lg">Prioridade</Badge>
                                 )}
                               </div>
                             </div>
