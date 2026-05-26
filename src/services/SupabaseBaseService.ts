@@ -143,7 +143,7 @@ export abstract class SupabaseBaseService<T extends BaseEntity> extends BaseServ
       this.invalidateCache();
       return updated;
     } catch (err) {
-      this.handleError(err, 'update');
+      throw AppError.fromError(err, `${this.constructor.name}.update`);
     }
   }
 
