@@ -44,14 +44,14 @@ export const useSaaSAdmin = () => {
     await companyService.update(id, { status: nextStatus }, true);
     refreshCompanies();
     toast({
-      title: "Status atualizado",
-      description: `Empresa agora está ${nextStatus === 'active' ? 'Ativa' : 'Suspensa'}.`
+      title: "Status operacional alterado",
+      description: `Tenant agora está com status estratégico: ${nextStatus === 'active' ? 'Ativo' : 'Suspenso'}.`
     });
   }, [refreshCompanies, toast]);
 
   const handleAddCompany = useCallback(async () => {
     if (!newCompany.name || !newCompany.slug) {
-      toast({ title: "Erro", description: "Nome e Slug são obrigatórios.", variant: "destructive" });
+      toast({ title: "Protocolo de Erro", description: "Nome e Slug são obrigatórios para a criação do tenant.", variant: "destructive" });
       return;
     }
     setIsSaving(true);
@@ -60,8 +60,8 @@ export const useSaaSAdmin = () => {
         name: newCompany.name,
         slug: newCompany.slug,
         status: 'active',
-        plan_id: newCompany.plan.toLowerCase(), // Usando o novo campo
-        subscription_plan: newCompany.plan, // Mantendo por compatibilidade
+        plan_id: newCompany.plan.toLowerCase(),
+        subscription_plan: newCompany.plan,
         owner_id: user?.id || "system",
         created_at: new Date(),
         updated_at: new Date()
@@ -69,17 +69,15 @@ export const useSaaSAdmin = () => {
       refreshCompanies();
       setIsAddOpen(false);
       setNewCompany({ name: '', slug: '', plan: 'trial' });
-      toast({ title: "Empresa cadastrada" });
+      toast({ title: "Sincronização de Novo Tenant Concluída" });
     } finally {
       setIsSaving(false);
     }
   }, [newCompany, refreshCompanies, toast, user]);
 
-
   const handleUpdateSubscription = useCallback(async (id: string, plan: SubscriptionPlan, expiresAt: string) => {
     setIsSaving(true);
     try {
-      // Atualizar ambos os campos para manter sincronia
       await companyService.update(id, {
         plan_id: plan.toLowerCase(),
         subscription_plan: plan,
@@ -89,12 +87,11 @@ export const useSaaSAdmin = () => {
       
       refreshCompanies();
       setIsUpdatingSub(false);
-      toast({ title: "Assinatura atualizada" });
+      toast({ title: "Ciclo de Assinatura Atualizado" });
     } finally {
       setIsSaving(false);
     }
   }, [refreshCompanies, toast]);
-
 
   const handleSaveEdit = useCallback(async (id: string, data: Partial<Company>) => {
     setIsSaving(true);
@@ -102,20 +99,20 @@ export const useSaaSAdmin = () => {
       await companyService.update(id, data, true);
       refreshCompanies();
       setIsEditing(false);
-      toast({ title: "Dados salvos com sucesso" });
+      toast({ title: "Governança de Dados Atualizada" });
     } finally {
       setIsSaving(false);
     }
   }, [refreshCompanies, toast]);
 
   const handleDeleteCompany = useCallback(async (id: string) => {
-    if (!window.confirm("Tem certeza que deseja excluir esta empresa? Esta ação é irreversível.")) return;
+    if (!window.confirm("Protocolo de Exclusão: Tem certeza que deseja eliminar este tenant permanentemente? Esta ação é irreversível.")) return;
     setIsSaving(true);
     try {
       await companyService.delete(id);
       refreshCompanies();
       setSelectedCompany(null);
-      toast({ title: "Empresa excluída permanentemente" });
+      toast({ title: "Tenant Eliminado com Sucesso" });
     } finally {
       setIsSaving(false);
     }
