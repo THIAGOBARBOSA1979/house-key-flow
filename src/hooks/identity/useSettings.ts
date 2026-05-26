@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { systemSettingsService, SystemSettings } from "@/services";
-import { companyService, CompanySettings } from "@/services";
+import { companyService, CompanySettings, Company } from "@/services";
 
 export const useSettings = () => {
   const { user } = useAuth();
