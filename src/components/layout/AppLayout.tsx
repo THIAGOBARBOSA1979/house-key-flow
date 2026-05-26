@@ -19,6 +19,7 @@ import { useUserPreferences } from "@/hooks/core/useUserPreferences";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlobalSearch } from "./GlobalSearch";
 import { UserMenu } from "./UserMenu";
+import { useTenant } from "@/contexts/TenantContext";
 
 interface AppLayoutProps {
   children?: React.ReactNode;
@@ -26,18 +27,16 @@ interface AppLayoutProps {
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
   const { user } = useAuth();
+  const { tenant } = useTenant();
   const isMobile = useIsMobile();
   const location = useLocation();
   const { sidebarCollapsed, setSidebarCollapsed } = useUserPreferences();
 
-  const [company, setCompany] = useState<any>(null);
+  const company = tenant;
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
-  useEffect(() => {
-    if (user?.company_id) {
-      companyService.getById(user.company_id, undefined, true).then(setCompany);
-    }
-  }, [user]);
+  // Company is now resolved via TenantContext
+
 
   const sidebarWidthClass = sidebarCollapsed ? "md:pl-sidebar-collapsed-width" : "md:pl-sidebar-width";
 
@@ -91,7 +90,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               </Button>
 
               <UserMenu 
-                companyName={company?.settings?.display_name || company?.name || 'A2'} 
+                companyName={company?.brand_name || company?.name || 'A2'} 
                 onOpenShortcuts={() => setIsShortcutsOpen(true)} 
               />
             </div>
@@ -127,7 +126,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   {company?.name?.charAt(0) || 'A2'}
                 </div>
                 <span className="font-black tracking-tighter text-foreground text-xl italic">
-                  {company?.settings?.display_name || company?.name || 'A2 Incorporadora'}
+                  {company?.brand_name || company?.name || 'A2 Incorporadora'}
                 </span>
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 leading-relaxed">
