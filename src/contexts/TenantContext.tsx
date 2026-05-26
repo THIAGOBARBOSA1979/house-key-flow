@@ -6,6 +6,7 @@ interface TenantContextType {
   tenant: Company | null;
   isLoading: boolean;
   isCustomDomain: boolean;
+  error: string | null;
 }
 
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
@@ -78,6 +79,7 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
         } else if (!isLocal && !isLovablePreview) {
            // Se estamos em um domínio/subdomínio e não achou a empresa, é 404 de tenant
            console.warn('Tenant não encontrado para o host:', hostname);
+           setError('Tenant não encontrado');
         }
 
       } catch (err) {
@@ -91,7 +93,7 @@ export const TenantProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <TenantContext.Provider value={{ tenant, isLoading, isCustomDomain }}>
+    <TenantContext.Provider value={{ tenant, isLoading, isCustomDomain, error }}>
       {isLoading ? null : children}
     </TenantContext.Provider>
   );

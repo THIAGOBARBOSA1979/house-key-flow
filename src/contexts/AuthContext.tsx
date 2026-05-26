@@ -8,7 +8,7 @@ import { securityService } from '@/services';
 import { companyService } from '@/services';
 import { AuthGuard } from '@/integrations/supabase/auth-guard';
 import { Supabase } from '@/integrations/supabase';
-import { findMockUser } from '@/mocks/users';
+import { supabase } from '@/integrations/supabase/client';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
 import { ErrorCode } from '@/utils/errors/AppError';
 
@@ -72,14 +72,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const session = await Supabase.auth.getSession();
 
       if (session?.user) {
+        // Fetch profile to get the most up-to-date role and tenant_id
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
         const authenticatedUser: User = {
           id: session.user.id,
-          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
+          name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
           email: session.user.email || '',
-          role: (session.user.user_metadata?.role as any) || 'client',
-          status: 'active',
-          company_id: session.user.user_metadata?.company_id,
-          is_super_admin: session.user.user_metadata?.role === 'super_admin'
+          role: (profile?.role as any) || (session.user.user_metadata?.role as any) || 'client',
+          status: (profile?.status as any) || 'active',
+          company_id: profile?.tenant_id || profile?.company_id || session.user.user_metadata?.company_id,
+          is_super_admin: profile?.is_super_admin || session.user.user_metadata?.role === 'super_admin'
         };
         setUser(authenticatedUser);
       } else {
@@ -102,14 +109,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null);
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
         if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+
           const authenticatedUser: User = {
             id: session.user.id,
-            name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
+            name: profile?.full_name || session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuário',
             email: session.user.email || '',
-            role: (session.user.user_metadata?.role as any) || 'client',
-            status: 'active',
-            company_id: session.user.user_metadata?.company_id,
-            is_super_admin: session.user.user_metadata?.role === 'super_admin'
+            role: (profile?.role as any) || (session.user.user_metadata?.role as any) || 'client',
+            status: (profile?.status as any) || 'active',
+            company_id: profile?.tenant_id || profile?.company_id || session.user.user_metadata?.company_id,
+            is_super_admin: profile?.is_super_admin || session.user.user_metadata?.role === 'super_admin'
           };
           
           setUser(authenticatedUser);
@@ -135,15 +148,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       let authenticatedUser: User | null = null;
 
       if (!error && data?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+
         // Map Supabase user to our internal User type
         authenticatedUser = {
           id: data.user.id,
-          name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Usuário',
+          name: profile?.full_name || data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Usuário',
           email: data.user.email || '',
-          role: (data.user.user_metadata?.role as any) || 'client',
-          status: 'active',
-          company_id: data.user.user_metadata?.company_id,
-          is_super_admin: data.user.user_metadata?.role === 'super_admin'
+          role: (profile?.role as any) || (data.user.user_metadata?.role as any) || 'client',
+          status: (profile?.status as any) || 'active',
+          company_id: profile?.tenant_id || profile?.company_id || data.user.user_metadata?.company_id,
+          is_super_admin: profile?.is_super_admin || data.user.user_metadata?.role === 'super_admin'
         };
       } else {
         // Fallback to mocks removed for production security compliance
@@ -156,7 +175,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       // Check company status if user belongs to one
       if (authenticatedUser.company_id && !authenticatedUser.is_super_admin) {
-        const company = await companyService.getById(authenticatedUser.company_id, undefined, true);
+        const { data: company } = await supabase.from('companies').select('*').eq('id', authenticatedUser.company_id).single();
         if (company) {
           if (company.status !== 'active') {
             throw new Error(`Empresa ${company.status === 'suspended' ? 'suspensa' : 'cancelada'}. Entre em contato com o suporte.`);
