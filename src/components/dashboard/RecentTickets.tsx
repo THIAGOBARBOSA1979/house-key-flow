@@ -22,7 +22,7 @@ export const RecentTickets = ({ tickets }: RecentTicketsProps) => {
           variant="ghost" 
           size="sm" 
           className="gap-1 font-bold text-primary" 
-          onClick={() => navigate("/admin/inbox")}
+          onClick={() => navigate("/app/inbox")}
         >
           Ver Inbox
           <ChevronRight size={16} />
@@ -34,7 +34,7 @@ export const RecentTickets = ({ tickets }: RecentTicketsProps) => {
             <div 
               key={ticket.id} 
               className="card-standard p-5 interactive-active border-none bg-card/40 backdrop-blur-md group hover:ring-2 hover:ring-primary/30 rounded-2xl shadow-sem-sm transition-all" 
-              onClick={() => navigate("/admin/inbox")}
+              onClick={() => navigate("/app/inbox")}
             >
               <div className="flex justify-between items-start mb-3">
                 <StatusBadge 

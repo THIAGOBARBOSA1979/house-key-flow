@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Building2, 
   Shield, 
@@ -17,10 +17,19 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthForm } from "@/hooks/identity/useAuthForm";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { useTenant } from "@/contexts/TenantContext";
 
 export default function Login() {
+  const { tenant, isLoading: isTenantLoading } = useTenant();
   const [activeTab, setActiveTab] = useState("client");
   const authForm = useAuthForm(activeTab);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (tenant && activeTab === 'master') {
+      setActiveTab('client');
+    }
+  }, [tenant]);
 
   const adminFeatures = [
     {
@@ -76,12 +85,20 @@ export default function Login() {
 
           <div className="flex items-center justify-center">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-primary to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-2xl shadow-xl shadow-brand/20 group-hover:rotate-6 transition-all duration-500">
-                A2
-              </div>
+              {tenant?.logo_url ? (
+                <img src={tenant.logo_url} alt={tenant.brand_name || tenant.name} className="h-14 object-contain" />
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand via-primary to-indigo-600 flex items-center justify-center text-brand-foreground font-black text-2xl shadow-xl shadow-brand/20 group-hover:rotate-6 transition-all duration-500">
+                  {tenant?.name?.substring(0, 2).toUpperCase() || "A2"}
+                </div>
+              )}
               <div>
-                <h1 className="text-h2 font-black tracking-tighter text-foreground">A2 Incorporadora</h1>
-                <p className="text-label text-brand uppercase tracking-widest">Sistema de Gestão</p>
+                <h1 className="text-h2 font-black tracking-tighter text-foreground">
+                  {tenant?.brand_name || tenant?.name || "A2 Incorporadora"}
+                </h1>
+                <p className="text-label text-brand uppercase tracking-widest">
+                  {tenant ? "Portal do Parceiro" : "Sistema de Gestão"}
+                </p>
               </div>
             </Link>
           </div>
@@ -111,10 +128,15 @@ export default function Login() {
                   )}
                 </h2>
                 <p className="text-body-lg text-muted-foreground leading-relaxed font-medium">
-                  {activeTab === "admin" 
-                    ? "O centro de comando definitivo para gerir incorporadoras de alta performance com segurança e agilidade."
-                    : "Acesse seu ecossistema exclusivo e gerencie seu imóvel, vistorias e garantias com o padrão A2 de excelência."
-                  }
+                  {tenant ? (
+                    activeTab === "admin" 
+                      ? `Acesso administrativo para colaboradores da ${tenant.brand_name || tenant.name}.`
+                      : `Portal de serviços exclusivo para proprietários da ${tenant.brand_name || tenant.name}.`
+                  ) : (
+                    activeTab === "admin" 
+                      ? "O centro de comando definitivo para gerir incorporadoras de alta performance com segurança e agilidade."
+                      : "Acesse seu ecossistema exclusivo e gerencie seu imóvel, vistorias e garantias com o padrão de excelência."
+                  )}
                 </p>
               </div>
 
@@ -167,11 +189,15 @@ export default function Login() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4 bg-muted/50 p-1.5 rounded-2xl h-14">
+                    <TabsList className={`grid w-full ${tenant ? 'grid-cols-2' : 'grid-cols-4'} bg-muted/50 p-1.5 rounded-2xl h-14`}>
                       <TabsTrigger value="client" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Portal</TabsTrigger>
                       <TabsTrigger value="admin" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Admin</TabsTrigger>
-                      <TabsTrigger value="register" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Adesão</TabsTrigger>
-                      <TabsTrigger value="master" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Master</TabsTrigger>
+                      {!tenant && (
+                        <>
+                          <TabsTrigger value="register" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Adesão</TabsTrigger>
+                          <TabsTrigger value="master" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:shadow-sem-md transition-all">Master</TabsTrigger>
+                        </>
+                      )}
                     </TabsList>
 
 

@@ -26,7 +26,7 @@ export const CriticalWarranties = () => {
             <div 
               key={claim.id} 
               className="card-standard p-6 interactive-active border border-border/20 bg-card/30 backdrop-blur-md group hover:ring-2 hover:ring-status-critical/20 rounded-[1.75rem] shadow-sem-sm transition-all" 
-              onClick={() => navigate("/admin/warranty")}
+              onClick={() => navigate("/app/warranty")}
             >
               <div className="flex justify-between items-start mb-3">
                 <StatusBadge 
@@ -49,7 +49,7 @@ export const CriticalWarranties = () => {
       <Button 
         variant="outline" 
         className="w-full text-[10px] font-black uppercase tracking-widest rounded-xl h-12 border-dashed border-primary/20 hover:border-primary/50 hover:bg-primary/5 mt-4 transition-all" 
-        onClick={() => navigate("/admin/warranty")}
+        onClick={() => navigate("/app/warranty")}
       >
         Matriz de Assistência Técnica
       </Button>

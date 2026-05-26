@@ -78,7 +78,7 @@ export const ChecklistSelector = ({
         className="w-full border-2 border-dashed border-border/20 text-[10px] h-12 font-black uppercase tracking-widest active:scale-95 transition-all rounded-2xl hover:bg-primary/5 hover:border-primary/20 hover:text-primary"
         onClick={() => {
           if (window.confirm("As alterações não salvas serão perdidas. Deseja continuar para o gerenciamento de checklists?")) {
-            window.location.href = "/admin/checklist";
+            window.location.href = "/app/checklist";
           }
         }}
       >

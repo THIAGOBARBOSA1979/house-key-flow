@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Supabase } from "@/integrations/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { companyService } from "@/services";
 
 
@@ -53,43 +53,43 @@ export default function Register() {
     setIsLoading(true);
     try {
       const slug = values.companyName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const subdomain = slug;
       
-      // 1. Criar empresa usando Supabase direto ou Service
-      const { data: company, error: companyError } = await Supabase.db.create<any>(
-        'companies',
-        {
+      // 1. Criar empresa
+      const { data: company, error: companyError } = await supabase
+        .from('companies')
+        .insert({
           name: values.companyName,
           slug: slug,
-          status: 'active' as any
-        }
-      );
+          subdomain: subdomain,
+          status: 'active'
+        } as any)
+        .select()
+        .single();
 
       if (companyError) throw companyError;
 
-      // 2. Criar usuário no Auth (com metadados)
-      const { data: authData, error: authError } = await Supabase.auth.signUp(
-        values.email,
-        values.password,
-        {
+      // 2. Criar usuário no Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
           data: {
             full_name: values.fullName,
             role: 'admin',
-            company_id: (company as any).id
+            company_id: company.id
           }
         }
-      );
-
-
+      });
 
       if (authError) throw authError;
 
       // 3. Atualizar owner da empresa
       if (authData?.user) {
-        await Supabase.db.update(
-          'companies',
-          (company as any).id,
-          { owner_id: authData.user.id }
-        );
+        await supabase
+          .from('companies')
+          .update({ owner_id: authData.user.id })
+          .eq('id', company.id);
       }
 
 
@@ -99,7 +99,7 @@ export default function Register() {
         description: "Você já pode começar a usar o sistema.",
       });
 
-      navigate('/admin');
+      navigate('/app');
     } catch (error: any) {
       toast({
         title: "Erro ao criar conta",

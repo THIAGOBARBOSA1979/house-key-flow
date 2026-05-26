@@ -41,13 +41,21 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     
     // Super Admin has access to everything
     if (userRole !== 'super_admin' && !roles.includes(userRole)) {
-      // If user is client/user but trying to access admin
-      if (userRole === 'user' && location.pathname.startsWith('/admin')) {
+      // If user is client/user but trying to access app
+      if (userRole === 'user' && location.pathname.startsWith('/app')) {
         return <Navigate to="/client" replace />;
       }
-      // If admin trying to access saas admin but not super_admin
+      // If trying to access super-admin
+      if (location.pathname.startsWith('/super-admin')) {
+        return <Navigate to="/app" replace />;
+      }
       return <Navigate to="/" replace />;
     }
+  }
+
+  // Final check for super-admin routes if not caught above
+  if (location.pathname.startsWith('/super-admin') && userRole !== 'super_admin') {
+    return <Navigate to="/app" replace />;
   }
 
   return <>{children}</>;

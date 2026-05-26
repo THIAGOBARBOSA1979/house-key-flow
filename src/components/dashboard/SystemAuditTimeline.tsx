@@ -23,7 +23,7 @@ export const SystemAuditTimeline = ({ activities }: SystemAuditTimelineProps) =>
           variant="ghost" 
           size="sm" 
           className="gap-1 font-bold text-primary hover:bg-primary/5 rounded-xl" 
-          onClick={() => navigate("/admin/audit-logs")}
+          onClick={() => navigate("/app/audit-logs")}
         >
           Audit Log
           <ChevronRight size={14} />

@@ -65,7 +65,7 @@ describe('ProtectedRoute', () => {
     render(
       <BrowserRouter>
         <Routes>
-          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
+          <Route path="/app" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
           <Route path="/client" element={<div>Client Area</div>} />
         </Routes>
       </BrowserRouter>
@@ -73,12 +73,12 @@ describe('ProtectedRoute', () => {
 
     // Initial render of / results in matching route, but Navigate takes effect
     // In this test setup we need to navigate to /admin
-    window.history.pushState({}, 'Test', '/admin');
+    window.history.pushState({}, 'Test', '/app');
     
     render(
       <BrowserRouter>
         <Routes>
-          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
+          <Route path="/app" element={<ProtectedRoute requiredRole="admin"><div>Admin Content</div></ProtectedRoute>} />
           <Route path="/client" element={<div>Client Area</div>} />
         </Routes>
       </BrowserRouter>

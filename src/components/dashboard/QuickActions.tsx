@@ -18,7 +18,7 @@ export const QuickActions = () => {
     { 
       label: "Novo Atendimento", 
       icon: ShieldCheck, 
-      onClick: () => navigate("/admin/warranty"),
+      onClick: () => navigate("/app/warranty"),
       color: "text-status-critical",
       bgColor: "bg-status-critical/10",
       description: "Abrir chamado de garantia"
@@ -26,7 +26,7 @@ export const QuickActions = () => {
     { 
       label: "Novo Empreendimento", 
       icon: Building, 
-      onClick: () => navigate("/admin/properties"),
+      onClick: () => navigate("/app/properties"),
       color: "text-blue-500",
       bgColor: "bg-blue-50",
       description: "Expandir o portfólio"
@@ -34,7 +34,7 @@ export const QuickActions = () => {
     { 
       label: "Gestão de Clientes", 
       icon: User, 
-      onClick: () => navigate("/admin/ClientArea"),
+      onClick: () => navigate("/app/ClientArea"),
       color: "text-emerald-500",
       bgColor: "bg-emerald-50",
       description: "Painel de relacionamento"
@@ -42,7 +42,7 @@ export const QuickActions = () => {
     { 
       label: "Enviar Documentos", 
       icon: FileUp, 
-      onClick: () => navigate("/admin/documents"),
+      onClick: () => navigate("/app/documents"),
       color: "text-purple-500",
       bgColor: "bg-purple-50",
       description: "Sincronização de arquivos"

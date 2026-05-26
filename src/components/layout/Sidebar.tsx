@@ -32,6 +32,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { companyService } from "@/services";
 import { AuthGuard } from "@/integrations/supabase/auth-guard";
 import { useUserPreferences } from "@/hooks/core/useUserPreferences";
+import { usePermission } from "@/hooks/usePermission";
 
 interface SidebarProps {
   className?: string;
@@ -39,29 +40,29 @@ interface SidebarProps {
 }
 
 const operationalItems = [
-  { to: "/admin", icon: Home, label: "Painel Estratégico", end: true },
-  { to: "/admin/calendar", icon: Calendar, label: "Cronograma Técnico" },
-  { to: "/admin/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas" },
-  { to: "/admin/warranty", icon: ShieldCheck, label: "Assistência Técnica" },
-  { to: "/admin/support", icon: MessageSquare, label: "Suporte Técnico" },
-  { to: "/admin/inbox", icon: MessageSquare, label: "Inbox WhatsApp", adminOnly: true },
+  { to: "/app", icon: Home, label: "Painel Estratégico", end: true },
+  { to: "/app/calendar", icon: Calendar, label: "Cronograma Técnico", permission: "maintenance.view" },
+  { to: "/app/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas", permission: "maintenance.view" },
+  { to: "/app/warranty", icon: ShieldCheck, label: "Assistência Técnica", permission: "maintenance.view" },
+  { to: "/app/support", icon: MessageSquare, label: "Suporte Técnico", permission: "maintenance.view" },
+  { to: "/app/inbox", icon: MessageSquare, label: "Inbox WhatsApp", permission: "maintenance.manage" },
 ];
 
 const managementItems = [
-  { to: "/admin/properties", icon: Building, label: "Empreendimentos" },
-  { to: "/admin/announcements", icon: Megaphone, label: "Comunicados" },
-  { to: "/admin/ClientArea", icon: User, label: "Clientes" },
-  { to: "/admin/documents", icon: FileText, label: "Documentos" },
-  { to: "/admin/users", icon: Users, label: "Usuários" },
-  { to: "/admin/technicians", icon: Wrench, label: "Técnicos" },
+  { to: "/app/properties", icon: Building, label: "Empreendimentos", permission: "properties.view" },
+  { to: "/app/announcements", icon: Megaphone, label: "Comunicados", permission: "announcements.view" },
+  { to: "/app/ClientArea", icon: User, label: "Clientes", permission: "users.view" },
+  { to: "/app/documents", icon: FileText, label: "Documentos", permission: "documents.view" },
+  { to: "/app/users", icon: Users, label: "Usuários", permission: "users.manage" },
+  { to: "/app/technicians", icon: Wrench, label: "Técnicos", permission: "users.manage" },
 ];
 
 const systemItems = [
-  { to: "/admin/checklist", icon: ClipboardCheck, label: "Checklists", adminOnly: true },
-  { to: "/admin/settings", icon: Settings, label: "Configurações", adminOnly: true },
-  { to: "/admin/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
-  { to: "/admin/audit-logs", icon: FileSearch, label: "Audit & Compliance", superAdminOnly: true },
-  { to: "/admin/saas", icon: ShieldCheck, label: "Command Center", superAdminOnly: true },
+  { to: "/app/checklist", icon: ClipboardCheck, label: "Checklists", permission: "settings.manage" },
+  { to: "/app/settings", icon: Settings, label: "Configurações", permission: "settings.manage" },
+  { to: "/app/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
+  { to: "/app/audit-logs", icon: FileSearch, label: "Audit & Compliance", superAdminOnly: true },
+  { to: "/app/saas", icon: ShieldCheck, label: "Command Center", superAdminOnly: true },
 ];
 
 const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) => {
@@ -78,9 +79,12 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
     i18n.changeLanguage(nextLng);
   };
 
+  const { hasPermission } = usePermission();
+
   const filterItems = (items: any[]) => items.filter(item => {
     if (item.superAdminOnly && !AuthGuard.isSuperAdmin()) return false;
     if (item.adminOnly && !AuthGuard.isAdmin() && !AuthGuard.isSuperAdmin()) return false;
+    if (item.permission && !hasPermission(item.permission)) return false;
     return true;
   });
 
@@ -171,7 +175,7 @@ const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { col
           )}
 
           <div className="flex items-center justify-between gap-card-gap">
-            <div className="flex items-center gap-card-gap min-w-0 group cursor-pointer p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300" onClick={() => navigate(user?.role === 'admin' ? '/admin/profile' : '/client/profile')}>
+            <div className="flex items-center gap-card-gap min-w-0 group cursor-pointer p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300" onClick={() => navigate(user?.role === 'admin' ? '/app/profile' : '/client/profile')}>
               <div className="relative">
                 <div className="w-16 h-16 rounded-card bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-sidebar-primary-foreground font-black text-xl shadow-sem-lg border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-slow">
                   {user?.name?.charAt(0) || "A"}

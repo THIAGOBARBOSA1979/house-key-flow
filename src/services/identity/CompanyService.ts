@@ -20,12 +20,22 @@ export interface Company {
   slug: string;
   status: CompanyStatus;
   owner_id: string;
-  subscription_plan: SubscriptionPlan; // Mantendo para retrocompatibilidade temporária
+  subscription_plan: SubscriptionPlan;
   plan_id?: string;
   subscription_status?: 'trial' | 'active' | 'past_due' | 'canceled' | 'suspended';
   trial_ends_at?: Date;
   subscription_expires_at?: Date;
   settings?: CompanySettings;
+  subdomain?: string;
+  custom_domain?: string;
+  brand_name?: string;
+  logo_url?: string;
+  favicon_url?: string;
+  theme_settings?: {
+    primary?: string;
+    secondary?: string;
+    radius?: string;
+  };
   created_at: Date;
   updated_at: Date;
   company_id?: string;

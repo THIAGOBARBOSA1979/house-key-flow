@@ -240,7 +240,7 @@ const AdminSupport = () => {
                     <p className="text-sm font-medium">Histórico de mensagens sincronizado com a Central de Atendimento.</p>
                     <div className="flex gap-4">
                       <Button variant="outline" asChild className="rounded-xl">
-                        <a href="/admin/inbox">Ir para Inbox WhatsApp</a>
+                        <a href="/app/inbox">Ir para Inbox WhatsApp</a>
                       </Button>
                     </div>
                  </div>

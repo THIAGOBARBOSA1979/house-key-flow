@@ -27,7 +27,7 @@ export const PendingDocuments: React.FC = () => {
                 <p className="text-sm font-bold text-amber-900">12 aguardando revisão</p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/admin/documents")} className="text-amber-600 hover:bg-amber-100 rounded-xl">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/app/documents")} className="text-amber-600 hover:bg-amber-100 rounded-xl">
               <ChevronRight size={18} />
             </Button>
           </div>
@@ -41,7 +41,7 @@ export const PendingDocuments: React.FC = () => {
                 <p className="text-sm font-bold text-red-900">5 laudos expirados</p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/admin/documents")} className="text-red-600 hover:bg-red-100 rounded-xl">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/app/documents")} className="text-red-600 hover:bg-red-100 rounded-xl">
               <ChevronRight size={18} />
             </Button>
           </div>

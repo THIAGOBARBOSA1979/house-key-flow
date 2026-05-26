@@ -25,7 +25,7 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
           variant="ghost" 
           size="sm" 
           className="gap-1 font-bold text-primary" 
-          onClick={() => navigate("/admin/inspections")}
+          onClick={() => navigate("/app/inspections")}
         >
           Ver todas
           <ChevronRight size={16} />
@@ -37,7 +37,7 @@ export const ScheduledInspections = ({ inspections }: ScheduledInspectionsProps)
             <Card key={inspection.id} className="card-standard overflow-hidden border border-border/40 bg-card/60 backdrop-blur-xl rounded-card shadow-sem-sm hover:shadow-sem-lg transition-all duration-500 group/item relative">
               <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary/40 group-hover/item:bg-primary transition-colors"></div>
               <CardContent className="p-0">
-                <InspectionItem inspection={inspection as any} onUpdate={() => navigate("/admin/inspections")} />
+                <InspectionItem inspection={inspection as any} onUpdate={() => navigate("/app/inspections")} />
               </CardContent>
             </Card>
 

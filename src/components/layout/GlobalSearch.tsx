@@ -89,7 +89,7 @@ export function GlobalSearch({ onClose }: { onClose?: () => void }) {
                       {searchResults.properties.map(p => (
                         <button 
                           key={p.id}
-                          onClick={() => handleNavigate('/admin/properties')}
+                          onClick={() => handleNavigate('/app/properties')}
                           className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-primary/5 group transition-all"
                         >
                           <span className="font-bold text-sm text-foreground/80 group-hover:text-primary">{p.name}</span>
@@ -106,7 +106,7 @@ export function GlobalSearch({ onClose }: { onClose?: () => void }) {
                       {searchResults.users.map(u => (
                         <button 
                           key={u.id}
-                          onClick={() => handleNavigate('/admin/users')}
+                          onClick={() => handleNavigate('/app/users')}
                           className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-primary/5 group transition-all"
                         >
                           <div className="text-left">
@@ -126,7 +126,7 @@ export function GlobalSearch({ onClose }: { onClose?: () => void }) {
                       {searchResults.documents.map(d => (
                         <button 
                           key={d.id}
-                          onClick={() => handleNavigate('/admin/documents')}
+                          onClick={() => handleNavigate('/app/documents')}
                           className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-primary/5 group transition-all"
                         >
                           <span className="font-bold text-sm text-foreground/80 group-hover:text-primary">{d.title}</span>

@@ -46,7 +46,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Novo Empreendimento", 
     description: "Cadastrar nova obra ou projeto", 
     icon: Building, 
-    path: "/admin/properties", 
+    path: "/app/properties", 
     category: "Gestão",
     shortcut: "Alt + P"
   },
@@ -55,7 +55,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Agendar Vistoria", 
     description: "Criar novo agendamento de inspeção", 
     icon: ClipboardCheck, 
-    path: "/admin/calendar", 
+    path: "/app/calendar", 
     category: "Operacional",
     shortcut: "Alt + V"
   },
@@ -64,7 +64,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Nova Garantia", 
     description: "Registrar solicitação de assistência", 
     icon: ShieldCheck, 
-    path: "/admin/warranty", 
+    path: "/app/warranty", 
     category: "Operacional",
     shortcut: "Alt + G"
   },
@@ -73,7 +73,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Novo Ticket", 
     description: "Abrir chamado de suporte interno", 
     icon: MessageSquare, 
-    path: "/admin/support", 
+    path: "/app/support", 
     category: "Sistema"
   },
   { 
@@ -81,7 +81,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Configurações", 
     description: "Ajustar parâmetros do sistema", 
     icon: Settings, 
-    path: "/admin/settings", 
+    path: "/app/settings", 
     category: "Sistema",
     shortcut: "Alt + S"
   },
@@ -90,7 +90,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Novo Comunicado", 
     description: "Enviar aviso para clientes", 
     icon: Megaphone, 
-    path: "/admin/announcements", 
+    path: "/app/announcements", 
     category: "Gestão"
   },
   { 
@@ -98,7 +98,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Ver Auditoria", 
     description: "Consultar logs do sistema", 
     icon: Activity, 
-    path: "/admin/audit-logs", 
+    path: "/app/audit-logs", 
     category: "Sistema"
   },
   { 
@@ -106,7 +106,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     title: "Gerenciar Usuários", 
     description: "Configurar permissões e contas", 
     icon: User, 
-    path: "/admin/users", 
+    path: "/app/users", 
     category: "Gestão"
   }
 ];
