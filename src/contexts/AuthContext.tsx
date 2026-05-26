@@ -8,7 +8,7 @@ import { securityService } from '@/services';
 import { companyService } from '@/services';
 import { AuthGuard } from '@/integrations/supabase/auth-guard';
 import { Supabase } from '@/integrations/supabase';
-import { findMockUser } from '@/mocks/users';
+import { supabase } from '@/integrations/supabase/client';
 import { errorHandler } from '@/utils/errors/ErrorHandler';
 import { ErrorCode } from '@/utils/errors/AppError';
 
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (session?.user) {
         // Fetch profile to get the most up-to-date role and tenant_id
-        const { data: profile } = await Supabase
+        const { data: profile } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null);
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
         if (session?.user) {
-          const { data: profile } = await Supabase
+          const { data: profile } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
@@ -148,7 +148,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       let authenticatedUser: User | null = null;
 
       if (!error && data?.user) {
-        const { data: profile } = await Supabase
+        const { data: profile } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', data.user.id)
