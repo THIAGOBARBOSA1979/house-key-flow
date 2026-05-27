@@ -1,44 +1,46 @@
-import { SupabaseBaseService } from "../SupabaseBaseService";
+import { SupabaseBaseService, SupabaseBaseServiceOptions } from "../SupabaseBaseService";
+import { BaseEntity } from "@/types/shared";
 
-export interface Asset {
-  id: string;
-  company_id: string;
-  property_id: string;
+export interface Asset extends BaseEntity {
+  propertyId: string;
   name: string;
   category: "HVAC" | "Electrical" | "Plumbing" | "Elevator" | "Fire Safety" | "Other";
   brand?: string;
   model?: string;
-  serial_number?: string;
-  installation_date?: Date;
-  warranty_expiration?: Date;
+  serialNumber?: string;
+  installationDate?: string;
+  warrantyExpiration?: string;
   status: "active" | "maintenance" | "broken" | "retired";
-  last_maintenance_date?: Date;
-  next_maintenance_date?: Date;
+  lastMaintenanceDate?: string;
+  nextMaintenanceDate?: string;
 }
 
 export class AssetService extends SupabaseBaseService<Asset> {
   constructor() {
-    super("assets");
+    const options: SupabaseBaseServiceOptions = {
+      supabaseTable: "assets",
+      fieldMapping: {
+        propertyId: "property_id",
+        serialNumber: "serial_number",
+        installationDate: "installation_date",
+        warrantyExpiration: "warranty_expiration",
+        lastMaintenanceDate: "last_maintenance_date",
+        nextMaintenanceDate: "next_maintenance_date"
+      }
+    };
+    super(options);
   }
 
   async getByProperty(propertyId: string): Promise<Asset[]> {
-    const { data, error } = await this.supabase
-      .from(this.tableName)
-      .select("*")
-      .eq("property_id", propertyId);
-
-    if (error) this.handleError(error);
-    return data || [];
+    return this.getAll(undefined, true, [
+      { column: "property_id", operator: "eq", value: propertyId }
+    ]);
   }
 
   async getCriticalAssets(): Promise<Asset[]> {
-    const { data, error } = await this.supabase
-      .from(this.tableName)
-      .select("*, properties(title)")
-      .or("status.eq.broken,status.eq.maintenance");
-
-    if (error) this.handleError(error);
-    return data || [];
+    return this.getAll(undefined, true, [
+      { column: "status", operator: "in", value: ["broken", "maintenance"] }
+    ]);
   }
 }
 

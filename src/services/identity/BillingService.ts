@@ -1,57 +1,57 @@
-import { SupabaseBaseService } from "../SupabaseBaseService";
+import { SupabaseBaseService, SupabaseBaseServiceOptions } from "../SupabaseBaseService";
+import { BaseEntity } from "@/types/shared";
+import { Supabase } from "@/integrations/supabase";
 
-export interface Invoice {
-  id: string;
-  company_id: string;
+export interface Invoice extends BaseEntity {
   amount: number;
   currency: string;
   status: "paid" | "pending" | "overdue" | "cancelled";
-  due_date: Date;
-  paid_at?: Date;
-  plan_name: string;
-  invoice_url?: string;
+  dueDate: string;
+  paidAt?: string;
+  planName: string;
+  invoiceUrl?: string;
 }
 
-export interface UsageMetric {
-  id: string;
-  company_id: string;
-  metric_name: "properties_count" | "users_count" | "storage_gb" | "inspections_count";
-  current_value: number;
-  limit_value: number;
+export interface UsageMetric extends BaseEntity {
+  metricName: "properties_count" | "users_count" | "storage_gb" | "inspections_count";
+  currentValue: number;
+  limitValue: number;
 }
 
 export class BillingService extends SupabaseBaseService<Invoice> {
   constructor() {
-    super("invoices");
+    const options: SupabaseBaseServiceOptions = {
+      supabaseTable: "invoices",
+      fieldMapping: {
+        dueDate: "due_date",
+        paidAt: "paid_at",
+        planName: "plan_name",
+        invoiceUrl: "invoice_url"
+      }
+    };
+    super(options);
   }
 
   async getInvoices(): Promise<Invoice[]> {
-    const { data, error } = await this.supabase
-      .from(this.tableName)
-      .select("*")
-      .order("due_date", { ascending: false });
-
-    if (error) this.handleError(error);
-    return data || [];
+    return this.getAll();
   }
 
   async getUsageMetrics(): Promise<UsageMetric[]> {
-    const { data, error } = await this.supabase
-      .from("usage_metrics")
-      .select("*");
-
-    if (error) this.handleError(error);
-    return data || [];
+    const { data, error } = await Supabase.db.findMany<any>("usage_metrics" as any);
+    if (error) throw error;
+    return (data || []).map(item => ({
+      id: item.id,
+      company_id: item.company_id,
+      metricName: item.metric_name,
+      currentValue: item.current_value,
+      limitValue: item.limit_value
+    }));
   }
 
   async upgradePlan(newPlanId: string): Promise<void> {
-    // Logic to initiate Stripe/Paddle session or update plan in DB
-    const { error } = await this.supabase
-      .from("companies")
-      .update({ plan_id: newPlanId })
-      .eq("id", await this.getCompanyId());
-
-    if (error) this.handleError(error);
+    const companyId = await this.getCompanyId();
+    const { error } = await Supabase.db.update("companies" as any, companyId, { plan_id: newPlanId });
+    if (error) throw error;
   }
 }
 
