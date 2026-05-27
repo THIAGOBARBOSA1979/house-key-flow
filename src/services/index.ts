@@ -20,6 +20,8 @@ export * from './operations/ChecklistService';
 export * from './operations/InspectionDraftService';
 export * from './operations/SupportTicketService';
 export * from './operations/TicketMessageService';
+export * from './operations/NonConformityService';
+export * from './operations/QualityService';
 
 
 

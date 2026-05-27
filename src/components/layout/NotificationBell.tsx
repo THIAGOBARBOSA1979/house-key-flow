@@ -133,12 +133,12 @@ export const NotificationBell = () => {
                         <Check size={12} />
                       </Button>
                     )}
-                    {n.metadata?.url && (
+                    {n.metadata?.actionUrl && (
                       <Button 
                         variant="ghost" 
                         size="icon" 
                         className="h-6 w-6 rounded-lg text-muted-foreground hover:bg-muted/10"
-                        onClick={() => window.open(n.metadata.url, '_blank')}
+                        onClick={() => window.open(n.metadata.actionUrl, '_blank')}
                       >
                         <ExternalLink size={12} />
                       </Button>

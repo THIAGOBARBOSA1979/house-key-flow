@@ -15,7 +15,8 @@ import {
   ArrowRight,
   Keyboard,
   Activity,
-  Megaphone
+  Megaphone,
+  AlertTriangle
 } from "lucide-react";
 import { 
   Dialog, 
