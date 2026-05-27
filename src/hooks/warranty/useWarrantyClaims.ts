@@ -86,6 +86,7 @@ export const useWarrantyClaims = (clientId: string, userName?: string) => {
     eventAutomationService.onWarrantyRequested(
       result.request.id,
       clientId,
+      companyId || "",
       selectedItem.name
     );
     
