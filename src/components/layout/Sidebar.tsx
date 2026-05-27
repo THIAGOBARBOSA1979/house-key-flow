@@ -54,6 +54,7 @@ const operationalItems = [
 
 const managementItems = [
   { to: "/app/properties", icon: Building, label: "Empreendimentos", permission: "properties.view" },
+  { to: "/app/assets", icon: Layout, label: "Ativos (ISO 55001)", permission: "maintenance.view" },
   { to: "/app/non-conformities", icon: AlertTriangle, label: "Não Conformidades", permission: "maintenance.manage" },
   { to: "/app/quality", icon: BarChart3, label: "Indicadores Qualidade", permission: "reports.view" },
   { to: "/app/announcements", icon: Megaphone, label: "Comunicados", permission: "announcements.view" },
@@ -63,13 +64,16 @@ const managementItems = [
   { to: "/app/technicians", icon: Wrench, label: "Técnicos", permission: "users.manage" },
 ];
 
+
 const systemItems = [
   { to: "/app/checklist", icon: ClipboardCheck, label: "Checklists", permission: "settings.manage" },
   { to: "/app/settings", icon: Settings, label: "Configurações", permission: "settings.manage" },
+  { to: "/app/billing", icon: BarChart3, label: "Faturamento", permission: "settings.manage" },
   { to: "/app/design-system", icon: Layout, label: "Design System", superAdminOnly: true },
   { to: "/app/audit-logs", icon: FileSearch, label: "Audit & Compliance", superAdminOnly: true },
   { to: "/app/saas", icon: ShieldCheck, label: "Command Center", superAdminOnly: true },
 ];
+
 
 const SidebarContent = memo(({ collapsed, onToggleCollapse, onItemClick }: { collapsed: boolean; onToggleCollapse?: () => void; onItemClick?: () => void }) => {
   const navigate = useNavigate();

@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      assets: {
+        Row: {
+          brand: string | null
+          category: string
+          company_id: string
+          created_at: string
+          id: string
+          installation_date: string | null
+          last_maintenance_date: string | null
+          model: string | null
+          name: string
+          next_maintenance_date: string | null
+          property_id: string | null
+          serial_number: string | null
+          status: string
+          updated_at: string
+          warranty_expiration: string | null
+        }
+        Insert: {
+          brand?: string | null
+          category: string
+          company_id: string
+          created_at?: string
+          id?: string
+          installation_date?: string | null
+          last_maintenance_date?: string | null
+          model?: string | null
+          name: string
+          next_maintenance_date?: string | null
+          property_id?: string | null
+          serial_number?: string | null
+          status?: string
+          updated_at?: string
+          warranty_expiration?: string | null
+        }
+        Update: {
+          brand?: string | null
+          category?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          installation_date?: string | null
+          last_maintenance_date?: string | null
+          model?: string | null
+          name?: string
+          next_maintenance_date?: string | null
+          property_id?: string | null
+          serial_number?: string | null
+          status?: string
+          updated_at?: string
+          warranty_expiration?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -784,6 +853,56 @@ export type Database = {
           {
             foreignKeyName: "inspections_tenant_id_fkey"
             columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          amount: number
+          company_id: string
+          created_at: string
+          currency: string
+          due_date: string
+          id: string
+          invoice_url: string | null
+          paid_at: string | null
+          plan_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          company_id: string
+          created_at?: string
+          currency?: string
+          due_date: string
+          id?: string
+          invoice_url?: string | null
+          paid_at?: string | null
+          plan_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          created_at?: string
+          currency?: string
+          due_date?: string
+          id?: string
+          invoice_url?: string | null
+          paid_at?: string | null
+          plan_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_company_id_fkey"
+            columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
@@ -1594,6 +1713,41 @@ export type Database = {
             columns: ["ticket_id"]
             isOneToOne: false
             referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usage_metrics: {
+        Row: {
+          company_id: string
+          current_value: number
+          id: string
+          limit_value: number
+          metric_name: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          current_value?: number
+          id?: string
+          limit_value: number
+          metric_name: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          current_value?: number
+          id?: string
+          limit_value?: number
+          metric_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_metrics_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]

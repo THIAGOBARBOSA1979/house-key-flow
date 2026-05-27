@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { AppLayout as DashboardLayout } from "@/components/layout/AppLayout";
 import { Stats } from "@/components/dashboard/Stats";
 import { ActiveProperties } from "@/components/dashboard/ActiveProperties";
 import { ScheduledInspections } from "@/components/dashboard/ScheduledInspections";
@@ -20,7 +19,7 @@ const Index = () => {
   } = useDashboardData();
 
   return (
-    <DashboardLayout>
+    <div className="animate-in fade-in duration-slow">
       <PageHeader 
         title="Painel Estratégico" 
         description="Gestão de Ativos & Governança Operacional"
@@ -29,8 +28,8 @@ const Index = () => {
       
       <Stats className="mb-layout-gap-lg" />
       
-      <div className="grid-dashboard gap-layout-gap-lg">
-        <div className="lg:col-span-7 xl:col-span-8 layout-stack gap-layout-gap-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-layout-gap-lg">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-layout-gap-lg">
           <ActiveProperties />
           <ScheduledInspections inspections={inspections} />
           
@@ -98,34 +97,29 @@ const Index = () => {
           
           <Card className="rounded-card border-none bg-primary/5 dark:bg-primary/10 backdrop-blur-xl overflow-hidden shadow-sem-lg border border-primary/10">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-black tracking-tight flex items-center gap-3">
-                <ShieldAlert className="text-primary h-5 w-5" />
-                Alertas de Governança
+              <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                <ShieldAlert size={16} className="text-primary" />
+                Vulnerabilidades Técnicas
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className={cn(
-                "p-4 rounded-2xl border flex items-start gap-3",
-                healthMetrics?.status === 'healthy' ? "bg-emerald-500/5 border-emerald-500/10" : "bg-status-critical/5 border-status-critical/10"
-              )}>
-                <div className={cn(
-                  "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
-                  healthMetrics?.status === 'healthy' ? "bg-emerald-500/10 text-emerald-600" : "bg-status-critical/10 text-status-critical"
-                )}>
-                  <Activity size={14} />
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-xs font-bold">
+                  <span className="text-muted-foreground">SLA de Assistência</span>
+                  <span className={cn("px-2 py-0.5 rounded-full", healthMetrics?.slaStatus === 'good' ? 'bg-status-success/10 text-status-success' : 'bg-status-warning/10 text-status-warning')}>
+                    {healthMetrics?.slaStatus === 'good' ? 'Saudável' : 'Atenção'}
+                  </span>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-black uppercase tracking-widest text-foreground">Saúde do Sistema</p>
-                  <p className="text-[11px] text-muted-foreground font-bold leading-relaxed">
-                    {healthMetrics?.status === 'healthy' ? "Todos os serviços operando em capacidade máxima." : "Instabilidade detectada nos serviços core."}
-                  </p>
+                <div className="flex justify-between items-center text-xs font-bold">
+                  <span className="text-muted-foreground">Índice de Retrabalho</span>
+                  <span className="text-foreground">4.2%</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 
