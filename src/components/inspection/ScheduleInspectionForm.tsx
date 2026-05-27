@@ -123,6 +123,7 @@ export const ScheduleInspectionForm = ({
       await notificationService.createNotification(
         clientId || "client-1",
         "inspection_scheduled",
+        newInspection.company_id || "",
         {
           relatedEntityId: newInspection.id,
           relatedEntityType: 'inspection',

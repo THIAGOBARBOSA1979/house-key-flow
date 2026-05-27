@@ -93,6 +93,7 @@ class WarrantyAutomationService {
       notificationService.createNotification(
         request.clientId,
         clientFlowType,
+        request.company_id || '',
         {
           relatedEntityId: request.id,
           relatedEntityType: 'warranty',

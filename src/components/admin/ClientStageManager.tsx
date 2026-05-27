@@ -104,7 +104,7 @@ export function ClientStageManager({ clientId, onStageChange }: ClientStageManag
         ? 'inspection_enabled' 
         : 'warranty_enabled';
       
-      notificationService.createNotification(clientId, notificationType, {
+      notificationService.createNotification(clientId, notificationType, profile.company_id || '', {
         relatedEntityType: 'stage'
       });
 

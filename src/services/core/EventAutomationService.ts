@@ -11,7 +11,7 @@ export interface AutomationResult {
 
 class EventAutomationService {
   // Process inspection accepted by client
-  async onInspectionAccepted(inspectionId: string, clientId: string): Promise<AutomationResult> {
+  async onInspectionAccepted(inspectionId: string, clientId: string, companyId: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -33,10 +33,10 @@ class EventAutomationService {
       });
       actions.push('Evento registrado no histórico');
 
-      notificationService.createNotification(clientId, 'inspection_approved', {
+      notificationService.createNotification(clientId, 'inspection_approved', companyId, {
         relatedEntityId: inspectionId, relatedEntityType: 'inspection'
       });
-      notificationService.createNotification(clientId, 'warranty_enabled', {
+      notificationService.createNotification(clientId, 'warranty_enabled', companyId, {
         relatedEntityType: 'stage'
       });
       actions.push('Notificações criadas');
@@ -56,7 +56,7 @@ class EventAutomationService {
   }
 
   // Process inspection approved event (admin)
-  async onInspectionApproved(inspectionId: string, clientId: string): Promise<AutomationResult> {
+  async onInspectionApproved(inspectionId: string, clientId: string, companyId: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -78,10 +78,10 @@ class EventAutomationService {
       });
       actions.push('Evento registrado no histórico');
 
-      notificationService.createNotification(clientId, 'inspection_approved', {
+      notificationService.createNotification(clientId, 'inspection_approved', companyId, {
         relatedEntityId: inspectionId, relatedEntityType: 'inspection'
       });
-      notificationService.createNotification(clientId, 'warranty_enabled', {
+      notificationService.createNotification(clientId, 'warranty_enabled', companyId, {
         relatedEntityType: 'stage'
       });
       actions.push('Notificações criadas');
@@ -100,7 +100,7 @@ class EventAutomationService {
   }
 
   // Process inspection rejected event
-  async onInspectionRejected(inspectionId: string, clientId: string, reason?: string): Promise<AutomationResult> {
+  async onInspectionRejected(inspectionId: string, clientId: string, companyId: string, reason?: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -122,7 +122,7 @@ class EventAutomationService {
       actions.push('Evento registrado no histórico');
 
       // 3. Create notification
-      notificationService.createNotification(clientId, 'inspection_rejected', {
+      notificationService.createNotification(clientId, 'inspection_rejected', companyId, {
         relatedEntityId: inspectionId,
         relatedEntityType: 'inspection'
       });
@@ -146,7 +146,7 @@ class EventAutomationService {
   }
 
   // Process inspection scheduled event
-  async onInspectionScheduled(inspectionId: string, clientId: string, scheduledDate: Date): Promise<AutomationResult> {
+  async onInspectionScheduled(inspectionId: string, clientId: string, companyId: string, scheduledDate: Date): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -165,7 +165,7 @@ class EventAutomationService {
       actions.push('Evento registrado no histórico');
 
       // 2. Create notification
-      notificationService.createNotification(clientId, 'inspection_scheduled', {
+      notificationService.createNotification(clientId, 'inspection_scheduled', companyId, {
         relatedEntityId: inspectionId,
         relatedEntityType: 'inspection'
       });
@@ -190,7 +190,7 @@ class EventAutomationService {
   }
 
   // Process warranty request created event
-  async onWarrantyRequested(warrantyId: string, clientId: string, itemName: string): Promise<AutomationResult> {
+  async onWarrantyRequested(warrantyId: string, clientId: string, companyId: string, itemName: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -209,7 +209,7 @@ class EventAutomationService {
       actions.push('Evento registrado no histórico');
 
       // 2. Create notification
-      notificationService.createNotification(clientId, 'warranty_created', {
+      notificationService.createNotification(clientId, 'warranty_created', companyId, {
         relatedEntityId: warrantyId,
         relatedEntityType: 'warranty'
       });
@@ -234,7 +234,7 @@ class EventAutomationService {
   }
 
   // Process warranty completed event
-  async onWarrantyCompleted(warrantyId: string, clientId: string): Promise<AutomationResult> {
+  async onWarrantyCompleted(warrantyId: string, clientId: string, companyId: string): Promise<AutomationResult> {
     const actions: string[] = [];
 
     try {
@@ -253,7 +253,7 @@ class EventAutomationService {
       actions.push('Evento registrado no histórico');
 
       // 2. Create notification
-      notificationService.createNotification(clientId, 'warranty_completed', {
+      notificationService.createNotification(clientId, 'warranty_completed', companyId, {
         relatedEntityId: warrantyId,
         relatedEntityType: 'warranty'
       });
@@ -271,22 +271,22 @@ class EventAutomationService {
   }
 
   // Generic event processor
-  async processEvent(event: { type: EventType; clientId: string; entityId?: string; data?: any }): Promise<AutomationResult> {
+  async processEvent(event: { type: EventType; clientId: string; companyId: string; entityId?: string; data?: any }): Promise<AutomationResult> {
     switch (event.type) {
       case 'inspection_approved':
-        return this.onInspectionApproved(event.entityId || '', event.clientId);
+        return this.onInspectionApproved(event.entityId || '', event.clientId, event.companyId);
       
       case 'inspection_rejected':
-        return this.onInspectionRejected(event.entityId || '', event.clientId, event.data?.reason);
+        return this.onInspectionRejected(event.entityId || '', event.clientId, event.companyId, event.data?.reason);
       
       case 'inspection_scheduled':
-        return this.onInspectionScheduled(event.entityId || '', event.clientId, event.data?.scheduledDate);
+        return this.onInspectionScheduled(event.entityId || '', event.clientId, event.companyId, event.data?.scheduledDate);
       
       case 'warranty_requested':
-        return this.onWarrantyRequested(event.entityId || '', event.clientId, event.data?.itemName);
+        return this.onWarrantyRequested(event.entityId || '', event.clientId, event.companyId, event.data?.itemName);
       
       case 'warranty_completed':
-        return this.onWarrantyCompleted(event.entityId || '', event.clientId);
+        return this.onWarrantyCompleted(event.entityId || '', event.clientId, event.companyId);
       
       default:
         return { success: true, actions: ['No automation configured for this event type'] };
