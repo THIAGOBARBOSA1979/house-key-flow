@@ -89,7 +89,9 @@ const App = () => {
                   <Route path="announcements" element={<Pages.Announcements />} />
                   <Route path="technicians" element={<Pages.Technicians />} />
                   <Route path="support" element={<Pages.AdminSupport />} />
-                  <Route path="inbox" element={<Pages.SupportInbox />} />
+                  <Route path="inbox" element={<Pages.Inbox />} />
+                  <Route path="maintenance" element={<Pages.Maintenance />} />
+                  <Route path="profile" element={<Pages.Profile />} />
                 </Route>
 
                 {/* Protected Client Routes */}
