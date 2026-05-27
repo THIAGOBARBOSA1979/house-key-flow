@@ -48,6 +48,7 @@ const operationalItems = [
   { to: "/app/inspections", icon: ClipboardCheck, label: "Vistorias Técnicas", permission: "maintenance.view" },
   { to: "/app/warranty", icon: ShieldCheck, label: "Assistência Técnica", permission: "maintenance.view" },
   { to: "/app/support", icon: MessageSquare, label: "Suporte Técnico", permission: "maintenance.view" },
+  { to: "/app/maintenance", icon: Wrench, label: "Manutenção Preventiva", permission: "maintenance.manage" },
   { to: "/app/inbox", icon: MessageSquare, label: "Inbox WhatsApp", permission: "maintenance.manage" },
 ];
 
