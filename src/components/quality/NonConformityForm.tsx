@@ -84,6 +84,7 @@ export const NonConformityForm = ({ open, onOpenChange, onSuccess }: NonConformi
       await notificationService.createNotification(
         user.id,
         'system_update',
+        user.company_id,
         {},
         { 
           title: "Nova Não Conformidade", 
