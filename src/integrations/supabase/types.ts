@@ -790,6 +790,63 @@ export type Database = {
           },
         ]
       }
+      maintenance_schedules: {
+        Row: {
+          assigned_to: string | null
+          company_id: string
+          created_at: string | null
+          description: string | null
+          frequency: string
+          id: string
+          property_id: string | null
+          scheduled_date: string
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          frequency?: string
+          id?: string
+          property_id?: string | null
+          scheduled_date: string
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          frequency?: string
+          id?: string
+          property_id?: string | null
+          scheduled_date?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_schedules_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_schedules_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       non_conformities: {
         Row: {
           closed_at: string | null
