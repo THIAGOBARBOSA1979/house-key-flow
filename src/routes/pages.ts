@@ -35,7 +35,9 @@ export const SaaSAdmin = lazy(() => import("@/pages/admin/SaaSAdmin"));
 export const NonConformities = lazy(() => import("@/pages/admin/NonConformities"));
 export const QualityIndicators = lazy(() => import("@/pages/admin/QualityIndicators"));
 export const Maintenance = lazy(() => import("@/pages/Maintenance"));
-export const SupportInboxV2 = lazy(() => import("@/pages/Inbox"));
+export const Inbox = lazy(() => import("@/pages/Inbox"));
+export const Profile = lazy(() => import("@/pages/Profile"));
+
 
 
 
