@@ -20,7 +20,7 @@ describe('Core Services Integration', () => {
   });
 
   it('should generate notifications for specific events', () => {
-    notificationService.createNotification('client-abc', 'stage_changed', {
+    notificationService.createNotification('client-abc', 'stage_changed', 'company-123', {
       relatedEntityType: 'warranty',
       relatedEntityId: 'w-123'
     }, {

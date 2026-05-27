@@ -15,7 +15,8 @@ import {
   ArrowRight,
   Keyboard,
   Activity,
-  Megaphone
+  Megaphone,
+  AlertTriangle
 } from "lucide-react";
 import { 
   Dialog, 
@@ -108,6 +109,14 @@ const QUICK_ACTIONS: QuickAction[] = [
     icon: User, 
     path: "/app/users", 
     category: "Gestão"
+  },
+  { 
+    id: "non-conformity", 
+    title: "Nova Não Conformidade", 
+    description: "Registrar evento para ISO 9001", 
+    icon: AlertTriangle, 
+    path: "/app/non-conformities", 
+    category: "Operacional"
   }
 ];
 

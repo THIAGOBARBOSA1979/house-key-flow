@@ -11,48 +11,48 @@ import { ErrorView } from "@/components/shared/ErrorView";
 const QualityIndicators = () => {
   const { user } = useAuth();
   
-  const { data: metrics = [], isLoading, error, refetch } = useQuery({
+  const { data: metricsData, isLoading, error, refetch } = useQuery({
     queryKey: ['quality-metrics', user?.company_id],
     queryFn: async () => {
-      return await qualityService.getAll(user?.company_id, user?.is_super_admin);
+      return await qualityService.getMetrics(user?.company_id, user?.is_super_admin);
     },
     enabled: !!user
   });
 
-  const cards = [
+  const cards = metricsData ? [
     {
       title: "NPS Médio",
-      value: "8.9",
-      target: "9.0",
-      change: "+0.4",
+      value: metricsData.nps.value.toString(),
+      target: metricsData.nps.target.toString(),
+      change: metricsData.nps.change,
       icon: Target,
       color: "text-brand"
     },
     {
       title: "Resolução 1º Contato",
-      value: "74%",
-      target: "80%",
-      change: "-2%",
+      value: `${metricsData.first_contact.value}%`,
+      target: `${metricsData.first_contact.target}%`,
+      change: metricsData.first_contact.change,
       icon: CheckCircle2,
       color: "text-emerald-500"
     },
     {
       title: "Tempo Médio de Atendimento",
-      value: "14h",
-      target: "12h",
-      change: "-1.5h",
+      value: `${metricsData.tma.value}h`,
+      target: `${metricsData.tma.target}h`,
+      change: metricsData.tma.change,
       icon: Clock,
       color: "text-blue-500"
     },
     {
       title: "Taxa de Não Conformidade",
-      value: "1.2%",
-      target: "2.0%",
-      change: "-0.3%",
+      value: `${metricsData.nc_rate.value}%`,
+      target: `${metricsData.nc_rate.target}%`,
+      change: metricsData.nc_rate.change,
       icon: AlertTriangle,
       color: "text-orange-500"
     }
-  ];
+  ] : [];
 
   if (isLoading) return <SkeletonLoader type="page" />;
   if (error) return <ErrorView message={(error as any)?.message} onRetry={() => refetch()} />;

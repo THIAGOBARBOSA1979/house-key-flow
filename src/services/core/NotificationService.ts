@@ -41,6 +41,7 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
   async createNotification(
     clientId: string, 
     type: NotificationType,
+    companyId: string,
     metadata?: ClientNotification['metadata'],
     customMessage?: { title?: string; message?: string }
   ): Promise<ClientNotification> {
@@ -55,8 +56,7 @@ export class NotificationService extends SupabaseBaseService<ClientNotification>
       urgent: template.urgent,
       metadata,
       createdAt: new Date(),
-      company_id: (metadata as any)?.company_id || ''
-    });
+    }, companyId);
   }
 
   getNotifications(clientId: string): ClientNotification[] {

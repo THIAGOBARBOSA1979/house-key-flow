@@ -159,8 +159,9 @@ class InspectionService extends SupabaseBaseService<Inspection> {
       if (status === 'complete' || status === 'accepted') {
         const { eventAutomationService } = await import("../core/EventAutomationService");
         const clientId = (updated as any).client_id || (updated as any).clientId;
-        if (clientId) {
-          eventAutomationService.onInspectionApproved(id, clientId);
+        const companyId = (updated as any).company_id || (updated as any).companyId;
+        if (clientId && companyId) {
+          eventAutomationService.onInspectionApproved(id, clientId, companyId);
         }
       }
     }
