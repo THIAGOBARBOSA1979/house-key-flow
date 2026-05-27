@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { propertyService, inspectionService, warrantyFlowService, auditLogService, supportService, systemHealthService } from "@/services";
+import { propertyService, inspectionService, warrantyFlowService, auditLogService, supportService, systemHealthService, nonConformityService } from "@/services";
 import { SystemHealthMetrics } from "@/services";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -17,6 +17,7 @@ export const useDashboardData = () => {
     warrantyClaims: [],
     recentActivities: [],
     recentTickets: [],
+    nonConformities: [],
     propertyMetrics: null,
     technicalConformity: 100
   });
@@ -26,13 +27,14 @@ export const useDashboardData = () => {
   const refreshData = useCallback(async () => {
     setLoading(true);
     try {
-      const [properties, inspections, warrantyClaims, recentActivities, recentTickets, hMetrics] = await Promise.all([
+      const [properties, inspections, warrantyClaims, recentActivities, recentTickets, hMetrics, nonConformities] = await Promise.all([
         propertyService.getAll(companyId, isSuperAdmin),
         inspectionService.getAll(companyId, isSuperAdmin),
         warrantyFlowService.getAllRequests(companyId, isSuperAdmin),
         auditLogService.getRecentLogsAsync(5),
         supportService.getAll(companyId, isSuperAdmin),
-        systemHealthService.getHealthMetrics()
+        systemHealthService.getHealthMetrics(),
+        nonConformityService.getAll(companyId, isSuperAdmin)
       ]);
 
       setData({
@@ -41,6 +43,7 @@ export const useDashboardData = () => {
         warrantyClaims: warrantyClaims.slice(0, 2),
         recentActivities,
         recentTickets: recentTickets.filter((t: any) => t.status !== 'closed').slice(0, 3),
+        nonConformities: nonConformities.slice(0, 3),
         propertyMetrics: propertyService.getMetricsSync(companyId, isSuperAdmin),
         technicalConformity: await inspectionService.getTechnicalConformityScore(companyId, isSuperAdmin),
       });

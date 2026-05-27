@@ -12,10 +12,14 @@ import { nonConformityService } from "@/services/operations/NonConformityService
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { NonConformityForm } from "@/components/quality/NonConformityForm";
+import { Download } from "lucide-react";
+import { exportService } from "@/services";
 
 const NonConformities = () => {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const { data: nonConformities = [], isLoading, error, refetch } = useQuery({
     queryKey: ['non-conformities', user?.company_id],
@@ -43,11 +47,27 @@ const NonConformities = () => {
     }
   };
 
+  const handleExport = () => {
+    exportService.exportToCSV(nonConformities, "nao_conformidades_a2");
+  };
+
   const actions = (
-    <Button className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95">
-      <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
-      Nova Não Conformidade
-    </Button>
+    <div className="flex items-center gap-3">
+      <Button 
+        variant="outline" 
+        className="h-11 px-5 rounded-xl font-bold border-primary/20 hover:bg-primary/5"
+        onClick={handleExport}
+      >
+        <Download className="mr-2 h-4 w-4" /> Exportar
+      </Button>
+      <Button 
+        className="h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95"
+        onClick={() => setIsFormOpen(true)}
+      >
+        <Plus className="mr-2 h-4 w-4" strokeWidth={3} />
+        Nova Não Conformidade
+      </Button>
+    </div>
   );
 
   return (
@@ -169,6 +189,12 @@ const NonConformities = () => {
             )
           }
         ]}
+      />
+
+      <NonConformityForm 
+        open={isFormOpen} 
+        onOpenChange={setIsFormOpen} 
+        onSuccess={() => refetch()} 
       />
     </PageTemplate>
   );
