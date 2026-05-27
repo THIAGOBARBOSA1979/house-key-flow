@@ -1,5 +1,6 @@
 import { SupabaseBaseService, SupabaseBaseServiceOptions } from "../SupabaseBaseService";
 import { BaseEntity } from "@/types/shared";
+import { Supabase } from "@/integrations/supabase";
 
 export interface Asset extends BaseEntity {
   propertyId: string;
@@ -18,7 +19,8 @@ export interface Asset extends BaseEntity {
 export class AssetService extends SupabaseBaseService<Asset> {
   constructor() {
     const options: SupabaseBaseServiceOptions = {
-      supabaseTable: "assets",
+      storageKey: "a2_assets",
+      supabaseTable: "assets" as any,
       fieldMapping: {
         propertyId: "property_id",
         serialNumber: "serial_number",
@@ -41,6 +43,11 @@ export class AssetService extends SupabaseBaseService<Asset> {
     return this.getAll(undefined, true, [
       { column: "status", operator: "in", value: ["broken", "maintenance"] }
     ]);
+  }
+
+  protected async getCompanyId(): Promise<string> {
+    const user = await Supabase.auth.getCurrentUser();
+    return user?.user_metadata?.company_id || "";
   }
 }
 

@@ -21,7 +21,8 @@ export interface UsageMetric extends BaseEntity {
 export class BillingService extends SupabaseBaseService<Invoice> {
   constructor() {
     const options: SupabaseBaseServiceOptions = {
-      supabaseTable: "invoices",
+      storageKey: "a2_invoices",
+      supabaseTable: "invoices" as any,
       fieldMapping: {
         dueDate: "due_date",
         paidAt: "paid_at",
@@ -46,6 +47,11 @@ export class BillingService extends SupabaseBaseService<Invoice> {
       currentValue: item.current_value,
       limitValue: item.limit_value
     }));
+  }
+
+  protected async getCompanyId(): Promise<string> {
+    const user = await Supabase.auth.getCurrentUser();
+    return user?.user_metadata?.company_id || "";
   }
 
   async upgradePlan(newPlanId: string): Promise<void> {
