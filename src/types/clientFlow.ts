@@ -25,7 +25,8 @@ export type NotificationType =
   | 'warranty_created'
   | 'warranty_updated'
   | 'warranty_completed'
-  | 'stage_changed';
+  | 'stage_changed'
+  | 'system_update';
 
 export type TimelineItemStatus = 'completed' | 'current' | 'pending' | 'blocked';
 
@@ -258,6 +259,11 @@ export const NOTIFICATION_TEMPLATES: Record<NotificationType, { title: string; m
   stage_changed: {
     title: 'Evolução na Jornada do Proprietário',
     message: 'O status do seu posicionamento na nossa jornada digital foi atualizado.',
+    urgent: false
+  },
+  system_update: {
+    title: 'Atualização do Sistema',
+    message: 'Uma nova atualização ou evento importante foi registrado no sistema.',
     urgent: false
   }
 
