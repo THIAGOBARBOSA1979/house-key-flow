@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { nonConformityService } from "@/services/operations/NonConformityService";
+import { notificationService } from "@/services/core/NotificationService";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks";
 import { Loader2, AlertTriangle } from "lucide-react";
@@ -78,6 +79,17 @@ export const NonConformityForm = ({ open, onOpenChange, onSuccess }: NonConformi
         created_at: new Date(),
         updated_at: new Date()
       } as any);
+
+      // Trigger Notification for relevant users
+      await notificationService.createNotification(
+        user.id,
+        'SYSTEM_UPDATE',
+        { company_id: user.company_id },
+        { 
+          title: "Nova Não Conformidade", 
+          message: `O evento "${values.title}" foi registrado no sistema.` 
+        }
+      );
 
       toast({
         title: "Sucesso",

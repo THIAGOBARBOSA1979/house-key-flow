@@ -13,13 +13,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { NonConformityForm } from "@/components/quality/NonConformityForm";
+import { NonConformityDetails } from "@/components/quality/NonConformityDetails";
 import { Download } from "lucide-react";
 import { exportService } from "@/services";
+import { NonConformity } from "@/services/operations/NonConformityService";
 
 const NonConformities = () => {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedNC, setSelectedNC] = useState<NonConformity | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const { data: nonConformities = [], isLoading, error, refetch } = useQuery({
     queryKey: ['non-conformities', user?.company_id],
@@ -183,7 +187,15 @@ const NonConformities = () => {
             accessorKey: "id",
             className: "text-right",
             cell: (n: any) => (
-              <Button variant="ghost" size="sm" className="font-bold text-primary">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="font-bold text-primary"
+                onClick={() => {
+                  setSelectedNC(n);
+                  setIsDetailsOpen(true);
+                }}
+              >
                 Ver Detalhes <ArrowRight className="ml-2 h-3 w-3" />
               </Button>
             )
@@ -195,6 +207,13 @@ const NonConformities = () => {
         open={isFormOpen} 
         onOpenChange={setIsFormOpen} 
         onSuccess={() => refetch()} 
+      />
+
+      <NonConformityDetails
+        nc={selectedNC}
+        open={isDetailsOpen}
+        onOpenChange={setIsDetailsOpen}
+        onUpdate={() => refetch()}
       />
     </PageTemplate>
   );
