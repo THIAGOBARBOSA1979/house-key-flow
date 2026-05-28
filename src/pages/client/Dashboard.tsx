@@ -316,8 +316,10 @@ const Dashboard = () => {
 
         <div className="lg:col-span-1 space-y-8">
           <TechnicalSheet 
-            propertyArea={propertyData?.totalArea}
+            propertyArea={(profile as any)?.totalArea ? parseFloat((profile as any).totalArea) : propertyData?.totalArea}
             deliveryDate={userInfo.deliveryDate?.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+            solarPosition={(profile as any)?.governance_metadata?.solar_position}
+            parkingSpots={(profile as any)?.governance_metadata?.parking_spots}
           />
           
           <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white p-8 overflow-hidden relative group">

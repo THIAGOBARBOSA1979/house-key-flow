@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { ErrorView } from "@/components/shared/ErrorView";
-import { propertyService } from "@/services/operations/PropertyService";
+import { propertyService } from "@/services";
 
 import { Button } from "@/components/ui/button";
 import { 
@@ -41,11 +41,11 @@ export default function ClientInspections() {
   const [previewContent, setPreviewContent] = useState("");
 
 
-  const loadInspections = async () => {
+  const loadInspections = useCallback(async () => {
     try {
       setError(null);
       const all = await inspectionService.getAll();
-      const raw = all.filter(i => i && i.client === (user?.name || "João Silva"));
+      const raw = all.filter(i => i && i.client === (user?.name || "Proprietário"));
       setInspections(raw.map(i => ({ 
         ...i, 
         title: i.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica', 
@@ -55,10 +55,9 @@ export default function ClientInspections() {
     } catch (err) {
       setError("Falha ao carregar vistorias.");
     }
-  };
+  }, [user?.name, selectedInspection]);
 
-
-  useEffect(() => { loadInspections(); }, [user]);
+  useEffect(() => { loadInspections(); }, [loadInspections]);
 
   const inspection = useMemo(() => selectedInspection ? inspections.find(i => i.id === selectedInspection) : null, [selectedInspection, inspections]);
 
@@ -284,13 +283,13 @@ export default function ClientInspections() {
                 )}
 
                 {inspection.status === 'complete' && !inspection.signed && (
-                  <div className="bg-gradient-to-br from-primary via-indigo-600 to-indigo-800 border-none rounded-[2.5rem] p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-700 shadow-2xl shadow-primary/20 relative overflow-hidden group/sign">
+                  <div className="bg-gradient-to-br from-primary via-indigo-600 to-indigo-800 border-none rounded-[2.5rem] p-6 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-700 shadow-2xl shadow-primary/20 relative overflow-hidden group/sign">
                     <div className="absolute right-[-2%] top-[-10%] opacity-10 pointer-events-none group-hover/sign:rotate-12 transition-transform duration-1000 text-white">
                       <PenTool size={180} />
                     </div>
-                    <div className="flex items-center gap-8 relative z-10">
-                      <div className="p-6 bg-white/10 backdrop-blur-xl text-white rounded-[2rem] border border-white/20 shadow-inner group-hover/sign:scale-110 group-hover/sign:rotate-3 transition-all duration-500">
-                         <PenTool size={40} strokeWidth={2.5} />
+                    <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 relative z-10 text-center sm:text-left">
+                      <div className="p-5 sm:p-6 bg-white/10 backdrop-blur-xl text-white rounded-[1.5rem] sm:rounded-[2rem] border border-white/20 shadow-inner group-hover/sign:scale-110 group-hover/sign:rotate-3 transition-all duration-500 shrink-0">
+                         <PenTool size={32} className="sm:h-10 sm:w-10" strokeWidth={2.5} />
                       </div>
                       <div className="space-y-2">
                         <h5 className="text-2xl font-black tracking-tight text-white leading-tight">Formalização Digital Pendente</h5>
