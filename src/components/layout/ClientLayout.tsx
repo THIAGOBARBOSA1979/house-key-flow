@@ -99,6 +99,19 @@ const ClientLayout = () => {
         </div>
       </div>
 
+      {/* Desktop Search Header Overlay - Modern floating look */}
+      <div className="hidden lg:flex fixed top-8 left-[352px] right-12 z-40 items-center justify-between pointer-events-none">
+        <div className="pointer-events-auto">
+          <ClientCommandPalette />
+        </div>
+        <div className="flex items-center gap-4 pointer-events-auto">
+          <Button variant="ghost" size="icon" className="bg-white/80 backdrop-blur-md border border-border/10 rounded-xl h-10 w-10 shadow-sm relative">
+             <Bell size={20} className="text-muted-foreground" />
+             {unreadCount > 0 && <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full animate-pulse" />}
+          </Button>
+        </div>
+      </div>
+
       {/* Sidebar Desktop */}
       <aside className={cn(
         "fixed inset-y-0 left-0 z-50 w-80 bg-white border-r border-border/40 transition-transform duration-500 lg:translate-x-0",
