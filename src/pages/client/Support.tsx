@@ -207,7 +207,8 @@ const Support = () => {
               </div>
             )}
           </CardContent>
-        </div>
+        </Card>
+      </div>
 
         {/* Right Column: FAQ & Quick Help */}
         <div className="lg:col-span-4 space-y-8">
