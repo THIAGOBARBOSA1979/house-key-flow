@@ -181,7 +181,55 @@ export default function ClientDocuments() {
           <TabsTrigger value="recent" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><Clock className="h-4 w-4 mr-2" />Recentes</TabsTrigger>
           <TabsTrigger value="contracts" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><Archive className="h-4 w-4 mr-2" />Contratos</TabsTrigger>
           <TabsTrigger value="stats" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><BarChart className="h-4 w-4 mr-2" />Estatísticas</TabsTrigger>
+          <TabsTrigger value="shared" className="flex-1 rounded-xl font-black uppercase text-[10px] tracking-widest"><ShieldCheck className="h-4 w-4 mr-2" />Arquivos Condomínio</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="shared" className="space-y-6 pt-2">
+           <Card className="rounded-[2.5rem] border-none shadow-xl bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-12 overflow-hidden relative group">
+              <div className="absolute right-[-10%] top-[-10%] opacity-10 group-hover:rotate-12 transition-transform duration-1000">
+                 <ShieldCheck size={300} />
+              </div>
+              <div className="relative z-10 max-w-2xl space-y-6">
+                 <Badge className="bg-primary border-none font-black uppercase text-[10px] px-4 py-1.5 rounded-xl">Documentação Comum</Badge>
+                 <h3 className="text-3xl font-black tracking-tighter">Regulamentos & Governança</h3>
+                 <p className="text-indigo-100/70 font-medium leading-relaxed">
+                   Acesse a convenção de condomínio, regimento interno e manuais das áreas comuns para garantir a boa convivência e preservação do patrimônio.
+                 </p>
+                 <div className="flex flex-wrap gap-4 pt-4">
+                    <Button className="bg-white text-indigo-900 hover:bg-indigo-50 rounded-2xl font-black uppercase tracking-widest text-[10px] h-14 px-8">
+                       Baixar Convenção Completa
+                    </Button>
+                    <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 rounded-2xl font-black uppercase tracking-widest text-[10px] h-14 px-8">
+                       Regimento Interno
+                    </Button>
+                 </div>
+              </div>
+           </Card>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
+                { title: "Manual de Áreas Comuns", category: "Infraestrutura", size: "12.4 MB" },
+                { title: "Plantas de Lazer", category: "Arquitetura", size: "45.2 MB" },
+                { title: "Ata de Instalação", category: "Jurídico", size: "1.1 MB" },
+                { title: "Calendário de Manutenções", category: "Operacional", size: "0.8 MB" }
+              ].map((doc, i) => (
+                <div key={i} className="flex items-center justify-between p-6 rounded-3xl bg-white border border-border/5 hover:border-primary/20 hover:shadow-lg transition-all group">
+                   <div className="flex items-center gap-6">
+                      <div className="p-4 bg-muted/50 rounded-2xl text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                         <FileText size={24} />
+                      </div>
+                      <div>
+                         <h4 className="font-black text-sm tracking-tight">{doc.title}</h4>
+                         <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">{doc.category} • {doc.size}</p>
+                      </div>
+                   </div>
+                   <Button variant="ghost" size="icon" className="rounded-xl h-12 w-12 text-primary hover:bg-primary/5">
+                      <Download size={20} />
+                   </Button>
+                </div>
+              ))}
+           </div>
+        </TabsContent>
 
         <TabsContent value="all" className="space-y-layout-gap pt-2">
           <ResponsiveGrid columns={4} gap="layout">

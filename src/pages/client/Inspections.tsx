@@ -258,12 +258,30 @@ export default function ClientInspections() {
                       <Button variant="outline" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 border-2 border-primary/10 hover:border-primary hover:bg-primary/5 transition-all shadow-sm" onClick={handleViewPdf}>
                         <FileText size={16} className="text-primary mr-2" strokeWidth={2.5} /> Laudo Técnico PDF
                       </Button>
-                      <Button variant="ghost" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20">
-                        <MessageSquare size={16} className="mr-2" strokeWidth={2.5} /> Consultar Suporte
+                      <Button variant="ghost" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20" onClick={() => window.location.href = '/client/support'}>
+                        <MessageSquare size={16} className="mr-2" strokeWidth={2.5} /> Reportar Pendência
                       </Button>
                     </div>
                   </div>
                 </div>
+
+                {inspection.status === 'confirmed' && (
+                  <div className="bg-amber-50 border-2 border-amber-100 rounded-[2.5rem] p-8 mb-10 flex flex-col sm:flex-row items-center justify-between gap-8 animate-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-center gap-6">
+                      <div className="p-4 bg-amber-500 text-white rounded-2xl shadow-lg shadow-amber-500/20">
+                         <Clock size={28} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <h5 className="text-xl font-black tracking-tight text-amber-900 leading-tight">Prepare-se para sua Vistoria</h5>
+                        <p className="text-sm text-amber-700/80 font-bold leading-relaxed max-w-md">Confirme sua presença e revise os manuais técnicos para uma homologação eficiente.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 w-full sm:w-auto">
+                      <Button variant="outline" className="flex-1 sm:flex-initial border-amber-200 text-amber-700 hover:bg-amber-100 rounded-xl font-black uppercase tracking-widest text-[10px] h-12 px-8">Solicitar Reagendamento</Button>
+                      <Button className="flex-1 sm:flex-initial bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-black uppercase tracking-widest text-[10px] h-12 px-10 shadow-lg shadow-amber-600/20">Confirmar Presença</Button>
+                    </div>
+                  </div>
+                )}
 
                 {inspection.status === 'complete' && !inspection.signed && (
                   <div className="bg-gradient-to-br from-primary via-indigo-600 to-indigo-800 border-none rounded-[2.5rem] p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-700 shadow-2xl shadow-primary/20 relative overflow-hidden group/sign">
