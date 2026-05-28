@@ -23,21 +23,24 @@ class FinancialService extends SupabaseBaseService<ClientInvoice> {
   constructor() {
     super({
       storageKey: "a2_client_invoices",
-      supabaseTable: "client_invoices",
-      auditEntityType: "invoice",
+      supabaseTable: "client_invoices" as any,
+      auditEntityType: "financial",
       shouldSyncWithSupabase: true,
       fieldMapping: {
         amount: 'amount',
-        dueDate: 'due_date',
-        paidAt: 'paid_at',
-        invoiceUrl: 'invoice_url',
-        pixCode: 'pix_code'
+        due_date: 'due_date',
+        paid_at: 'paid_at',
+        invoice_url: 'invoice_url',
+        pix_code: 'pix_code'
       }
     });
   }
 
   async getClientInvoices(clientId: string): Promise<ClientInvoice[]> {
-    return await this.getAllFiltered({ client_id: clientId });
+    // Correct usage of getAll with filters
+    return await this.getAll(undefined, true, [
+      { column: 'client_id', operator: 'eq', value: clientId }
+    ]);
   }
 
   async payInvoice(invoiceId: string): Promise<ClientInvoice | undefined> {
