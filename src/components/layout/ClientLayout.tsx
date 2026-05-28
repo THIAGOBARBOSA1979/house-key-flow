@@ -217,8 +217,12 @@ const ClientLayout = () => {
           {unreadCount > 0 && <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full" />}
           <span className="text-[8px] font-black uppercase tracking-widest">Radar</span>
         </NavLink>
-        <div className="p-3 bg-primary rounded-2xl shadow-lg shadow-primary/40 -mt-10 border-4 border-white">
-           <ClientCommandPalette />
+        <div className="-mt-10">
+           <ClientCommandPalette trigger={
+             <div className="p-4 bg-primary rounded-2xl shadow-lg shadow-primary/40 border-4 border-white text-white">
+               <Search size={24} strokeWidth={3} />
+             </div>
+           } />
         </div>
         <NavLink to="/client/support" className={({ isActive }) => cn("flex flex-col items-center gap-1 transition-all", isActive ? "text-primary scale-110" : "text-white/40")}>
           <MessageSquare size={20} strokeWidth={2.5} />
