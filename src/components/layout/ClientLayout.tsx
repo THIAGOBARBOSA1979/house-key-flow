@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { 
   Home, Building, LogOut, Menu, X, User, Bell, 
   MessageSquare, FileText, ClipboardCheck, ShieldCheck, 
-  HelpCircle, ChevronRight, Moon, Sun, Settings, LayoutDashboard, Receipt 
+  HelpCircle, ChevronRight, Moon, Sun, Settings, LayoutDashboard, Receipt, Wrench 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
