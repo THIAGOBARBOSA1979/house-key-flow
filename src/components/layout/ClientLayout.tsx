@@ -186,9 +186,9 @@ const ClientLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="lg:ml-80 min-h-screen">
-        <div className="p-layout-gap sm:p-layout-gap-lg lg:p-layout-gap-xl max-w-[1600px] mx-auto overflow-x-hidden">
-          <div className="mb-8">
+      <main className="lg:ml-80 min-h-screen relative overflow-x-hidden">
+        <div className="p-4 sm:p-layout-gap-lg lg:p-layout-gap-xl max-w-[1600px] mx-auto">
+          <div className="mb-4 sm:mb-8">
             <Breadcrumbs />
           </div>
           <Outlet />

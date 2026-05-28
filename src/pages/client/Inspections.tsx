@@ -121,7 +121,7 @@ export default function ClientInspections() {
              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Controle de Qualidade • ABNT</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter leading-tight">
             Vistorias & Entrega <span className="text-primary">.</span>
           </h1>
         </div>

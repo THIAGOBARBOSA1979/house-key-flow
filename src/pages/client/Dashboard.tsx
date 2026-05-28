@@ -166,15 +166,15 @@ const Dashboard = () => {
 
 
   return (
-    <div className="container-responsive py-8 space-y-12 animate-in fade-in duration-slow">
+    <div className="container-responsive py-4 sm:py-8 space-y-8 sm:space-y-12 animate-in fade-in duration-slow">
       {/* Welcome Header - Refined Hierarchy */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-border/10">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-             <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Command Center • Status: {stage === 'warranty_enabled' ? 'Operacional' : 'Em Construção'}</span>
+             <span className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+             <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Command Center • Status: {stage === 'warranty_enabled' ? 'Operacional' : 'Em Construção'}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-foreground">
             Olá, <span className="text-primary">{userInfo.name}</span>
           </h1>
         </div>
