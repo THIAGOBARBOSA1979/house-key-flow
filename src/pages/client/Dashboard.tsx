@@ -26,6 +26,7 @@ import { RecentDocumentsCard } from "@/components/dashboard/client/RecentDocumen
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { QuickActions } from "@/components/client/QuickActions";
 
 
 import { useAuditMarker } from "@/hooks/useAuditMarker";
@@ -185,6 +186,8 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
+          <QuickActions />
+          
           <PropertyInfoCard 
             property={userInfo.property}
             unit={userInfo.unit}
