@@ -51,3 +51,4 @@ export const ClientNotifications = lazy(() => import("@/pages/client/Notificatio
 export const ClientProfile = lazy(() => import("@/pages/client/Profile"));
 
 export const ClientSupport = lazy(() => import("@/pages/client/Support"));
+export const ClientFinancial = lazy(() => import("@/pages/client/Financial"));
