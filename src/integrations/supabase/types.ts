@@ -342,6 +342,78 @@ export type Database = {
           },
         ]
       }
+      client_invoices: {
+        Row: {
+          amount: number
+          barcode: string | null
+          client_id: string
+          company_id: string
+          created_at: string
+          description: string | null
+          due_date: string
+          id: string
+          invoice_url: string | null
+          paid_at: string | null
+          pix_code: string | null
+          property_id: string | null
+          status: string
+          title: string
+          unit_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          barcode?: string | null
+          client_id: string
+          company_id: string
+          created_at?: string
+          description?: string | null
+          due_date: string
+          id?: string
+          invoice_url?: string | null
+          paid_at?: string | null
+          pix_code?: string | null
+          property_id?: string | null
+          status?: string
+          title: string
+          unit_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          barcode?: string | null
+          client_id?: string
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          due_date?: string
+          id?: string
+          invoice_url?: string | null
+          paid_at?: string | null
+          pix_code?: string | null
+          property_id?: string | null
+          status?: string
+          title?: string
+          unit_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_invoices_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_profiles: {
         Row: {
           block: string | null
