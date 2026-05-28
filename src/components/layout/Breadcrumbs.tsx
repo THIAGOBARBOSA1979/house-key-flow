@@ -22,7 +22,8 @@ const routeLabels: Record<string, string> = {
   "announcements": "Comunicados",
   "technicians": "Técnicos",
   "design-system": "Design System",
-  "audit-logs": "Auditoria"
+  "audit-logs": "Auditoria",
+  "maintenance": "Manutenção"
 };
 
 interface BreadcrumbsProps {

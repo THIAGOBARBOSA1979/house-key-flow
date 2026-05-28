@@ -4,12 +4,13 @@ import { cn } from "@/lib/utils";
 import { 
   Home, Building, LogOut, Menu, X, User, Bell, 
   MessageSquare, FileText, ClipboardCheck, ShieldCheck, 
-  HelpCircle, ChevronRight, Moon, Sun, Settings, LayoutDashboard 
+  HelpCircle, ChevronRight, Moon, Sun, Settings, LayoutDashboard, Receipt, Wrench 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Breadcrumbs } from "./Breadcrumbs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage, useNotifications } from "@/hooks";
 import { useCompany } from "@/hooks/core/useCompany";
@@ -144,9 +145,11 @@ const ClientLayout = () => {
           <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar py-2">
             <ClientNavLink to="/client" icon={LayoutDashboard}>Resumo</ClientNavLink>
             <ClientNavLink to="/client/properties" icon={Building}>Meu Imóvel</ClientNavLink>
+            <ClientNavLink to="/client/financial" icon={Receipt}>Financeiro</ClientNavLink>
             <ClientNavLink to="/client/documents" icon={FileText}>Documentos</ClientNavLink>
             <ClientNavLink to="/client/inspections" icon={ClipboardCheck}>Vistorias</ClientNavLink>
             <ClientNavLink to="/client/warranty" icon={ShieldCheck}>Garantias</ClientNavLink>
+            <ClientNavLink to="/client/maintenance" icon={Wrench}>Manutenção</ClientNavLink>
             <ClientNavLink to="/client/notifications" icon={Bell} badgeCount={unreadCount}>Radar</ClientNavLink>
             <ClientNavLink to="/client/support" icon={HelpCircle}>Suporte</ClientNavLink>
           </nav>
@@ -167,6 +170,9 @@ const ClientLayout = () => {
       {/* Main Content */}
       <main className="lg:ml-80 min-h-screen">
         <div className="p-layout-gap sm:p-layout-gap-lg lg:p-layout-gap-xl max-w-[1600px] mx-auto overflow-x-hidden">
+          <div className="mb-8">
+            <Breadcrumbs />
+          </div>
           <Outlet />
         </div>
       </main>

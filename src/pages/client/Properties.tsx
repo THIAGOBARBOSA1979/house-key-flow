@@ -29,6 +29,7 @@ import {
   Droplets,
   Download
 } from "lucide-react";
+import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage } from "@/hooks";
 import { useToast } from "@/hooks";
@@ -82,14 +83,14 @@ const ClientProperties = () => {
 
 
   const propertyDetails = {
-    address: propertyData?.location || "Rua das Flores, 1500, Centro",
-    city: "São Paulo",
-    state: "SP",
-    size: propertyData?.totalArea ? `${Math.round(propertyData.totalArea / 120)}m²` : "72,50m²",
+    address: propertyData?.location || "Consulte seu contrato",
+    city: "Porto Alegre",
+    state: "RS",
+    size: propertyData?.totalArea ? `${Math.round(propertyData.totalArea / (propertyData.units || 1))}m²` : "72,50m²",
     bedrooms: 2,
     bathrooms: 2,
-    deliveryDate: propertyData?.deliveryDate ? propertyData.deliveryDate.toLocaleDateString() : "15/04/2025",
-    warrantyExpiration: "15/04/2030",
+    deliveryDate: propertyData?.deliveryDate ? format(new Date(propertyData.deliveryDate), 'dd/MM/yyyy') : "15/04/2025",
+    warrantyExpiration: propertyData?.deliveryDate ? format(new Date(new Date(propertyData.deliveryDate).setFullYear(new Date(propertyData.deliveryDate).getFullYear() + 5)), 'dd/MM/yyyy') : "15/04/2030",
     documents: [
       { id: "1", title: "Manual do Proprietário", type: "manual", size: "4.5 MB" },
       { id: "2", title: "Termo de Garantia", type: "warranty", size: "1.2 MB" },
@@ -99,8 +100,8 @@ const ClientProperties = () => {
   };
 
   const specifications = [
-    { icon: Maximize2, label: "Área Privativa", value: "72,50 m²" },
-    { icon: Layers, label: "Pavimento", value: "12º Andar" },
+    { icon: Maximize2, label: "Área Privativa", value: propertyDetails.size },
+    { icon: Layers, label: "Pavimento", value: profile?.floor ? `${profile.floor}º Andar` : "Andar Médio" },
     { icon: Sun, label: "Posição Solar", value: "Norte" },
     { icon: Wind, label: "Ventilação", value: "Natural" },
     { icon: Zap, label: "Rede Elétrica", value: "220v" },
