@@ -7,18 +7,22 @@ export const TechnicalSheet = ({
   propertyArea, 
   totalArea, 
   deliveryDate, 
-  warrantyStatus = "Ativa" 
+  warrantyStatus = "Ativa",
+  solarPosition = "Norte/Leste",
+  parkingSpots = "02 (G1)"
 }: { 
   propertyArea?: number; 
   totalArea?: number; 
   deliveryDate?: string; 
   warrantyStatus?: string;
+  solarPosition?: string;
+  parkingSpots?: string;
 }) => {
   const specs = [
     { label: "Área Privativa", value: propertyArea ? `${propertyArea} m²` : "85,40 m²", icon: Ruler },
     { label: "Área Total", value: totalArea ? `${totalArea} m²` : "112,20 m²", icon: Ruler },
-    { label: "Vagas", value: "02 (G1)", icon: Map },
-    { label: "Solar", value: "Norte/Leste", icon: Sun },
+    { label: "Vagas", value: parkingSpots, icon: Map },
+    { label: "Solar", value: solarPosition, icon: Sun },
     { label: "Entrega", value: deliveryDate || "Dez/2025", icon: Calendar },
     { label: "Garantia", value: warrantyStatus, icon: ShieldCheck },
   ];
@@ -31,19 +35,19 @@ export const TechnicalSheet = ({
   ];
 
   return (
-    <Card className="border-none shadow-2xl rounded-[3rem] bg-white overflow-hidden group">
-      <CardHeader className="p-10 pb-6">
+    <Card className="border-none shadow-2xl rounded-[2.5rem] sm:rounded-[3rem] bg-white overflow-hidden group">
+      <CardHeader className="p-8 sm:p-10 pb-4 sm:pb-6">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <CardTitle className="text-2xl font-black tracking-tighter">Ficha Técnica</CardTitle>
-            <CardDescription className="font-bold text-muted-foreground/60 uppercase text-[10px] tracking-widest">Protocolo da Unidade</CardDescription>
+            <CardTitle className="text-xl sm:text-2xl font-black tracking-tighter">Ficha Técnica</CardTitle>
+            <CardDescription className="font-bold text-muted-foreground/60 uppercase text-[9px] sm:text-[10px] tracking-widest">Protocolo da Unidade</CardDescription>
           </div>
-          <div className="p-4 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-            <Info className="h-7 w-7" strokeWidth={2.5} />
+          <div className="p-3 sm:p-4 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+            <Info className="h-5 w-5 sm:h-7 sm:w-7" strokeWidth={2.5} />
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-10 pt-4 space-y-10">
+      <CardContent className="p-8 sm:p-10 pt-2 sm:pt-4 space-y-8 sm:space-y-10">
         <div className="grid grid-cols-2 gap-6">
           {specs.map((spec) => (
             <div key={spec.label} className="p-5 rounded-3xl bg-muted/20 border border-border/5 hover:bg-muted/40 transition-all group/item">

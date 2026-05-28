@@ -174,4 +174,13 @@ class PropertyService extends SupabaseBaseService<Property> {
 }
 
 export const propertyService = new PropertyService();
+
+export interface PropertyDossier {
+  manualUrl?: string;
+  blueprintUrl?: string;
+  warrantyUrl?: string;
+  descriptiveUrl?: string;
+  neighborhoodGuideUrl?: string;
+}
+
 export type { Property, PropertyMilestone, PropertyUnit, PropertyMetrics };
