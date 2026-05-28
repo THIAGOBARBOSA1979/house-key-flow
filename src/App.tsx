@@ -105,6 +105,7 @@ const App = () => {
                   <Route path="profile" element={<Pages.ClientProfile />} />
                   <Route path="support" element={<Pages.ClientSupport />} />
                   <Route path="financial" element={<Pages.ClientFinancial />} />
+                  <Route path="maintenance" element={<Pages.ClientMaintenance />} />
                 </Route>
 
                 {/* Legacy redirects for top-level paths and /admin */}

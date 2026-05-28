@@ -148,6 +148,7 @@ const ClientLayout = () => {
             <ClientNavLink to="/client/documents" icon={FileText}>Documentos</ClientNavLink>
             <ClientNavLink to="/client/inspections" icon={ClipboardCheck}>Vistorias</ClientNavLink>
             <ClientNavLink to="/client/warranty" icon={ShieldCheck}>Garantias</ClientNavLink>
+            <ClientNavLink to="/client/maintenance" icon={Wrench}>Manutenção</ClientNavLink>
             <ClientNavLink to="/client/notifications" icon={Bell} badgeCount={unreadCount}>Radar</ClientNavLink>
             <ClientNavLink to="/client/support" icon={HelpCircle}>Suporte</ClientNavLink>
           </nav>
