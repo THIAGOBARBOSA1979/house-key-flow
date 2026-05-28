@@ -100,8 +100,11 @@ const Support = () => {
             SLA de Resposta: 24h
           </Badge>
           <Badge className="bg-emerald-500/10 text-emerald-600 border-none font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-xl">
-            WhatsApp Ativo
+            WhatsApp Concierge Ativo
           </Badge>
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all">
+             <Smartphone size={20} />
+          </Button>
         </div>
       </div>
 
