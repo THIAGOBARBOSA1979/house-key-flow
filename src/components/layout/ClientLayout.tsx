@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { 
   Home, Building, LogOut, Menu, X, User, Bell, 
   MessageSquare, FileText, ClipboardCheck, ShieldCheck, 
-  HelpCircle, ChevronRight, Moon, Sun, Settings, LayoutDashboard, Receipt, Wrench 
+  HelpCircle, ChevronRight, Moon, Sun, Settings, LayoutDashboard, Receipt, Wrench, Search 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,7 @@ import { Breadcrumbs } from "./Breadcrumbs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage, useNotifications } from "@/hooks";
 import { useCompany } from "@/hooks/core/useCompany";
+import { ClientCommandPalette } from "./ClientCommandPalette";
 import { 
   Select, 
   SelectContent, 
@@ -91,10 +92,7 @@ const ClientLayout = () => {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="rounded-xl relative">
-            <Bell size={20} className="text-muted-foreground" />
-            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full" />
-          </Button>
+          <ClientCommandPalette />
           <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="rounded-xl">
             <Menu size={24} className="text-primary" />
           </Button>
@@ -194,6 +192,30 @@ const ClientLayout = () => {
           <Outlet />
         </div>
       </main>
+
+      {/* Bottom Navigation Mobile - Concierge experience */}
+      <div className="lg:hidden fixed bottom-6 left-6 right-6 h-16 bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-[2rem] z-50 flex items-center justify-around px-4 shadow-2xl">
+        <NavLink to="/client" end className={({ isActive }) => cn("flex flex-col items-center gap-1 transition-all", isActive ? "text-primary scale-110" : "text-white/40")}>
+          <Home size={20} strokeWidth={2.5} />
+          <span className="text-[8px] font-black uppercase tracking-widest">Início</span>
+        </NavLink>
+        <NavLink to="/client/notifications" className={({ isActive }) => cn("flex flex-col items-center gap-1 transition-all relative", isActive ? "text-primary scale-110" : "text-white/40")}>
+          <Bell size={20} strokeWidth={2.5} />
+          {unreadCount > 0 && <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full" />}
+          <span className="text-[8px] font-black uppercase tracking-widest">Radar</span>
+        </NavLink>
+        <div className="p-3 bg-primary rounded-2xl shadow-lg shadow-primary/40 -mt-10 border-4 border-white">
+           <ClientCommandPalette />
+        </div>
+        <NavLink to="/client/support" className={({ isActive }) => cn("flex flex-col items-center gap-1 transition-all", isActive ? "text-primary scale-110" : "text-white/40")}>
+          <MessageSquare size={20} strokeWidth={2.5} />
+          <span className="text-[8px] font-black uppercase tracking-widest">Suporte</span>
+        </NavLink>
+        <NavLink to="/client/profile" className={({ isActive }) => cn("flex flex-col items-center gap-1 transition-all", isActive ? "text-primary scale-110" : "text-white/40")}>
+          <User size={20} strokeWidth={2.5} />
+          <span className="text-[8px] font-black uppercase tracking-widest">Perfil</span>
+        </NavLink>
+      </div>
 
       {/* Overlay Mobile */}
       {sidebarOpen && (
