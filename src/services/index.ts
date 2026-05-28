@@ -22,6 +22,8 @@ export * from './operations/SupportTicketService';
 export * from './operations/TicketMessageService';
 export * from './operations/NonConformityService';
 export * from './operations/QualityService';
+export * from './operations/MaintenanceScheduleService';
+export * from './operations/FinancialService';
 
 
 
