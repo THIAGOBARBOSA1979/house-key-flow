@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Breadcrumbs } from "./Breadcrumbs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClientStage, useNotifications } from "@/hooks";
 import { useCompany } from "@/hooks/core/useCompany";
@@ -169,6 +170,9 @@ const ClientLayout = () => {
       {/* Main Content */}
       <main className="lg:ml-80 min-h-screen">
         <div className="p-layout-gap sm:p-layout-gap-lg lg:p-layout-gap-xl max-w-[1600px] mx-auto overflow-x-hidden">
+          <div className="mb-8">
+            <Breadcrumbs />
+          </div>
           <Outlet />
         </div>
       </main>
