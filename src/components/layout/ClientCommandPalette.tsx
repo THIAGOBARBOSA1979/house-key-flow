@@ -1,7 +1,7 @@
 
 import * as React from "react";
 import {
-  Calculator,
+  Building2,
   Calendar,
   CreditCard,
   FileText,
@@ -72,7 +72,7 @@ export function ClientCommandPalette() {
               <span>Painel de Controle</span>
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => navigate("/client/properties"))}>
-              <Building className="mr-2 h-4 w-4" />
+              <Building2 className="mr-2 h-4 w-4" />
               <span>Minha Unidade</span>
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => navigate("/client/financial"))}>
