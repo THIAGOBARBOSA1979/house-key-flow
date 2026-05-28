@@ -66,15 +66,6 @@ const Financial = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'paid': return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
-      case 'pending': return <Clock className="h-4 w-4 text-amber-500" />;
-      case 'overdue': return <AlertCircle className="h-4 w-4 text-destructive" />;
-      default: return null;
-    }
-  };
-
   return (
     <div className="container-responsive py-8 space-y-12 animate-in fade-in duration-slow">
       {/* Header */}
@@ -164,98 +155,143 @@ const Financial = () => {
 
         {/* Right: Invoices Table */}
         <div className="lg:col-span-2 space-y-8">
-          <Tabs defaultValue="all" className="w-full">
-            <div className="flex items-center justify-between mb-8">
-              <TabsList className="bg-muted/50 rounded-2xl h-12 p-1 border border-border/10">
-                <TabsTrigger value="all" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Todos</TabsTrigger>
-                <TabsTrigger value="pending" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Pendentes</TabsTrigger>
-                <TabsTrigger value="paid" className="rounded-xl px-6 font-black uppercase text-[10px] tracking-widest">Pagos</TabsTrigger>
-              </TabsList>
-              
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <History size={16} />
-                <span className="text-[10px] font-black uppercase tracking-widest">Histórico Completo</span>
-              </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-[2rem] border border-border/5 shadow-sm">
+            <div className="flex items-center gap-2">
+               <History size={16} className="text-primary" />
+               <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Gestão de Títulos</span>
             </div>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setShowStatement(!showStatement)}
+              className="rounded-xl font-black uppercase text-[9px] tracking-widest h-11 px-6 hover:bg-primary/5 text-primary"
+            >
+              {showStatement ? <Receipt className="mr-2 h-3 w-3" /> : <History className="mr-2 h-3 w-3" />} 
+              {showStatement ? "Ver Faturas" : "Ver Extrato Detalhado"}
+            </Button>
+          </div>
 
-            <TabsContent value="all" className="mt-0 space-y-4">
-              {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-20 gap-4">
-                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Sincronizando registros...</p>
-                </div>
-              ) : invoices.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 border-2 border-dashed border-border/20 rounded-[2.5rem] bg-white">
-                  <div className="p-6 bg-muted/30 rounded-full text-muted-foreground">
-                    <FileText size={40} />
+          {!showStatement ? (
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="bg-muted/50 rounded-2xl h-11 p-1 mb-8">
+                <TabsTrigger value="all" className="rounded-xl px-6 font-black uppercase text-[9px] tracking-widest">Todos</TabsTrigger>
+                <TabsTrigger value="pending" className="rounded-xl px-6 font-black uppercase text-[9px] tracking-widest">Pendentes</TabsTrigger>
+                <TabsTrigger value="paid" className="rounded-xl px-6 font-black uppercase text-[9px] tracking-widest">Pagos</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="all" className="mt-0 space-y-4">
+                {isLoading ? (
+                  <div className="flex flex-col items-center justify-center py-20 gap-4">
+                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Sincronizando registros...</p>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-black tracking-tighter">Nenhum registro encontrado</h3>
-                    <p className="text-sm text-muted-foreground font-medium max-w-[280px] mx-auto mt-2">Você não possui faturas ou boletos lançados no momento.</p>
+                ) : invoices.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 border-2 border-dashed border-border/20 rounded-[2.5rem] bg-white">
+                    <div className="p-6 bg-muted/30 rounded-full text-muted-foreground">
+                      <FileText size={40} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black tracking-tighter">Nenhum registro encontrado</h3>
+                      <p className="text-sm text-muted-foreground font-medium max-w-[280px] mx-auto mt-2">Você não possui faturas ou boletos lançados no momento.</p>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {invoices.map((invoice) => (
-                    <Card key={invoice.id} className="rounded-3xl border border-border/5 hover:border-primary/20 hover:shadow-xl transition-all duration-300 bg-white group">
-                      <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <div className="flex items-center gap-6">
-                          <div className={cn(
-                            "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
-                            invoice.status === 'paid' ? "bg-emerald-50 text-emerald-600" : "bg-primary/5 text-primary"
-                          )}>
-                            <Receipt size={24} />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-3 mb-1">
-                              <h4 className="font-black text-lg tracking-tight group-hover:text-primary transition-colors">{invoice.title}</h4>
-                              {getStatusBadge(invoice.status)}
+                ) : (
+                  <div className="space-y-4">
+                    {invoices.map((invoice) => (
+                      <Card key={invoice.id} className="rounded-3xl border border-border/5 hover:border-primary/20 hover:shadow-xl transition-all duration-300 bg-white group">
+                        <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                          <div className="flex items-center gap-6">
+                            <div className={cn(
+                              "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                              invoice.status === 'paid' ? "bg-emerald-50 text-emerald-600" : "bg-primary/5 text-primary"
+                            )}>
+                              <Receipt size={24} />
                             </div>
-                            <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                              <span className="flex items-center gap-1.5"><Clock size={12} /> Vencimento: {format(new Date(invoice.due_date), 'dd/MM/yyyy')}</span>
-                              <span className="flex items-center gap-1.5">ID: {invoice.id.substring(0,8)}</span>
+                            <div>
+                              <div className="flex items-center gap-3 mb-1">
+                                <h4 className="font-black text-lg tracking-tight group-hover:text-primary transition-colors">{invoice.title}</h4>
+                                {getStatusBadge(invoice.status)}
+                              </div>
+                              <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                <span className="flex items-center gap-1.5"><Clock size={12} /> Vencimento: {format(new Date(invoice.due_date), 'dd/MM/yyyy')}</span>
+                                <span className="flex items-center gap-1.5">ID: {invoice.id.substring(0,8)}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between md:justify-end gap-4 sm:gap-8 pt-4 md:pt-0 border-t md:border-t-0 border-border/5">
-                          <div className="text-right">
-                            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1">Valor Total</p>
-                            <p className="text-xl font-black tracking-tighter">R$ {invoice.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                             {invoice.status !== 'paid' && invoice.pix_code && (
-                               <Button 
-                                 variant="outline" 
-                                 size="icon" 
-                                 className="rounded-xl h-12 w-12 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
-                                 onClick={() => handleCopy(invoice.pix_code!, invoice.id)}
-                               >
-                                 {copiedId === invoice.id ? <Check size={20} /> : <Copy size={20} />}
+                          
+                          <div className="flex items-center justify-between md:justify-end gap-4 sm:gap-8 pt-4 md:pt-0 border-t md:border-t-0 border-border/5">
+                            <div className="text-right">
+                              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1">Valor Total</p>
+                              <p className="text-xl font-black tracking-tighter">R$ {invoice.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                               {invoice.status !== 'paid' && invoice.pix_code && (
+                                 <Button 
+                                   variant="outline" 
+                                   size="icon" 
+                                   className="rounded-xl h-12 w-12 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
+                                   onClick={() => handleCopy(invoice.pix_code!, invoice.id)}
+                                 >
+                                   {copiedId === invoice.id ? <Check size={20} /> : <Copy size={20} />}
+                                 </Button>
+                               )}
+                               <Button variant="ghost" size="icon" className="rounded-xl h-12 w-12 hover:bg-primary/5 text-primary">
+                                 <Download size={20} />
                                </Button>
-                             )}
-                             <Button variant="ghost" size="icon" className="rounded-xl h-12 w-12 hover:bg-primary/5 text-primary">
-                               <Download size={20} />
-                             </Button>
-                             {invoice.status !== 'paid' && (
-                               <Button className="rounded-xl h-12 font-black uppercase tracking-widest text-[10px] px-6 shadow-lg shadow-primary/20">Pagar</Button>
-                             )}
+                               {invoice.status !== 'paid' && (
+                                 <Button className="rounded-xl h-12 font-black uppercase tracking-widest text-[10px] px-6 shadow-lg shadow-primary/20">Pagar</Button>
+                               )}
+                            </div>
                           </div>
                         </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+              <TabsContent value="pending" className="mt-0 space-y-4">
+                {invoices.filter(i => i.status === 'pending').map((invoice) => (
+                  <Card key={invoice.id} className="rounded-3xl border border-border/5 bg-white p-6">
+                    {/* Simplified for brevity, same structure as above */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                         <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-primary"><Receipt size={20} /></div>
+                         <div>
+                           <p className="font-black">{invoice.title}</p>
+                           <p className="text-[10px] font-black uppercase text-muted-foreground">Vencimento: {format(new Date(invoice.due_date), 'dd/MM/yyyy')}</p>
+                         </div>
                       </div>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
+                      <p className="text-lg font-black text-primary">R$ {invoice.amount.toLocaleString('pt-BR')}</p>
+                    </div>
+                  </Card>
+                ))}
+              </TabsContent>
+              <TabsContent value="paid" className="mt-0 space-y-4">
+                {invoices.filter(i => i.status === 'paid').map((invoice) => (
+                  <Card key={invoice.id} className="rounded-3xl border border-border/5 bg-white p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                         <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600"><CheckCircle2 size={20} /></div>
+                         <div>
+                           <p className="font-black">{invoice.title}</p>
+                           <p className="text-[10px] font-black uppercase text-muted-foreground">Pago em: {format(new Date(invoice.due_date), 'dd/MM/yyyy')}</p>
+                         </div>
+                      </div>
+                      <p className="text-lg font-black text-emerald-600">R$ {invoice.amount.toLocaleString('pt-BR')}</p>
+                    </div>
+                  </Card>
+                ))}
+              </TabsContent>
+            </Tabs>
           ) : (
             <Card className="rounded-[2.5rem] border-none shadow-xl bg-white overflow-hidden animate-in slide-in-from-right-4 duration-500">
               <div className="p-10 border-b border-border/5 bg-muted/20">
                 <h3 className="text-xl font-black tracking-tighter">Extrato Consolidado</h3>
                 <p className="text-sm text-muted-foreground font-medium">Posição financeira detalhada da unidade</p>
               </div>
-              <div className="p-0">
-                <table className="w-full text-left">
+              <div className="p-0 overflow-x-auto">
+                <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-muted/30 border-b border-border/5">
                       <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Data</th>
@@ -272,7 +308,7 @@ const Financial = () => {
                            <p className="text-sm font-black">{item.title}</p>
                            <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mt-1">Ref: {item.id.substring(0,8)}</p>
                         </td>
-                        <td className="px-8 py-6 text-sm font-black text-right">R$ {item.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                        <td className="px-8 py-6 text-sm font-black text-right whitespace-nowrap">R$ {item.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
                         <td className="px-8 py-6 text-center">
                            <div className="flex justify-center">
                              {getStatusBadge(item.status)}
