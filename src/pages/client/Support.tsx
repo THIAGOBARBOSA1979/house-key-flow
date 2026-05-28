@@ -83,25 +83,30 @@ const Support = () => {
   [tickets, selectedTicketId]);
 
   return (
-    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
+    <div className="container-responsive py-4 md:py-8 space-y-8 md:space-y-12 pb-24 md:pb-6 animate-in fade-in duration-slow">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
              <span className="w-2.5 h-2.5 rounded-full bg-primary" />
              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Suporte ao Proprietário • Central de SLA</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground flex items-center gap-3">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground flex items-center gap-3">
             Garantia & Suporte <span className="text-primary">.</span>
           </h1>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           <Badge className="bg-primary/5 text-primary border-primary/10 font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-xl">
             SLA de Resposta: 24h
+          </Badge>
+          <Badge className="bg-emerald-500/10 text-emerald-600 border-none font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-xl">
+            WhatsApp Ativo
           </Badge>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-layout-gap">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Form & History */}
+        <div className="lg:col-span-8 space-y-8">
         <Card className="shadow-2xl border-none bg-card/60 backdrop-blur-md rounded-[2.5rem]">
           <CardHeader className="p-10 pb-6">
             <CardTitle className="text-2xl font-black tracking-tight">Nova Solicitação</CardTitle>
@@ -202,7 +207,54 @@ const Support = () => {
               </div>
             )}
           </CardContent>
-        </Card>
+        </div>
+
+        {/* Right Column: FAQ & Quick Help */}
+        <div className="lg:col-span-4 space-y-8">
+          <Card className="rounded-[2.5rem] border-none shadow-xl bg-slate-900 text-white p-8 overflow-hidden relative group">
+            <div className="absolute right-[-10%] top-[-10%] opacity-10 group-hover:rotate-12 transition-transform duration-1000">
+               <HelpCircle size={200} />
+            </div>
+            <CardHeader className="p-0 mb-6">
+              <CardTitle className="text-xl font-black tracking-tighter">Dúvidas Frequentes</CardTitle>
+              <CardDescription className="text-slate-400 font-bold">Respostas instantâneas para você</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+               <div className="relative mb-6">
+                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                 <Input 
+                   placeholder="Pesquisar na base de conhecimento..." 
+                   className="pl-11 bg-white/5 border-white/10 rounded-xl text-white placeholder:text-slate-500 h-12"
+                 />
+               </div>
+               <ClientFAQ />
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-[2.5rem] border-none shadow-xl bg-white p-8 space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-primary/5 rounded-2xl text-primary">
+                <BookOpen size={20} strokeWidth={3} />
+              </div>
+              <h3 className="text-lg font-black tracking-tighter">Manuais Técnicos</h3>
+            </div>
+            <div className="space-y-4">
+              {[
+                { title: "Manual do Proprietário", size: "4.5 MB" },
+                { title: "Guia de Garantia ABNT", size: "1.2 MB" },
+                { title: "Normas de Reforma", size: "2.1 MB" }
+              ].map((manual, i) => (
+                <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-muted/30 hover:bg-primary/5 transition-all group cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <FileText size={16} className="text-muted-foreground group-hover:text-primary" />
+                    <span className="text-xs font-bold">{manual.title}</span>
+                  </div>
+                  <Download size={14} className="text-muted-foreground group-hover:text-primary" />
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
       </div>
 
       <Dialog open={!!selectedTicketId} onOpenChange={(open) => !open && setSelectedTicketId(null)}>
