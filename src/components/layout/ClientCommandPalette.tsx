@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/command";
 import { useNavigate } from "react-router-dom";
 
-export function ClientCommandPalette() {
+export function ClientCommandPalette({ trigger }: { trigger?: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
@@ -52,16 +52,22 @@ export function ClientCommandPalette() {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-muted-foreground bg-muted/30 hover:bg-muted/50 border border-border/10 rounded-xl transition-all w-full sm:w-64"
-      >
-        <Search className="h-3.5 w-3.5" />
-        <span className="flex-1 text-left">Busca inteligente...</span>
-        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
-        </kbd>
-      </button>
+      {trigger ? (
+        <div onClick={() => setOpen(true)} className="cursor-pointer">
+          {trigger}
+        </div>
+      ) : (
+        <button
+          onClick={() => setOpen(true)}
+          className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-muted-foreground bg-muted/30 hover:bg-muted/50 border border-border/10 rounded-xl transition-all w-full sm:w-64 pointer-events-auto"
+        >
+          <Search className="h-3.5 w-3.5" />
+          <span className="flex-1 text-left">Busca inteligente...</span>
+          <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+            <span className="text-xs">⌘</span>K
+          </kbd>
+        </button>
+      )}
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="O que você está procurando?" />
         <CommandList className="max-h-[400px]">
