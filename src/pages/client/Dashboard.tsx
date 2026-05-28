@@ -69,13 +69,50 @@ const Dashboard = () => {
     };
   }, [user, profile, propertyData]);
 
-  const timeline: TimelineStep[] = [
-    { id: '1', title: 'Contrato', description: 'Assinatura homologada.', date: '10/06/23', status: 'completed' },
-    { id: '2', title: 'Obras', description: 'Acompanhamento estrutural.', date: 'Em curso', status: 'completed' },
-    { id: '3', title: 'Vistoria', description: 'Checklist ABNT da unidade.', status: stage === 'inspection_enabled' ? 'current' : (stage === 'warranty_enabled' ? 'completed' : 'pending') },
-    { id: '4', title: 'Chaves', description: 'Recebimento oficial.', status: stage === 'warranty_enabled' ? 'completed' : 'pending' },
-    { id: '5', title: 'Garantia', description: 'Assistência técnica premium.', status: stage === 'warranty_enabled' ? 'current' : 'pending' },
-  ];
+  const timeline: TimelineStep[] = useMemo(() => {
+    const history = profile?.stageHistory || [];
+    const getStageDate = (targetStage: string) => {
+      const entry = history.find(h => h.toStage === targetStage);
+      return entry ? new Date(entry.changedAt).toLocaleDateString('pt-BR') : undefined;
+    };
+
+    return [
+      { 
+        id: '1', 
+        title: 'Contrato', 
+        description: 'Assinatura homologada.', 
+        date: getStageDate('registered') || '10/06/23', 
+        status: 'completed' 
+      },
+      { 
+        id: '2', 
+        title: 'Obras', 
+        description: 'Acompanhamento estrutural.', 
+        date: 'Em curso', 
+        status: (stage === 'registered' || stage === 'lead') ? 'current' : 'completed' 
+      },
+      { 
+        id: '3', 
+        title: 'Vistoria', 
+        description: 'Checklist ABNT da unidade.', 
+        date: getStageDate('inspection_enabled'),
+        status: stage === 'inspection_enabled' ? 'current' : (stage === 'warranty_enabled' ? 'completed' : 'pending') 
+      },
+      { 
+        id: '4', 
+        title: 'Chaves', 
+        description: 'Recebimento oficial.', 
+        date: getStageDate('warranty_enabled'),
+        status: stage === 'warranty_enabled' ? 'completed' : 'pending' 
+      },
+      { 
+        id: '5', 
+        title: 'Garantia', 
+        description: 'Assistência técnica premium.', 
+        status: stage === 'warranty_enabled' ? 'current' : 'pending' 
+      },
+    ];
+  }, [profile, stage]);
 
   const constructionUpdates = useMemo(() => {
     if (serviceUpdates && serviceUpdates.length > 0) {

@@ -14,7 +14,9 @@ import {
   Wallet,
   CheckCircle2,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Copy,
+  Check
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,15 @@ const Financial = () => {
   const { user } = useAuth();
   const [invoices, setInvoices] = useState<ClientInvoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleCopy = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast({ title: "Copiado", description: "Código copiado para a área de transferência." });
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   useEffect(() => {
     if (user?.id) {
@@ -205,17 +216,27 @@ const Financial = () => {
                           </div>
                         </div>
                         
-                        <div className="flex items-center justify-between md:justify-end gap-8 pt-4 md:pt-0 border-t md:border-t-0 border-border/5">
+                        <div className="flex items-center justify-between md:justify-end gap-4 sm:gap-8 pt-4 md:pt-0 border-t md:border-t-0 border-border/5">
                           <div className="text-right">
                             <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1">Valor Total</p>
                             <p className="text-xl font-black tracking-tighter">R$ {invoice.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                           </div>
                           <div className="flex items-center gap-2">
+                             {invoice.status !== 'paid' && invoice.pix_code && (
+                               <Button 
+                                 variant="outline" 
+                                 size="icon" 
+                                 className="rounded-xl h-12 w-12 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all"
+                                 onClick={() => handleCopy(invoice.pix_code!, invoice.id)}
+                               >
+                                 {copiedId === invoice.id ? <Check size={20} /> : <Copy size={20} />}
+                               </Button>
+                             )}
                              <Button variant="ghost" size="icon" className="rounded-xl h-12 w-12 hover:bg-primary/5 text-primary">
                                <Download size={20} />
                              </Button>
                              {invoice.status !== 'paid' && (
-                               <Button className="rounded-xl h-12 font-black uppercase tracking-widest text-[10px] px-6">Pagar</Button>
+                               <Button className="rounded-xl h-12 font-black uppercase tracking-widest text-[10px] px-6 shadow-lg shadow-primary/20">Pagar</Button>
                              )}
                           </div>
                         </div>
