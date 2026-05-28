@@ -19,6 +19,7 @@ import { useWarrantyClaims } from "@/hooks/warranty/useWarrantyClaims";
 import { WarrantyGuide } from "@/components/warranty/client/WarrantyGuide";
 import { WarrantyStatus } from "@/components/warranty/client/WarrantyStatus";
 import { NewWarrantyRequestDialog } from "@/components/warranty/client/NewWarrantyRequestDialog";
+import { WarrantyEmergencyBanner } from "@/components/warranty/client/WarrantyEmergencyBanner";
 import { SatisfactionSurvey } from "@/components/shared/SatisfactionSurvey";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -266,11 +267,14 @@ const ClientWarranty = () => {
                 )}
               </div>
             ) : (
-              <Card className="h-full min-h-[400px] flex flex-col items-center justify-center p-12 text-center border-dashed border-2 border-muted-foreground/10 bg-muted/5 rounded-[3rem]">
-                <ShieldCheck className="h-20 w-20 text-muted-foreground/10 mb-6" />
-                <h3 className="text-2xl font-black text-muted-foreground/60 tracking-tight">Selecione um Protocolo</h3>
-                <p className="text-muted-foreground/40 max-w-xs mx-auto mt-2 font-bold text-sm">Escolha uma solicitação na lista lateral para realizar o acompanhamento técnico em tempo real.</p>
-              </Card>
+              <div className="space-y-8">
+                <WarrantyEmergencyBanner />
+                <Card className="h-full min-h-[400px] flex flex-col items-center justify-center p-12 text-center border-dashed border-2 border-muted-foreground/10 bg-muted/5 rounded-[3rem]">
+                  <ShieldCheck className="h-20 w-20 text-muted-foreground/10 mb-6" />
+                  <h3 className="text-2xl font-black text-muted-foreground/60 tracking-tight">Selecione um Protocolo</h3>
+                  <p className="text-muted-foreground/40 max-w-xs mx-auto mt-2 font-bold text-sm">Escolha uma solicitação na lista lateral para realizar o acompanhamento técnico em tempo real.</p>
+                </Card>
+              </div>
             )}
           </div>
         </div>

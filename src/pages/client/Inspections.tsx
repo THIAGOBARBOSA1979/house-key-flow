@@ -121,7 +121,7 @@ export default function ClientInspections() {
              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Controle de Qualidade • ABNT</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter leading-tight">
             Vistorias & Entrega <span className="text-primary">.</span>
           </h1>
         </div>
@@ -207,11 +207,11 @@ export default function ClientInspections() {
                   </Badge>
                 </div>
               </div>
-              <CardHeader className="relative -mt-20 px-8 sm:px-12 pb-6">
-                <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-                  <div className="flex items-center gap-8">
-                    <div className="p-6 bg-white rounded-[2.5rem] shadow-2xl border border-border/50 text-primary group-hover:scale-110 group-hover:rotate-3 transition-transform duration-700">
-                      <ClipboardCheck className="h-12 w-12" strokeWidth={2.5} />
+              <CardHeader className="relative -mt-16 sm:-mt-20 px-6 sm:px-12 pb-6">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+                  <div className="flex items-center gap-6 sm:gap-8">
+                    <div className="p-4 sm:p-6 bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-border/50 text-primary group-hover:scale-110 group-hover:rotate-3 transition-transform duration-700 shrink-0">
+                      <ClipboardCheck className="h-8 w-8 sm:h-12 sm:w-12" strokeWidth={2.5} />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -219,17 +219,17 @@ export default function ClientInspections() {
                           status={inspection.status === 'complete' ? 'complete' : (inspection.status === 'confirmed' ? 'progress' : 'pending')} 
                           label={inspection.status === 'complete' ? 'Protocolo Concluído' : (inspection.status === 'confirmed' ? 'Visita Confirmada' : 'Aguardando')}
                         />
-                        <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border-primary/10 h-6 px-3">{inspection.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica ABNT'}</Badge>
+                        <Badge variant="outline" className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest bg-primary/5 text-primary border-primary/10 h-6 px-3">{inspection.type === 'keyDelivery' ? 'Entrega de Chaves' : 'Vistoria Técnica ABNT'}</Badge>
                       </div>
-                      <CardTitle className="text-3xl font-black tracking-tight leading-tight">{inspection.title} <span className="text-primary">•</span> {inspection.unit}</CardTitle>
-                      <CardDescription className="font-bold flex items-center gap-2 mt-2 text-muted-foreground/80">
-                        <MapPin size={16} className="text-primary" /> {inspection.property}
+                      <CardTitle className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">{inspection.title} <span className="text-primary lg:inline hidden">•</span> <br className="lg:hidden" /> {inspection.unit}</CardTitle>
+                      <CardDescription className="font-bold flex items-center gap-2 mt-2 text-muted-foreground/80 text-sm">
+                        <MapPin size={14} className="text-primary" /> <span className="truncate max-w-[200px] sm:max-w-none">{inspection.property}</span>
                       </CardDescription>
                     </div>
                   </div>
-                  <div className="bg-primary text-white p-6 rounded-[2rem] shadow-xl shadow-primary/20 min-w-[160px] text-center transform group-hover:translate-y-[-5px] transition-transform duration-500">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">Agenda Técnica</p>
-                    <p className="text-2xl font-black tracking-tighter">{safeFormat(inspection.scheduledDate, "dd/MM/yyyy")}</p>
+                  <div className="bg-primary text-white p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] shadow-xl shadow-primary/20 w-full lg:min-w-[160px] lg:w-auto text-center transform group-hover:translate-y-[-5px] transition-transform duration-500">
+                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">Agenda Técnica</p>
+                    <p className="text-xl sm:text-2xl font-black tracking-tighter">{safeFormat(inspection.scheduledDate, "dd/MM/yyyy")}</p>
                     <div className="flex items-center justify-center gap-1.5 mt-1 bg-white/20 rounded-full py-1">
                        <Clock size={12} strokeWidth={3} />
                        <p className="text-xs font-black">{inspection.time}</p>
@@ -258,12 +258,30 @@ export default function ClientInspections() {
                       <Button variant="outline" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 border-2 border-primary/10 hover:border-primary hover:bg-primary/5 transition-all shadow-sm" onClick={handleViewPdf}>
                         <FileText size={16} className="text-primary mr-2" strokeWidth={2.5} /> Laudo Técnico PDF
                       </Button>
-                      <Button variant="ghost" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20">
-                        <MessageSquare size={16} className="mr-2" strokeWidth={2.5} /> Consultar Suporte
+                      <Button variant="ghost" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-12 px-6 text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20" onClick={() => window.location.href = '/client/support'}>
+                        <MessageSquare size={16} className="mr-2" strokeWidth={2.5} /> Reportar Pendência
                       </Button>
                     </div>
                   </div>
                 </div>
+
+                {inspection.status === 'confirmed' && (
+                  <div className="bg-amber-50 border-2 border-amber-100 rounded-[2.5rem] p-8 mb-10 flex flex-col sm:flex-row items-center justify-between gap-8 animate-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-center gap-6">
+                      <div className="p-4 bg-amber-500 text-white rounded-2xl shadow-lg shadow-amber-500/20">
+                         <Clock size={28} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <h5 className="text-xl font-black tracking-tight text-amber-900 leading-tight">Prepare-se para sua Vistoria</h5>
+                        <p className="text-sm text-amber-700/80 font-bold leading-relaxed max-w-md">Confirme sua presença e revise os manuais técnicos para uma homologação eficiente.</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4 w-full sm:w-auto">
+                      <Button variant="outline" className="flex-1 sm:flex-initial border-amber-200 text-amber-700 hover:bg-amber-100 rounded-xl font-black uppercase tracking-widest text-[10px] h-12 px-8">Solicitar Reagendamento</Button>
+                      <Button className="flex-1 sm:flex-initial bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-black uppercase tracking-widest text-[10px] h-12 px-10 shadow-lg shadow-amber-600/20">Confirmar Presença</Button>
+                    </div>
+                  </div>
+                )}
 
                 {inspection.status === 'complete' && !inspection.signed && (
                   <div className="bg-gradient-to-br from-primary via-indigo-600 to-indigo-800 border-none rounded-[2.5rem] p-8 sm:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 animate-in zoom-in-95 duration-700 shadow-2xl shadow-primary/20 relative overflow-hidden group/sign">

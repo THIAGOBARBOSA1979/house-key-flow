@@ -83,7 +83,7 @@ const Financial = () => {
              <span className="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" />
              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Gestão Financeira • Unidade {user?.id?.substring(0,4)}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-foreground">
             Meu <span className="text-primary">Financeiro</span>
           </h1>
         </div>
