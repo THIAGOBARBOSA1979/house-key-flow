@@ -27,7 +27,8 @@ import {
   Layers,
   Zap,
   Droplets,
-  Download
+  Download,
+  Star
 } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
@@ -130,7 +131,7 @@ const ClientProperties = () => {
 
   return (
 
-    <div className="container-responsive py-layout-gap space-y-layout-gap pb-20 md:pb-6 animate-in fade-in duration-slow">
+    <div className="container-responsive py-layout-gap space-y-layout-gap pb-24 md:pb-6 animate-in fade-in duration-slow">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div className="space-y-2">
@@ -172,8 +173,8 @@ const ClientProperties = () => {
                 <Badge className="bg-primary border-none font-black text-[10px] uppercase mb-6 px-4 py-1.5 shadow-xl shadow-primary/20 tracking-[0.2em]">Imóvel A2 Exclusive</Badge>
                 <h2 className="text-5xl font-black tracking-tighter leading-[0.9] mb-6">{propertyData?.name || "Edifício Aurora"}</h2>
                 <div className="flex items-center gap-4 text-white/90 font-bold bg-white/10 backdrop-blur-xl w-fit px-6 py-3 rounded-2xl border border-white/20 shadow-2xl">
-                  <MapPin size={20} className="text-primary" strokeWidth={3} />
-                  <span className="text-sm tracking-wide">{propertyDetails.address}</span>
+                   <MapPin size={20} className="text-primary" strokeWidth={3} />
+                   <span className="text-sm tracking-wide">{propertyDetails.address}</span>
                 </div>
              </div>
           </div>
@@ -206,7 +207,7 @@ const ClientProperties = () => {
                   </div>
                </div>
                <Button className="font-black uppercase tracking-widest text-[11px] h-14 px-10 rounded-2xl shadow-xl shadow-primary/20 hover:translate-y-[-2px] transition-all active:scale-95">
-                 <Download className="mr-2 h-4 w-4" /> Baixar Dossier Completo
+                 <Download className="mr-2 h-4 w-4" /> Baixar Dossier
                </Button>
             </div>
           </div>
@@ -222,7 +223,7 @@ const ClientProperties = () => {
           <TabsTrigger value="history" className="rounded-xl py-4 font-black uppercase text-[10px] tracking-widest data-[state=active]:shadow-lg">Histórico</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="specs" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <TabsContent value="specs" className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-layout-gap">
             <Card className="border-none shadow-md bg-white p-8 space-y-6">
                <div className="p-3 bg-primary/5 rounded-2xl w-fit">
@@ -284,61 +285,94 @@ const ClientProperties = () => {
                </ul>
             </Card>
           </div>
+
+          <Card className="rounded-[2.5rem] border-none shadow-xl bg-gradient-to-br from-slate-50 to-white p-10 overflow-hidden relative group">
+            <div className="flex flex-col md:flex-row gap-10 items-center">
+              <div className="md:w-1/3 text-center md:text-left space-y-4">
+                 <Badge className="bg-primary/10 text-primary border-none font-black uppercase tracking-widest text-[10px] px-4 py-1.5 rounded-xl">Certificação A2</Badge>
+                 <h3 className="text-3xl font-black tracking-tighter">Qualidade de Materiais</h3>
+                 <p className="text-muted-foreground text-sm font-medium leading-relaxed">
+                   Todos os materiais aplicados na sua unidade seguem os mais rigorosos padrões de qualidade e sustentabilidade do mercado.
+                 </p>
+                 <Button variant="outline" className="rounded-xl font-black uppercase tracking-widest text-[10px] h-12 px-8 border-2">Ver Certificados</Button>
+              </div>
+              <div className="md:w-2/3 grid grid-cols-2 sm:grid-cols-3 gap-4 w-full">
+                {[
+                  { name: "Cimento", brand: "Votoran Premium", rating: 5 },
+                  { name: "Piso", brand: "Portobello 90x90", rating: 5 },
+                  { name: "Metais", brand: "Docol Linha Luxo", rating: 5 },
+                  { name: "Fios", brand: "Pirelli Antichama", rating: 5 },
+                  { name: "Vidros", brand: "Cebrace Térmico", rating: 4 },
+                  { name: "Tintas", brand: "Suvinil Proteção", rating: 5 }
+                ].map((mat, i) => (
+                  <div key={i} className="p-5 bg-white rounded-2xl border border-border/5 shadow-sm hover:shadow-md transition-all">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1">{mat.name}</p>
+                    <p className="text-xs font-black truncate">{mat.brand}</p>
+                    <div className="flex gap-0.5 mt-2">
+                      {Array.from({length: 5}).map((_, j) => (
+                        <div key={j} className={cn("w-1.5 h-1.5 rounded-full", j < mat.rating ? "bg-primary" : "bg-muted")} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
         </TabsContent>
 
         <TabsContent value="documents" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <Card className="border-none shadow-md overflow-hidden bg-white">
-             <CardHeader className="bg-muted/30 pb-6 border-b">
-               <CardTitle className="text-xl font-black tracking-tight">Arquivos da Unidade</CardTitle>
+           <Card className="border-none shadow-md overflow-hidden bg-white rounded-[2.5rem]">
+             <CardHeader className="bg-muted/30 pb-6 border-b p-10">
+               <CardTitle className="text-2xl font-black tracking-tight">Arquivos da Unidade</CardTitle>
                <CardDescription className="font-medium">Documentos oficiais e técnicos para download.</CardDescription>
              </CardHeader>
              <CardContent className="p-0">
                 <div className="divide-y">
-                  {propertyDetails.documents.map((doc) => (
-                    <div key={doc.id} className="flex items-center justify-between p-6 hover:bg-muted/30 transition-all group">
-                       <div className="flex items-center gap-4">
-                          <div className="p-3 bg-primary/5 text-primary rounded-xl">
-                             <FileText className="h-6 w-6" />
-                          </div>
-                          <div>
-                             <h4 className="font-black text-sm group-hover:text-primary transition-colors">{doc.title}</h4>
-                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{doc.size}</p>
-                          </div>
-                       </div>
-                       <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm" className="font-black uppercase tracking-widest text-[10px] h-10 px-4 rounded-xl hover:bg-primary/10 text-primary" onClick={() => handleViewDocument(doc.title)}>
-                            Visualizar
-                          </Button>
-                          <Button variant="outline" size="sm" className="font-black uppercase tracking-widest text-[10px] h-10 w-10 p-0 rounded-xl hover:bg-primary hover:text-white transition-all">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                       </div>
-                    </div>
-                  ))}
+                   {propertyDetails.documents.map((doc) => (
+                     <div key={doc.id} className="flex items-center justify-between p-8 hover:bg-muted/30 transition-all group">
+                        <div className="flex items-center gap-6">
+                           <div className="p-4 bg-primary/5 text-primary rounded-2xl">
+                              <FileText className="h-6 w-6" strokeWidth={2.5} />
+                           </div>
+                           <div>
+                              <h4 className="font-black text-base group-hover:text-primary transition-colors">{doc.title}</h4>
+                              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{doc.size} • PDF Digitalizado</p>
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                           <Button variant="ghost" size="sm" className="font-black uppercase tracking-widest text-[10px] h-12 px-6 rounded-xl hover:bg-primary/10 text-primary" onClick={() => handleViewDocument(doc.title)}>
+                             Visualizar
+                           </Button>
+                           <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl hover:bg-primary hover:text-white transition-all border-2">
+                             <Download className="h-4 w-4" strokeWidth={3} />
+                           </Button>
+                        </div>
+                     </div>
+                   ))}
                 </div>
              </CardContent>
            </Card>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-              <Card className="rounded-[2.5rem] border-none shadow-xl bg-slate-900 text-white p-10 relative overflow-hidden group">
+              <Card className="rounded-[3rem] border-none shadow-xl bg-slate-900 text-white p-12 relative overflow-hidden group">
                  <div className="absolute right-[-10%] top-[-10%] opacity-10 group-hover:rotate-12 transition-transform duration-1000">
                     <Building2 size={240} />
                  </div>
-                 <div className="relative z-10 space-y-4">
-                    <Badge className="bg-primary border-none font-black uppercase text-[10px] px-3 py-1 rounded-lg">Status Comunitário</Badge>
-                    <h4 className="text-2xl font-black tracking-tighter">Áreas Comuns & Lazer</h4>
+                 <div className="relative z-10 space-y-6">
+                    <Badge className="bg-primary border-none font-black uppercase text-[10px] px-4 py-1.5 rounded-xl">Status Comunitário</Badge>
+                    <h4 className="text-3xl font-black tracking-tighter">Áreas Comuns & Lazer</h4>
                     <p className="text-slate-400 text-sm font-medium leading-relaxed">
-                       Acompanhe o status de entrega e manutenção dos espaços compartilhados do seu empreendimento.
+                       Acompanhe o status de entrega e manutenção dos espaços compartilhados do seu empreendimento Aurora Exclusive.
                     </p>
-                    <div className="space-y-3 pt-4">
+                    <div className="space-y-4 pt-4">
                        {[
                          { label: "Piscina & Deck", status: "Entregue" },
                          { label: "Espaço Gourmet", status: "Em Manutenção" },
-                         { label: "Academia", status: "Entregue" }
+                         { label: "Academia Premium", status: "Entregue" }
                        ].map((item, i) => (
                          <div key={i} className="flex justify-between items-center text-xs">
-                            <span className="font-bold">{item.label}</span>
-                            <span className={cn("px-2 py-0.5 rounded-md font-black uppercase text-[9px]", item.status === 'Entregue' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400')}>
+                            <span className="font-bold text-slate-200">{item.label}</span>
+                            <span className={cn("px-3 py-1 rounded-lg font-black uppercase text-[9px] tracking-widest", item.status === 'Entregue' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400')}>
                                {item.status}
                             </span>
                          </div>
@@ -347,20 +381,30 @@ const ClientProperties = () => {
                  </div>
               </Card>
 
-              <Card className="rounded-[2.5rem] border-none shadow-xl bg-white p-10 space-y-6">
-                 <div className="flex items-center gap-4">
-                    <div className="p-4 bg-primary/5 rounded-2xl text-primary">
-                       <MapPin size={24} />
+              <Card className="rounded-[3rem] border-none shadow-xl bg-white p-12 space-y-8">
+                 <div className="flex items-center gap-5">
+                    <div className="p-4 bg-primary/5 rounded-2xl text-primary shadow-inner">
+                       <MapPin size={24} strokeWidth={3} />
                     </div>
                     <div>
-                       <h4 className="text-xl font-black tracking-tighter">Vizinhança A2</h4>
-                       <p className="text-xs text-muted-foreground font-medium">Conecte-se com seu novo bairro.</p>
+                       <h4 className="text-2xl font-black tracking-tighter">Vizinhança A2</h4>
+                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Localização Privilegiada</p>
                     </div>
                  </div>
                  <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                    Sua unidade está em uma região estratégica com alta valorização e infraestrutura completa.
+                    Sua unidade está em uma região estratégica com alta valorização e infraestrutura completa de serviços e lazer.
                  </p>
-                 <Button variant="outline" className="w-full h-12 rounded-xl font-black uppercase tracking-widest text-[10px] border-2">
+                 <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-muted/30 rounded-2xl">
+                      <p className="text-[9px] font-black uppercase text-muted-foreground mb-1">Pontuação</p>
+                      <p className="text-sm font-black text-primary flex items-center gap-1">9.8/10 <Star size={12} fill="currentColor" /></p>
+                    </div>
+                    <div className="p-4 bg-muted/30 rounded-2xl">
+                      <p className="text-[9px] font-black uppercase text-muted-foreground mb-1">Walk Score</p>
+                      <p className="text-sm font-black text-primary">Excelente</p>
+                    </div>
+                 </div>
+                 <Button variant="outline" className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[11px] border-2 shadow-sm">
                     Ver Guia do Bairro
                  </Button>
               </Card>
@@ -368,61 +412,69 @@ const ClientProperties = () => {
         </TabsContent>
 
         <TabsContent value="warranty" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-layout-gap">
-              <Card className="border-none shadow-md bg-white p-8">
-                <h3 className="text-xl font-black tracking-tight mb-6 flex items-center gap-3">
-                  <ShieldCheck className="h-6 w-6 text-primary" />
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Card className="border-none shadow-xl bg-white p-10 rounded-[3rem]">
+                <h3 className="text-2xl font-black tracking-tight mb-8 flex items-center gap-4">
+                  <div className="p-3 bg-primary/5 rounded-xl text-primary"><ShieldCheck className="h-6 w-6" strokeWidth={2.5} /></div>
                   Prazos de Garantia
                 </h3>
-                <div className="space-y-6">
+                <div className="space-y-8">
                    {[
-                     { label: "Estrutural", value: "5 anos", exp: "Abr/2030" },
-                     { label: "Impermeabilização", value: "3 anos", exp: "Abr/2028" },
-                     { label: "Hidráulica/Elétrica", value: "2 anos", exp: "Abr/2027" },
-                     { label: "Acabamentos", value: "1 ano", exp: "Abr/2026" }
+                     { label: "Estrutural", value: "5 anos", exp: "Abr/2030", progress: 85 },
+                     { label: "Impermeabilização", value: "3 anos", exp: "Abr/2028", progress: 60 },
+                     { label: "Hidráulica/Elétrica", value: "2 anos", exp: "Abr/2027", progress: 40 },
+                     { label: "Acabamentos", value: "1 ano", exp: "Abr/2026", progress: 20 }
                    ].map((item, i) => (
-                     <div key={i} className="flex items-center justify-between">
-                        <div className="space-y-1">
-                           <p className="text-sm font-black">{item.label}</p>
-                           <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Expira em: {item.exp}</p>
+                     <div key={i} className="space-y-3">
+                        <div className="flex items-center justify-between">
+                           <div className="space-y-1">
+                              <p className="text-base font-black">{item.label}</p>
+                              <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Validade: {item.exp}</p>
+                           </div>
+                           <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] px-4 py-1.5 uppercase tracking-widest rounded-xl">{item.value}</Badge>
                         </div>
-                        <Badge className="bg-primary/10 text-primary border-none font-black text-[10px] px-3 py-1 uppercase">{item.value}</Badge>
+                        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                           <div className="h-full bg-primary rounded-full" style={{ width: `${100 - item.progress}%` }} />
+                        </div>
                      </div>
                    ))}
                 </div>
-                <Button className="w-full mt-8 font-black uppercase tracking-widest text-[10px] h-12 rounded-2xl" onClick={() => navigate("/client/warranty")}>
-                   Abrir Solicitação de Garantia
+                <Button className="w-full mt-10 font-black uppercase tracking-widest text-[11px] h-14 rounded-[1.5rem] shadow-xl shadow-primary/20" onClick={() => navigate("/client/warranty")}>
+                   Abrir Solicitação de Assistência
                 </Button>
               </Card>
 
-              <Card className="border-dashed border-2 shadow-none bg-muted/20 flex flex-col items-center justify-center p-8 text-center space-y-4">
-                 <div className="p-4 bg-white rounded-full shadow-sm">
-                   <Info className="h-8 w-8 text-primary" />
+              <Card className="border-2 border-dashed border-primary/20 shadow-none bg-primary/[0.02] rounded-[3rem] flex flex-col items-center justify-center p-12 text-center space-y-6">
+                 <div className="p-6 bg-white rounded-3xl shadow-xl text-primary group-hover:scale-110 transition-transform">
+                   <Info className="h-10 w-10" strokeWidth={2.5} />
                  </div>
-                 <h3 className="font-black tracking-tight">Precisa de Ajuda Técnica?</h3>
-                 <p className="text-sm text-muted-foreground font-medium max-w-[280px]">Consulte o manual do proprietário antes de realizar qualquer alteração na sua unidade.</p>
-                 <Button variant="outline" className="font-black uppercase tracking-widest text-[10px] h-11 px-8 rounded-xl">Ver FAQ do Imóvel</Button>
+                 <h3 className="text-2xl font-black tracking-tight">Precisa de Suporte Técnico?</h3>
+                 <p className="text-base text-muted-foreground font-medium max-w-[320px] leading-relaxed">Consulte o manual do proprietário digitalizado antes de realizar qualquer alteração estrutural na sua unidade.</p>
+                 <div className="flex flex-col sm:flex-row gap-4 w-full">
+                    <Button variant="outline" className="flex-1 font-black uppercase tracking-widest text-[10px] h-12 rounded-xl border-2">FAQ do Imóvel</Button>
+                    <Button variant="outline" className="flex-1 font-black uppercase tracking-widest text-[10px] h-12 rounded-xl border-2">Ver Normas</Button>
+                 </div>
               </Card>
            </div>
         </TabsContent>
 
         <TabsContent value="history" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-           <Card className="border-none shadow-md bg-white p-8">
-             <div className="relative border-l-2 border-muted pl-8 space-y-12 py-4 ml-4">
+           <Card className="border-none shadow-xl bg-white p-12 rounded-[3rem]">
+             <div className="relative border-l-4 border-muted/30 pl-12 space-y-16 py-6 ml-6">
                 {[
-                  { title: "Entrega de Chaves", date: "15/04/2025", desc: "Entrega oficial da unidade para o cliente.", icon: CheckCircle2, color: "bg-green-500" },
-                  { title: "Vistoria de Pré-Entrega", date: "05/04/2025", desc: "Aprovada sem ressalvas.", icon: Building, color: "bg-primary" },
-                  { title: "Conclusão da Obra", date: "20/03/2025", desc: "Habite-se emitido pela prefeitura.", icon: Building2, color: "bg-primary" },
-                  { title: "Assinatura de Contrato", date: "10/11/2024", desc: "Financiamento bancário aprovado.", icon: FileText, color: "bg-primary" }
+                  { title: "Entrega de Chaves", date: "15/04/2025", desc: "Entrega oficial da unidade para o cliente com termo de posse assinado.", icon: CheckCircle2, color: "bg-emerald-500" },
+                  { title: "Vistoria de Pré-Entrega", date: "05/04/2025", desc: "Aprovada sem ressalvas em primeira inspeção técnica.", icon: Building, color: "bg-primary" },
+                  { title: "Conclusão da Obra", date: "20/03/2025", desc: "Habite-se emitido pela prefeitura e averbado.", icon: Building2, color: "bg-primary" },
+                  { title: "Assinatura de Contrato", date: "10/11/2024", desc: "Financiamento bancário e alienação fiduciária aprovados.", icon: FileText, color: "bg-primary" }
                 ].map((item, i) => (
                   <div key={i} className="relative">
-                     <div className={cn("absolute -left-[41px] top-0 p-2 rounded-full text-white shadow-lg", item.color)}>
-                        <item.icon size={16} />
+                     <div className={cn("absolute -left-[68px] top-0 p-3 rounded-2xl text-white shadow-2xl border-4 border-white", item.color)}>
+                        <item.icon size={20} strokeWidth={3} />
                      </div>
-                     <div className="space-y-1">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.date}</span>
-                        <h4 className="font-black text-lg tracking-tight">{item.title}</h4>
-                        <p className="text-sm text-muted-foreground font-medium">{item.desc}</p>
+                     <div className="space-y-2">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">{item.date}</span>
+                        <h4 className="font-black text-2xl tracking-tight mt-2">{item.title}</h4>
+                        <p className="text-base text-muted-foreground font-medium leading-relaxed max-w-2xl">{item.desc}</p>
                      </div>
                   </div>
                 ))}

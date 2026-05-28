@@ -19,11 +19,19 @@ const faqData = [
   },
   {
     question: "Onde encontro a planta do meu imóvel?",
-    answer: "Todas as plantas e manuais técnicos estão disponíveis na aba 'Documentos' do seu portal."
+    answer: "Todas as plantas e manuais técnicos estão disponíveis na aba 'Documentos' do seu portal ou no dossiê técnico na aba 'Meu Imóvel'."
   },
   {
-    question: "Como posso falar com o suporte técnico?",
-    answer: "Você pode utilizar o botão 'Falar com suporte' no menu lateral ou abrir um chamado diretamente pela aba de 'Garantias'."
+    question: "Como faço para trocar o titular da unidade?",
+    answer: "A troca de titularidade exige documentação legal. Entre em contato com o suporte financeiro anexando o contrato de cessão ou escritura."
+  },
+  {
+    question: "Quais reparos estão cobertos pela garantia?",
+    answer: "A garantia cobre defeitos de execução e materiais conforme a tabela da NBR 15575. Itens de desgaste natural (como lâmpadas ou vedantes) são de responsabilidade do proprietário."
+  },
+  {
+    question: "Posso realizar reformas antes da entrega das chaves?",
+    answer: "Não. Por questões de segurança e seguro da obra, nenhuma reforma ou personalização pode ser feita antes da vistoria final e entrega oficial das chaves."
   }
 ];
 
