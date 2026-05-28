@@ -32,6 +32,7 @@ const Financial = () => {
   const [invoices, setInvoices] = useState<ClientInvoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showStatement, setShowStatement] = useState(false);
   const { toast } = useToast();
 
   const handleCopy = (text: string, id: string) => {
@@ -246,15 +247,49 @@ const Financial = () => {
                   ))}
                 </div>
               )}
-            </TabsContent>
-            
-            <TabsContent value="pending" className="mt-0">
-               {/* Similar logic but filtered */}
-               <div className="py-20 text-center border-2 border-dashed rounded-[2.5rem]">
-                 <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest">Apenas faturas pendentes</p>
-               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          ) : (
+            <Card className="rounded-[2.5rem] border-none shadow-xl bg-white overflow-hidden animate-in slide-in-from-right-4 duration-500">
+              <div className="p-10 border-b border-border/5 bg-muted/20">
+                <h3 className="text-xl font-black tracking-tighter">Extrato Consolidado</h3>
+                <p className="text-sm text-muted-foreground font-medium">Posição financeira detalhada da unidade</p>
+              </div>
+              <div className="p-0">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-muted/30 border-b border-border/5">
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Data</th>
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Descrição</th>
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">Valor</th>
+                      <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/5">
+                    {invoices.map((item) => (
+                      <tr key={item.id} className="hover:bg-muted/10 transition-colors">
+                        <td className="px-8 py-6 text-xs font-bold text-muted-foreground">{format(new Date(item.due_date), 'dd/MM/yyyy')}</td>
+                        <td className="px-8 py-6">
+                           <p className="text-sm font-black">{item.title}</p>
+                           <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mt-1">Ref: {item.id.substring(0,8)}</p>
+                        </td>
+                        <td className="px-8 py-6 text-sm font-black text-right">R$ {item.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                        <td className="px-8 py-6 text-center">
+                           <div className="flex justify-center">
+                             {getStatusBadge(item.status)}
+                           </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {invoices.length === 0 && (
+                  <div className="p-20 text-center">
+                    <p className="text-muted-foreground font-black uppercase text-[10px] tracking-widest">Nenhuma transação registrada</p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
         </div>
       </div>
     </div>
