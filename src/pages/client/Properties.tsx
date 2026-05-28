@@ -318,6 +318,53 @@ const ClientProperties = () => {
                 </div>
              </CardContent>
            </Card>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+              <Card className="rounded-[2.5rem] border-none shadow-xl bg-slate-900 text-white p-10 relative overflow-hidden group">
+                 <div className="absolute right-[-10%] top-[-10%] opacity-10 group-hover:rotate-12 transition-transform duration-1000">
+                    <Building2 size={240} />
+                 </div>
+                 <div className="relative z-10 space-y-4">
+                    <Badge className="bg-primary border-none font-black uppercase text-[10px] px-3 py-1 rounded-lg">Status Comunitário</Badge>
+                    <h4 className="text-2xl font-black tracking-tighter">Áreas Comuns & Lazer</h4>
+                    <p className="text-slate-400 text-sm font-medium leading-relaxed">
+                       Acompanhe o status de entrega e manutenção dos espaços compartilhados do seu empreendimento.
+                    </p>
+                    <div className="space-y-3 pt-4">
+                       {[
+                         { label: "Piscina & Deck", status: "Entregue" },
+                         { label: "Espaço Gourmet", status: "Em Manutenção" },
+                         { label: "Academia", status: "Entregue" }
+                       ].map((item, i) => (
+                         <div key={i} className="flex justify-between items-center text-xs">
+                            <span className="font-bold">{item.label}</span>
+                            <span className={cn("px-2 py-0.5 rounded-md font-black uppercase text-[9px]", item.status === 'Entregue' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400')}>
+                               {item.status}
+                            </span>
+                         </div>
+                       ))}
+                    </div>
+                 </div>
+              </Card>
+
+              <Card className="rounded-[2.5rem] border-none shadow-xl bg-white p-10 space-y-6">
+                 <div className="flex items-center gap-4">
+                    <div className="p-4 bg-primary/5 rounded-2xl text-primary">
+                       <MapPin size={24} />
+                    </div>
+                    <div>
+                       <h4 className="text-xl font-black tracking-tighter">Vizinhança A2</h4>
+                       <p className="text-xs text-muted-foreground font-medium">Conecte-se com seu novo bairro.</p>
+                    </div>
+                 </div>
+                 <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                    Sua unidade está em uma região estratégica com alta valorização e infraestrutura completa.
+                 </p>
+                 <Button variant="outline" className="w-full h-12 rounded-xl font-black uppercase tracking-widest text-[10px] border-2">
+                    Ver Guia do Bairro
+                 </Button>
+              </Card>
+           </div>
         </TabsContent>
 
         <TabsContent value="warranty" className="animate-in fade-in slide-in-from-bottom-4 duration-500">

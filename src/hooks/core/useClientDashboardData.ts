@@ -25,7 +25,7 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
     const load = async () => {
       try {
         const [docs, inspections, warranty, construction, maintenance, invoices] = await Promise.all([
-          documentService.getDocumentsByClient(userName || profile?.name || "João Silva"),
+          documentService.getDocumentsByClient(userName || profile?.name || "Proprietário"),
           inspectionService.getAll(),
           warrantyFlowService.getAllRequests(),
           propertyId ? constructionService.getUpdatesByProperty(propertyId) : constructionService.getUpdates(),
@@ -35,7 +35,7 @@ export const useClientDashboardData = (clientId: string, userName?: string) => {
 
         setData({
           allDocs: docs,
-          allInspections: inspections.filter(i => i && i.client === (userName || profile?.name || "João Silva")),
+          allInspections: inspections.filter(i => i && i.client === (userName || profile?.name || "Proprietário")),
           warrantyRequests: warranty.filter(r => r.clientId === clientId),
           constructionUpdates: construction,
           maintenanceSchedules: maintenance,

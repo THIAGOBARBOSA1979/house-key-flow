@@ -128,7 +128,25 @@ const ClientLayout = () => {
             </Button>
           </div>
 
-          <div className="mb-10">
+          <div className="mb-10 space-y-4">
+            {allProfiles.length > 1 ? (
+              <div className="px-4 py-3 rounded-3xl bg-primary/5 border border-primary/10">
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-2 px-1">Alternar Unidade</p>
+                <Select value={selectedProfileId || undefined} onValueChange={setSelectedProfileId}>
+                  <SelectTrigger className="bg-white border-none shadow-sm rounded-2xl h-11 text-xs font-bold">
+                    <SelectValue placeholder="Selecione a unidade" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-2xl border-none shadow-2xl">
+                    {allProfiles.map(p => (
+                      <SelectItem key={p.id} value={p.id} className="text-xs font-bold py-3">
+                        {p.propertyName} - {p.unitNumber}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : null}
+
             <Link to="/client/profile" className="flex items-center gap-4 p-4 rounded-3xl bg-muted/30 border border-border/5 hover:bg-primary/5 hover:border-primary/20 transition-all group">
               <Avatar className="h-12 w-12 border-2 border-primary/10 group-hover:border-primary transition-all">
                 <AvatarFallback className="bg-primary/10 text-primary font-black uppercase text-xs">

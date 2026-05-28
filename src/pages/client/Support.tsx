@@ -110,12 +110,12 @@ const Support = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Assunto</label>
+                  <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Assunto do Protocolo</label>
                   <Input 
                     value={formState.subject} 
                     onChange={e => setFormState(prev => ({...prev, subject: e.target.value}))} 
-                    placeholder="Ex: Vazamento na cozinha" 
-                    className="h-12 rounded-xl" required 
+                    placeholder="Ex: Infiltração parede suíte" 
+                    className="h-12 rounded-xl focus:ring-primary/20 transition-all" required 
                   />
                 </div>
                 <div className="space-y-2">
