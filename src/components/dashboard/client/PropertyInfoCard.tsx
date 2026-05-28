@@ -31,31 +31,31 @@ export const PropertyInfoCard = ({
     <CardHeader className="relative z-10 p-8 pb-4">
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
         <div className="space-y-4">
-          <CardTitle className="text-3xl font-black tracking-tighter flex items-center gap-4">
-            <div className="p-4 bg-primary text-white rounded-[1.5rem] shadow-xl shadow-primary/20">
-              <Building2 className="h-8 w-8" strokeWidth={2.5} />
+          <CardTitle className="text-3xl sm:text-4xl font-black tracking-tighter flex items-center gap-4">
+            <div className="p-4 bg-primary text-white rounded-[1.5rem] shadow-xl shadow-primary/20 shrink-0">
+              <Building2 className="h-6 w-6 sm:h-8 sm:w-8" strokeWidth={2.5} />
             </div>
-            {property}
+            <span className="truncate">{property}</span>
           </CardTitle>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline" className="bg-background px-4 py-1.5 font-black uppercase tracking-widest text-[10px] rounded-xl border-2">
+            <Badge variant="outline" className="bg-background px-4 py-1.5 font-black uppercase tracking-widest text-[9px] sm:text-[10px] rounded-xl border-2">
               Unidade {unit}
             </Badge>
             {block && (
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-black uppercase tracking-widest text-[10px] px-4 py-1.5 rounded-xl">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-black uppercase tracking-widest text-[9px] sm:text-[10px] px-4 py-1.5 rounded-xl">
                 {block}
               </Badge>
             )}
-            <Badge className="bg-emerald-500 text-white border-none font-black uppercase tracking-widest text-[10px] px-4 py-1.5 rounded-xl shadow-lg shadow-emerald-500/10">
+            <Badge className="bg-emerald-500 text-white border-none font-black uppercase tracking-widest text-[9px] sm:text-[10px] px-4 py-1.5 rounded-xl shadow-lg shadow-emerald-500/10">
               Ativo
             </Badge>
           </div>
         </div>
         {daysToDelivery > 0 && (
-          <div className="bg-white/80 backdrop-blur-md p-6 rounded-[2rem] border border-primary/10 shadow-xl flex flex-col items-center justify-center min-w-[140px] group-hover:scale-105 transition-transform duration-700">
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Contagem Regressiva</p>
-            <p className="text-3xl font-black text-primary tracking-tighter">{daysToDelivery}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-primary">Dias para chaves</p>
+          <div className="bg-white/80 backdrop-blur-md p-4 sm:p-6 rounded-[2rem] border border-primary/10 shadow-xl flex flex-col items-center justify-center min-w-[120px] sm:min-w-[140px] group-hover:scale-105 transition-transform duration-700">
+            <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1 text-center leading-tight">Contagem Regressiva</p>
+            <p className="text-2xl sm:text-3xl font-black text-primary tracking-tighter">{daysToDelivery}</p>
+            <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-primary text-center">Dias para chaves</p>
           </div>
         )}
       </div>
@@ -67,11 +67,11 @@ export const PropertyInfoCard = ({
             <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
               <TrendingUp size={12} /> Evolução Técnica
             </span>
-            <p className="text-4xl font-black text-primary tracking-tighter">{Math.round(contractProgress)}%</p>
+            <p className="text-3xl sm:text-4xl font-black text-primary tracking-tighter">{Math.round(contractProgress)}%</p>
           </div>
           <div className="text-right">
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block">Entrega</span>
-            <p className="font-black text-foreground">{deliveryDate.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}</p>
+            <span className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-widest block">Entrega</span>
+            <p className="font-black text-sm sm:text-base text-foreground">{deliveryDate.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}</p>
           </div>
         </div>
         <Progress value={contractProgress} className="h-2 bg-primary/10 rounded-full" />
