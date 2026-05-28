@@ -86,7 +86,7 @@ const ClientProperties = () => {
     address: propertyData?.location || "Consulte seu contrato",
     city: "Porto Alegre",
     state: "RS",
-    size: profile?.totalArea ? `${profile.totalArea}m²` : (propertyData?.totalArea ? `${Math.round(propertyData.totalArea / (propertyData.units || 1))}m²` : "72,50m²"),
+    size: propertyData?.totalArea ? `${Math.round(propertyData.totalArea / (propertyData.units || 1))}m²` : "72,50m²",
     bedrooms: 2,
     bathrooms: 2,
     deliveryDate: propertyData?.deliveryDate ? format(new Date(propertyData.deliveryDate), 'dd/MM/yyyy') : "15/04/2025",
