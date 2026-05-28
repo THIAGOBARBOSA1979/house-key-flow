@@ -3,16 +3,17 @@ import {
   LifeBuoy, 
   Send, 
   Search, 
-  MessageSquare,
-  ShieldCheck,
-  BookOpen,
-  HelpCircle,
-  ChevronRight,
-  Download,
-  FileQuestion,
-  Clock,
-  Smartphone,
-  Star
+  MessageSquare, 
+  ShieldCheck, 
+  BookOpen, 
+  HelpCircle, 
+  ChevronRight, 
+  Download, 
+  FileQuestion, 
+  Clock, 
+  Smartphone, 
+  Star,
+  FileText
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
